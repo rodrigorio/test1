@@ -1,0 +1,59 @@
+/*** GENERALES ***/
+
+/* Make sure the layout is centered in IE5 */
+body{text-align:center;}
+/* Fixes IE margin bugs */
+* html .menu_horizontal{overflow-x: hidden;}
+/* Fixes IE7 missing wrapping of code elements. */
+html>body p code { *white-space: normal; }
+/* Explicitly set interpolation, allowing dynamically resized images to not look horrible */
+img { -ms-interpolation-mode:bicubic; }
+/* Fixes padding on fieldset */
+fieldset { padding-top:0; }
+/* Makes classic textareas in IE 6 resemble other browsers */
+textarea { overflow:auto; }
+/*linea extra clearfix ie6*/
+* html .grupo{height:1%}
+/*linea extra clearfix ie7*/
+*:first-child+html .grupo{display:inline-block} 
+/*Fixes incorrect placement of numbers in ol's in IE6/7*/
+ol{margin-left:2em}
+
+
+
+/*** PLANTILLA ***/
+* html textarea{font-family:Arial, Helvetica, sans-serif}
+*:first-child+html textarea{font-family:Arial, Helvetica, sans-serif}
+
+* html button, * html label, * html select, * html li, * html .puntaje{cursor:pointer}
+i{cursor:pointer}
+
+.bo_wh{border:1px solid white !important}
+
+* html #wrapper{text-align:left}
+
+input{padding:6px 4px 2px}
+* html input, * html select{padding:6px 4px !important; font-size:1.1em !important}
+*:first-child+html input, *:first-child+html select{padding:5px 4px 3px; font-size:1.1em !important}
+
+* html .btn01{padding:2px 2px !important}
+*:first-child+html .btn01{padding:2px 2px !important}
+* html .btn_pres{padding:1px 4px 0 4px;}
+*:first-child+html .btn_pres{padding:1px 4px 0 4px;}
+
+.check_suscribirse{border:none !important}
+
+* html #msg_top{text-align:left}
+
+/* iconos ie6 */
+* html .valoracion, * html .puntaje, *html .i, *html .i32{overflow:hidden}
+*html .iveal .i{margin:2px 2px 2px 1px !important} *html .iveal .i32{margin:3px 5px 3px 2px !important}
+*:first-child+html .iveal .i{margin-left:2px !important} *:first-child+html .iveal .i32{margin-left:5px !important}
+
+*html .sc{background-image:url("images/iconos/social.gif")}
+*html .bs{background-image:url("images/iconos/basicos.gif")}
+*html .mi{background-image:url("images/iconos/manejo-info.gif")}
+*html .mc{background-image:url("images/iconos/misc.gif")}
+*html .valoracion, *html .puntaje{background-image:url("../images/iconos/puntajes_bn.gif")}
+
+* html .ba{background:url("images/fondos/fondo_secundario_transparente.gif") repeat;}  

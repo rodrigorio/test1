@@ -1,0 +1,97 @@
+<!--BeginFiltroComentariosBlock-->
+<div class="pabo bobo1 mabo2">
+    <span class="fte3 mari2">Mostrando comentarios {iTotalComentariosPagina} de {iTotalComentarios}</span>
+    <span class="fte2">Ordenar por</span>
+    <select id="ordenar_comentarios">    
+        <option>Recientes primero</option>
+        <option>Antig&uuml;os primero</option>
+        <option>Preferidos por la gente</option>
+    </select>                
+</div>      
+<!--EndFiltroComentariosBlock-->
+
+<!--BeginComentarioBlock-->
+<div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">                            
+    <div class="header mabo2 grupo">                    
+        <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
+    </div>                    
+    <p>{sComentario}</p>
+    <div class="fte2 fl_ri mabo2">a {iPersonas} personas le/s gusta el comentario</div>
+    <br clear="all">
+    <a class="fte2 fl_le" href="{hrefReportar}">Reportar Moderador</a>
+    <a class="fte2 fl_ri" href="{hrefMeGusta}">Me Gusta</a>
+</div> 
+<!--EndComentarioBlock-->
+
+<!--BeginComentarioValoracionBlock-->
+<div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">                            
+    <div class="header mabo2 grupo">                    
+        <!--BeginValoracion0Block--><span class="fl_le mari valoracion val0"></span><!--EndValoracion0Block-->
+        <!--BeginValoracion0_2Block--><span class="fl_le mari valoracion val0_2"></span><!--EndValoracion0_2Block-->    
+        <!--BeginValoracion1Block--><span class="fl_le mari valoracion val1"></span><!--EndValoracion1Block-->    
+        <!--BeginValoracion1_2Block--><span class="fl_le mari valoracion val1_2"></span><!--EndValoracion1_2Block-->    
+        <!--BeginValoracion2Block--><span class="fl_le mari valoracion val2"></span><!--EndValoracion2Block-->    
+        <!--BeginValoracion2_2Block--><span class="fl_le mari valoracion val2_2"></span><!--EndValoracion2_2Block-->    
+        <!--BeginValoracion3Block--><span class="fl_le mari valoracion val3"></span><!--EndValoracion3Block-->    
+        <!--BeginValoracion3_2Block--><span class="fl_le mari valoracion val3_2"></span><!--EndValoracion3_2Block-->    
+        <!--BeginValoracion4Block--><span class="fl_le mari valoracion val4"></span><!--EndValoracion4Block-->    
+        <!--BeginValoracion4_2Block--><span class="fl_le mari valoracion val4_2"></span><!--EndValoracion4_2Block-->    
+        <!--BeginValoracion5Block--><span class="fl_le mari valoracion val5"></span><!--EndValoracion5Block-->                 
+        <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
+    </div>                    
+    <p>{sComentario}</p>
+    <div class="fte2 fl_ri mabo2">a {iPersonas} personas le/s gusta el comentario</div>
+    <br clear="all">
+    <a class="fte2 fl_le" href="{hrefReportar}">Reportar Moderador</a>
+    <a class="fte2 fl_ri" href="{hrefMeGusta}">Me Gusta</a>
+</div> 
+<!--EndComentarioValoracionBlock-->
+
+<!--BeginPaginacionComentariosBlock-->
+<div id="paginacion" class="paginacion1 teal_ce mabo2">
+
+	<!--BeginLinksPaginas-->
+    <a rel="nofollow" href="{hrefPagina}">{iPagina}</a>
+    <!--EndLinksPaginas-->
+    
+    <!--BeginLinkPaginaActiva-->
+    <a rel="nofollow" class="texto_importante" href="{hrefPagina}">{iPagina}</a>
+    <!--EndLinkPaginaActiva-->    
+    
+</div>                                                                              
+<!--EndPaginacionComentariosBlock-->
+
+<!--BeginNuevoComentarioBlock-->
+<div id="nuevoComentario" class="ficha02 mabo3 cl_bo">  
+
+	<!--BeginPuntuarBlock-->          
+    <div class="puntuar mabo2 grupo">
+        <div class="desc fl_le mari">Punt&uacute;a &eacute;sta publicaci&oacute;n:</div>
+        <div id="puntaje" class="puntaje pun0 fl_le mari">
+            <div id="pun1"></div><div id="pun2"></div><div id="pun3"></div>
+            <div id="pun4"></div><div id="pun5"></div>
+        </div>
+        <div id="txt_puntaje" class="fl_le tetr_ca"></div> 
+    </div>
+    <!--EndPuntuarBlock-->
+                           
+    <div class="ta_wrap"> 
+        <div class="inner_fwrap">               
+            <textarea rows="0" cols="30" name="comentario" class="tarea_ctrl" title="Escribe tu comentario">Escribe tu comentario</textarea>
+        </div>
+    </div>
+
+    <div class="mato2 grupo di_no">
+        <input class="celda3" type="text" name="nombre" value="Nombre" title="Nombre"/>
+        <input class="celda3" type="text" name="mail" value="E-Mail (No se mostrar&aacute;)" title="E-Mail (No se mostrar&aacute;)" />
+        <input class="celda3 mari0" type="text" name="sitioweb" value="Sitio Web (Opcional)" title="Sitio Web (Opcional)" />
+        <div class="fl_le">
+            <input id="check_suscribirse" name="check_suscribirse" class="check_suscribirse" type="checkbox" checked="checked">
+            <label for="check_suscribirse">Notificarme nuevos comentarios por mail y suscribirme!.</label>	
+        </div>
+        <div class="fl_ri">
+            <button id="publicar" name="publicar" class="btn01">Publicar</button>
+        </div>                    
+    </div>                                                                           
+</div>                        
+<!--EndNuevoComentarioBlock-->
