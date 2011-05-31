@@ -1,0 +1,76 @@
+<!--BeginHeadBlock-->
+<base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
+
+<title>{sTituloVista}</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+<meta http-equiv="Content-language" content="es" />
+<meta name="description" content="{sMetaDescription}" /> 
+<meta name="keywords" content="{sMetaKeywords}" /> 
+
+<link href="gui/vistas.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<link href="gui/css/jquery-ui.css" rel="stylesheet">
+
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"gui/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/publicacion-ampliada.js");
+</script>
+<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="gui/vistas-ie.css" media="screen, projection" /><![endif]-->
+<!--[if lte IE 7]><script type="text/javascript" src="gui/vistas-ie67.js"></script><![endif]-->
+<!--[if lte IE 6]><script type="text/javascript" src="utilidades/js-scripts/iepngfix/iepngfix_tilebg.js"></script><![endif]-->
+<!--EndHeadBlock-->
+
+<!--BeginPublicacionEncabezadoBlock-->
+<div class="fl_le mabo3">
+    <ul class="m_horiz">
+        <li><a href="{hrefShareFacebook}" class="i sc facebook"></a></li>
+        <li><a href="{hrefShareTwitter}" class="i sc twitter"></a></li>
+        <li class="mari0"><a href="{hrefShareRss}" class="i bs rss ihover"></a>                        
+    </ul>
+</div> 
+<!--EndPublicacionEncabezadoBlock-->
+
+<!--BeginPublicacionEncabezadoValoracionBlock-->
+<div class="fl_le mabo3">
+    <span class="fl_le mari txt_imp">Valoraci&oacute;n:</span>        
+	<!--BeginValoracion0Block--><span class="fl_le mari valoracion val0"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion0Block-->
+    <!--BeginValoracion0_2Block--><span class="fl_le mari valoracion val0_2"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion0_2Block-->    
+    <!--BeginValoracion1Block--><span class="fl_le mari valoracion val1"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion1Block-->    
+    <!--BeginValoracion1_2Block--><span class="fl_le mari valoracion val1_2"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion1_2Block-->    
+    <!--BeginValoracion2Block--><span class="fl_le mari valoracion val2"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion2Block-->    
+    <!--BeginValoracion2_2Block--><span class="fl_le mari valoracion val2_2"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion2_2Block-->    
+    <!--BeginValoracion3Block--><span class="fl_le mari valoracion val3"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion3Block-->    
+    <!--BeginValoracion3_2Block--><span class="fl_le mari valoracion val3_2"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion3_2Block-->    
+    <!--BeginValoracion4Block--><span class="fl_le mari valoracion val4"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion4Block-->    
+    <!--BeginValoracion4_2Block--><span class="fl_le mari valoracion val4_2"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion4_2Block-->    
+    <!--BeginValoracion5Block--><span class="fl_le mari valoracion val5"></span> {iCantCriticas} Cr&iacute;ticas<!--EndValoracion5Block-->               
+</div>
+<div class="fl_ri">
+    <ul class="m_horiz">
+        <li><a href="{hrefShareFacebook}" class="i sc facebook"></a></li>
+        <li><a href="{hrefShareTwitter}" class="i sc twitter"></a></li>
+        <li class="mari0"><a href="{hrefShareRss}" class="i bs rss ihover"></a>                        
+    </ul>
+</div> 
+<!--EndPublicacionEncabezadoValoracionBlock-->
+
+<!--BeginPublicacionBlock-->
+<div class="ficha01 cl_bo pa0 ba_no mabo2">
+    <div class="titulo"><h1>{sTituloPublicacion}</h1></div>
+    <div class="detalle">{dFechaAlta} por {sAutor}</div>
+    <p>{sDescripcion}</p>
+    {publicidad}
+</div>
+<!--EndPublicacionBlock-->
+
+<!--BeginPublicacionPie-->
+<ul class="fl_ri mabo2 mato iveal cl_bo">
+    <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir</a></li> 
+</ul>
+<!--EndPublicacionPie-->
