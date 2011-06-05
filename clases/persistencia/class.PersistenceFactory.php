@@ -13,7 +13,18 @@ class PersistenceFactory {
 	/**
 	 * @param mixed $conn
 	 * @return GroupIntermediary
+     *
+     *
+
 	 */
+
+    public static function getAdministradorIntermediary(IMYSQL $conn)
+    {
+
+            if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+			return (AdministradorMySQLIntermediary::getInstance($conn));
+            }
+    }
 	public static function getGroupIntermediary(IMYSQL  $conn) {
 		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			include_once(P_PERSISTENCE_CLASSPATH . "MYSQL/class.GroupMySQLIntermediary.php");
