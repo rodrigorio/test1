@@ -58,13 +58,6 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
         if(isset($this->historial->request_uri)){
            self::$lastRequestUri = $this->historial->request_uri;
         }
-/*
-        echo "hola ".$this->historial->request_uri."<br>";
-        echo "hola ".$this->historial->modulo."<br>";
-        echo "hola ".$this->historial->controlador."<br>";
-        echo "hola ".$this->historial->accion."<br><br>";
-        $params = $this->historial->params;
-        print_r($params); echo "<br>";*/
     }
 
     /**
