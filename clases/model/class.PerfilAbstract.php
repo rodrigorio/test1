@@ -120,13 +120,16 @@ abstract class PerfilAbstract
     //METODOS DE INTERFACE (varian segun el perfil).
 
     /**
-     * Devuelve Modulo/Controlador/Accion a la cual se debe redirigir el sistema luego de que un usuario solicita una accion
+     * Por defecto devuelve Modulo/Controlador/Accion a la cual se debe redirigir el sistema luego de que un usuario solicita una accion
      * a la cual no tiene permiso ó esta desactivada.
+     *
+     * Si el flag esta activado devuelve el pathInfo de la redireccion. (ver HttpRequest getPathInfo() )
      */
-    public function getUrlRedireccion401(){}
+    public function getUrlRedireccion($pathInfo = false){}
 
     /**
-     * Url a la cual se redirecciona por defecto luego de realizar un login satisfactorio.
+     * Url a la cual se redirecciona por defecto luego de realizar un login satisfactorio. Tambien formato Modulo/Controlador/Accion.
+     * Si el flag esta activado devuelve el pathInfo de la redireccion. (ver HttpRequest getPathInfo() )
      */
-    public function getUrlRedireccionLoginDefecto(){}
+    public function getUrlRedireccionLoginDefecto($pathInfo = false){}
 }

@@ -20,7 +20,7 @@ class Administrador extends PerfilAbstract
      * Se supone que el administrador no tiene redirecciones por permisos =)
      * tiro excepcion para tener una guia al programar, si se desactiva desde index.php no sale nada.
      */
-    public function getUrlRedireccion401()
+    public function getUrlRedireccion($pathInfo = false)
     {
         $keyPermiso = FrontController::getInstance()->getRequest()->getKeyPermiso();
         throw new Exception("ERROR, el administrador no debe tener acciones deshabilitadas. Accion: ".$keyPermiso." no aparece entre los permisos del perfil.");
@@ -31,14 +31,18 @@ class Administrador extends PerfilAbstract
      *
      * Se tendria que llamar de la siguiente manera: list($modulo,$controlador,$accion) = $administrador->getUrlRedireccionLoginDefecto();
      *
-     * @return array 1)Modulo 2)Controlador 3) Accion.
+     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma HttpRequest $request->getPathInfo()
      */
-    public function getUrlRedireccionLoginDefecto()
+    public function getUrlRedireccionLoginDefecto($pathInfo = false)
     {
         $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
-        $modulo = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_MODULO');
-        $controlador = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_CONTROLADOR');
-        $accion = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_ACCION');
-        return array($modulo, $controlador, $accion);   
+        if(!$pathInfo){
+            $modulo = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_MODULO');
+            $controlador = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_CONTROLADOR');
+            $accion = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_ACCION');
+            return array($modulo, $controlador, $accion);
+        }else{
+            return $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_PATH');
+        }
     }
 }

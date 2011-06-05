@@ -25,17 +25,22 @@ class Visitante extends PerfilAbstract
      *
      * Sin embargo, es correcto pedir siempre login cuando la redireccion es porque el perfil no posee PERMISO PARA UNA ACCION
      * (independientemente si esta activa o no)
+     *
+     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma HttpRequest $request->getPathInfo()
+     *
      */
-    public function getUrlRedireccion401()
+    public function getUrlRedireccion($pathInfo = false)
     {
-        $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
-        $soloSistema = true; //devuelve mas rapido
-
-        $homeSitioModulo = $parametros->obtener('HOME_SITIO_MODULO', $soloSistema);
-        $homeSitioControlador = $parametros->obtener('HOME_SITIO_CONTROLADOR', $soloSistema);
-        $homeSitioAccion = $parametros->obtener('HOME_SITIO_ACCION', $soloSistema);
-
-        return array($modulo, $controlador, $accion);
+        if(!$pathInfo){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $soloSistema = true; //devuelve mas rapido
+            $homeSitioModulo = $parametros->obtener('HOME_SITIO_MODULO', $soloSistema);
+            $homeSitioControlador = $parametros->obtener('HOME_SITIO_CONTROLADOR', $soloSistema);
+            $homeSitioAccion = $parametros->obtener('HOME_SITIO_ACCION', $soloSistema);
+            return array($modulo, $controlador, $accion);
+        }else{
+            return '/';
+        }
     }
 
     /**
@@ -43,7 +48,7 @@ class Visitante extends PerfilAbstract
      * La redireccion (la pagina a la que se dirige el sistema luego del login)
      * estara determinada por el tipo de perfil que EFECTIVAMENTE se logueo.
      */
-    public function getUrlRedireccionLoginDefecto()
+    public function getUrlRedireccionLoginDefecto($pathInfo = false)
     {
         throw new Exception("ERROR, luego de loguearse un usuario nunca puede quedar en perfil Visitante");
     }
