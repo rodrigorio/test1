@@ -41,7 +41,12 @@ class SysController
     public function obtenerParametrosControlador($controladorId)
     {
         //123probando...
-        return array("parametro1" => "valorParametro1");
+        return array("NOMBRE_SITIO" => "Urbis Blog - Plantilla",
+                     "SUBTITULO_SITIO" => "Este es un ejemplo de la plantilla de blogs de Urbis.",
+                     "METATAG_TITLE" => "Titulo depende de Modulo-Controlador-Accion",
+                     "METATAG_DESCRIPTION" => "Ble ble bl eb lebleblebisadj aslid",
+                     "METATAG_KEYWORDS" => "una palabra, otra palabra, otra palabra mas",
+                     "FILE_NAME_LOGO_SITIO" => "logo.jpg");
     }
 
     /**
@@ -58,9 +63,12 @@ class SysController
     {
         //123probando...
         return array("index_publicaciones_index" => true,
-                     "admin_index_index" => true,
                      "index_publicaciones_redireccion404" => true,
-                     "index_publicaciones_sitioOffline" => true);
+                     "index_publicaciones_sitioOffline" => true,
+                     "index_login_index" => true,
+                     "index_login_procesar" => true,
+                     "admin_index_redireccion404" => true,
+                     "admin_index_index" => true);
     }
 
     /**
@@ -71,6 +79,6 @@ class SysController
     public function crearPerfil($perfilClass, Usuario $usuario = null)
     {
         $usuario = new Usuario();
-        return new Blogger($usuario);
+        return new Administrador($usuario);
     }
 }
