@@ -1,0 +1,32 @@
+#comprime lo que devuelve el servidor si esta activado el modulo en apache
+<ifmodule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css aplication/x-javascript application/javascript
+</ifmodule>
+
+#no deja abrir el .htaccess en ningun directorio ni raiz ni subdirectorios
+<Files ~ "^.*\.([Hh][Tt][Aa])">
+ order allow,deny
+ deny from all
+ satisfy all
+</Files>
+
+#no deja abrir archivos php excepto index.php, tampoco deja abrir los archivos de vistas "nombre.gui.html"
+<Files ~ "\.(php|gui\.html)$">
+	Order allow,deny
+	Deny from all
+</Files>
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+#desactiva busqueda por directorio
+Options All -Indexes
+
+#primero las condiciones de rewrite, si cumple se aplican las reglas rewrite, sino existe el [OR] se asume un AND
+#las condiciones hacen que se acepte cualquier directorio o archivo que exista o cualquier url que sea 'amigable'
+#y luego lo redireccione a /index.php (tener en cuenta de prohibir acceso a archivos que existen en cada directorio despues)
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php

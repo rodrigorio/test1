@@ -1,0 +1,63 @@
+<!--BeginHeadBlock-->
+<base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
+
+<title>{sTituloVista}</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-language" content="es" />
+<meta name="description" content="{sMetaDescription}" />
+<meta name="keywords" content="{sMetaKeywords}" />
+
+<link href="gui/vistas.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<link href="gui/css/jquery-ui.css" rel="stylesheet">
+
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"gui/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/funciones-globales.js")
+   .script("{pathUrlBase}"+"gui/vistas/login.js");
+</script>
+<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="gui/vistas-ie.css" media="screen, projection" /><![endif]-->
+<!--[if lte IE 7]><script type="text/javascript" src="gui/vistas-ie67.js"></script><![endif]-->
+<!--[if lte IE 6]><script type="text/javascript" src="utilidades/js-scripts/iepngfix/iepngfix_tilebg.js"></script><![endif]-->
+<!--EndHeadBlock-->
+
+<!--BeginFormularioBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi authenticate32"></span> Acceder</div>
+    <form id="login" class="grupo" action="{sFormAction}" method="post">
+        <div id='ajax_loading' class="di_no"></div>
+
+        <div class="msg_form iveal di_no"><span class="i bs"></span></div>
+
+        <div id="nombreUsuario" class="form_line">
+            <div class="msg_campo_der iveal di_no"><span class="i bs"></span></div>
+            <div class="in_wrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="nombreUsuario" value="Usuario" title="Usuario"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="contrasenia" class="form_line">
+            <div class="msg_campo_der iveal di_no"><span class="i bs"></span></div>
+            <div class="in_wrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="contrasenia" value="Contraseña" title="Contraseña"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="fl_le iveal">
+            <button id="acceder" type="submit" name="acceder" class="btn01"><span class="i mi signIn"></span> Acceder</button>
+        </div>
+
+        <input type="hidden" value="{sNextUrl}" name="next" id="next">
+    </form>
+</div>
+<!--EndFormularioBlock-->
