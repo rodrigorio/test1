@@ -29,6 +29,7 @@ class Publicacion
 
     /**
      * objetos Foto. (Proxy, se pide a demanda)
+     * @var array Objetos clase Foto
      */
     private $fotos = array();
 
@@ -43,7 +44,7 @@ class Publicacion
     private $archivos = array();
 
     /**
-     * objetos Archivos. (Proxy, se pide a demanda)
+     * objetos Comentario. (Proxy, se pide a demanda)
      */
     private $comentarios = array();
 
