@@ -22,7 +22,6 @@ class PluginPermisos extends PluginAbstract
     private function redireccionarRuta($mensajeAccionDenegada = self::MENSAJE_ACCION_DENEGADA, $mensajeSolicitaLogin = self::MENSAJE_SE_SOLICITA_LOGIN)
     {
         $this->getResponse()->setRawHeader('HTTP/1.0 401 Unauthorized');
-        SessionAutentificacion::getInstance()->realizoLogin(true);
         if(!SessionAutentificacion::getInstance()->realizoLogin()){
             //no es ajax y no hizo login redirecciono a login
             //luego de iniciar trata de ir al request original que pidio el client.
