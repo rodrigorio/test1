@@ -78,7 +78,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
        try{
 			$db = $this->conn;
             
-			$sSQL =	" select SQL_CALC_FOUND_ROWS p.numeroDocumento as numeroDocumento,
+			$sSQL =	" select p.numeroDocumento as numeroDocumento,
             u.contasenia as contrasenia from personas p
             join usuarios u on p.id = u.id where p.id =".$id."";
             $oUsuario = $db->getDBObject($sSQL);
