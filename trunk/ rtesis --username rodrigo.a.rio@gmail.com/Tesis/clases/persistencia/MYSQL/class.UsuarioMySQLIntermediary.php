@@ -30,7 +30,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 	}
     
 
-    private  function insert(Usuario $oUsuario)
+    public  function insert(Usuario $oUsuario)
    {
 		try{
 			$db = $this->conn;
@@ -72,7 +72,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		}
 	}
 
-    
+    //este no le puse byid porque seguro le p onemos otros parametros
     public function obtenerUsuario($id)
     {
        try{
@@ -94,5 +94,36 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
+/**
+ *se pueden agregar parametros para filtrar por campos
+ */
+    public function getListUsuarios(&$iRecordsTotal,$sOrderBy=null,$sOrder=null,$iIniLimit = null,$iRecordCount = null){
+		try{
+			$db = $this->conn;
+			$sSQL = "select SQL_CALC_FOUND_ROWS p.numeroDocumento as numeroDocumento,
+            u.contasenia as contrasenia from personas p
+            join usuarios u on p.id = u.id where p.id =";
+			if (isset($sOrderBy) && isset($sOrder)){
+				$sSQL .= " order by $sOrderBy $sOrder ";
+			}
+
+			if ($iIniLimit && $iRecordCount){
+				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+			}
+			$db->query($sSQL);
+
+			while( ($oUsuarios = $db->oNextRecord() ) ){
+				$vResult[] = Factory::getTorneosInstance($oUsuarios);
+			}
+			$iRecordsTotal = (int) $db->getDBValue(" select FOUND_ROWS() as list_count ");
+
+			return $vResult;
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+
 }
 ?>

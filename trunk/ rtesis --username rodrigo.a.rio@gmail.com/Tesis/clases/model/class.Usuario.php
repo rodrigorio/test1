@@ -9,7 +9,7 @@ class Usuario extends PersonaAbstract
 {
     private $fechaAlta;
     private $sitioWeb;
-    private $nombreUsuario;
+    private $nombreUsuario;//de donde salio este atributo??
     private $contrasenia;
 
     public function getNombreUsuario()
