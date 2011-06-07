@@ -6,7 +6,7 @@
  *
  * @author Andres
  */
-class classUsuarioMySQLIntermediary extends UsuarioIntermediary
+class UsuarioMySQLIntermediary extends UsuarioIntermediary
 { static $singletonInstance = 0;
 
 
@@ -28,25 +28,71 @@ class classUsuarioMySQLIntermediary extends UsuarioIntermediary
 		}
 		return(self::$singletonInstance);
 	}
+    
 
-   public function insert($sitioWeb,$especialidades_id,$perfiles_id,$contraseña,$fechaAlta) {
+    private  function insert(Usuario $oUsuario)
+   {
 		try{
 			$db = $this->conn;
-			$sSQL =	" insert into usuarios ".
-                    " sitioWeb=".$db->escape($nombre,true).", " .
-					" especialidades_id =".$db->escape($especialidades_id,false,MYSQL_TYPE_INT).", ".
-                    " perfiles_id =".$db->escape($especialidades_id,false,MYSQL_TYPE_INT).", ".
-					" contrasenia=".$db->escape($contrasenia,true).", " .
-			        " fechaAlta= ".$db->escape($fechaAlta, false,MYSQL_TYPE_DATE);
+			$sSQL =	" insert into personas ".
+                    " nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido,true).", " .
+					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo,true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento, false,MYSQL_TYPE_DATE);
+                    " email =".$db->escape($oUsuario->getEmail,true).", " .
+                    " telefono =".$db->escape($oUsuario->getTelefono,true).", " .
+                    " celular =".$db->escape($oUsuario->getCelular,true).", " .
+                    " fax =".$db->escape($oUsuario->getFax,true).", " .
+                    " domicilio =".$db->escape($oUsuario->getDomicilio,true).", " .
+                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id,false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id,false,MYSQL_TYPE_INT).", ".
+					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen,true).", " .
+                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal,true).", " .
+                    " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
+                    " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
+                    " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
+			        
+			 $db->execSQL($sSQL);
+             
+             $sSQL =	" insert into usuarios ".
+                    " sitioWeb=".$db->escape($oUsuario->getSitioWeb,true).", " .
+					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id,false,MYSQL_TYPE_INT).", ".
+                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id,false,MYSQL_TYPE_INT).", ".
+					" contrasenia=".$db->escape($oUsuario->getContrasenia,true).", " .
+			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta, false,MYSQL_TYPE_DATE);
 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             //aca ahy que hacer otra insecion en la tabla personas
-
+             
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+
+    
+    public function obtenerUsuario($id)
+    {
+       try{
+			$db = $this->conn;
+            
+			$sSQL =	" select SQL_CALC_FOUND_ROWS p.numeroDocumento as numeroDocumento,
+            u.contasenia as contrasenia from personas p
+            join usuarios u on p.id = u.id where p.id =".$id."";
+            $oUsuario = $db->getDBObject($sSQL);
+			if($oUsuario){
+
+				return $oUsuario;
+			}else{
+				return null;
+			}
+			
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
 }
 ?>
