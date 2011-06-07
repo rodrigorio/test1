@@ -10,6 +10,9 @@
  * @author Andres
  */
 class UsuarioIntermediary extends Intermediary{
-    //put your code here
+   
+    public  abstract function insert(Usuario $oUsuario);
+
+    public abstract function obtenerUsuario($id);
 }
 ?>
