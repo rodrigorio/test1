@@ -5,12 +5,11 @@
  */
 
 /**
- * Description of classPrueba
+ * Description of classDiagnosticoSCC
  *
  * @author Andres
  */
-abstract class ObjetivoAbstract
-{
-    protected $id;
+class DiagnosticoSCC extends DiagnosticoAbstract{
+    //put your code here
 }
 ?>

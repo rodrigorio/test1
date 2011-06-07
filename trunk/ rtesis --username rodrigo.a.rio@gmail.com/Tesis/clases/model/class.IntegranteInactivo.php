@@ -6,7 +6,7 @@
  *
  * @author Andres
  */
-class classIntegranteInactivo extends PerfilAbstract
+class IntegranteInactivo extends PerfilAbstract
 {
     const PERFIL_INTEGRANTE_INACTIVO_ID = 4;
     const PERFIL_INTEGRANTE_INACTIVO_DESCRIPCION = 'integrante inactivo';

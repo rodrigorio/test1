@@ -5,12 +5,11 @@
  */
 
 /**
- * Description of classPrueba
+ * Description of classIntegranteInactivoIntermediary
  *
  * @author Andres
  */
-abstract class ObjetivoAbstract
-{
-    protected $id;
+class IntegranteInactivoIntermediary extends Intermediary{
+    //put your code here
 }
 ?>

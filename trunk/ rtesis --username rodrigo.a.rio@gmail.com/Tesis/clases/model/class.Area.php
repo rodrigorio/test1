@@ -5,12 +5,11 @@
  */
 
 /**
- * Description of classPrueba
+ * Description of classArea
  *
  * @author Andres
  */
-abstract class ObjetivoAbstract
-{
-    protected $id;
+class Area {
+    //put your code here
 }
 ?>

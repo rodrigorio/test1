@@ -6,7 +6,7 @@
  *
  * @author Andres
  */
-class classModerador extends PerfilAbstract
+class Moderador extends PerfilAbstract
 {
     const PERFIL_MODERADOR_ID = 2;
     const PERFIL_MODERADOR_DESCRIPCION = 'moderador';

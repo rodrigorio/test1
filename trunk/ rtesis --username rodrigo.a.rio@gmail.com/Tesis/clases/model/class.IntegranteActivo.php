@@ -6,7 +6,7 @@
  *
  * 
  */
-class classIntegranteActivo extends PerfilAbstract
+class IntegranteActivo extends PerfilAbstract
 {
   const PERFIL_INTEGRANTE_ACTIVO_ID = 5;
     const PERFIL_INTEGRANTE_ACTIVO_DESCRIPCION = 'visitante';
