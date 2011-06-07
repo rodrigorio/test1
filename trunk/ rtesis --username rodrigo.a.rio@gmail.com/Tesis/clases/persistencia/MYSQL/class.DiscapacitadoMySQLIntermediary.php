@@ -9,7 +9,7 @@
  *
  * @author Andres
  */
-class PersonaMySQLIntermediary
+class DiscapacitadoMySQLIntermediary
 {
    static $singletonInstance = 0;
 

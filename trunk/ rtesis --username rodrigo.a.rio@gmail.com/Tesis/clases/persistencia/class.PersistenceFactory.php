@@ -48,11 +48,11 @@ class PersistenceFactory {
 			return (UsuarioMySQLIntermediary::getInstance($conn));
             }
     }
-    public static function getPersonaIntermediary(IMYSQL $conn)
+    public static function getDiscapacitadoIntermediary(IMYSQL $conn)
     {
 
             if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-			return (PersonaMySQLIntermediary::getInstance($conn));
+			return (DiscapacitadoMySQLIntermediary::getInstance($conn));
             }
     }
     public static function getModeradorIntermediary(IMYSQL $conn)

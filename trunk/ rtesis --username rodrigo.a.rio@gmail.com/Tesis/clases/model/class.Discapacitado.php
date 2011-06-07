@@ -9,7 +9,7 @@
  *
  * @author Andres
  */
-class Persona extends PersonaAbstract {
+class Discapacitado extends PersonaAbstract {
     //put your code here
 }
 ?>

@@ -9,7 +9,7 @@
  *
  * @author Andres
  */
-class classPersonaIntermediary extends Intermediary {
+class DiscapacitadoIntermediary extends Intermediary {
     //put your code here
 }
 ?>

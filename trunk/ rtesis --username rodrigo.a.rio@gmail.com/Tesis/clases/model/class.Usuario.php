@@ -22,6 +22,16 @@ class Usuario extends PersonaAbstract
         $this->nombreUsuario = $nombreUsuario;
         return $this;
     }
+    public function getContrasenia()
+    {
+        return $this->contrasenia;
+    }
+
+    public function setContrasenia($contrasenia)
+    {
+        $this->contrasenia = $contrasenia;
+        return $this;
+    }
     
 
 }
