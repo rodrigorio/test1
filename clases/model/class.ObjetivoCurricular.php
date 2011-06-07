@@ -5,12 +5,11 @@
  */
 
 /**
- * Description of classPrueba
+ * Description of classObjetivoCurricular
  *
  * @author Andres
  */
-abstract class ObjetivoAbstract
-{
-    protected $id;
+class ObjetivoCurricular {
+    //put your code here
 }
 ?>

@@ -6,7 +6,7 @@
  *
  * 
  */
-abstract class classSeguimientoAbstract
+abstract class SeguimientoAbstract
 {
    protected $id;
 

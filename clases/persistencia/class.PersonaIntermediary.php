@@ -5,12 +5,11 @@
  */
 
 /**
- * Description of classPrueba
+ * Description of classPersonaIntermediary
  *
  * @author Andres
  */
-abstract class ObjetivoAbstract
-{
-    protected $id;
+class classPersonaIntermediary extends Intermediary {
+    //put your code here
 }
 ?>
