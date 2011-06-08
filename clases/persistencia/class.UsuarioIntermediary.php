@@ -14,5 +14,7 @@ class UsuarioIntermediary extends Intermediary{
     public  abstract function insert(Usuario $oUsuario);
 
     public abstract function obtenerUsuario($id);
+
+    public abstract function guardarUsuario($id);
 }
 ?>

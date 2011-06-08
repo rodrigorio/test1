@@ -29,8 +29,37 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		return(self::$singletonInstance);
 	}
     
+    private function updateUsuario (Usuario $oUsuario)
+    {
+        try{
+			$db = $this->conn;
+			$sSQL =	" insert into personas ".
 
-    public  function insert(Usuario $oUsuario)
+            //insertar codigopara update similar al insert
+
+
+             $db->execSQL($sSQL);
+			 $db->commit();
+
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+
+    public function guardarUsuario(Usuario $oUsuario)
+    {
+        try{
+			if($oUsuario->getId() != null){
+            return updateUsuario($oUsuario);
+            }else{
+				return insertUsuario($oUsuario);
+            }
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+    private  function insertUsuario(Usuario $oUsuario)
    {
 		try{
 			$db = $this->conn;
