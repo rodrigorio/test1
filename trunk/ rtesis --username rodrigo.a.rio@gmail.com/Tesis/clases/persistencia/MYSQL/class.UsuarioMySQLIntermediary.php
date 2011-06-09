@@ -125,7 +125,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 /**
  *se pueden agregar parametros para filtrar por campos
  */
-    public function getListUsuarios(&$iRecordsTotal,$sOrderBy=null,$sOrder=null,$iIniLimit = null,$iRecordCount = null){
+    public function getListaUsuarios(&$iRecordsTotal,$sOrderBy=null,$sOrder=null,$iIniLimit = null,$iRecordCount = null){
 		try{
 			$db = $this->conn;
 			$sSQL = "select SQL_CALC_FOUND_ROWS p.numeroDocumento as numeroDocumento,
