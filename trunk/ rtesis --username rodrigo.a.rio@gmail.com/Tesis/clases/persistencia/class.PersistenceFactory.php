@@ -33,7 +33,8 @@ class PersistenceFactory {
 			return (UsuarioMySQLIntermediary::getInstance($conn));
             }
     }
-        public static function getVisitanteIntermediary(IMYSQL $conn)
+
+    public static function getVisitanteIntermediary(IMYSQL $conn)
     {
 
             if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
@@ -41,7 +42,7 @@ class PersistenceFactory {
             }
     }
 
-     public static function getUsuarioIntermediary(IMYSQL $conn)
+    public static function getUsuarioIntermediary(IMYSQL $conn)
     {
 
             if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
@@ -64,10 +65,9 @@ class PersistenceFactory {
     }
     public static function getIntegranteActivoIntermediary(IMYSQL $conn)
     {
-
-            if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+  		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (IntegranteActivoMySQLIntermediary::getInstance($conn));
-            }
+        }          
     }
 }
 ?>
