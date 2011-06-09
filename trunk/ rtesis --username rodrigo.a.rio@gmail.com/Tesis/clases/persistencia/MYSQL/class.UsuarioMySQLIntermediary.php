@@ -112,7 +112,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             join usuarios u on p.id = u.id where p.id =".$id."";
             $oUsuario = $db->getDBObject($sSQL);
 			if($oUsuario){
-
+				
 				return $oUsuario;
 			}else{
 				return null;
