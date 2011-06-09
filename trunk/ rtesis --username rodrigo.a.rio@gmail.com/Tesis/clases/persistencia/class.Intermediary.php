@@ -239,7 +239,7 @@ abstract class Intermediary
      * @return array|StdClass|null El tipo de objeto que devuelve depende de la clase de model con la que trabaje el Intermediary.
      * @throws Exception si hubo error en el metodo
      */
-    public function obtener($filtro, &$foundRows = 0);
+    abstract public function obtener($filtro, &$foundRows = 0);
 
     /**
      * @param  array $filtro Tiene todos los campos por los que hay que filtrar. $filtro['nombreCampo'] = valorFiltro
