@@ -14,7 +14,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		parent::__construct($conn);
 	}
 
-
 	/**
 	 * Singleton
 	 *
