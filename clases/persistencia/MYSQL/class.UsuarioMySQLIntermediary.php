@@ -28,19 +28,43 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		return(self::$singletonInstance);
 	}
     
-    private function updateUsuario (Usuario $oUsuario)
+    private function actualizarUsuario (Usuario $oUsuario)
     {
         try{
 			$db = $this->conn;
-			$sSQL =	" insert into personas ".
+			$sSQL =	" update personas " .
+                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido,true).", " .
+					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo,true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento, false,MYSQL_TYPE_DATE);
+                    " email =".$db->escape($oUsuario->getEmail,true).", " .
+                    " telefono =".$db->escape($oUsuario->getTelefono,true).", " .
+                    " celular =".$db->escape($oUsuario->getCelular,true).", " .
+                    " fax =".$db->escape($oUsuario->getFax,true).", " .
+                    " domicilio =".$db->escape($oUsuario->getDomicilio,true).", " .
+                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id,false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id,false,MYSQL_TYPE_INT).", ".
+					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen,true).", " .
+                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal,true).", " .
+                    " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
+                    " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
+                    " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
 
-            //insertar codigopara update similar al insert
+			 $db->execSQL($sSQL);
 
+             $sSQL =	" update usuarios ".
+                    " set sitioWeb=".$db->escape($oUsuario->getSitioWeb,true).", " .
+					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id,false,MYSQL_TYPE_INT).", ".
+                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id,false,MYSQL_TYPE_INT).", ".
+					" contrasenia=".$db->escape($oUsuario->getContrasenia,true).", " .
+			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta, false,MYSQL_TYPE_DATE);
 
-             $db->execSQL($sSQL);
+			 $db->execSQL($sSQL);
 			 $db->commit();
 
-
+            
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -58,12 +82,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-    private  function insertUsuario(Usuario $oUsuario)
+    private  function insertarUsuario(Usuario $oUsuario)
    {
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into personas ".
-                    " nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido,true).", " .
 					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
@@ -125,7 +149,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 /**
  *se pueden agregar parametros para filtrar por campos
  */
-    public function getListaUsuarios(&$iRecordsTotal,$sOrderBy=null,$sOrder=null,$iIniLimit = null,$iRecordCount = null){
+    public function obtenerListaUsuarios(&$iRecordsTotal,$sOrderBy=null,$sOrder=null,$iIniLimit = null,$iRecordCount = null){
 		try{
 			$db = $this->conn;
 			$sSQL = "select SQL_CALC_FOUND_ROWS p.numeroDocumento as numeroDocumento,
@@ -141,11 +165,23 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$db->query($sSQL);
 
 			while( ($oUsuarios = $db->oNextRecord() ) ){
-				$vResult[] = Factory::getTorneosInstance($oUsuarios);
+				$vResult[] = Factory::getUsuariosInstance($oUsuarios);//?????????????????
 			}
 			$iRecordsTotal = (int) $db->getDBValue(" select FOUND_ROWS() as list_count ");
 
 			return $vResult;
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+
+    public function _delete(Usuario $oUsuario) {
+		try{
+			$db = $this->conn;
+			$db->execSQL("delete from usuarios where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
+            $db->execSQL("delete from personas where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();
 
 		}catch(Exception $e){
