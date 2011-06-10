@@ -11,9 +11,10 @@
  */
 class UsuarioIntermediary extends Intermediary{
    
-    public  abstract function insert(Usuario $oUsuario);
+    public  abstract function insertarUsuario(Usuario $oUsuario);
 
     public abstract function obtenerUsuario($id);
+    public abstract function obtenerListaUsuario($id);
 
     public abstract function guardarUsuario($id);
 }
