@@ -115,6 +115,22 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    public function existe($filtro){}
+
+    public function actualizar(stdClass $object){}
+
+    public function actualizarCampoArray($objects, $cambios){}
+
+    public function insertar($objects){}
+
+    public function guardar(stdClass $object){}
+
+    public function borrar($objects){}
+
+    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+
+    //////////////////////////// FIN MATIAS ///////////////////////////
     
     private function actualizarUsuario (Usuario $oUsuario)
     {
