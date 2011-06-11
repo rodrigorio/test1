@@ -1,21 +1,9 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- * Description of classUsuarioIntermediary
+ * En esta clase va toda la interfaz a METODOS y ATRIBUTOS que sean unicos a MYSQL de la clase Usuarios.
+ * (Por ejemplo, sacar un promedio de la cantidad de registrados por mes)
  *
  * @author Andres
  */
-class UsuarioIntermediary extends Intermediary{
-   
-    public  abstract function insertarUsuario(Usuario $oUsuario);
-
-    public abstract function obtenerUsuario($id);
-    public abstract function obtenerListaUsuario($id);
-
-    public abstract function guardarUsuario($id);
-}
-?>
+abstract class UsuarioIntermediary extends Intermediary {}
