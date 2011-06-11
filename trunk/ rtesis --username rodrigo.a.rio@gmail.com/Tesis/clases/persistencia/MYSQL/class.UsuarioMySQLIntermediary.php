@@ -1,32 +1,120 @@
 <?php
 
-
 /**
  * Description of classUsuarioMySQLIntermediary
  *
  * @author Andres
  */
 class UsuarioMySQLIntermediary extends UsuarioIntermediary
-{ static $singletonInstance = 0;
+{
+    /* tienen que corresponder con los ids de la tabla perfiles */
+    const PERFIL_ADMINISTRADOR = 1;
+    const PERFIL_MODERADOR = 2;
+    const PERFIL_INTEGRANTE_ACTIVO = 3;
+    const PERFIL_INTEGRANTE_INACTIVO = 4;
 
+    private static $instance = null;
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
+    protected function __construct($conn) {
+        parent::__construct($conn);
+    }
 
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return GroupMySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
-	}
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return GroupMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn) {
+        if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
+    }
+
+    /**
+     * Se fija si existen objetos usuarios que cumplan con el filtro,
+     * al objeto/s le asigna el perfil dependiendo lo que levanto de la DB.
+     * Retorna null si no encuentra resutados, un objeto PerfilAbstract o un array de objetos PerfilAbstract.
+     * arroja excepcion si hubo algun problema en la consulta.
+     */
+    public function obtener($filtro, &$foundRows = 0){
+        try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
+                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
+                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
+                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+
+                        u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
+                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia
+                    FROM
+                        personas p JOIN usuarios u ON p.id = u.id
+                    WHERE".$this->crearCondicionSimple($filtro, "u");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+            while($oObj = $db->oNextRecord()){
+                $oUsuario = new stdClass();
+
+                $oUsuario->iId = $oObj->iId;
+                $oUsuario->sNombre = $oObj->sNombre;
+                $oUsuario->sApellido = $oObj->sApellido;
+                $oUsuario->sSexo = $oObj->sSexo;
+                $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
+                $oUsuario->sEmail = $oObj->sEmail;
+                $oUsuario->sTelefono = $oObj->sTelefono;
+                $oUsuario->sCelular = $oObj->sCelular;
+                $oUsuario->sFax = $oObj->sFax;
+                $oUsuario->sDomicilio = $oObj->sDomicilio;
+                $oUsuario->oCiudades = null;
+                $oUsuario->sCiudadOrigen = $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal = $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa = $oObj->sEmpresa;
+                $oUsuario->sUniversidad = $oObj->sUniversidad;
+                $oUsuario->sSecundaria = $oObj->sSecundaria;
+                $oUsuario->sSitioWeb = $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario = $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta = $oObj->dFechaAlta;
+
+                //creo el usuario
+                $oUsuario = Factory::getUsuarioInstance($oUsuario);
+
+                //creo el perfil con el usuario asignado
+                $oPerfilAbstract = new stdClass();
+                $oPerfilAbstract->iId = $oObj->perfiles_id;
+                $oPerfilAbstract->usuario = $oUsuario;
+                switch($oObj->perfiles_id){
+                    case self::PERFIL_ADMINISTRADOR:{ $oPerfil       = Factory::getAdministradorInstance($oPerfilAbstract); break; }
+                    case self::PERFIL_MODERADOR:{ $oPerfil           = Factory::getModeradorInstance($oPerfilAbstract); break; }
+                    case self::PERFIL_INTEGRANTE_ACTIVO:{ $oPerfil   = Factory::getIntegranteActivoInstance($oPerfilAbstract); break; }
+                    case self::PERFIL_INTEGRANTE_INACTIVO:{ $oPerfil = Factory::getIntegranteInactivoInstance($oPerfilAbstract); break; }
+                }
+
+                $aUsuarios[] = $oPerfil;
+            }
+
+            //si es solo un elemento devuelvo el objeto si hay mas de un elemento devuelvo el array.
+            if(count($aUsuarios) == 1){
+                return $aUsuarios[0];
+            }else{
+                return $aUsuarios;
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
     
     private function actualizarUsuario (Usuario $oUsuario)
     {
@@ -190,4 +278,3 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 	}
 
 }
-?>
