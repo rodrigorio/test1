@@ -28,5 +28,9 @@ class CiudadMySQLIntermediaryMySQLIntermediary extends CiudadIntermediary
 		return(self::$singletonInstance);
 	}
 	
+	public static function obtener()
+	{
+		
+	}
 }
 ?>
