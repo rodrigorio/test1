@@ -88,9 +88,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia = $oObj->sContrasenia;
                 $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
-				//holaaaaaaaaaaaaaa
+				//11111
                 //creo el usuario
-                $oUsuario = Factory::getUsuarioInstance($oUsuariosss);
+                $oUsuario = Factory::getUsuarioInstance($oUsuario111);
                 //creo el perfil con el usuario asignado
                 $oPerfilAbstract 		= new stdClass();
                 $oPerfilAbstract->iId	= $oObj->perfiles_id;
