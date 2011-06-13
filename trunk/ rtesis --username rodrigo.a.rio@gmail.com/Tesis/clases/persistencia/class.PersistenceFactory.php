@@ -10,14 +10,6 @@ class PersistenceFactory {
 
 	public function __construct() {}
 
-	/**
-	 * @param mixed $conn
-	 * @return GroupIntermediary
-     *
-     *
-
-	 */
-
     public static function getAdministradorIntermediary(IMYSQL $conn)
     {
 
@@ -25,7 +17,6 @@ class PersistenceFactory {
 			return (AdministradorMySQLIntermediary::getInstance($conn));
             }
     }
-    
     public static function getUsuarioIntermediary(IMYSQL $conn)
     {
 
@@ -33,7 +24,6 @@ class PersistenceFactory {
 			return (UsuarioMySQLIntermediary::getInstance($conn));
             }
     }
-
     public static function getVisitanteIntermediary(IMYSQL $conn)
     {
 
@@ -41,7 +31,6 @@ class PersistenceFactory {
 			return (VisitanteMySQLIntermediary::getInstance($conn));
             }
     }
-
     public static function getUsuarioIntermediary(IMYSQL $conn)
     {
 
@@ -67,6 +56,24 @@ class PersistenceFactory {
     {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (IntegranteActivoMySQLIntermediary::getInstance($conn));
+        }          
+    }
+    public static function getCiudadIntermediary(IMYSQL $conn)
+    {
+  		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+			return (CiudadMySQLIntermediary::getInstance($conn));
+        }          
+    }
+    public static function getProvinciaIntermediary(IMYSQL $conn)
+    {
+  		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+			return (ProvinciaMySQLIntermediary::getInstance($conn));
+        }          
+    }
+    public static function getPaisIntermediary(IMYSQL $conn)
+    {
+  		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+			return (PaisMySQLIntermediary::getInstance($conn));
         }          
     }
 }
