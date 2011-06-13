@@ -54,8 +54,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia
                     FROM
-                        personas p JOIN usuarios u ON p.id = u.id
-                    WHERE".$this->crearCondicionSimple($filtro, "u");
+                        personas p JOIN usuarios u ON p.id = u.id ";
+                    if(!empty($filtro)){     
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "u");
+                    }
 
             $db->query($sSQL);
 
@@ -63,44 +65,42 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             if(empty($foundRows)){ return null; }
 
+			$aUsuarios = array();
             while($oObj = $db->oNextRecord()){
-                $oUsuario = new stdClass();
-
-                $oUsuario->iId = $oObj->iId;
-                $oUsuario->sNombre = $oObj->sNombre;
-                $oUsuario->sApellido = $oObj->sApellido;
-                $oUsuario->sSexo = $oObj->sSexo;
+                $oUsuario 				= new stdClass();
+                $oUsuario->iId 			= $oObj->iId;
+                $oUsuario->sNombre 		= $oObj->sNombre;
+                $oUsuario->sApellido 	= $oObj->sApellido;
+                $oUsuario->sSexo 		= $oObj->sSexo;
                 $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
-                $oUsuario->sEmail = $oObj->sEmail;
-                $oUsuario->sTelefono = $oObj->sTelefono;
-                $oUsuario->sCelular = $oObj->sCelular;
-                $oUsuario->sFax = $oObj->sFax;
-                $oUsuario->sDomicilio = $oObj->sDomicilio;
-                $oUsuario->oCiudades = null;
-                $oUsuario->sCiudadOrigen = $oObj->sCiudadOrigen;
-                $oUsuario->sCodigoPostal = $oObj->sCodigoPostal;
-                $oUsuario->sEmpresa = $oObj->sEmpresa;
+                $oUsuario->sEmail 		= $oObj->sEmail;
+                $oUsuario->sTelefono 	= $oObj->sTelefono;
+                $oUsuario->sCelular	 	= $oObj->sCelular;
+                $oUsuario->sFax 		= $oObj->sFax;
+                $oUsuario->sDomicilio 	= $oObj->sDomicilio;
+                $oUsuario->oCiudades 	= null;
+                $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa		= $oObj->sEmpresa;
                 $oUsuario->sUniversidad = $oObj->sUniversidad;
-                $oUsuario->sSecundaria = $oObj->sSecundaria;
-                $oUsuario->sSitioWeb = $oObj->sSitioWeb;
-                $oUsuario->sNombreUsuario = $oObj->sNombreUsuario;
+                $oUsuario->sSecundaria 	= $oObj->sSecundaria;
+                $oUsuario->sSitioWeb 	= $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia = $oObj->sContrasenia;
-                $oUsuario->dFechaAlta = $oObj->dFechaAlta;
+                $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
 
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario);
-
                 //creo el perfil con el usuario asignado
-                $oPerfilAbstract = new stdClass();
-                $oPerfilAbstract->iId = $oObj->perfiles_id;
-                $oPerfilAbstract->usuario = $oUsuario;
+                $oPerfilAbstract 		= new stdClass();
+                $oPerfilAbstract->iId	= $oObj->perfiles_id;
+                $oPerfilAbstract->usuario 	= $oUsuario;
                 switch($oObj->perfiles_id){
                     case self::PERFIL_ADMINISTRADOR:{ $oPerfil       = Factory::getAdministradorInstance($oPerfilAbstract); break; }
                     case self::PERFIL_MODERADOR:{ $oPerfil           = Factory::getModeradorInstance($oPerfilAbstract); break; }
                     case self::PERFIL_INTEGRANTE_ACTIVO:{ $oPerfil   = Factory::getIntegranteActivoInstance($oPerfilAbstract); break; }
                     case self::PERFIL_INTEGRANTE_INACTIVO:{ $oPerfil = Factory::getIntegranteInactivoInstance($oPerfilAbstract); break; }
                 }
-
                 $aUsuarios[] = $oPerfil;
             }
 
@@ -158,7 +158,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
 			 $db->execSQL($sSQL);
 
-             $sSQL =	" update usuarios ".
+             $sSQL =" update usuarios ".
                     " set sitioWeb=".$db->escape($oUsuario->getSitioWeb,true).", " .
 					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id,false,MYSQL_TYPE_INT).", ".
                     " perfiles_id =".$db->escape($oUsuario->getPerfiles_id,false,MYSQL_TYPE_INT).", ".
@@ -178,9 +178,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     {
         try{
 			if($oUsuario->getId() != null){
-            return updateUsuario($oUsuario);
+            	return updateUsuario($oUsuario);
             }else{
-				return insertUsuario($oUsuario);
+				return insertarUsuario($oUsuario);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
@@ -239,7 +239,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             join usuarios u on p.id = u.id where p.id =".$id."";
             $oUsuario = $db->getDBObject($sSQL);
 			if($oUsuario){
-				
 				return $oUsuario;
 			}else{
 				return null;
