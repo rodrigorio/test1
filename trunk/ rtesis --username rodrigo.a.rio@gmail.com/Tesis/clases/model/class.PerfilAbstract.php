@@ -10,7 +10,7 @@ abstract class PerfilAbstract
     /**
      * Instancia de Usuario
      */
-    protected $usuario = null;
+    protected $oUsuario = null;
 
     /**
      * @var SessionNamespace
@@ -45,7 +45,7 @@ abstract class PerfilAbstract
 
     public function getUsuario()
     {
-        return $this->usuario;
+        return $this->oUsuario;
     }
 
     public function setId($id)

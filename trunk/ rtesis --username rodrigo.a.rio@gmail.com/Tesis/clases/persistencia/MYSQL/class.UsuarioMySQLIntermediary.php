@@ -88,7 +88,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia = $oObj->sContrasenia;
                 $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
-				//11111
+				//222
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario111);
                 //creo el perfil con el usuario asignado
@@ -132,13 +132,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
     //////////////////////////// FIN MATIAS ///////////////////////////
     
-    private function actualizarUsuario (Usuario $oUsuario)
+    private function actualizar(Usuario $oUsuario)
     {
         try{
 			$db = $this->conn;
+            $db->begin_transaction();
 			$sSQL =	" update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-                    " apellido =".$db->escape($oUsuario->getApellido,true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
 					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo,true).", " .
@@ -170,11 +171,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             
 		}catch(Exception $e){
+            $db->rollbak_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
     }
 
-    public function guardarUsuario(Usuario $oUsuario)
+    public function guardar(Usuario $oUsuario)
     {
         try{
 			if($oUsuario->getId() != null){
@@ -186,7 +188,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-    private  function insertarUsuario(Usuario $oUsuario)
+    private  function insertar(Usuario $oUsuario)
    {
 		try{
 			$db = $this->conn;
@@ -229,7 +231,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 	}
 
     //este no le puse byid porque seguro le p onemos otros parametros
-    public function obtenerUsuario($id)
+    public function obtener($id)
     {
        try{
 			$db = $this->conn;
@@ -238,8 +240,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             u.contasenia as contrasenia from personas p
             join usuarios u on p.id = u.id where p.id =".$id."";
             $oUsuario = $db->getDBObject($sSQL);
-			if($oUsuario){
-				return $oUsuario;
+            if($oUsuario){
+				return Factory::getUsuarioInstance($oUsuario);
 			}else{
 				return null;
 			}
