@@ -6,8 +6,8 @@
  */
 abstract class PersonaAbstract
 {
-    protected $id = null;
-    protected $nombre;
+    protected $iId = null;
+    protected $sNombre;
     protected $apellido;
     protected $sexo;
     protected $documento_tipos_id;
