@@ -131,7 +131,37 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
     //////////////////////////// FIN MATIAS ///////////////////////////
     
-    private function actualizar(Usuario $oUsuario)
+	public function registrar(Usuario $oUsuario){
+        try{
+			$db = $this->conn;
+			$db->begin_transaction();
+			$sSQL =	" insert personas " .
+                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+					if($oUsuario->getEmail()){
+	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." "; 
+					}
+			 $db->execSQL($sSQL);
+			 $iUltimoId = $db->insert_id();
+			 $sSQL =" insert usuarios ".
+			        " set id= ".$iUltimoId.", ";
+                    " prefiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ";
+                    " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ";
+                    " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
+
+			 $db->execSQL($sSQL);
+			 $db->commit();
+		}catch(Exception $e){
+			$db->rollbak_transaction();
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+////////////////////////////////////    
+    public function actualizar(Usuario $oUsuario)
     {
         try{
 			$db = $this->conn;
