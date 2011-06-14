@@ -7,10 +7,10 @@
  */
 class Usuario extends PersonaAbstract
 {
-    private $fechaAlta;
-    private $sitioWeb;
-    private $nombreUsuario;//de donde salio este atributo??
-    private $contrasenia;
+    private $dFechaAlta;
+    private $sSitioWeb;
+    private $sNombreUsuario;//de donde salio este atributo??
+    private $sContrasenia;
 
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -28,28 +28,30 @@ class Usuario extends PersonaAbstract
         }
     }
 
-    public function getNombreUsuario()
-    {
-        return $this->nombreUsuario;
+    public function getFechaAlta(){
+        return $this->dFechaAlta;
+    }
+    public function getSitioWeb(){
+        return $this->sSitioWeb;
+    }
+    public function getNombreUsuario(){
+        return $this->sNombreUsuario;
+    }
+    public function getContrasenia(){
+        return $this->sContrasenia;
     }
 
-    public function setNombreUsuario($nombreUsuario)
-    {
-        $this->nombreUsuario = $nombreUsuario;
-        return $this;
+ 	public function setFechaAlta($dFechaAlta){
+        $this->dFechaAlta = $dFechaAlta;
     }
-    public function getContrasenia()
-    {
-        return $this->contrasenia;
+    public function setSitioWeb($sSitioWeb){
+        $this->sSitioWeb = $sSitioWeb;
     }
-
-    public function setContrasenia($contrasenia)
-    {
-        $this->contrasenia = $contrasenia;
-        return $this;
+    public function setNombreUsuario($nombreUsuario){
+        $this->sNombreUsuario = $nombreUsuario;
     }
-    
-
+    public function setContrasenia($contrasenia){
+        $this->sContrasenia = $contrasenia;
+    }
 }
-
 ?>
