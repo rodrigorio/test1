@@ -45,21 +45,21 @@ class Provincia {
 		$this->$oPais = $oPais;
 	}
 	/**
-	 *  @return int $iId
+	 *  @return int 
 	 */
 	public function getId(){
 		return $this->iId ;
 	}
 	/**
-	 * @return string $sNombre
+	 * @return string 
 	 */
-	public function getNombre($sNombre){
+	public function getNombre(){
 		return $this->sNombre;
 	}
 	/**
-	 * @return Pais $oPais
+	 * @return Pais 
 	 */
-	public function getPais($oPais){
+	public function getPais(){
 		return $this->$oPais;
 	}
 }
