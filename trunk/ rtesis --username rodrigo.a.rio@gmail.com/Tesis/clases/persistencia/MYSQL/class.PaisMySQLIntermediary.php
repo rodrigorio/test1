@@ -34,7 +34,7 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
 	}
 	
 	public final function obtener($filtro, &$foundRows = 0){
-	 try{
+		try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 

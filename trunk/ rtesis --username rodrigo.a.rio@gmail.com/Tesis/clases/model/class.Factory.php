@@ -32,6 +32,22 @@ class Factory
         $oPais = new Pais($obj);
         return $oPais;
     }
+    /**
+     * @param stdClass $obj
+     * @return Provincia|null
+     */
+    public static function &getProvinciaInstance(stdClass $obj){
+        $oProvincia = new Provincia($obj);
+        return $oProvincia;
+    }
+    /**
+     * @param stdClass $obj
+     * @return Ciudad|null
+     */
+    public static function &getCiudadInstance(stdClass $obj){
+        $oCiudad = new Ciudad($obj);
+        return $oCiudad;
+    }
 
     /**
      * @param stdClass $obj
