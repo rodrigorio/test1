@@ -51,13 +51,13 @@ class Ciudad {
 	/**
 	 * @return string $sNombre
 	 */
-	public function getNombre($sNombre){
+	public function getNombre(){
 		return $this->sNombre;
 	}
 	/**
 	 * @return Provincia $oProvincia
 	 */
-	public function getProvincia($oProvincia){
+	public function getProvincia(){
 		return $this->oProvincia;
 	}
 }

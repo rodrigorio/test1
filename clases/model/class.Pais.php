@@ -46,7 +46,7 @@ class Pais {
 	/**
 	 * @return string $sNombre
 	 */
-	public function getNombre($sNombre){
+	public function getNombre(){
 		return $this->sNombre;
 	}
 ?>

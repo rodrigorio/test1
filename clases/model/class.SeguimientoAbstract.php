@@ -8,7 +8,7 @@
  */
 abstract class SeguimientoAbstract
 {
-   protected $id;
+   protected $iId;
 
 }
 ?>

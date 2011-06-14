@@ -26,11 +26,11 @@ class Factory
 
     /**
      * @param stdClass $obj
-     * @return Blogger|null Perfil Blogger que hereda de perfil abstract
+     * @return Pais|null
      */
-    public static function &getBloggerInstance(stdClass $obj){
-        $oBlogger = new Blogger($obj);
-        return $oBlogger;
+    public static function &getPaisInstance(stdClass $obj){
+        $oPais = new Pais($obj);
+        return $oPais;
     }
 
     /**
