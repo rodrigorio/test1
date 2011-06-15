@@ -50,8 +50,48 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
+    /**
+     * Si existe $_GET['callback'] entonces quiere decir que hay que devolver Json (porque usamos Jquery en el ajax)
+     * Si no existe callback asumimos que es una peticion ajax de html y devolvemos una ficha con mensaje de error
+     */
     public function ajaxError()
     {
-        $this->getResponse()->setBody("<br>entro ajax error<br>");
+        $request = $this->getRequest();
+        
+        //extraigo mensaje si es que existe y el tipo de ficha (la ficha solo se usa si hay que devolver html)
+        switch(true){
+            case $request->has('msgInfo'):
+            {
+                $mensaje = $request->getParam('msgInfo');
+                $ficha = "MsgInfoBlockI32";
+                break;
+            }
+            case $this->request->has('msgError'):
+            {
+                $mensaje = $request->getParam('msgError');
+                $ficha = "MsgErrorBlockI32";
+                break;
+            }
+            default:
+                $mensaje = "Ha ocurrido un error al procesar los datos";
+                $ficha = "MsgInfoBlockI32";
+                break;
+        }
+       
+        if($request->has('callback')){
+            //devuelvo error ajax en formato json
+            $this->getJsonHelper()->initJsonAjaxResponse()
+                                  ->setSuccess(false)
+                                  ->setMessage($mensaje)
+                                  ->sendJsonAjaxResponse();
+        }else{
+            //devuelvo error ajax en formato html
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "respuesta", $ficha);
+            $this->getTemplate()->set_var("sMensaje", $mensaje);
+            
+            //setea los headers para response ajax html y setea el body content
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('respuesta', false));
+        }       
     }
 }

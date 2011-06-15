@@ -1,22 +1,35 @@
 <?php
+
 /**
  *
  * @author Matias Velilla
  */
-class AjaxHelper {
-
+class AjaxHelper extends HelperAbstract
+{
+    /**
+     * Devuelve si el contexto del HttpRequest es ajax o no
+     * @return boolean
+     */
     public function isAjaxContext()
     {
         return $this->getRequest()->isXmlHttpRequest();
     }
 
-    public function setHeaders()
+    /**
+     * Seteo los headers en Response para peticiones Ajax que devuelven HTML
+     */
+    public function setHtmlResponseHeaders()
     {
-        $this->getResponse()->setRawHeader("Content-Type: text/html");
-        $this->getResponse()->setRawHeader("Cache-Control: no-cache, must-revalidate");
-        $this->getResponse()->setRawHeader("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-        $this->getResponse()->setRawHeader("Pragma: no-cache");
+        $this->getResponse()->setRawHeader("Content-Type: text/html")
+                            ->setRawHeader("Cache-Control: no-cache, must-revalidate")
+                            ->setRawHeader("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT")
+                            ->setRawHeader("Pragma: no-cache");
+        return $this;
     }
-    
+
+    public function sendHtmlAjaxResponse($bodyContent)
+    {
+        $this->setHtmlResponseHeaders();
+        $this->getResponse()->setBody($bodyContent);
+    }
 }
-?>
