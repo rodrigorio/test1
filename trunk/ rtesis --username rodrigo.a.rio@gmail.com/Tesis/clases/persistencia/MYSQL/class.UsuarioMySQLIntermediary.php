@@ -117,19 +117,84 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
     public function existe($filtro){}
 
-    public function actualizar(stdClass $object){}
+    //public function actualizar(stdClass $object){}
 
     public function actualizarCampoArray($objects, $cambios){}
 
-    public function insertar($objects){}
+   // public function insertar($objects???){}
 
-    public function guardar(stdClass $object){}
+    //public function guardar(stdClass $object){}
 
     public function borrar($objects){}
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
     //////////////////////////// FIN MATIAS ///////////////////////////
+<<<<<<< .mine
+    
+    public function registrar(Usuario $oUsuario){
+        try{
+			$db = $this->conn;
+			$db->begin_transaction();
+			$sSQL =	" insert personas " .
+                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+					if($oUsuario->getEmail()){
+	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." "; 
+					}
+			 $db->execSQL($sSQL);
+			 $iUltimoId = $db->insert_id();
+			 $sSQL =" insert usuarios ".
+			        " set id= ".$iUltimoId.", ";
+                    " prefiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ";
+                    " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ";
+                    " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
+
+			 $db->execSQL($sSQL);
+			 $db->commit();
+		}catch(Exception $e){
+			$db->rollbak_transaction();
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+////////////////////////////////////    
+    public function actualizar(Usuario $oUsuario)
+	public function registrar(Usuario $oUsuario){
+        try{
+			$db = $this->conn;
+			$db->begin_transaction();
+			$sSQL =	" insert personas " .
+                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+					if($oUsuario->getEmail()){
+	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." "; 
+					}
+			 $db->execSQL($sSQL);
+			 $iUltimoId = $db->insert_id();
+			 $sSQL =" insert usuarios ".
+			        " set id= ".$iUltimoId.", ";
+                    " prefiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ";
+                    " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ";
+                    " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
+
+			 $db->execSQL($sSQL);
+			 $db->commit();
+		}catch(Exception $e){
+			$db->rollbak_transaction();
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+////////////////////////////////////    
+    public function actualizar(Usuario $oUsuario)
+=======
 
 	public function registrar(Usuario $oUsuario){
         try{
@@ -162,6 +227,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     }
 ////////////////////////////////////
     public function actualizar(Usuario $oUsuario)
+>>>>>>> .r66
     {
         try{
 			$db = $this->conn;
@@ -169,6 +235,24 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+<<<<<<< .mine
+					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+                    " email =".$db->escape($oUsuario->getEmail(),true).", " .
+                    " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
+                    " celular =".$db->escape($oUsuario->getCelular(),true).", " .
+                    " fax =".$db->escape($oUsuario->getFax(),true).", " .
+                    " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
+                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id(),false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id(),false,MYSQL_TYPE_INT).", ".
+					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
+                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
+                    " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
+                    " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
+                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
+=======
                     " documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo,true).", " .
@@ -185,15 +269,16 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
+>>>>>>> .r66
 
 			 $db->execSQL($sSQL);
 
              $sSQL =" update usuarios ".
-                    " set sitioWeb=".$db->escape($oUsuario->getSitioWeb,true).", " .
-					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id,false,MYSQL_TYPE_INT).", ".
-                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id,false,MYSQL_TYPE_INT).", ".
-					" contrasenia=".$db->escape($oUsuario->getContrasenia,true).", " .
-			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta, false,MYSQL_TYPE_DATE);
+                    " set sitioWeb=".$db->escape($oUsuario->getSitioWeb(),true).", " .
+					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id(),false,MYSQL_TYPE_INT).", ".
+                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id(),false,MYSQL_TYPE_INT).", ".
+					" contrasenia=".$db->escape($oUsuario->getContrasenia(),true).", " .
+			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta(), false,MYSQL_TYPE_DATE);
 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -223,32 +308,32 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$db = $this->conn;
 			$sSQL =	" insert into personas ".
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-                    " apellido =".$db->escape($oUsuario->getApellido,true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
-                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
-                    " sexo =".$db->escape($oUsuario->getSexo,true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento, false,MYSQL_TYPE_DATE);
-                    " email =".$db->escape($oUsuario->getEmail,true).", " .
-                    " telefono =".$db->escape($oUsuario->getTelefono,true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+                    " email =".$db->escape($oUsuario->getEmail(),true).", " .
+                    " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
                     " celular =".$db->escape($oUsuario->getCelular,true).", " .
-                    " fax =".$db->escape($oUsuario->getFax,true).", " .
-                    " domicilio =".$db->escape($oUsuario->getDomicilio,true).", " .
-                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id,false,MYSQL_TYPE_INT).", ".
-                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id,false,MYSQL_TYPE_INT).", ".
-					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen,true).", " .
-                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal,true).", " .
-                    " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
-                    " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
+                    " fax =".$db->escape($oUsuario->getFax(),true).", " .
+                    " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .//revisar esto
+                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id(),false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id(),false,MYSQL_TYPE_INT).", ".
+					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
+                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
+                    " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
+                    " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
+                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
 
 			 $db->execSQL($sSQL);
 
              $sSQL =	" insert into usuarios ".
-                    " sitioWeb=".$db->escape($oUsuario->getSitioWeb,true).", " .
-					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id,false,MYSQL_TYPE_INT).", ".
-                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id,false,MYSQL_TYPE_INT).", ".
-					" contrasenia=".$db->escape($oUsuario->getContrasenia,true).", " .
-			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta, false,MYSQL_TYPE_DATE);
+                    " sitioWeb=".$db->escape($oUsuario->getSitioWeb(),true).", " .
+					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id(),false,MYSQL_TYPE_INT).", ".
+                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id(),false,MYSQL_TYPE_INT).", ".
+					" contrasenia=".$db->escape($oUsuario->getContrasenia(),true).", " .
+			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta(), false,MYSQL_TYPE_DATE);
 
 			 $db->execSQL($sSQL);
 			 $db->commit();
