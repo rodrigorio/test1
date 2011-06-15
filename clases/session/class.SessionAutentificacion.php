@@ -10,8 +10,6 @@ class SessionAutentificacion
      * @var SessionNamespace
      */
     private $autentificacion;
-
-    private $logged = false;
     
     /**
      * Singleton instance
@@ -30,6 +28,9 @@ class SessionAutentificacion
     private function __construct()
     {
         $this->autentificacion = new SessionNamespace('autentificacion');
+        if(!isset($this->autentificacion->logged)){
+            $this->autentificacion->logged = false;
+        }
     }
 
     /**
@@ -59,11 +60,11 @@ class SessionAutentificacion
 
     public function realizoLogin($flag = null)
     {
-        if (null !== $flag){
-            $this->logged = $flag;
+        if(null != $flag){
+            $this->autentificacion->logged = $flag;            
             return $this;
-        }
-        return $this->logged;
+        }        
+        return $this->autentificacion->logged;
     }
 
     /**
@@ -90,5 +91,6 @@ class SessionAutentificacion
             unset($this->autentificacion->perfil);
         }
         $this->autentificacion->perfil = $perfil;
+        return $this;
     }
 }
