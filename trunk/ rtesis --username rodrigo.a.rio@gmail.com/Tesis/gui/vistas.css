@@ -49,23 +49,6 @@ body, th, td{color:#333}
 li{text-decoration:none}
 i{background-color:#EEE}
 p{margin-bottom:18px}
-form{position:relative}
-
-input, textarea, select, .ta_wrap, .in_wrap{border:1px solid #999; -moz-border-radius:3px 3px 3px 3px; -webkit-border-radius:5px; border-radius:5px; background-color:#FFF; margin-bottom:10px}
-input, select, .in_wrap{padding:4px}
-textarea, .ta_wrap{padding:6px 4px 2px}
-input, textarea{color:#CCC}
-input[type="text"]{height:20px;}
-select{height:25px;}
-textarea{height:70px; outline:0px; resize:none; vertical-align:bottom}
-input[type="submit"], button, label, select, li{cursor:pointer}
-
-/* Para simular el width fluido en <textarea>, <input> y <select> */
-.inner_fwrap{overflow:hidden}
-.inner_fwrap .restantes{color:#999}
-.ta_wrap textarea, .in_wrap input, .in_wrap select{width:100%; padding:0 !important; margin-bottom:0 !important; border:none !important}
-
-input[type="text"]:focus, textarea:focus{color:#333}
 
 h1{font-size:2.8em; line-height:36px}
 h2{font-size:1.7em; color:#FFF}
@@ -75,6 +58,57 @@ a{text-decoration:none; color:#1111CC; outline:0;}
 a:hover{text-decoration:underline}
 
 #dialog{display:none}
+
+/* Form Elements */
+form{position:relative}
+input, textarea, select, .fwrap{border:1px solid #999; background-color:#FFF}
+.fwrap{margin-bottom:10px; cursor:text; -moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
+input{padding:6px 4px} /* en ie7 select no es html es active-x asi que priorizar autocomplete en inputs en su lugar porq no agarra reglas, solo los options */
+select{padding:4px 2px}
+input, textarea{color:#333}
+input[type="text"], input[type="password"], select{-moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
+textarea{outline:0px; vertical-align:bottom}
+.textareaAutoGrow{resize:none; overflow:hidden}
+.textAreaExpanded{height:70px !important}
+input[type="submit"], label, select, li{cursor:pointer}
+input[type="checkbox"], input[type="radio"]{padding:0px}
+
+/*
+ * Para simular el width fluido en <textarea>, <input> y <select>
+ * NOTA: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
+ */
+.inner_fwrap{overflow:hidden; position:relative}
+.inner_fwrap .restantes{color:#999}
+.fwrap textarea, .fwrap input, .fwrap select{width:100%; border:0px none !important; background-color: transparent; outline:0 none;}
+.fwrap textarea{padding:6px 4px; height:16px;}
+.fwrap .textAreaLihe{padding:3px 4px; height:14px;}
+
+/*
+ * El contenedor superior es el que tiene margin-bottom.
+ * Puede tenerlo el fwrap o el form_line.
+ */
+.form_line{position:relative; text-align:left; margin-bottom:10px}
+.form_line .fwrap{margin-bottom:0 !important}
+
+/* Tamanio line-height para form elements (mas chicos, entran en un renglon) */
+.inputTextLihe{padding:3px 4px !important}
+.inputSelectLihe {padding:2px 2px 2px 1px}
+.inputSelectLihe option{padding:0px !important}
+.textAreaLihe, .inputTextLihe, .inputSelectLihe{font-size:11px !important; margin:0 !important}
+
+ /* BOTONES, No cambiar el orden de las clases porque es importante para que se pisen los valores de las propiedades.
+    NOTA: Estan seteadas las propiedades para la apariencia por defecto. */
+.button, .buttonText, .button button{ background: none repeat scroll 0 0 transparent; border:0 none; cursor: pointer; display: inline-block; font-size: 11px; font-family:Lucida Grande,Tahoma,Verdana,Arial,sans-serif; font-weight: bold; margin: 0; outline: medium none; padding: 1px 0 2px; white-space: nowrap;}
+.button{color: #333; background-color:#EEE; background-image:-moz-linear-gradient(top, #FFF, #CCC); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)); background-image:linear-gradient(top, #FFF, #CCC); border-color:#CCC #666 #666 #CCC; border-style: solid; border-width: 1px;
+        -moz-box-shadow:0 1px 0px #CCC; box-shadow:0 1px 0px #CCC; -webkit-box-shadow:0 1px 0px #CCC; cursor: pointer; display: inline-block; font-size: 11px; font-weight: bold; line-height: normal !important; padding:2px 6px; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap}
+.button:hover{ text-decoration: none; border-color:#666 !important}
+.button:active{ background-color:#DDD; background-image:none; -moz-box-shadow:0 0 2px #666 inset; box-shadow:0 0 2px #666 inset; -webkit-box-shadow:0 0 2px #666 inset; background: none repeat scroll 0 0 #DDDDDD; text-decoration:none}
+
+/* diferentes tamaños para los botones, por defecto los botones ocupan una linea (line-height) */
+.buttonLarge, .buttonLarge .buttonText, .buttonLarge button{ font-size:13px; padding:3px 6px}
+
+/* agranda el tamaño del boton, por defecto los botones ocupan una linea (line-height), este ocupa mas de una */
+.buttonXLarge, .buttonXLarge .buttonText, .buttonXLarge button{font-size:16px; padding: 8px 12px; text-transform:uppercase}
 
 
 
@@ -104,6 +138,8 @@ a:hover{text-decoration:underline}
 .fowe_bo{font-weight:bold}
 .co{color:#333 !important}
 .po_re{position:relative !important}
+.veal_mi{vertical-align:middle !important}
+.mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
 
 .baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
 .ba{background:url("images/fondos/fondo_secundario_transparente.png") repeat}
@@ -163,17 +199,22 @@ a:hover{text-decoration:underline}
 .valoracion{width:69px; height:14px; margin-top:2px}
 .puntaje{width:82px; height:16px; margin-top:1px}
 .puntaje div{float:left; width:16px; height:16px}
-.tarea_ctrl{height:20px !important; min-height:20px}
 .m_horiz li{float:left; margin-right:5px;}
 .m_vert li{margin-bottom:5px;}
 /* mensajes */
 #msg_top{left:50%; width:480px; text-align:center; overflow:hidden; position:absolute; top:-1px; z-index:10000; margin-left:-250px}
 .msg_form{margin-bottom:10px;}
 .msg_campo_izq, .msg_campo_der{position:absolute; width:200px; z-index:101;}
-.msg_campo_der{left:449px; text-align:left !important}
-.msg_campo_izq{right:449px; text-align:right !important}
-/* no uso microestilo porque despues hago herencia en los estilos de los skins errores */
-.form_line{position:relative; text-align:left;}
+.msg_campo_der{left:445px; text-align:left !important}
+.msg_campo_izq{right:445px; text-align:right !important}
+/* slides */
+.slide{position:relative; padding-top:20px; margin:20px 0 10px 0; clear:both;}
+.slide .slideExpanded, .slide .slideCollapsed{padding: 5px 5px 5px 0; position:absolute; top:-17px; left:0px}
+.slide .slideExpanded .i, .slide .slideCollapsed .i{margin-right:5px;}
+/* tabs */
+.tabs .leftTabs{float:left; padding-left:10px}
+.tabs .rightTabs{float:right; padding-right:10px}
+.toggleTabs li{display:inline; border-bottom:0px !important;}
 
 
 
@@ -198,9 +239,11 @@ a:hover{text-decoration:underline}
 .error{border:1px solid #FF3835; background-color:#FFC5C4}
 .correcto{border:1px solid #42FF35; background-color:#C8FFC4}
 /* mensajes en formularios */
-.form_line .hint, .form_line .error{color:#FFF; font-size:0.8em; text-shadow:1px 1px 1px #000; margin-bottom:10px; padding:5px 5px 4px; -moz-border-radius:5px 0 5px 0; -webkit-border-radius:5px 0 5px 0; border-radius:5px 0 5px 0; -moz-box-shadow:0px 1px 3px #333; box-shadow:0px 1px 3px #333; -webkit-box-shadow:0px 1px 3px #333; border:none;}
-.form_line .hint{border-top:1px solid #DBF0FF; background-color:#0090F8; background-image:-moz-linear-gradient(top, #37AFFF, #0090F8); background-image:-webkit-gradient(linear, left top,left bottom, from(#37AFFF), to(#0090F8)); background-image:linear-gradient(top, #37AFFF, #0090F8)}
-.form_line .error{border-top:1px solid #FFE1E0; background-color:#FF3522; background-image:-moz-linear-gradient(top, #FF918D, #FF3522); background-image:-webkit-gradient(linear, left top,left bottom, from(#FF918D), to(#FF3522)); background-image:linear-gradient(top, #FF918D, #FF3522)}
+.form_line label{font-weight:bold; text-transform:uppercase;}
+.form_line .hint, .form_line .error{color:#FFF; font-size:0.8em; font-weight:normal !important; text-shadow:1px 1px 1px #000; padding:5px 5px 4px; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 1px 3px #333; box-shadow:0px 1px 3px #333; -webkit-box-shadow:0px 1px 3px #333; border:none;}
+.form_line .hint{line-height:1.7em; border-top:2px solid #DBF0FF; background-color:#0090F8; background-image:-moz-linear-gradient(top, #37AFFF, #0090F8); background-image:-webkit-gradient(linear, left top,left bottom, from(#37AFFF), to(#0090F8)); background-image:linear-gradient(top, #37AFFF, #0090F8)}
+.form_line .hint a{text-shadow:1px 1px 1px #FFF; font-weight:bold;}
+.form_line .error{max-width:250px; margin-top:5px; background-color:#FF5C4F; background-image:-moz-linear-gradient(top, #FF918D, #FF3522); background-image:-webkit-gradient(linear, left top,left bottom, from(#FF918D), to(#FF3522)); background-image:linear-gradient(top, #FF918D, #FF3522)}
 /* le doy la posicion de los iconos desde aca porque desde javascript solo cambia la clase */
 form .correcto .i{background-position:-176px -224px}
 form .error .i, .form_line .error .i{background-position:-96px -224px}
@@ -219,11 +262,23 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha03 .header{background-color:#FF9; padding:10px;}
 .ficha03 p{text-align:right}
 
-.ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#FFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
-.ficha04 .titulo{padding:5px; background-color:#EEEFFF; border:1px dashed #999; position:absolute; top:-20px; text-transform:capitalize; font-size:1.7em; color:#333;}
+/* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
+.ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
+.ficha04 .titulo{padding:4px 6px; background-color:#80A3C9; border:1px solid #666; position:absolute; top:-20px; text-transform:capitalize; font-size:1.7em; color:#FFFFFF;}
 
-.ficha05{padding:10px; background-color:#FFF; border:1px solid #CCC}
+.ficha05{text-align:left; padding:10px; background-color:#FFF; border:1px solid #CCC}
 .ficha05 .titulo{font-size:1.7em; border-bottom:1px solid #AAA; padding-bottom:10px; margin-bottom:10px;}
+
+.slide01{border-top:1px dashed #999; padding-top:20px;}
+.slide01 .slideExpanded, .slide01 .slideCollapsed{background-color:#FFF; font-size:1.7em; cursor:pointer;}
+.slide01 .slideExpanded .mi{background-position:-96px -224px}
+.slide01 .slideCollapsed .mi{background-position:-176px -224px}
+
+.tabs01 .tabs{border-bottom:1px solid #898989}
+.tabs01 .toggleTabs li{background:#DDD; border:1px solid #BBB; border-bottom:0px !important; -moz-border-radius:2px 2px 0 0; -webkit-border-radius:2px 2px 0 0; border-radius:2px 2px 0 0;}
+.tabs01 .toggleTabs li a{color:#333 !important}
+.tabs01 .tabContent{background:none repeat scroll 0 0 #F7F7F7 !important; border:1px solid #BBB !important; border-top:0px !important;}
+.tabs01 .ui-tabs-selected{font-weight:bold !important; border-color:#898989 !important; background-color:#F7F7F7 !important; background-image:-moz-linear-gradient(top, #FFF, #F7F7F7) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#F7F7F7)) !important; background-image:linear-gradient(top, #FFF, #F7F7F7) !important}
 
 .menu01 a{text-decoration:none; font-weight:bold}
 .menu01 a:hover{background-color:#333; color:#FFF}
@@ -240,23 +295,40 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .thumb02 i:hover{border:1px solid #FFF}
 .thumb02 span{padding:1px 5px; background:none repeat scroll 0 0 #333; color:#FFF}
 
-.paginacion1 a, .btn01{padding:4px 6px; border-width:1px; border-style:solid; border-color:#CCC #666 #666 #CCC; color:#333; background-color:#EEE; background-image:-moz-linear-gradient(top, #FFF, #CCC); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)); background-image:linear-gradient(top, #FFF, #CCC)}
-.paginacion1 a:hover, .btn01:hover{border-color:#666 !important}
-.paginacion1 a:active, .btn01:active{border-color:#666 !important; background-color:#DDD; background-image:none;}
-.btn_pres{padding:2px 5px 3px; color:#FFF; background-color:#999; border-left:2px solid #666 !important; border-top:2px solid #666 !important; border-bottom:2px solid #DDD !important; border-right:2px solid #DDD !important; -moz-box-shadow:none; box-shadow:none; -webkit-box-shadow:none}
+/*** BOTONES ***/
+
+/* Boton confirmar accion */
+.buttonConfirm{-moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; background-image:none; border-color:#DBE5F9 #5D729B #5D729B #DBE5F9; background-color: #93B5F9}
+.buttonConfirm:active{border-color:#5D729B; background-color: #84A3E0; -moz-box-shadow:0 0 2px blue inset; box-shadow:0 0 2px blue inset; -webkit-box-shadow:0 0 2px blue inset}
+
+/* Boton confirmar accion especial */
+.buttonSpecial{-moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; background-image:none; border-color:#B2FFB2 #548E54 #548E54 #B2FFB2; background-color: #81DB81}
+.buttonSpecial:active{border-color:#548E54; background-color: #78C978; -moz-box-shadow:0 0 2px green inset; box-shadow:0 0 2px green inset; -webkit-box-shadow:0 0 2px green inset}
+
+.buttonConfirm button, .buttonSpecial button, .buttonSpecial .buttonText, .buttonConfirm .buttonText{color:#FFF; text-shadow:#666 1px 1px 1px}
+
+
 
 /*** VARIOS ***/
 .fte2{font-size:0.8em}
 .fte3{font-size:1.7em} /* Puede utilizarse en lineas de 36px */
 .fte4{font-size:2.8em; line-height:36px}
+
 .txt_cuidado{color:#F00}
 .txt_imp{font-weight:bold; text-transform:capitalize}
 .txt_imp2{font-weight:bold; text-transform:uppercase}
-.dest{}
+p .destacado{font-weight:bold;}
+
+.defVal{color:#CCC}
+.defVal:focus{color:#333} /* Para textareas e inputs con valores por defecto */
+
 .marca_obligatorio{color:red; font-size:10px; font-weight:bold;}
-.ajaxdelay *{opacity:0.5; filter:alpha(opacity = 40)}
+
+.disabled, .ajaxdelay *{opacity:0.5; filter:alpha(opacity = 40)}
 /* si el contenedor no tiene position relative va a parar a la punta de la pantalla (no esta mal, se puede usar) */
-#ajax_loading{position:absolute; top:10px; right:10px; height:27px; width:28px; background-image:url("images/iconos/wait30trans.gif"); background-repeat:no-repeat; background-position:center 25%; z-index:101; opacity:1 !important; filter:alpha(opacity = 100) !important}
+#ajax_loading{position:absolute; top:10px; right:10px; background-repeat:no-repeat; background-position:center 25%; z-index:101; opacity:1 !important; filter:alpha(opacity = 100) !important}
+.ajax_wait30{height:27px; width:28px; background-image:url("images/iconos/wait30trans.gif");}
+.ajax_wait16{height:1.1em; width:1.1em; background-image:url("images/iconos/wait16trans.gif");}
 
 /*** ICONOS ***/
 .valoracion, .puntaje{background-image:url("images/iconos/puntajes_bn.png"); background-repeat:no-repeat}
@@ -284,12 +356,15 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 /* porque se usan en <span> que es un tag lineal */
 .i, .i32{display:inline-block} 
 .i{height:16px; width:16px} .i32{height:32px; width:32px} 
-/* cuando hay un icono dentro de un menu */
-li a .i{margin-right:6px; float:left;}
+/* cuando hay un icono dentro de un link */
+a .i{margin-right:4px; float:left}
 /* para utilizar iconos alineados verticalmente con texto. La clase va en el contenedor y se usa asi para el fix de ie6 */
+/* esta clase no se usa cuando los iconos van dentro de tags <a> !! */
 .iveal .i, .iveal .i32{vertical-align:middle}
 /* para convertir el icono en boton si es que se usa como tal pero solo sin <a> */
 .ihover:hover{cursor:pointer; background-color:#DDD; outline:1px solid #AAA}
+/* para iconos dentro de inputs lineheight */
+.inner_fwrap .i{position:absolute; top:2px; right:2px;}
 
 /* redes sociales */
 .sc{background:url("images/iconos/social.png") no-repeat scroll} /* imagen, que para ie6 cambia se usa gif */
@@ -434,70 +509,43 @@ li a .i{margin-right:6px; float:left;}
 /*** JQUERY UI (PORQUE SE RESPETAN LAS CLASES DEL FRAMEWORK, ACA SOLO ASPECTO VISUAL) ***/
 /****************************************************************************************/
 
+/*** RESETEO LOS SKINS DEL CORE, no hace falta important porque esta hoja se llama a continuacion de la de jquery. ***/
+
+/* mis visuals*/
+.ui-corner-tl, .ui-corner-tr, .ui-corner-bl, .ui-corner-br, .ui-corner-top, .ui-corner-bottom, .ui-corner-right, .ui-corner-left, .ui-corner-all {-moz-border-radius:0px; -webkit-border-radius:0px; border-radius:0px;}
+
+/* component containers */
+.ui-widget, .ui-widget .ui-widget, .ui-widget-content, .ui-widget-header, .ui-helper-reset
+{ margin:0; padding:0; border:0; font-weight:inherit; font-style:inherit; font-size:100%; font-family:inherit; vertical-align:baseline; background:none;}
+
 /*** ACA REESCRIBO ALGUNAS REGLAS DE LAS CLASES BASE, LO HAGO ACA ASI CUANDO SALEN ACTUALIZACIONES NO HAY LIO ***/
-.ui-dialog-content, .ui-dialog{padding:0px !important; min-height:0px !important}
-.ui-dialog-buttonpane{padding:0px !important; margin:0px !important; background-color:#DDD !important; border-top:1px solid #BBB; -moz-border-radius:0px 0px 6px 6px!important; -webkit-border-radius:0px 0px 6px 6px !important; border-radius:0px 0px 6px 6px !important}
-.ui-dialog{-moz-box-shadow:0 0 150px #000 !important; box-shadow:0 0 150px #000; -webkit-box-shadow:0 0 150px #000 !important;}
-.ui-dialog-titlebar{padding:8px !important}
-.ui-dialog-title{margin:0px !important}
 
-/*** COMPONENT CONTAINERS ***/
-.ui-widget { font-family:Arial}
-.ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {font-family:Arial}
-.ui-widget-content{background:#fff; border-bottom:1px solid #FFF}
-.ui-widget-content a{color:#222}
-.ui-widget-header{font-size:1.7em; background:#CCC url("images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:2px solid #FFF; border-bottom:1px solid #999; -moz-border-radius:6px 6px 0px 0px !important; -webkit-border-radius:6px 6px 0px 0px !important; border-radius:6px 6px 0px 0px !important}
-.ui-widget-header a{color:#222}
-
-/*** INTERACTION STATES ***/
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid #d3d3d3/*{borderColorDefault}*/; background: #e6e6e6/*{bgColorDefault}*/ url("images/fondos/ui-bg_glass_75_e6e6e6_1x400.png")/*{bgImgUrlDefault}*/ 50%/*{bgDefaultXPos}*/ 50%/*{bgDefaultYPos}*/ repeat-x/*{bgDefaultRepeat}*/; font-weight: normal/*{fwDefault}*/; color: #555555/*{fcDefault}*/; }
-.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { color: #555555/*{fcDefault}*/; text-decoration: none; }
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #999999/*{borderColorHover}*/; background: #dadada/*{bgColorHover}*/ url("images/fondos/ui-bg_glass_75_dadada_1x400.png")/*{bgImgUrlHover}*/ 50%/*{bgHoverXPos}*/ 50%/*{bgHoverYPos}*/ repeat-x/*{bgHoverRepeat}*/; font-weight: normal/*{fwDefault}*/; color: #212121/*{fcHover}*/; }
-.ui-state-hover a, .ui-state-hover a:hover { color: #212121/*{fcHover}*/; text-decoration: none; }
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { border: 1px solid #aaaaaa/*{borderColorActive}*/; background: #ffffff/*{bgColorActive}*/ url("images/fondos/ui-bg_glass_65_ffffff_1x400.png")/*{bgImgUrlActive}*/ 50%/*{bgActiveXPos}*/ 50%/*{bgActiveYPos}*/ repeat-x/*{bgActiveRepeat}*/; font-weight: normal/*{fwDefault}*/; color: #212121/*{fcActive}*/; }
-.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #212121/*{fcActive}*/; text-decoration: none; }
-.ui-widget :active { outline: none; }
-
-/*** INTERACTION CUES ***/
-.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight  {border: 1px solid #fcefa1/*{borderColorHighlight}*/; background: #fbf9ee/*{bgColorHighlight}*/ url("images/fondos/ui-bg_glass_55_fbf9ee_1x400.png")/*{bgImgUrlHighlight}*/ 50%/*{bgHighlightXPos}*/ 50%/*{bgHighlightYPos}*/ repeat-x/*{bgHighlightRepeat}*/; color: #363636/*{fcHighlight}*/; }
-.ui-state-highlight a, .ui-widget-content .ui-state-highlight a,.ui-widget-header .ui-state-highlight a { color: #363636/*{fcHighlight}*/; }
-.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {border: 1px solid #cd0a0a/*{borderColorError}*/; background: #fef1ec/*{bgColorError}*/ url("images/fondos/ui-bg_glass_95_fef1ec_1x400.png")/*{bgImgUrlError}*/ 50%/*{bgErrorXPos}*/ 50%/*{bgErrorYPos}*/ repeat-x/*{bgErrorRepeat}*/; color: #cd0a0a/*{fcError}*/; }
-.ui-state-error a, .ui-widget-content .ui-state-error a, .ui-widget-header .ui-state-error a { color: #cd0a0a/*{fcError}*/; }
-.ui-state-error-text, .ui-widget-content .ui-state-error-text, .ui-widget-header .ui-state-error-text { color: #cd0a0a/*{fcError}*/; }
-.ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary { font-weight: bold; }
-.ui-priority-secondary, .ui-widget-content .ui-priority-secondary,  .ui-widget-header .ui-priority-secondary { opacity: .7; filter:Alpha(Opacity=70); font-weight: normal; }
-.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled { opacity: .35; filter:Alpha(Opacity=35); background-image: none; }
+/* dialog */
+.ui-dialog-content, .ui-dialog{padding:0px !important; min-height:0px}
+.ui-dialog-buttonpane{padding:0px; margin:0px; background-color:#DDD; border-top:1px solid #BBB}
+.ui-dialog{-moz-box-shadow:0 0 5px #000; box-shadow:0 0 5px #000; -webkit-box-shadow:0 0 5px #000}
+.ui-dialog-titlebar{padding:8px; font-size:1.7em; background:#CCC url("images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:1px solid #FFF; border-bottom:1px solid #999}
+.ui-dialog-titlebar-close{padding:1px !important;}
+.ui-dialog-title{margin:0px; text-shadow:#666 1px 1px 1px}
+/* tabs */
+.ui-tabs{padding:0px; position:relative}
+.ui-tabs .ui-tabs-nav{margin:0; padding:0}
+.ui-tabs .ui-tabs-panel{display:block; padding:10px; border-top:0px}
 
 /*** ICONS (AGREGAR A MEDIDA QUE SE VAYA NECESITANDO PORQUE EN REALIDAD YA TENEMOS LOS NUESTROS Q SON MEJORES)***/
+
 /* states and images */
 .ui-icon{width:16px; height:16px; background-image: url("images/iconos/ui-icons_222222_256x240.png")}
 .ui-widget-content .ui-icon {background-image: url("images/iconos/ui-icons_222222_256x240.png")}
 .ui-widget-header .ui-icon {background-image: url("images/iconos/ui-icons_222222_256x240.png")}
 .ui-state-default .ui-icon { background-image: url("images/iconos/ui-icons_888888_256x240.png")}
-.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url("images/iconos/ui-icons_454545_256x240.png")}
-.ui-state-active .ui-icon {background-image: url("images/iconos/ui-icons_454545_256x240.png")}
-.ui-state-highlight .ui-icon {background-image: url("images/iconos/ui-icons_2e83ff_256x240.png")}
-.ui-state-error .ui-icon, .ui-state-error-text .ui-icon {background-image:url("images/iconos/ui-icons_cd0a0a_256x240.png")}
+
 /* positioning */
 .ui-icon-closethick{background-position: -96px -128px; }
-
-/*** MISC VISUALS ***/
-.ui-corner-tl { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-tr { -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-bl { -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-br { -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-top { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-bottom { -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-right {  -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-left { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; }
-.ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; border-radius: 4px/*{cornerRadius}*/; }
 
 /*** OVERLAYS ***/
 .ui-widget-overlay{background:#000 url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png")/*{bgImgUrlOverlay}*/ 50%/*{bgOverlayXPos}*/ 50%/*{bgOverlayYPos}*/ repeat-x/*{bgOverlayRepeat}*/; opacity: .3;filter:Alpha(Opacity=30)/*{opacityOverlay}*/; }
 .ui-widget-shadow { margin: -8px/*{offsetTopShadow}*/ 0 0 -8px/*{offsetLeftShadow}*/; padding: 8px/*{thicknessShadow}*/; background: #aaaaaa/*{bgColorShadow}*/ url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png")/*{bgImgUrlShadow}*/ 50%/*{bgShadowXPos}*/ 50%/*{bgShadowYPos}*/ repeat-x/*{bgShadowRepeat}*/; opacity: .3;filter:Alpha(Opacity=30)/*{opacityShadow}*/; -moz-border-radius: 8px/*{cornerRadiusShadow}*/; -webkit-border-radius: 8px/*{cornerRadiusShadow}*/; border-radius: 8px/*{cornerRadiusShadow}*/; }
-
-
 
 /* solo de prueba local, en los sitios remotos borrar */
 .as_160_600{width:160px; height:600px;}
