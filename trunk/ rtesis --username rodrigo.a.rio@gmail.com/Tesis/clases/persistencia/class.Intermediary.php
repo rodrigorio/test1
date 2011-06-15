@@ -24,7 +24,7 @@ abstract class Intermediary
      * @param DB $conn;
      */
     abstract protected static function &getInstance(IMYSQL $conn);
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////// METODOS PRIVADOS DE AYUDA PARA UTILIZAR CUANDO SE ESRIBAN LOS METODOS QUE REALIZAN CONSULTAS  ///////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ abstract class Intermediary
      */
     protected final function crearCondicionSimple($filtro, $aliasTabla = "", $quotes = false){
         if(empty($filtro)){ return ""; }
-        
+
         foreach ($filtro as $campo => $valor){
             $campo = (!empty($aliasTabla)) ? $aliasTabla.".".$campo : $campo;
             $condicion[] = ($quotes) ? " ".$campo." = '".$valor."' " : " ".$campo." = ".$valor." ";
