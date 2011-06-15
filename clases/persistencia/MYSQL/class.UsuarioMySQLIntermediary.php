@@ -130,7 +130,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
     //////////////////////////// FIN MATIAS ///////////////////////////
-<<<<<<< .mine
+
     
     public function registrar(Usuario $oUsuario){
         try{
@@ -162,7 +162,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		}
     }
 ////////////////////////////////////    
-    public function actualizar(Usuario $oUsuario)
+    
 	public function registrar(Usuario $oUsuario){
         try{
 			$db = $this->conn;
@@ -193,9 +193,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		}
     }
 ////////////////////////////////////    
-    public function actualizar(Usuario $oUsuario)
-=======
-
+   
 	public function registrar(Usuario $oUsuario){
         try{
                     $db = $this->conn;
@@ -227,7 +225,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     }
 ////////////////////////////////////
     public function actualizar(Usuario $oUsuario)
->>>>>>> .r66
+
     {
         try{
 			$db = $this->conn;
@@ -235,7 +233,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-<<<<<<< .mine
+
 					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
@@ -252,7 +250,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
-=======
                     " documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo,true).", " .
@@ -269,7 +266,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
->>>>>>> .r66
+
 
 			 $db->execSQL($sSQL);
 
