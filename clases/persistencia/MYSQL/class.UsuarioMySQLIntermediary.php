@@ -188,6 +188,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$db->execSQL($sSQL);
 			
 			$db->commit();
+			/**
+			 * @todo falta funcion de enviar el email
+			 */
 		}catch(Exception $e){
 			$db->rollbak_transaction();
 			throw new Exception($e->getMessage(), 0);
