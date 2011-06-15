@@ -14,7 +14,6 @@ class Factory
         $oVisitante = new Visitante($obj);
         return $oVisitante;
     }
-
     /**
      * @param stdClass $obj
      * @return Blogger|null Perfil Blogger que hereda de perfil abstract
@@ -23,8 +22,6 @@ class Factory
         $oAdministrador = new Administrador($obj);
         return $oAdministrador;
     }
-
-   
     /**
      * @param stdClass $obj
      * @return Pais|null
@@ -49,7 +46,14 @@ class Factory
         $oCiudad = new Ciudad($obj);
         return $oCiudad;
     }
-
+    /**
+     * @param stdClass $obj
+     * @return Invitado|null
+     */
+    public static function &getInvitadoInstance(stdClass $obj){
+        $oInvitado = new Invitado($obj);
+        return $oInvitado;
+    }
     /**
      * @param stdClass $obj
      * @return Usuario|null Usuario que hereda de Persona, luego se asigna a un objeto perfil
