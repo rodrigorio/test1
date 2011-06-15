@@ -24,6 +24,7 @@ class Factory
         return $oAdministrador;
     }
 
+   
     /**
      * @param stdClass $obj
      * @return Pais|null
