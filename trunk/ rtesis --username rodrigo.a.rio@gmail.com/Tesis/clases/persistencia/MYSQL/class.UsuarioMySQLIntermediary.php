@@ -55,7 +55,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id ";
-                    if(!empty($filtro)){     
+                    if(!empty($filtro)){
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "u");
                     }
 
@@ -65,7 +65,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             if(empty($foundRows)){ return null; }
 
-			$aUsuarios = array();
+            $aUsuarios = array();
             while($oObj = $db->oNextRecord()){
                 $oUsuario 				= new stdClass();
                 $oUsuario->iId 			= $oObj->iId;
@@ -130,25 +130,25 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
     //////////////////////////// FIN MATIAS ///////////////////////////
-    
+
 	public function registrar(Usuario $oUsuario){
         try{
-			$db = $this->conn;
-			$db->begin_transaction();
-			$sSQL =	" insert personas " .
+                    $db = $this->conn;
+                    $db->begin_transaction();
+                    $sSQL =	" insert personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
                     " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
-					if($oUsuario->getEmail()){
-	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." "; 
-					}
-			 $db->execSQL($sSQL);
-			 $iUltimoId = $db->insert_id();
-			 $sSQL =" insert usuarios ".
-			        " set id= ".$iUltimoId.", ";
+                    if($oUsuario->getEmail()){
+                       $sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
+                    }
+                     $db->execSQL($sSQL);
+                     $iUltimoId = $db->insert_id();
+                     $sSQL =" insert usuarios ".
+                    " set id= ".$iUltimoId.", ";
                     " prefiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ";
                     " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ";
                     " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
@@ -160,16 +160,16 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-////////////////////////////////////    
+////////////////////////////////////
     public function actualizar(Usuario $oUsuario)
     {
         try{
 			$db = $this->conn;
             $db->begin_transaction();
-			$sSQL =	" update personas " .
+            $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
+                    " documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo,true).", " .
                     " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento, false,MYSQL_TYPE_DATE);
@@ -198,7 +198,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-            
+
 		}catch(Exception $e){
             $db->rollbak_transaction();
 			throw new Exception($e->getMessage(), 0);
@@ -240,9 +240,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
-			        
+
 			 $db->execSQL($sSQL);
-             
+
              $sSQL =	" insert into usuarios ".
                     " sitioWeb=".$db->escape($oUsuario->getSitioWeb,true).", " .
 					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id,false,MYSQL_TYPE_INT).", ".
@@ -253,7 +253,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -264,7 +264,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     {
        try{
 			$db = $this->conn;
-            
+
 			$sSQL =	" select p.numeroDocumento as numeroDocumento,
             u.contasenia as contrasenia from personas p
             join usuarios u on p.id = u.id where p.id =".$id."";
@@ -274,7 +274,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			}else{
 				return null;
 			}
-			
+
 
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
