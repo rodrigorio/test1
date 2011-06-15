@@ -29,59 +29,28 @@ class Usuario extends PersonaAbstract
         }
     }
 
-    public function getNombreUsuario()
-    {
+    public function getNombreUsuario(){
         return $this->sNombreUsuario;
+    }
+    public function getContrasenia(){
+    	return $this->sContrasenia;
+    }
     public function getFechaAlta(){
         return $this->dFechaAlta;
     }
     public function getSitioWeb(){
         return $this->sSitioWeb;
     }
-    public function getNombreUsuario(){
-        return $this->sNombreUsuario;
-    }
-    public function getContrasenia(){
-        return $this->sContrasenia;
-    public function getFechaAlta(){
-        return $this->dFechaAlta;
-    }
-    public function getSitioWeb(){
-        return $this->sSitioWeb;
-    }
-    public function getNombreUsuario(){
-        return $this->sNombreUsuario;
-    }
-    public function getContrasenia(){
-        return $this->sContrasenia;
-    }
 
-    public function setNombreUsuario($sNombreUsuario)
-    {
-        $this->nombreUsuario = $sNombreUsuario;
-        return $this;
+    public function setNombreUsuario($sNombreUsuario){
+    	$this->nombreUsuario = $sNombreUsuario;
+    }
  	public function setFechaAlta($dFechaAlta){
         $this->dFechaAlta = $dFechaAlta;
     }
     public function setSitioWeb($sSitioWeb){
-        $this->sSitioWeb = $sSitioWeb;
- 	public function setFechaAlta($dFechaAlta){
-        $this->dFechaAlta = $dFechaAlta;
+    	$this->sSitioWeb = $sSitioWeb;
     }
-    public function setSitioWeb($sSitioWeb){
-        $this->sSitioWeb = $sSitioWeb;
-    }
-    public function getContrasenia()
-    {
-        return $this->sContrasenia;
-    public function setNombreUsuario($nombreUsuario){
-        $this->sNombreUsuario = $nombreUsuario;
-    public function setNombreUsuario($nombreUsuario){
-        $this->sNombreUsuario = $nombreUsuario;
-    }
-
-        public function setContrasenia($contrasenia){
-        $this->sContrasenia = $contrasenia;
     public function setContrasenia($contrasenia){
         $this->sContrasenia = $contrasenia;
     }

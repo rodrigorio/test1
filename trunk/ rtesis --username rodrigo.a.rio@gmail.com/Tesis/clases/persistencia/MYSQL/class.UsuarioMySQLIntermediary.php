@@ -160,30 +160,34 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-	public function enviarInvitacion(Usuario $oUsuario){
+	public function enviarInvitacion($iIdUsuario , Usuario $oInvitado){
         try{
 			$db = $this->conn;
 			$db->begin_transaction();
-			$sSQL =	" insert personas " .
-                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
-                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
-                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
-					if($oUsuario->getEmail()){
-	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." "; 
+			
+			$sSQL =	" insert personas set";
+					if($oInvitado->getNombre()){
+						$sSQL .=" nombre =".$db->escape($oInvitado->getNombre(),true).", ";
+					}	
+					if($oInvitado->getApellido()){
+                    	$sSQL .=" apellido =".$db->escape($oInvitado->getApellido(),true).", ";
 					}
-			 $db->execSQL($sSQL);
-			 $iUltimoId = $db->insert_id();
-			 $sSQL =" insert usuarios ".
-			        " set id= ".$iUltimoId.", ";
-                    " prefiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ";
-                    " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ";
-                    " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
-
-			 $db->execSQL($sSQL);
-			 $db->commit();
+			$sSQL .= " email = ".$db->escape($oInvitado->getEmail(),true)." "; 
+			$db->execSQL($sSQL);
+			
+			$iUltimoId = $db->insert_id();
+			 
+			$sSQL =" insert usuario_x_invitado ".
+			        " set usuarios_id= ".$iIdUsuario.", ";
+                    " invitados_id=".$iUltimoId.", ";
+                    " relacion=".$db->escape($oInvitado->getRelacion(),true)." ";
+			$db->execSQL($sSQL);
+			
+			$sSQL =" insert invitados ".
+			        " set id= ".$iUltimoId." ";
+			$db->execSQL($sSQL);
+			
+			$db->commit();
 		}catch(Exception $e){
 			$db->rollbak_transaction();
 			throw new Exception($e->getMessage(), 0);
@@ -370,5 +374,5 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-
 }
+?>
