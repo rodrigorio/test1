@@ -464,3 +464,5 @@ class Templates extends HelperAbstract
         return $res;
     }
 }
+
+?>
