@@ -13,10 +13,42 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->mostrarFormulario();
     }
 
+    /**
+     * Procesa el envio desde un formulario de login.
+     * El metodo es ajax, si se detecta que la peticion fue a traves de otro metodo tira excepcion 404
+     * Este metodo resuelve tambien a que url tiene que dirigirse el usuario una vez que se loguea.
+     */
     public function procesar()
     {
-        //si es ajax me fijo si los post son correctos y devuelvo true o false para q procese el submit del form
-        $this->getResponse()->setBody("entro procesar login");
+        //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
+        try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            SysController::getInstance()->loginUsuario($this->getRequest()->getPost('nombreUsuario'), $this->getRequest()->getPost('contraseniaMD5'));
+            if(!SessionAutentificacion::getInstance()->realizoLogin()){
+                //indica que la accion no se concreto con exito y agrega un mensaje de error
+                $this->getJsonHelper()->setSuccess(false)
+                                      ->setMessage('Datos Incorrectos');
+            }else{
+                
+                $redirect = $this->getRequest()->getPost('next');
+                if(empty($redirect)){
+                    $redirect = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccionLoginDefecto(true);
+                }
+                
+                //agrega una url para que el js redireccione
+                $this->getJsonHelper()->setSuccess(true)
+                                      ->setRedirect($redirect);
+            }
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     public function mostrarFormulario()
@@ -36,6 +68,7 @@ class LoginControllerIndex extends PageControllerAbstract
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
         $fileNameLogo = $parametros->obtener('FILE_NAME_LOGO_SITIO');
         $footerContent = "UrBIS . Todos los derechos reservados";
+        $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";
 
         //Si entro a login por error de permiso guardo la url original donde queria ir el user.
         $nextFormUrl = "";
@@ -62,6 +95,7 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "columnaIzquierdaContent", "FormularioBlock");
         $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
         $this->getTemplate()->set_var("sNextUrl", $nextFormUrl);
+        $this->getTemplate()->set_var("sLinkRecuperarPass", $linkRecuperarPass);
 
         $this->getTemplate()->set_var("footerContent", $footerContent);
 
@@ -89,6 +123,12 @@ class LoginControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("idOpcion", 'opt1');
             $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
             $this->getTemplate()->set_var("sNombreOpcion", "Volver a inicio");
+        }else{
+            //si no muestro foto informativa por defecto (tipo gmail)
+            $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "columnaDerechaContent", "ImagenLoginBlock");
+            $this->getTemplate()->set_var("srcImagenLogin", 'gui/images/banners-logos/welcome.jpg');
+            $this->getTemplate()->set_var("widthImagenLogin", "460");
+            $this->getTemplate()->set_var("heightImagenLogin", "200");
         }
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));

@@ -16,7 +16,8 @@
 *       $tpl->print_var("main");    // output block
 *********************************************************************************/
 
-class Templates{
+class Templates extends HelperAbstract
+{
     private $sTemplate;
     private $DBlocks;       	/* initial data files and blocks */
     private $ParsedBlocks;   	/* resulted data and variables	*/
@@ -463,5 +464,3 @@ class Templates{
         return $res;
     }
 }
-
-?>

@@ -3,96 +3,192 @@
 /**
  * @author Matias Velilla
  */
-class JasonHelper
+class JsonHelper extends HelperAbstract
 {
-    /**
-     * Suppress exit when sendJson() called
-     * @var boolean
-     */
-    public $suppressExit = false;
 
     /**
-     * Create JSON response
+     * En jsonAjaxResponse se genera el array que luego se va a convertir en json para ser enviado.
+     * Con esto se logra unificar los valores para devolver Mensaje, Resultado, etc.
      *
-     * Encodes and returns data to JSON. Content-Type header set to
-     * 'application/json', and disables layouts and viewRenderer (if being
-     * used).
+     * Desde un PageController el codigo se veria de la siguiente manera:
      *
-     * @param  mixed   $data
-     * @param  boolean $keepLayouts
-     * @param  boolean|array $keepLayouts
-     * NOTE:   if boolean, establish $keepLayouts to true|false
-     *         if array, admit params for Zend_Json::encode as enableJsonExprFinder=>true|false
-     *         if $keepLayouts and parmas for Zend_Json::encode are required
-     *         then, the array can contains a 'keepLayout'=>true|false
-     *         that will not be passed to Zend_Json::encode method but will be passed
-     *         to Zend_View_Helper_Json
-     * @throws Zend_Controller_Action_Helper_Json
-     * @return string
+     * $this->getJsonHelper()->initJsonAjaxResponse()    //se fija si existe callback y lo guarda, tmb limpia el array
+     *                       ->setSuccess(true|false)    //indica si la respuesta fue una accion procesada con exito o no
+     *                       ->setMessage($msg)          //agrega un mensaje de exito|error
+     *                       ->setRedirect($url)         //agrega una url para que el js redireccione
+     *                       ->setValor($nombre, $valor) //agrega un token al array que luego sera codificado
+     *                       ->sendJsonAjaxResponse();   //automaticamente envia el json con los datos acumulados en el objeto
+     * 
+     * @var array
      */
-    public function encodeJson($data, $keepLayouts = false)
+    private $jsonAjaxResponse = array();
+
+    /**
+     *
+     * @var string
+     */
+    private $jQueryCallback;
+
+    /**
+     * var boolean Guarda un flag indicando si se inicio una respuesta json para enviar por ajax.
+     */
+    private $jsonAjaxResponseIniciada = false;
+
+    /**
+     *
+     * Encode data as JSON and set response header
+     *
+     * Encode the array $valueToEncode into the JSON format
+     *
+     */
+    public static function encodeJson($valueToEncode, $options)
     {
-        /**
-         * @see Zend_View_Helper_Json
-         */
-        require_once 'Zend/View/Helper/Json.php';
-        $jsonHelper = new Zend_View_Helper_Json();
-        $data = $jsonHelper->json($data, $keepLayouts);
+        // Encoding
+        $encodedResult = json_encode($valueToEncode);
 
-        if (!$keepLayouts) {
-            /**
-             * @see Zend_Controller_Action_HelperBroker
-             */
-            require_once 'Zend/Controller/Action/HelperBroker.php';
-            Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer')->setNoRender(true);
+        if(isset($options['jQueryCallback'])){
+            $encodedResult = $options['jQueryCallback']."(".$encodedResult.")";
         }
-
-        return $data;
+        
+        return $encodedResult;
     }
 
     /**
      * Encode JSON response and immediately send
      *
-     * @param  mixed   $data
-     * @param  boolean|array $keepLayouts
-     * NOTE:   if boolean, establish $keepLayouts to true|false
-     *         if array, admit params for Zend_Json::encode as enableJsonExprFinder=>true|false
-     *         if $keepLayouts and parmas for Zend_Json::encode are required
-     *         then, the array can contains a 'keepLayout'=>true|false
-     *         that will not be passed to Zend_Json::encode method but will be passed
-     *         to Zend_View_Helper_Json
-     * @return string|void
+     * Si existe un callback de Jquery lo agrega en la codificacion
+     *
+     * @param array $data
      */
-    public function sendJson($data, $keepLayouts = false)
+    public function sendJson($data)
     {
-        $data = $this->encodeJson($data, $keepLayouts);
-        $response = $this->getResponse();
-        $response->setBody($data);
+        $options = array();
 
-        if (!$this->suppressExit) {
-            $response->sendResponse();
-            exit;
+        if(!empty($this->jQueryCallback)){
+            $options['jQueryCallback'] = $this->jQueryCallback;
         }
 
-        return $data;
+        $data = $this->encodeJson($data, $options);
+
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', 'application/json', true);        
+        $response->setBody($data);       
     }
 
     /**
-     * Strategy pattern: call helper as helper broker method
-     *
-     * Allows encoding JSON. If $sendNow is true, immediately sends JSON
-     * response.
-     *
-     * @param  mixed   $data
-     * @param  boolean $sendNow
-     * @param  boolean $keepLayouts
-     * @return string|void
+     * Se fija si existe callback y lo guarda en el objeto, tmb limpia el array de respuesta
      */
-    public function direct($data, $sendNow = true, $keepLayouts = false)
-    {
-        if ($sendNow) {
-            return $this->sendJson($data, $keepLayouts);
+    public function initJsonAjaxResponse()    
+    {        
+        if($this->getRequest()->has("callback")){
+            $this->jQueryCallback = $this->getRequest()->getParam("callback");
         }
-        return $this->encodeJson($data, $keepLayouts);
+
+        $this->jsonAjaxResponse = array();
+        $this->jsonAjaxResponseIniciada = true;
+        return $this;
+    }
+
+    /**
+     * Indica si la respuesta fue una accion procesada con exito o no
+     *
+     * @param boolean $result Indica si la accion procesada fue exitosa
+     */
+    public function setSuccess($result)    
+    {
+        $flag = ($result) ? "1" : "0";
+        $this->jsonAjaxResponse['success'] = $flag;
+        return $this;
+    }
+
+    /**
+     * Agrega un mensaje de exito|error
+     *
+     * @param string $msg Mensaje que se agregara al response json
+     */
+    public function setMessage($msg)          
+    {
+        $this->jsonAjaxResponse['mensaje'] = $msg;
+        return $this;
+    }
+
+    /**
+     * Agrega una url para que el js redireccione
+     *
+     * @param string $url Es solo el pathInfo, el metodo automaticamente agrega el BaseUrl si es que existe.
+     *                    Es decir, si el sitio esta en www.sitio.com/baseurl/ y yo quiero redireccionar a www.sitio.com/baseurl/admin
+     *                    Entonces el parametro solo debe contener "/admin". Por defecto redirecciona a la raiz del sitio.
+     */    
+    public function setRedirect($pathInfo = "/")
+    {
+        $this->jsonAjaxResponse['redirect'] = $this->getRequest()->getBaseUrl().$pathInfo;
+        return $this;
+    }
+
+    /**
+     * Agrega un token al array que luego sera codificado
+     *
+     * @param string $nombre Nombre de la variable que sera codificada
+     * @param string|int|date $valor Valor que sera asignado a la variable, se convierte a string
+     */
+    public function setValor($nombre, $valor)
+    {
+        $this->jsonAjaxResponse[$nombre] = $valor;
+        return $this;
+    }
+
+    /**
+     * Este metodo agil llama internamente a sendJson con el array de elementos acumulado para la respuesta ajax
+     * @throws Exception si la respuesta no fue iniciada (no hay nada para devolver)
+     */
+    public function sendJsonAjaxResponse()
+    {
+        if(!$this->jsonAjaxResponseIniciada){
+            throw new Exception("El Ajax Response no fue iniciado");
+        }
+        $this->sendJson($this->jsonAjaxResponse);
+    }
+
+    /**
+     * Pretty-print JSON string
+     *
+     * Use 'indent' option to select indentation string - by default it's a tab
+     *
+     * @param string $json Original JSON string
+     * @param array $options Encoding options
+     * @return string
+     */
+    public static function prettyPrint($json, $options = array())
+    {
+        $tokens = preg_split('|([\{\}\]\[,])|', $json, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $result = "";
+        $indent = 0;
+
+        $ind = "\t";
+        if(isset($options['indent'])) {
+            $ind = $options['indent'];
+        }
+
+        foreach($tokens as $token) {
+            if($token == "") continue;
+
+            $prefix = str_repeat($ind, $indent);
+            if($token == "{" || $token == "[") {
+                $indent++;
+                if($result != "" && $result[strlen($result)-1] == "\n") {
+                    $result .= $prefix;
+                }
+                $result .= "$token\n";
+            } else if($token == "}" || $token == "]") {
+                $indent--;
+                $prefix = str_repeat($ind, $indent);
+                $result .= "\n$prefix$token";
+            } else if($token == ",") {
+                $result .= "$token\n";
+            } else {
+                $result .= $prefix.$token;
+            }
+        }
+        return $result;
     }
 }
