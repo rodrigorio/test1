@@ -250,22 +250,22 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
-                    " documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id,false,MYSQL_TYPE_INT).", ".
-                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento,true).", " .
-                    " sexo =".$db->escape($oUsuario->getSexo,true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento, false,MYSQL_TYPE_DATE);
-                    " email =".$db->escape($oUsuario->getEmail,true).", " .
-                    " telefono =".$db->escape($oUsuario->getTelefono,true).", " .
-                    " celular =".$db->escape($oUsuario->getCelular,true).", " .
-                    " fax =".$db->escape($oUsuario->getFax,true).", " .
-                    " domicilio =".$db->escape($oUsuario->getDomicilio,true).", " .
-                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id,false,MYSQL_TYPE_INT).", ".
-                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id,false,MYSQL_TYPE_INT).", ".
-					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen,true).", " .
-                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal,true).", " .
-                    " empresa =".$db->escape($oUsuario->getEmpresa,true).", " .
-                    " universidad =".$db->escape($oUsuario->getUniversidad,true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria,true).", " .
+                    " documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+                    " email =".$db->escape($oUsuario->getEmail(),true).", " .
+                    " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
+                    " celular =".$db->escape($oUsuario->getCelular(),true).", " .
+                    " fax =".$db->escape($oUsuario->getFax(),true).", " .
+                    " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
+                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id(),false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id(),false,MYSQL_TYPE_INT).", ".
+					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
+                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
+                    " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
+                    " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
+                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
 
 
 			 $db->execSQL($sSQL);
