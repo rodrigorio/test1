@@ -62,9 +62,9 @@
 <!--EndPaginacionComentariosBlock-->
 
 <!--BeginNuevoComentarioBlock-->
-<div id="nuevoComentario" class="ficha02 mabo3 cl_bo">  
+<div id="nuevoComentario" class="ficha02 mabo3 cl_bo grupo">
 
-	<!--BeginPuntuarBlock-->          
+    <!--BeginPuntuarBlock-->
     <div class="puntuar mabo2 grupo">
         <div class="desc fl_le mari">Punt&uacute;a &eacute;sta publicaci&oacute;n:</div>
         <div id="puntaje" class="puntaje pun0 fl_le mari">
@@ -75,23 +75,28 @@
     </div>
     <!--EndPuntuarBlock-->
                            
-    <div class="ta_wrap mabo0">
-        <div class="inner_fwrap">               
-            <textarea rows="0" cols="30" name="comentario" class="tarea_ctrl" title="Escribe tu comentario">Escribe tu comentario</textarea>
-        </div>
-    </div>
+    <form id="formComentar" name="formComentar" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-    <div class="grupo di_no">
-        <input class="celda3" type="text" name="nombre" value="Nombre" title="Nombre"/>
-        <input class="celda3" type="text" name="mail" value="E-Mail (No se mostrar&aacute;)" title="E-Mail (No se mostrar&aacute;)" />
-        <input class="celda3 mari0" type="text" name="sitioweb" value="Sitio Web (Opcional)" title="Sitio Web (Opcional)" />
+        <div id='msg_form_comentar' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
+
+        <div class="ta_wrap mabo2">
+            <div class="inner_fwrap">
+                <textarea rows="0" cols="30" id="comentarioMensaje" class="tarea_ctrl defVal maxlength" title="Escribe tu comentario">Escribe tu comentario</textarea>
+            </div>
+        </div>
+
+        <input class="celda3 defVal" type="text" name="nombre" id="comentarioNombre" value="Nombre" title="Nombre"/>
+        <input class="celda3 defVal" type="text" name="mail" id="comentarioMail" value="E-Mail (No se mostrar&aacute;)" title="E-Mail (No se mostrar&aacute;)" />
+        <input class="celda3 defVal mari0" type="text" name="sitioweb" id="comentarioSitioWeb" value="Sitio Web (Opcional)" title="Sitio Web (Opcional)" />
+
         <div class="fl_le">
-            <input id="check_suscribirse" name="check_suscribirse" class="check_suscribirse" type="checkbox" checked="checked">
-            <label for="check_suscribirse">Notificarme nuevos comentarios por mail y suscribirme!.</label>	
+            <input id="comentarioSuscribirse" name="suscribirse" class="veal_mi" type="checkbox" checked="checked">
+            <label for="comentarioSuscribirse">Notificarme nuevos comentarios por mail y suscribirme!.</label>
         </div>
         <div class="fl_ri">
-            <button id="publicar" name="publicar" class="btn01">Publicar</button>
-        </div>                    
-    </div>                                                                           
+            <button id="comentarioPublicar" type="submit" name="publicar" class="btn01">Publicar</button>
+        </div>
+    </form>
 </div>                        
 <!--EndNuevoComentarioBlock-->
