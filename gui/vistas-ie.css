@@ -19,12 +19,15 @@ textarea { overflow:auto; }
 /*Fixes incorrect placement of numbers in ol's in IE6/7*/
 ol{margin-left:2em}
 
+input[type="checkbox"], input[type="radio"]{ background:transparent; border:none !important}
+/* reseteo a mano los fonts porque en ie6/7 no corre el inherit lamentablemente */
+*:first-child+html textarea{font:100% Arial, Helvetica, sans-serif}
+* html textarea{font:100% Arial, Helvetica, sans-serif}
+*:first-child+html input, *:first-child+html select{font:100% Arial, Helvetica, sans-serif}
+
 
 
 /*** PLANTILLA ***/
-* html textarea{font-family:Arial, Helvetica, sans-serif}
-*:first-child+html textarea{font-family:Arial, Helvetica, sans-serif}
-
 * html button, * html label, * html select, * html li, * html .puntaje{cursor:pointer}
 i{cursor:pointer}
 
@@ -32,23 +35,21 @@ i{cursor:pointer}
 
 * html #wrapper{text-align:left}
 
-input{padding:6px 4px 2px}
-* html input, * html select{padding:6px 4px !important; font-size:1.1em !important}
-*:first-child+html input, *:first-child+html select{padding:5px 4px 3px; font-size:1.1em !important}
+input, button{overflow:visible !important;}
+/* hago un hack de line-height para los botones en ie7 */
+*:first-child+html .button button{line-height:12px; padding:0px !important}
+*:first-child+html .buttonLarge button{line-height:18px; padding:0px 6px !important}
+*:first-child+html .buttonXLarge button{line-height:26px; padding:2px 12px !important}
 
-* html .btn01{padding:2px 2px !important}
-*:first-child+html .btn01{padding:2px 2px !important}
-* html .btn_pres{padding:1px 4px 0 4px;}
-*:first-child+html .btn_pres{padding:1px 4px 0 4px;}
-
-.check_suscribirse{border:none !important}
+/* Para todos los ie esto */
+.form_line{overflow:hidden}
 
 * html #msg_top{text-align:left}
 
 /* iconos ie6 ie7 */
 * html .valoracion, * html .puntaje, *html .i, *html .i32{overflow:hidden}
-*html .iveal .i{margin:2px 4px 2px 4px !important} *html .iveal .i32{margin:2px 3px 2px 3px !important}
-*:first-child+html .iveal .i{margin:2px 4px 2px 4px !important} *:first-child+html .iveal .i32{margin:2px 3px 2px 3px !important}
+*html .iveal .i, *html .iveal .i32{margin:2px 3px 2px 3px !important}
+*:first-child+html .iveal .i, *:first-child+html .iveal .i32{margin:2px 3px 2px 3px !important}
 
 *html .sc{background-image:url("images/iconos/social.gif")}
 *html .bs{background-image:url("images/iconos/basicos.gif")}
