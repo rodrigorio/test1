@@ -12,15 +12,7 @@
  *
  * Si el 404 es postDispatch se tiene que poner como siempre el dispatched en falso
  * y se tiene que limpiar el response para no caer en un ciclo infinito en el repeat del Front.
- *
- * NOTA: QUE PASA SI UN VISITANTE ACCEDE POR EJEMPLO A "ADMIN/PUBLICACIONES/AKLDJASLDKJASLKDJ/" (UNA DIRECCION Q NO EXISTE PERO DENTRO DE ADMIN)
- *       EN TAL CASO 404 DETECTA QUE LA PAGINA NO EXISTE Y RUTEA A REQUEST A: ADMIN_PUBLICACIONES_REDIRECCION404 (ACCION FINAL)
- *       PERO NOSOTROS NO QUEREMOS QUE NINGUN PERFIL PUEDA VER SIQUIERA UNA PAGINA 404 DEL MODULO DE ADMINISTRADOR.
- *       ESTA DECICION LA TOMA EL PLUGIN DE PERMISOS, YA QUE REDIRECCION404 ES UNA ACCION MAS Y TIENE QUE SER ASIGNADA A ALGUN GRUPO.
- *       En tal caso ADMIN_PUBLICACIONES_REDIRECCION404 sera solo autorizada a los administradores y moderadores (por ejemplo)
- *       Si es un visitante pedira autorizacion para acceder a la pagina. Si se autentifica y sigue sin tener permiso sera redireccionado segun
- *       getUrlRedireccion() que determina la pagina a donde van a parar las acciones desautorizadas para usuarios que ya estan logueados.
- *
+ * 
  * @author Matias Velilla
  */
 class PluginRedireccion404 extends PluginAbstract
