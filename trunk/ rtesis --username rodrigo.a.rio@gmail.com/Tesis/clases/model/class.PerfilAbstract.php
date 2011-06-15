@@ -15,31 +15,31 @@ abstract class PerfilAbstract
     /**
      * @var SessionNamespace
      */
-    protected $permisos;
+    protected $oPermisos;
 
     /**
      * Id de perfil
      */
-    protected $id;
+    protected $iId;
 
     /**
      * Nombre del perfil instanciado
      */
-    protected $descripcion;
+    protected $sDescripcion;
 	
-    public function __construct(Usuario $usuario = null)
+    public function __construct(Usuario $oUsuario = null)
     {
-        $this->permisos = new SessionNamespace('permisos');
+        $this->oPermisos = new SessionNamespace('permisos');
 
-        if(null !== $usuario)
+        if(null !== $oUsuario)
         {
-            $this->setUsuario($usuario);
+            $this->setUsuario($oUsuario);
         }
     }
 	
-    public function setUsuario(Usuario $usuario)
+    public function setUsuario(Usuario $oUsuario)
     {
-        $this->usuario = $usuario;
+        $this->usuario = $oUsuario;
         return $this;
     }
 
@@ -48,26 +48,26 @@ abstract class PerfilAbstract
         return $this->oUsuario;
     }
 
-    public function setId($id)
+    public function setId($iId)
     {
-        $this->id = $id;
+        $this->id = $iId;
         return $this;
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->iId;
     }
 
-    public function setDescripcion($descripcion)
+    public function setDescripcion($sDescripcion)
     {
-        $this->descripcion = $descripcion;
+        $this->sDescripcion = $sDescripcion;
         return $this;
     }
 
     public function getDescripcion()
     {
-        return $this->descripcion;
+        return $this->sDescripcion;
     }
 
     /**
@@ -88,14 +88,14 @@ abstract class PerfilAbstract
             $array = SysController::getInstance()->cargarPermisosPerfil($this->id);
             if(!empty($array))
             {
-                $this->permisos->acciones = $array;
+                $this->permisos->acciones = $aArray;
                 $this->permisos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES, 'acciones');
             }
         }
         return $this;
     }
 	
-    public function tiene($funcion)
+    public function tiene($funcion)//??es un string?
     {
         if(!isset($this->permisos->acciones))
         {
