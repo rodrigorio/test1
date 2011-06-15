@@ -246,7 +246,8 @@ abstract class Intermediary
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param  array $filtro Tiene todos los campos por los que hay que filtrar, puede tener subarray si el filtro es complejo. $filtro['nombreCampo'] = valorFiltro
+     * @param  array|null $filtro Tiene todos los campos por los que hay que filtrar, puede tener subarray si el filtro es complejo.
+     *         $filtro['nombreCampo'] = valorFiltro. Si se pasa null por parametro el obtener() devuelve todos los objetos guardados en persistencia
      * @param  int $foundRows Si existe se pasa por referencia y asigna a la variable la cantidad de filas resultantes de la consulta
      * @return array|StdClass|null El tipo de objeto que devuelve depende de la clase de model con la que trabaje el Intermediary.
      * @throws Exception si hubo error en el metodo

@@ -27,6 +27,4 @@ Options All -Indexes
 #las condiciones hacen que se acepte cualquier directorio o archivo que exista o cualquier url que sea 'amigable'
 #y luego lo redireccione a /index.php (tener en cuenta de prohibir acceso a archivos que existen en cada directorio despues)
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php
+RewriteRule !\.(js|ico|txt|gif|jpg|png|css|html)$ index.php
