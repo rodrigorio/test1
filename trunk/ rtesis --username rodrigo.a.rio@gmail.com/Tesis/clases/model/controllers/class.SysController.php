@@ -64,9 +64,10 @@ class SysController
         //123probando...
         return array("index_publicaciones_index" => true,
                      "index_publicaciones_redireccion404" => true,
-                     "index_publicaciones_sitioOffline" => true,
+                     "index_index_sitioOffline" => true,
+                     "index_index_sitioEnConstruccion" => true,
+                     "index_index_ajaxError" => true,
                      "index_login_index" => true,
-                     "index_login_procesar" => true,
                      "admin_index_redireccion404" => true,
                      "index_login_procesar" => true,
                      "index_login_redireccion404" => true,
@@ -80,7 +81,9 @@ class SysController
     public function obtenerPerfilDefecto()
     {
         $oObj = new stdClass();
-        return Factory::getVisitanteInstance($oObj);
+        $perfil = Factory::getVisitanteInstance($oObj);
+        $perfil->iniciarPermisos();
+        return $perfil;
     }
 
     /**
@@ -88,12 +91,18 @@ class SysController
      * @return PerfilAbstract|null
      * @throws Exception si hubo error en la consulta
      */
-    public function obtenerUsuarioLogin($sNombreUsuario, $sContrasenia){
+    public function loginUsuario($sNombreUsuario, $sContrasenia){
         try{
+            $filtro = array('nombre' => $sNombreUsuario, 'contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->obtener($sNombreUsuario, $sContrasenia);
+            $perfil = $oUsuarioIntermediary->obtener($filtro);
+            if(null !== $perfil){
+                $perfil->iniciarPermisos();
+                SessionAutentificacion::getInstance()->cargarAutentificacion($perfil)
+                                                     ->realizoLogin(true);
+            }
         }catch(Exception $e){
             throw $e;
         }
-    } 
+    }
 }
