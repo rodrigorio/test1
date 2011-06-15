@@ -1,56 +1,103 @@
+/**
+ * Para ayuda acerca de form plugin: http://jquery.malsup.com/form/#html
+ * Para ayuda acerca de validate plugin: http://docs.jquery.com/Plugins/Validation/validate#options
+ */
+
 $(document).ready(function(){
-    
-    $("#userForm").validate({
 
-        rules: {
-            companyContactFirstName: "required",
-            companyContactLastName: "required",
-            companyEmail: {required: true, email: true},
-            companyName: "required",
-            termsAndConditions: "required",
-            companyLoginPassword: {
-                required: true,
-                password: "#companyEmail"
-            },
-            companyLoginPassword2: {
-                equalTo: "#companyLoginPassword"
-            }
+    $("#acceder").removeClass("disabled");
+
+    // VALIDACION FORMULARIO LOGIN//
+
+    $("#formLogin").validate({
+        errorElement: "div",
+        validClass: "correcto",
+        
+        //algunos parametros los seteamos para que no haya incompatibilidades con navegadores viejos
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        focusInvalid: false,
+        focusCleanup: true,
+
+
+        //ubico la etiqueta con el resultado y el mensaje en el contenedor de form_linea del campo
+        errorPlacement:function(error, element){            
+            error.appendTo("#msg_"+element.attr("id"));
         },
 
-        messages: {
-            companyContactFirstName: validatorMessage("required", "first name"),
-            companyContactLastName: validatorMessage("required", "last name"),
-            companyEmail: {
-                required: validatorMessage("required", "email address"),
-                email: validatorMessage("valid", "email address")
-            },
-            companyName: validatorMessage("required", "company name"),
-            termsAndConditions: "You have to accept our terms and conditions",
-            companyLoginPassword: {
-               required: validatorMessage("required", "password"),
-               password: validatorMessage("password")
-            },
-            companyLoginPassword2: validatorMessage("equalPasswords")
+        //no quiero que el plugin agregue ni saque clases me gusta todo como esta       
+        highlight: function(element){},        
+        unhighlight: function(element){},
+
+        //reglas que tiene que verificar en los campos
+        rules:{
+            nombreUsuario:{required:true},
+            contrasenia:{required:true}
         },
 
-        errorPlacement: function(label, element) {
-            if (element.attr('id') == "termsAndConditions") {
-                label.insertAfter("#termsAndConditions");
-            } else {
-                label.insertAfter(element);
-            }
-        }
+        //mensajes que devuelve si campo es invalido (ver la funcion en el archivo funciones-globales.js)
+        messages:{
+            nombreUsuario: mensajeValidacion("requerido"),
+            contrasenia: mensajeValidacion("requerido")
+        }        
+    });    
+
+    // HINTS FORMULARIO LOGIN//
+
+    $("#contrasenia").focus(function(){
+        $("#hintContrasenia").show();
+    });    
+    $("#contrasenia").blur(function(){        
+        $("#hintContrasenia").hide();
     });
 
-    $("#userForm").submit(function(){
-        if ($("#userForm").valid() == true) {
-            // If form is valid:
-            // Calculate and set MD5 password.
-            hashPassword("companyLoginPassword", "companyLoginPasswordMD5");
-            // Remove attribute "name" from password fields, so this inputs
-            // don't will be posted.
-            $("#companyLoginPassword").removeAttr("name");
-            $("#companyLoginPassword2").removeAttr("name");
+    // SUBMIT FORMULARIO LOGIN//
+
+    //preparo el objeto de opciones para el submit
+    var options = {
+        dataType: 'jsonp',
+        resetForm: true,
+        url: 'login-procesar',
+
+        beforeSerialize: function($form, options){
+            if($("#formLogin").valid() == true){
+
+                //calculo MD5
+                hashPassword("contrasenia", "contraseniaMD5");
+                //borro la contraseania asi no se envia
+                $("#contrasenia").val("");
+
+                //reseteo el contenedor del mensaje de resultado
+                $('#msg_form_login').removeClass("correcto").removeClass("error");
+                $('#msg_form_login .msg').html("");
+
+                //marco el contenedor en espera de una respuesta
+                setWaitingStatus('formLogin', true);
+            }else{
+                //cancelo el submit
+                return false;
+            }           
+        },
+
+        success:function(data){
+            //quito el estado en espera del contenedor
+            setWaitingStatus('formLogin', false);
+            if(data.success == undefined || data.success == 0){
+                //si se produjo error muestro el mensaje    
+                var mensaje = data.mensaje;
+                if(mensaje == undefined){
+                    mensaje = lang['error procesar'];
+                }
+                $('#msg_form_login .msg').html(mensaje);
+                $('#msg_form_login').addClass("error").fadeIn('slow');
+            }else{
+                //si se logueo de forma satisfactoria redirecciono
+                location = data.redirect;
+            }
         }
-    });
+    };
+
+    //bindeo el plugin
+    $("#formLogin").ajaxForm(options);
 });
