@@ -279,7 +279,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$sSQL =	" insert into personas ".
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getDocumento_tipo_id(),false,MYSQL_TYPE_INT).", ".
+					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
                     " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
