@@ -9,4 +9,3 @@ class UrlHelper extends HelperAbstract
 {
    
 }
-?>
