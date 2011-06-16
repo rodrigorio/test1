@@ -26,7 +26,7 @@ abstract class PerfilAbstract
      * Nombre del perfil instanciado
      */
     protected $sDescripcion;
-	
+
     public function __construct(Usuario $oUsuario = null)
     {
         $this->oPermisos = new SessionNamespace('permisos');
@@ -36,7 +36,7 @@ abstract class PerfilAbstract
             $this->setUsuario($oUsuario);
         }
     }
-	
+
     public function setUsuario(Usuario $oUsuario)
     {
         $this->oUsuario = $oUsuario;
@@ -80,7 +80,7 @@ abstract class PerfilAbstract
     {
         return $this->getUsuario()->getNombreUsuario();
     }
-	
+
     protected function cargarPermisos()
     {
         if(!isset($this->permisos->acciones))
@@ -94,7 +94,7 @@ abstract class PerfilAbstract
         }
         return $this;
     }
-	
+
     public function tiene($funcion)//??es un string?
     {
         if(!isset($this->permisos->acciones))
@@ -103,13 +103,13 @@ abstract class PerfilAbstract
         }
         return isset($this->permisos->acciones[$funcion]);
     }
-	
+
     public function activo($funcion)
     {
         if(!isset($this->permisos->acciones))
         {
             $this->cargarPermisos();
-        }        
+        }
         if($this->tiene($funcion))
         {
             return $this->permisos->acciones[$funcion];
