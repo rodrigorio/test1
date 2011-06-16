@@ -2,3 +2,4 @@
 class InstitucionIntermediary extends Intermediary{
 	
 }
+?>
