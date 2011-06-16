@@ -182,9 +182,11 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 #footerSubCont #menu{float:left}
 #frameIndex01 #footerSubCont #copyright{float:right}
 
+#popUpCont{padding:10px; position:relative; text-align:left; margin:0}
+
 .columnas2 .col1, .columnas2 .col2{float:left; text-align:left}
 .columnas2 .col1{float: left; width: 650px; min-height:200px;}
-.columnas2 .col2{display: block; float: left; margin-left:30px 0 0 20px; position: relative; width: 270px}
+.columnas2 .col2{display: block; float: left; margin:30px 0 0 20px; position: relative; width: 270px}
 .columnas2 .col2 .top{min-height:200px; overflow: hidden; padding-left: 20px}
 .columnas2 .col2 .bottom{clear: both; height: 50px; top: 0}
 
@@ -236,6 +238,8 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 .footerSub01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
 #frameIndex01 .footerSub01{font-size:0.8em}
 #frameIndex01 .footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
+
+#popUpCont .popUpCont01{background-color:#FFF}
 
 /*** COMPONENTES EN GENERAL ***/
 .info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
