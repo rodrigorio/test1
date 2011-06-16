@@ -73,7 +73,6 @@ class PluginParametros extends PluginAbstract
         $this->parametrosDinamicosStrategy->setRequest($request);
               
         $this->setRequest($request) //se setea porque el $request se va a usar en metodos privados de la clase
-             ->cargarParametrosEstaticosSitio() //primero se extraen los parametros estaticos seteados en /sitio/
              ->agregarParametrosEstaticos();
     }
 
@@ -134,41 +133,43 @@ class PluginParametros extends PluginAbstract
         }
     }
 
-    private function cargarParametrosEstaticosSitio()
-    {
-        $parametrosSitio = new ParametrosSitio();
-        $this->parametrosEstaticos = $parametrosSitio->getParametrosSitio();
-        return $this;
-    }
-
     private function agregarParametrosEstaticos()
     {
-        $sistema = array('MULTI_IDIOMA' => '1',
-                         'SESSION_NAME' => 'UrbisBlog',
-                         'HOME_SITIO_MODULO' => 'index',
-                         'HOME_SITIO_CONTROLADOR' => 'publicaciones',
-                         'HOME_SITIO_ACCION' => 'index',
+        $sistema = array(
+                        'DATABASE_HOST' => 'localhost',
+                        'DATABASE_DRIVER' => 'IMYSQL',
+                        'DATABASE_USER' => 'root',
+                        'DATABASE_PASSWORD' => 'urbis9878',
+                        'DATABASE_NAME' => 'tesis',
+                        'DATABASE_PORT' => '3306',
+                        'DATABASE_AUTOCOMMIT' => '0',
 
-                         'ACTIVO_MODULO_INDEX' => '1',
-                         'ACTIVO_MODULO_ADMIN' => '1', //este no deberia desactivarse nunca
+                        'MULTI_IDIOMA' => '1',
+                        'SESSION_NAME' => 'Tesis',
+                        'HOME_SITIO_MODULO' => 'index',
+                        'HOME_SITIO_CONTROLADOR' => 'index',
+                        'HOME_SITIO_ACCION' => 'index',
 
-                         'ERROR_DB_REDIRECICON_MODULO' => 'index',
-                         'ERROR_DB_REDIRECICON_CONTROLADOR' => 'index',
-                         'ERROR_DB_REDIRECICON_ACCION' => 'sitioEnConstruccion',
+                        'ACTIVO_MODULO_INDEX' => '1',
+                        'ACTIVO_MODULO_ADMIN' => '1', //este no deberia desactivarse nunca
 
-                         'PERFIL_BLOGGER_REDIRECCION_MODULO' => 'index',
-                         'PERFIL_BLOGGER_REDIRECCION_CONTROLADOR' => 'publicaciones',
-                         'PERFIL_BLOGGER_REDIRECCION_ACCION' => 'index',
-                         'PERFIL_BLOGGER_REDIRECCION_PATH' => '/',
-                         'PERFIL_BLOGGER_REDIRECCIONLOGIN_MODULO' => 'admin',
-                         'PERFIL_BLOGGER_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
-                         'PERFIL_BLOGGER_REDIRECCIONLOGIN_ACCION' => 'index',
-                         'PERFIL_BLOGGER_REDIRECCIONLOGIN_PATH' => '/admin',
-            
-                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_MODULO' => 'admin',
-                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
-                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_ACCION' => 'index',
-                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_PATH' => '/admin');
+                        'ERROR_DB_REDIRECICON_MODULO' => 'index',
+                        'ERROR_DB_REDIRECICON_CONTROLADOR' => 'index',
+                        'ERROR_DB_REDIRECICON_ACCION' => 'sitioEnConstruccion',
+
+                        'PERFIL_BLOGGER_REDIRECCION_MODULO' => 'index',
+                        'PERFIL_BLOGGER_REDIRECCION_CONTROLADOR' => 'publicaciones',
+                        'PERFIL_BLOGGER_REDIRECCION_ACCION' => 'index',
+                        'PERFIL_BLOGGER_REDIRECCION_PATH' => '/',
+                        'PERFIL_BLOGGER_REDIRECCIONLOGIN_MODULO' => 'admin',
+                        'PERFIL_BLOGGER_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
+                        'PERFIL_BLOGGER_REDIRECCIONLOGIN_ACCION' => 'index',
+                        'PERFIL_BLOGGER_REDIRECCIONLOGIN_PATH' => '/admin',
+
+                        'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_MODULO' => 'admin',
+                        'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
+                        'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_ACCION' => 'index',
+                        'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_PATH' => '/admin');
 
         $indexPublicaciones = array('MAXCANT_PUBLICIDADES_COL_IZQ' => '3');
 
@@ -189,7 +190,7 @@ class PluginParametros extends PluginAbstract
 
     public function imprimirParametrosEstaticos()
     {
-        echo "<pre>"; print_r($this->parametrosEstaticos); echo "</pre>"; exit();
+        echo "<pre>".print_r($this->parametrosEstaticos)."</pre>"; exit();
     }
 
     /**
