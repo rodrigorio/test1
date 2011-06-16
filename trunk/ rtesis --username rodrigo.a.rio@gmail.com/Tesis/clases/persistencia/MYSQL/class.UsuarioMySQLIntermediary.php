@@ -233,7 +233,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " fax =".$db->escape($oUsuario->getFax(),true).", " .
                     " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
                     " instituciones_id =".$db->escape($oUsuario->getInstituciones_id(),false,MYSQL_TYPE_INT).", ".
-                    " ciudades_id =".$db->escape($oUsuario->getCiudades_id(),false,MYSQL_TYPE_INT).", ".
+    /*ver esto*/    " ciudades_id = ".$db->escape($oUsuario->getCiudadesId(),false,MYSQL_TYPE_INT).", ".
 					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
@@ -276,6 +276,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
    {
 		try{
 			$db = $this->conn;
+			$db->begin_transaction();
 			$sSQL =	" insert into personas ".
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
@@ -310,6 +311,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
              
 		}catch(Exception $e){
+			$db->rollbak_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
