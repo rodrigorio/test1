@@ -45,7 +45,7 @@ button::-moz-focus-inner{border:0; padding:0}
 /****************************************/
 
 body{width:100%; height:100%; font-family:Arial; font-size:0.75em; line-height:18px; direction:ltr;}
-body, th, td{color:#333}
+body, th, td{color:#666}
 li{text-decoration:none}
 i{background-color:#EEE}
 p{margin-bottom:18px}
@@ -140,6 +140,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .po_re{position:relative !important}
 .veal_mi{vertical-align:middle !important}
 .mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
+.mihe0{min-height:100px} .mihe1{min-height:200px} .mihe2{min-height:300px} .mihe3{min-height:400px} .mihe4{min-height:500px} 
 
 .baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
 .ba{background:url("images/fondos/fondo_secundario_transparente.png") repeat}
@@ -164,31 +165,34 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 
 .celda2, .celda3, .celda4{margin-bottom:10px; margin-right:10px; float:left;}
 
-#frameBlog01 #wrapper{width:960px; margin:10px auto; padding:10px;}
-#frameBlog01 #header{padding:10px; height:90px; position:relative}
-#frameBlog01 #header #titulo{float:left; position:absolute; top:20px; left:180px}
-#frameBlog01 #header #logo{float:left; margin-right:10px;}
-#frameBlog01 #footer{clear:both; padding:10px; position:relative; margin-top:10px;}
-#frameBlog01 #wrapper .celda3{width:303px; float:left}
-#frameBlog01 #sub-header{margin-bottom:10px; height:30px}
-#frameBlog01 #sub-header li{display:inline;}
-#frameBlog01 #sub-header a{padding:6px; display:inline-block;}
-#frameBlog01 #subtitulo{margin-bottom:10px; text-align:center;}
-#frameBlog02 #wrapper{width:600px; padding:10px; left:50%; top:10%; position:absolute; margin-left:-300px}
+#frameIndex #header{height: 90px; width: 100%}
+#frameIndex #headerCont{margin:0 auto; width: 960px}
+#frameIndex #headerCont #logo{float: left; margin:0; padding:0; width: 200px; padding-top:15px}
+#frameIndex #headerCont #navigation{float: right; padding-top: 30px; position: relative; width: 760px; z-index: 9999;}
+#frameIndex #subHeader{padding:20px 0;}
+#frameIndex #subHeaderCont{margin: 0 auto; width: 960px}
+#frameIndex #subHeaderCont #titulo{padding: 10px 0}
+#frameIndex #subHeaderCont #slogan{padding-bottom: 10px; padding-top: 5px}
+#frameIndex #centralPage{padding-top:10px}
+#frameIndex #centralPageCont{margin: 0 auto; width: 960px}
+#frameIndex #footer{display: table; padding: 30px 0; width: 100%;}
+#frameIndex #footerCont{margin: 0 auto; width: 960px}
+#frameIndex #footerCont .celda4{padding: 20px 10px; width: 220px; margin:0 !important}
+#frameIndex #footerSub{display: table; padding: 10px 0; width: 100%}
+#frameIndex #footerSubCont{margin: 0 auto; width: 960px;}
+#frameIndex #footerSubCont #menu{float:left}
+#frameIndex #footerSubCont #copyright{float:right}
 
-.columnas2 .col1, .columnas2 .col2{float:left; padding:10px; text-align:left} 
-.columnas2 .col1{width:160px; margin-right:10px} 
-.columnas2 .col2{width:750px} 
-/* agregar teal_ce para centrar contenido dentro de la celda */
-.columnas2 .col2 .celda3{width:243px !important} 
-.columnas2 .col2 .celda4{width:180px !important} 
-/* ficha02 agrega padding entonces celda3 cambia */
-.columnas2 .col2 .ficha02 .celda3{width:226px !important}
+.columnas2 .col1, .columnas2 .col2{float:left; text-align:left}
+.columnas2 .col1{float: left; width: 650px; min-height:200px;}
+.columnas2 .col2{display: block; float: left; margin-left: 20px; position: relative; width: 270px}
+.columnas2 .col2 .top{min-height:200px; overflow: hidden; padding-left: 20px}
+.columnas2 .col2 .bottom{clear: both; height: 50px; top: 0}
 
 .columnas2A .col1, .columnas2A .col2{float:left; padding:10px; text-align:left}
 .columnas2A .col1, .columnas2A .col2{width:460px}
 
-/*** THUMBNAILS MEDIANOS Y CHICOS ***/
+/*** THUMBNAILS GRANDES, MEDIANOS Y CHICOS ***/
 .th_fto_m, .th_fto_s{background: none repeat scroll 0 0; display:inline-block; outline:medium none; position:relative; vertical-align: bottom; text-align:left; border-collapse:collapse; border-spacing:0; line-height:0 !important}
 .th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:80px; width:105px}
 .th_vid_m{display:inline-block; padding:5px; position:relative}
@@ -223,15 +227,19 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 /****************************************/
 
 /*** BLOQUE DE LOS TEMPLATES ***/
-.body01{background:url("images/fondos/fondo.jpg") repeat;}
+#frameIndex .subHeader01 {background: none repeat scroll 0 0 #807FFE;}
+#frameIndex .subHeader01 #titulo{color:#FFF; text-shadow:2px 2px 2px #333; font-size:6em; line-height:54px}
+/*Una escepcion porque es muy largo el nombre del proyecto*/
+#frameIndex .subHeader01 #slogan{color:#FFFEEE; font-size: 2.3em; line-height: 18px;}
+#frameIndex .subHeader01 h1{font-size:1em; line-height:32px;}
 
-.header01{background-color:#CCCCFF; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
-.header01 #titulo{font-size:5em; color:#FFF; text-shadow:#666 1px 2px 1px; line-height:72px; font-weight:bold; text-transform:capitalize;}
-.header02{font-size:2em; color:#FFF; text-align:left; border:1px dashed #666;}
+#frameIndex .centralPage01 .columnas2 .col2 .top{background:url("images/fondos/sidebar-bg.png") no-repeat scroll left top #FFF;}
+#frameIndex .centralPage01 .columnas2 .col2 .bottom{background:url("images/fondos/sidebar-bg-bottom.png") no-repeat scroll left bottom #FFF;}
 
-.sub-header01{background-color:#FFF; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #888 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border-top:1px solid #333}
-
-.footer01{background-color:#CCCCFF; -moz-border-radius:0px 0px 5px 5px; -webkit-border-radius:0px 0px 5px 5px; border-radius:0px 0px 5px 5px; border-top:1px solid #EFEFFC; text-align:center;}
+#frameIndex .footer01{background:none repeat scroll 0 0 #807FFE;}
+#frameIndex .footerSub01{background:url("images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
+#frameIndex .footerSub01{font-size:0.8em}
+#frameIndex .footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
 
 /*** COMPONENTES EN GENERAL ***/
 .info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
@@ -286,6 +294,31 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .menu02 a{text-decoration:none; font-weight:bold}
 .menu02 a:hover{text-decoration:underline;}
 .menu02 li{margin-left:15px; list-style-type:square; color:#1111CC;}
+
+/* jquery superfish */
+.menu03{text-align:right; z-index:50}
+.menu03 ul#menu-list {float: right; height: 30px; z-index: 50;}
+.menu03 ul#menu-list li {display:inline; padding: 5px 10px;}
+.menu03 ul#menu-list li a {color: #000000; font-size: 18px; line-height:20px; letter-spacing: 1px; text-decoration: none;}
+.menu03 #menu-list, #menu-list * {list-style: none outside none; margin: 0; padding: 0;}
+.menu03 #menu-list {line-height:1;}
+.menu03 #menu-list ul {position: absolute; top: -999em; width: 200px;}
+.menu03 #menu-list ul li {width: 100%;}
+.menu03 #menu-list li:hover{background: none repeat scroll 0 0 #F9F9F9; visibility: inherit}
+.menu03 #menu-list li{float: left; position: relative}
+.menu03 #menu-list a{display: block; position: relative}
+.menu03 #menu-list li:hover ul, #menu-list li.sfHover ul{left: 0; top: 2.5em; z-index: 99;}
+.menu03 ul#menu-list li:hover li ul, ul#menu-list li.sfHover li ul{top: -999em;}
+.menu03 ul#menu-list li li:hover ul, ul#menu-list li li.sfHover ul{left: 220px; top: 0;}
+.menu03 ul#menu-list li li:hover li ul, ul#menu-list li li.sfHover li ul{top: -999em;}
+.menu03 ul#menu-list li li li:hover ul, ul#menu-list li li li.sfHover ul{left: 10em; top: 0;}
+.menu03 #menu-list a{text-decoration: none}
+.menu03 #menu-list a, #menu-list a:visited {color:#000;}
+.menu03 #menu-list li li {background: none repeat scroll 0 0 #F9F9F9; border-bottom: 1px solid #E9E9E9; padding: 5px 10px; text-align: left;}
+.menu03 #menu-list li li:hover{background: none repeat scroll 0 0 #E9E9E9;}
+.menu03 #menu-list li li a{color:#000; font-size: 14px;}
+.menu03 #menu-list li:hover, #menu-list li.sfHover, #menu-list a:focus, #menu-list a:hover, #menu-list a:active{outline: 0 none}
+.menu03 #menu-list a.sf-with-ul {min-width: 1px; padding-right: 0}
 
 .thumb01{padding:5px; background-color:#FFF; border:1px solid #CCC; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 .thumb01:hover{border:1px solid #333; text-decoration:none}

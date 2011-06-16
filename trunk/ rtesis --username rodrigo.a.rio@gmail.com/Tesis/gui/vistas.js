@@ -212,6 +212,11 @@ $(document).ready(function(){
        $(this).next().show();
     });
 
+    //SUPER FISH MENU
+    $(function(){
+        $('#menu-list').superfish();
+    });
+
     // PUNTUAR PUBLICACIONES, ETC //
     var txts_puntaje = new Array();
     txts_puntaje['pun1'] = 'p\xe9simo';
