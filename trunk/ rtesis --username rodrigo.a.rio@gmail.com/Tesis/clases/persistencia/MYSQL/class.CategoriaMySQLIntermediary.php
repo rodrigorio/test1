@@ -58,4 +58,4 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
-	
+?>	
