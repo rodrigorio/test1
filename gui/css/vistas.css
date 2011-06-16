@@ -185,7 +185,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 
 .columnas2 .col1, .columnas2 .col2{float:left; text-align:left}
 .columnas2 .col1{float: left; width: 650px; min-height:200px;}
-.columnas2 .col2{display: block; float: left; margin-left: 20px; position: relative; width: 270px}
+.columnas2 .col2{display: block; float: left; margin-left:30px 0 0 20px; position: relative; width: 270px}
 .columnas2 .col2 .top{min-height:200px; overflow: hidden; padding-left: 20px}
 .columnas2 .col2 .bottom{clear: both; height: 50px; top: 0}
 
