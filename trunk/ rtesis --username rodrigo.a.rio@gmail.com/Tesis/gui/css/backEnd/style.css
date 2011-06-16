@@ -1005,6 +1005,162 @@ table input[type="checkbox"] {
 	position:static;
 }
 
+/**********************************************************************/
+/*********** ICONOS, (SON LOS MISMOS PARA TODO EL SISTEMA *************/
+/**********************************************************************/
+
+/* porque se usan en <span> que es un tag lineal */
+.i, .i32{display:inline-block}
+.i{height:16px; width:16px} .i32{height:32px; width:32px}
+/* cuando hay un icono dentro de un link */
+a .i{margin-right:4px; float:left}
+/* para utilizar iconos alineados verticalmente con texto. La clase va en el contenedor y se usa asi para el fix de ie6 */
+/* esta clase no se usa cuando los iconos van dentro de tags <a> !! */
+.iveal .i, .iveal .i32{vertical-align:middle}
+/* para convertir el icono en boton si es que se usa como tal pero solo sin <a> */
+.ihover:hover{cursor:pointer; background-color:#DDD; outline:1px solid #AAA}
+/* para iconos dentro de inputs lineheight */
+.inner_fwrap .i{position:absolute; top:2px; right:2px;}
+
+/* redes sociales */
+.sc{background:url("../../images/iconos/social.png") no-repeat scroll} /* imagen, que para ie6 cambia se usa gif */
+.delicious{background-position:0px -34px} .delicious:hover{background-position:0px -87px}
+.delicious32{background-position:0px 0px} .delicious32:hover{background-position:0px -53px}
+.digg{background-position:-34px -34px} .digg:hover{background-position:-34px -87px}
+.digg32{background-position:-34px 0px} .digg32:hover{background-position:-34px -53px}
+.facebook{background-position:-68px -34px} .facebook:hover{background-position:-68px -87px}
+.facebook32{background-position:-68px 0px} .facebook32:hover{background-position:-68px -53px}
+.linkedin{background-position:-102px -34px} .linkedin:hover{background-position:-102px -87px}
+.linkedin32{background-position:-102px 0px} .linkedin32:hover{background-position:-102px -53px}
+.myspace{background-position:-136px -34px} .myspace:hover{background-position:-136px -87px}
+.myspace32{background-position:-136px 0px} .myspace32:hover{background-position:-136px -53px}
+.reddit{background-position:-170px -34px} .reddit:hover{background-position:-170px -87px}
+.reddit32{background-position:-170px 0px} .reddit32:hover{background-position:-170px -53px}
+.twitter{background-position:-204px -34px} .twitter:hover{background-position:-204px -87px}
+.twitter32{background-position:-204px 0px} .twitter32:hover{background-position:-204px -53px}
+
+/* gui */
+.bs{background:url("../../images/iconos/basicos.png") no-repeat scroll}
+.add{background-position:0px -224px} .add32{background-position:0px 0px}
+.arrowDown{background-position:-32px -224px} .arrowDown32{background-position:-32px 0px}
+.arrowLeft{background-position:-48px -224px} .arrowLeft32{background-position:-64px 0px}
+.arrowRight{background-position:-32px -240px}
+.arrowUp{background-position:-48px -240px} .arrowUp32{background-position:-96px 0px}
+.arrowRefresh{background-position:-16px -240px} .arrowRefresh32{background-position:-128px 0px}
+.cancel{background-position:-96px -224px} .cancel32{background-position:-160px 0px}
+.close{background-position:-160px -224px} .close32{background-position:-192px 0px}
+.confirm{background-position:-176px -224px} .confirm32{background-position:-224px 0px}
+.play32{background-position:-256px 0px}
+.controlSkipBack{background-position:0px -256px} .controSkipBack32{background-position:-288px 0px}
+.controlSkipForward{background-position:-16px -256px} .controlSkipForward32{background-position:-320px 0px}
+.stop{background-position:-208px -224px} .stop32{background-position:-352px 0px}
+.delete{background-position:0px -272px} .delete32{background-position:-384px 0px}
+.edit{background-position:-16px -272px} .edit32{background-position:0px -32px}
+.warning{background-position:-80px -272px} .warning32{background-position:-32px -32px}
+.settings{background-position:-192px -240px} .settings32{background-position:-64px -32px}
+.search{background-position:-208px -240px} .search32{background-position:-96px -32px}
+.save{background-position:-224px -224px} .save32{background-position:-128px -32px}
+.photoDouble32{background-position:-160px -32px} .photoSingle{background-position:-272px -240px} .photoSingleAdd{background-position:-256px -240px} .photoSingleRemove{background-position:-256px -224px} .photoSingleEdit{background-position:-272px -224px}
+.admin{background-position:0px -240px} .admin32{background-position:-192px -32px} .adminEdit{background-position:-16px -224px}
+.calendar{background-position:-80px -240px} .calendar32{background-position:-224px -32px} .calendarAdd{background-position:-64px -224px} .calendarEdit{background-position:-80px -224px} .calendarRemove{background-position:-64px -240px}
+.chart{background-position:-112px -240px} .chart32{background-position:-256px -32px} .chartAdd{background-position:-112px -224px} .chartRemove{background-position:-96px -240px}
+.clock{background-position:-128px -224px} .clockAdd{background-position:-128px -240px} .clockRemove{background-position:-144px -240px} .clockEdit{background-position:-144px -224px}
+.contact32{background-position:-288px -32px} .contactEdit{background-position:-192px -224px}
+.document{background-position:-48px -272px} .document32{background-position:-320px -32px} .documentAdd{background-position:-32px -256px} .documentRemove{background-position:-48px -256px} .documentEdit{background-position:-32px -272px}
+.help{background-position:-64px -256px} .help32{background-position:-352px -32px}
+.info{background-position:-64px -272px} .info32{background-position:-384px -32px}
+.lockClosed32{background-position:0px -64px}
+.movie{background-position:-336px -240px} .movie32{background-position:-32px -64px} .movieAdd{background-position:-320px -224px} .movieRemove{background-position:-320px -240px} .movieEdit{background-position:-336px -224px}
+.notepad{background-position:-288px -224px} .notepad32{background-position:-64px -64px} .notepadEdit{background-position:-304px -240px} .notepadRemove{background-position:-304px -224px} .notepadAdd{background-position:-288px -240px}
+.user32{background-position:-96px -64px} .user32Add{background-position:-128px -64px} .user32Remove{background-position:-192px -64px} .user32Edit{background-position:-160px -64px} .user32Secure{background-position:-256px -64px}
+.group32{background-position:-224px -64px}
+.report{background-position:-224px -240px} .report32{background-position:0px -96px}
+.folderOpen32{background-position:-32px -96px}
+.rss{background-position:-240px -224px} .rss32{background-position:-64px -96px}
+.folderClosedAdd{background-position:-96px -256px} .folderClosed32Add{background-position:-96px -96px}
+.link{background-position:-384px -224px} .link32Add{background-position:-128px -96px} .linkAdd{background-position:-400px -224px} .linkRemove{background-position:-384px -240px} .linkEdit{background-position:-400px -240px}
+.comment{background-position:-176px -240px} .commentAdd{background-position:-160px -240px}
+.print{background-position:-240px -240px}
+.mail{background-position:-352px -224px} .mailEdit{background-position:-368px -224px} .mailRemove{background-position:-368px -240px} .mailAdd{background-position:-352px -240px}
+.home{background-position:-80px -256px}
+
+.mi{background:url("../../images/iconos/manejo-info.png") no-repeat scroll}
+.attachment{background-position:-32px -224px} .attachment32{background-position:0px 0px} .attachmentAdd{background-position:-16px -224px} .attachmentRemove{background-position:0px -240px} .attachmentEdit{background-position:-16px -240px}
+.authenticate{background-position:-48px -224px} .authenticate32{background-position:-32px 0px}
+.bookmark32{background-position:-64px 0px}
+.category{background-position:-80px -224px} .category32{background-position:-96px 0px} .categoryEdit{background-position:-64px -224px} .categoryRemove{background-position:-48px -240px} .categoryAdd{background-position:-32px -240px}
+.chartArea32{background-position:-128px 0px}
+.chartPie32{background-position:-160px 0px}
+.chartBar32{background-position:-192px 0px} .chartBarAdd{background-position:-64px -240px} .chartBarRemove{background-position:-80px -240px}
+.colourPalette32{background-position:-224px 0px} .colourPaletteShare{background-position:-112px -224px}
+.continue{background-position:-96px -240px} .continue32{background-position:-256px 0px}
+.controlPanel32{background-position:-288px 0px}
+.documentBlank{background-position:-128px -240px} .documentBlank32{background-position:-320px 0px} .documentBlankAdd{background-position:-112px -240px} .documentBlankRemove{background-position:-128px -224px} .documentBlankEdit{background-position:-144px -224px}
+.documentForm32{background-position:-352px 0px}
+.download{background-position:-144px -240px} .download32{background-position:-384px 0px}
+.upload{background-position:-160px -224px} .upload32{background-position:0px -32px}
+.entry32{background-position:-32px -32px}
+.export{background-position:-160px -240px} .export32{background-position:-64px -32px}
+.fileClosed{background-position:-208px -224px} .fileOpen{background-position:-192px -224px} .fileClosed32{background-position:-96px -32px} .fileOpen32{background-position:-128px -32px} .fileClosedAdd{background-position:-192px -240px} .fileClosedRemove{background-position:-208px -240px}
+.filter{background-position:-224px -240px} .filter32{background-position:-160px -32px} .filterAdd{background-position:-224px -224px} .filterRemove{background-position:-240px -224px} .filterEdit{background-position:-240px -240px}
+.flagWhite{background-position:-256px -224px} .flagYellow{background-position:-272px -224px} .flagGreen{background-position:-272px -240px} .flagRed{background-position:-256px -240px} .flagWhite32{background-position:-192px -32px} .flagYellow32{background-position:-224px -32px} .flagGreen32{background-position:-288px -32px} .flagRed32{background-position:-256px -32px}
+.tools{background-position:-128px -272px} .tools32{background-position:-320px -32px}
+.list{background-position:-304px -240px} .list32{background-position:-352px -32px} .listAdd{background-position:-288px -224px} .listRemove{background-position:-304px -224px} .listEdit{background-position:-288px -240px}
+.map{background-position:-336px -240px} .map32{background-position:-384px -32px} .mapAdd{background-position:-320px -224px} .mapRemove{background-position:-320px -240px} .mapEdit{background-position:-336px -224px}
+.moderate{background-position:-352px -224px} .moderate32{background-position:0px -64px}
+.module{background-position:-368px -224px} .module32{background-position:-32px -64px} .moduleAdd{background-position:-368px -224px} .moduleRemove{background-position:-368px -240px} .moduleEdit{background-position:-352px -240px}
+.news{background-position:0px -256px} .news32{background-position:-64px -64px} .newsAdd{background-position:-400px -224px} .newsRemove{background-position:-400px -240px} .newsEdit{background-position:-384px -240px}
+.password{background-position:-16px -256px} .password32{background-position:-96px -64px}
+.publish{background-position:-32px -256px} .publish32{background-position:-128px -64px}
+.readMore{background-position:-48px -256px} .readMore32{background-position:-160px -64px}
+.relationshipData{background-position:-80px -256px} .relationshipData32{background-position:-192px -64px} .relationshipDataAdd{background-position:-32px -272px} .relationshipDataRemove{background-position:-64px -256px} .relationshipDataEdit{background-position:-48px -272px}
+.relationshipPeople{background-position:-64px -272px} .relationshipPeople32{background-position:-224px -64px}
+.security32{background-position:-256px -64px}
+.signIn{background-position:-80px -272px}  .signIn32{background-position:-288px -64px}
+.signOut{background-position:-96px -256px} .signOut32{background-position:-320px -64px}
+.statistics{background-position:-144px -256px} .statistics32{background-position:-352px -64px}
+.support{background-position:-128px -256px} .support32{background-position:-384px -64px}
+.adDollars{background-position:0px -224px}
+.collapse{background-position:-96px -224px}
+.expand{background-position:-176px -224px}
+.fax{background-position:-176px -240px}
+.spam{background-position:-112px -256px}
+.mobilePhone{background-position:-160px -256px}
+.office{background-position:-176px -256px}
+.phone{background-position:0px -272px}
+.phoneOffice{background-position:-16px -272px}
+.sortDown{background-position:-96px -272px}
+.sortUp{background-position:-112px -272px}
+.viewList{background-position:-144px -272px}
+.create{background-position:-160px -272px}
+
+.mc{background:url("../../images/iconos/misc.png") no-repeat scroll}
+.ar{background-position:-32px -176px} .ar32{background-position:0px 0px}
+.es{background-position:-48px -176px} .es32{background-position:-32px 0px}
+.us{background-position:-64px -160px} .us32{background-position:-64px 0px}
+.purchase32{background-position:-96px 0px}
+.rateThumbsDown{background-position:-96px -160px} .rateThumbsDown32{background-position:-128px 0px}
+.rateThumbsUp{background-position:-112px -160px} .rateThumbsUp32{background-position:-160px 0px}
+.announcement32{background-position:-192px 0px}
+.blog{background-position:-80px -160px} .blog32{background-position:-224px 0px}
+.inbox32{background-position:-256px 0px}
+.calculator{background-position:-96px -176px} .calculator32{background-position:-288px 0px}
+.favourite32{background-position:-320px 0px}
+.tag{background-position:-128px -160px} .tag32{background-position:-352px 0px}
+.webBrowser{background-position:-32px -160px} .webBrowser32{background-position:-384px 0px} .webBrowser32Add{background-position:-32px -32px} .webBrowser32Remove{background-position:-96px -32px} .webBrowser32Edit{background-position:-64px -32px}
+.alert{background-position:-16px -160px} .alert32{background-position:0px -32px}
+.preview{background-position:-64px -176px} .preview32{background-position:-128px -32px}
+.searchDocument{background-position:-112px -176px} .searchDocument32{background-position:-160px -32px}
+.linkBreak{background-position:-48px -160px}
+.hierarchy{background-position:-80px -176px}
+.star1{background-position:0px -160px}
+.star2{width:32px !important; background-position:0px -176px}
+.star3{width:48px !important; background-position:0px -192px}
+.star4{width:64px !important; background-position:0px -208px}
+.star5{width:80px !important; background-position:0px -224px}
+
+
+
 /*  Login Page  */
 body.login { background:#e6e6e6; }
 .login section[role=main] {
