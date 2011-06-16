@@ -7,7 +7,7 @@ require_once 'includes/includePath.php';
 require_once 'includes/autoload.php';
 
 FrontController::getInstance()->throwExceptions(true) //poner en true cuando se testea, las excepciones se imprimen y cortan la ejecucion del sistema.
-                              ->setBaseUrl('/blogs1.0')
+                              ->setBaseUrl('/tesis')
                               ->registerPlugin(new PluginSession())                       // routeStartup  preDispatch
                               ->registerPlugin(new PluginRedireccion404())                //               preDispatch   postDispatch
                               ->registerPlugin(new PluginPermisos())                      //               preDispatch   postDispatch
