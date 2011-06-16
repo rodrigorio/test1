@@ -2,3 +2,4 @@
 class EspecialidadIntermediary extends Intermediary{
 	
 }
+?>
