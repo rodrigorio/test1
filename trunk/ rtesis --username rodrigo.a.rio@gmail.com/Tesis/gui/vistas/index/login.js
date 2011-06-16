@@ -100,4 +100,5 @@ $(document).ready(function(){
 
     //bindeo el plugin
     $("#formLogin").ajaxForm(options);
+
 });
