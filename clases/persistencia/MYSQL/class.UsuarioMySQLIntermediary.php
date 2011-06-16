@@ -130,7 +130,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
     //////////////////////////// FIN MATIAS ///////////////////////////
-    
+
 	public function registrar(Usuario $oUsuario){
         try{
 			$db = $this->conn;
@@ -143,7 +143,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
                     " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
 					if($oUsuario->getEmail()){
-	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." "; 
+	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
 					}
 			 $db->execSQL($sSQL);
 			 $iUltimoId = $db->insert_id();
@@ -164,29 +164,29 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
 			$db = $this->conn;
 			$db->begin_transaction();
-			
+
 			$sSQL =	" insert personas set";
 					if($oInvitado->getNombre()){
 						$sSQL .=" nombre =".$db->escape($oInvitado->getNombre(),true).", ";
-					}	
+					}
 					if($oInvitado->getApellido()){
                     	$sSQL .=" apellido =".$db->escape($oInvitado->getApellido(),true).", ";
 					}
-			$sSQL .= " email = ".$db->escape($oInvitado->getEmail(),true)." "; 
+			$sSQL .= " email = ".$db->escape($oInvitado->getEmail(),true)." ";
 			$db->execSQL($sSQL);
-			
+
 			$iUltimoId = $db->insert_id();
-			 
+
 			$sSQL =" insert usuario_x_invitado ".
 			        " set usuarios_id= ".$iIdUsuario.", ";
                     " invitados_id=".$iUltimoId.", ";
                     " relacion=".$db->escape($oInvitado->getRelacion(),true)." ";
 			$db->execSQL($sSQL);
-			
+
 			$sSQL =" insert invitados ".
 			        " set id= ".$iUltimoId." ";
 			$db->execSQL($sSQL);
-			
+
 			$db->commit();
 			/**
 			 * @todo falta funcion de enviar el email
@@ -196,7 +196,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-////////////////////////////////////    
+////////////////////////////////////
     public function actualizar(Usuario $oUsuario)
 
     {
@@ -238,7 +238,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." "; 
+                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." ";
 
 
 			 $db->execSQL($sSQL);
@@ -309,7 +309,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			$db->rollbak_transaction();
 			throw new Exception($e->getMessage(), 0);
@@ -380,4 +380,3 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		}
 	}
 }
-?>
