@@ -7,3 +7,4 @@
  * @author Andres
  */
 abstract class UsuarioIntermediary extends Intermediary {}
+?>
