@@ -39,7 +39,7 @@ abstract class PerfilAbstract
 	
     public function setUsuario(Usuario $oUsuario)
     {
-        $this->usuario = $oUsuario;
+        $this->oUsuario = $oUsuario;
         return $this;
     }
 
@@ -50,7 +50,7 @@ abstract class PerfilAbstract
 
     public function setId($iId)
     {
-        $this->id = $iId;
+        $this->iId = $iId;
         return $this;
     }
 
