@@ -83,13 +83,9 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .fwrap textarea{padding:6px 4px; height:16px;}
 .fwrap .textAreaLihe{padding:3px 4px; height:14px;}
 
-/*
- * El contenedor superior es el que tiene margin-bottom.
- * Puede tenerlo el fwrap o el form_line.
- */
+/* El contenedor superior es el que tiene margin-bottom. Puede tenerlo el fwrap o el form_line. */
 .form_line{position:relative; text-align:left; margin-bottom:10px}
 .form_line .fwrap{margin-bottom:0 !important}
-
 /* Tamanio line-height para form elements (mas chicos, entran en un renglon) */
 .inputTextLihe{padding:3px 4px !important}
 .inputSelectLihe {padding:2px 2px 2px 1px}
@@ -103,10 +99,8 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
         -moz-box-shadow:0 1px 0px #CCC; box-shadow:0 1px 0px #CCC; -webkit-box-shadow:0 1px 0px #CCC; cursor: pointer; display: inline-block; font-size: 11px; font-weight: bold; line-height: normal !important; padding:2px 6px; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap}
 .button:hover{ text-decoration: none; border-color:#666 !important}
 .button:active{ background-color:#DDD; background-image:none; -moz-box-shadow:0 0 2px #666 inset; box-shadow:0 0 2px #666 inset; -webkit-box-shadow:0 0 2px #666 inset; background: none repeat scroll 0 0 #DDDDDD; text-decoration:none}
-
 /* diferentes tamaños para los botones, por defecto los botones ocupan una linea (line-height) */
 .buttonLarge, .buttonLarge .buttonText, .buttonLarge button{ font-size:13px; padding:3px 6px}
-
 /* agranda el tamaño del boton, por defecto los botones ocupan una linea (line-height), este ocupa mas de una */
 .buttonXLarge, .buttonXLarge .buttonText, .buttonXLarge button{font-size:16px; padding: 8px 12px; text-transform:uppercase}
 
@@ -172,8 +166,12 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 #subHeaderCont{margin: 0 auto; width: 960px}
 #frameIndex01 #subHeaderCont #titulo{padding: 10px 0}
 #frameIndex01 #subHeaderCont #slogan{padding-bottom: 10px; padding-top: 5px}
-#frameIndex01 #centralPage{padding-top:10px}
-#frameIndex01 #centralPageCont{margin: 0 auto; width: 960px}
+#frameIndex01 #Page{padding-top:10px}
+#frameIndex01 #PageCont{margin: 0 auto; width: 960px}
+#frameIndex01 #topPage{padding: 20px 0; width: 100%;}
+#frameIndex01 #topPageContent{margin: 0 auto; width: 960px;}
+#frameIndex01 #centerPage{display:table; padding-top:20px; width: 100%;}
+#frameIndex01 #centerPageContent{margin: 0 auto; width: 960px;}
 #frameIndex01 #footer{display: table; padding: 30px 0; width: 100%;}
 #frameIndex01 #footerCont{margin: 0 auto; width: 960px}
 #frameIndex01 #footerCont .celda4{padding: 20px 10px; width: 220px; margin:0 !important}
@@ -182,13 +180,36 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 #footerSubCont #menu{float:left}
 #frameIndex01 #footerSubCont #copyright{float:right}
 
+#frameIndex02 #topPage{margin: 0 auto; width: 600px; padding:10px; margin-top:80px; text-align:left;}
+#frameIndex02 #centerPage{width: 100%}
+#frameIndex02 #centerPageCont{margin:0 auto; padding:20px 10px; width: 600px; min-height:250px; text-align:center; position:relative}
+/* ojo con este que si el contenedor vale mas de 600 no se ajusta fluidamente porq es absolute*/
+#frameIndex02 #centerPageCont #titulo{position:absolute; width:600px; top:80px; text-align:center;}
+#frameIndex02 #centerPageCont #subTitulo{position:absolute; top:180px; width:600px; text-align:center;}
+#frameIndex02 #bottomPage{margin: 0 auto; width: 600px; padding:10px; text-align:center;}
+
+#frameComunidad01
+topHeader
+topHeaderMenuLeft"></div>
+        <div id="topHeaderMenuRight"></div>
+    </div>
+
+    <div id="centerHeader">
+        <div id="logo"></div>
+        <div id="centerHeaderCont"></div>
+    </div>
+
+
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
 
 .columnas2 .col1, .columnas2 .col2{float:left; text-align:left}
-.columnas2 .col1{float: left; width: 650px; min-height:200px;}
-.columnas2 .col2{display: block; float: left; margin:30px 0 0 20px; position: relative; width: 270px}
+.columnas2 .col1{width: 650px; min-height:200px;}
+.columnas2 .col2{display: block; margin:30px 0 0 20px; position: relative; width: 270px}
 .columnas2 .col2 .top{min-height:200px; overflow: hidden; padding-left: 20px}
 .columnas2 .col2 .bottom{clear: both; height: 50px; top: 0}
+
+.columnas2A .col1, .columnas2A .col2{float:left; text-align:left}
+.columnas2A .col1, .columnas2A .col2{width:480px; min-height:200px;}
 
 /*** THUMBNAILS GRANDES, MEDIANOS Y CHICOS ***/
 .th_fto_m, .th_fto_s{background: none repeat scroll 0 0; display:inline-block; outline:medium none; position:relative; vertical-align: bottom; text-align:left; border-collapse:collapse; border-spacing:0; line-height:0 !important}
@@ -225,21 +246,35 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 /****************************************/
 
 /*** BLOQUE DE LOS TEMPLATES ***/
-#frameIndex01 .subHeader01 {background: none repeat scroll 0 0 #807FFE;}
-#frameIndex01 .subHeader01 #titulo{color:#FFF; text-shadow:2px 2px 2px #333; font-size:6em; line-height:54px}
+.body01{background-color:#E9E9E9}
+.header01{background-color:#FFF;}
+
+.subHeader01 {background: none repeat scroll 0 0 #807FFE;}
+.subHeader01 #titulo{color:#FFF; text-shadow:2px 2px 2px #333; font-size:6em; line-height:54px}
 /*Una escepcion porque es muy largo el nombre del proyecto*/
-#frameIndex01 .subHeader01 #slogan{color:#FFFEEE; font-size: 2.3em; line-height: 18px;}
-#frameIndex01 .subHeader01 h1{font-size:1em; line-height:32px;}
+.subHeader01 #slogan{color:#FFFEEE; font-size: 2.3em; line-height: 18px;}
+.subHeader01 h1{font-size:1em; line-height:32px;}
 
-#frameIndex01 .centralPage01 .columnas2 .col2 .top{background:url("../images/fondos/sidebar-bg.png") no-repeat scroll left top #FFF;}
-#frameIndex01 .centralPage01 .columnas2 .col2 .bottom{background:url("../images/fondos/sidebar-bg-bottom.png") no-repeat scroll left bottom #FFF;}
+.Page01{background-color:#FFF}
+.Page01 .columnas2 .col2 .top{background:url("../images/fondos/sidebar-bg.png") no-repeat scroll left top #FFF;}
+.Page01 .columnas2 .col2 .bottom{background:url("../images/fondos/sidebar-bg-bottom.png") no-repeat scroll left bottom #FFF;}
 
-#frameIndex01 .footer01{background:none repeat scroll 0 0 #807FFE;}
-#frameIndex01 .footerSub01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
-#frameIndex01 .footerSub01{font-size:0.8em}
-#frameIndex01 .footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
+.topPage01{background-color:#FFF; color:#666; font-size:16px; letter-spacing: 1px;}
+.centerPage01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
 
-#popUpCont .popUpCont01{background-color:#FFF}
+.topPage02{border-width:1px 1px 0 1px; border-style:solid; border-color:#999;}
+.centerPage02 {background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9}
+.centerPage02 #centerPageCont{border-width:0 1px 0 1px; border-style:dashed; border-color:#CCC;}
+.centerPage02 #titulo{font-size:6em; line-height:54px; font-weight:bold;}
+.centerPage02 #subTitulo{color:#333; font-size:2.8em; line-height:36px;}
+.bottomPage02{border-width:0 1px 1px 1px; border-style:solid; border-color:#999; font-size:0.8em}
+
+.footer01{background:none repeat scroll 0 0 #807FFE;}
+.footerSub01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
+.footerSub01{font-size:0.8em}
+.footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
+
+.popUpCont01{background-color:#FFF}
 
 /*** COMPONENTES EN GENERAL ***/
 .info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
@@ -261,8 +296,8 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha01 .titulo, .ficha01 .titulo{text-transform:uppercase; font-weight:bold}
 .ficha01 .subtitulo{font-size:1.7em}
 .ficha01 .detalle{font-size:0.8em}
-.ficha02{padding:10px; border:1px solid #999; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #999 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border-top:1px solid #333;}
 
+.ficha02{padding:10px; border:1px solid #999; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #999 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border-top:1px solid #333;}
 .ficha02 .puntuar .desc{font-weight:bold;}
 .ficha02 .puntuar #txt_puntaje{font-size:1.7em}
 
