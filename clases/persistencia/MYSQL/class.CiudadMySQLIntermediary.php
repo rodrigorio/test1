@@ -48,10 +48,10 @@ class CiudadMySQLIntermediaryMySQLIntermediary extends CiudadIntermediary
             
 			$aCiudades = array();
             while($oObj = $db->oNextRecord()){
-            	$oCiudad 		= new stdClass();
-            	$oCiudad->iId 	= $oObj->iId;
-            	$oCiudad->sNombre= $oObj->sNombre;
-            	//$oCiudad->oProvincia= $oObj->iProvinciaId;
+            	$oCiudad 			= new stdClass();
+            	$oCiudad->iId 		= $oObj->iId;
+            	$oCiudad->sNombre	= $oObj->sNombre;
+            	$oCiudad->oProvincia= null;
             	$aProvincias[]		= Factory::getCiudadInstance($oCiudad);
             }
             //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
