@@ -25,7 +25,12 @@ input[type="checkbox"], input[type="radio"]{ background:transparent; border:none
 * html textarea{font:100% Arial, Helvetica, sans-serif}
 *:first-child+html input, *:first-child+html select{font:100% Arial, Helvetica, sans-serif}
 
-
+/* hacks para que ie6 y ie7 soporten min-height*/
+* html .mihe0{height:100px; height:auto !important;} *:first-child+html .mihe0{height:100px; height:auto !important;}
+* html .mihe1{height:200px; height:auto !important;} *:first-child+html .mihe1{height:200px; height:auto !important;}
+* html .mihe2{height:300px; height:auto !important;} *:first-child+html .mihe2{height:300px; height:auto !important;}
+* html .mihe3{height:400px; height:auto !important;} *:first-child+html .mihe3{height:400px; height:auto !important;}
+* html .mihe4{height:500px; height:auto !important;} *:first-child+html .mihe4{height:500px; height:auto !important;}
 
 /*** PLANTILLA ***/
 * html button, * html label, * html select, * html li, * html .puntaje{cursor:pointer}
@@ -34,6 +39,8 @@ i{cursor:pointer}
 .bo_wh{border:1px solid white !important}
 
 * html #wrapper{text-align:left}
+* html #frameIndex02 #centerPageCont{height:250px; height:auto !important;}
+*:first-child+html #frameIndex02 #centerPageCont{height:250px; height:auto !important;}
 
 input, button{overflow:visible !important;}
 /* hago un hack de line-height para los botones en ie7 */
