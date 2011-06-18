@@ -188,17 +188,15 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex02 #centerPageCont #subTitulo{position:absolute; top:180px; width:600px; text-align:center;}
 #frameIndex02 #bottomPage{margin: 0 auto; width: 600px; padding:10px; text-align:center;}
 
-#frameComunidad01
-topHeader
-topHeaderMenuLeft"></div>
-        <div id="topHeaderMenuRight"></div>
-    </div>
+/* El bloque topHeader no lo hago heredar de ningun frame porque lo quiero usar en el modulo de seguimientos y en el de comunidad */
+#topHeader{height:30px;}
+#topHeader #topHeaderMenuRight, #frameComunidad01 #topHeader #topHeaderMenuLeft{height: 29px; opacity: 1; position: absolute; top: 0; width: 100%; z-index: 990}
+#topHeader #topHeaderMenuLeft{left:0;}
+#topHeader #topHeaderMenuRight{right:0;}
 
-    <div id="centerHeader">
-        <div id="logo"></div>
-        <div id="centerHeaderCont"></div>
-    </div>
-
+#frameComunidad01 #centerHeader{}
+#frameComunidad01 #centerHeader #logo{}
+#frameComunidad01 #centerHeader #centerHeaderCont{}
 
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
 
@@ -275,6 +273,8 @@ topHeaderMenuLeft"></div>
 .footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
 
 .popUpCont01{background-color:#FFF}
+
+.topHeader01{border-bottom:1px solid #807FFE; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
 
 /*** COMPONENTES EN GENERAL ***/
 .info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
