@@ -3,7 +3,7 @@
 <html>
 <head>
 
-    <base href="http://localhost/tesis/" />
+    <base href="http://urbis.dyndns-server.com/tesis/" />
     <title>Titulo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
@@ -30,7 +30,7 @@
                 <li><a href="#"><span class="i mi publish"></span> Opcion2</a></li>
                 <li><a href="#"><span class="i mi publish"></span> Opcion3</a></li>
                 <li>
-                    <a href="#" class="subMenu"><span class="i mi publish"></span> Opcion4</a>
+                    <a href="#"><span class="i mi publish"></span> Desplegable</a>
                     <ul>
                         <li><a href="#">SubOpcion</a></li>
                         <li><a href="#">SubOpcion2</a></li>
@@ -47,9 +47,42 @@
         </div>
     </div>
    
-    <div id="centerHeader">
-        <div id="logo"></div>
-        <div id="centerHeaderCont"></div>
+    <div id="centerHeader" class="centerHeader01">
+        <div id="centerHeaderCont" class="grupo">
+            <div id="logo">
+                <a href="index.html"><img src="gui/images/banners-logos/fasta.png" alt=""/></a>
+                <div id="logoTxt">
+                    <div id="logoDesc">SGPAPD</div>
+                    <div id="seccionDesc">Comunidad</div>
+                </div>
+            </div>
+            <div id="centerHeaderContLeft">
+                <form id="formHeader" name="formheader" action="" method="post">
+                    <div id='ajax_loading' class="ajax_wait30 di_no"></div>                    
+                    <input class="defVal miwi2" type="text" name="buscar" id="buscarFormHeader" value="Ing. palabras claves o parte del texto..." title="Ing. palabras claves o parte del texto..." />                    
+                    <label for="comentarioPublicar" class="button buttonConfirm buttonLarge iveal">
+                        <button id="comentarioPublicar" type="submit" name="publicar">Buscar Publicaciones</button> 
+                        <span class="i bs search"></span>
+                    </label>
+                </form>
+            </div>
+            <div id="centerHeaderContRight">
+                <ul class="m_horiz">
+                    <li>
+                        <a class="button" href="#">
+                            <span class="i mi signIn"></span>
+                            <span class="buttonText">Accion 1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button" href="#">
+                            <span class="i mi signIn"></span>
+                            <span class="buttonText">Accion 2</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     
 </body>
