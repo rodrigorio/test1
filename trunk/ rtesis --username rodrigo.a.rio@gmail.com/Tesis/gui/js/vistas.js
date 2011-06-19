@@ -214,7 +214,7 @@ $(document).ready(function(){
 
     //SUPER FISH MENU
     $(function(){
-        $('#menu-list').superfish();
+        $('.menuList').superfish();
     });
 
     // PUNTUAR PUBLICACIONES, ETC //
