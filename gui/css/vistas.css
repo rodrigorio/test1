@@ -45,7 +45,7 @@ button::-moz-focus-inner{border:0; padding:0}
 /****************************************/
 
 body{width:100%; height:100%; font-family:Arial; font-size:0.75em; line-height:18px; direction:ltr;}
-body, th, td{color:#666}
+body, th, td{color:#333}
 li{text-decoration:none}
 i{background-color:#EEE}
 p{margin-bottom:18px}
@@ -73,9 +73,8 @@ textarea{outline:0px; vertical-align:bottom}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
 
-/*
- * Para simular el width fluido en <textarea>, <input> y <select>
- * NOTA: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
+/* Para simular el width fluido en <textarea>, <input> y <select>
+ * Nota: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
  */
 .inner_fwrap{overflow:hidden; position:relative}
 .inner_fwrap .restantes{color:#999}
@@ -92,16 +91,18 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .inputSelectLihe option{padding:0px !important}
 .textAreaLihe, .inputTextLihe, .inputSelectLihe{font-size:11px !important; margin:0 !important}
 
- /* BOTONES, No cambiar el orden de las clases porque es importante para que se pisen los valores de las propiedades.
-    NOTA: Estan seteadas las propiedades para la apariencia por defecto. */
+/*** BOTONES ***/
+/* No cambiar el orden de las clases porque es importante para que se pisen los valores de las propiedades.
+ * Nota: Estan seteadas las propiedades para la apariencia por defecto. 
+ */
 .button, .buttonText, .button button{ background: none repeat scroll 0 0 transparent; border:0 none; cursor: pointer; display: inline-block; font-size: 11px; font-family:Lucida Grande,Tahoma,Verdana,Arial,sans-serif; font-weight: bold; margin: 0; outline: medium none; padding: 1px 0 2px; white-space: nowrap;}
 .button{color: #333; background-color:#EEE; background-image:-moz-linear-gradient(top, #FFF, #CCC); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)); background-image:linear-gradient(top, #FFF, #CCC); border-color:#CCC #666 #666 #CCC; border-style: solid; border-width: 1px;
         -moz-box-shadow:0 1px 0px #CCC; box-shadow:0 1px 0px #CCC; -webkit-box-shadow:0 1px 0px #CCC; cursor: pointer; display: inline-block; font-size: 11px; font-weight: bold; line-height: normal !important; padding:2px 6px; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap}
 .button:hover{ text-decoration: none; border-color:#666 !important}
 .button:active{ background-color:#DDD; background-image:none; -moz-box-shadow:0 0 2px #666 inset; box-shadow:0 0 2px #666 inset; -webkit-box-shadow:0 0 2px #666 inset; background: none repeat scroll 0 0 #DDDDDD; text-decoration:none}
 /* diferentes tamaños para los botones, por defecto los botones ocupan una linea (line-height) */
-.buttonLarge, .buttonLarge .buttonText, .buttonLarge button{ font-size:13px; padding:3px 6px}
-/* agranda el tamaño del boton, por defecto los botones ocupan una linea (line-height), este ocupa mas de una */
+.buttonLarge, .buttonLarge .buttonText, .buttonLarge button{font-size:12px; padding:3px 6px}
+/* agranda el size del boton, por defecto los botones ocupan una linea (line-height), este ocupa mas de una */
 .buttonXLarge, .buttonXLarge .buttonText, .buttonXLarge button{font-size:16px; padding: 8px 12px; text-transform:uppercase}
 
 
@@ -134,6 +135,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .po_re{position:relative !important}
 .veal_mi{vertical-align:middle !important}
 .mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
+.miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
 .mihe0{min-height:100px} .mihe1{min-height:200px} .mihe2{min-height:300px} .mihe3{min-height:400px} .mihe4{min-height:500px} 
 
 .baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
@@ -158,6 +160,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 
 .celda2, .celda3, .celda4{margin-bottom:10px; margin-right:10px; float:left;}
 
+#frameIndex01 body{color:#666 !important}
 #frameIndex01 #header{height: 90px; width: 100%}
 #frameIndex01 #headerCont{margin:0 auto; width: 960px}
 #frameIndex01 #headerCont #logo{float: left; margin:0; padding:0; width: 200px; padding-top:15px}
@@ -180,6 +183,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 #footerSubCont #menu{float:left}
 #frameIndex01 #footerSubCont #copyright{float:right}
 
+#frameIndex02 body{color:#666 !important}
 #frameIndex02 #topPage{margin: 0 auto; width: 600px; padding:10px; margin-top:80px; text-align:left;}
 #frameIndex02 #centerPage{width: 100%}
 #frameIndex02 #centerPageCont{margin:0 auto; padding:20px 10px; width: 600px; min-height:250px; text-align:center; position:relative}
@@ -195,9 +199,13 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #topHeader #topHeaderMenuLeft{top:0; left:0; padding-left:5px;}
 #topHeader #topHeaderMenuRight{top:0; right:0; padding-right:5px;}
 
-#frameComunidad01 #centerHeader{}
-#frameComunidad01 #centerHeader #logo{}
-#frameComunidad01 #centerHeader #centerHeaderCont{}
+#frameComunidad01 #centerHeader{width:100%}
+#frameComunidad01 #centerHeaderCont{padding:20px 10px; position:relative}
+#frameComunidad01 #centerHeaderCont #logo{position:absolute; top:20px; left:10px; width:200px;}
+#frameComunidad01 #centerHeaderCont #logo #logoTxt{position:absolute; top:65px; left:0}
+#frameComunidad01 #centerHeaderCont #logo #logoTxt div{float:left; margin-right:10px}
+#frameComunidad01 #centerHeaderCont #centerHeaderContLeft{float:left; margin-left:230px;}
+#frameComunidad01 #centerHeaderCont #centerHeaderContRight{float:right}
 
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
 
@@ -244,15 +252,21 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 /* SKINS (ASPECTO VISUAL) */
 /****************************************/
 
-/*** BLOQUE DE LOS TEMPLATES ***/
+/*** BLOQUES DE LOS TEMPLATES ***/
 .body01{background-color:#E9E9E9}
+
 .header01{background-color:#FFF;}
+
+.topHeader01{border-bottom:1px solid #807FFE; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
 
 .subHeader01 {background: none repeat scroll 0 0 #807FFE;}
 .subHeader01 #titulo{color:#FFF; text-shadow:2px 2px 2px #333; font-size:6em; line-height:54px}
 /*Una escepcion porque es muy largo el nombre del proyecto*/
 .subHeader01 #slogan{color:#FFFEEE; font-size: 2.3em; line-height: 18px;}
 .subHeader01 h1{font-size:1em; line-height:32px;}
+
+.centerHeader01 #logo #logoDesc{font-size:1.7em; text-shadow:1px 1px 1px #000; font-weight:bold;}
+.centerHeader01 #logo #seccionDesc{font-size:1.7em; color:#999;}
 
 .Page01{background-color:#FFF}
 .Page01 .columnas2 .col2 .top{background:url("../images/fondos/sidebar-bg.png") no-repeat scroll left top #FFF;}
@@ -274,8 +288,6 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
 
 .popUpCont01{background-color:#FFF}
-
-.topHeader01{border-bottom:1px solid #807FFE; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
 
 /*** COMPONENTES EN GENERAL ***/
 .info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
@@ -331,8 +343,7 @@ ul.menu01 li a{color:#1111CC !important; text-decoration: none; font-weight:bold
 .menu01 ul{position: absolute; top: -999em; width: 200px;}
 .menu01 ul li{width: 100%;}
 .menu01 li a .i{float:none !important}
-.menu01 li a:hover{background-color:#D1D9FF; margin-bottom:2px;}
-.menu01 li .subMenu a:hover{background-color:#FFF !important;}
+.menu01 li a:hover{background-color:#D1D9FF}
 .menu01 li{float: left; position: relative}
 .menu01 a{display: block; position: relative}
 .menu01 li:hover ul, li.sfHover ul{left:0; top: 2.5em; z-index:1000;}
@@ -342,9 +353,10 @@ ul.menu01 li li:hover li ul, ul.menu01 li li.sfHover li ul{top: -999em;}
 ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu01 a{text-decoration: none}
 .menu01 a, .menu01 a:visited {color:#000;}
-.menu01 li li {background: none repeat scroll 0 0 #F9F9F9; border-bottom: 1px solid #E9E9E9; text-align: left;}
+.menu01 li li{background: none repeat scroll 0 0 #EEEFFF; text-align: left; border-width:0 1px 0 1px; border-style:solid; border-color:#807FFE}
+.menu01 li li:last-child{border-bottom:1px solid #807FFE}
 .menu01 li li:hover{background: none repeat scroll 0 0 #E9E9E9;}
-.menu01 li li a{color:#000; font-size: 14px;}
+.menu01 li li a{font-weight:normal !important}
 .menu01 li:hover, .menu01 li.sfHover, .menu01 a:focus, .menu01 a:hover, .menu01 a:active{outline: 0 none}
 .menu01 a.sf-with-ul {min-width: 1px; padding-right: 0}
 
@@ -386,18 +398,15 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .thumb02 span{padding:1px 5px; background:none repeat scroll 0 0 #333; color:#FFF}
 
 /*** BOTONES ***/
-
-/* Boton confirmar accion */
+/* confirmar accion */
 .buttonConfirm{-moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; background-image:none; border-color:#DBE5F9 #5D729B #5D729B #DBE5F9; background-color: #93B5F9}
 .buttonConfirm:active{border-color:#5D729B; background-color: #84A3E0; -moz-box-shadow:0 0 2px blue inset; box-shadow:0 0 2px blue inset; -webkit-box-shadow:0 0 2px blue inset}
 
-/* Boton confirmar accion especial */
+/* confirmar accion especial */
 .buttonSpecial{-moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; background-image:none; border-color:#B2FFB2 #548E54 #548E54 #B2FFB2; background-color: #81DB81}
 .buttonSpecial:active{border-color:#548E54; background-color: #78C978; -moz-box-shadow:0 0 2px green inset; box-shadow:0 0 2px green inset; -webkit-box-shadow:0 0 2px green inset}
 
 .buttonConfirm button, .buttonSpecial button, .buttonSpecial .buttonText, .buttonConfirm .buttonText{color:#FFF; text-shadow:#666 1px 1px 1px}
-
-
 
 /*** VARIOS ***/
 .fte2{font-size:0.8em}
@@ -599,8 +608,8 @@ a .i{margin-right:4px; float:left}
 /*** JQUERY UI (PORQUE SE RESPETAN LAS CLASES DEL FRAMEWORK, ACA SOLO ASPECTO VISUAL) ***/
 /****************************************************************************************/
 
-/*** RESETEO LOS SKINS DEL CORE, no hace falta important porque esta hoja se llama a continuacion de la de jquery. ***/
-
+/*** RESETS ***/
+/* no hace falta important porque esta hoja se llama a continuacion de la de jquery */
 /* mis visuals*/
 .ui-corner-tl, .ui-corner-tr, .ui-corner-bl, .ui-corner-br, .ui-corner-top, .ui-corner-bottom, .ui-corner-right, .ui-corner-left, .ui-corner-all {-moz-border-radius:0px; -webkit-border-radius:0px; border-radius:0px;}
 
@@ -609,7 +618,6 @@ a .i{margin-right:4px; float:left}
 { margin:0; padding:0; border:0; font-weight:inherit; font-style:inherit; font-size:100%; font-family:inherit; vertical-align:baseline; background:none;}
 
 /*** ACA REESCRIBO ALGUNAS REGLAS DE LAS CLASES BASE, LO HAGO ACA ASI CUANDO SALEN ACTUALIZACIONES NO HAY LIO ***/
-
 /* dialog */
 .ui-dialog-content, .ui-dialog{padding:0px !important; min-height:0px}
 .ui-dialog-buttonpane{padding:0px; margin:0px; background-color:#DDD; border-top:1px solid #BBB}
@@ -623,7 +631,6 @@ a .i{margin-right:4px; float:left}
 .ui-tabs .ui-tabs-panel{display:block; padding:10px; border-top:0px}
 
 /*** ICONS (AGREGAR A MEDIDA QUE SE VAYA NECESITANDO PORQUE EN REALIDAD YA TENEMOS LOS NUESTROS Q SON MEJORES)***/
-
 /* states and images */
 .ui-icon{width:16px; height:16px; background-image: url("../images/iconos/ui-icons_222222_256x240.png")}
 .ui-widget-content .ui-icon {background-image: url("../images/iconos/ui-icons_222222_256x240.png")}
@@ -631,8 +638,8 @@ a .i{margin-right:4px; float:left}
 .ui-state-default .ui-icon { background-image: url("../images/iconos/ui-icons_888888_256x240.png")}
 
 /* positioning */
-.ui-icon-closethick{background-position: -96px -128px; }
+.ui-icon-closethick{background-position:-96px -128px}
 
 /*** OVERLAYS ***/
-.ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png")/*{bgImgUrlOverlay}*/ 50%/*{bgOverlayXPos}*/ 50%/*{bgOverlayYPos}*/ repeat-x/*{bgOverlayRepeat}*/; opacity: .3;filter:Alpha(Opacity=30)/*{opacityOverlay}*/; }
-.ui-widget-shadow { margin: -8px/*{offsetTopShadow}*/ 0 0 -8px/*{offsetLeftShadow}*/; padding: 8px/*{thicknessShadow}*/; background: #aaaaaa/*{bgColorShadow}*/ url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png")/*{bgImgUrlShadow}*/ 50%/*{bgShadowXPos}*/ 50%/*{bgShadowYPos}*/ repeat-x/*{bgShadowRepeat}*/; opacity: .3;filter:Alpha(Opacity=30)/*{opacityShadow}*/; -moz-border-radius: 8px/*{cornerRadiusShadow}*/; -webkit-border-radius: 8px/*{cornerRadiusShadow}*/; border-radius: 8px/*{cornerRadiusShadow}*/; }
+.ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity: .3;filter:Alpha(Opacity=30)}
+.ui-widget-shadow{margin:-8px 0 0 -8px; padding:8px; background:#aaaaaa url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity:.3;filter:Alpha(Opacity=30); -moz-border-radius:8px; -webkit-border-radius:8px; border-radius: 8px}
