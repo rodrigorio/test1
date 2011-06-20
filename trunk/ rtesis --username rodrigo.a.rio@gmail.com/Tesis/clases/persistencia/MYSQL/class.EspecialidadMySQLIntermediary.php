@@ -29,12 +29,8 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 	}
     public function existe($filtro){}
 
-    public function actualizar(stdClass $object){}
-
-    public function actualizarCampoArray($objects, $cambios){}
-
-    
-    private  function insertar(Especialidad $oEspecilaidad)
+          
+    private  function insertar(Especialidad $oEspecialidad)
    {
 		try{
 			$db = $this->conn;
@@ -51,10 +47,88 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 		}
 	}
     
+ private  function actualizar(Especialidad $oEspecialidad)
+   {
+		try{
+			$db = $this->conn;
+			$sSQL =	" update especialidades ".
+                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true).", " .
+                    " id =".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)." ";
+                    			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
 
-    public function guardar(stdClass $object){}
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    public function guardar(Especialidad $oEspecialidad)
+    {
+        try{
+			if($oEspecialidad->getId() != null){
+            	return actualizar($oEspecilaidad);
+            }else{
+				return insertar($oEspecialidad);
+            }
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
 
-    public function borrar($objects){}
+public final function obtener($filtro, &$foundRows = 0){
+	 	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+                        e.id as iId, e.nombre as sNombre
+                        FROM
+                       especialidades e ";
+                    if(!empty($filtro)){     
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    }
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+			$aEspecialidades = array();
+            while($oObj = $db->oNextRecord()){
+            	$oEspecialidad 		= new stdClass();
+            	$oEspecialidad->iId 	= $oObj->iId;
+            	$oEspecialidad->sNombre= $oObj->sNombre;
+            	$aEspecialidades[]		= Factory::getEspecilidadInstance($oEspecialidad);
+            }
+
+            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
+            if(count($aEspecialidads) == 1){
+                return $aEspecialidades[0];
+            }else{
+                return $aEspecialidades;
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+	}
+    
+	//borra muchas especialidades
+	//public function borrar($objects){}
+    
+    //borra una especialidad
+    public function borrar(Especialidad $oEspecialidad) {
+		try{
+			$db = $this->conn;
+			$db->execSQL("delete from especialidades where id=".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT));
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
