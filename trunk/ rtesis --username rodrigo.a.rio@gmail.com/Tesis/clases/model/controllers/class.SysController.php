@@ -93,7 +93,7 @@ class SysController
      */
     public function loginUsuario($sNombreUsuario, $sContrasenia){
         try{
-            $filtro = array('nombre' => $sNombreUsuario, 'contrasenia' => $sContrasenia);
+            $filtro = array('sNombre' => $sNombreUsuario, 'sContrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $perfil = $oUsuarioIntermediary->obtener($filtro);
             if(null !== $perfil){
