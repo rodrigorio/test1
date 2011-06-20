@@ -12,6 +12,8 @@ class Usuario extends PersonaAbstract
     private $sSitioWeb;
     private $sNombreUsuario;//de donde salio este atributo??
     private $sContrasenia;
+    private $iEspecilidadId;
+    private $iPelfilId;
 
     public function __construct(stdClass $oParams = null){
         parent::__construct();
