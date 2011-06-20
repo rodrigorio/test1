@@ -38,7 +38,7 @@ class CiudadMySQLIntermediaryMySQLIntermediary extends CiudadIntermediary
                     FROM
                        ciudades c ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "c");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);
