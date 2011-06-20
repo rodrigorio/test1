@@ -41,7 +41,7 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 			$sSQL =	" insert into instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
                     " id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT).", ".
-                    " ciudades_id =".$db->escape($oInstitucion->getCiudadId(),false,MYSQL_TYPE_INT)." ";
+                    " ciudades_id =".$db->escape($oInstitucion->getCiudad()->getId(),false,MYSQL_TYPE_INT)." ";
 			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -52,6 +52,92 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 		}
 	}
     
+private  function actualizar(Intitucion $oInstitucion)
+   {
+		try{
+			$db = $this->conn;
+			$sSQL =	" update instituciones ".
+                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
+                    " id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." "
+			        " ciudades_id =".$db->escape($oInstitucion->getCiudad()->geId(),false,MYSQL_TYPE_INT).", ".;
+                    			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    public function guardar(Institucion $oInstitucion)
+    {
+        try{
+			if($oInstitucion->getId() != null){
+            	return actualizar($oInstitucion);
+            }else{
+				return insertar($oInstitucion);
+            }
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+
+public final function obtener($filtro, &$foundRows = 0){
+	 	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+                        i.id as iId, i.nombre as sNombre, i.ciudades_id as iCiudadId
+                        FROM
+                       instituciones i ";
+                    if(!empty($filtro)){     
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    }
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+			$aInstituciones = array();
+            while($oObj = $db->oNextRecord()){
+            	$oInstitucion 		= new stdClass();
+            	$oInstitucion->iId 	= $oObj->iId;
+            	$oInstitucion->sNombre= $oObj->sNombre;
+  //falta un campo de tipo objeto-->
+            	$aInstituciones[]		= Factory::getInstitucionInstance($oinstitucion);
+            }
+
+            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
+            if(count($aInstituciones) == 1){
+                return $aInstituciones[0];
+            }else{
+                return $aInstituciones;
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+	}
+    
+	//borra muchas especialidades
+	//public function borrar($objects){}
+    
+    //borra una especialidad
+    public function borrar(Institucion $oInstitucion) {
+		try{
+			$db = $this->conn;
+			$db->execSQL("delete from instituciones where id=".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT));
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+
+    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
     public function guardar(stdClass $object){}
 
