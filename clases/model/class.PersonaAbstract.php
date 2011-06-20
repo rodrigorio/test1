@@ -10,7 +10,7 @@ abstract class PersonaAbstract
     protected $sNombre;
     protected $sApellido;
     protected $sSexo;
-    protected $iTipoDocumento;
+    protected $iTipoDocumentoId;
     protected $sNumeroDocumento;
     protected $dFechaNacimiento;
     protected $sEmail;
@@ -18,7 +18,7 @@ abstract class PersonaAbstract
     protected $sCelualr;
     protected $sFax;
     protected $sDomicilio;
-    protected $instituciones_id;
+    protected $institucionId;
     protected $oCiudad;
     protected $sCiudadOrigen;
     protected $sCodigoPostal;
@@ -77,6 +77,12 @@ abstract class PersonaAbstract
     public function getEmail(){
        return $this->sEmail;
     }
+    public function getCiudad(){
+    	if($this->oCiudad == null){
+    		$this->oCiudad = Comunidad::getInstance()->obtener($this->)///ver esto
+    	}
+    	return $this->oCiudad;
+    } 
 //.....faltan agegar los demas
 }
 ?>
