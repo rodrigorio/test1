@@ -10,6 +10,5 @@
  * @author Andres
  */
 class Eje {
-    //put your code here
 }
 ?>
