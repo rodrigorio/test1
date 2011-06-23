@@ -18,7 +18,7 @@ abstract class PersonaAbstract
     protected $sCelualr;
     protected $sFax;
     protected $sDomicilio;
-    protected $institucionId;
+    protected $oInstitucion;
     protected $oCiudad;
     protected $sCiudadOrigen;
     protected $sCodigoPostal;
