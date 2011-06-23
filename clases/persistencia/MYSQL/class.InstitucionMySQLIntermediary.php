@@ -40,7 +40,6 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 			$db = $this->conn;
 			$sSQL =	" insert into instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT).", ".
                     " ciudades_id =".$db->escape($oInstitucion->getCiudad()->getId(),false,MYSQL_TYPE_INT)." ";
 			 
 			 $db->execSQL($sSQL);
@@ -58,9 +57,8 @@ private  function actualizar(Intitucion $oInstitucion)
 			$db = $this->conn;
 			$sSQL =	" update instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." "
-			        " ciudades_id =".$db->escape($oInstitucion->getCiudad()->geId(),false,MYSQL_TYPE_INT).", ".;
-                    			 
+                    " ciudades_id =".$db->escape($oInstitucion->getCiudad()->geId(),false,MYSQL_TYPE_INT).
+                    " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
