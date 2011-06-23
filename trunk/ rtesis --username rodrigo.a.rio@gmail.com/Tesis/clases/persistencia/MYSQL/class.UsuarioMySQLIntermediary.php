@@ -325,4 +325,29 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+	
+	public function permisosPorPerfil($iIdPerfil){
+	  try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+						CONCAT_WS("_",cp.`controlador`,a.`accion`),
+						a.`activo`
+						from `perfiles` p
+						join `acciones_x_perfil` ap ON ap.`perfiles_id` = p.`id`
+						join `acciones` a on a.`grupo` =  ap.`grupo`
+						join `controladores_pagina` cp on cp.`id` = a.`controladores_pagina_id`
+						WHERE p.`id` = $iIdPerfil";
+            $db->query($sSQL);
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            if(empty($foundRows)){ return null; }
+
+            $db->query($sSQL);
+            
+            return $db->getDBArrayQuery(sSQL);
+	  	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+	}
 }

@@ -61,8 +61,15 @@ class SysController
      */
     public function cargarPermisosPerfil($idPerfil)
     {
+    	$oUsuarioIntermediary = PersistenceFactory::getUsuariosIntermediary($this->db);
+	   	$array = $oUsuarioIntermediary->permisosPorPerfil($idPerfil);
+	   	if($array == null){
+	   		echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!";
+	   	}else{
+	   		return $array;
+	   	}
         //123probando...
-        return array("index_publicaciones_index" => true,
+       /* return array("index_publicaciones_index" => true,
                      "index_publicaciones_redireccion404" => true,
                      "index_index_sitioOffline" => true,
                      "index_index_sitioEnConstruccion" => true,
@@ -71,7 +78,7 @@ class SysController
                      "admin_index_redireccion404" => true,
                      "index_login_procesar" => true,
                      "index_login_redireccion404" => true,
-                     "admin_index_index" => true);
+                     "admin_index_index" => true);*/
     }
 
     /**
