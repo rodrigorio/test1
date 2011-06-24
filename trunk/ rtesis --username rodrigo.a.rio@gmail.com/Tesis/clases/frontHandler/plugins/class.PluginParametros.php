@@ -139,8 +139,8 @@ class PluginParametros extends PluginAbstract
                         'DATABASE_HOST' => 'localhost',
                         'DATABASE_DRIVER' => 'IMYSQL',
                         'DATABASE_USER' => 'root',
-                        'DATABASE_PASSWORD' => 'urbis9878',
-                        'DATABASE_NAME' => 'tesis',
+                        'DATABASE_PASSWORD' => 'rrio1234',
+                        'DATABASE_NAME' => 'new_tesis',
                         'DATABASE_PORT' => '3306',
                         'DATABASE_AUTOCOMMIT' => '0',
 

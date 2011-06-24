@@ -44,4 +44,5 @@ class Categoria {
 	public function getNombre(){
 		return $this->sNombre;
 	}
+}
 ?>

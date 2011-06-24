@@ -5,7 +5,7 @@
  */
 abstract class PerfilAbstract
 {
-    const SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES = 1200; //20 minutos
+    const SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES = 20; //20 segundos
 
     /**
      * Instancia de Usuario
@@ -27,16 +27,13 @@ abstract class PerfilAbstract
      */
     protected $sDescripcion;
 
-    public function __construct(Usuario $oUsuario = null)
+ 	public function __construct(){}
+
+	public function iniciarPermisos()
     {
         $this->oPermisos = new SessionNamespace('permisos');
-
-        if(null !== $oUsuario)
-        {
-            $this->setUsuario($oUsuario);
-        }
     }
-
+    
     public function setUsuario(Usuario $oUsuario)
     {
         $this->oUsuario = $oUsuario;
@@ -83,13 +80,13 @@ abstract class PerfilAbstract
 
     protected function cargarPermisos()
     {
-        if(!isset($this->permisos->acciones))
+        if(!isset($this->oPermisos->acciones))
         {
-            $array = SysController::getInstance()->cargarPermisosPerfil($this->id);
+            $array = SysController::getInstance()->cargarPermisosPerfil($this->iId);
             if(!empty($array))
             {
-                $this->permisos->acciones = $aArray;
-                $this->permisos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES, 'acciones');
+                $this->oPermisos->acciones = $array;
+               // $this->oPermisos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES, 'acciones');
             }
         }
         return $this;
@@ -97,22 +94,22 @@ abstract class PerfilAbstract
 
     public function tiene($funcion)//??es un string?
     {
-        if(!isset($this->permisos->acciones))
+        if(!isset($this->oPermisos->acciones))
         {
             $this->cargarPermisos();
         }
-        return isset($this->permisos->acciones[$funcion]);
+        return isset($this->oPermisos->acciones[$funcion]);
     }
 
     public function activo($funcion)
     {
-        if(!isset($this->permisos->acciones))
+        if(!isset($this->oPermisos->acciones))
         {
             $this->cargarPermisos();
         }
         if($this->tiene($funcion))
         {
-            return $this->permisos->acciones[$funcion];
+            return $this->oPermisos->acciones[$funcion];
         }
         return null;
     }

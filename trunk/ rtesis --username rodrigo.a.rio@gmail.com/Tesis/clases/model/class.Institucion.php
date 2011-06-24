@@ -45,4 +45,5 @@ class Institucion {
 	public function getNombre(){
 		return $this->sNombre;
 	}
+}
 ?>

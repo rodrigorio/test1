@@ -79,7 +79,7 @@ abstract class PersonaAbstract
     }
     public function getCiudad(){
     	if($this->oCiudad == null){
-    		$this->oCiudad = Comunidad::getInstance()->obtener($this->)///ver esto
+    		$this->oCiudad = Comunidad::getInstance()->obtener($this->iId);///ver esto
     	}
     	return $this->oCiudad;
     } 
