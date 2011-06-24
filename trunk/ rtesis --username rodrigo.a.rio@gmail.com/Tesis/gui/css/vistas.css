@@ -208,6 +208,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameComunidad01 #page{width:100%; min-width:960px; position:relative; overflow:hidden; text-align:left; float:left;}
 #frameComunidad01 #page #pageLeft{width:245px; float:left;}
 #frameComunidad01 #page #pageRight{position:relative; margin-left:235px}
+#frameComunidad01 #page .pageRightExpanded{margin-left:10px !important;}
 #frameComunidad01 #page #pageLeft #pageMenuTopLeft{min-height:22px; padding:5px 10px;}
 #frameComunidad01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:5px 10px; position:relative;}
 #frameComunidad01 #page #pageRight #pageMenuTopRight #togleInnerCont{position:absolute; top:8px; right:10px;}
@@ -278,7 +279,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .subHeader01 h1{font-size:1em; line-height:32px;}
 
 .centerHeader01 #logo #logoDesc{font-size:1.7em; text-shadow:1px 1px 1px #000; font-weight:bold;}
-.centerHeader01 #logo #seccionDesc{font-size:1.7em; color:#999;}
+.centerHeader01 #logo #moduloDesc{font-size:1.7em; color:#999;}
 
 /* template index */
 .Page01{background-color:#FFF}
