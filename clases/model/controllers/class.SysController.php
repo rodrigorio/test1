@@ -41,8 +41,8 @@ class SysController
     public function obtenerParametrosControlador($controladorId)
     {
         //123probando...
-        return array("NOMBRE_SITIO" => "Urbis Blog - Plantilla",
-                     "SUBTITULO_SITIO" => "Este es un ejemplo de la plantilla de blogs de Urbis.",
+        return array("NOMBRE_SITIO" => "Tesis",
+                     "SUBTITULO_SITIO" => "sistema de ....",
                      "METATAG_TITLE" => "Titulo depende de Modulo-Controlador-Accion",
                      "METATAG_DESCRIPTION" => "Ble ble bl eb lebleblebisadj aslid",
                      "METATAG_KEYWORDS" => "una palabra, otra palabra, otra palabra mas",
@@ -61,24 +61,30 @@ class SysController
      */
     public function cargarPermisosPerfil($idPerfil)
     {
-    	$oUsuarioIntermediary = PersistenceFactory::getUsuariosIntermediary($this->db);
+    	/*$oUsuarioIntermediary = PersistenceFactory::getUsuariosIntermediary($this->db);
 	   	$array = $oUsuarioIntermediary->permisosPorPerfil($idPerfil);
 	   	if($array == null){
 	   		echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!";
 	   	}else{
 	   		return $array;
-	   	}
+	   	}*/
         //123probando...
-       /* return array("index_publicaciones_index" => true,
+        return array("index_publicaciones_index" => true,
                      "index_publicaciones_redireccion404" => true,
+        
+                     "index_index_index" => true,
+                     "index_index_registrarse" => true,
+                     "index_index_redireccion404" => true,
                      "index_index_sitioOffline" => true,
                      "index_index_sitioEnConstruccion" => true,
                      "index_index_ajaxError" => true,
+        
                      "index_login_index" => true,
-                     "admin_index_redireccion404" => true,
                      "index_login_procesar" => true,
                      "index_login_redireccion404" => true,
-                     "admin_index_index" => true);*/
+        
+                     "admin_index_redireccion404" => true,
+                     "admin_index_index" => true);
     }
 
     /**

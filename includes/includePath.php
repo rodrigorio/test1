@@ -6,7 +6,7 @@ set_include_path(
 	
 	.'clases/frontHandler'.PATH_SEPARATOR.'../clases/frontHandler'.PATH_SEPARATOR.'../../clases/frontHandler'.PATH_SEPARATOR.'../../../clases/frontHandler'.PATH_SEPARATOR
 
-        .'clases/frontHandler/plugins'.PATH_SEPARATOR.'../clases/frontHandler/plugins'.PATH_SEPARATOR.'../../clases/frontHandler/plugins'.PATH_SEPARATOR.'../../../clases/frontHandler/plugins'.PATH_SEPARATOR
+    .'clases/frontHandler/plugins'.PATH_SEPARATOR.'../clases/frontHandler/plugins'.PATH_SEPARATOR.'../../clases/frontHandler/plugins'.PATH_SEPARATOR.'../../../clases/frontHandler/plugins'.PATH_SEPARATOR
 		
 	.'clases/model'.PATH_SEPARATOR.'../clases/model'.PATH_SEPARATOR.'../../clases/model'.PATH_SEPARATOR.'../../../clases/model'.PATH_SEPARATOR			
 	
@@ -14,7 +14,7 @@ set_include_path(
 		
 	.'clases/pageControllers'.PATH_SEPARATOR.'../clases/pageControllers'.PATH_SEPARATOR.'../../clases/pageControllers'.PATH_SEPARATOR.'../../../clases/pageControllers'.PATH_SEPARATOR
 
-        .'clases/pageControllers/helper'.PATH_SEPARATOR.'../clases/pageControllers/helper'.PATH_SEPARATOR.'../../clases/pageControllers/helper'.PATH_SEPARATOR.'../../../clases/pageControllers/helper'.PATH_SEPARATOR
+    .'clases/pageControllers/helper'.PATH_SEPARATOR.'../clases/pageControllers/helper'.PATH_SEPARATOR.'../../clases/pageControllers/helper'.PATH_SEPARATOR.'../../../clases/pageControllers/helper'.PATH_SEPARATOR
 	
 	.'clases/pageControllers/index'.PATH_SEPARATOR.'../clases/pageControllers/index'.PATH_SEPARATOR.'../../clases/pageControllers/index'.PATH_SEPARATOR.'../../../clases/pageControllers/index'.PATH_SEPARATOR
 	

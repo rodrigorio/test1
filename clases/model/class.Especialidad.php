@@ -44,4 +44,5 @@ class Especialidad {
 	public function getNombre(){
 		return $this->sNombre;
 	}
+}
 ?>

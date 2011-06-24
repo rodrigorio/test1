@@ -49,4 +49,5 @@ class Pais {
 	public function getNombre(){
 		return $this->sNombre;
 	}
+}
 ?>
