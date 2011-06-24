@@ -71,18 +71,18 @@ class SysController
         //123probando...
         return array("index_publicaciones_index" => true,
                      "index_publicaciones_redireccion404" => true,
-        
+
                      "index_index_index" => true,
                      "index_index_registrarse" => true,
                      "index_index_redireccion404" => true,
                      "index_index_sitioOffline" => true,
                      "index_index_sitioEnConstruccion" => true,
                      "index_index_ajaxError" => true,
-        
+
                      "index_login_index" => true,
                      "index_login_procesar" => true,
                      "index_login_redireccion404" => true,
-        
+
                      "admin_index_redireccion404" => true,
                      "admin_index_index" => true);
     }
