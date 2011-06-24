@@ -181,4 +181,14 @@ class IndexControllerIndex extends PageControllerAbstract
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('respuesta', false));
         }       
     }
+
+    public function index()
+    {
+        $this->home();
+    }
+
+    public function home()
+    {
+        
+    }
 }
