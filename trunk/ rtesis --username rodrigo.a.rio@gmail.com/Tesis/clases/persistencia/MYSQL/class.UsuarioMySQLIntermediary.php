@@ -199,6 +199,18 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     {
         try{
 			$db = $this->conn;
+					
+			if($oUsuario->getCiudad()!= null){
+			$ciudadId = ($oUsuario->getCiudad()->getId());
+			}else {
+				$ciudadId = null;
+			}
+        if($oInstitucion->getId()!= null){
+			$institucionId = ($oInstitucion->getId());
+			}else {
+				$institucionId = null;
+			}
+			
             $db->begin_transaction();
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
@@ -213,7 +225,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " celular =".$db->escape($oUsuario->getCelular(),true).", " .
                     " fax =".$db->escape($oUsuario->getFax(),true).", " .
                     " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
-                    " instituciones_id =".$db->escape($oUsuario->getInstitucionesId(),false,MYSQL_TYPE_INT).", ".
+                    " instituciones_id =".$institucionId.", ".
                     " ciudades_id =".$db->escape($oUsuario->getCiudades()->getId(),false,MYSQL_TYPE_INT).", ".
 					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
@@ -230,8 +242,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " fax =".$db->escape($oUsuario->getFax(),true).", " .
                     " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
                     " instituciones_id =".$db->escape($oUsuario->getInstitucionesId(),false,MYSQL_TYPE_INT).", ".
-    /*ver esto*/    " ciudades_id = ".$db->escape($oUsuario->getCiudad()->getId(),false,MYSQL_TYPE_INT).", ".
-/*va el id o el nombre*/" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
+                    " ciudades_id = ".$ciudadId.", ".
+/*va un string no el id*/" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
