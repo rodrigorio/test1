@@ -85,7 +85,7 @@ function valueToggleBlur(elemento, textarea){
     if(elemento.val() == ""){
 
         /*contar caracteres*/
-        if(textarea){ elemento.next().hide(); }
+        if(textarea){elemento.next().hide();}
 
         elemento.val(elemento.attr("title"))
                 .removeClass("co");
@@ -198,9 +198,9 @@ $(document).ready(function(){
         valueToggleFocus(elemento);
         elemento.next().show(); /*contar caracteres*/
     });
-    $("textarea.defVal").live("blur", function(){ valueToggleBlur($(this),true); });
-    $("textarea.textareaAutoGrow").live("focus", function(){ $(this).addClass("textAreaExpanded")});
-    $("textarea.textareaAutoGrow").live("blur", function(){ $(this).removeClass("textAreaExpanded")});
+    $("textarea.defVal").live("blur", function(){valueToggleBlur($(this),true);});
+    $("textarea.textareaAutoGrow").live("focus", function(){$(this).addClass("textAreaExpanded")});
+    $("textarea.textareaAutoGrow").live("blur", function(){$(this).removeClass("textAreaExpanded")});
 
     //Slides
     $(".slideExpanded").live("click", function(){
@@ -210,6 +210,22 @@ $(document).ready(function(){
     $(".slideCollapsed").live("click", function(){
        $(this).removeClass("slideCollapsed").addClass("slideExpanded");
        $(this).next().show();
+    });
+    
+    /* Comunidad/Seguimientos */
+    $("#togleInnerCont").live("click", function(){
+        var togleInnerCont = $("#togleInnerCont");
+        var pageRightInnerCont = $("#pageRightInnerCont");
+        var pageRightInnerMainCont = $("#pageRightInnerMainCont");
+        if(pageRightInnerCont.hasClass("di_no")){
+            pageRightInnerMainCont.removeClass("mari0");
+            revelarElemento(pageRightInnerCont);
+            togleInnerCont.removeClass("expand").addClass("collapse");
+        }else{
+            pageRightInnerMainCont.addClass("mari0");
+            ocultarElemento(pageRightInnerCont);
+            togleInnerCont.removeClass("collapse").addClass("expand");
+        }       
     });
 
     //SUPER FISH MENU
