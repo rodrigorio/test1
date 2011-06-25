@@ -136,23 +136,23 @@ input[type="submit"]:focus, input[type="button"]:focus { outline : none; }
 <script type="text/javascript" src="utilidades/jquery/jquery.inputfocus-0.9.min.js"></script>
 <script type="text/javascript" src="utilidades/jquery/jquery.main.js"></script>
 <div id="container">
-        <form action="#" method="post">
+        <form action="#" method="post" name="registracion">
             <!-- #first_step -->
             <div id="first_step">
                 <h1>Registracion <span>Paso 1</span> de 3</h1>
                 <div class="form">
                     <select id="tipoDni" name="tipoDni">
-                        <option>Dni</option>
-                        <option>LC</option>
+                        <option value="1">Dni</option>
+                        <option value="2">LC</option>
                     </select>
                     <label for="tipoDni">Tipo de documento</label>
                     <input type="text" name="dni" id="dni" value="numero de documento" />
                     <label for="dni">Numero de documento</label>
-                    <input type="text" name="firstname" id="firstname" value="nombre" />
+                    <input type="text" name="firstname" id="firstname" value="{sNombre}" />
                     <label for="firstname">Nombre. </label>
-                    <input type="text" name="lastname" id="lastname" value="apellido" />
+                    <input type="text" name="lastname" id="lastname" value="{sApellido}" />
                     <label for="lastname">Apellido. </label>
-                    <input type="text" name="email" id="email" value="email" />
+                    <input type="text" name="email" id="email" value="{sEmail}" readonly="readonly" />
                     <label for="email">Su dirección de correo electrónico. Nosotros enviaremos información importante a esta dirección. </label>   
                     
                 </div>      <!-- clearfix --><div class="clear"></div><!-- /clearfix -->
@@ -173,7 +173,12 @@ input[type="submit"]:focus, input[type="button"]:focus { outline : none; }
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
                     </select>
-                    <label for="gender">Tu sexo </label> <!-- clearfix --><div class="clear"></div><!-- /clearfix -->                 
+                    <label for="gender">Sexo </label>
+                    <p class="cl_bo">
+                    <input type="text" id="datepicker" class="wi118">
+                    <label for="gender">Fecha de nacimiento</label>
+                    </p>
+                     <!-- clearfix --><div class="clear"></div><!-- /clearfix -->                 
                 </div>      <!-- clearfix --><div class="clear"></div><!-- /clearfix -->
                 <input class="submit" type="submit" name="submit_second" id="submit_second" value="" />
             </div>      <!-- clearfix --><div class="clear"></div><!-- /clearfix -->
@@ -182,12 +187,12 @@ input[type="submit"]:focus, input[type="button"]:focus { outline : none; }
             <div id="third_step">
                 <h1>Registracion <span>Paso 3</span> de 3</h1>
                 <div class="form">
-                    <h2>Summary</h2>
+                    <h2>Resumen</h2>
                     <table>
                         <tr><td>Tipo de documento</td><td></td></tr>
                         <tr><td>Numero de documento</td><td></td></tr>
-                        <tr><td>Username</td><td></td></tr>
-                        <tr><td>Password</td><td></td></tr>
+                        <tr><td>Nombre de usuario</td><td></td></tr>
+                        <tr><td>Contraseña</td><td></td></tr>
                         <tr><td>Email</td><td></td></tr>
                         <tr><td>Nombre</td><td></td></tr>
                         <tr><td>Sexo</td><td></td></tr>

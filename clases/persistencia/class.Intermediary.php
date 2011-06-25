@@ -239,8 +239,6 @@ abstract class Intermediary
         return $consulta;
     }
 
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /////////// METODOS INTERFACE (DEBEN SER IMPLEMENTADOS EN LOS INTERMEDIARY CONCRETOS) ///////////
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,7 +264,7 @@ abstract class Intermediary
      * @return StdClass|array retorna el objeto que se actualizo con posibles alteraciones en sus atributos dependiendo la actualizacion
      * @throws Exception si hubo error en la consulta
      */
-    abstract public function actualizar(stdClass $object);
+    abstract public function actualizar($object);
 
     /**
      * @param array $objects Objetos de la clase que manipule el intermediary concreto
@@ -291,7 +289,7 @@ abstract class Intermediary
      * @return StdClass retorna el objeto que se guardo con posibles alteraciones en sus atributos dependiendo la consulta ejecutada
      * @throws Exception si hubo error en la consulta
      */
-    abstract public function guardar(stdClass $object);
+    abstract public function guardar($object);
 
     /**
      * Internamente utiliza la clave primaria de los objetos para borrarlos de la persistencia.

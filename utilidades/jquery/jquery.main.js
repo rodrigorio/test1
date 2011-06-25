@@ -26,7 +26,7 @@ $(function(){
 
     //reset progress bar
     $('#progress').css('width','0');
-    $('#progress_text').html('0% Complete');
+    $('#progress_text').html('0% Completo');
 
     //first_step
     $('form').submit(function(){ return false; });
@@ -52,7 +52,7 @@ $(function(){
         if(!error) {
            
                 //update progress bar
-                $('#progress_text').html('50% Complete');
+                $('#progress_text').html('50% Completo');
                 $('#progress').css('width','170px');
                 
                 //slide steps
@@ -92,19 +92,19 @@ $(function(){
                   return false;
         	  } else {   
                 //update progress bar
-                $('#progress_text').html('100% Complete');
+                $('#progress_text').html('100% Completo');
                 $('#progress').css('width','339px');
                 
                 //prepare the fourth step
                 var fields = new Array(
-                	$('#tipoDni').val(),
+                	($('#tipoDni').val()==1?"DNI":"LC"),
                 	$('#dni').val(),
                     $('#username').val(),
                     $('#password').val(),
                     $('#email').val(),
                     $('#firstname').val() + ' ' + $('#lastname').val(),
-                    $('#sex').val()
-                    //$('#fechaNacimiento').val()                       
+                    $('#sex').val(),
+                    $('#datepicker').val()
                 );
                 var tr = $('#third_step tr');
                 tr.each(function(){
@@ -119,10 +119,31 @@ $(function(){
         } else return false;
 
     });
-
+	$( "#datepicker" ).datepicker({
+		showOn: "button",
+		buttonImage: "gui/images/iconos/calendar.gif",
+		buttonImageOnly: true
+	});
 
     $('#submit_third').click(function(){
-        alert('enviar la infooooo');            
+        alert('enviar la infooooo');
+    	var fields = "tipoDni="+$('#tipoDni').val()+
+            		"&dni="+$('#dni').val()+
+            		"&username="+$('#username').val()+
+            		"&password="+$('#password').val()+
+            		"&email="+$('#email').val()+
+            		"&firstname="+$('#firstname').val()+
+            		"&lastname="+$('#lastname').val()+
+            		"&sex="+$('#sex').val()+
+            		"&fechaNacimiento="+$('#datepicker').val()+"";                       
+    	$.ajax({
+    		type:	"POST",
+    		url: 	"registrarse",
+    		data: 	fields,
+    		success: function(data){
+    			var lista = $.parseJSON(data);
+    		}
+    	});
     });
 
 });

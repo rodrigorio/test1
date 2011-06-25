@@ -12,7 +12,7 @@ class Usuario extends PersonaAbstract
     private $sSitioWeb;
     private $sNombreUsuario;//de donde salio este atributo??
     private $sContrasenia;
-    private $iEspecilidadId;
+    private $oEspecialidad;
     private $iPelfilId;
 
     public function __construct(stdClass $oParams = null){
@@ -43,6 +43,12 @@ class Usuario extends PersonaAbstract
     public function getSitioWeb(){
         return $this->sSitioWeb;
     }
+    public function getEspecialidad(){
+        return $this->oEspecialidad;
+    }
+    public function getPerfilId(){
+        return $this->iPelfilId;
+    }
 
     public function setNombreUsuario($sNombreUsuario){
     	$this->nombreUsuario = $sNombreUsuario;
@@ -55,6 +61,12 @@ class Usuario extends PersonaAbstract
     }
     public function setContrasenia($contrasenia){
         $this->sContrasenia = $contrasenia;
+    }
+    public function setEspecialidad($oEspecialidad){
+        $this->oEspecialidad = $oEspecialidad;
+    }
+    public function setPerfilId($iPerfilId){
+        $this->iPelfilId = $iPerfilId;
     }
 }
 ?>
