@@ -4,7 +4,7 @@
  * Controlador principal de la 'logica de negocio'. 
  *
  */
-class BlogController
+class IndexController
 {
     /**
      * @var Instancia de DB

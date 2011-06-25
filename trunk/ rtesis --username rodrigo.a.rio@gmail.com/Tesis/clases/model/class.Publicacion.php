@@ -50,7 +50,7 @@ class Publicacion
 
     private function obtenerFotos()
     {
-        //$this->fotos = BlogController::getInstance()->obtenerFotosPublicacion($this->id);
+        //$this->fotos = ComunidadController::getInstance()->obtenerFotosPublicacion($this->id);
     }
 
     private function obtenerVideos()
