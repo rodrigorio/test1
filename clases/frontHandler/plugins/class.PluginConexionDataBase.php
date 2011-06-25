@@ -24,8 +24,10 @@ class PluginConexionDataBase extends PluginAbstract
         try{
             $oDB = DriversFactory::getInstace($driver, $host, $user, $pass, $dbName, $port, $autoCommit);
             SysController::getInstance()->setDBDriver($oDB);
-            BlogController::getInstance()->setDBDriver($oDB);
+            ComunidadController::getInstance()->setDBDriver($oDB);
             AdminController::getInstance()->setDBDriver($oDB);
+            IndexController::getInstance()->setDBDriver($oDB);
+            SeguimientosController::getInstance()->setDBDriver($oDB);
             self::$connected = true;           
         }catch(Exception $e){
             self::$connected = false;
