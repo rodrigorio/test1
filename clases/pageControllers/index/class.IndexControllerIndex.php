@@ -25,23 +25,32 @@ class IndexControllerIndex extends PageControllerAbstract
         return $this;
     }
 
-	 private function setMenuTemplate()
+    private function setMenuTemplate()
     {
-        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "menuHeader", "MenuHorizontal03Block");
+        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "menuHeader", "MenuPpalIndexBlock");
         //Opcion1
         $this->getTemplate()->set_var("idOpcion", 'opt1');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/home');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
         $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
-        $this->getTemplate()->parse("OpcionesMenu", false);
+        $this->getTemplate()->parse("OpcionesMenu", true);
         //Opcion2
         $this->getTemplate()->set_var("idOpcion", 'opt2');
         $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/mostrarFormRegistracion');
         $this->getTemplate()->set_var("sNombreOpcion", "Registrarse");
-        $this->getTemplate()->parse("OpcionMenuLastOpt", false);
-		$this->getTemplate()->parse("menuHeader", false);
-		
+        $this->getTemplate()->parse("OpcionesMenu", true);
+        //Opcion3
+        $this->getTemplate()->set_var("idOpcion", 'opt3');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/login');
+        $this->getTemplate()->set_var("sNombreOpcion", "Acceder");
+        $this->getTemplate()->parse("OpcionesMenu", true);
+
+        //borro el submenu que todavia no se usa
+        $this->getTemplate()->set_var("SubMenu", "");
+
+        $this->getTemplate()->parse("menuHeader", false);		
         return $this;
     }
+
 	public function index(){
 		 try{
              $this->setFrameTemplate()
@@ -64,7 +73,8 @@ class IndexControllerIndex extends PageControllerAbstract
             //throw new Exception('Error Template');
             //return;
         }
-	} 
+	}
+        
 	public function mostrarFormRegistracion(){
 		 try{
              $this->setFrameTemplate()
