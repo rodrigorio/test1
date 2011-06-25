@@ -5,11 +5,13 @@
  */
 class IndexControllerIndex extends PageControllerAbstract
 {
-	private function setFrameTemplate(){
-	    $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
-		return $this;
-	}
-  	private function setHeadTemplate()
+
+    private function setFrameTemplate(){
+        $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
+        return $this;
+    }
+
+    private function setHeadTemplate()
     {
         $front = FrontController::getInstance();
         $parametros = $front->getPlugin('PluginParametros');
@@ -25,7 +27,7 @@ class IndexControllerIndex extends PageControllerAbstract
         return $this;
     }
 
-	 private function setMenuTemplate()
+    private function setMenuTemplate()
     {
         $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "menuHeader", "MenuHorizontal03Block");
         //Opcion1
@@ -38,60 +40,63 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/registrarse');
         $this->getTemplate()->set_var("sNombreOpcion", "Registrarse");
         $this->getTemplate()->parse("OpcionMenuLastOpt", false);
-		$this->getTemplate()->parse("menuHeader", false);
+        $this->getTemplate()->parse("menuHeader", false);
 		
         return $this;
     }
-	public function index(){
-		 try{
-             $this->setFrameTemplate()
-                  ->setHeadTemplate()
-                  ->setMenuTemplate();
-			
-	        $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-	        $this->getTemplate()->set_var("tituloHeader", "SGP...");
-	        $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
-	        $this->getTemplate()->set_var("topPageContent", "top page content");
-	        
-	        
-	        $this->getTemplate()->set_var("centerPageContent", "       aaa");
-	        
-	        
-	        $this->getTemplate()->set_var("footerContent", "footer content");
-	        $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
-	        $this->getTemplate()->set_var("footerSubCopyright", "copyright");
-        	$this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-		 }catch(Exception $e){
-        	print_r($e);
-            //throw new Exception('Error Template');
-            //return;
+
+    public function index(){
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTemplate()
+                 ->setMenuTemplate();
+
+            $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
+            $this->getTemplate()->set_var("tituloHeader", "SGP...");
+            $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
+            $this->getTemplate()->set_var("topPageContent", "top page content");
+
+
+            $this->getTemplate()->set_var("centerPageContent", "       aaa");
+
+
+            $this->getTemplate()->set_var("footerContent", "footer content");
+            $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
+            $this->getTemplate()->set_var("footerSubCopyright", "copyright");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
+        //throw new Exception('Error Template');
+        //return;
         }
-	} 
-	public function registrarse(){
-		 try{
-             $this->setFrameTemplate()
-                  ->setHeadTemplate()
-                  ->setMenuTemplate();
-			
-	        $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-	        $this->getTemplate()->set_var("tituloHeader", "SGP...");
-	        $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
-	        $this->getTemplate()->set_var("topPageContent", "top page content");
-	        
-	        $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
-	        
-	        $this->getTemplate()->parse("centerPageContent", false);
-	        
-	        $this->getTemplate()->set_var("footerContent", "footer content");
-	        $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
-	        $this->getTemplate()->set_var("footerSubCopyright", "copyright");
-        	$this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-		 }catch(Exception $e){
-        	print_r($e);
-            //throw new Exception('Error Template');
-            //return;
-        }
-	} 
+    }
+
+    public function registrarse(){
+     try{
+         $this->setFrameTemplate()
+              ->setHeadTemplate()
+              ->setMenuTemplate();
+
+            $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
+            $this->getTemplate()->set_var("tituloHeader", "SGP...");
+            $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
+            $this->getTemplate()->set_var("topPageContent", "top page content");
+
+            $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
+
+            $this->getTemplate()->parse("centerPageContent", false);
+
+            $this->getTemplate()->set_var("footerContent", "footer content");
+            $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
+            $this->getTemplate()->set_var("footerSubCopyright", "copyright");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+             }catch(Exception $e){
+                print_r($e);
+                //throw new Exception('Error Template');
+                //return;
+     }
+    }
+
     /**
      * Muestra pagina de sitio en construccion
      */
@@ -180,15 +185,5 @@ class IndexControllerIndex extends PageControllerAbstract
             //setea los headers para response ajax html y setea el body content
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('respuesta', false));
         }       
-    }
-
-    public function index()
-    {
-        $this->home();
-    }
-
-    public function home()
-    {
-        
     }
 }
