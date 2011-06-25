@@ -71,14 +71,6 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         //nombre es de referencia en cuanto a schema, para redireccionar se usa el array de parametros
         $router->addRoute('defaultDefaultDefault', $route);
-        $route = new RegexRoute('index',
-                                array(
-                                        'module' => "index",
-                                        'controller' => "index",
-                                        'action'     => "index"
-                                ));
-        //nombre es de referencia en cuanto a schema, para redireccionar se usa el array de parametros
-        $router->addRoute('indexIndexIndex', $route);
         
         $route = new RegexRoute('registrarse',
                                 array(
