@@ -172,9 +172,9 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 #Page{padding-top:10px}
 #frameIndex01 #PageCont{margin: 0 auto; width: 960px}
 #frameIndex01 #topPage{padding: 20px 0; width: 100%;}
-#frameIndex01 #topPageContent{margin: 0 auto; width: 960px;}
+#frameIndex01 #topPageCont{margin: 0 auto; width: 960px;}
 #frameIndex01 #centerPage{display:table; padding-top:20px; width: 100%;}
-#frameIndex01 #centerPageContent{margin: 0 auto; width: 960px;}
+#frameIndex01 #centerPageCont{margin: 0 auto; width: 960px;}
 #frameIndex01 #footer{display: table; padding: 30px 0; width: 100%;}
 #frameIndex01 #footerCont{margin: 0 auto; width: 960px}
 #frameIndex01 #footerCont .celda4{padding: 20px 10px; width: 220px; margin:0 !important}
