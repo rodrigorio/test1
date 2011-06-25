@@ -5,7 +5,7 @@
  *
  * @author Matias Velilla
  */
-class Seguimientos
+class SeguimientosController
 {
     
     /**
