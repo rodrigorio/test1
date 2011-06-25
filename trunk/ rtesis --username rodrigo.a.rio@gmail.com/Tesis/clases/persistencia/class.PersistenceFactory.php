@@ -31,13 +31,6 @@ class PersistenceFactory {
 			return (VisitanteMySQLIntermediary::getInstance($conn));
             }
     }
-    public static function getUsuarioIntermediary(IMYSQL $conn)
-    {
-
-            if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-			return (UsuarioMySQLIntermediary::getInstance($conn));
-            }
-    }
     public static function getDiscapacitadoIntermediary(IMYSQL $conn)
     {
 

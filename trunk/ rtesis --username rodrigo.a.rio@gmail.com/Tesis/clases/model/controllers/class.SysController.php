@@ -73,6 +73,7 @@ class SysController
                      "index_publicaciones_redireccion404" => true,
 
                      "index_index_index" => true,
+                     "index_index_mostrarFormRegistracion" => true,
                      "index_index_registrarse" => true,
                      "index_index_redireccion404" => true,
                      "index_index_sitioOffline" => true,

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Description of classUsuarioMySQLIntermediary
  *
@@ -120,9 +119,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     
     public function actualizarCampoArray($objects, $cambios){}
 
-      
-
-    public function borrar($objects){}
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
@@ -153,7 +149,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 $db->execSQL($sSQL);
 			 $db->commit();
 		}catch(Exception $e){
-			$db->rollbak_transaction();
+			$db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
     }
@@ -189,24 +185,24 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 * @todo falta funcion de enviar el email
 			 */
 		}catch(Exception $e){
-			$db->rollbak_transaction();
+			$db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
     }
 ////////////////////////////////////
-    public function actualizar(Usuario $oUsuario)
+    public function actualizar($oUsuario)
 
     {
         try{
 			$db = $this->conn;
 					
 			if($oUsuario->getCiudad()!= null){
-			$ciudadId = ($oUsuario->getCiudad()->getId());
+				$ciudadId = $oUsuario->getCiudad()->getId();
 			}else {
 				$ciudadId = null;
 			}
-        if($oInstitucion->getId()!= null){
-			$institucionId = ($oInstitucion->getId());
+        	if($oUsuario->getInstitucion()->getId()!= null){
+				$institucionId = $oUsuario->getInstitucion()->getId();
 			}else {
 				$institucionId = null;
 			}
@@ -215,7 +211,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-
 					" documento_tipos_id =".$db->escape($oUsuario->getDocumentoId(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
@@ -226,28 +221,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " fax =".$db->escape($oUsuario->getFax(),true).", " .
                     " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
                     " instituciones_id =".$institucionId.", ".
-                    " ciudades_id =".$db->escape($oUsuario->getCiudades()->getId(),false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$ciudadId.", ".
 					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
-                    " documento_tipos_id =".$db->escape($oUsuario->getDocumentoId(),false,MYSQL_TYPE_INT).", ".
-                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
-                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
-                    " email =".$db->escape($oUsuario->getEmail(),true).", " .
-                    " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
-                    " celular =".$db->escape($oUsuario->getCelular(),true).", " .
-                    " fax =".$db->escape($oUsuario->getFax(),true).", " .
-                    " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
-                    " instituciones_id =".$db->escape($oUsuario->getInstitucionesId(),false,MYSQL_TYPE_INT).", ".
-                    " ciudades_id = ".$ciudadId.", ".
-/*va un string no el id*/" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
-                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
-                    " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
-                    " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." ";
+                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)."";
 
 
 			 $db->execSQL($sSQL);
@@ -264,26 +243,36 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
 
 		}catch(Exception $e){
-            $db->rollbak_transaction();
+            $db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
     }
 
-    public function guardar(Usuario $oUsuario)
+    public function guardar($oUsuario)
     {
         try{
 			if($oUsuario->getId() != null){
-            	return actualizar($oUsuario);
+            	return $this->actualizar($oUsuario);
             }else{
-				return insertar($oUsuario);
+				return $this->insertar($oUsuario);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-    private  function insertar(Usuario $oUsuario)
+    public function insertar($oUsuario)
    {
 		try{
+			if($oUsuario->getCiudad()!= null){
+				$ciudadId = $oUsuario->getCiudad()->getId();
+			}else {
+				$ciudadId = null;
+			}
+        	if($oUsuario->getInstitucion()!= null){
+				$institucionId = $oUsuario->getInstitucion()->getId();
+			}else {
+				$institucionId = null;
+			}
 			$db = $this->conn;
 			$db->begin_transaction();
 			$sSQL =	" insert into personas ".
@@ -292,41 +281,48 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE);
                     " email =".$db->escape($oUsuario->getEmail(),true).", " .
                     " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
-                    " celular =".$db->escape($oUsuario->getCelular,true).", " .
+                    " celular =".$db->escape($oUsuario->getCelular(),true).", " .
                     " fax =".$db->escape($oUsuario->getFax(),true).", " .
                     " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .//revisar esto
-                    " instituciones_id =".$db->escape($oUsuario->getInstituciones_id(),false,MYSQL_TYPE_INT).", ".
-                    " ciudades_id =".$db->escape($oUsuario->getCiudad()->geId(),false,MYSQL_TYPE_INT).", ".
+                    " instituciones_id =".$institucionId.", ".
+                    " ciudades_id =".$ciudadId.", ".
 					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria(),true).", " .
 
-			 $db->execSQL($sSQL);
-
-             $sSQL =	" insert into usuarios ".
+			$db->execSQL($sSQL);
+			$iLastId = $db->insert_id();
+			if($oUsuario->getEspecialidad()!= null){
+				$iEspecialidadId = $oUsuario->getEspecialidad()->getId();
+			}else {
+				$iEspecialidadId = null;
+			}
+             $sSQL =" insert into usuarios set ".
+                    " id=".$db->escape($iLastId,false).", " .
                     " sitioWeb=".$db->escape($oUsuario->getSitioWeb(),true).", " .
-					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id(),false,MYSQL_TYPE_INT).", ".
-                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id(),false,MYSQL_TYPE_INT).", ".
-					" contrasenia=".$db->escape($oUsuario->getContrasenia(),true).", " .
-			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta(), false,MYSQL_TYPE_DATE);
+					" especialidades_id =".$db->escape($iEspecialidadId,true).", ".
+                    " perfiles_id =".self::PERFIL_INTEGRANTE_INACTIVO.", ".
+					" nombre=".$db->escape($oUsuario->getNombreUsuario(),true)."";
+					" contrasenia=".$db->escape($oUsuario->getContrasenia(),true)."";
 
 			 $db->execSQL($sSQL);
 			 $db->commit();
-
+			 return true;
 
 		}catch(Exception $e){
-			$db->rollbak_transaction();
+			$db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
+			return false;
 		}
 	}
 
    
-    public function borrar(Usuario $oUsuario) {
+    public function borrar($oUsuario) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from usuarios where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
@@ -344,7 +340,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-						CONCAT_WS("_",cp.`controlador`,a.`accion`),
+						CONCAT_WS('_',cp.`controlador`,a.`accion`),
 						a.`activo`
 						from `perfiles` p
 						join `acciones_x_perfil` ap ON ap.`perfiles_id` = p.`id`

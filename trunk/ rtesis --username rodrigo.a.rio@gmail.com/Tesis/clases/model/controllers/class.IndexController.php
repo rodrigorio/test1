@@ -42,6 +42,16 @@ class IndexController
     public function setDBDriver(DB $db){
         $this->db = $db;
     }
-
-    
+	
+    /**
+     * @param stdClass $obj
+     */
+    public function registrar($obj){
+    	try{
+			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->guardar(Factory::getUsuarioInstance($obj));
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
 }

@@ -41,7 +41,7 @@ abstract class PersonaAbstract
         $this->sSexo = $sSexo;
     }
     public function setTipoDocumento($iTipoDoc){
-        $this->iTipoDocumento = $iTipoDoc;
+        $this->iTipoDocumentoId = $iTipoDoc;
     }
     public function setNumeroDocumento($sNumeroDocumento){
         $this->sNumeroDocumento = $sNumeroDocumento;
@@ -51,6 +51,39 @@ abstract class PersonaAbstract
     }
     public function setEmail($sEmail){
         $this->sEmail = $sEmail;
+    }
+    public function setTelefono($sTelefono){
+        $this->sTelefono = $sTelefono;
+    }
+    public function setCelular($sCelualr){
+        $this->sCelualr = $sCelualr;
+    }
+    public function setFax($sFax){
+        $this->sFax = $sFax;
+    }
+    public function setDomicilio($sDomicilio){
+        $this->sDomicilio = $sDomicilio;
+    }
+    public function setInstitucion($oInstitucion){
+        $this->oInstitucion = $oInstitucion;
+    }
+    public function setCiudad($oCiudad){
+        $this->oCiudad = $oCiudad;
+    }
+    public function setCiudadOrigen($sCiudadOrigen){
+        $this->sCiudadOrigen = $sCiudadOrigen;
+    }
+    public function setCodigoPostal($sCodigoPostal){
+        $this->sCodigoPostal = $sCodigoPostal;
+    }
+    public function setEmpresa($sEmpresa){
+        $this->sEmpresa = $sEmpresa;
+    }
+    public function setUniversidad($sUniversidad){
+        $this->sUniversidad = $sUniversidad;
+    }
+    public function setSecundaria($sSecundaria){
+        $this->sSecundaria = $sSecundaria;
     }
 //.....faltan agegar los demas
     public function getId(){
@@ -66,7 +99,7 @@ abstract class PersonaAbstract
         return $this->sSexo;
     }
     public function getTipoDocumento(){
-        return $this->iTipoDocumento;
+        return $this->iTipoDocumentoId;
     }
     public function getNumeroDocumento(){
         return $this->sNumeroDocumento;
@@ -79,10 +112,39 @@ abstract class PersonaAbstract
     }
     public function getCiudad(){
     	if($this->oCiudad == null){
-    		$this->oCiudad = Comunidad::getInstance()->obtener($this->iId);///ver esto
+    		//$this->oCiudad = Comunidad::getInstance()->obtener($this->iId);///ver esto
     	}
     	return $this->oCiudad;
     } 
-//.....faltan agegar los demas
+ 	public function getTelefono(){
+       	return $this->sTelefono ;
+    }
+    public function getCelular(){
+        return $this->sCelualr;
+    }
+    public function getFax(){
+        return $this->sFax ;
+    }
+    public function getDomicilio(){
+        return $this->sDomicilio ;
+    }
+    public function getInstitucion(){
+        return $this->oInstitucion ;
+    }
+    public function getCiudadOrigen(){
+        return $this->sCiudadOrigen ;
+    }
+    public function getCodigoPostal(){
+        return $this->sCodigoPostal ;
+    }
+    public function getEmpresa(){
+        return $this->sEmpresa ;
+    }
+    public function getUniversidad(){
+        return $this->sUniversidad;
+    }
+    public function getSecundaria(){
+       return $this->sSecundaria;
+    }
 }
 ?>

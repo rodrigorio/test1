@@ -127,7 +127,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .tetr_ca{text-transform:capitalize}
 .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left}
-.wi{width:100%}
+.wi{width:100%} #container input.wi118{width: 118px;}
 .bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none}
 .fowe_bo{font-weight:bold}
