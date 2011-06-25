@@ -145,7 +145,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
      */
     public function index()
     {
-        $publicacion = BlogController::getInstance()->obtenerUltimaPublicacion();
+        $publicacion = ComunidadController::getInstance()->obtenerUltimaPublicacion();
         if (null === $publicacion){
             $this->sinPublicaciones();
         } else {
@@ -158,7 +158,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
         //si el objeto no se paso por parametro trata de obtenerlo desde los argumentos que paso el distpatcher
         if(null === $publicacion){
             try {
-                $publicacion = BlogController::getInstance()->obtenerPublicacion($this->getInvokeParam('publicacionId'));
+                $publicacion = ComunidadController::getInstance()->obtenerPublicacion($this->getInvokeParam('publicacionId'));
             }catch(Exception $e){
                 throw new Exception("La publicacion no existe o fue eliminada", 404);
                 return;
