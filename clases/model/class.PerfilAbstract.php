@@ -27,9 +27,9 @@ abstract class PerfilAbstract
      */
     protected $sDescripcion;
 
- 	public function __construct(){}
+    public function __construct(){}
 
-	public function iniciarPermisos()
+    public function iniciarPermisos()
     {
         $this->oPermisos = new SessionNamespace('permisos');
     }
