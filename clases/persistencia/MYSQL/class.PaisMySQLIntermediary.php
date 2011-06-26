@@ -72,5 +72,58 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
+	private  function insertar(Pais $oPais)
+   		{
+		try{
+			$db = $this->conn;
+			$sSQL =	" insert into paises ".
+                    " set nombre =".$db->escape($oPais->getNombre(),true).", ";
+                    			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+	private  function actualizar(Pais $oPais)
+   {
+		try{
+			$db = $this->conn;
+			$sSQL =	" update paises ".
+                    " set nombre =".$db->escape($oPais->getNombre(),true).", " .
+                    " where id =".$db->escape($oPais->getId(),false,MYSQL_TYPE_INT)." ";
+                    			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    public function guardar(Pais $oPais)
+    {
+        try{
+			if($oPais->getId() != null){
+            	return actualizar($oPais);
+            }else{
+				return insertar($oPais);
+            }
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+ public function borrar(Pais $oPais) {
+		try{
+			$db = $this->conn;
+			$db->execSQL("delete from paises where id=".$db->escape($oPais->getId(),false,MYSQL_TYPE_INT));
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
 }
 ?>
