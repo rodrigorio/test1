@@ -10,7 +10,11 @@ class LoginControllerIndex extends PageControllerAbstract
 {
     public function index()
     {
-        $this->mostrarFormulario();
+        if($this->getRequest()->has("popUp")){
+            $this->mostrarFormularioPopUp();
+        }else{
+            $this->mostrarFormulario();
+        }
     }
 
     /**
@@ -51,6 +55,52 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
+    public function mostrarFormularioPopUp()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-01.gui.html", "frame");
+
+        //si ya esta logueado cancelo la accion y redirecciono a url por defecto.
+        if(SessionAutentificacion::getInstance()->realizoLogin()){
+            $pathInfo = true;
+            $url = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccionLoginDefecto($pathInfo);
+
+            $tituloMensajeError = "Ya existe un perfil autentificado";
+            $ficha = "MsgFichaInfoBlock";
+            $mensajeInfoError = "Ya existe un perfil autentificado en sesion, por favor accede desde el siguiente link.";
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "popUpContent", $ficha);
+            $this->getTemplate()->set_var("sTituloMsgFicha", $tituloMensajeError);
+            $this->getTemplate()->set_var("sMsgFicha", $mensajeInfoError);
+
+            //Link
+            $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "itemExtraMsgFicha", "MenuVertical02Block");
+            $this->getTemplate()->unset_blocks("OpcionesMenu"); //solo uso un link
+            $this->getTemplate()->set_var("idOpcion", 'acceder');
+            $this->getTemplate()->set_var("hrefOpcion", $url);
+            $this->getTemplate()->set_var("sNombreOpcion", "Volver");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }else{
+
+            $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";
+
+            //Si entro a login por error de permiso guardo la url original donde queria ir el user.
+            $nextFormUrl = "";
+            if($this->getRequest()->getPathInfo() != '/login'){
+                $nextFormUrl = $this->getRequest()->get('REQUEST_URI');
+            }
+            //se procesa el envio del form en un metodo de esta misma clase.
+            $actionFormUrl = "login-procesar";
+            
+            $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "popUpContent", "FormularioBlock");
+            $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
+            $this->getTemplate()->set_var("sNextUrl", $nextFormUrl);
+            $this->getTemplate()->set_var("sLinkRecuperarPass", $linkRecuperarPass);
+        }
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
     public function mostrarFormulario()
     {
         //si ya esta logueado cancelo la accion y redirecciono a url por defecto.
@@ -78,7 +128,7 @@ class LoginControllerIndex extends PageControllerAbstract
         //se procesa el envio del form en un metodo de esta misma clase.
         $actionFormUrl = "login-procesar";
 
-        $this->getTemplate()->load_file("gui/templates/frameBlog01-03.gui.html", "frame");
+        $this->getTemplate()->load_file("gui/templates/index/frame01-03.gui.html", "frame");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
