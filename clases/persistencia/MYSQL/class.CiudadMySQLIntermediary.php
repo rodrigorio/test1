@@ -64,5 +64,66 @@ class CiudadMySQLIntermediaryMySQLIntermediary extends CiudadIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
+private  function insertar(Ciudad $oCiudad)
+   {
+		try{
+			$db = $this->conn;
+			$sSQL =	" insert into ciudades ".
+                    " set nombre =".$db->escape($oCiudad->getNombre(),true).", " .
+                    " ciudad_id =".$db->escape($oCiudad->getProvincia()->getId(),false,MYSQL_TYPE_INT)." ";
+			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    
+private  function actualizar(Ciudad $oCiudad)
+   {
+		try{
+			$db = $this->conn;
+		if($oCiudad->getProvincia()!= null){
+			$provinciaId = ($oCiudad->getProvincia()->getId());
+			}else {
+				$provinciaIdId = null;
+			}
+        
+			$sSQL =	" update ciudades ".
+                    " set nombre =".$db->escape($oCiudad->getNombre(),true).", " .
+                    " provincia_id =".escape($provinciaId,false,MYSQL_TYPE_INT).
+                    " where id =".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT)." " ;			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    public function guardar(Ciudad $oCiudad)
+    {
+        try{
+			if($oCiudad->getId() != null){
+            	return actualizar($oCiudad);
+            }else{
+				return insertar($oCiudad);
+            }
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+public function borrar(Ciudad $oCiudad) {
+		try{
+			$db = $this->conn;
+			$db->execSQL("delete from ciudades where id=".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT));
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
 }
 ?>
