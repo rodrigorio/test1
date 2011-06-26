@@ -126,7 +126,7 @@ class IndexControllerIndex extends PageControllerAbstract
     	$oObj->sEmail			= $sEmail;
     	$oObj->dFechaNacimiento	= $dFechaNacimiento." 00:00";
 		
-    	IndexController::getInstance()->registrar($oObj);
+    	echo IndexController::getInstance()->registrar($oObj);
 	}
     /**
      * Muestra pagina de sitio en construccion
@@ -163,7 +163,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", "");
 
         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "columnaCentralContent", "MsgInfoBlockI32");
-        $this->getTemplate()->set_var("sMensaje", "El sitio se encuentra fuera de lÃ­nea por el momento.");
+        $this->getTemplate()->set_var("sMensaje", "El sitio se encuentra fuera de línea por el momento.");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "columnaCentralContent", "ImagenSitioEnConstruccionBlock", true);
         $this->getTemplate()->set_var("srcSitioEnConstruccion", 'gui/images/banners-logos/fuera_de_linea.jpg');
