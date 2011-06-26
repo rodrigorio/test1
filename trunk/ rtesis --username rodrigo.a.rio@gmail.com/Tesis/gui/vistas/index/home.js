@@ -1,8 +1,9 @@
 $(document).ready(function(){
-   /* Ejemplo de dialog en menu01 con ajax despues borrar */
-    $("#menu1").live('click',function(){
+   
+    $("#menuPpalAcceder").live('click',function(){
 
-        $.getScript("http://localhost/tesis/gui/vistas/index/login.js");
+        $.getScript(pathUrlBase+"utilidades/js-scripts/md5.js");
+        $.getScript(pathUrlBase+"gui/vistas/index/login.js");
 
         //nosotros laburamos con los dialogs pelados, porque usamos nuestro propio frame html
         var dialog = $("#dialog");
@@ -10,7 +11,7 @@ $(document).ready(function(){
 
         //para ver las opciones: http://www.phpeveryday.com/articles/jQuery-UI-Dialog-Options-P1002.html
         dialog.load(
-            'http://localhost/tesis/login',
+            pathUrlBase+"login?popUp=1",
             {},
             function(responseText, textStatus, XMLHttpRequest){
                     dialog.dialog({
@@ -20,6 +21,8 @@ $(document).ready(function(){
                         modal:true,
                         closeOnEscape:true
                     });
+                    $("#formLogin").validate(validateFormLogin);
+                    $("#formLogin").ajaxForm(optionsAjaxFormLogin);
             }
         );
         return false;
