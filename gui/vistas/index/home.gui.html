@@ -8,7 +8,7 @@
 <meta name="description" content="{sMetaDescription}" />
 <meta name="keywords" content="{sMetaKeywords}" />
 
-<link href="gui/vistas.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<link href="gui/css/vistas.css" rel="stylesheet" type="text/css" media="screen, projection" />
 <link href="gui/css/jquery-ui.css" rel="stylesheet">
 
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
@@ -21,9 +21,11 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-   .script("{pathUrlBase}"+"gui/vistas.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/index/home.js");
 </script>
+<script type="text/javascript"> var pathUrlBase = "{pathUrlBase}"; </script>
+
 <!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="gui/vistas-ie.css" media="screen, projection" /><![endif]-->
 <!--[if lte IE 6]><script type="text/javascript" src="utilidades/js-scripts/iepngfix/iepngfix_tilebg.js"></script><![endif]-->
 <!--EndHeadBlock-->
