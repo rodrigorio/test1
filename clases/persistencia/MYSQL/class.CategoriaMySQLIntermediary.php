@@ -157,9 +157,6 @@ public final function obtener($filtro, &$foundRows = 0){
 			throw new Exception($e->getMessage(), 0);
 		}	
 	}
-	
-    	
-    }
     
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
