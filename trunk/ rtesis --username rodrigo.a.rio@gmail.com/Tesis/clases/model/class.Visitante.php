@@ -7,7 +7,7 @@
  */
 class Visitante extends PerfilAbstract
 {
-    const PERFIL_VISITANTE_ID = 3;
+    const PERFIL_VISITANTE_ID = 4;
     const PERFIL_VISITANTE_DESCRIPCION = 'visitante';
 
     public function __construct(){

@@ -105,9 +105,9 @@ class SysController
      * @return PerfilAbstract|null
      * @throws Exception si hubo error en la consulta
      */
-    public function loginUsuario($sNombreUsuario, $sContrasenia){
+    public function loginUsuario($nroDocumento, $sContrasenia, $tipoDocumento = 1){
         try{
-            $filtro = array('sNombre' => $sNombreUsuario, 'sContrasenia' => $sContrasenia);
+            $filtro = array('documento_tipos_id' => $tipoDocumento, 'numeroDocumento' => $nroDocumento, 'contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $perfil = $oUsuarioIntermediary->obtener($filtro);
             if(null !== $perfil){

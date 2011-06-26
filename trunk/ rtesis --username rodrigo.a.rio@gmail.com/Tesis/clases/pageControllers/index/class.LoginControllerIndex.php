@@ -31,7 +31,7 @@ class LoginControllerIndex extends PageControllerAbstract
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            SysController::getInstance()->loginUsuario($this->getRequest()->getPost('nombreUsuario'), $this->getRequest()->getPost('contraseniaMD5'));
+            SysController::getInstance()->loginUsuario($this->getRequest()->getPost('documento'), $this->getRequest()->getPost('contraseniaMD5'));
             if(!SessionAutentificacion::getInstance()->realizoLogin()){
                 //indica que la accion no se concreto con exito y agrega un mensaje de error
                 $this->getJsonHelper()->setSuccess(false)

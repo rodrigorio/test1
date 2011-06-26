@@ -10,7 +10,11 @@ class Usuario extends PersonaAbstract
    
     private $dFechaAlta;
     private $sSitioWeb;
-    private $sNombreUsuario;//de donde salio este atributo??
+    /*
+     * Cuando se crea el usuario se guarda el nombre de usuario con la concatenacion de nombre y apellido
+     * reemplazando espacios blancos con '.' (puntos)
+     */
+    private $sNombreUsuario;
     private $sContrasenia;
     private $oEspecialidad;
     private $iPelfilId;
@@ -69,4 +73,3 @@ class Usuario extends PersonaAbstract
         $this->iPelfilId = $iPerfilId;
     }
 }
-?>
