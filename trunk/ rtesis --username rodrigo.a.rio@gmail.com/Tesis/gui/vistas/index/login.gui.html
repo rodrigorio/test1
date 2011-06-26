@@ -18,7 +18,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
-   .script("{pathUrlBase}"+"gui/vistas.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/index/login.js");
 </script>
 
@@ -30,7 +30,7 @@
 
 <!--BeginFormularioBlock-->
 <div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi authenticate32"></span> Acceder</div>
+    <div class="titulo iveal"><span class="i32 mi authenticate32"></span></div>
     <form id="formLogin" name="formLogin" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
@@ -38,7 +38,7 @@
 
         <div id="msg_nombreUsuario" class="form_line">
             <label for="nombreUsuario">Usuario</label>
-            <div class="in_wrap">
+            <div class="fwrap">
                 <div class="inner_fwrap">
                     <input type="text" name="nombreUsuario" id="nombreUsuario" title="Usuario" maxlength="30" />
                 </div>
@@ -47,8 +47,8 @@
 
         <div id="msg_contrasenia" class="form_line">
             <label for="contrasenia">Contraseña</label>
-            <div id="hintContrasenia" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La contraseña contempla mayúsculas y minúsculas.</span></div>
-            <div class="in_wrap">
+            <div style="right:-215px;" id="hintContrasenia" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La contraseña contempla mayúsculas y minúsculas.</span></div>
+            <div class="fwrap">
                 <div class="inner_fwrap">
                     <input type="password" name="contrasenia" id="contrasenia" title="Contraseña" maxlength="30" />
                     <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
@@ -57,7 +57,12 @@
         </div>
 
         <div class="fl_le iveal">
-            <button id="acceder" type="submit" name="acceder" class="btn01 disabled"><span class="i mi signIn"></span> Acceder</button>
+            <label for="acceder" class="button buttonConfirm buttonLarge mari3">
+                <button id="acceder" type="submit" name="acceder" class="btn01">
+                    <span class="i mi signIn"></span> 
+                    Acceder
+                </button>
+            </label>
         </div>
         <div class="fl_ri iveal">
             <a href="{sLinkRecuperarPass}" target="blank"><span class="bs i help"></span> ¿Olvidaste tu contraseña?</a>
