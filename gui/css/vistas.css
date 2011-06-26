@@ -119,7 +119,6 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .male{margin-left:5px} .mari{margin-right:5px} .mato{margin-top:5px} .mabo{margin-bottom:5px}
 .male2{margin-left:10px} .mari2{margin-right:10px} .mato2{margin-top:10px} .mabo2{margin-bottom:10px}
 .male3{margin-left:20px} .mari3{margin-right:20px} .mato3{margin-top:20px} .mabo3{margin-bottom:20px}
-.male12{margin-left:12%} .mari12{margin-right:12%} .mato12{margin-top:12%} .mabo12{margin-bottom:12%}
 .ma0{margin:0 !important} .male0{margin-left:0 !important} .mari0{margin-right:0 !important} .mato0{margin-top:0 !important} .mabo0{margin-bottom:0 !important}
 
 .di_bl{display:block} .di_no{display:none} .di_in{display:inline}
@@ -128,9 +127,6 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .tetr_ca{text-transform:capitalize}
 .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left}
-.wi{width:100%}
-.wi300{width:300px}
-#container input.wi118{width: 118px;}
 .bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none}
 .fowe_bo{font-weight:bold}
