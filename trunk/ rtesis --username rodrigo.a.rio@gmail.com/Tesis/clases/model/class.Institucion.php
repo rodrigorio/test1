@@ -45,5 +45,17 @@ class Institucion {
 	public function getNombre(){
 		return $this->sNombre;
 	}
+/**
+	 * @return  Ciudad $oCiudad
+	 */
+	public function getCiudad(){
+		return $this->oCiudad;
+	}
+/**
+	 * @param Ciudad $oCiudad
+	 */
+	public function setCiudad($oCiudad){
+		$this->oCiudad = $oCiudad;
+	}
 }
 ?>
