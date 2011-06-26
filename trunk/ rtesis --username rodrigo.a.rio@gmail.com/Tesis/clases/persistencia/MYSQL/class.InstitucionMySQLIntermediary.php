@@ -27,10 +27,31 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 		}
 		return(self::$singletonInstance);
 	}
-    public function existe($filtro){}
+public  function existe($filtro){
+		try{
+			$db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
 
-    public function actualizar(stdClass $object){}
+            $sSQL = "SELECT
+                        i.id as iId, i.nombre as sNombre, i.ciudades_id as iCiudadId
+                        FROM
+                       instituciones i ";
+                    if(!empty($filtro)){     
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "i");
+                    }
+            			
+			$db->query($sSQL);
+			if($db->num_rows() > 0){
+				return true;
+			}else{
+				return false;
+			}
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}	
+	}
 
+    
     public function actualizarCampoArray($objects, $cambios){}
 
     
@@ -55,9 +76,15 @@ private  function actualizar(Intitucion $oInstitucion)
    {
 		try{
 			$db = $this->conn;
+		if($oInstitucion->getCiudad()!= null){
+			$ciudadId = ($oInstitucion->getCiudad()->getId());
+			}else {
+				$ciudadId = null;
+			}
+        
 			$sSQL =	" update instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " ciudades_id =".$db->escape($oInstitucion->getCiudad()->geId(),false,MYSQL_TYPE_INT).
+                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT).
                     " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -90,7 +117,7 @@ public final function obtener($filtro, &$foundRows = 0){
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "i");
                     }
 
             $db->query($sSQL);
@@ -123,7 +150,7 @@ public final function obtener($filtro, &$foundRows = 0){
 	//borra muchas especialidades
 	//public function borrar($objects){}
     
-    //borra una especialidad
+    //borra una Institucion
     public function borrar(Institucion $oInstitucion) {
 		try{
 			$db = $this->conn;
@@ -136,11 +163,7 @@ public final function obtener($filtro, &$foundRows = 0){
 	}
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
-
-    public function guardar(stdClass $object){}
-
-    public function borrar($objects){}
-
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+   
+    
 }
 ?>	
