@@ -5,11 +5,12 @@
  */
 class IndexControllerIndex extends PageControllerAbstract
 {
-	private function setFrameTemplate(){
-	    $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
-		return $this;
-	}
-  	private function setHeadTemplate()
+    private function setFrameTemplate(){
+        $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
+        return $this;
+    }
+
+    private function setHeadTemplate()
     {
         $front = FrontController::getInstance();
         $parametros = $front->getPlugin('PluginParametros');
@@ -17,7 +18,8 @@ class IndexControllerIndex extends PageControllerAbstract
         $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
         $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
-        
+
+        $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", $tituloVista);
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
@@ -29,17 +31,12 @@ class IndexControllerIndex extends PageControllerAbstract
     {
         $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "menuHeader", "MenuPpalIndexBlock");
         //Opcion1
-        $this->getTemplate()->set_var("idOpcion", 'opt1');
+        $this->getTemplate()->set_var("idOpcion", 'menuPpalInicio');
         $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
         $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
         $this->getTemplate()->parse("OpcionesMenu", true);
-        //Opcion2
-        $this->getTemplate()->set_var("idOpcion", 'opt2');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/mostrarFormRegistracion');
-        $this->getTemplate()->set_var("sNombreOpcion", "Registrarse");
-        $this->getTemplate()->parse("OpcionesMenu", true);
         //Opcion3
-        $this->getTemplate()->set_var("idOpcion", 'opt3');
+        $this->getTemplate()->set_var("idOpcion", 'menuPpalAcceder');
         $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/login');
         $this->getTemplate()->set_var("sNombreOpcion", "Acceder");
         $this->getTemplate()->parse("OpcionesMenu", true);
@@ -51,60 +48,56 @@ class IndexControllerIndex extends PageControllerAbstract
         return $this;
     }
 
-	public function index(){
-		 try{
-             $this->setFrameTemplate()
-                  ->setHeadTemplate()
-                  ->setMenuTemplate();
-			
-	        $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-	        $this->getTemplate()->set_var("tituloHeader", "SGP...");
-	        $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
-	        $this->getTemplate()->set_var("topPageContent", "top page content");
-	        
-	        $this->getTemplate()->set_var("centerPageContent", "       aaa");
-	        
-	        $this->getTemplate()->set_var("footerContent", "footer content");
-	        $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
-	        $this->getTemplate()->set_var("footerSubCopyright", "copyright");
-        	$this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-		 }catch(Exception $e){
-        	print_r($e);
-            //throw new Exception('Error Template');
-            //return;
+    public function index(){
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTemplate()
+                 ->setMenuTemplate();
+
+            $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
+            $this->getTemplate()->set_var("tituloHeader", "SGP...");
+            $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
+            $this->getTemplate()->set_var("topPageContent", "top page content");
+
+            $this->getTemplate()->set_var("centerPageContent", "       aaa");
+
+            $this->getTemplate()->set_var("footerContent", "footer content");
+            $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
+            $this->getTemplate()->set_var("footerSubCopyright", "copyright");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
         }
-	}
+    }
         
-	public function mostrarFormRegistracion(){
-		 try{
-             $this->setFrameTemplate()
-                  ->setHeadTemplate()
-                  ->setMenuTemplate();
-			
-	        $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-	        $this->getTemplate()->set_var("tituloHeader", "SGP...");
-	        $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
-	        $this->getTemplate()->set_var("topPageContent", "top page content");
-	        
-	        $this->getTemplate()->set_var("sEmail", "rio_rodrigo@gmail.com");
-	        $this->getTemplate()->set_var("sNombre", "Rodrigo");
-	        $this->getTemplate()->set_var("sApellido", "Rio");
-	        
-	        $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
-	        
-	        $this->getTemplate()->parse("centerPageContent", false);
-	        
-	        $this->getTemplate()->set_var("footerContent", "footer content");
-	        $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
-	        $this->getTemplate()->set_var("footerSubCopyright", "copyright");
-        	$this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-		 }catch(Exception $e){
-        	print_r($e);
-            //throw new Exception('Error Template');
-            //return;
+    public function mostrarFormRegistracion(){
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTemplate()
+                 ->setMenuTemplate();
+
+            $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
+            $this->getTemplate()->set_var("tituloHeader", "SGP...");
+            $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
+            $this->getTemplate()->set_var("topPageContent", "top page content");
+
+            $this->getTemplate()->set_var("sEmail", "rio_rodrigo@gmail.com");
+            $this->getTemplate()->set_var("sNombre", "Rodrigo");
+            $this->getTemplate()->set_var("sApellido", "Rio");
+
+            $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
+
+            $this->getTemplate()->parse("centerPageContent", false);
+
+            $this->getTemplate()->set_var("footerContent", "footer content");
+            $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
+            $this->getTemplate()->set_var("footerSubCopyright", "copyright");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            print_r($e);
         }
-	} 
-	public function registrarse(){
+    }
 
 		$sUserName 	= $this->getRequest()->getPost("username");
 		$iTipoDni 	= $this->getRequest()->getPost("tipoDni");
@@ -163,7 +156,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", "");
 
         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "columnaCentralContent", "MsgInfoBlockI32");
-        $this->getTemplate()->set_var("sMensaje", "El sitio se encuentra fuera de línea por el momento.");
+        $this->getTemplate()->set_var("sMensaje", "El sitio se encuentra fuera de lï¿½nea por el momento.");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "columnaCentralContent", "ImagenSitioEnConstruccionBlock", true);
         $this->getTemplate()->set_var("srcSitioEnConstruccion", 'gui/images/banners-logos/fuera_de_linea.jpg');
