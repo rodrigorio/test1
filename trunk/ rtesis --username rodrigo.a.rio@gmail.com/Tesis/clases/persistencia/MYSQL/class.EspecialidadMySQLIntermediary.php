@@ -35,8 +35,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into especialidades ".
-                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true).", " .
-                    " id =".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)." ";
+                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true).", ";
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -53,7 +52,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 			$db = $this->conn;
 			$sSQL =	" update especialidades ".
                     " set nombre =".$db->escape($oEspecialidad->getNombre(),true).", " .
-                    " id =".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)." ";
+                    " where id =".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)." ";
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -86,7 +85,7 @@ public final function obtener($filtro, &$foundRows = 0){
                         FROM
                        especialidades e ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, " e ");
                     }
 
             $db->query($sSQL);
