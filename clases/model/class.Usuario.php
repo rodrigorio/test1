@@ -43,6 +43,12 @@ class Usuario extends PersonaAbstract
     public function getSitioWeb(){
         return $this->sSitioWeb;
     }
+    public function getEspecialidad(){
+        return $this->oEspecialidad;
+    }
+    public function getPerfilId(){
+        return $this->iPelfilId;
+    }
 
     public function setNombreUsuario($sNombreUsuario){
     	$this->sNombreUsuario = $sNombreUsuario;
