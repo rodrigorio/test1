@@ -1,3 +1,9 @@
+.wi{width:100%}
+.wi300{width:300px}
+#container input.wi118{width: 118px;}
+
+.male12{margin-left:12%} .mari12{margin-right:12%} .mato12{margin-top:12%} .mabo12{margin-bottom:12%}
+
 #registracion{ width: 500px; padding: 0 80px;}
 #registracion label{ float: left;} 
 #reg_sex, #reg_tipoDni, #registracion input {
