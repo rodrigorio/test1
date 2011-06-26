@@ -68,5 +68,66 @@ class ProvinciaMySQLIntermediaryMySQLIntermediary extends ProvinciaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
+	private  function insertar(Provincia $oProvincia)
+   {
+		try{
+			$db = $this->conn;
+			$sSQL =	" insert into provincias ".
+                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
+                    " paises_id =".$db->escape($oProvincia->getPais()->getId(),false,MYSQL_TYPE_INT)." ";
+			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    
+private  function actualizar(Provincia $oProvincia)
+   {
+		try{
+			$db = $this->conn;
+		if($oProvincia->getPais()!= null){
+			$paisId = ($oProvincia->getPais()->getId());
+			}else {
+				$paisId = null;
+			}
+        
+			$sSQL =	" update provincias ".
+                    " set nombre =".$db->escape($oProvincia->getNombre(),true).", " .
+                    " paises_id =".escape($paisId,false,MYSQL_TYPE_INT).
+                    " where id =".$db->escape($oProvincias->getId(),false,MYSQL_TYPE_INT)." " ;			 
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+             
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
+    public function guardar(Provincia $oProvincia)
+    {
+        try{
+			if($oProvincia->getId() != null){
+            	return actualizar($oProvincia);
+            }else{
+				return insertar($oProvincia);
+            }
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+public function borrar(Provincia $oProvincia) {
+		try{
+			$db = $this->conn;
+			$db->execSQL("delete from provincias where id=".$db->escape($oProvincia->getId(),false,MYSQL_TYPE_INT));
+			$db->commit();
+
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+	}
 }
 ?>
