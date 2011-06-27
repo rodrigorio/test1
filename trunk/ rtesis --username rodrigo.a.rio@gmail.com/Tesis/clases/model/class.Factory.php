@@ -16,11 +16,39 @@ class Factory
     }
     /**
      * @param stdClass $obj
-     * @return Blogger|null Perfil Blogger que hereda de perfil abstract
+     * @return Administrador|null Perfil Blogger que hereda de perfil abstract
+     * @throws exception si hubo error en el constructor de la clase que se desea instanciar.
      */
     public static function &getAdministradorInstance(stdClass $obj){
         $oAdministrador = new Administrador($obj);
         return $oAdministrador;
+    }
+    /**
+     * @param stdClass $obj
+     * @return Moderador|null Perfil Blogger que hereda de perfil abstract
+     * @throws exception si hubo error en el constructor de la clase que se desea instanciar.
+     */
+    public static function &getModeradorInstance(stdClass $obj){
+        $oModerador = new Moderador($obj);
+        return $oModerador;
+    }
+    /**
+     * @param stdClass $obj
+     * @return Administrador|null Perfil Blogger que hereda de perfil abstract
+     * @throws exception si hubo error en el constructor de la clase que se desea instanciar.
+     */
+    public static function &getIntegranteActivoInstance(stdClass $obj){
+        $oIntegranteActivo = new IntegranteActivo($obj);
+        return $oIntegranteActivo;
+    }
+    /**
+     * @param stdClass $obj
+     * @return Administrador|null Perfil Blogger que hereda de perfil abstract
+     * @throws exception si hubo error en el constructor de la clase que se desea instanciar.
+     */
+    public static function &getIntegranteInactivoInstance(stdClass $obj){
+        $oIntegranteInactivo = new IntegranteInactivo($obj);
+        return $oIntegranteInactivo;
     }
     /**
      * @param stdClass $obj
