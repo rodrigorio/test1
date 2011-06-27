@@ -90,11 +90,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario);
-                
+
                 //creo el perfil con el usuario asignado
                 $oPerfilAbstract            = new stdClass();
                 $oPerfilAbstract->iId       = $oObj->perfiles_id;
-                $oPerfilAbstract->usuario   = $oUsuario;
+                $oPerfilAbstract->oUsuario   = $oUsuario;
                 switch($oObj->perfiles_id){
                     case self::PERFIL_ADMINISTRADOR:{ $oPerfil       = Factory::getAdministradorInstance($oPerfilAbstract); break; }
                     case self::PERFIL_MODERADOR:{ $oPerfil           = Factory::getModeradorInstance($oPerfilAbstract); break; }
