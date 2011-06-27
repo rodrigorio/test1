@@ -11,10 +11,24 @@ class Moderador extends PerfilAbstract
     const PERFIL_MODERADOR_ID = 5;
     const PERFIL_MODERADOR_DESCRIPCION = 'moderador';
 
-    public function __construct(){
+    public function __construct(stdClass $oParams = null){
         parent::__construct();
-        $this->id = self::PERFIL_MODERADOR_ID;
-        $this->descripcion = self::PERFIL_MODERADOR_DESCRIPCION;
+
+        $vArray = get_object_vars($oParams);
+        $vThisVars = get_class_vars(__CLASS__);
+        if(is_array($vArray)){
+            foreach($vArray as $varName => $value){
+                if(array_key_exists($varName,$vThisVars)){
+                    $this->$varName = $value;
+                }else{
+                    throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
+                }
+            }
+        }
+
+        //si el stdClass no tenia los atributos principales los seteo por constante
+        if(empty($this->iId)){ $this->iId =  self::PERFIL_MODERADOR_ID; }
+        if(empty($this->sDescripcion)){ $this->sDescripcion = self::PERFIL_MODERADOR_DESCRIPCION; }
     }
 
     /**

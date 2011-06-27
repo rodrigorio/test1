@@ -7,18 +7,20 @@
  */
 class Usuario extends PersonaAbstract
 {
-   
     private $dFechaAlta;
+
     private $sSitioWeb;
+    
     /*
      * Cuando se crea el usuario se guarda el nombre de usuario con la concatenacion de nombre y apellido
      * reemplazando espacios blancos con '.' (puntos)
      */
     private $sNombreUsuario;
-    private $sContrasenia;
-    private $oEspecialidad;
-    private $iPelfilId;
 
+    private $sContrasenia;
+
+    private $oEspecialidad;
+    
     public function __construct(stdClass $oParams = null){
         parent::__construct();
 
@@ -38,38 +40,40 @@ class Usuario extends PersonaAbstract
     public function getNombreUsuario(){
         return $this->sNombreUsuario;
     }
+
     public function getContrasenia(){
     	return $this->sContrasenia;
     }
+
     public function getFechaAlta(){
         return $this->dFechaAlta;
     }
+
     public function getSitioWeb(){
         return $this->sSitioWeb;
     }
+
     public function getEspecialidad(){
         return $this->oEspecialidad;
-    }
-    public function getPerfilId(){
-        return $this->iPelfilId;
     }
 
     public function setNombreUsuario($sNombreUsuario){
     	$this->sNombreUsuario = $sNombreUsuario;
     }
- 	public function setFechaAlta($dFechaAlta){
+
+    public function setFechaAlta($dFechaAlta){
         $this->dFechaAlta = $dFechaAlta;
     }
+
     public function setSitioWeb($sSitioWeb){
     	$this->sSitioWeb = $sSitioWeb;
     }
+
     public function setContrasenia($contrasenia){
         $this->sContrasenia = $contrasenia;
     }
+
     public function setEspecialidad($oEspecialidad){
         $this->oEspecialidad = $oEspecialidad;
-    }
-    public function setPerfilId($iPerfilId){
-        $this->iPelfilId = $iPerfilId;
     }
 }

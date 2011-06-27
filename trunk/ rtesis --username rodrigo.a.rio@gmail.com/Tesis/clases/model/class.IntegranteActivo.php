@@ -11,10 +11,24 @@ class IntegranteActivo extends PerfilAbstract
     const PERFIL_INTEGRANTE_ACTIVO_ID = 2;
     const PERFIL_INTEGRANTE_ACTIVO_DESCRIPCION = 'visitante';
 
-    public function __construct(){
+    public function __construct(stdClass $oParams = null){
         parent::__construct();
-        $this->id = self::PERFIL_INTEGRANTE_ACTIVO_ID;
-        $this->descripcion = self::PERFIL_INTEGRANTE_ACTIVO_DESCRIPCION;
+
+        $vArray = get_object_vars($oParams);
+        $vThisVars = get_class_vars(__CLASS__);
+        if(is_array($vArray)){
+            foreach($vArray as $varName => $value){
+                if(array_key_exists($varName,$vThisVars)){
+                    $this->$varName = $value;
+                }else{
+                    throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
+                }
+            }
+        }
+
+        //si el stdClass no tenia los atributos principales los seteo por constante
+        if(empty($this->iId)){ $this->iId =  self::PERFIL_INTEGRANTE_ACTIVO_ID; }
+        if(empty($this->sDescripcion)){ $this->sDescripcion = self::PERFIL_INTEGRANTE_ACTIVO_DESCRIPCION; }
     }
 
     /**
