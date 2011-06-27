@@ -101,8 +101,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     case self::PERFIL_INTEGRANTE_ACTIVO:{ $oPerfil   = Factory::getIntegranteActivoInstance($oPerfilAbstract); break; }
                     case self::PERFIL_INTEGRANTE_INACTIVO:{ $oPerfil = Factory::getIntegranteInactivoInstance($oPerfilAbstract); break; }
                 }
-
-                echo "<pre>".print_r($oPerfil)."</pre>";
                 
                 $aUsuarios[] = $oPerfil;
             }
