@@ -99,34 +99,37 @@ class IndexControllerIndex extends PageControllerAbstract
         }
     }
 
-		$sUserName 	= $this->getRequest()->getPost("username");
-		$iTipoDni 	= $this->getRequest()->getPost("tipoDni");
-		$iDni	 	= $this->getRequest()->getPost("dni");
-		$sPassword 	= $this->getRequest()->getPost("password");
-		$sEmail 	= $this->getRequest()->getPost("email");
-		$sFirstName	= $this->getRequest()->getPost("firstname");
-		$sLastName 	= $this->getRequest()->getPost("lastname");
-		$sSex	 	= $this->getRequest()->getPost("sex");
-		$dFechaNacimiento	 	= trim($this->getRequest()->getPost("fechaNacimiento"));
-		$oObj		= new stdClass();
-		$oObj->sNombreUsuario 	= $sUserName; 
-		$oObj->sContrasenia		= $sPassword;
-		$oObj->sNombre			= $sFirstName;
-		$oObj->sApellido		= $sLastName;
-		$oObj->sSexo			= $sSex;
-		$oObj->iTipoDocumentoId	= $iTipoDni;
+    public function registrarse()
+    {
+        $sUserName 	= $this->getRequest()->getPost("username");
+        $iTipoDni 	= $this->getRequest()->getPost("tipoDni");
+        $iDni	 	= $this->getRequest()->getPost("dni");
+        $sPassword 	= $this->getRequest()->getPost("password");
+        $sEmail 	= $this->getRequest()->getPost("email");
+        $sFirstName	= $this->getRequest()->getPost("firstname");
+        $sLastName 	= $this->getRequest()->getPost("lastname");
+        $sSex	 	= $this->getRequest()->getPost("sex");
+        $dFechaNacimiento	 	= trim($this->getRequest()->getPost("fechaNacimiento"));
+        $oObj		= new stdClass();
+        $oObj->sNombreUsuario 	= $sUserName;
+        $oObj->sContrasenia	= $sPassword;
+        $oObj->sNombre		= $sFirstName;
+        $oObj->sApellido	= $sLastName;
+        $oObj->sSexo		= $sSex;
+        $oObj->iTipoDocumentoId	= $iTipoDni;
     	$oObj->sNumeroDocumento	= $iDni;
-    	$oObj->sEmail			= $sEmail;
+    	$oObj->sEmail		= $sEmail;
     	$oObj->dFechaNacimiento	= $dFechaNacimiento." 00:00";
 		
     	echo IndexController::getInstance()->registrar($oObj);
-	}
+    }
+
     /**
      * Muestra pagina de sitio en construccion
      */
     public function sitioEnConstruccion()
     {
-        $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
+        $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
         
         $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());

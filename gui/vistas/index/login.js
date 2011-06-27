@@ -75,7 +75,7 @@ var validateFormLogin = {
 
     //reglas que tiene que verificar en los campos
     rules:{
-        nombreUsuario:{required:true},
+        documento:{required:true},
         contrasenia:{required:true}
     },
 

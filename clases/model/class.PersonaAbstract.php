@@ -15,7 +15,7 @@ abstract class PersonaAbstract
     protected $dFechaNacimiento;
     protected $sEmail;
     protected $sTelefono;
-    protected $sCelualr;
+    protected $sCelular;
     protected $sFax;
     protected $sDomicilio;
     protected $oInstitucion;
