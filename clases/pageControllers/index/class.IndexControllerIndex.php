@@ -55,15 +55,38 @@ class IndexControllerIndex extends PageControllerAbstract
                  ->setMenuTemplate();
 
             $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-            $this->getTemplate()->set_var("tituloHeader", "SGP...");
-            $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
-            $this->getTemplate()->set_var("topPageContent", "top page content");
+            $this->getTemplate()->set_var("tituloHeader", "SGPAPD");
+            $this->getTemplate()->set_var("subtituloHeader", "Sistema de gestión del proceso de aprendizaje en personas discapacitadas");
 
-            $this->getTemplate()->set_var("centerPageContent", "       aaa");
+            //nombre seccion
+            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "topPageContent", "TituloSeccionBlock");
+            $this->getTemplate()->set_var("sNombreSeccionTopPage", "Inicio");
 
-            $this->getTemplate()->set_var("footerContent", "footer content");
-            $this->getTemplate()->set_var("footerSubContent", "footer subcontent");
-            $this->getTemplate()->set_var("footerSubCopyright", "copyright");
+            //contenido home
+            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "centerPageContent", "HomeCenterPageBlock");
+            
+
+            //footer home
+            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "footerContent", "HomeFooterBlock");
+
+
+            //Limpio las opciones porque ya hay otros menues.
+            $this->getTemplate()->set_var("OpcionesMenu", "");
+            $this->getTemplate()->set_var("OpcionMenuLastOpt", "");
+            
+            $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "footerSubContent", "MenuHorizontal04Block");
+            $this->getTemplate()->set_var("idOpcion", 'footerSubInicio');
+            $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
+            $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
+            $this->getTemplate()->parse("OpcionesMenu", true);
+
+            $this->getTemplate()->set_var("idOpcion", 'footerSubAnterior');
+            $this->getTemplate()->set_var("hrefOpcion", "javascript:history.go(-1)");
+            $this->getTemplate()->set_var("sNombreOpcion", "Página anterior");
+            $this->getTemplate()->parse("OpcionMenuLastOpt");
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "footerSubCopyright", "HomeCopyrightBlock");
+
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);
