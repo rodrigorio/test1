@@ -81,7 +81,7 @@ var validateFormLogin = {
 
     //mensajes que devuelve si campo es invalido (ver la funcion en el archivo funciones-globales.js)
     messages:{
-        nombreUsuario: mensajeValidacion("requerido"),
+        documento: mensajeValidacion("requerido"),
         contrasenia: mensajeValidacion("requerido")
     }
 }

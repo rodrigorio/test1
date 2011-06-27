@@ -55,6 +55,7 @@ class IndexControllerIndex extends PageControllerAbstract
                  ->setMenuTemplate();
 
             $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
+            $this->getTemplate()->set_var("hrefLogoHeader", "http://www.ufasta.edu.ar");
             $this->getTemplate()->set_var("tituloHeader", "SGPAPD");
             $this->getTemplate()->set_var("subtituloHeader", "Sistema de gestión del proceso de aprendizaje en personas discapacitadas");
 
@@ -65,10 +66,8 @@ class IndexControllerIndex extends PageControllerAbstract
             //contenido home
             $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "centerPageContent", "HomeCenterPageBlock");
             
-
             //footer home
             $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "footerContent", "HomeFooterBlock");
-
 
             //Limpio las opciones porque ya hay otros menues.
             $this->getTemplate()->set_var("OpcionesMenu", "");
