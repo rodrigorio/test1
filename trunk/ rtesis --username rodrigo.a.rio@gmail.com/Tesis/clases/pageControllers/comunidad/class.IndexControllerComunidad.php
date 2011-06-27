@@ -32,21 +32,17 @@ class IndexControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "topHeaderMenuLeft", "TopHeaderMenuLeftBlock");
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "topHeaderMenuRight", "TopHeaderMenuRightBlock");
 
-        /*
-        //Opcion1
-        $this->getTemplate()->set_var("idOpcion", 'menuPpalInicio');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
-        $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
-        $this->getTemplate()->parse("OpcionesMenu", true);
-        //Opcion3
-        $this->getTemplate()->set_var("idOpcion", 'menuPpalAcceder');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/login');
-        $this->getTemplate()->set_var("sNombreOpcion", "Acceder");
-        $this->getTemplate()->parse("OpcionesMenu", true);
-
-        //borro el submenu que todavia no se usa
-        $this->getTemplate()->set_var("SubMenu", "");
-        */
+        //links menu top comunidad
+        $this->getTemplate()->set_var("topHeaderMenuHrefComunidad", $this->getRequest()->getBaseUrl().'/comunidad/home');
+        $this->getTemplate()->set_var("topHeaderMenuHrefPublicaciones", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones');
+        $this->getTemplate()->set_var("topHeaderMenuHrefInstituciones", $this->getRequest()->getBaseUrl().'/comunidad/instituciones');
+        $this->getTemplate()->set_var("topHeaderMenuHrefDescargas", $this->getRequest()->getBaseUrl().'/comunidad/descargas');
+        $this->getTemplate()->set_var("topHeaderMenuHrefSeguimientos", $this->getRequest()->getBaseUrl().'/seguimientos/home');
+        $this->getTemplate()->set_var("topHeaderMenuHrefDatosPersonales", $this->getRequest()->getBaseUrl().'/comunidad/datosPersonales');
+        $this->getTemplate()->set_var("topHeaderMenuHrefInvitaciones", $this->getRequest()->getBaseUrl().'/comunidad/invitaciones');
+        $this->getTemplate()->set_var("topHeaderMenuHrefSoporte", $this->getRequest()->getBaseUrl().'/comunidad/soporte');
+        $this->getTemplate()->set_var("topHeaderMenuHrefCerrarSesion", $this->getRequest()->getBaseUrl().'/logout');
+        $this->getTemplate()->set_var("topHeaderMenuHrefPreferencias", $this->getRequest()->getBaseUrl().'/comunidad/preferencias');
         
         $this->getTemplate()->parse("topHeaderMenuLeft", false);
         $this->getTemplate()->parse("topHeaderMenuRight", false);
