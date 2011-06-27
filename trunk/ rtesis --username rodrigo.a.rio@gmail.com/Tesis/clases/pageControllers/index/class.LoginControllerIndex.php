@@ -112,12 +112,10 @@ class LoginControllerIndex extends PageControllerAbstract
                 
         $front = FrontController::getInstance();
         $parametros = $front->getPlugin('PluginParametros');
-        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
-        $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
+        $tituloVista = $parametros->obtener('METATAG_TITLE');
         $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
         $fileNameLogo = $parametros->obtener('FILE_NAME_LOGO_SITIO');
-        $footerContent = "UrBIS . Todos los derechos reservados";
         $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";
 
         //Si entro a login por error de permiso guardo la url original donde queria ir el user.
@@ -136,18 +134,23 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->set_var("sourceLogoHeader", 'sitio/uploads/design/'.$fileNameLogo);
-        //despues tiene que haber un helper de imagenes cuya una de las funciones extraiga estos valores.
-        $this->getTemplate()->set_var("heightLogoHeader", '89');
-        $this->getTemplate()->set_var("widthLogoHeader", '156');
-        $this->getTemplate()->set_var("tituloHeader", $nombreSitio);
+        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "menuHeader", "MenuPpalIndexBlock");
+        $this->getTemplate()->set_var("idOpcion", 'menuPpalInicio');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
+        $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
+        $this->getTemplate()->parse("OpcionesMenu");
+        //borro el submenu que todavia no se usa
+        $this->getTemplate()->set_var("SubMenu", "");
+        $this->getTemplate()->parse("menuHeader", false);
+
+        $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
+        $this->getTemplate()->set_var("hrefLogoHeader", "http://www.ufasta.edu.ar");
+        $this->getTemplate()->set_var("tituloHeader", "Acceder");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "columnaIzquierdaContent", "FormularioBlock");
         $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
         $this->getTemplate()->set_var("sNextUrl", $nextFormUrl);
         $this->getTemplate()->set_var("sLinkRecuperarPass", $linkRecuperarPass);
-
-        $this->getTemplate()->set_var("footerContent", $footerContent);
 
         //Si vino a Login por error de permiso muestro ficho con advertencia y link a inicio
         if($this->getRequest()->has('msgError') || $this->getRequest()->has('msgInfo')){
@@ -180,6 +183,10 @@ class LoginControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("widthImagenLogin", "460");
             $this->getTemplate()->set_var("heightImagenLogin", "200");
         }
+
+        //footer home
+        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "footerContent", "LoginFooterBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "footerSubCopyright", "LoginCopyrightBlock");
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
