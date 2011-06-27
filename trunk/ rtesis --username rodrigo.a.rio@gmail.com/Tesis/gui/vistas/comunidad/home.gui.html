@@ -1,0 +1,65 @@
+<!--BeginHeadBlock-->
+<base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
+
+<title>{sTituloVista}</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-language" content="es" />
+<meta name="description" content="{sMetaDescription}" />
+<meta name="keywords" content="{sMetaKeywords}" />
+
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/index/login.js");
+</script>
+<script type="text/javascript"> var pathUrlBase = "{pathUrlBase}"; </script>
+
+<link href="gui/css/vistas.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<link href="gui/css/jquery-ui.css" rel="stylesheet">
+<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="gui/css/vistas-ie.css" media="screen, projection" /><![endif]-->
+<!--[if lte IE 6]><script type="text/javascript" src="utilidades/js-scripts/iepngfix/iepngfix_tilebg.js"></script><![endif]-->
+<!--EndHeadBlock-->
+
+<!--BeginTopHeaderMenuLeftBlock-->
+<ul class="m_horiz menu01 menuList iveal">
+    <li>
+        <a href="{topHeaderMenuHrefComunidad}" class="optionSelected"><span class="i bs group"></span> Comunidad</a>
+        <ul>
+            <li><a href="#"><span class="i mi publish"></span> Publicaciones</a></li>
+            <li><a href="#"><span class="i mc bank"></span> Instituciones</a></li>
+            <li><a href="#"><span class="i mi download"></span> Catalogo Descargas</a></li>
+        </ul>
+    </li>
+    <li><a href="#"><span class="i mi relationshipPeople"></span> Seguimientos</a></li>
+</ul>
+<!--EndTopHeaderMenuLeftBlock-->
+
+<!--BeginTopHeaderMenuRightBlock-->
+<ul class="m_horiz menu01 menuList iveal">
+    <li>
+        <a href="#"><span class="i bs user"></span> Cuenta</a>
+        <ul style="left:-118px;">
+            <li><a href="#"><span class="i bs userEdit"></span> Datos Personales</a></li>
+            <li><a href="#"><span class="i bs userAdd"></span> Invitaciones</a></li>
+            <li><a href="#"><span class="i mi support"></span> Soporte</a></li>
+            <li><a href="#"><span class="i mi signOut"></span> Salir</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#" title="Configuracion"><span class="i bs settings"></span></a>
+        <ul style="left:-160px;">
+            <li><a href="#">Preferencias</a></li>
+        </ul>
+    </li>
+</ul>
+<!--EndTopHeaderMenuRightBlock-->

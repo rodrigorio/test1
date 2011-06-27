@@ -69,7 +69,6 @@ class PluginRouteSchema extends PluginAbstract
                                         'controller' => $homeSitioControlador,
                                         'action'     => $homeSitioAccion
                                 ));
-        //nombre es de referencia en cuanto a schema, para redireccionar se usa el array de parametros
         $router->addRoute('defaultDefaultDefault', $route);
         
         $route = new RegexRoute('mostrarFormRegistracion',
@@ -86,7 +85,6 @@ class PluginRouteSchema extends PluginAbstract
                                         'controller' => "index",
                                         'action'     => "registrarse"
                                 ));
-        //nombre es de referencia en cuanto a schema, para redireccionar se usa el array de parametros
         $router->addRoute('indexIndexRegistrarse', $route);
 
         $route = new RegexRoute('login',
@@ -104,5 +102,13 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'procesar'
                                 ));
         $router->addRoute('indexLoginProcesar', $route);
+
+        $route = new RegexRoute('comunidad/home',
+                                array(
+                                        'module' => 'comunidad',
+                                        'controller' => 'index',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('comunidadIndexIndex', $route);
     }
 }

@@ -85,7 +85,9 @@ class SysController
                      "index_login_redireccion404" => true,
 
                      "admin_index_redireccion404" => true,
-                     "admin_index_index" => true);
+                     "admin_index_index" => true,
+
+                     "comunidad_index_index" => true);
     }
 
     /**
