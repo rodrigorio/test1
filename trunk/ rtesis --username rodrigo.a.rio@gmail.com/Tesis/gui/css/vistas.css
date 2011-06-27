@@ -128,7 +128,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left}
 .bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
-.bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none}
+.bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .co{color:#333 !important}
 .po_re{position:relative !important}
@@ -177,6 +177,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameIndex01 #footer{display: table; padding: 30px 0; width: 100%;}
 #frameIndex01 #footerCont{margin: 0 auto; width: 960px}
 #frameIndex01 #footerCont .celda4{padding: 20px 10px; width: 220px; margin:0 !important}
+#frameIndex01 #footerCont .celda2{padding: 20px 10px; width: 460px; margin:0 !important}
 #frameIndex01 #footerSub{display: table; padding: 10px 0; width: 100%}
 #frameIndex01 #footerSubCont{margin: 0 auto; width: 960px;}
 #frameIndex01 #footerSubCont #menu{float:left}
@@ -294,6 +295,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameComunidad01 .page01 #pageRight #pageRightCont #pageRightContMenuTop{border-bottom:1px solid #CCC}
 
 .topPage01{background-color:#FFF; color:#666; font-size:16px; letter-spacing: 1px;}
+.topPage01 h2{color:#666; font-weight:bold;}
 .centerPage01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
 
 .topPage02{border-width:1px 1px 0 1px; border-style:solid; border-color:#999;}
@@ -306,7 +308,6 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .footer01{background:none repeat scroll 0 0 #807FFE;}
 .footerSub01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
 .footerSub01{font-size:0.8em}
-.footerSub01 ul li{border-right: 1px solid #999999; height: 15px; padding-left:14px; padding-right:14px;}
 
 .popupCont01{background-color:#FFF}
 
@@ -409,6 +410,10 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu03 .menuList li li a{color:#000; font-size: 14px;}
 .menu03 .menuList li:hover, .menuList li.sfHover, .menuList a:focus, .menuList a:hover, .menuList a:active{outline: 0 none}
 .menu03 .menuList a.sf-with-ul {min-width: 1px; padding-right: 0}
+
+.menu04 a{text-decoration:none; padding-left:5px; padding-right:10px; color:#999 !important}
+.menu04 a:hover{text-decoration:underline;}
+.menu04 li{border-right:1px solid #999}
 
 .thumb01{padding:5px; background-color:#FFF; border:1px solid #CCC; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 .thumb01:hover{border:1px solid #333; text-decoration:none}
