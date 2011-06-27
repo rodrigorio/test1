@@ -196,6 +196,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #topHeader{height:30px; position:relative; width:100%; min-width:960px}
 #topHeader #topHeaderMenuRight, #topHeader #topHeaderMenuLeft{height:30px; opacity:1; position:absolute; z-index:990}
 #topHeader #topHeaderMenuRight a, #topHeader #topHeaderMenuLeft a{padding:7px 10px; z-index:1000;}
+#topHeader #topHeaderMenuRight .optionSelected, #topHeader #topHeaderMenuLeft .optionSelected{padding:4px 10px 7px 10px}
 #topHeader #topHeaderMenuLeft{top:0; left:0; padding-left:5px;}
 #topHeader #topHeaderMenuRight{top:0; right:0; padding-right:5px;}
 
@@ -381,6 +382,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu01 li li a{font-weight:normal !important}
 .menu01 li:hover, .menu01 li.sfHover, .menu01 a:focus, .menu01 a:hover, .menu01 a:active{outline: 0 none}
 .menu01 a.sf-with-ul {min-width: 1px; padding-right: 0}
+.menu01 .optionSelected{border-top:3px solid #93B5F9}
 
 .menu02 a{text-decoration:none; font-weight:bold;}
 .menu02 a:hover{text-decoration:underline;}
@@ -543,8 +545,8 @@ a .i{margin-right:4px; float:left}
 .lockClosed32{background-position:0px -64px}
 .movie{background-position:-336px -240px} .movie32{background-position:-32px -64px} .movieAdd{background-position:-320px -224px} .movieRemove{background-position:-320px -240px} .movieEdit{background-position:-336px -224px}
 .notepad{background-position:-288px -224px} .notepad32{background-position:-64px -64px} .notepadEdit{background-position:-304px -240px} .notepadRemove{background-position:-304px -224px} .notepadAdd{background-position:-288px -240px}
-.user32{background-position:-96px -64px} .user32Add{background-position:-128px -64px} .user32Remove{background-position:-192px -64px} .user32Edit{background-position:-160px -64px} .user32Secure{background-position:-256px -64px}
-.group32{background-position:-224px -64px}
+.user{background-position:-128px -256px} .user32{background-position:-96px -64px} .userAdd{background-position:-96px -272px} .user32Add{background-position:-128px -64px} .user32Remove{background-position:-192px -64px} .userEdit{background-position:-112px -272px} .user32Edit{background-position:-160px -64px} .user32Secure{background-position:-256px -64px}
+.group{background-position:-112px -256px} .group32{background-position:-224px -64px}
 .report{background-position:-224px -240px} .report32{background-position:0px -96px} 
 .folderOpen32{background-position:-32px -96px}
 .rss{background-position:-240px -224px} .rss32{background-position:-64px -96px}
@@ -624,6 +626,7 @@ a .i{margin-right:4px; float:left}
 .searchDocument{background-position:-112px -176px} .searchDocument32{background-position:-160px -32px}
 .linkBreak{background-position:-48px -160px}
 .hierarchy{background-position:-80px -176px}
+.bank{background-position:-128px -176px}
 .star1{background-position:0px -160px} 
 .star2{width:32px !important; background-position:0px -176px} 
 .star3{width:48px !important; background-position:0px -192px} 
