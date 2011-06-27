@@ -137,20 +137,17 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", "");
         $this->getTemplate()->set_var("sMetaKeywords", "");
 
-        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "columnaCentralContent", "MsgInfoBlockI32");
-        $this->getTemplate()->set_var("sMensaje", "El sitio se encuentra en construccion.");
-
-        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "columnaCentralContent", "ImagenSitioEnConstruccionBlock", true);
-        $this->getTemplate()->set_var("srcSitioEnConstruccion", 'gui/images/banners-logos/bajo_construccion.jpg');
-        $this->getTemplate()->set_var("widthSitioEnConstruccion", "580");
-        $this->getTemplate()->set_var("heightSitioEnConstruccion", "300");
+        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "topPageContent", "TopPageBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "bottomPageContent", "BottomPageBlock");
+        $this->getTemplate()->set_var("tituloVista", "Sitio en construccion");
+        $this->getTemplate()->set_var("subtituloVista", "Estamos trabajando, muy pronto estaremos en línea");
             
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     public function sitioOffline()
     {
-        $$this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
+        $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/sitio-offline.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
@@ -158,13 +155,10 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", "");
         $this->getTemplate()->set_var("sMetaKeywords", "");
 
-        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "columnaCentralContent", "MsgInfoBlockI32");
-        $this->getTemplate()->set_var("sMensaje", "El sitio se encuentra fuera de l�nea por el momento.");
-
-        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "columnaCentralContent", "ImagenSitioEnConstruccionBlock", true);
-        $this->getTemplate()->set_var("srcSitioEnConstruccion", 'gui/images/banners-logos/fuera_de_linea.jpg');
-        $this->getTemplate()->set_var("widthSitioEnConstruccion", "580");
-        $this->getTemplate()->set_var("heightSitioEnConstruccion", "300");
+        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-offline.gui.html", "topPageContent", "TopPageBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-offline.gui.html", "bottomPageContent", "BottomPageBlock");
+        $this->getTemplate()->set_var("tituloVista", "Sitio fuera de linea");
+        $this->getTemplate()->set_var("subtituloVista", "El sitio se encuentra momentáneamente fuera de línea, sepa disculpar las molestias. No dude en concactarse con nosotros.");
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }

@@ -194,7 +194,7 @@ class PageControllerAbstract implements PageControllerInterface
                 break;                
         }
         
-        $this->getTemplate()->load_file("gui/templates/frameBlog02-01.gui.html", "frame");
+        $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
@@ -202,10 +202,12 @@ class PageControllerAbstract implements PageControllerInterface
         $this->getTemplate()->set_var("sMetaDescription", "");
         $this->getTemplate()->set_var("sMetaKeywords", "");
 
+        $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "centerPageContent", "TituloBlock");
+
         $mensajeInfoError = "Puedes que hayas hecho clic en un enlace caducado o que hayas escrito mal la dirección.
                              En algunas direcciones web se distingue entre mayúsculas y minúsculas.";
 
-        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "columnaCentralContent", $ficha);
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "centerPageContent", $ficha, true);
         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloMensajeError);
         $this->getTemplate()->set_var("sMsgFicha", $mensajeInfoError);
 
@@ -221,12 +223,9 @@ class PageControllerAbstract implements PageControllerInterface
         $this->getTemplate()->set_var("sNombreOpcion", "Volver a la página anterior");
         $this->getTemplate()->parse("OpcionMenuLastOpt");
 
-        //foto 404
-        $this->getTemplate()->load_file_section("gui/vistas/index/sitio-en-construccion.gui.html", "columnaCentralContent", "ImagenSitioEnConstruccionBlock", true);
-        $this->getTemplate()->set_var("srcSitioEnConstruccion", 'gui/images/banners-logos/404.jpg');
-        $this->getTemplate()->set_var("widthSitioEnConstruccion", "580");
-        $this->getTemplate()->set_var("heightSitioEnConstruccion", "300");
-
+        $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "topPageContent", "TopPageBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "bottomPageContent", "BottomPageBlock");
+        
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
 }
