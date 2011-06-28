@@ -6,7 +6,7 @@
 class IndexControllerComunidad extends PageControllerAbstract
 {
     private function setFrameTemplate(){
-        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-02.gui.html", "frame");
+        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         return $this;
     }
 
@@ -55,43 +55,33 @@ class IndexControllerComunidad extends PageControllerAbstract
                  ->setHeadTemplate()
                  ->setMenuTemplate();
 
-            /*
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $perfilDesc = $perfil->getDescripcion();
+            $nombreUsuario = $perfil->getNombreUsuario();
+
             $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
             $this->getTemplate()->set_var("hrefLogoHeader", "http://www.ufasta.edu.ar");
-            $this->getTemplate()->set_var("tituloHeader", "SGPAPD");
-            $this->getTemplate()->set_var("subtituloHeader", "Sistema de gestión del proceso de aprendizaje en personas discapacitadas");
-
-            //nombre seccion
-            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "topPageContent", "TituloSeccionBlock");
-            $this->getTemplate()->set_var("sNombreSeccionTopPage", "Inicio");
-
-            //contenido home
-            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "centerPageContent", "HomeCenterPageBlock");
-
-            //footer home
-            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "footerContent", "HomeFooterBlock");
-
-            //Limpio las opciones porque ya hay otros menues.
-            $this->getTemplate()->set_var("OpcionesMenu", "");
-            $this->getTemplate()->set_var("OpcionMenuLastOpt", "");
-
-            $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "footerSubContent", "MenuHorizontal04Block");
-            $this->getTemplate()->set_var("idOpcion", 'footerSubInicio');
-            $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
-            $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
-            $this->getTemplate()->parse("OpcionesMenu", true);
-
-            $this->getTemplate()->set_var("idOpcion", 'footerSubAnterior');
-            $this->getTemplate()->set_var("hrefOpcion", "javascript:history.go(-1)");
-            $this->getTemplate()->set_var("sNombreOpcion", "Página anterior");
-            $this->getTemplate()->parse("OpcionMenuLastOpt");
-
-            $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "footerSubCopyright", "HomeCopyrightBlock");
-            */
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-
+            $this->getTemplate()->set_var("logoDesc", "SGPAPD");
+            $this->getTemplate()->set_var("moduloDesc", "Comunidad");
             
+            //nombre seccion
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "centerHeaderContRight", "CenterHeaderContRight");
+            $this->getTemplate()->set_var("nombreUsuarioLogged", $nombreUsuario);
+            $this->getTemplate()->set_var("hrefEditarPerfil", $this->getRequest()->getBaseUrl().'/comunidad/datosPersonales');
+            $this->getTemplate()->set_var("hrefAdministrador", $this->getRequest()->getBaseUrl().'/admin');
+            //si no es moderador o admin quito el boton al administrador
+            if($perfilDesc != 'administrador' && $perfilDesc != 'moderador'){
+                $this->getTemplate()->set_var("AdministradorButton", "");
+            }
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Comunidad - Inicio");
+            
+            //contenido ppal home comunidad
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
+
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));            
          }catch(Exception $e){
             print_r($e);
         }

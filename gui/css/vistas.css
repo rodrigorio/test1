@@ -51,7 +51,7 @@ i{background-color:#EEE}
 p{margin-bottom:18px}
 
 h1{font-size:2.8em; line-height:36px}
-h2{font-size:1.7em; color:#FFF}
+h2{font-size:1.7em}
 h3{font-weight:bold}
 
 a{text-decoration:none; color:#1111CC; outline:0;}
@@ -218,7 +218,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameComunidad01 #page #pageLeft #pageLeftCont{padding:10px 20px 0 10px; min-height:350px; margin-bottom:-2000px; padding-bottom:2000px;}
 #frameComunidad01 #page #pageRight #pageRightCont{margin-bottom:-2000px; padding-bottom:2000px}
 #frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerCont{width:235px; float:right; padding:10px; margin-bottom:-2000px; padding-bottom:2000px}
-#frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:10px; margin-right:256px; height:100%}
+#frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:20px 10px; margin-right:256px; height:100%}
 #frameComunidad01 #page #pageRight #pageRightCont #pageRightContMenuTop{padding:5px 10px; overflow:auto; height:100%;}
 
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
@@ -307,6 +307,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .bottomPage02{border-width:0 1px 1px 1px; border-style:solid; border-color:#999; font-size:0.8em}
 
 .footer01{background:none repeat scroll 0 0 #807FFE;}
+.footer01 h2{color:#FFF}
 .footerSub01{background:url("../images/fondos/page-top-background.jpg") repeat-x scroll center top #E9E9E9;}
 .footerSub01{font-size:0.8em}
 
@@ -626,7 +627,7 @@ a .i{margin-right:4px; float:left}
 .searchDocument{background-position:-112px -176px} .searchDocument32{background-position:-160px -32px}
 .linkBreak{background-position:-48px -160px}
 .hierarchy{background-position:-80px -176px}
-.bank{background-position:-128px -176px}
+.bank{background-position:-128px -176px} .bank32{background-position:-192px -32px}
 .star1{background-position:0px -160px} 
 .star2{width:32px !important; background-position:0px -176px} 
 .star3{width:48px !important; background-position:0px -192px} 
