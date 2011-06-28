@@ -86,6 +86,13 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "registrarse"
                                 ));
         $router->addRoute('indexIndexRegistrarse', $route);
+        $route = new RegexRoute('enviar-invitacion',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "index",
+                                        'action'     => "enviarInvitacion"
+                                ));
+        $router->addRoute('indexIndexEnviarInvitacion', $route);
 
         $route = new RegexRoute('login',
                                 array(
