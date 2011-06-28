@@ -55,9 +55,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id ";
                     if(!empty($filtro)){
-                    	$sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
-            
+
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -66,28 +66,27 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $aUsuarios = array();
             while($oObj = $db->oNextRecord()){
-                $oUsuario                   = new stdClass();
-                $oUsuario->iId              = $oObj->iId;
-                $oUsuario->sNombre          = $oObj->sNombre;
-                $oUsuario->sApellido        = $oObj->sApellido;
-                $oUsuario->sSexo            = $oObj->sSexo;
+                $oUsuario 				= new stdClass();
+                $oUsuario->iId 			= $oObj->iId;
+                $oUsuario->sNombre 		= $oObj->sNombre;
+                $oUsuario->sApellido 	= $oObj->sApellido;
+                $oUsuario->sSexo 		= $oObj->sSexo;
                 $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
-                $oUsuario->sEmail           = $oObj->sEmail;
-                $oUsuario->sTelefono        = $oObj->sTelefono;
-                $oUsuario->sCelular         = $oObj->sCelular;
-                $oUsuario->sFax             = $oObj->sFax;
-                $oUsuario->sDomicilio       = $oObj->sDomicilio;
-                $oUsuario->oCiudad          = null;
-                $oUsuario->sCiudadOrigen    = $oObj->sCiudadOrigen;
-                $oUsuario->sCodigoPostal    = $oObj->sCodigoPostal;
-                $oUsuario->sEmpresa         = $oObj->sEmpresa;
-                $oUsuario->sUniversidad     = $oObj->sUniversidad;
-                $oUsuario->sSecundaria      = $oObj->sSecundaria;
-                $oUsuario->sSitioWeb        = $oObj->sSitioWeb;
-                $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
-                $oUsuario->sContrasenia     = $oObj->sContrasenia;
-                $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
-                
+                $oUsuario->sEmail 		= $oObj->sEmail;
+                $oUsuario->sTelefono 	= $oObj->sTelefono;
+                $oUsuario->sCelular	 	= $oObj->sCelular;
+                $oUsuario->sFax 		= $oObj->sFax;
+                $oUsuario->sDomicilio 	= $oObj->sDomicilio;
+                $oUsuario->oCiudades 	= null;
+                $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa		= $oObj->sEmpresa;
+                $oUsuario->sUniversidad = $oObj->sUniversidad;
+                $oUsuario->sSecundaria 	= $oObj->sSecundaria;
+                $oUsuario->sSitioWeb 	= $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario);
 
@@ -181,11 +180,91 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-	public function enviarInvitacion($iIdUsuario , Usuario $oInvitado){
+	private function enviarEmail($orig, $dest, $asunto, $body){
+    	try{
+    		$mail = new PHPMailer();
+    		//Con PluginDir le indicamos a la clase phpmailer donde se 
+		  	//encuentra la clase smtp que como he comentado al principio de 
+		  	//este ejemplo va a estar en el subdirectorio includes
+			$mail->PluginDir = "../../system/";
+
+		  	//Con la propiedad Mailer le indicamos que vamos a usar un 
+		  	//servidor smtp
+		  	$mail->Mailer = "smtp";
+		  	
+		  	//Asignamos a Host el nombre de nuestro servidor smtp
+		  	$mail->Host = "smtp.hotpop.com";
+
+		  	//Le indicamos que el servidor smtp requiere autenticación
+		  	$mail->SMTPAuth = true;
+		
+		  	//Le decimos cual es nuestro nombre de usuario y password
+		  	$mail->Username = "rrio@HotPOP.com"; 
+		  	$mail->Password = "mipassword";
+		
+		  	//Indicamos cual es nuestra dirección de correo y el nombre que 
+		  	//queremos que vea el usuario que lee nuestro correo
+		 	$mail->From = $orig;
+		 	$mail->FromName = "Eduardo Garcia";
+		
+			//el valor por defecto 10 de Timeout es un poco escaso dado que voy a usar 
+			//una cuenta gratuita, por tanto lo pongo a 30  
+			$mail->Timeout=30;
+		
+	  		//Indicamos cual es la dirección de destino del correo
+			$mail->AddAddress($dest);
+			
+			//Asignamos asunto y cuerpo del mensaje
+			//El cuerpo del mensaje lo ponemos en formato html, haciendo 
+			//que se vea en negrita
+			$mail->Subject = $asunto;
+			$mail->Body = "<b>Mensaje de prueba </b><br/><p>$body</p>";
+		
+			//Definimos AltBody por si el destinatario del correo no admite email con formato html 
+			$mail->AltBody = "Mensaje de prueba mandado con phpmailer en formato solo texto";
+			
+			$mail->IsHTML(true);
+			//se envia el mensaje, si no ha habido problemas 
+			//la variable $exito tendra el valor true
+			$exito = $mail->Send();
+			
+			//Si el mensaje no ha podido ser enviado se realizaran 4 intentos mas como mucho 
+			//para intentar enviar el mensaje, cada intento se hara 5 segundos despues 
+			//del anterior, para ello se usa la funcion sleep	
+	  		$intentos=1; 
+			while ((!$exito) && ($intentos < 5)) {
+				sleep(5);
+		     	//echo $mail->ErrorInfo;
+		     	$exito = $mail->Send();
+		     	$intentos=$intentos+1;	
+	   		}
+		   if(!$exito) {
+				echo "Problemas enviando correo electrónico a ".$valor;
+				echo "<br/>".$mail->ErrorInfo;	
+		   }else{
+				echo "Mensaje enviado correctamente";
+		   }
+    	}catch(Exception $e){
+			$db->rollback_transaction();
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+    /**
+     * 
+     * Enter description here ...
+     * @param unknown_type $iIdUsuario
+     * @param Invitado $oInvitado {
+     * 		nombre
+     * 		apellido
+     * 		email
+     * 		relacion
+     * }
+     * @throws Exception
+     */
+	public function enviarInvitacion($iIdUsuario , Invitado $oInvitado){
         try{
 			$db = $this->conn;
 			$db->begin_transaction();
-
 			$sSQL =	" insert personas set";
 					if($oInvitado->getNombre()){
 						$sSQL .=" nombre =".$db->escape($oInvitado->getNombre(),true).", ";
@@ -195,23 +274,34 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					}
 			$sSQL .= " email = ".$db->escape($oInvitado->getEmail(),true)." ";
 			$db->execSQL($sSQL);
-
+			
 			$iUltimoId = $db->insert_id();
 
+			$sSQL 	= " insert invitados ".
+			        " set id= ".$iUltimoId."";
+			$db->execSQL($sSQL);
+			
+			$time 	= time();
+			$token 	= md5($time);
 			$sSQL =" insert usuario_x_invitado ".
-			        " set usuarios_id= ".$iIdUsuario.", ";
-                    " invitados_id=".$iUltimoId.", ";
-                    " relacion=".$db->escape($oInvitado->getRelacion(),true)." ";
+			        " set usuarios_id= ".$iIdUsuario.", ".
+                    " invitados_id=".$iUltimoId.", ".
+                    " relacion=".$db->escape($oInvitado->getRelacion(),true).",".
+			 		" token=".$db->escape($token,true)."";
 			$db->execSQL($sSQL);
 
-			$sSQL =" insert invitados ".
-			        " set id= ".$iUltimoId." ";
-			$db->execSQL($sSQL);
 
 			$db->commit();
-			/**
-			 * @todo falta funcion de enviar el email
-			 */
+			
+			$nom 	= $oInvitado->getNombre();
+			$ape 	= $oInvitado->getApellido();
+			$email 	= $oInvitado->getEmail();
+			//$body 	= "http://localhost/Tesis2/mostrarFormRegistracion?nom=$nom&ape=$ape&email=$email&token=$token&inv=$iUltimoId&us=$iIdUsuario";
+			/*$asuto 	= "registracion";
+			$dest 	= $oInvitado->getEmail();
+			$orig	= "rodrigo.a.rio@gmail.com";
+			$this->enviarEmail($orig, $dest, $asunto, $body);*/
+			return  true;
 		}catch(Exception $e){
 			$db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
@@ -348,7 +438,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					" especialidades_id =".$db->escape($iEspecialidadId,true).", ".
                     " perfiles_id =".self::PERFIL_INTEGRANTE_INACTIVO.", ".
 					" nombre=".$db->escape($oUsuario->getNombreUsuario(),true).",".
-					" contrasenia=".$db->escape($oUsuario->getContrasenia(),true)."";
+					" contrasenia=".$db->escape(md5($oUsuario->getContrasenia()),true)."";
 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -391,11 +481,35 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
             if(empty($foundRows)){ return null; }
 
-            $db->query($sSQL);
-            
             return $db->getDBArrayQuery(sSQL);
 	  	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
+	}
+	
+	public function validarUrlTmp($user,$inv,$email,$token){
+		 try{
+            $db = $this->conn;
+            $sSQL = "SELECT 
+					  `usuarios_id`,
+					  `invitados_id`,
+					  `relacion`,
+					  `fecha`,
+					  `estado`,
+					  `token`
+					FROM 
+					  `usuario_x_invitado` ui
+					JOIN
+						usuarios u ON u.id = ui.usuarios_id
+					JOIN
+						personas p ON p.id = ui.invitados_id
+					WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now() AND ui.`usuarios_id` = $user AND ui.invitados_id = $inv 
+						AND ui.token = ".$db->escape($token,true)."";
+            $db->query($sSQL);
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            return $foundRows;
+		  }catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
 	}
 }

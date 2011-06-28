@@ -92,8 +92,23 @@ class IndexControllerIndex extends PageControllerAbstract
         }
     }
         
+    private function validarUrlTemporal(){
+    	try{
+    		$user	= $this->getRequest()->get("us");
+	    	$inv 	= $this->getRequest()->get("inv");
+	    	$email  = $this->getRequest()->get("email");
+	    	$token  = $this->getRequest()->get("token");
+	    	return IndexController::getInstance()->validarUrlTmp($user,$inv,$email,$token);
+     	}catch(Exception $e){
+     		return false;
+            print_r($e);
+        }
+    }
     public function mostrarFormRegistracion(){
         try{
+        	if(!$this->validarUrlTemporal()){
+        		exit("La pagina ha caducado");	
+        	}
             $this->setFrameTemplate()
                  ->setHeadTemplate()
                  ->setMenuTemplate();
@@ -103,9 +118,9 @@ class IndexControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("subtituloHeader", "subtitulo header");
             $this->getTemplate()->set_var("topPageContent", "top page content");
 
-            $this->getTemplate()->set_var("sEmail", "rio_rodrigo@gmail.com");
-            $this->getTemplate()->set_var("sNombre", "Rodrigo");
-            $this->getTemplate()->set_var("sApellido", "Rio");
+            $this->getTemplate()->set_var("sEmail", $this->getRequest()->get("email"));
+            $this->getTemplate()->set_var("sNombre", $this->getRequest()->get("nom"));
+            $this->getTemplate()->set_var("sApellido", $this->getRequest()->get("ape"));
 
             $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
 
@@ -123,27 +138,31 @@ class IndexControllerIndex extends PageControllerAbstract
 
     public function registrarse()
     {
-        $sUserName 	= $this->getRequest()->getPost("username");
-        $iTipoDni 	= $this->getRequest()->getPost("tipoDni");
-        $iDni	 	= $this->getRequest()->getPost("dni");
-        $sPassword 	= $this->getRequest()->getPost("password");
-        $sEmail 	= $this->getRequest()->getPost("email");
-        $sFirstName	= $this->getRequest()->getPost("firstname");
-        $sLastName 	= $this->getRequest()->getPost("lastname");
-        $sSex	 	= $this->getRequest()->getPost("sex");
-        $dFechaNacimiento	 	= trim($this->getRequest()->getPost("fechaNacimiento"));
-        $oObj		= new stdClass();
-        $oObj->sNombreUsuario 	= $sUserName;
-        $oObj->sContrasenia	= $sPassword;
-        $oObj->sNombre		= $sFirstName;
-        $oObj->sApellido	= $sLastName;
-        $oObj->sSexo		= $sSex;
-        $oObj->iTipoDocumentoId	= $iTipoDni;
-    	$oObj->sNumeroDocumento	= $iDni;
-    	$oObj->sEmail		= $sEmail;
-    	$oObj->dFechaNacimiento	= $dFechaNacimiento." 00:00";
-		
-    	echo IndexController::getInstance()->registrar($oObj);
+    	try{
+	        $sUserName 	= $this->getRequest()->getPost("username");
+	        $iTipoDni 	= $this->getRequest()->getPost("tipoDni");
+	        $iDni	 	= $this->getRequest()->getPost("dni");
+	        $sPassword 	= $this->getRequest()->getPost("password");
+	        $sEmail 	= $this->getRequest()->getPost("email");
+	        $sFirstName	= $this->getRequest()->getPost("firstname");
+	        $sLastName 	= $this->getRequest()->getPost("lastname");
+	        $sSex	 	= $this->getRequest()->getPost("sex");
+	        $dFechaNacimiento	 	= trim($this->getRequest()->getPost("fechaNacimiento"));
+	        $oObj		= new stdClass();
+	        $oObj->sNombreUsuario 	= $sUserName;
+	        $oObj->sContrasenia	= $sPassword;
+	        $oObj->sNombre		= $sFirstName;
+	        $oObj->sApellido	= $sLastName;
+	        $oObj->sSexo		= $sSex;
+	        $oObj->iTipoDocumentoId	= $iTipoDni;
+	    	$oObj->sNumeroDocumento	= $iDni;
+	    	$oObj->sEmail		= $sEmail;
+	    	$oObj->dFechaNacimiento	= $dFechaNacimiento." 00:00";
+			
+    		echo IndexController::getInstance()->registrar($oObj);
+    	  }catch(Exception $e){
+            print_r($e);
+        }
     }
 
     /**

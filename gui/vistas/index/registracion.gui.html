@@ -1,5 +1,20 @@
 <link href="gui/css/registracion.css" rel="stylesheet" type="text/css" media="screen, projection" />
-<script type="text/javascript" src="gui/js/registracion.js"></script>
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/index/login.js")
+   .script("{pathUrlBase}"+"gui/js/registracion.js");
+   
+</script>
 <div id="registration_container">
 	<div>
 		<div id="registracion_msg_error" class="error"></div>
@@ -31,7 +46,7 @@
 				</div>
 				<label for="email">Tu correo electrónico:</label>
 				<div class="field_container">
-					<input  id="reg_email" name="reg_email" type="text" value="{sEmail}" >
+					<input  id="reg_email" name="reg_email" type="text" value="{sEmail}" readonly="readonly">
 				</div>
 				<label for="firstname">Nombre de usuario:</label>
 				<div class="field_container">

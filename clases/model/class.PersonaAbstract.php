@@ -55,8 +55,8 @@ abstract class PersonaAbstract
     public function setTelefono($sTelefono){
         $this->sTelefono = $sTelefono;
     }
-    public function setCelular($sCelualr){
-        $this->sCelualr = $sCelualr;
+    public function setCelular($sCelular){
+        $this->sCelular = $sCelular ;
     }
     public function setFax($sFax){
         $this->sFax = $sFax;
@@ -120,7 +120,7 @@ abstract class PersonaAbstract
        	return $this->sTelefono ;
     }
     public function getCelular(){
-        return $this->sCelualr;
+        return $this->sCelular;
     }
     public function getFax(){
         return $this->sFax ;
