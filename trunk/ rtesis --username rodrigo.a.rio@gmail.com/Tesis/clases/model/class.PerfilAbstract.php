@@ -75,7 +75,7 @@ abstract class PerfilAbstract
      */
     public function getNombreUsuario()
     {
-        return $this->getUsuario()->getNombreUsuario();
+        return $this->oUsuario->getNombreUsuario();
     }
 
     protected function cargarPermisos()
