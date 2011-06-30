@@ -66,34 +66,34 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $aUsuarios = array();
             while($oObj = $db->oNextRecord()){
-                $oUsuario 				= new stdClass();
-                $oUsuario->iId 			= $oObj->iId;
-                $oUsuario->sNombre 		= $oObj->sNombre;
-                $oUsuario->sApellido 	= $oObj->sApellido;
-                $oUsuario->sSexo 		= $oObj->sSexo;
+                $oUsuario                   = new stdClass();
+                $oUsuario->iId              = $oObj->iId;
+                $oUsuario->sNombre          = $oObj->sNombre;
+                $oUsuario->sApellido        = $oObj->sApellido;
+                $oUsuario->sSexo            = $oObj->sSexo;
                 $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
-                $oUsuario->sEmail 		= $oObj->sEmail;
-                $oUsuario->sTelefono 	= $oObj->sTelefono;
-                $oUsuario->sCelular	 	= $oObj->sCelular;
-                $oUsuario->sFax 		= $oObj->sFax;
-                $oUsuario->sDomicilio 	= $oObj->sDomicilio;
-                $oUsuario->oCiudades 	= null;
-                $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
-                $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
-                $oUsuario->sEmpresa		= $oObj->sEmpresa;
-                $oUsuario->sUniversidad = $oObj->sUniversidad;
-                $oUsuario->sSecundaria 	= $oObj->sSecundaria;
-                $oUsuario->sSitioWeb 	= $oObj->sSitioWeb;
-                $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
-                $oUsuario->sContrasenia = $oObj->sContrasenia;
-                $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
+                $oUsuario->sEmail           = $oObj->sEmail;
+                $oUsuario->sTelefono        = $oObj->sTelefono;
+                $oUsuario->sCelular         = $oObj->sCelular;
+                $oUsuario->sFax             = $oObj->sFax;
+                $oUsuario->sDomicilio       = $oObj->sDomicilio;
+                $oUsuario->oCiudad          = null;
+                $oUsuario->sCiudadOrigen    = $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal    = $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa         = $oObj->sEmpresa;
+                $oUsuario->sUniversidad     = $oObj->sUniversidad;
+                $oUsuario->sSecundaria      = $oObj->sSecundaria;
+                $oUsuario->sSitioWeb        = $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia     = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario);
 
                 //creo el perfil con el usuario asignado
                 $oPerfilAbstract            = new stdClass();
                 $oPerfilAbstract->iId       = $oObj->perfiles_id;
-                $oPerfilAbstract->oUsuario   = $oUsuario;
+                $oPerfilAbstract->oUsuario  = $oUsuario;
                 switch($oObj->perfiles_id){
                     case self::PERFIL_ADMINISTRADOR:{ $oPerfil       = Factory::getAdministradorInstance($oPerfilAbstract); break; }
                     case self::PERFIL_MODERADOR:{ $oPerfil           = Factory::getModeradorInstance($oPerfilAbstract); break; }
@@ -195,14 +195,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		  	//Asignamos a Host el nombre de nuestro servidor smtp
 		  	$mail->Host = "smtp.hotpop.com";
 
-		  	//Le indicamos que el servidor smtp requiere autenticación
+		  	//Le indicamos que el servidor smtp requiere autenticaciï¿½n
 		  	$mail->SMTPAuth = true;
 		
 		  	//Le decimos cual es nuestro nombre de usuario y password
 		  	$mail->Username = "rrio@HotPOP.com"; 
 		  	$mail->Password = "mipassword";
 		
-		  	//Indicamos cual es nuestra dirección de correo y el nombre que 
+		  	//Indicamos cual es nuestra direcciï¿½n de correo y el nombre que 
 		  	//queremos que vea el usuario que lee nuestro correo
 		 	$mail->From = $orig;
 		 	$mail->FromName = "Eduardo Garcia";
@@ -211,7 +211,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			//una cuenta gratuita, por tanto lo pongo a 30  
 			$mail->Timeout=30;
 		
-	  		//Indicamos cual es la dirección de destino del correo
+	  		//Indicamos cual es la direcciï¿½n de destino del correo
 			$mail->AddAddress($dest);
 			
 			//Asignamos asunto y cuerpo del mensaje
@@ -239,7 +239,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		     	$intentos=$intentos+1;	
 	   		}
 		   if(!$exito) {
-				echo "Problemas enviando correo electrónico a ".$valor;
+				echo "Problemas enviando correo electrï¿½nico a ".$valor;
 				echo "<br/>".$mail->ErrorInfo;	
 		   }else{
 				echo "Mensaje enviado correctamente";
