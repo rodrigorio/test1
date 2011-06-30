@@ -62,7 +62,7 @@ class Discapacitado extends PersonaAbstract
     	$this->sNombreApellidoPadre = $sNombreApellidoPadre;
     }
  public function setNombreApellidoMadre($sNombreApellidoMadre){
-    	$this->sNombreApellidoMadre = $sNombreApellidoMadreadre;
+    	$this->sNombreApellidoMadre = $sNombreApellidoMadre;
     }
  public function setFechaNacimientoPadre($dFechaNacimientoPadre){
     	$this->dFechaNacimientoPadre = $dFechaNacimientoPadre;

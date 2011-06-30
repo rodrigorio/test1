@@ -33,7 +33,7 @@ public  function existe($filtro){
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        i.id as iId, i.nombre as sNombre, i.ciudades_id as iCiudadId
+                        i.id as iId, i.nombre as sNombre
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
@@ -113,7 +113,7 @@ public final function obtener($filtro, &$foundRows = 0){
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        i.id as iId, i.nombre as sNombre, i.ciudades_id as iCiudadId
+                        i.id as iId, i.nombre as sNombre
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
@@ -131,7 +131,8 @@ public final function obtener($filtro, &$foundRows = 0){
             	$oInstitucion 		= new stdClass();
             	$oInstitucion->iId 	= $oObj->iId;
             	$oInstitucion->sNombre= $oObj->sNombre;
-  //falta un campo de tipo objeto-->
+            	$oUsuario->oCiudades 	= null;
+  
             	$aInstituciones[]		= Factory::getInstitucionInstance($oinstitucion);
             }
 
