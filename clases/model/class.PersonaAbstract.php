@@ -147,4 +147,3 @@ abstract class PersonaAbstract
        return $this->sSecundaria;
     }
 }
-?>
