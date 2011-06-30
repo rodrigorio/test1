@@ -104,6 +104,7 @@ class IndexControllerIndex extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function mostrarFormRegistracion(){
         try{
         	if(!$this->validarUrlTemporal()){

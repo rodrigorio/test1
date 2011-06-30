@@ -23,7 +23,7 @@ class LoginControllerIndex extends PageControllerAbstract
      * Este metodo resuelve tambien a que url tiene que dirigirse el usuario una vez que se loguea.
      */
     public function procesar()
-    {
+    {        
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         

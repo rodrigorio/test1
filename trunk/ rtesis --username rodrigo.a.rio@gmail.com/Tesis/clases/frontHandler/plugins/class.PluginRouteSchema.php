@@ -117,5 +117,13 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('comunidadIndexIndex', $route);
+
+        $route = new RegexRoute('admin',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'index',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminIndexIndex', $route);
     }
 }
