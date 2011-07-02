@@ -39,10 +39,10 @@ class RegistracionControllerIndex extends PageControllerAbstract
 
     public function index()
     {
-        $this->mostrarFormRegistracion();
+        $this->formulario();
     }
 
-    public function mostrarFormRegistracion(){
+    public function formulario(){
         try{
             if(!$this->validarUrlTemporal()){
                 exit("La pagina ha caducado");
@@ -72,7 +72,7 @@ class RegistracionControllerIndex extends PageControllerAbstract
         }
     }
 
-    public function registrarse()
+    public function procesar()
     {
     	try{
 	        $sUserName 	= $this->getRequest()->getPost("username");

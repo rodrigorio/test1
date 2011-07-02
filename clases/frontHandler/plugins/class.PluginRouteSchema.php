@@ -62,7 +62,10 @@ class PluginRouteSchema extends PluginAbstract
 
         $router = FrontController::getInstance()->getRouter();
 
-        //Define routes from generic to specific
+        ////////////////////////////////
+        ////// RUTAS MODULO INDEX //////
+        ////////////////////////////////
+        
         $route = new RegexRoute('',
                                 array(
                                         'module' => $homeSitioModulo,
@@ -71,36 +74,29 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('defaultDefaultDefault', $route);
         
-        $route = new RegexRoute('mostrarFormRegistracion',
+        $route = new RegexRoute('registracion',
                                 array(
                                         'module' => "index",
-                                        'controller' => "index",
-                                        'action'     => "mostrarFormRegistracion"
+                                        'controller' => "registracion",
+                                        'action'     => "formulario"
                                 ));
-        $router->addRoute('indexIndexFormRegistracion', $route);
+        $router->addRoute('indexRegistracionFormulario', $route);
         
-        $route = new RegexRoute('registrarse',
+        $route = new RegexRoute('registracion-procesar',
                                 array(
                                         'module' => "index",
-                                        'controller' => "index",
-                                        'action'     => "registrarse"
+                                        'controller' => "registracion",
+                                        'action'     => "procesar"
                                 ));
-        $router->addRoute('indexIndexRegistrarse', $route);
-        $route = new RegexRoute('enviar-invitacion',
-                                array(
-                                        'module' => "index",
-                                        'controller' => "index",
-                                        'action'     => "enviarInvitacion"
-                                ));
-        $router->addRoute('indexIndexEnviarInvitacion', $route);
-
+        $router->addRoute('indexRegistracionProcesar', $route);
+        
         $route = new RegexRoute('login',
                                 array(
                                         'module' => 'index',
                                         'controller' => 'login',
                                         'action'     => 'index'
                                 ));
-        $router->addRoute('indexLoginDefault', $route);
+        $router->addRoute('indexLoginIndex', $route);
 
         $route = new RegexRoute('login-procesar',
                                 array(
@@ -110,6 +106,10 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('indexLoginProcesar', $route);
 
+        ////////////////////////////////////
+        ////// RUTAS MODULO COMUNIDAD //////
+        ////////////////////////////////////
+
         $route = new RegexRoute('comunidad/home',
                                 array(
                                         'module' => 'comunidad',
@@ -117,6 +117,54 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('comunidadIndexIndex', $route);
+
+        $route = new RegexRoute('invitaciones',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "invitaciones",
+                                        'action'     => "index"
+                                ));
+        $router->addRoute('comunidadInvitacionesIndex', $route);
+
+        $route = new RegexRoute('invitaciones-listado',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "invitaciones",
+                                        'action'     => "listado"
+                                ));
+        $router->addRoute('comunidadInvitacionesListado', $route);
+
+        $route = new RegexRoute('nueva-invitacion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "invitaciones",
+                                        'action'     => "formulario"
+                                ));
+        $router->addRoute('comunidadInvitacionesFormulario', $route);
+
+        $route = new RegexRoute('invitacion-procesar',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "invitaciones",
+                                        'action'     => "procesar"
+                                ));
+        $router->addRoute('comunidadInvitacionesProcesar', $route);
+        
+        ///////////////////////////////////////////
+        ////// RUTAS MODULO SEGUIMIENTOS //////////
+        ///////////////////////////////////////////
+        
+        $route = new RegexRoute('seguimientos/home',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'index',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosIndexIndex', $route);
+
+        ////////////////////////////////////
+        ////// RUTAS MODULO ADMIN //////////
+        ////////////////////////////////////
 
         $route = new RegexRoute('admin',
                                 array(

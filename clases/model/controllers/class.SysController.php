@@ -73,8 +73,6 @@ class SysController
                      "index_publicaciones_redireccion404" => true,
 
                      "index_index_index" => true,
-                     "index_index_mostrarFormRegistracion" => true,
-                     "index_index_registrarse" => true,
                      "index_index_redireccion404" => true,
                      "index_index_sitioOffline" => true,
                      "index_index_sitioEnConstruccion" => true,
@@ -84,10 +82,21 @@ class SysController
                      "index_login_procesar" => true,
                      "index_login_redireccion404" => true,
 
+                     "index_registracion_index" => true,
+                     "index_registracion_formulario" => true,
+                     "index_registracion_procesar" => true,
+                     "index_registracion_redireccion404" => true,
+
                      "admin_index_redireccion404" => true,
                      "admin_index_index" => true,
 
-                     "comunidad_index_index" => true);
+                     "comunidad_index_index" => true,
+            
+                     "comunidad_invitaciones_index" => true,
+                     "comunidad_invitaciones_procesar" => true,
+                     "comunidad_invitaciones_formulario" => true,
+                     "comunidad_invitaciones_listado" => true,
+                     "comunidad_invitaciones_redireccion404" => true);
     }
 
     /**
