@@ -2,15 +2,17 @@
 
 /**
  * Page Controller para las vistas basicas del modulo comunidad.
+ *
+ * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.
  */
 class IndexControllerComunidad extends PageControllerAbstract
-{
+{    
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         return $this;
     }
 
-    private function setHeadTemplate()
+    private function setHeadTag()
     {
         $front = FrontController::getInstance();
         $parametros = $front->getPlugin('PluginParametros');
@@ -19,60 +21,64 @@ class IndexControllerComunidad extends PageControllerAbstract
         $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", $tituloVista);
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        //js de home
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "jsContent", "JsContent");
+        
         return $this;
     }
 
-    private function setMenuTemplate()
+    /**
+     * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
+     *
+     */
+    static function setCabecera(Templates &$template)
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "topHeaderMenuLeft", "TopHeaderMenuLeftBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "topHeaderMenuRight", "TopHeaderMenuRightBlock");
+        $request = FrontController::getInstance()->getRequest();
 
         //links menu top comunidad
-        $this->getTemplate()->set_var("topHeaderMenuHrefComunidad", $this->getRequest()->getBaseUrl().'/comunidad/home');
-        $this->getTemplate()->set_var("topHeaderMenuHrefPublicaciones", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones');
-        $this->getTemplate()->set_var("topHeaderMenuHrefInstituciones", $this->getRequest()->getBaseUrl().'/comunidad/instituciones');
-        $this->getTemplate()->set_var("topHeaderMenuHrefDescargas", $this->getRequest()->getBaseUrl().'/comunidad/descargas');
-        $this->getTemplate()->set_var("topHeaderMenuHrefSeguimientos", $this->getRequest()->getBaseUrl().'/seguimientos/home');
-        $this->getTemplate()->set_var("topHeaderMenuHrefDatosPersonales", $this->getRequest()->getBaseUrl().'/comunidad/datosPersonales');
-        $this->getTemplate()->set_var("topHeaderMenuHrefInvitaciones", $this->getRequest()->getBaseUrl().'/comunidad/invitaciones');
-        $this->getTemplate()->set_var("topHeaderMenuHrefSoporte", $this->getRequest()->getBaseUrl().'/comunidad/soporte');
-        $this->getTemplate()->set_var("topHeaderMenuHrefCerrarSesion", $this->getRequest()->getBaseUrl().'/logout');
-        $this->getTemplate()->set_var("topHeaderMenuHrefPreferencias", $this->getRequest()->getBaseUrl().'/comunidad/preferencias');
-        
-        $this->getTemplate()->parse("topHeaderMenuLeft", false);
-        $this->getTemplate()->parse("topHeaderMenuRight", false);
-        return $this;
+        $template->set_var("topHeaderMenuHrefComunidad", $request->getBaseUrl().'/comunidad/home');
+        $template->set_var("topHeaderMenuHrefPublicaciones", $request->getBaseUrl().'/comunidad/publicaciones');
+        $template->set_var("topHeaderMenuHrefInstituciones", $request->getBaseUrl().'/comunidad/instituciones');
+        $template->set_var("topHeaderMenuHrefDescargas", $request->getBaseUrl().'/comunidad/descargas');
+        $template->set_var("topHeaderMenuHrefSeguimientos", $request->getBaseUrl().'/seguimientos/home');
+        $template->set_var("topHeaderMenuHrefDatosPersonales", $request->getBaseUrl().'/comunidad/datosPersonales');
+        $template->set_var("topHeaderMenuHrefInvitaciones", $request->getBaseUrl().'/comunidad/invitaciones');
+        $template->set_var("topHeaderMenuHrefSoporte", $request->getBaseUrl().'/comunidad/soporte');
+        $template->set_var("topHeaderMenuHrefCerrarSesion", $request->getBaseUrl().'/logout');
+        $template->set_var("topHeaderMenuHrefPreferencias", $request->getBaseUrl().'/comunidad/preferencias');
+    }
+
+    /**
+     * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
+     *
+     */
+    static function setCenterHeader(Templates &$template){
+        $request = FrontController::getInstance()->getRequest();
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $perfilDesc = $perfil->getDescripcion();
+        $nombreUsuario = $perfil->getNombreUsuario();
+
+        $template->set_var("nombreUsuarioLogged", $nombreUsuario);
+        $template->set_var("hrefEditarPerfil", $request->getBaseUrl().'/comunidad/datosPersonales');
+        $template->set_var("hrefAdministrador", $request->getBaseUrl().'/admin');
+        //si no es moderador o admin quito el boton al administrador
+        if($perfilDesc != 'administrador' && $perfilDesc != 'moderador'){
+            $template->set_var("AdministradorButton", "");
+        }        
     }
 
     public function index(){
         try{
             $this->setFrameTemplate()
-                 ->setHeadTemplate()
-                 ->setMenuTemplate();
+                 ->setHeadTag();
 
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $perfilDesc = $perfil->getDescripcion();
-            $nombreUsuario = $perfil->getNombreUsuario();
-
-            $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-            $this->getTemplate()->set_var("hrefLogoHeader", "http://www.ufasta.edu.ar");
-            $this->getTemplate()->set_var("logoDesc", "SGPAPD");
-            $this->getTemplate()->set_var("moduloDesc", "Comunidad");
-            
-            //nombre seccion
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "centerHeaderContRight", "CenterHeaderContRight");
-            $this->getTemplate()->set_var("nombreUsuarioLogged", $nombreUsuario);
-            $this->getTemplate()->set_var("hrefEditarPerfil", $this->getRequest()->getBaseUrl().'/comunidad/datosPersonales');
-            $this->getTemplate()->set_var("hrefAdministrador", $this->getRequest()->getBaseUrl().'/admin');
-            //si no es moderador o admin quito el boton al administrador
-            if($perfilDesc != 'administrador' && $perfilDesc != 'moderador'){
-                $this->getTemplate()->set_var("AdministradorButton", "");
-            }
+            $this::setCabecera($this->getTemplate());
+            $this::setCenterHeader($this->getTemplate());
 
             //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Comunidad - Inicio");

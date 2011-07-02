@@ -44,6 +44,49 @@ pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 1
 a:link { -webkit-tap-highlight-color: #FF5E99; }
 body, select, input, textarea { color:#666; }
 
+/****************************************/
+/* MICROESTILOS */
+/****************************************/
+
+.pa{padding:5px} .pa2{padding:10px} .pa3{padding:20px}
+.pale{padding-left:5px} .pari{padding-right:5px} .pato{padding-top:5px} .pabo{padding-bottom:5px}
+.pale2{padding-left:10px} .pari2{padding-right:10px} .pato2{padding-top:10px} .pabo2{padding-bottom:10px}
+.pale3{padding-left:20px} .pari3{padding-right:20px} .pato3{padding-top:20px} .pabo3{padding-bottom:20px}
+.pa0{padding:0 !important} .pale0{padding-left:0 !important} .pari0{padding-right:0 !important} .pato0{padding-top:0 !important} .pabo0{padding-bottom:0 !important}
+.male{margin-left:5px} .mari{margin-right:5px} .mato{margin-top:5px} .mabo{margin-bottom:5px}
+.male2{margin-left:10px} .mari2{margin-right:10px} .mato2{margin-top:10px} .mabo2{margin-bottom:10px}
+.male3{margin-left:20px} .mari3{margin-right:20px} .mato3{margin-top:20px} .mabo3{margin-bottom:20px}
+.ma0{margin:0 !important} .male0{margin-left:0 !important} .mari0{margin-right:0 !important} .mato0{margin-top:0 !important} .mabo0{margin-bottom:0 !important}
+
+.di_bl{display:block} .di_no{display:none} .di_in{display:inline}
+.cl_bo{clear:both} .cl_le{clear:left} .cl_ri{clear:right}
+.teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center}
+.tetr_ca{text-transform:capitalize}
+.lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
+.fl_ri{float:right} .fl_le{float:left}
+.bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
+.bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
+.fowe_bo{font-weight:bold}
+.co{color:#333 !important}
+.po_re{position:relative !important}
+.veal_mi{vertical-align:middle !important}
+.mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
+.miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
+.mihe0{min-height:100px} .mihe1{min-height:200px} .mihe2{min-height:300px} .mihe3{min-height:400px} .mihe4{min-height:500px}
+
+.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
+.ba_no{background:none !important}
+
+.bora{-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
+.bora2{-moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;}
+.bora3{-moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px;}
+.bora4{-moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0;}
+.bora5{-moz-border-radius:5px 0 0 5px; -webkit-border-radius:5px 0 0 5px; border-radius:5px 0 0 5px;}
+.bora6{-moz-border-radius:0 5px 5px 0; -webkit-border-radius:0 5px 5px 0; border-radius:0 5px 5px 0;}
+
+.bosh{-moz-box-shadow:0 1px 2px #333; box-shadow:0 1px 2px #333; -webkit-box-shadow:0 1px 2px #333;}
+.bosh2{-moz-box-shadow:1px 2px 6px 0; box-shadow:1px 2px 6px 0; -webkit-box-shadow:1px 2px 6px 0 #333;}
+.bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
 
 /*  Fonts  */
 @font-face {
@@ -97,7 +140,6 @@ body {
 body section[role=navigation] {
 	width:271px;
 	height:auto;
-	padding:25px 0;
 	position:absolute;
 	top:0;
 	left:0;
@@ -107,6 +149,7 @@ body section[role=main] {
 	height:100%;
 	margin-left:271px;
 	padding:25px;
+        min-height:600px;
 }
 select, input, textarea, button { font:99% sans-serif; }
 strong, th {
@@ -143,19 +186,19 @@ section[role=navigation] header {
 	margin:0 2px 25px 0;
 	padding-left:25px;
 }
-section[role=navigation] header a {
-	background:url(../../images/backEnd/sample_logo.png) no-repeat;
-	width:148px;
-	height:31px;
-	text-indent:-9999em;
-	display:block;
+section[role=navigation] header li{
+    margin-bottom:10px;
+    font-weight:bold;
+    list-style:none;
 }
 section[role=navigation] header h1 {
-	margin-top:6px;
-	font-weight:normal;
-	font-family:'PTSansItalic', Arial, sans-serif;
-	color:#999;
-	text-shadow:none;
+    margin-top:6px;
+    font-weight:bold;
+    font-family:'PTSansItalic', Arial, sans-serif;
+    color:#999;
+    text-shadow:2px 2px 2px #666;
+    font-size:3em;
+    margin-bottom:20px;
 }
 
 /*  Navigation Layout :: User Info  */
@@ -1009,6 +1052,29 @@ table input[type="checkbox"] {
 /*********** ICONOS, (SON LOS MISMOS PARA TODO EL SISTEMA *************/
 /**********************************************************************/
 
+/*** ICONOS ***/
+.valoracion, .puntaje{background-image:url("../images/iconos/puntajes_bn.png"); background-repeat:no-repeat}
+.puntaje{cursor:pointer}
+/* val = valoraciones, pun = form puntuar */
+.val0{background-position:-89px -142px}
+.val0_2{background-position:-89px -128px}
+.val1{background-position:-89px -114px}
+.val1_2{background-position:-89px -100px}
+.val2{background-position:-89px -86px}
+.val2_2{background-position:-89px -72px}
+.val3{background-position:-89px -58px}
+.val3_2{background-position:-89px -44px}
+.val4{background-position:-89px -30px}
+.val4_2{background-position:-89px -16px}
+.val5{background-position:-89px -2px}
+
+.pun0{background-position:-3px -223px}
+.pun1{background-position:-3px -163px}
+.pun2{background-position:-3px -123px}
+.pun3{background-position:-3px -83px}
+.pun4{background-position:-3px -43px}
+.pun5{background-position:-3px -3px}
+
 /* porque se usan en <span> que es un tag lineal */
 .i, .i32{display:inline-block}
 .i{height:16px; width:16px} .i32{height:32px; width:32px}
@@ -1068,12 +1134,12 @@ a .i{margin-right:4px; float:left}
 .contact32{background-position:-288px -32px} .contactEdit{background-position:-192px -224px}
 .document{background-position:-48px -272px} .document32{background-position:-320px -32px} .documentAdd{background-position:-32px -256px} .documentRemove{background-position:-48px -256px} .documentEdit{background-position:-32px -272px}
 .help{background-position:-64px -256px} .help32{background-position:-352px -32px}
-.info{background-position:-64px -272px} .info32{background-position:-384px -32px}
+.infoo{background-position:-64px -272px} .info32{background-position:-384px -32px}
 .lockClosed32{background-position:0px -64px}
 .movie{background-position:-336px -240px} .movie32{background-position:-32px -64px} .movieAdd{background-position:-320px -224px} .movieRemove{background-position:-320px -240px} .movieEdit{background-position:-336px -224px}
 .notepad{background-position:-288px -224px} .notepad32{background-position:-64px -64px} .notepadEdit{background-position:-304px -240px} .notepadRemove{background-position:-304px -224px} .notepadAdd{background-position:-288px -240px}
-.user32{background-position:-96px -64px} .user32Add{background-position:-128px -64px} .user32Remove{background-position:-192px -64px} .user32Edit{background-position:-160px -64px} .user32Secure{background-position:-256px -64px}
-.group32{background-position:-224px -64px}
+.user{background-position:-128px -256px} .user32{background-position:-96px -64px} .userAdd{background-position:-96px -272px} .user32Add{background-position:-128px -64px} .user32Remove{background-position:-192px -64px} .userEdit{background-position:-112px -272px} .user32Edit{background-position:-160px -64px} .user32Secure{background-position:-256px -64px}
+.group{background-position:-112px -256px} .group32{background-position:-224px -64px}
 .report{background-position:-224px -240px} .report32{background-position:0px -96px}
 .folderOpen32{background-position:-32px -96px}
 .rss{background-position:-240px -224px} .rss32{background-position:-64px -96px}
@@ -1153,6 +1219,7 @@ a .i{margin-right:4px; float:left}
 .searchDocument{background-position:-112px -176px} .searchDocument32{background-position:-160px -32px}
 .linkBreak{background-position:-48px -160px}
 .hierarchy{background-position:-80px -176px}
+.bank{background-position:-128px -176px} .bank32{background-position:-192px -32px}
 .star1{background-position:0px -160px}
 .star2{width:32px !important; background-position:0px -176px}
 .star3{width:48px !important; background-position:0px -192px}

@@ -57,6 +57,12 @@ class PageControllerAbstract implements PageControllerInterface
         return $this->template;
     }
 
+    protected final function setTemplate(Templates $template)
+    {
+        $this->template = $template;
+        return $this;
+    }
+
     protected final function restartTemplate()
     {
         $this->template = null;
@@ -196,7 +202,6 @@ class PageControllerAbstract implements PageControllerInterface
         
         $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
 
-        $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "headContent", "HeadBlock");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", "Página no enconrada");
         $this->getTemplate()->set_var("sMetaDescription", "");
@@ -222,9 +227,6 @@ class PageControllerAbstract implements PageControllerInterface
         $this->getTemplate()->set_var("hrefOpcion", "javascript:history.go(-1)");
         $this->getTemplate()->set_var("sNombreOpcion", "Volver a la página anterior");
         $this->getTemplate()->parse("OpcionMenuLastOpt");
-
-        $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "topPageContent", "TopPageBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "bottomPageContent", "BottomPageBlock");
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }

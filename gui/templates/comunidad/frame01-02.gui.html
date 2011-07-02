@@ -2,31 +2,96 @@
 
 <html>
     
-<head>{headContent}</head>
+<head>
+    <base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
+
+    <title>{sTituloVista}</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-language" content="es" />
+    <meta name="description" content="{sMetaDescription}" />
+    <meta name="keywords" content="{sMetaKeywords}" />
+
+    <link href="gui/css/vistas.css" rel="stylesheet" type="text/css" media="screen, projection" />
+    <link href="gui/css/jquery-ui.css" rel="stylesheet">
+
+    {cssContent}
+
+    {jsContent}
+
+    <script type="text/javascript"> var pathUrlBase = "{pathUrlBase}"; </script>
+
+    <!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="gui/vistas-ie.css" media="screen, projection" /><![endif]-->
+    <!--[if lte IE 6]><script type="text/javascript" src="utilidades/js-scripts/iepngfix/iepngfix_tilebg.js"></script><![endif]-->
+</head>
 
 <body id="frameComunidad01">
     {msgTop}
 
     <div id="topHeader" class="topHeader01">
         <div id="topHeaderMenuLeft">
-            {topHeaderMenuLeft}
+            <ul class="m_horiz menu01 menuList iveal">
+                <li>
+                    <a href="{topHeaderMenuHrefComunidad}" class="optionSelected"><span class="i bs group"></span> Comunidad</a>
+                    <ul>
+                        <li><a href="{topHeaderMenuHrefPublicaciones}"><span class="i mi publish"></span> Publicaciones</a></li>
+                        <li><a href="{topHeaderMenuHrefInstituciones}"><span class="i mc bank"></span> Instituciones</a></li>
+                        <li><a href="{topHeaderMenuHrefDescargas}"><span class="i mi download"></span> Catalogo Descargas</a></li>
+                    </ul>
+                </li>
+                <li><a href="{topHeaderMenuHrefSeguimientos}"><span class="i mi relationshipPeople"></span> Seguimientos</a></li>
+            </ul>
         </div>
         <div id="topHeaderMenuRight">
-            {topHeaderMenuRight}
+            <ul class="m_horiz menu01 menuList iveal">
+                <li>
+                    <a href="#"><span class="i bs user"></span> Cuenta</a>
+                    <ul style="left:-118px;">
+                        <li><a href="{topHeaderMenuHrefDatosPersonales}"><span class="i bs userEdit"></span> Datos Personales</a></li>
+                        <li><a href="{topHeaderMenuHrefInvitaciones}"><span class="i bs userAdd"></span> Invitaciones</a></li>
+                        <li><a href="{topHeaderMenuHrefSoporte}"><span class="i mi support"></span> Soporte</a></li>
+                        <li><a href="{topHeaderMenuHrefCerrarSesion}"><span class="i mi signOut"></span> Salir</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" title="Configuracion"><span class="i bs settings"></span></a>
+                    <ul style="left:-160px;">
+                        <li><a href="{topHeaderMenuHrefPreferencias}">Preferencias</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <div id="centerHeader" class="centerHeader01 grupo">
+    <div id="centerHeader" class="centerHeader01 grupo mabo3">
         <div id="logo">
-            <a href="{hrefLogoHeader}"><img src="{sourceLogoHeader}" alt=""/></a>
+            <a href="http://www.ufasta.edu.ar"><img src="gui/images/banners-logos/fasta.png" alt=""/></a>
             <div id="logoTxt">
-                <div id="logoDesc">{logoDesc}</div>
-                <div id="moduloDesc">{moduloDesc}</div>
+                <div id="logoDesc">SGPAPD</div>
+                <div id="moduloDesc">Comunidad</div>
             </div>
         </div>
         <div id="centerHeaderCont">
             <div id="centerHeaderContRight" class="di_in">
-                {centerHeaderContRight}
+                <div class="teal_ri">
+                    <div class="fte3 mabo2">Bienvenido {nombreUsuarioLogged}</div>
+                    <ul class="m_horiz cl_bo">
+                        <li>
+                            <a class="button" href="{hrefEditarPerfil}">
+                                <span class="i bs userEdit"></span>
+                                <span class="buttonText">Editar Perfil</span>
+                            </a>
+                        </li>
+                        <!--BeginAdministradorButton-->
+                        <li class="mari0">
+                            <a class="button" href="{hrefAdministrador}">
+                                <span class="i bs admin"></span>
+                                <span class="buttonText">Administrador</span>
+                            </a>
+                        </li>
+                        <!--EndAdministradorButton-->
+                    </ul>
+                </div>
             </div>
             {centerHeaderCont}
         </div>

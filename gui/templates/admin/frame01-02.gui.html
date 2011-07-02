@@ -5,24 +5,81 @@
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
 
-<head>{headContent}</head>
+<head>
+    <base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
+
+    <meta charset="UTF-8">
+    <!--[if IE 8 ]><meta http-equiv="X-UA-Compatible" content="IE=7"><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-language" content="es" />
+
+    <title>{sTituloVista}</title>
+    <meta name="description" content="{sMetaDescription}" />
+    <meta name="keywords" content="{sMetaKeywords}" />
+
+    {jsContent}
+
+    <link rel="stylesheet" href="gui/css/backEnd/style.css">
+    <link rel="stylesheet" href="gui/css/backEnd/jquery.tipsy.css">
+    <link rel="stylesheet" href="gui/css/backEnd/jquery.wysiwyg.css">
+    <link rel="stylesheet" href="gui/css/backEnd/jquery.datatables.css">
+    <link rel="stylesheet" href="gui/css/backEnd/jquery.facebox.css">
+
+    {cssContent}
+    
+    <script type="text/javascript"> var pathUrlBase = "{pathUrlBase}"; </script>
+</head>
 
 <body>
+    {msgTop}
     <section role="navigation">
         <header>
-            {headerContentNavigation}
+            <h1>Proyecto SGPAPD</h1>
+            <ul class="male0">
+                <li><a href="{hrefHomeModuloIndex}" title="Inicio web visitantes"><span class="i bs home"></span> Inicio Visitantes</a></li>
+                <li><a href="{hrefHomeModuloComunidad}" title="Inicio comunidad"><span class="i bs group"></span> Inicio Comunidad</a></li>
+                <li><a href="{hrefHomeModuloSeguimientos}" title="Inicio seguimientos"><span class="i mi relationshipPeople"></span> Inicio Seguimientos</a></li>
+                <li><a href="{hrefHomeModuloAdmin}" title="Inicio Administrador"><span class="i bs admin"></span> Inicio Admin</a></li>
+            </ul>
         </header>
 
         <section id="user-info">
-            {userInfoNavigation}
+            <img src="{srcImageUser}" alt="avatar {userName}">
+            <div>
+                <a href="{hrefEditarPerfil}" title="Editar usuario">{userName}</a>
+                <em>{perfilDescripcion}</em>
+                <ul>
+                    <li><a class="button-link" href="{hrefCerrarSesion}" title="Cerrar Sesion" rel="tooltip">Cerrar Sesion</a></li>
+                </ul>
+            </div>
         </section>
 
         <nav id="main-nav">
-            {mainNavigationMenuContent}
+            <ul>
+                <li><a href="index.html" title="" class="dashboard no-submenu">Dashboard</a></li>
+                <li {currentOption}>
+                    <a href="#" title="" class="projects">Projects</a><span title="You have 3 new tasks">3</span>
+                    <ul>
+                        <li><a href="#" title="">Add Project</a></li>
+                        <li><a href="#" title="">Edit Project</a></li>
+                        <li><a href="#" title="">Project Management</a></li>
+                        <li><a href="#" title="">Project Gallery</a></li>
+                        <li><a href="#" title="">Settings</a></li>
+                    </ul>
+                </li>
+                <li {currentOption}>
+                    <a href="#" title="" class="products">Products</a>
+                    <ul>
+                        <li><a href="#" title="">Add Product</a></li>
+                        <li><a href="#" title="">Edit Product</a></li>
+                        <li><a href="#" title="">Product Management</a></li>
+                        <li><a href="#" title="">Some very long link with a lot of words</a></li>
+                    </ul>
+                </li>
+            </ul>
         </nav>
     </section>
 	
-
     <section role="main">
         <section id="widgets-container">
             {widgetsContent}
