@@ -118,7 +118,7 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('comunidadIndexIndex', $route);
 
-        $route = new RegexRoute('invitaciones',
+        $route = new RegexRoute('comunidad/invitaciones',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "invitaciones",
@@ -126,7 +126,7 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('comunidadInvitacionesIndex', $route);
 
-        $route = new RegexRoute('invitaciones-listado',
+        $route = new RegexRoute('comunidad/invitaciones-listado',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "invitaciones",
@@ -134,7 +134,7 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('comunidadInvitacionesListado', $route);
 
-        $route = new RegexRoute('nueva-invitacion',
+        $route = new RegexRoute('comunidad/nueva-invitacion',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "invitaciones",
@@ -142,7 +142,7 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('comunidadInvitacionesFormulario', $route);
 
-        $route = new RegexRoute('invitacion-procesar',
+        $route = new RegexRoute('comunidad/invitacion-procesar',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "invitaciones",
@@ -166,7 +166,7 @@ class PluginRouteSchema extends PluginAbstract
         ////// RUTAS MODULO ADMIN //////////
         ////////////////////////////////////
 
-        $route = new RegexRoute('admin',
+        $route = new RegexRoute('admin/home',
                                 array(
                                         'module' => 'admin',
                                         'controller' => 'index',

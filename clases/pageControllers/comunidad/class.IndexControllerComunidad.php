@@ -64,8 +64,8 @@ class IndexControllerComunidad extends PageControllerAbstract
         $nombreUsuario = $perfil->getNombreUsuario();
 
         $template->set_var("nombreUsuarioLogged", $nombreUsuario);
-        $template->set_var("hrefEditarPerfil", $request->getBaseUrl().'/comunidad/datosPersonales');
-        $template->set_var("hrefAdministrador", $request->getBaseUrl().'/admin');
+        $template->set_var("hrefEditarPerfil", $request->getBaseUrl().'/comunidad/datos-personales');
+        $template->set_var("hrefAdministrador", $request->getBaseUrl().'/admin/home');
         //si no es moderador o admin quito el boton al administrador
         if($perfilDesc != 'administrador' && $perfilDesc != 'moderador'){
             $template->set_var("AdministradorButton", "");

@@ -43,7 +43,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("hrefHomeModuloIndex", $request->getBaseTagUrl()."/");
         $template->set_var("hrefHomeModuloComunidad", $request->getBaseTagUrl()."/comunidad/home");
         $template->set_var("hrefHomeModuloSeguimientos", $request->getBaseTagUrl()."/seguimientos/home");
-        $template->set_var("hrefHomeModuloAdmin", $request->getBaseTagUrl()."/admin");
+        $template->set_var("hrefHomeModuloAdmin", $request->getBaseTagUrl()."/admin/home");
 
         //info user
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
@@ -52,7 +52,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         
         $template->set_var("srcImageUser", "#");
         $template->set_var("userName", $nombreUsuario);
-        $template->set_var("hrefEditarPerfil", $request->getBaseTagUrl().'/comunidad/datosPersonales');
+        $template->set_var("hrefEditarPerfil", $request->getBaseTagUrl().'/comunidad/datos-personales');
         $template->set_var("perfilDescripcion", $perfilDesc);
         $template->set_var("hrefCerrarSesion", $request->getBaseTagUrl().'/logout');
     }
