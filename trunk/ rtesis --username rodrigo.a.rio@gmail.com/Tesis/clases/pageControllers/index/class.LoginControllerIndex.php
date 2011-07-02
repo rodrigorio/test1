@@ -128,24 +128,13 @@ class LoginControllerIndex extends PageControllerAbstract
 
         $this->getTemplate()->load_file("gui/templates/index/frame01-03.gui.html", "frame");
 
-        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "headContent", "HeadBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "jsContent", "JsContent");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", $tituloVista);
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "menuHeader", "MenuPpalIndexBlock");
-        $this->getTemplate()->set_var("idOpcion", 'menuPpalInicio');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
-        $this->getTemplate()->set_var("sNombreOpcion", "Inicio");
-        $this->getTemplate()->parse("OpcionesMenu");
-        //borro el submenu que todavia no se usa
-        $this->getTemplate()->set_var("SubMenu", "");
-        $this->getTemplate()->parse("menuHeader", false);
-
-        $this->getTemplate()->set_var("sourceLogoHeader", "gui/images/banners-logos/fasta.png");
-        $this->getTemplate()->set_var("hrefLogoHeader", "http://www.ufasta.edu.ar");
-        $this->getTemplate()->set_var("tituloHeader", "Acceder");
+        IndexControllerIndex::setCabecera($this->getTemplate());
 
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "columnaIzquierdaContent", "FormularioBlock");
         $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
@@ -184,9 +173,7 @@ class LoginControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("heightImagenLogin", "200");
         }
 
-        //footer home
-        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "footerContent", "LoginFooterBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "footerSubCopyright", "LoginCopyrightBlock");
+        IndexControllerIndex::setFooter($this->getTemplate());
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
