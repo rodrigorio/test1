@@ -130,4 +130,12 @@ class SysController
             throw $e;
         }
     }
+
+    public function cerrarSesion(){
+        try{
+            
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 }
