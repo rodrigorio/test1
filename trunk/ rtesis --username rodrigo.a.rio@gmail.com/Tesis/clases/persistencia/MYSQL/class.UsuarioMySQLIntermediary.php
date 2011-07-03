@@ -51,7 +51,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
 
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
-                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia
+                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
+                        u.invitacionesDisponibles as iInvitacionesDisponibles
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id ";
                     if(!empty($filtro)){
@@ -87,6 +88,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia     = $oObj->sContrasenia;
                 $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario);
 
