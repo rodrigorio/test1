@@ -105,6 +105,10 @@ class RegistracionControllerIndex extends PageControllerAbstract
 	    	$oObj->dFechaNacimiento	= $dFechaNacimiento." 00:00";
 
     		$res =  IndexController::getInstance()->registrar($oObj,$iUserId);
+    		if($res>=10 && $res<=12){
+    			echo $res;
+	    		exit;
+    		}
     		$redirect = "/comunidad/home";
     		$this->getJsonHelper()->setSuccess($res)
                                       ->setRedirect($redirect);
