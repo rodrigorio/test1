@@ -150,8 +150,11 @@ class PluginParametros extends PluginAbstract
                         'HOME_SITIO_CONTROLADOR' => 'index',
                         'HOME_SITIO_ACCION' => 'index',
 
-                        'ACTIVO_MODULO_INDEX' => '1',
+                        //ojo que los nombres corresponden con el nombre de los archivos y carpetas fisicos
                         'ACTIVO_MODULO_ADMIN' => '1', //este no deberia desactivarse nunca
+                        'ACTIVO_MODULO_COMUNIDAD' => '1',
+                        'ACTIVO_MODULO_SEGUIMIENTOS' => '1',
+                        'ACTIVO_MODULO_INDEX' => '1',
 
                         'ERROR_DB_REDIRECICON_MODULO' => 'index',
                         'ERROR_DB_REDIRECICON_CONTROLADOR' => 'index',
@@ -164,7 +167,7 @@ class PluginParametros extends PluginAbstract
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_MODULO' => 'comunidad',
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_ACCION' => 'index',
-                        'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_PATH' => '/comunidad',
+                        'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_PATH' => '/comunidad/home',
 
                         'PERFIL_INTEGRANTEACTIVO_REDIRECCION_MODULO' => 'comunidad',
                         'PERFIL_INTEGRANTEACTIVO_REDIRECCION_CONTROLADOR' => 'index',
@@ -173,7 +176,7 @@ class PluginParametros extends PluginAbstract
                         'PERFIL_INTEGRANTEACTIVO_REDIRECCIONLOGIN_MODULO' => 'comunidad',
                         'PERFIL_INTEGRANTEACTIVO_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
                         'PERFIL_INTEGRANTEACTIVO_REDIRECCIONLOGIN_ACCION' => 'index',
-                        'PERFIL_INTEGRANTEACTIVO_REDIRECCIONLOGIN_PATH' => '/comunidad',
+                        'PERFIL_INTEGRANTEACTIVO_REDIRECCIONLOGIN_PATH' => '/comunidad/home',
 
                         'PERFIL_MODERADOR_REDIRECCION_MODULO' => 'admin',
                         'PERFIL_MODERADOR_REDIRECCION_CONTROLADOR' => 'index',
@@ -182,12 +185,12 @@ class PluginParametros extends PluginAbstract
                         'PERFIL_MODERADOR_REDIRECCIONLOGIN_MODULO' => 'admin',
                         'PERFIL_MODERADOR_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
                         'PERFIL_MODERADOR_REDIRECCIONLOGIN_ACCION' => 'index',
-                        'PERFIL_MODERADOR_REDIRECCIONLOGIN_PATH' => '/admin',
+                        'PERFIL_MODERADOR_REDIRECCIONLOGIN_PATH' => '/admin/home',
 
                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_MODULO' => 'admin',
                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_ACCION' => 'index',
-                        'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_PATH' => '/admin');
+                        'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_PATH' => '/admin/home');
 
         $indexPublicaciones = array('MAXCANT_PUBLICIDADES_COL_IZQ' => '3');
 
