@@ -7,7 +7,7 @@
 			events:				      [], // Array of events to be triggerd
 			maxCharacters:		  500, // Characters limit
 			status:				      true, // True to show status indicator bewlow the element
-			statusClass:		    "restantes fte2", // The class on the status div
+			statusClass:		    "restantes male fte2", // The class on the status div
 			statusText:			    "caracteres restantes" // The status text
 		}, options );
 		

@@ -37,9 +37,63 @@
 <!--BeginPageRightInnerContBlock-->
 <div class="mabo2">
     <ul class="menu02">
-        <li><a href="{hrefInvitaciones}">Inicio</a></li>
-        <li><a href="{hrefMisInvitaciones}">Mis invitaciones</a></li>
+        <li class="mabo2"><a href="{hrefInvitaciones}">Inicio</a></li>
+        <li class="mabo2"><a href="{hrefMisInvitaciones}">Mis invitaciones</a></li>
         <li><a href="{hrefNuevaInvitacion}">Enviar nueva invitacion</a></li>
     </ul>
 </div>
 <!--EndPageRightInnerContBlock-->
+
+<!--BeginFormularioBlock-->
+<h2 class="mabo2">Quedan {iInvitacionesDisponibles} invitaciones disponibles para enviar</h2>
+
+<div class='ficha04 bora grupo cl_bo' style="width:640px;">
+    <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
+    <form id="formEnviarInvitacion" name="formEnviarInvitacion" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <div id='msg_form_enviarInvitacion' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
+
+        <div id="msg_nombre" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="nombre" id="nombre" title="Nombre persona invitada" maxlength="40" value="Nombre persona invitada" />
+                </div>
+            </div>
+        </div>
+
+        <div id="msg_apellido" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="apellid" id="apellido" title="Apellido persona invitada" maxlength="40" value="Apellido persona invitada" />
+                </div>
+            </div>
+        </div>
+
+        <div id="msg_email" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="email" id="email" title="Email persona invitada" maxlength="40" value="Email persona invitada" />
+                </div>
+            </div>
+        </div>
+
+        <div id="msg_relacion" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="relacion" class="textareaAutoGrow defVal maxlength" title="Breve descripcion de la relacion que mantiene con el invitado">Breve descripcion de la relacion que mantiene con el invitado</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="fl_le">
+            <label for="enviarInvitacion" class="button buttonConfirm buttonLarge mari3">
+                <button id="enviarInvitacion" type="submit" name="enviarInvitacion" class="btn01">
+                    Enviar Invitacion
+                </button>
+            </label>
+        </div>
+    </form>
+</div>
+<!--EndFormularioBlock-->
+
