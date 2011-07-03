@@ -56,4 +56,12 @@ class ComunidadController
     {
 
     }
+    public function enviarInvitacion($oUsuario, $oInvitado, $sDescripcion){
+    	try{
+			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->enviarInvitacion($oUsuario,Factory::getInvitadoInstance($oInvitado), $sDescripcion);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
 }

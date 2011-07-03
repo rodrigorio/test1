@@ -64,12 +64,31 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
     /**
      * Procesa el envio desde un formulario de invitacion.
      */
-    public function procesar()
-    {
-        //si accedio a traves de la url muestra pagina 404
+    public function procesar(){
+    	 //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-
         
+        try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $oUsuario	= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+   			$oInvitado	= new stdClass();
+	   		$oInvitado->sRelacion 	= $this->getRequest()->getPost('relacion');
+			$oInvitado->sNombre 	= $this->getRequest()->getPost('nombre');
+			$oInvitado->sApellido 	= $this->getRequest()->getPost('apellido');
+			$oInvitado->sEmail 		= $this->getRequest()->getPost('email');
+		//	$sDescripcion			= $this->getRequest()->getPost('sDescripcion');
+			$sDescripcion="";
+			ComunidadController::getInstance()->enviarInvitacion($oUsuario, $oInvitado, $sDescripcion);
+			$this->getJsonHelper()->setSuccess(true);
+                                      //->setRedirect($redirect);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    	
     }
 
     /**
@@ -115,4 +134,6 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
     public function listado()
     {
     }
+    
+    
 }

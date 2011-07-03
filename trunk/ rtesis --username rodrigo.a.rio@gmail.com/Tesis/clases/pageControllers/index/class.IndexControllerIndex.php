@@ -77,8 +77,8 @@ class IndexControllerIndex extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setHeadTag();
             
-            $this::setCabecera($this->getTemplate());
-            $this::setFooter($this->getTemplate());
+            $this->setCabecera($this->getTemplate());
+            $this->setFooter($this->getTemplate());
 
             //nombre seccion
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Inicio");

@@ -70,8 +70,8 @@ class IndexControllerAdmin extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setHeadTag();
 
-            $this::setCabecera($this->getTemplate());
-            $this::setMenu($this->getTemplate());
+            $this->setCabecera($this->getTemplate());
+            $this->setMenu($this->getTemplate());
 
             //widgets
             $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "widgetsContent", "WidgetsContent");

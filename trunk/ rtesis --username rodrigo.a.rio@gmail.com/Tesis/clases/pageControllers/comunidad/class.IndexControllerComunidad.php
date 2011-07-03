@@ -7,7 +7,7 @@
  */
 class IndexControllerComunidad extends PageControllerAbstract
 {    
-    private function setFrameTemplate(){
+   private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         return $this;
     }
@@ -77,8 +77,8 @@ class IndexControllerComunidad extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setHeadTag();
 
-            $this::setCabecera($this->getTemplate());
-            $this::setCenterHeader($this->getTemplate());
+            $this->setCabecera($this->getTemplate());
+            $this->setCenterHeader($this->getTemplate());
 
             //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Comunidad - Inicio");

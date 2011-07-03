@@ -92,6 +92,8 @@ class SysController
 
                      "comunidad_index_index" => true,
             
+                     "comunidad_invitaciones_confirmarEnviarInvitacion" => true,
+                     "comunidad_invitaciones_enviarInvitacion" => true,
                      "comunidad_invitaciones_index" => true,
                      "comunidad_invitaciones_procesar" => true,
                      "comunidad_invitaciones_formulario" => true,

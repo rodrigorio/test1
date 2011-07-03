@@ -59,6 +59,9 @@ class RegistracionControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombre", $this->getRequest()->get("nom"));
             $this->getTemplate()->set_var("sApellido", $this->getRequest()->get("ape"));
 
+            $this->getTemplate()->set_var("us", $this->getRequest()->get("us"));
+            $this->getTemplate()->set_var("inv",$this->getRequest()->get("inv"));
+            
             $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
 
             $this->getTemplate()->parse("centerPageContent", false);
@@ -72,9 +75,12 @@ class RegistracionControllerIndex extends PageControllerAbstract
         }
     }
 
-    public function procesar()
-    {
+    public function procesar(){
+	 	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
     	try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
 	        $sUserName 	= $this->getRequest()->getPost("username");
 	        $iTipoDni 	= $this->getRequest()->getPost("tipoDni");
 	        $iDni	 	= $this->getRequest()->getPost("dni");
@@ -83,8 +89,11 @@ class RegistracionControllerIndex extends PageControllerAbstract
 	        $sFirstName	= $this->getRequest()->getPost("firstname");
 	        $sLastName 	= $this->getRequest()->getPost("lastname");
 	        $sSex	 	= $this->getRequest()->getPost("sex");
+	        $iUserId 	= $this->getRequest()->getPost("us");
+	        $iInvId	 	= $this->getRequest()->getPost("inv");
 	        $dFechaNacimiento	 	= trim($this->getRequest()->getPost("fechaNacimiento"));
 	        $oObj		= new stdClass();
+	        $oObj->iId 	= $iInvId;
 	        $oObj->sNombreUsuario 	= $sUserName;
 	        $oObj->sContrasenia	= $sPassword;
 	        $oObj->sNombre		= $sFirstName;
@@ -95,9 +104,15 @@ class RegistracionControllerIndex extends PageControllerAbstract
 	    	$oObj->sEmail		= $sEmail;
 	    	$oObj->dFechaNacimiento	= $dFechaNacimiento." 00:00";
 
-    		echo IndexController::getInstance()->registrar($oObj);
-    	  }catch(Exception $e){
-            print_r($e);
+    		$res =  IndexController::getInstance()->registrar($oObj,$iUserId);
+    		$redirect = "/comunidad/home";
+    		$this->getJsonHelper()->setSuccess($res)
+                                      ->setRedirect($redirect);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
         }
+
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }

@@ -33,10 +33,12 @@ $(function(){
     		"&firstname="+$('#reg_nombre').val()+
     		"&lastname="+$('#reg_apellido').val()+
     		"&sex="+$('#reg_sex').val()+
+    		"&inv="+$('#inv').val()+
+    		"&us="+$('#us').val()+
     		"&fechaNacimiento="+$('#reg_dia_fecha_de_nacimiento').val()+"/"+$('#reg_mes_fecha_de_nacimiento').val()+"/"+$('#reg_anio_fecha_de_nacimiento').val()+"";                       
 			$.ajax({
 				type:	"POST",
-				url: 	"registrarse",
+				url: 	"registracion-procesar",
 				data: 	fields,
 				beforeSend: function() {
 					$("#registracion_msg").html("");
@@ -71,9 +73,10 @@ $(function(){
 					}
 					
 					$("#registracion").hide();
-					$("#registracion_msg").html("Registracion existosa");
-					$("#registracion_msg").show();
+					//$("#registracion_msg").html("Registracion existosa");
+					//$("#registracion_msg").show();
 					//enviar a la primer pagina del perfil
+					location = data.redirect;
 				}
 			});
 	    } else{
