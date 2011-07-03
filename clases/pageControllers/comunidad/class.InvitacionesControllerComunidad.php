@@ -27,6 +27,15 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         return $this;
     }
 
+    private function setMenuDerecha()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
+
+        $this->getTemplate()->set_var("hrefNuevaInvitacion", $this->getRequest()->getBaseTagUrl()."comunidad/nueva-invitacion");
+        $this->getTemplate()->set_var("hrefInvitaciones", $this->getRequest()->getBaseTagUrl()."comunidad/invitaciones");
+        $this->getTemplate()->set_var("hrefMisInvitaciones", $this->getRequest()->getBaseTagUrl()."comunidad/invitaciones-listado");        
+    }
+
     /**
      * Establece descripcion de invitaciones y el menu con 2 opciones,
      * estado de invitaciones enviadas y formulario para enviar nueva invitacion
@@ -42,13 +51,12 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         //titulo seccion
         $this->getTemplate()->set_var("tituloSeccion", "Invitaciones");
 
+        //menu derecha
+        $this->setMenuDerecha();
+
         //contenido ppal home invitaciones
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-
         $this->getTemplate()->set_var("hrefNuevaInvitacion", $this->getRequest()->getBaseTagUrl()."comunidad/nueva-invitacion");
-        $this->getTemplate()->set_var("hrefInvitaciones", $this->getRequest()->getBaseTagUrl()."comunidad/invitaciones");
-        $this->getTemplate()->set_var("hrefMisInvitaciones", $this->getRequest()->getBaseTagUrl()."comunidad/invitaciones-listado");
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
@@ -65,6 +73,23 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
      */
     public function formulario()
     {
+        //Si no tiene invitaciones redirecciono con mensaje.
+
+        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
+        $this->setHeadTag();
+
+        IndexControllerComunidad::setCabecera($this->getTemplate());
+        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Enviar Nueva Invitacion");
+
+        //menu derecha
+        $this->setMenuDerecha();
+
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     /**
