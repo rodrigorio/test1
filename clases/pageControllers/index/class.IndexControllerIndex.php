@@ -122,6 +122,11 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
+    public function cerrarSesion()
+    {
+        
+    }
+
     /**
      * Si existe $_GET['callback'] entonces quiere decir que hay que devolver Json (porque usamos Jquery en el ajax)
      * Si no existe callback asumimos que es una peticion ajax de html y devolvemos una ficha con mensaje de error
