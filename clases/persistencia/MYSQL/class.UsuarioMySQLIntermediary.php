@@ -67,27 +67,27 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $aUsuarios = array();
             while($oObj = $db->oNextRecord()){
-                $oUsuario                   = new stdClass();
-                $oUsuario->iId              = $oObj->iId;
-                $oUsuario->sNombre          = $oObj->sNombre;
-                $oUsuario->sApellido        = $oObj->sApellido;
-                $oUsuario->sSexo            = $oObj->sSexo;
+                $oUsuario 				= new stdClass();
+                $oUsuario->iId 			= $oObj->iId;
+                $oUsuario->sNombre 		= $oObj->sNombre;
+                $oUsuario->sApellido 	= $oObj->sApellido;
+                $oUsuario->sSexo 		= $oObj->sSexo;
                 $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
-                $oUsuario->sEmail           = $oObj->sEmail;
-                $oUsuario->sTelefono        = $oObj->sTelefono;
-                $oUsuario->sCelular         = $oObj->sCelular;
-                $oUsuario->sFax             = $oObj->sFax;
-                $oUsuario->sDomicilio       = $oObj->sDomicilio;
-                $oUsuario->oCiudad          = null;
-                $oUsuario->sCiudadOrigen    = $oObj->sCiudadOrigen;
-                $oUsuario->sCodigoPostal    = $oObj->sCodigoPostal;
-                $oUsuario->sEmpresa         = $oObj->sEmpresa;
-                $oUsuario->sUniversidad     = $oObj->sUniversidad;
-                $oUsuario->sSecundaria      = $oObj->sSecundaria;
-                $oUsuario->sSitioWeb        = $oObj->sSitioWeb;
-                $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
-                $oUsuario->sContrasenia     = $oObj->sContrasenia;
-                $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->sEmail 		= $oObj->sEmail;
+                $oUsuario->sTelefono 	= $oObj->sTelefono;
+                $oUsuario->sCelular	 	= $oObj->sCelular;
+                $oUsuario->sFax 		= $oObj->sFax;
+                $oUsuario->sDomicilio 	= $oObj->sDomicilio;
+                $oUsuario->oCiudad 		= null;
+                $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa		= $oObj->sEmpresa;
+                $oUsuario->sUniversidad = $oObj->sUniversidad;
+                $oUsuario->sSecundaria 	= $oObj->sSecundaria;
+                $oUsuario->sSitioWeb 	= $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
                 $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
                 //creo el usuario
                 $oUsuario = Factory::getUsuarioInstance($oUsuario);
@@ -95,7 +95,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 //creo el perfil con el usuario asignado
                 $oPerfilAbstract            = new stdClass();
                 $oPerfilAbstract->iId       = $oObj->perfiles_id;
-                $oPerfilAbstract->oUsuario  = $oUsuario;
+                $oPerfilAbstract->oUsuario   = $oUsuario;
                 switch($oObj->perfiles_id){
                     case self::PERFIL_ADMINISTRADOR:{ $oPerfil       = Factory::getAdministradorInstance($oPerfilAbstract); break; }
                     case self::PERFIL_MODERADOR:{ $oPerfil           = Factory::getModeradorInstance($oPerfilAbstract); break; }
@@ -153,11 +153,23 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
     //////////////////////////// FIN MATIAS ///////////////////////////
 
-	public function registrar(Usuario $oUsuario){
+	public function registrar(Usuario $oUsuario,$iInvitadoId){
         try{
 			$db = $this->conn;
 			$db->begin_transaction();
-			$sSQL =	" insert personas " .
+       		$filtro["u.nombre"] 		= $oUsuario->getNombreUsuario();
+			if($this->existe($filtro)){
+				return 10;
+			}
+			$filtro["p.numeroDocumento"]= $oUsuario->getNumeroDocumento();
+			if($this->existe($filtro)){
+				return 11;
+			}
+			$filtro["p.email"]= $oUsuario->getEmail();
+			if($this->existe($filtro)){
+				return 12;
+			}
+			$sSQL =	" update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
 					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
@@ -167,13 +179,19 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					if($oUsuario->getEmail()){
 	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
 					}
+					$sSQL .=" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
-			 $iUltimoId = $db->insert_id();
 			 $sSQL =" insert usuarios ".
-			        " set id= ".$iUltimoId.", ";
+			        " set id=  ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ";
                     " prefiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ";
                     " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ";
                     " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
+
+			 $db->execSQL($sSQL);
+			 $sSQL =" update usuario_x_invitado ".
+			        " SET ".
+			        " WHERE usuarios_id= ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ".
+                    " AND invitados_id=".$iInvitadoId." ";
 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -197,14 +215,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		  	//Asignamos a Host el nombre de nuestro servidor smtp
 		  	$mail->Host = "smtp.hotpop.com";
 
-		  	//Le indicamos que el servidor smtp requiere autenticaciï¿½n
+		  	//Le indicamos que el servidor smtp requiere autenticación
 		  	$mail->SMTPAuth = true;
 		
 		  	//Le decimos cual es nuestro nombre de usuario y password
 		  	$mail->Username = "rrio@HotPOP.com"; 
 		  	$mail->Password = "mipassword";
 		
-		  	//Indicamos cual es nuestra direcciï¿½n de correo y el nombre que 
+		  	//Indicamos cual es nuestra dirección de correo y el nombre que 
 		  	//queremos que vea el usuario que lee nuestro correo
 		 	$mail->From = $orig;
 		 	$mail->FromName = "Eduardo Garcia";
@@ -213,7 +231,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			//una cuenta gratuita, por tanto lo pongo a 30  
 			$mail->Timeout=30;
 		
-	  		//Indicamos cual es la direcciï¿½n de destino del correo
+	  		//Indicamos cual es la dirección de destino del correo
 			$mail->AddAddress($dest);
 			
 			//Asignamos asunto y cuerpo del mensaje
@@ -241,7 +259,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		     	$intentos=$intentos+1;	
 	   		}
 		   if(!$exito) {
-				echo "Problemas enviando correo electrï¿½nico a ".$valor;
+				echo "Problemas enviando correo electrónico a ".$valor;
 				echo "<br/>".$mail->ErrorInfo;	
 		   }else{
 				echo "Mensaje enviado correctamente";
@@ -250,6 +268,44 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
+    }
+    
+    public function sendMail($orig, $dest, $asunto, $body){
+    	// Varios destinatarios
+			$para  = $dest;
+			
+			// subject
+			$titulo = $asunto;
+			
+			// message
+			$mensaje = '
+			<html>
+			<head>
+			  <title>Usted ha sido invitado para registrarse en .....</title>
+			</head>
+			<body>
+			  <p>Haga click en el siguiente enlace para poder registrarse!</p>
+			  <div>'.$body.'</div>
+			</body>
+			</html>
+			';
+			
+			// Para enviar un correo HTML mail, la cabecera Content-type debe fijarse
+			$cabeceras  = 'MIME-Version: 1.0' . "\r\n";
+			$cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+			
+			// Cabeceras adicionales
+			$cabeceras .= "To: ".$dest. "\r\n";
+			$cabeceras .= 'From: Registracion <'.$orig.'>' . "\r\n";
+			$cabeceras .= 'Cc:' . "\r\n";
+			$cabeceras .= 'Bcc: ' . "\r\n";
+			
+			// Mail it
+			if (mail($para, $titulo, $mensaje, $cabeceras)){
+				return true;
+			}else{
+				return false;
+			}
     }
     /**
      * 
@@ -263,7 +319,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
      * }
      * @throws Exception
      */
-	public function enviarInvitacion($iIdUsuario , Invitado $oInvitado){
+	public function enviarInvitacion($oUsuario , Invitado $oInvitado){
+		
         try{
 			$db = $this->conn;
 			$db->begin_transaction();
@@ -276,13 +333,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					}
 			$sSQL .= " email = ".$db->escape($oInvitado->getEmail(),true)." ";
 			$db->execSQL($sSQL);
-			
 			$iUltimoId = $db->insert_id();
 
 			$sSQL 	= " insert invitados ".
 			        " set id= ".$iUltimoId."";
 			$db->execSQL($sSQL);
-			
+			$iIdUsuario = $oUsuario->getId();
 			$time 	= time();
 			$token 	= md5($time);
 			$sSQL =" insert usuario_x_invitado ".
@@ -292,17 +348,20 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 		" token=".$db->escape($token,true)."";
 			$db->execSQL($sSQL);
 
-
 			$db->commit();
 			
 			$nom 	= $oInvitado->getNombre();
 			$ape 	= $oInvitado->getApellido();
 			$email 	= $oInvitado->getEmail();
-			//$body 	= "http://localhost/Tesis2/mostrarFormRegistracion?nom=$nom&ape=$ape&email=$email&token=$token&inv=$iUltimoId&us=$iIdUsuario";
-			/*$asuto 	= "registracion";
+			
+			$body 	= "<p>Usted ha sido invitado por ".$oUsuario->getNombre().", ".$oUsuario->getApellido()."";
+			$body 	.= "<br/> para que pueda integrar la comunidad de profesionales de personas discapacitas, etc, etc.";
+			$body 	.= "<a href='http://www.rodrigorio.com.ar/tesis/registracion?nom=$nom&ape=$ape&email=$email&token=$token&inv=$iUltimoId&us=$iIdUsuario' > registrate</a>";
+			$body 	.= "</p>";
+			$asunto = "registracion";
 			$dest 	= $oInvitado->getEmail();
-			$orig	= "rodrigo.a.rio@gmail.com";
-			$this->enviarEmail($orig, $dest, $asunto, $body);*/
+			$orig	= "registracion@sistemadegestion.com";
+			$this->sendMail($orig, $dest, $asunto, $body);
 			return  true;
 		}catch(Exception $e){
 			$db->rollback_transaction();

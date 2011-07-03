@@ -117,6 +117,7 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('comunidadIndexIndex', $route);
+        
 
         $route = new RegexRoute('comunidad/invitaciones',
                                 array(

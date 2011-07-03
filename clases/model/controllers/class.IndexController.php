@@ -46,16 +46,10 @@ class IndexController
     /**
      * @param stdClass $obj
      */
-    public function registrar($obj){
+    public function registrar($obj,$iUsuarioId){
     	try{
 			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-			$obj2 = new stdClass();
-			$obj2->sRelacion 	= "Colega";
-			$obj2->sNombre 		= $obj->sNombre;
-			$obj2->sApellido 	= $obj->sNombre;
-			$obj2->sEmail 		= $obj->sEmail.rand();
-            $oUsuarioIntermediary->enviarInvitacion(61,Factory::getInvitadoInstance($obj2));
-            return $oUsuarioIntermediary->guardar(Factory::getUsuarioInstance($obj));
+            return $oUsuarioIntermediary->registrar(Factory::getUsuarioInstance($obj),$iUsuarioId);
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}

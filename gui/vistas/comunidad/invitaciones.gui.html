@@ -1,4 +1,5 @@
 <!--BeginJsContent-->
+<link href="gui/css/invitacion.css" rel="stylesheet" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
     $LAB
@@ -49,10 +50,14 @@
 
 <div class='ficha04 bora grupo cl_bo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
+    <div class="di_no" id="msg_conf"></div>
     <form id="formEnviarInvitacion" name="formEnviarInvitacion" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-        <div id='msg_form_enviarInvitacion' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
+        <div id='msg_form_enviarInvitacion' class="msg_form iveal di_no">
+        	<span class="bs i"></span>
+        	<span class="msg"></span>
+        </div>
 
         <div id="msg_nombre" class="form_line">
             <div class="fwrap">
@@ -65,7 +70,7 @@
         <div id="msg_apellido" class="form_line">
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="apellid" id="apellido" title="Apellido persona invitada" maxlength="40" value="Apellido persona invitada" />
+                    <input class="defVal" type="text" name="apellido" id="apellido" title="Apellido persona invitada" maxlength="40" value="Apellido persona invitada" />
                 </div>
             </div>
         </div>
@@ -83,7 +88,7 @@
             <div id="hintRelacion" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">Esta información no será revelada en ningún momento</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="relacion" class="textareaAutoGrow defVal maxlength" title="Breve descripcion de la relacion que mantiene con el invitado">Breve descripcion de la relacion que mantiene con el invitado</textarea>
+                    <textarea rows="0" cols="0" id="relacion" name="relacion" class="textareaAutoGrow defVal maxlength" title="Breve descripcion de la relacion que mantiene con el invitado">Breve descripcion de la relacion que mantiene con el invitado</textarea>
                 </div>
             </div>
         </div>
