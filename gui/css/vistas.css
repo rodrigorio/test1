@@ -1,4 +1,4 @@
-/****************************************/
+f/****************************************/
 /* RESETS */
 /****************************************/
 
@@ -343,7 +343,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha03 p{text-align:right}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
-.ficha04{margin-top:30px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
+.ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
 .ficha04 .titulo{padding:4px 6px; background-color:#80A3C9; border:1px solid #666; position:absolute; top:-20px; text-transform:capitalize; font-size:1.7em; color:#FFFFFF;}
 
 .ficha05{text-align:left; padding:10px; background-color:#FFF; border:1px solid #CCC}
