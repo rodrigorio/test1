@@ -80,9 +80,13 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
         $invitacionesDisponibles = $usuario->getInvitacionesDisponibles();
+
         //Si no tiene invitaciones redirecciono con mensaje.
         if(empty($invitacionesDisponibles)){
-            $pathInfo = true;
+            $url = PluginRedireccionAccionDesactivada::getLastRequestUri();
+            if(empty($url)){
+                $url = $perfil->getUrlRedireccion(true);
+            }
             $this->getRedirectorHelper()->gotoUrl($url); //por defecto redireccion resulta en un inmediato exit() luego de la sentencia.
         }
 
