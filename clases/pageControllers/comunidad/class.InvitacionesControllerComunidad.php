@@ -66,6 +66,10 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
      */
     public function procesar()
     {
+        //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        
     }
 
     /**
@@ -73,7 +77,14 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
      */
     public function formulario()
     {
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+        $invitacionesDisponibles = $usuario->getInvitacionesDisponibles();
         //Si no tiene invitaciones redirecciono con mensaje.
+        if(empty($invitacionesDisponibles)){
+            $pathInfo = true;
+            $this->getRedirectorHelper()->gotoUrl($url); //por defecto redireccion resulta en un inmediato exit() luego de la sentencia.
+        }
 
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         $this->setHeadTag();
@@ -87,7 +98,9 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         //menu derecha
         $this->setMenuDerecha();
 
+        //contenido ppal
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+        $this->getTemplate()->set_var("iInvitacionesDisponibles", $invitacionesDisponibles);
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
