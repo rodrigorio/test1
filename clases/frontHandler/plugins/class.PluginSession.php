@@ -41,6 +41,13 @@ class PluginSession extends PluginAbstract
     {
         SessionAutentificacion::getInstance()->cargarAutentificacion(SysController::getInstance()->obtenerPerfilDefecto());
     }
+
+    static function destruirSesion(){
+        //destruyo la session actual
+        $remove_cookie = true;
+        $readonly_namespaces = true;
+        Session::destroy($remove_cookie, $readonly_namespaces);        
+    }
    
     public function routeStartup(HttpRequest $request)
     {
@@ -54,11 +61,8 @@ class PluginSession extends PluginAbstract
                 $this->classPerfilAnterior = get_class($perfilAbstract);
             }
 
-            //destruyo la session actual
-            $remove_cookie = true;
-            $readonly_namespaces = true;
-            Session::destroy($remove_cookie, $readonly_namespaces);
-
+            self::destruirSesion();
+            
             //no tiro excepcion para que se carguen parametros estaticos y se conecte a la DB pero en el predispatch
             //no quiero que se ejecuten cosas innecesarias ya que se destruyo la session: se redirecciona a la home o a login.
             FrontController::getInstance()->unregisterPlugin('PluginRedireccion404')

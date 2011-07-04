@@ -122,9 +122,14 @@ class IndexControllerIndex extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
+    /**
+     *  luego de cerrar sesion redirige a la home del sitio.
+     *  Syscontroller solo destruye la sesion si el perfil es != visitante
+     */
     public function cerrarSesion()
     {
-        
+        SysController::getInstance()->cerrarSesion();
+        $this->getRedirectorHelper()->gotoUrl("/");
     }
 
     /**
