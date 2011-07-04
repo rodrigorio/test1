@@ -56,49 +56,16 @@ class SysController
      *
      * @param integer $idPerfil - id del perfil del que tiene que obtener permisos.
      *
-     * @TODO llamar a la factoria de sistema que construya este array dependiendo el perfil.
-     * Reemplazar en el campo 'activo' el 0 y el 1 que esta en la DB por false o true cuando se guarden valores en dicho array.
      */
     public function cargarPermisosPerfil($idPerfil)
     {
-    	/*$oUsuarioIntermediary = PersistenceFactory::getUsuariosIntermediary($this->db);
-	   	$array = $oUsuarioIntermediary->permisosPorPerfil($idPerfil);
-	   	if($array == null){
-	   		echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!";
-	   	}else{
-	   		return $array;
-	   	}*/
-        //123probando...
-        return array("index_publicaciones_index" => true,
-                     "index_publicaciones_redireccion404" => true,
-
-                     "index_index_index" => true,
-                     "index_index_redireccion404" => true,
-                     "index_index_sitioOffline" => true,
-                     "index_index_sitioEnConstruccion" => true,
-                     "index_index_ajaxError" => true,
-
-                     "index_login_index" => true,
-                     "index_login_procesar" => true,
-                     "index_login_redireccion404" => true,
-
-                     "index_registracion_index" => true,
-                     "index_registracion_formulario" => true,
-                     "index_registracion_procesar" => true,
-                     "index_registracion_redireccion404" => true,
-
-                     "admin_index_redireccion404" => true,
-                     "admin_index_index" => true,
-
-                     "comunidad_index_index" => true,
-            
-                     "comunidad_invitaciones_confirmarEnviarInvitacion" => true,
-                     "comunidad_invitaciones_enviarInvitacion" => true,
-                     "comunidad_invitaciones_index" => true,
-                     "comunidad_invitaciones_procesar" => true,
-                     "comunidad_invitaciones_formulario" => true,
-                     "comunidad_invitaciones_listado" => true,
-                     "comunidad_invitaciones_redireccion404" => true);
+    	$oUsuarioIntermediary = PersistenceFactory::getUsuariosIntermediary($this->db);
+        $array = $oUsuarioIntermediary->permisosPorPerfil($idPerfil);
+        if($array == null){
+            echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!"; exit();
+        }else{
+            return $array;
+        }
     }
 
     /**
@@ -135,7 +102,10 @@ class SysController
 
     public function cerrarSesion(){
         try{
-            
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            if(get_class($perfil) != 'Visitante'){
+                PluginSession::destruirSesion();
+            }
         }catch(Exception $e){
             throw $e;
         }

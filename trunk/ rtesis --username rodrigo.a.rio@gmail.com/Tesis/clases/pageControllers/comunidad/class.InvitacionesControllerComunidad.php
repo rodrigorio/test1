@@ -105,6 +105,8 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
             $url = PluginRedireccionAccionDesactivada::getLastRequestUri();
             if(empty($url)){
                 $url = $perfil->getUrlRedireccion(true);
+            }else{
+                $this->getRedirectorHelper()->setPrependBase(false);
             }
             $this->getRedirectorHelper()->gotoUrl($url); //por defecto redireccion resulta en un inmediato exit() luego de la sentencia.
         }

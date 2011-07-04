@@ -86,7 +86,7 @@ abstract class PerfilAbstract
             if(!empty($array))
             {
                 $this->oPermisos->acciones = $array;
-               // $this->oPermisos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES, 'acciones');
+                $this->oPermisos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES, 'acciones');
             }
         }
         return $this;
