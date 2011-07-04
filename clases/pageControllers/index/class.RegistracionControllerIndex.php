@@ -7,11 +7,8 @@ class RegistracionControllerIndex extends PageControllerAbstract
 {
     private function validarUrlTemporal(){
     	try{
-            $user   = $this->getRequest()->get("us");
-            $inv    = $this->getRequest()->get("inv");
-            $email  = $this->getRequest()->get("email");
             $token  = $this->getRequest()->get("token");
-            return IndexController::getInstance()->validarUrlTmp($user,$inv,$email,$token);
+            return IndexController::getInstance()->validarUrlTmp($token);
      	}catch(Exception $e){
             return false;
             print_r($e);
@@ -44,10 +41,10 @@ class RegistracionControllerIndex extends PageControllerAbstract
 
     public function formulario(){
         try{
-            if(!$this->validarUrlTemporal()){
+        	$oInvitado = $this->validarUrlTemporal();
+            if(!$oInvitado){
                 exit("La pagina ha caducado");
             }
-
             $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
             $this->setHeadTag();
             
@@ -55,12 +52,12 @@ class RegistracionControllerIndex extends PageControllerAbstract
 
             $this->getTemplate()->set_var("topPageContent", "Registracion");
 
-            $this->getTemplate()->set_var("sEmail", $this->getRequest()->get("email"));
-            $this->getTemplate()->set_var("sNombre", $this->getRequest()->get("nom"));
-            $this->getTemplate()->set_var("sApellido", $this->getRequest()->get("ape"));
+            $this->getTemplate()->set_var("sEmail", $oInvitado->email);
+            $this->getTemplate()->set_var("sNombre", $oInvitado->nombre);
+            $this->getTemplate()->set_var("sApellido", $oInvitado->apellido);
 
-            $this->getTemplate()->set_var("us", $this->getRequest()->get("us"));
-            $this->getTemplate()->set_var("inv",$this->getRequest()->get("inv"));
+            $this->getTemplate()->set_var("us", $oInvitado->usuarios_id);
+            $this->getTemplate()->set_var("inv",$oInvitado->invitados_id);
             
             $this->getTemplate()->load_file("gui/vistas/index/registracion.gui.html", "centerPageContent");
 
