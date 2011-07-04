@@ -55,12 +55,12 @@ class IndexController
 		}
     }
     /**
-     * @param stdClass $obj
+     * @param string $token
      */
-    public function validarUrlTmp($user,$inv,$email,$token){
+    public function validarUrlTmp($token){
     	try{
 			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->validarUrlTmp($user,$inv,$email,$token);
+            return $oUsuarioIntermediary->validarUrlTmp($token);
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}

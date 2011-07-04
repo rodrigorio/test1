@@ -347,6 +347,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			 		" token=".$db->escape($token,true)."";
 			$db->execSQL($sSQL);
 
+			$sSQL =" update usuarios u ".
+			        " set u.invitacionesDisponibles = u.invitacionesDisponibles-1 ".
+			 		" WHERE u.id= ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)."";
+			$db->execSQL($sSQL);
+
 			$db->commit();
 			
 			$nom 	= $oInvitado->getNombre();
@@ -355,7 +360,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			
 			$body 	= "<p>Usted ha sido invitado por ".$oUsuario->getNombre().", ".$oUsuario->getApellido()."";
 			$body 	.= "<br/> para que pueda integrar la comunidad de profesionales de personas discapacitas, etc, etc.";
-			$body 	.= "<a href='http://www.rodrigorio.com.ar/tesis/registracion?nom=$nom&ape=$ape&email=$email&token=$token&inv=$iUltimoId&us=$iIdUsuario' > registrate</a>";
+			$body 	.= "<a href='http://www.rodrigorio.com.ar/tesis/registracion?token=$token' > registrate</a>";
 			$body 	.= "</p>";
 			$asunto = "registracion";
 			$dest 	= $oInvitado->getEmail();
@@ -547,29 +552,31 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
 	}
 	
-	public function validarUrlTmp($user,$inv,$email,$token){
+	public function validarUrlTmp($token){
 		 try{
             $db = $this->conn;
-            $sSQL = "SELECT 
-					  `usuarios_id`,
-					  `invitados_id`,
-					  `relacion`,
-					  `fecha`,
-					  `estado`,
-					  `token`
+            $sSQL = "SELECT
+            		  ui.`usuarios_id`,
+					  ui.`invitados_id`,
+					  ui.`relacion`,
+					  ui.`fecha`,
+					  ui.`estado`,
+					  ui.`token`,
+					  p.`email`,
+					  p.`nombre`,
+					  p.`apellido`
 					FROM 
 					  `usuario_x_invitado` ui
 					JOIN
 						usuarios u ON u.id = ui.usuarios_id
 					JOIN
 						personas p ON p.id = ui.invitados_id
-					WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now() AND ui.`usuarios_id` = $user AND ui.invitados_id = $inv 
-						AND ui.token = ".$db->escape($token,true)."";
-            $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-            return $foundRows;
+					WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now() 
+						 AND ui.token = ".$db->escape($token,true)." AND ui.estado = 'pendiente' ";
+            return $db->getDBObject($sSQL);
 		  }catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
+			return false;
 		}
 	}
 }
