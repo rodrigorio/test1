@@ -177,4 +177,5 @@ class LoginControllerIndex extends PageControllerAbstract
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
+    
 }

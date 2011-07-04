@@ -74,6 +74,13 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('defaultDefaultDefault', $route);
         
+        $route = new RegexRoute('recuperar-contrasenia',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "registracion",
+                                        'action'     => "recuperarContraseña"
+                                ));
+        $router->addRoute('indexRegistracionRecuperarContraseña', $route);
         $route = new RegexRoute('registracion',
                                 array(
                                         'module' => "index",

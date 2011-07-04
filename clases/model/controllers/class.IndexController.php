@@ -65,5 +65,17 @@ class IndexController
 			echo $e->getMessage();
 		}
     }
+    /**
+     * @param string $token
+     */
+    public function recuperarContrasenia($sNombreUsuario,$sEmail){
+    	try{
+    		$filtro = array('u.nombre' => $sNombreUsuario, 'p.email' =>  $sEmail);
+			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->obtener($filtro);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
     
 }
