@@ -136,6 +136,34 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
     public function listado()
     {
     }
-    
+	/**
+     * Muestra pagina de sitio en construccion
+     */
+    public function sitioEnConstruccion()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
+        
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", "Sitio en construccion");
+        $this->getTemplate()->set_var("sMetaDescription", "");
+        $this->getTemplate()->set_var("sMetaKeywords", "");
+
+        $this->getTemplate()->set_var("tituloVista", "Sitio en construccion");
+        $this->getTemplate()->set_var("subtituloVista", "Estamos trabajando, muy pronto estaremos en línea");
+            
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    public function sitioOffline()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", "Sitio fuera de linea");
+        $this->getTemplate()->set_var("sMetaDescription", "");
+        $this->getTemplate()->set_var("sMetaKeywords", "");
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
     
 }

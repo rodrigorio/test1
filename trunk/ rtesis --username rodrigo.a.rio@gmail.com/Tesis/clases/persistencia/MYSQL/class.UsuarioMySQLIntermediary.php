@@ -213,14 +213,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		  	//Asignamos a Host el nombre de nuestro servidor smtp
 		  	$mail->Host = "smtp.hotpop.com";
 
-		  	//Le indicamos que el servidor smtp requiere autenticaciï¿½n
+		  	//Le indicamos que el servidor smtp requiere autenticación
 		  	$mail->SMTPAuth = true;
 		
 		  	//Le decimos cual es nuestro nombre de usuario y password
 		  	$mail->Username = "rrio@HotPOP.com"; 
 		  	$mail->Password = "mipassword";
 		
-		  	//Indicamos cual es nuestra direcciï¿½n de correo y el nombre que 
+		  	//Indicamos cual es nuestra dirección de correo y el nombre que 
 		  	//queremos que vea el usuario que lee nuestro correo
 		 	$mail->From = $orig;
 		 	$mail->FromName = "Eduardo Garcia";
@@ -229,7 +229,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			//una cuenta gratuita, por tanto lo pongo a 30  
 			$mail->Timeout=30;
 		
-	  		//Indicamos cual es la direcciï¿½n de destino del correo
+	  		//Indicamos cual es la dirección de destino del correo
 			$mail->AddAddress($dest);
 			
 			//Asignamos asunto y cuerpo del mensaje
@@ -257,7 +257,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		     	$intentos=$intentos+1;	
 	   		}
 		   if(!$exito) {
-				echo "Problemas enviando correo electrï¿½nico a ".$valor;
+				echo "Problemas enviando correo electrónico a ".$valor;
 				echo "<br/>".$mail->ErrorInfo;	
 		   }else{
 				echo "Mensaje enviado correctamente";
@@ -305,7 +305,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 				return false;
 			}
     }
-
     /**
      * 
      * Enter description here ...
@@ -444,7 +443,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-    
     public function insertar($oUsuario)
    {
 		try{
@@ -547,24 +545,22 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
 
             $sSQL = "SELECT
-                    CONCAT_WS('_',cp.`controlador`,a.`accion`),
-                    a.`activo`
-                    from `perfiles` p
-                    join `acciones_x_perfil` ap ON ap.`perfiles_id` = p.`id`
-                    join `acciones` a on a.`grupo` =  ap.`grupo`
-                    join `controladores_pagina` cp on cp.`id` = a.`controladores_pagina_id`
-                    WHERE p.`id` = $iIdPerfil";
-
+						CONCAT_WS('_',cp.`controlador`,a.`accion`),
+						a.`activo`
+						from `perfiles` p
+						join `acciones_x_perfil` ap ON ap.`perfiles_id` = p.`id`
+						join `acciones` a on a.`grupo` =  ap.`grupo`
+						join `controladores_pagina` cp on cp.`id` = a.`controladores_pagina_id`
+						WHERE p.`id` = $iIdPerfil";
             $db->query($sSQL);
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
             if(empty($foundRows)){ return null; }
 
             return $db->getDBArrayQuery(sSQL);
-        }catch(Exception $e){
+	  	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-    }
+	}
 	
 	public function validarUrlTmp($token){
 		 try{
@@ -592,5 +588,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 			return false;
 		}
+	}
+	
+	public function recuperarContrasenia($sNombreUsuario,$sEmail){
+		
 	}
 }
