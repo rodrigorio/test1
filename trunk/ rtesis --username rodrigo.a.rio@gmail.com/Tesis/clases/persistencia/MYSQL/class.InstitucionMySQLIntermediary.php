@@ -31,9 +31,9 @@ public  function existe($filtro){
 		try{
 			$db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
-
+   
             $sSQL = "SELECT
-                        i.id as iId, i.nombre as sNombre
+                        i.id as iId,  i.nombre as sNombre
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
