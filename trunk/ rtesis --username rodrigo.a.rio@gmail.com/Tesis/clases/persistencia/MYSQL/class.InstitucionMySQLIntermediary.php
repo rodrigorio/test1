@@ -33,7 +33,7 @@ public  function existe($filtro){
             $filtro = $this->escapeStringArray($filtro);
    
             $sSQL = "SELECT
-                        i.id as iId,  i.nombre as sNombre
+                        i.id as iId, i.nombre as sNombre
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
@@ -148,7 +148,7 @@ public final function obtener($filtro, &$foundRows = 0){
         }
 	}
     
-	//borra muchas lidades
+	//borra muchas especialidades
 	//public function borrar($objects){}
     
     //borra una Institucion
