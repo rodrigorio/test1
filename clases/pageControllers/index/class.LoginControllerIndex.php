@@ -178,4 +178,21 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
     
+	public function recuperarContrasenia(){
+		echo "sss";
+		if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
+    	try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+	       echo $sNombreUsuario 	= $this->getRequest()->getPost("nombreUsuario");
+	       // $iDni 	= $this->getRequest()->getPost("dni");
+	        $sEmail	 	= $this->getRequest()->getPost("email");
+
+    		$res =  IndexController::getInstance()->recuperarContrasenia($sNombreUsuario,$sEmail);
+			var_dump($res);
+        }catch(Exception $e){
+
+        }
+    }
 }

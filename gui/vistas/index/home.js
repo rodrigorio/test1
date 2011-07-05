@@ -23,6 +23,10 @@ $(document).ready(function(){
                     });
                     $("#formLogin").validate(validateFormLogin);
                     $("#formLogin").ajaxForm(optionsAjaxFormLogin);
+                    $("#rec_pass").live('click',function(){
+                    	$("#formLogin").hide();
+                    	$("#recuperarContrasenia").show();
+                    });
             }
         );
         return false;

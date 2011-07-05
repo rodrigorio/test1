@@ -556,7 +556,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
             if(empty($foundRows)){ return null; }
 
-            return $db->getDBArrayQuery(sSQL);
+            return $db->getDBArrayQuery($sSQL);
 	  	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }

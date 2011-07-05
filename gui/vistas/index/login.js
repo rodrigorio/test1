@@ -94,3 +94,40 @@ $("#contrasenia").live("focus", function(){
 $("#contrasenia").live("blur", function(){
     $("#hintContrasenia").hide();
 });
+function recuperarPass(){
+	var nombreUsuario = $("#rec_nombre_usuario").val();
+	var email = $("#rec_email").val();
+	var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;  
+    var fields = $('#recuperarContrasenia input[type=text]');
+    var error = 0;
+    fields.each(function(){
+        var value = $(this).val();
+        if( value == "" || value.length<1 || ( $(this).attr('id')=='rec_email' && !emailPattern.test(value) ) ) {
+            $(this).addClass('rec_error');
+            error++;
+        } else {
+            $(this).removeClass('rec_error');
+        }
+    });
+    if(!error) {
+    	var fields = "email="+email+"&nombreUsuario="+nombreUsuario;
+    	$.ajax({
+			type:	"POST",
+			url: 	"recuperar-contrasenia",
+			data: 	fields,
+			beforeSend: function() {
+				$("#ajax_loading").show();
+			},
+			success: function(data){
+				$("#ajax_loading").hide();
+				var resp = $.parseJSON(data);
+				alert(resp);
+				if(resp == false){
+					
+				}
+			}
+    	});
+    }else{
+    	return false;
+    }
+}

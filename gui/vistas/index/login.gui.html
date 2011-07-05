@@ -1,4 +1,5 @@
 <!--BeginJsContent-->
+
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
     $LAB
@@ -16,13 +17,12 @@
 <!--EndJsContent-->
 
 <!--BeginFormularioBlock-->
+<link href="gui/css/login.css" rel="stylesheet" type="text/css" media="screen, projection" />
 <div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi authenticate32"></span></div>
+    <div class="titulo iveal" id="title"><span class="i32 mi authenticate32"></span></div>
     <form id="formLogin" name="formLogin" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-
         <div id='msg_form_login' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
-
         <div id="msg_documento" class="form_line">
             <label for="documento">Documento</label>
             <div class="fwrap">
@@ -31,7 +31,6 @@
                 </div>
             </div>
         </div>
-
         <div id="msg_contrasenia" class="form_line">
             <label for="contrasenia">Contraseña</label>
             <div style='right:-220px' id="hintContrasenia" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La contraseña contempla mayúsculas y minúsculas.</span></div>
@@ -42,7 +41,6 @@
                 </div>
             </div>
         </div>
-
         <div class="fl_le iveal">
             <label for="acceder" class="button buttonConfirm buttonLarge mari3">
                 <button id="acceder" type="submit" name="acceder" class="btn01">
@@ -52,12 +50,41 @@
             </label>
         </div>
         <div class="fl_ri iveal">
-            <a href="{sLinkRecuperarPass}" target="blank"><span class="bs i help"></span> ¿Olvidaste tu contraseña?</a>
+            <a href="javascript:;" id="rec_pass"><span class="bs i help"></span> ¿Olvidaste tu contraseña?</a>
         </div>
 
         <input type="hidden" value="{sNextUrl}" name="next" id="next">
     </form>
+    
+    <div class="di_no" id="recuperarContrasenia">
+		<div id="titleRecPass"><h2>Recuperar contrase&ntilde;a</h2></div>
+		<div id="msg_email" class="form_line">
+			<label for="email">Tu correo electr&oacute;nico:</label>
+			<div class="fwrap">
+	            <div class="inner_fwrap">
+					<input  id="rec_email" name="rec_email" type="text" value="" >
+				</div>
+			</div>
+		</div>
+		<div id="msg_user" class="form_line">
+			<label for="username">Nombre de usuario:</label>
+			<div class="fwrap">
+	        	<div class="inner_fwrap">
+	      	        <input type="text" name="rec_nombre_usuario" id="rec_nombre_usuario" />
+	      	     </div>
+			</div>
+		</div>
+		<div class="fl_le iveal">
+            <label for="acceder" class="button buttonConfirm buttonLarge mari3">
+                <button id="rec_pass" type="button" onclick="recuperarPass();" class="btn01">
+                    <span class="i mi signIn"></span> 
+                    Enviar
+                </button>
+            </label>
+        </div>
+    </div>
 </div>
+
 <!--EndFormularioBlock-->
 
 <!--BeginImagenLoginBlock-->
