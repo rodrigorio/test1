@@ -117,15 +117,4 @@ class RegistracionControllerIndex extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
-    public function recuperarContraseña(){
-    	try{
-	        $sNombreUsuario 	= $this->getRequest()->getPost("nombreUsuario");
-	       // $iDni 	= $this->getRequest()->getPost("dni");
-	        $sEmail	 	= $this->getRequest()->getPost("email");
-
-    		$res =  IndexController::getInstance()->recuperarContrasenia($sNombreUsuario,$sEmail);
-        }catch(Exception $e){
-
-        }
-    }
 }
