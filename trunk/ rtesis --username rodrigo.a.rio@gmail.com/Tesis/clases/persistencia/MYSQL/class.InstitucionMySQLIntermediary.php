@@ -148,7 +148,7 @@ public final function obtener($filtro, &$foundRows = 0){
         }
 	}
     
-	//borra muchas especialidades
+	//borra muchas lidades
 	//public function borrar($objects){}
     
     //borra una Institucion
