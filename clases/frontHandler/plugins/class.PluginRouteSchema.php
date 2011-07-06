@@ -158,6 +158,22 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "procesar"
                                 ));
         $router->addRoute('comunidadInvitacionesProcesar', $route);
+
+        $route = new RegexRoute('comunidad/datos-personales',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "datosPersonales",
+                                        'action'     => "formulario"
+                                ));
+        $router->addRoute('comunidadDatosPersonalesFormulario', $route);
+
+        $route = new RegexRoute('comunidad/datos-personales-procesar',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "datosPersonales",
+                                        'action'     => "procesar"
+                                ));
+        $router->addRoute('comunidadDatosPersonalesProcesar', $route);
         
         ///////////////////////////////////////////
         ////// RUTAS MODULO SEGUIMIENTOS //////////
