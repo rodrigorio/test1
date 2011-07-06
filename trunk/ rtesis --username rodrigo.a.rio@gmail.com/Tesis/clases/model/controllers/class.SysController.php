@@ -63,7 +63,6 @@ class SysController
     {
     	$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
         $array = $oUsuarioIntermediary->permisosPorPerfil($idPerfil);
-        print_r($array);
         if($array == null){
             echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!";
         }else{
