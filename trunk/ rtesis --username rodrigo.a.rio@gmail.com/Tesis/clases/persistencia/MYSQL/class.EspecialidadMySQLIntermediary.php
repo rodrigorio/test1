@@ -85,7 +85,7 @@ public final function obtener($filtro, &$foundRows = 0){
                         FROM
                        especialidades e ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, " e ");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);

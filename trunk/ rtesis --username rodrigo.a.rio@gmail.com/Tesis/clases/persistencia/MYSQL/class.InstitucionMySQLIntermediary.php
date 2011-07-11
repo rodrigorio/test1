@@ -37,7 +37,7 @@ public  function existe($filtro){
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "i");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
             			
 			$db->query($sSQL);
@@ -59,9 +59,14 @@ public  function existe($filtro){
    {
 		try{
 			$db = $this->conn;
+		if($oInstitucion->getCiudad()!= null){
+			$ciudadId = ($oInstitucion->getCiudad()->getId());
+			}else {
+				$ciudadId = null;
+			}
 			$sSQL =	" insert into instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " ciudades_id =".$db->escape($oInstitucion->getCiudad()->getId(),false,MYSQL_TYPE_INT)." ";
+                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ";
 			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -84,7 +89,7 @@ private  function actualizar(Intitucion $oInstitucion)
         
 			$sSQL =	" update instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT).
+                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ".
                     " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -117,7 +122,7 @@ public final function obtener($filtro, &$foundRows = 0){
                         FROM
                        instituciones i ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "i");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);
@@ -148,7 +153,7 @@ public final function obtener($filtro, &$foundRows = 0){
         }
 	}
     
-	//borra muchas especialidades
+	//borra muchas instituciones
 	//public function borrar($objects){}
     
     //borra una Institucion

@@ -84,7 +84,7 @@ public final function obtener($filtro, &$foundRows = 0){
                         FROM
                        categorias c ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, " c ");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);

@@ -43,7 +43,7 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
                     FROM
                        paises p ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "p");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);

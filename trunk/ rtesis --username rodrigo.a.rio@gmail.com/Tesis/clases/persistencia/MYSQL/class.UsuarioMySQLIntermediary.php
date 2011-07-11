@@ -384,7 +384,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			}else {
 				$ciudadId = null;
 			}
-        	if($oUsuario->getInstitucion()->getId()!= null){
+        	if($oUsuario->getInstitucion()!= null){
 				$institucionId = $oUsuario->getInstitucion()->getId();
 			}else {
 				$institucionId = null;
