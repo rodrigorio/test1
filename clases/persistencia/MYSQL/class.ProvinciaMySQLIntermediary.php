@@ -39,7 +39,7 @@ class ProvinciaMySQLIntermediaryMySQLIntermediary extends ProvinciaIntermediary
                     FROM
                        provincias p ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro, "p");
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);
