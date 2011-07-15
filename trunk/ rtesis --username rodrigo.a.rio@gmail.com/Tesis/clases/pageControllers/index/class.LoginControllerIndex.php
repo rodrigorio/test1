@@ -179,20 +179,41 @@ class LoginControllerIndex extends PageControllerAbstract
     }
     
 	public function recuperarContrasenia(){
-		echo "sss";
 		if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         
     	try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-	       echo $sNombreUsuario 	= $this->getRequest()->getPost("nombreUsuario");
-	       // $iDni 	= $this->getRequest()->getPost("dni");
+	        $sNombreUsuario 	= $this->getRequest()->getPost("nombreUsuario");
+	        //$iDni 	= $this->getRequest()->getPost("dni");
 	        $sEmail	 	= $this->getRequest()->getPost("email");
 
     		$res =  IndexController::getInstance()->recuperarContrasenia($sNombreUsuario,$sEmail);
-			var_dump($res);
-        }catch(Exception $e){
-
+    		if($res === true ){
+    			$this->getJsonHelper()->setSuccess(true);
+    		}else if($res === -1){
+    			$this->getJsonHelper()->setSuccess(false)->setMessage("No se pudo enviar el email, reintente mas tarde.");
+    		}else{
+    			$this->getJsonHelper()->setSuccess(false)->setMessage("Datos incorrectos, reintente mas tarde.");
+    		}
+    	}catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
         }
+    	//setea headers y body en el response con los valores codificados
+       	$this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+    function confirmarContrasenia(){
+    	try{
+    		$sToken 	= $this->getRequest()->get("token");
+    		$oUsuario	= IndexController::getInstance()->confirmarContrasenia($sToken);
+    		if($oUsuario){
+    			$url = "/?mt=as4dd.";
+    			$this->getRedirectorHelper()->gotoUrl($url);
+    		}else{
+    		    exit("Se produjo un error y no se ha podido realizar la accion.");
+    		}
+    	}catch(Exception $e){
+
+    	}
     }
 }

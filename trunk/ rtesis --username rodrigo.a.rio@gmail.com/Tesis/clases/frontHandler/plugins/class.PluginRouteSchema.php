@@ -74,13 +74,20 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('defaultDefaultDefault', $route);
         
-        $route = new RegexRoute('recuperar-contrasenia',
+        $route = new RegexRoute('recuperarContrasenia',
                                 array(
                                         'module' => "index",
                                         'controller' => "login",
                                         'action'     => "recuperarContrasenia"
                                 ));
         $router->addRoute('indexLoginFormRecuperarContrasenia', $route);
+        $route = new RegexRoute('confirmarContrasenia',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "login",
+                                        'action'     => "confirmarContrasenia"
+                                ));
+        $router->addRoute('indexLoginFormConfirmarContrasenia', $route);
         
         $route = new RegexRoute('registracion',
                                 array(

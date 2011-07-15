@@ -49,7 +49,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
                         p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
-
+						p.`documento_tipos_id` as iTipoDocumentoId,
+  						p.`numeroDocumento` as sNumeroDocumento,
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles
@@ -58,7 +59,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     if(!empty($filtro)){
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
-
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -71,6 +71,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->iId 			= $oObj->iId;
                 $oUsuario->sNombre 		= $oObj->sNombre;
                 $oUsuario->sApellido 	= $oObj->sApellido;
+                $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
+                $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
                 $oUsuario->sSexo 		= $oObj->sSexo;
                 $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
                 $oUsuario->sEmail 		= $oObj->sEmail;
@@ -79,6 +81,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sFax 		= $oObj->sFax;
                 $oUsuario->sDomicilio 	= $oObj->sDomicilio;
                 $oUsuario->oCiudad 		= null;
+                $oUsuario->oInstitucion = null;
                 $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
                 $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
                 $oUsuario->sEmpresa		= $oObj->sEmpresa;
@@ -276,17 +279,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$titulo = $asunto;
 			
 			// message
-			$mensaje = '
-			<html>
-			<head>
-			  <title>Usted ha sido invitado para registrarse en .....</title>
-			</head>
-			<body>
-			  <p>Haga click en el siguiente enlace para poder registrarse!</p>
-			  <div>'.$body.'</div>
-			</body>
-			</html>
-			';
+			$mensaje = $body;
 			
 			// Para enviar un correo HTML mail, la cabecera Content-type debe fijarse
 			$cabeceras  = 'MIME-Version: 1.0' . "\r\n";
@@ -361,10 +354,21 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$body 	.= "<br/> para que pueda integrar la comunidad de profesionales de personas discapacitas, etc, etc.";
 			$body 	.= "<a href='http://www.rodrigorio.com.ar/tesis/registracion?token=$token' > registrate</a>";
 			$body 	.= "</p>";
+			$msg = '
+			<html>
+			<head>
+			  <title>Usted ha sido invitado para registrarse en .....</title>
+			</head>
+			<body>
+			  <p>Haga click en el siguiente enlace para poder registrarse!</p>
+			  <div>'.$body.'</div>
+			</body>
+			</html>
+			';
 			$asunto = "registracion";
 			$dest 	= $oInvitado->getEmail();
 			$orig	= "registracion@sistemadegestion.com";
-			$this->sendMail($orig, $dest, $asunto, $body);
+			$this->sendMail($orig, $dest, $asunto, $msg);
 			return  true;
 		}catch(Exception $e){
 			$db->rollback_transaction();
@@ -374,7 +378,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
 
     public function actualizar($oUsuario)
-
     {
         try{
 			$db = $this->conn;
@@ -382,22 +385,22 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			if($oUsuario->getCiudad()!= null){
 				$ciudadId = $oUsuario->getCiudad()->getId();
 			}else {
-				$ciudadId = null;
+				$ciudadId = 'null';
 			}
         	if($oUsuario->getInstitucion()!= null){
 				$institucionId = $oUsuario->getInstitucion()->getId();
 			}else {
-				$institucionId = null;
+				$institucionId = 'null';
 			}
 			
             $db->begin_transaction();
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getDocumentoId(),false,MYSQL_TYPE_INT).", ".
+					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE);
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE).",".
                     " email =".$db->escape($oUsuario->getEmail(),true).", " .
                     " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
                     " celular =".$db->escape($oUsuario->getCelular(),true).", " .
@@ -409,22 +412,19 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)."";
+                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." ".
+            		" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)."";
+			$db->execSQL($sSQL);
 
-
-			 $db->execSQL($sSQL);
-
-             $sSQL =" update usuarios ".
+            $sSQL =" update usuarios ".
                     " set sitioWeb=".$db->escape($oUsuario->getSitioWeb(),true).", " .
-					" especialidades_id =".$db->escape($oUsuario->getEspecialidades_id(),false,MYSQL_TYPE_INT).", ".
-                    " perfiles_id =".$db->escape($oUsuario->getPerfiles_id(),false,MYSQL_TYPE_INT).", ".
-					" contrasenia =".$db->escape($oUsuario->getContrasenia(),true).", " .
-			        " fechaAlta= ".$db->escape($oUsuario->getFechaAlta(), true,MYSQL_TYPE_DATE);
-
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-
+					" especialidades_id =".$db->escape($oUsuario->getEspecialidad(),false,MYSQL_TYPE_INT).", ".
+               //     " perfiles_id =".$db->escape($oUsuario->getPerfiles_id(),false,MYSQL_TYPE_INT).", ".
+					" contrasenia =".$db->escape($oUsuario->getContrasenia(),true)."".
+            		" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)."";
+			$db->execSQL($sSQL);
+			$db->commit();
+			return true;
 		}catch(Exception $e){
             $db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
@@ -482,8 +482,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " celular =".$db->escape($oUsuario->getCelular(),true).", " .
                     " fax =".$db->escape($oUsuario->getFax(),true).", " .
                     " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .//revisar esto
-                    " instituciones_id =".$db->escape($institucionId,true).", ".
-                    " ciudades_id =".$db->escape($ciudadId,true).", ".
+                    " instituciones_id =".$db->escape($institucionId,false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($ciudadId,false,MYSQL_TYPE_INT).", ".
 					" ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
                     " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
@@ -498,7 +498,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 				$iEspecialidadId = null;
 			}
              $sSQL =" insert into usuarios set ".
-                    " id=".$db->escape($iLastId,false).", " .
+                    " id=".$db->escape($iLastId,false,MYSQL_TYPE_INT).", " .
                     " sitioWeb=".$db->escape($oUsuario->getSitioWeb(),true).", " .
 					" especialidades_id =".$db->escape($iEspecialidadId,true).", ".
                     " perfiles_id =".self::PERFIL_INTEGRANTE_INACTIVO.", ".
@@ -584,13 +584,62 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now() 
 						 AND ui.token = ".$db->escape($token,true)." AND ui.estado = 'pendiente' ";
             return $db->getDBObject($sSQL);
-		  }catch(Exception $e){
+	 	}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 			return false;
 		}
 	}
 	
-	public function recuperarContrasenia($sNombreUsuario,$sEmail){
-		
+	public function guardarNuevaContrasenia($iId){
+		try{
+			$db = $this->conn;
+			$time 	= time();
+			$token 	= md5($time);
+			$pass	= substr( md5(microtime()), 1, 8);
+			$oPass = new stdClass();
+			$oPass->nuevaContrasenia = $pass;
+			$oPass->token = $token;
+			$sSQL = " insert into usuarios_datos_temp set ".
+                    " id=".$db->escape($iId,false,MYSQL_TYPE_INT).", " .
+                    " contraseniaNueva=".$db->escape(md5($pass),true).", ".
+                    " token=".$db->escape($token,true)." ";
+
+			 $db->execSQL($sSQL);
+			 $db->commit();
+			 return $oPass;
+		}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+			return false;
+		}
+	}
+	
+	public function validarConfirmacionContrasenia($token){
+		 try{
+            $db = $this->conn;
+            $sSQL = "SELECT 
+            			udt.id as iId, 
+            			udt.contraseniaNueva as sContraseniaNueva
+					FROM 
+					  `usuarios_datos_temp` udt
+					JOIN
+						usuarios u ON udt.id = u.id
+					JOIN
+						personas p ON p.id = udt.id
+					WHERE DATE_SUB(udt.fecha,INTERVAL 5 DAY) <= now() 
+						 AND udt.token = ".$db->escape($token,true)." ";
+            $objUsuario = $db->getDBObject($sSQL);
+            if($objUsuario){
+            	$filtro   = array('u.id' => $objUsuario->iId);
+				$oPerfil  = $this->obtener($filtro);
+				$oUsuario = $oPerfil->getUsuario();
+				$oUsuario->setContrasenia( $objUsuario->sContraseniaNueva );
+				return $this->guardar($oUsuario);
+            }else{
+            	return false;
+            }
+	 	}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+			return false;
+		}
 	}
 }

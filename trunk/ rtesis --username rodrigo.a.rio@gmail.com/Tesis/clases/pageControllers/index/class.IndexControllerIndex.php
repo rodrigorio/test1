@@ -83,6 +83,11 @@ class IndexControllerIndex extends PageControllerAbstract
             //nombre seccion
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Inicio");
 
+            if($this->getRequest()->get("mt")!=""){
+            	$this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTop", "MsgDialogInfoBlockI32");
+	            $this->getTemplate()->set_var("sMensaje", "Su contrase&ntilde;a ha sido modificada.");
+	            $this->getTemplate()->parse('msgTop', false);
+            }
             //contenido home
             $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "centerPageContent", "HomeCenterPageBlock");
             

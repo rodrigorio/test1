@@ -23,6 +23,8 @@ class Usuario extends PersonaAbstract
 
     private $iInvitacionesDisponibles;
     
+    private $sContraseniaNueva;
+    
     public function __construct(stdClass $oParams = null){
         parent::__construct();
 
@@ -58,7 +60,14 @@ class Usuario extends PersonaAbstract
     public function getEspecialidad(){
         return $this->oEspecialidad;
     }
+    public function getContraseniaNueva(){
+        return $this->sContraseniaNueva;
+    }
+    public function getInvitacionesDisponibles(){
+        return $this->iInvitacionesDisponibles;
+    }
 
+    ///////////////////////SETS//////////////////////////
     public function setNombreUsuario($sNombreUsuario){
     	$this->sNombreUsuario = $sNombreUsuario;
     }
@@ -83,7 +92,9 @@ class Usuario extends PersonaAbstract
         $this->iInvitacionesDisponibles = $iInvitacionesDisponibles;
         return $this;
     }
-    public function getInvitacionesDisponibles(){
-        return $this->iInvitacionesDisponibles;
+
+    public function setContraseniaNueva($pass){
+        $this->sContraseniaNueva = $pass;
     }
+    
 }
