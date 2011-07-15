@@ -70,9 +70,57 @@ class IndexController
      */
     public function recuperarContrasenia($sNombreUsuario,$sEmail){
     	try{
+    		$request = FrontController::getInstance()->getRequest();
     		$filtro = array('u.nombre' => $sNombreUsuario, 'p.email' =>  $sEmail);
 			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->obtener($filtro);
+            $oPerfil= $oUsuarioIntermediary->obtener($filtro);
+            if($oPerfil){
+            	$oNuevoPass = $oUsuarioIntermediary->guardarNuevaContrasenia($oPerfil->getUsuario()->getId());
+            	if($oNuevoPass){
+	            	$asunto = "Recuperación de contraseña";
+					$dest 	= $oPerfil->getUsuario()->getEmail();
+					$orig	= "servicios@sistemadegestion.com";
+					$sToken	= $oNuevoPass->token;
+					$sNuevaContrasenia	= $oNuevoPass->nuevaContrasenia;
+					$body 	="<html>
+								<head>
+								  <title>Usted ha sido invitado para registrarse en .....</title>
+								</head>
+								<body>
+								  <p>Si usted no solicitó cambiar su contraseña omita este mail, en caso contrario 
+								  		haga click en el siguiente enlace para confirmar su nueva contraseña!</p>
+								  <p><a href='".$request->getBaseTagUrl()."confirmarContrasenia?token=$sToken'> Confirmar </a></p>		
+								  <div><p>Nueva contraseña : ".$sNuevaContrasenia."</div>
+								</body>
+							</html>";
+	            	$envio = $oUsuarioIntermediary->sendMail($orig, $dest, $asunto, $body);
+	            	if($envio){
+	            		return true;
+	            	}else{
+	            		return -1;
+	            	}
+            	}else{
+            		return null;
+            	} 
+            }else{
+            	return null;
+            }
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+    /**
+     * @param string $token
+     */
+    public function confirmarContrasenia($sToken){
+    	try{
+			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oUsuario = $oUsuarioIntermediary->validarConfirmacionContrasenia($sToken);
+            if($oUsuario){
+            	return true;
+            }else{
+            	return null;
+            }
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}

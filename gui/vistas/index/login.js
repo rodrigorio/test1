@@ -104,8 +104,10 @@ function recuperarPass(){
         var value = $(this).val();
         if( value == "" || value.length<1 || ( $(this).attr('id')=='rec_email' && !emailPattern.test(value) ) ) {
             $(this).addClass('rec_error');
+            $("#hint"+$(this).attr('id')).show();
             error++;
         } else {
+        	$("#hint"+$(this).attr('id')).hide();
             $(this).removeClass('rec_error');
         }
     });
@@ -113,17 +115,17 @@ function recuperarPass(){
     	var fields = "email="+email+"&nombreUsuario="+nombreUsuario;
     	$.ajax({
 			type:	"POST",
-			url: 	"recuperar-contrasenia",
+			url: 	"recuperarContrasenia",
 			data: 	fields,
 			beforeSend: function() {
 				$("#ajax_loading").show();
 			},
 			success: function(data){
 				$("#ajax_loading").hide();
-				var resp = $.parseJSON(data);
-				alert(resp);
-				if(resp == false){
+				if(data.success==1){
 					
+				}else{
+					alert(data.mensaje);
 				}
 			}
     	});
