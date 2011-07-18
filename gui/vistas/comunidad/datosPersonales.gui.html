@@ -9,64 +9,136 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-   //.script("{pathUrlBase}"+"gui/vistas/comunidad/datosPersonales.js")
+   .script("{pathUrlBase}"+"gui/vistas/comunidad/datosPersonales.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js");
 </script>
-<!--BeginJsContent-->
+<!--EndJsContent-->
 
 <!--BeginFormularioBlock-->
-<div class='ficha04 bora grupo cl_bo' style="width:640px;">
-    <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
-    <div class="di_no" id="msg_conf"></div>
-    <form id="formEnviarInvitacion" name="formEnviarInvitacion" action="" method="post">
+<div class='ficha04 bora grupo' style="width:640px;">
+    <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
+    <form id="formDatosPersonales" name="formDatosPersonales" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id='msg_form_datosPersonales' class="msg_form iveal di_no">
+            <span class="bs i"></span>
+            <span class="msg"></span>
+        </div>
 
-        <div id='msg_form_enviarInvitacion' class="msg_form iveal di_no">
-        	<span class="bs i"></span>
-        	<span class="msg"></span>
+        <h2 class="mabo3">Informacion Basica</h2>
+
+        <div id="msg_documento" class="form_line">
+            <label for="documento">Documento</label>
+            <div class="cl_le"></div>
+            <div class="fl_le mari2">
+                <select style="width:75px" name="tipoDocumento" id="tipoDocumento" title="tipoDocumento">
+                    <option>DNI</option>
+                    <option>CI</option>
+                    <option>LC</option>
+                    <option>LD</option>
+                </select>
+            </div>
+            <input style="width:545px" class="defVal" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="Numero" />
         </div>
 
         <div id="msg_nombre" class="form_line">
+            <label for="nombre">Nombre</label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="nombre" id="nombre" title="Nombre persona invitada" maxlength="40" value="Nombre persona invitada" />
+                    <input type="text" name="nombre" id="nombre" title="nombre" maxlength="30" />
                 </div>
             </div>
         </div>
 
         <div id="msg_apellido" class="form_line">
+            <label for="nombre">Apellido</label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="apellido" id="apellido" title="Apellido persona invitada" maxlength="40" value="Apellido persona invitada" />
+                    <input type="text" name="apellido" id="apellido" title="apellido" maxlength="40" />
                 </div>
             </div>
         </div>
 
         <div id="msg_email" class="form_line">
-            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <label for="nombre">E-mail</label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="email" id="email" title="Email persona invitada" maxlength="40" value="Email persona invitada" />
+                    <input type="text" name="email" id="email" title="email" maxlength="70" />
                 </div>
             </div>
         </div>
 
-        <div id="msg_relacion" class="form_line">
-            <div id="hintRelacion" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">Esta información no será revelada en ningún momento</span></div>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="relacion" name="relacion" class="textareaAutoGrow defVal maxlength" title="Breve descripcion de la relacion que mantiene con el invitado">Breve descripcion de la relacion que mantiene con el invitado</textarea>
-                </div>
-            </div>
-        </div>
 
         <div class="fl_le">
-            <label for="enviarInvitacion" class="button buttonConfirm buttonLarge mari3">
-                <button id="enviarInvitacion" type="submit" name="enviarInvitacion" class="btn01">
-                    Enviar Invitacion
+            <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
+                <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+                    Actualizar Perfil
                 </button>
             </label>
         </div>
     </form>
 </div>
 <!--EndFormularioBlock-->
+
+<!--BeginPageRightInnerContBlock-->
+<h2 class="mabo3">Privacidad</h2>
+
+<div class="form_line">
+    <label for="privacidadEmail">E-mail</label>
+    <div class="fwrap">
+        <div class="inner_fwrap">
+            <select name="privacidadEmail" id="privacidadEmail" title="privacidadEmail">
+                <option>Comunidad</option>
+                <option>Publico</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form_line">
+    <label for="privacidadTelefonoContacto">Telefono de Contacto</label>
+    <div class="fwrap">
+        <div class="inner_fwrap">
+            <select name="privacidadTelefonoContacto" id="privacidadTelefonoContacto" title="privacidadTelefonoContacto">
+                <option>Comunidad</option>
+                <option>Privado</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form_line">
+    <label for="movil">Movil</label>
+    <div class="fwrap">
+        <div class="inner_fwrap">
+            <select name="movil" id="movil" title="movil">
+                <option>Comunidad</option>
+                <option>Privado</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form_line">
+    <label for="fax">Fax</label>
+    <div class="fwrap">
+        <div class="inner_fwrap">
+            <select name="fax" id="fax" title="fax">
+                <option>Comunidad</option>
+                <option>Privado</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form_line">
+    <label for="curriculum">Curriculum</label>
+    <div class="fwrap">
+        <div class="inner_fwrap">
+            <select name="curriculum" id="curriculum" title="curriculum">
+                <option>Comunidad</option>
+                <option>Privado</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!--EndPageRightInnerContBlock-->

@@ -56,6 +56,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         //titulo seccion
         $this->getTemplate()->set_var("tituloSeccion", "Modificar datos personales");
 
+        //privacidad (columna)
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
+
         //contenido ppal
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioBlock");
 
