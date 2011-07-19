@@ -1,0 +1,284 @@
+<!--BeginJsContent-->
+<link href="gui/css/invitacion.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>
+<script type="text/javascript">
+	var geocoder;
+	var map ;
+	var initialLocation;
+	var mdp = new google.maps.LatLng(-34.880, -58.689);
+	var capital = new google.maps.LatLng(-36.505, -58.6959);
+	var browserSupportFlag =  new Boolean();
+	var infowindow = new google.maps.InfoWindow();
+	function initializeMapa() {
+		geocoder = new google.maps.Geocoder();
+	    var myLatlng = new google.maps.LatLng(-34.397, -58.644);
+	    var myOptions = {
+	      zoom: 10,
+	      center: myLatlng,
+	      mapTypeId: google.maps.MapTypeId.ROADMAP
+	    }
+	    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	    
+	 // Try W3C Geolocation method (Preferred)
+	    if(navigator.geolocation) {
+	      browserSupportFlag = true;
+	      navigator.geolocation.getCurrentPosition(function(position) {
+	        initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+	        contentString = "Localizacion encontrada usando W3C standard";
+	        map.setCenter(initialLocation);
+	        infowindow.setContent(contentString);
+	        infowindow.setPosition(initialLocation);
+	        infowindow.open(map);
+	      }, function() {
+	        handleNoGeolocation(browserSupportFlag);
+	      });
+	    } else if (google.gears) {
+	      // Try Google Gears Geolocation
+	      browserSupportFlag = true;
+	      var geo = google.gears.factory.create('beta.geolocation');
+	      geo.getCurrentPosition(function(position) {
+	        initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
+	        contentString = "Localizacion encontrada usando Google Gears";
+	        map.setCenter(initialLocation);
+	        infowindow.setContent(contentString);
+	        infowindow.setPosition(initialLocation);
+	        infowindow.open(map);
+	      }, function() {
+	        handleNoGeolocation(browserSupportFlag);
+	      });
+	    } else {
+	      // Browser doesn't support Geolocation
+	      browserSupportFlag = false;
+	      handleNoGeolocation(browserSupportFlag);
+	    }
+	}
+
+	function handleNoGeolocation(errorFlag) {
+	  if (errorFlag == true) {
+	    initialLocation = capital;
+	    contentString = "Error: The Geolocation service failed.";
+	  } else {
+	    initialLocation = mdp ;
+	    contentString = "Error: Your browser doesn't support geolocation. Are you in Mar del Plata?";
+	  }
+	  map.setCenter(initialLocation);
+	  infowindow.setContent(contentString);
+	  infowindow.setPosition(initialLocation);
+	  infowindow.open(map);
+	}
+	function codeAddress() {
+	   var address = $("#direccion").val();
+	   geocoder.geocode( { 'address': address}, function(results, status) {
+	     if (status == google.maps.GeocoderStatus.OK) {
+	       map.setCenter(results[0].geometry.location);
+	       var marker = new google.maps.Marker({
+	           map: map, 
+	           position: results[0].geometry.location
+	       });
+	     } else {
+	       alert("Geocode was not successful for the following reason: " + status);
+	     }
+	   });
+	 }
+ 
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"gui/vistas/comunidad/invitaciones.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginPageRightInnerMainContBlock-->
+<div class="pato3">
+    <div class="mabo2">
+        <div class="iveal mabo2">
+            <h2 class="di_in"><a href="{hrefNuevaInstitucion}">Crear una institucion</a></h2> <span class="i32 bs user32Add male"></span>
+        </div>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
+            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
+            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
+        </p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
+            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
+            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
+        </p>
+    </div>
+</div>
+<!--EndPageRightInnerMainContBlock-->
+
+<!--BeginPageRightInnerContBlock-->
+<div class="mabo2">
+    <ul class="menu02">
+        <li class="mabo2"><a href="{hrefInstitucion}">Inicio</a></li>
+        <li class="mabo2"><a href="{hrefMisInstituciones}">Mis instituciones</a></li>
+        <li><a href="{hrefNuevaInstitucion}">Crear nueva institucion</a></li>
+    </ul>
+</div>
+<!--EndPageRightInnerContBlock-->
+
+<!--BeginFormularioBlock-->
+<div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
+    <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
+    <div class="di_no" id="msg_conf"></div>
+    <form id="formEnviarInvitacion" name="formEnviarInvitacion" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <div id='msg_form_enviarInvitacion' class="msg_form iveal di_no">
+        	<span class="bs i"></span>
+        	<span class="msg"></span>
+        </div>
+
+        <div id="msg_nombre" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="nombre" id="nombre" title="Nombre persona invitada" maxlength="40" value="Nombre de la institucion" />
+                </div>
+            </div>
+        </div>
+        <div id="msg_descripcion" class="form_line">
+            <div id="hintDescripcion" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">aaaa</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow defVal maxlength" title="Breve descripcion de la institucion">Breve descripcion de la institucion</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="msg_tipo" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select class="defVal" name="tipo" id="tipo" >
+                    	<option value="">Selecciones tipo de institucion</option>
+                    	<!--BeginListaTipoDeInstitucionesBlock-->
+                    	<option value="{iTipoId}">{sTipoDescripcion}</option>
+                    	<!--EndListaTipoDeInstitucionesBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="cargo" id="cargo" title="Cargo del encargado" maxlength="40" value="Cargo del encargado" />
+                </div>
+            </div>
+        </div>
+        <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="personaJuridica" id="personaJuridica" title="Persona juridica" maxlength="40" value="Persona juridica" />
+                </div>
+            </div>
+        </div>
+        <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="direccion" id="direccion" title="Direccion" maxlength="40" value="Direccion" />
+                </div>
+            </div>
+        </div>
+
+		  <div id="msg_tipo" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select class="defVal" name="pais" id="pais" >
+                    	<option value="">Seleccione un pais</option>
+                    	<!--BeginListaPaisesBlock-->
+                    	<option value="{iPaisId}">{sPais}</option>
+                    	<!--EndListaPaisesBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+          <div id="msg_tipo" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select class="defVal" name="provincia" id="provincia" >
+                    	<option value="">Selecciones una provincia</option>
+                    	<!--BeginListaProvinciasBlock-->
+                    	<option value="{iProvinciaId}">{sProvincia}</option>
+                    	<!--EndListaProvinciaaBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+          <div id="msg_tipo" class="form_line">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select class="defVal" name="tipo" id="tipo" >
+                    	<option value="">Selecciones una ciudad</option>
+                    	<!--BeginListaCiudadesBlock-->
+                    	<option value="{iCiudadId}">{sCiudad}</option>
+                    	<!--EndListaCiudadesBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+           <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="Email de la institucion" />
+                </div>
+            </div>
+        </div>
+         <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="tel" id="tel" title="Telefono de contacto" maxlength="40" value="Telefono de contacto" />
+                </div>
+            </div>
+         </div>
+         <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="web" id="web" title="Sitio web" maxlength="40" value="Sitio web" />
+                </div>
+            </div>
+        </div>
+         <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="horarioAtencion" id="horarioAtencion" title="Horario de atencion" maxlength="40" value="Horario de atencion" />
+                </div>
+            </div>
+        </div>
+
+        <div class="fl_le">
+            <label for="enviarInvitacion" class="button buttonConfirm buttonLarge mari3">
+                <button id="enviarInvitacion" type="submit" name="enviarInvitacion" class="btn01">
+                    Guardar Institucion
+                </button>
+            </label>
+        </div>
+    </form>
+</div>
+<div id="map_canvas" style="float: left;  border: 3px solid;margin: 20px; height: 400px; width: 400px; display:block;"></div>
+<div style="float: left;">
+  	<label for="ubicarInstitucion" class="button buttonConfirm buttonLarge mari3">
+		<button type="button" onclick="codeAddress();" name="geoCoder" class="btn01" >
+			Ubicar institucion segun direccion 
+		</button>
+	</label>
+</div>
+<script type="text/javascript">
+	initializeMapa();
+</script>
+<!--EndFormularioBlock-->
+
