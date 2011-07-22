@@ -176,7 +176,8 @@ class DiscapacitadoMySQLIntermediary extends UsuarioIntermediary
                     " codigoPostal =".$db->escape($oDiscapacitado->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oDiscapacitado->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oDiscapacitado->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oDiscapacitado->getSecundaria(),true)."";
+                    " secundaria =".$db->escape($oDiscapacitado->getSecundaria(),true)."".
+                    " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)."";
 
 
 			 $db->execSQL($sSQL);
@@ -188,8 +189,8 @@ class DiscapacitadoMySQLIntermediary extends UsuarioIntermediary
                     " fechaNacimientoMadre =".$db->escape($oDiscapacitado->getFechaNacimientoMadre(),false,MYSQL_TYPE_DATE).", ".
 					" ocupacionPadre =".$db->escape($oDiscapacitado->getOcupacionPadre(),true).", " .
                     " ocupacionMadre =".$db->escape($oDiscapacitado->getOcupacionMadre(),true).", " .
-			        " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", " ;
-
+			        " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", " .
+                    " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)."";
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
