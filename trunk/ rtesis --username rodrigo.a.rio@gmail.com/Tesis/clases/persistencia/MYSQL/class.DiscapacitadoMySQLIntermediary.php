@@ -9,7 +9,7 @@
  *
  * @author Andres
  */
-class DiscapacitadoMySQLIntermediary extends UsuarioIntermediary
+class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 {
    static $singletonInstance = 0;
 
@@ -164,7 +164,7 @@ class DiscapacitadoMySQLIntermediary extends UsuarioIntermediary
 					" documento_tipos_id =".$db->escape($oDiscapacitado->getDocumentoId(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oDiscapacitado->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oDiscapacitado->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oDiscapacitado->getFechaNacimiento(), false,MYSQL_TYPE_DATE);
+                    " fechaNacimiento= ".$db->escape($oDiscapacitado->getFechaNacimiento(), false,MYSQL_TYPE_DATE).", ".
                     " email =".$db->escape($oDiscapacitado->getEmail(),true).", " .
                     " telefono =".$db->escape($oDiscapacitado->getTelefono(),true).", " .
                     " celular =".$db->escape($oDiscapacitado->getCelular(),true).", " .
@@ -176,8 +176,8 @@ class DiscapacitadoMySQLIntermediary extends UsuarioIntermediary
                     " codigoPostal =".$db->escape($oDiscapacitado->getCodigoPostal(),true).", " .
                     " empresa =".$db->escape($oDiscapacitado->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oDiscapacitado->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oDiscapacitado->getSecundaria(),true)."".
-                    " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)."";
+                    " secundaria =".$db->escape($oDiscapacitado->getSecundaria(),true)." ".
+                    " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)." ";
 
 
 			 $db->execSQL($sSQL);
@@ -216,6 +216,7 @@ class DiscapacitadoMySQLIntermediary extends UsuarioIntermediary
     public function insertar($oDiscapacitado)
    {
 		try{
+			$db = $this->conn;
 			if($oDiscapacitado->getCiudad()!= null){
 				$ciudadId = $oDiscapacitado->getCiudad()->getId();
 			}else {
