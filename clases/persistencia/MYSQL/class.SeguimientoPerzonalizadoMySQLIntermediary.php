@@ -24,7 +24,7 @@ static $singletonInstance = 0;
 	}
 
 
-     public function actualizar($oSeguimientoPerzonalizado)
+     public function actualizar($oSeguimientoPersonalizado)
 
     {
         try{
@@ -141,7 +141,7 @@ static $singletonInstance = 0;
 		}
    }
 
-   
+    //el borrado debe ser logico sino vamos a tener problemas, mirar diagramas de base de datos
     public function borrar($oSeguimientoPersonalizado) {
 		try{
 			$db = $this->conn;
