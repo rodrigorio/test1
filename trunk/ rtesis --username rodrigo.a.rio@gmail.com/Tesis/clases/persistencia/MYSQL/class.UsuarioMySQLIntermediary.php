@@ -42,7 +42,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
                         p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
@@ -544,7 +544,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = $this->conn;
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
 						CONCAT_WS('_',cp.`controlador`,a.`accion`),
 						a.`activo`
 						from `perfiles` p
@@ -565,7 +565,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 	public function validarUrlTmp($token){
 		 try{
             $db = $this->conn;
-            $sSQL = "SELECT
+            $sSQL = "SELECT 
             		  ui.`usuarios_id`,
 					  ui.`invitados_id`,
 					  ui.`relacion`,

@@ -1,5 +1,5 @@
 <!--BeginJsContent-->
-<link href="gui/css/invitacion.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<link href="gui/css/institucion.css" rel="stylesheet" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>
@@ -15,7 +15,7 @@
 		geocoder = new google.maps.Geocoder();
 	    var myLatlng = new google.maps.LatLng(-34.397, -58.644);
 	    var myOptions = {
-	      zoom: 10,
+	      zoom: 12,
 	      center: myLatlng,
 	      mapTypeId: google.maps.MapTypeId.ROADMAP
 	    }
@@ -91,7 +91,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-   .script("{pathUrlBase}"+"gui/vistas/comunidad/invitaciones.js")
+   .script("{pathUrlBase}"+"gui/vistas/comunidad/instituciones.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js");
 </script>
 <!--EndJsContent-->
@@ -130,10 +130,10 @@
 <div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <div class="di_no" id="msg_conf"></div>
-    <form id="formEnviarInvitacion" name="formEnviarInvitacion" action="" method="post">
+    <form id="formCrearInstitucion" name="formCrearInstitucion" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-        <div id='msg_form_enviarInvitacion' class="msg_form iveal di_no">
+        <div id='msg_form_crearInstitucion' class="msg_form iveal di_no">
         	<span class="bs i"></span>
         	<span class="msg"></span>
         </div>
@@ -141,7 +141,7 @@
         <div id="msg_nombre" class="form_line">
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="nombre" id="nombre" title="Nombre persona invitada" maxlength="40" value="Nombre de la institucion" />
+                    <input class="defVal requerido" type="text" name="nombre" id="nombre" title="Nombre de la institucion" maxlength="40" value="Nombre de la institucion" />
                 </div>
             </div>
         </div>
@@ -149,7 +149,7 @@
             <div id="hintDescripcion" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">aaaa</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow defVal maxlength" title="Breve descripcion de la institucion">Breve descripcion de la institucion</textarea>
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow defVal maxlength requerido" title="Breve descripcion de la institucion">Breve descripcion de la institucion</textarea>
                 </div>
             </div>
         </div>
@@ -157,8 +157,8 @@
         <div id="msg_tipo" class="form_line">
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal" name="tipo" id="tipo" >
-                    	<option value="">Selecciones tipo de institucion</option>
+                    <select class="defVal requerido" name="tipo" id="tipo" >
+                    	<option value="">Seleccione el tipo de institucion</option>
                     	<!--BeginListaTipoDeInstitucionesBlock-->
                     	<option value="{iTipoId}">{sTipoDescripcion}</option>
                     	<!--EndListaTipoDeInstitucionesBlock-->
@@ -170,7 +170,7 @@
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="cargo" id="cargo" title="Cargo del encargado" maxlength="40" value="Cargo del encargado" />
+                    <input class="defVal requerido" type="text" name="cargo" id="cargo" title="Cargo que ocupa en la institucion" maxlength="40" value="Cargo que ocupa en la institucion" />
                 </div>
             </div>
         </div>
@@ -186,7 +186,7 @@
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="direccion" id="direccion" title="Direccion" maxlength="40" value="Direccion" />
+                    <input class="defVal requerido" type="text" name="direccion" id="direccion" title="Direccion" maxlength="40" value="Direccion" />
                 </div>
             </div>
         </div>
@@ -194,10 +194,10 @@
 		  <div id="msg_tipo" class="form_line">
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal" name="pais" id="pais" >
+                    <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
                     	<option value="">Seleccione un pais</option>
                     	<!--BeginListaPaisesBlock-->
-                    	<option value="{iPaisId}">{sPais}</option>
+                    	<option value="{iPaisId}">{sPaisNombre}</option>
                     	<!--EndListaPaisesBlock-->
                     </select>
                 </div>
@@ -206,10 +206,10 @@
           <div id="msg_tipo" class="form_line">
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal" name="provincia" id="provincia" >
+                    <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
                     	<option value="">Selecciones una provincia</option>
                     	<!--BeginListaProvinciasBlock-->
-                    	<option value="{iProvinciaId}">{sProvincia}</option>
+                    	<option value="{iProvinciaId}">{sProvinciaNombre}</option>
                     	<!--EndListaProvinciaaBlock-->
                     </select>
                 </div>
@@ -218,20 +218,20 @@
           <div id="msg_tipo" class="form_line">
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal" name="tipo" id="tipo" >
+                    <select class="defVal requerido" name="ciudad" id="ciudad" >
                     	<option value="">Selecciones una ciudad</option>
                     	<!--BeginListaCiudadesBlock-->
-                    	<option value="{iCiudadId}">{sCiudad}</option>
+                    	<option value="{iCiudadId}">{sCiudadNombre}</option>
                     	<!--EndListaCiudadesBlock-->
                     </select>
                 </div>
             </div>
         </div>
-           <div id="msg_email" class="form_line">
+        <div id="msg_email" class="form_line">
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="Email de la institucion" />
+                    <input class="defVal requerido" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="Email de la institucion" />
                 </div>
             </div>
         </div>
@@ -239,7 +239,7 @@
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="tel" id="tel" title="Telefono de contacto" maxlength="40" value="Telefono de contacto" />
+                    <input class="defVal requerido" type="text" name="tel" id="tel" title="Telefono de contacto" maxlength="40" value="Telefono de contacto" />
                 </div>
             </div>
          </div>
@@ -259,10 +259,34 @@
                 </div>
             </div>
         </div>
+         <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="sedes" id="sedes" title="Sedes" maxlength="40" value="Sedes" />
+                </div>
+            </div>
+        </div>
+         <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="autoridades" id="autoridades" title="Autoridades" maxlength="40" value="Autoridades" />
+                </div>
+            </div>
+        </div>
+         <div id="msg_email" class="form_line">
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="defVal" type="text" name="actividadesMes" id="actividadesMes" title="Actividades del mes" maxlength="40" value="Actividades del mes" />
+                </div>
+            </div>
+        </div>
 
         <div class="fl_le">
-            <label for="enviarInvitacion" class="button buttonConfirm buttonLarge mari3">
-                <button id="enviarInvitacion" type="submit" name="enviarInvitacion" class="btn01">
+            <label for="CrearInstitucion" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearInstitucion" type="submit" name="crearInstitucion" class="btn01">
                     Guardar Institucion
                 </button>
             </label>

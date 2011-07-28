@@ -27,7 +27,8 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 		}
 		return(self::$singletonInstance);
 	}
-public  function existe($filtro){
+	
+	public  function existe($filtro){
 		try{
 			$db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -112,7 +113,7 @@ private  function actualizar(Intitucion $oInstitucion)
 		}
     }
 
-public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro, &$foundRows = 0){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);

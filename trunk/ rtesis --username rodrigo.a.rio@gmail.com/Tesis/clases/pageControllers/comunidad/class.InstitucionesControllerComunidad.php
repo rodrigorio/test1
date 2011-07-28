@@ -112,10 +112,58 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 
         //contenido ppal
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-
+		$listaPaises	= ComunidadController::getInstance()->listaPaises();
+		foreach ($listaPaises as $oPais){
+    	    $this->getTemplate()->set_var("iPaisId", $oPais->getId());
+    	    $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
+    	    $this->getTemplate()->parse("ListaPaisesBlock", true);
+		}
+        	
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
+	public function provinciasByPais(){
+		 if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+    	 try{
+    	 	$iPaisId =  $this->getRequest()->getPost("iPaisId");
+			$result = array();
+    	 	if($iPaisId != 0){
+				$vListaProvincias	= ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
+				foreach($vListaProvincias as $oProvincia){
+					$obj = new stdClass();
+					$obj->id = $oProvincia->getId();
+					$obj->sNombre = $oProvincia->getNombre();
+					array_push($result,$obj);
+				}
+    	 	}
+			echo json_encode($result);
+        }catch(Exception $e){
+        	print_r($e);
+            //throw new Exception('Error Template');
+            //return;
+        }
+    }
+	public function ciudadesByProvincia(){
+		 if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+    	 try{
+    	 	$iProvinciaId =  $this->getRequest()->getPost("iProvinciaId");
+			$result = array();
+    	 	if($iProvinciaId != 0){
+				$vListaCiudades	= ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
+				foreach($vListaCiudades as $oCiudad){
+					$obj = new stdClass();
+					$obj->id = $oCiudad->getId();
+					$obj->sNombre = $oCiudad->getNombre();
+					array_push($result,$obj);
+				}
+    	 	}
+			echo json_encode($result);
+        }catch(Exception $e){
+        	print_r($e);
+            //throw new Exception('Error Template');
+            //return;
+        }
+    }
     /**
      * Lista de todas las Instituciones realizadas y el estado en el que se encuentran
      */

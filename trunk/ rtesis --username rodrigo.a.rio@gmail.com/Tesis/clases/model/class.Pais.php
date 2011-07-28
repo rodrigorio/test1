@@ -7,6 +7,7 @@
 class Pais {
 	private $iId;
 	private $sNombre;
+	private $sCodigo;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
@@ -38,6 +39,12 @@ class Pais {
 		$this->sNombre = $sNombre;
 	}
 	/**
+	 * @param string $sCodigo
+	 */
+	public function setCodigo($sCodigo){
+		$this->sCodigo = $sCodigo;
+	}
+	/**
 	 *  @return int $iId
 	 */
 	public function getId(){
@@ -48,6 +55,12 @@ class Pais {
 	 */
 	public function getNombre(){
 		return $this->sNombre;
+	}
+	/**
+	 * @return string $sCodigo
+	 */
+	public function getCodigo(){
+		return $this->sCodigo;
 	}
 }
 ?>

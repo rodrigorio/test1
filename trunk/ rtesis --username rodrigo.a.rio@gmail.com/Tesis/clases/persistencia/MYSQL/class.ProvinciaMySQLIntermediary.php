@@ -5,7 +5,7 @@
  *
  * @author Rodrigo A. Rio
  */
-class ProvinciaMySQLIntermediaryMySQLIntermediary extends ProvinciaIntermediary
+class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 {
      static $singletonInstance = 0;
 
@@ -68,7 +68,7 @@ class ProvinciaMySQLIntermediaryMySQLIntermediary extends ProvinciaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
-	private  function insertar(Provincia $oProvincia)
+	private  function insertar($oProvincia)
    {
 		try{
 			$db = $this->conn;
@@ -85,8 +85,8 @@ class ProvinciaMySQLIntermediaryMySQLIntermediary extends ProvinciaIntermediary
 		}
 	}
     
-private  function actualizar(Provincia $oProvincia)
-   {
+	private  function actualizar($oProvincia)
+    {
 		try{
 			$db = $this->conn;
 		if($oProvincia->getPais()!= null){
@@ -107,7 +107,7 @@ private  function actualizar(Provincia $oProvincia)
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    public function guardar(Provincia $oProvincia)
+    public function guardar($oProvincia)
     {
         try{
 			if($oProvincia->getId() != null){
@@ -119,7 +119,7 @@ private  function actualizar(Provincia $oProvincia)
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-public function borrar(Provincia $oProvincia) {
+public function borrar($oProvincia) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from provincias where id=".$db->escape($oProvincia->getId(),false,MYSQL_TYPE_INT));

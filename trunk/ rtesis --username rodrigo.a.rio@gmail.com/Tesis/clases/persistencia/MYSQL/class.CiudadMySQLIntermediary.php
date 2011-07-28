@@ -4,7 +4,7 @@
  *
  * @author Rodrigo A. Rio
  */
-class CiudadMySQLIntermediaryMySQLIntermediary extends CiudadIntermediary
+class CiudadMySQLIntermediary extends CiudadIntermediary
 {
      static $singletonInstance = 0;
 
