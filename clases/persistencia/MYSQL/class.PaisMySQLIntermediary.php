@@ -9,10 +9,9 @@
  *
  * @author Rodrigo A. Rio
  */
-class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
+class PaisMySQLIntermediary extends PaisIntermediary
 {
-     static $singletonInstance = 0;
-
+	private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
@@ -26,11 +25,10 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
 	 * @return PaisMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
 	
 	public final function obtener($filtro, &$foundRows = 0){
@@ -38,7 +36,7 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         p.id as iId, p.nombre as sNombre, p.codigo as sCodigo
                     FROM
                        paises p ";
@@ -47,7 +45,6 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
                     }
 
             $db->query($sSQL);
-
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($foundRows)){ return null; }
@@ -72,7 +69,7 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
-	private  function insertar(Pais $oPais)
+	public  function insertar($oPais)
    		{
 		try{
 			$db = $this->conn;
@@ -87,7 +84,7 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-	private  function actualizar(Pais $oPais)
+	public  function actualizar($oPais)
    {
 		try{
 			$db = $this->conn;
@@ -103,19 +100,19 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    public function guardar(Pais $oPais)
+    public function guardar($oPais)
     {
         try{
 			if($oPais->getId() != null){
-            	return actualizar($oPais);
+            	return $this->actualizar($oPais);
             }else{
-				return insertar($oPais);
+				return $this->insertar($oPais);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
- public function borrar(Pais $oPais) {
+ 	public function borrar($oPais) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from paises where id=".$db->escape($oPais->getId(),false,MYSQL_TYPE_INT));
@@ -125,5 +122,38 @@ class PaisMySQLIntermediaryMySQLIntermediary extends PaisIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+	
+	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+		
+	}
+	
+	public function actualizarCampoArray($objects, $cambios){
+		
+	}
+ 	
+	public function existe($filtro){
+    	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        paises p 
+					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+           	return false; 
+        }
+    }
 }
 ?>

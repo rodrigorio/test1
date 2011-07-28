@@ -181,6 +181,21 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "procesar"
                                 ));
         $router->addRoute('comunidadDatosPersonalesProcesar', $route);
+        //INSITUCIONES//
+        $route = new RegexRoute('comunidad/provinciasByPais',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "provinciasByPais"
+                                ));
+        $router->addRoute('comunidadInstitucionesProvinciasByPais', $route);
+        $route = new RegexRoute('comunidad/ciudadesByProvincia',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "ciudadesByProvincia"
+                                ));
+        $router->addRoute('comunidadInstitucionesCiudadesByProvincia', $route);
         
         $route = new RegexRoute('comunidad/nueva-institucion',
                                 array(

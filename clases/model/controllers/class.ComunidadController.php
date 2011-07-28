@@ -64,4 +64,30 @@ class ComunidadController
 			echo $e->getMessage();
 		}
     }
+    public function listaPaises(){
+    	try{
+			$oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
+            return $oPaisIntermediary->obtener(array());
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+    public function listaProvinciasByPais($iPaisId){
+    	try{
+    		$filtro = array("p.id"=>$iPaisId);
+			$oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
+            return $oProvinciaIntermediary ->obtener($filtro);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+    public function listaCiudadByProvincia($iProvinciaId){
+    	try{
+    		$filtro = array("c.id"=>$iProvinciaId);
+			$oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
+            return $oCiudadIntermediary->obtener($filtro);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
 }

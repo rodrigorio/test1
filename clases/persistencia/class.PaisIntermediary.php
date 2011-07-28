@@ -3,7 +3,5 @@
  *
  * @author Rodrigo A. Rio
  */
-class PaisIntermediary extends Intermediary{
-	
-}
+abstract class PaisIntermediary extends Intermediary{}
 ?>
