@@ -71,15 +71,15 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $oUsuario	= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-   			$oInvitado	= new stdClass();
-	   		$oInvitado->sRelacion 	= $this->getRequest()->getPost('relacion');
-			$oInvitado->sNombre 	= $this->getRequest()->getPost('nombre');
-			$oInvitado->sApellido 	= $this->getRequest()->getPost('apellido');
-			$oInvitado->sEmail 		= $this->getRequest()->getPost('email');
+            $oUsuario					= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+   			$oInstitucion				= new stdClass();
+			$oInstitucion->sNombre 		= $this->getRequest()->getPost('nombre');
+	   		$oInstitucion->sDescripcion	= $this->getRequest()->getPost('descripcion');
+			$oInstitucion->iTipo 	= $this->getRequest()->getPost('tipo');
+			$oInstitucion->sEmail 		= $this->getRequest()->getPost('email');
 		//	$sDescripcion			= $this->getRequest()->getPost('sDescripcion');
 			$sDescripcion="";
-			ComunidadController::getInstance()->enviarInstitucion($oUsuario, $oInvitado, $sDescripcion);
+			ComunidadController::getInstance()->crearInstitucion($oUsuario, $oInvitado, $sDescripcion);
 			$this->getJsonHelper()->setSuccess(true);
                                       //->setRedirect($redirect);
         }catch(Exception $e){
@@ -130,8 +130,8 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
     	 	if($iPaisId != 0){
 				$vListaProvincias	= ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
 				foreach($vListaProvincias as $oProvincia){
-					$obj = new stdClass();
-					$obj->id = $oProvincia->getId();
+					$obj 		= new stdClass();
+					$obj->id 	= $oProvincia->getId();
 					$obj->sNombre = $oProvincia->getNombre();
 					array_push($result,$obj);
 				}

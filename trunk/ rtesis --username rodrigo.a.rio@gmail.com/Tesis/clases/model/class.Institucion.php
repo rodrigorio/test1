@@ -2,7 +2,20 @@
 class Institucion {
 	private $iId;
 	private $sNombre;
-	private $ociudad;
+	private $oCiudad;
+ 	private $iModerado;
+ 	private $sDescripcion;
+  	private $iTipoInstitucion;
+  	private $sDireccion;
+  	private $sEmail;
+  	private $sTelefono;
+  	private $sSitioWeb;
+  	private $sHorariosAtencion;
+  	private $sAutoridades;
+  	private $sCargo;
+  	private $sPersoneriaJuridica;
+  	private $sSedes;
+  	private $sActividadesMes;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
@@ -34,6 +47,19 @@ class Institucion {
 		$this->sNombre = $sNombre;
 	}
 	/**
+	 * @param Ciudad $oCiudad
+	 */
+	public function setCiudad($oCiudad){
+		$this->oCiudad = $oCiudad;
+	}
+	/**
+	 * @param string $sDescripcion
+	 */
+	public function setDescripcion($sDescripcion){
+		$this->sDescripcion = $sDescripcion;
+	}
+	///////////////gets//////////////
+	/**
 	 *  @return int $iId
 	 */
 	public function getId(){
@@ -51,11 +77,6 @@ class Institucion {
 	public function getCiudad(){
 		return $this->oCiudad;
 	}
-/**
-	 * @param Ciudad $oCiudad
-	 */
-	public function setCiudad($oCiudad){
-		$this->oCiudad = $oCiudad;
-	}
+	
 }
 ?>

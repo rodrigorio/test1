@@ -74,7 +74,7 @@ class ComunidadController
     }
     public function listaProvinciasByPais($iPaisId){
     	try{
-    		$filtro = array("p.id"=>$iPaisId);
+    		$filtro = array("p.paises_id"=>$iPaisId);
 			$oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
             return $oProvinciaIntermediary ->obtener($filtro);
 		}catch(Exception $e){
@@ -83,7 +83,7 @@ class ComunidadController
     }
     public function listaCiudadByProvincia($iProvinciaId){
     	try{
-    		$filtro = array("c.id"=>$iProvinciaId);
+    		$filtro = array("c.provincia_id"=>$iProvinciaId);
 			$oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
             return $oCiudadIntermediary->obtener($filtro);
 		}catch(Exception $e){

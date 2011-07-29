@@ -189,6 +189,7 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "provinciasByPais"
                                 ));
         $router->addRoute('comunidadInstitucionesProvinciasByPais', $route);
+        
         $route = new RegexRoute('comunidad/ciudadesByProvincia',
                                 array(
                                         'module' => "comunidad",
@@ -204,6 +205,13 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "nuevaInstitucion"
                                 ));
         $router->addRoute('comunidadInstitucionesNueva', $route);
+        $route = new RegexRoute('comunidad/institucion-procesar',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "procesar"
+                                ));
+        $router->addRoute('comunidadInstitucionesProcesar', $route);
         
         $route = new RegexRoute('comunidad/instituciones-listado',
                                 array(

@@ -3,7 +3,7 @@
  *
  * @author Rodrigo A. Rio
  */
-class ProvinciaIntermediary extends Intermediary{
+abstract class ProvinciaIntermediary extends Intermediary{
 	
 }
 ?>
