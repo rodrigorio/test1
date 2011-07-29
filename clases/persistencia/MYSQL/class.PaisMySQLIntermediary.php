@@ -58,12 +58,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
             	$aPaises[]		= Factory::getPaisInstance($oPais);
             }
 
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($aPaises) == 1){
-                return $aPaises[0];
-            }else{
-                return $aPaises;
-            }
+            return $aPaises;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

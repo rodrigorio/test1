@@ -7,7 +7,7 @@
  */
 class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 {
-     static $singletonInstance = 0;
+    private static $instance = null;
 
 
 	protected function __construct( $conn) {
@@ -19,14 +19,13 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return ProvinciaMySQLIntermediary
+	 * @return PaisMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
 	
 	public final function obtener($filtro, &$foundRows = 0){
@@ -43,7 +42,6 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
                     }
 
             $db->query($sSQL);
-
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($foundRows)){ return null; }
@@ -56,19 +54,13 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
             	//$oProvincia->oPais= $oObj->iPaisId;
             	$aProvincias[]		= Factory::getProvinciaInstance($oProvincia);
             }
-
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($aProvincias) == 1){
-                return $aProvincias[0];
-            }else{
-                return $aProvincias;
-            }
+          	return $aProvincias;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
 	}
-	private  function insertar($oProvincia)
+	public  function insertar($oProvincia)
    {
 		try{
 			$db = $this->conn;
@@ -85,7 +77,7 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 		}
 	}
     
-	private  function actualizar($oProvincia)
+	public  function actualizar($oProvincia)
     {
 		try{
 			$db = $this->conn;
@@ -111,15 +103,15 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
     {
         try{
 			if($oProvincia->getId() != null){
-            	return actualizar($oProvincia);
+            	return $this->actualizar($oProvincia);
             }else{
-				return insertar($oProvincia);
+				return $this->insertar($oProvincia);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-public function borrar($oProvincia) {
+	public function borrar($oProvincia) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from provincias where id=".$db->escape($oProvincia->getId(),false,MYSQL_TYPE_INT));
@@ -129,5 +121,37 @@ public function borrar($oProvincia) {
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+		
+	}
+	
+	public function actualizarCampoArray($objects, $cambios){
+		
+	}
+ 	
+	public function existe($filtro){
+    	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        provincias p 
+					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+           	return false; 
+        }
+    }
 }
 ?>

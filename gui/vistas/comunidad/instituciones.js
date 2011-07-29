@@ -19,7 +19,7 @@ $(function(){
 			"&relacion="+$('#relacion').val();
 			$.ajax({
 				type:	"POST",
-				url: 	"comunidad/invitacion-procesar",
+				url: 	"comunidad/institucion-procesar",
 				data: 	fields,
 				beforeSend: function() {
 					$("#ajax_loading").show();

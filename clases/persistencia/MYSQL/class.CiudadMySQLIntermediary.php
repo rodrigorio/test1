@@ -6,8 +6,7 @@
  */
 class CiudadMySQLIntermediary extends CiudadIntermediary
 {
-     static $singletonInstance = 0;
-
+	private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
@@ -18,14 +17,13 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return CiudadMySQLIntermediary
+	 * @return PaisMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
 	
 	public final function obtener($filtro, &$foundRows = 0){
@@ -52,19 +50,14 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
             	$oCiudad->iId 		= $oObj->iId;
             	$oCiudad->sNombre	= $oObj->sNombre;
             	$oCiudad->oProvincia= null;
-            	$aProvincias[]		= Factory::getCiudadInstance($oCiudad);
+            	$aCiudades[]		= Factory::getCiudadInstance($oCiudad);
             }
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($aCiudades) == 1){
-                return $aCiudades[0];
-            }else{
-                return $aCiudades;
-            }
+            return $aCiudades;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
 	}
-private  function insertar(Ciudad $oCiudad)
+	public  function insertar($oCiudad)
    {
 		try{
 			$db = $this->conn;
@@ -81,7 +74,7 @@ private  function insertar(Ciudad $oCiudad)
 		}
 	}
     
-private  function actualizar(Ciudad $oCiudad)
+	public  function actualizar($oCiudad)
    {
 		try{
 			$db = $this->conn;
@@ -103,20 +96,20 @@ private  function actualizar(Ciudad $oCiudad)
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    public function guardar(Ciudad $oCiudad)
+    public function guardar($oCiudad)
     {
         try{
 			if($oCiudad->getId() != null){
-            	return actualizar($oCiudad);
+            	return $this->actualizar($oCiudad);
             }else{
-				return insertar($oCiudad);
+				return $this->insertar($oCiudad);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-public function borrar(Ciudad $oCiudad) {
-		try{
+	public function borrar($oCiudad) {
+			try{
 			$db = $this->conn;
 			$db->execSQL("delete from ciudades where id=".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();
@@ -125,5 +118,37 @@ public function borrar(Ciudad $oCiudad) {
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+		
+	}
+	
+	public function actualizarCampoArray($objects, $cambios){
+		
+	}
+ 	
+	public function existe($filtro){
+    	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        ciudades c 
+					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+           	return false; 
+        }
+    }
 }
 ?>

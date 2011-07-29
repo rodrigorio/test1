@@ -3,7 +3,7 @@
  *
  * @author Rodrigo A. Rio
  */
-class CiudadIntermediary extends Intermediary{
+abstract class CiudadIntermediary extends Intermediary{
 	
 }
 ?>
