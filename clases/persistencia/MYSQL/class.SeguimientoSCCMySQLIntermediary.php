@@ -142,12 +142,15 @@ static $singletonInstance = 0;
    //el borrado debe ser logico sino vamos a tener problemas, mirar diagramas de base de datos
     public function borrar($oSeguimientoSCC) {
 		try{
+			
 			$db = $this->conn;
+			$db->begin_transaction();
 			$db->execSQL("delete from seguimientos where id=".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT));
             $db->execSQL("delete from seguimientos_scc where id=".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();
 
 		}catch(Exception $e){
+			$db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
