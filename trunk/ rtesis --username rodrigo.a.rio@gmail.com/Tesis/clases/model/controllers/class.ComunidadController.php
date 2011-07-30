@@ -90,4 +90,16 @@ class ComunidadController
 			echo $e->getMessage();
 		}
     }
+    
+    ///tipea andres
+public function guardarInstitución($oInstitucion){
+    	try{
+			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->guardar($oInstitucion);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+
+    
 }
