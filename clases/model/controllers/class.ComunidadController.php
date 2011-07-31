@@ -100,6 +100,30 @@ public function guardarInstitución($oInstitucion){
 			echo $e->getMessage();
 		}
     }
-
+public function borrarInstitución($oInstitucion){
+    	try{
+			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->borrar($oInstitucion);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+public function obtenerInstitución($filtro){
+    	try{
+			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->obtener($oInstitucion);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+public function existeInstitución($filtro){
+    	try{
+			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->existe($oInstitucion);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+    
     
 }

@@ -74,61 +74,61 @@ class Institucion {
 	 * @param string $sDireccion
 	 */
 	public function setDireccion($sDireccion){
-		$this->$sDireccion = $sDireccion;
+		$this->sDireccion = $sDireccion;
 	}
 	/**
 	 * @param string $sEmail
 	 */
 	public function setEmail($sEmail){
-		$this->$sEmail = $sEmail;
+		$this->sEmail = $sEmail;
 	}
 	/**
 	 * @param string $sTelefono
 	 */
 	public function setTelefono($sTelefono){
-		$this->$sTelefono = $sTelefono;
+		$this->sTelefono = $sTelefono;
 	}
 	/**
 	 * @param string $sSitioWeb
 	 */
 	public function setSitioWeb($sSitioWeb){
-		$this->$sSitioWeb = $sSitioWeb;
+		$this->sSitioWeb = $sSitioWeb;
 	}
 	/**
 	 * @param string $sHorariosAtencion
 	 */
 	public function setHorariosAtencion($sHorariosAtencion){
-		$this->$sHorariosAtencion = $sHorariosAtencion;
+		$this->sHorariosAtencion = $sHorariosAtencion;
 	}
 	/**
 	 * @param string $sAutoridades
 	 */
 	public function setAutoridades($sAutoridades){
-		$this->$sAutoridades = $sAutoridades;
+		$this->sAutoridades = $sAutoridades;
 	}
 	/**
 	 * @param string $sCargo
 	 */
 	public function setCargo($sCargo){
-		$this->$sCargo = $sCargo;
+		$this->sCargo = $sCargo;
 	}
 	/**
 	 * @param string $sPersoneriaJuridica
 	 */
 	public function setPersoneriaJuridica($sPersoneriaJuridica){
-		$this->$sPersoneriaJuridica = $sPersoneriaJuridica;
+		$this->sPersoneriaJuridica = $sPersoneriaJuridica;
 	}
 	/**
 	 * @param string $sSedes
 	 */
 	public function setSedes($sSedes){
-		$this->$sSedes = $sSedes;
+		$this->sSedes = $sSedes;
 	}
 	/**
 	 * @param string $sSedes
 	 */
 	public function setActividadesMes($sActividadesMes){
-		$this->$sActividadesMes = $sActividadesMes;
+		$this->sActividadesMes = $sActividadesMes;
 	}
 	///////////////gets//////////////
 	/**
@@ -143,11 +143,89 @@ class Institucion {
 	public function getNombre(){
 		return $this->sNombre;
 	}
-/**
+	/**
 	 * @return  Ciudad $oCiudad
 	 */
 	public function getCiudad(){
 		return $this->oCiudad;
+	}
+	/**
+	 *  @return int $iModerado
+	 */
+	public function getModerado(){
+		return $this->iModerado ;
+	}
+	/**
+	 *  @return int $iTipoInstitucion
+	 */
+	public function getTipoInstitucion(){
+		return $this->$iTipoInstitucion ;
+	}
+	/**
+	 *  @return int $sDescripcion
+	 */
+	public function getDescripcion(){
+		return $this->$sDescripcion ;
+	}
+	/**
+	 *  @return int $sDireccion
+	 */
+	public function getDireccion(){
+		return $this->$sDireccion ;
+	}
+	/**
+	 *  @return int $sEmail
+	 */
+	public function getEmail(){
+		return $this->$sEmail ;
+	}
+	/**
+	 *  @return int $sTelefono
+	 */
+	public function getTelefono(){
+		return $this->$sTelefono ;
+	}
+	/**
+	 *  @return int $sSitioWeb
+	 */
+	public function getSitioWeb(){
+		return $this->$sSitioWeb ;
+	}
+	/**
+	 *  @return int $sHorariosAtencion
+	 */
+	public function getHorariosAtencion(){
+		return $this->$sHorariosAtencion ;
+	}
+	/**
+	 *  @return int $sAutoridades
+	 */
+	public function getAutoridades(){
+		return $this->$sAutoridades ;
+	}
+	/**
+	 *  @return int $sCargo
+	 */
+	public function getCargo(){
+		return $this->$sCargo ;
+	}
+	/**
+	 *  @return int $sPersoneriaJuridica
+	 */
+	public function getPersoneriaJuridica(){
+		return $this->$sPersoneriaJuridica ;
+	}
+	/**
+	 *  @return int $sSedes
+	 */
+	public function getSedes(){
+		return $this->$sSedes ;
+	}
+	/**
+	 *  @return int $sActividadesMes
+	 */
+	public function getActividadesMes(){
+		return $this->$sActividadesMes ;
 	}
 	
 }
