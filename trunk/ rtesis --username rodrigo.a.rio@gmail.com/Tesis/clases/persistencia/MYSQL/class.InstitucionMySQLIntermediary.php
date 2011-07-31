@@ -66,9 +66,22 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 				$ciudadId = null;
 			}
 			$sSQL =	" insert into instituciones ".
-                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ";
-			 
+                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", ".
+                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ".
+					" moderado_id =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
+					" descripcion =".$db->escape($oInstitucion->getDescripcion(),true).", ".
+					" tipoInstitucion_id =".$db->escape($oInstitucion->getTipoInstitucion(),false,MYSQL_TYPE_INT).", ".
+					" direccion =".$db->escape($oInstitucion->getDireccion(),true).", ".
+					" email =".$db->escape($oInstitucion->getEmail(),true).", ".
+					" telefono =".$db->escape($oInstitucion->getTelefono(),true).", ".
+					" sitioWeb =".$db->escape($oInstitucion->getSitioWeb(),true).", ".
+					" horariosAtencion =".$db->escape($oInstitucion->getHorariosAtencion(),true).", ".
+					" autoridades =".$db->escape($oInstitucion->getAutoridades(),true).", ".
+					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
+					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
+					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
+					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ";
+						 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
@@ -91,7 +104,21 @@ private  function actualizar(Intitucion $oInstitucion)
 			$sSQL =	" update instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
                     " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." " ;			 
+					" moderado_id =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
+					" descripcion =".$db->escape($oInstitucion->getDescripcion(),true).", ".
+					" tipoInstitucion_id =".$db->escape($oInstitucion->getTipoInstitucion(),false,MYSQL_TYPE_INT).", ".
+					" direccion =".$db->escape($oInstitucion->getDireccion(),true).", ".
+					" email =".$db->escape($oInstitucion->getEmail(),true).", ".
+					" telefono =".$db->escape($oInstitucion->getTelefono(),true).", ".
+					" sitioWeb =".$db->escape($oInstitucion->getSitioWeb(),true).", ".
+					" horariosAtencion =".$db->escape($oInstitucion->getHorariosAtencion(),true).", ".
+					" autoridades =".$db->escape($oInstitucion->getAutoridades(),true).", ".
+					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
+					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
+					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
+					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ".
+                    " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." " ;
+						 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
@@ -138,6 +165,19 @@ private  function actualizar(Intitucion $oInstitucion)
             	$oInstitucion->iId 	= $oObj->iId;
             	$oInstitucion->sNombre= $oObj->sNombre;
             	$oUsuario->oCiudades 	= null;
+            	$oInstitucion->iModerado 	= $oObj->iModerado;
+            	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
+            	$oInstitucion->iTipoInstitucion 	= $oObj->iTipoInstitucion;
+            	$oInstitucion->sDireccion 	= $oObj->sDireccion;
+            	$oInstitucion->sEmail 	= $oObj->sEmail;
+            	$oInstitucion->sTelefono 	= $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb 	= $oObj->sSitioWeb;
+            	$oInstitucion->sHorariosAtencion 	= $oObj->sHorariosAtencion;
+            	$oInstitucion->sAutoridades 	= $oObj->sAutoridades;
+            	$oInstitucion->sCargo 	= $oObj->sCargo;
+            	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
+            	$oInstitucion->sSedes 	= $oObj->sSedes;
+            	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
   
             	$aInstituciones[]		= Factory::getInstitucionInstance($oinstitucion);
             }
