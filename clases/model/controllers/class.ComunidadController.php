@@ -111,7 +111,7 @@ public function borrarInstitución($oInstitucion){
 public function obtenerInstitución($filtro){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->obtener($oInstitucion);
+            return $oInstitucionIntermediary->obtener($filtro);
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}
@@ -119,7 +119,7 @@ public function obtenerInstitución($filtro){
 public function existeInstitución($filtro){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->existe($oInstitucion);
+            return $oInstitucionIntermediary->existe($filtro);
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}

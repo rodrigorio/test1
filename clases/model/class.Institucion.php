@@ -159,73 +159,73 @@ class Institucion {
 	 *  @return int $iTipoInstitucion
 	 */
 	public function getTipoInstitucion(){
-		return $this->$iTipoInstitucion ;
+		return $this->iTipoInstitucion ;
 	}
 	/**
 	 *  @return int $sDescripcion
 	 */
 	public function getDescripcion(){
-		return $this->$sDescripcion ;
+		return $this->sDescripcion ;
 	}
 	/**
 	 *  @return int $sDireccion
 	 */
 	public function getDireccion(){
-		return $this->$sDireccion ;
+		return $this->sDireccion ;
 	}
 	/**
 	 *  @return int $sEmail
 	 */
 	public function getEmail(){
-		return $this->$sEmail ;
+		return $this->sEmail ;
 	}
 	/**
 	 *  @return int $sTelefono
 	 */
 	public function getTelefono(){
-		return $this->$sTelefono ;
+		return $this->sTelefono ;
 	}
 	/**
 	 *  @return int $sSitioWeb
 	 */
 	public function getSitioWeb(){
-		return $this->$sSitioWeb ;
+		return $this->sSitioWeb ;
 	}
 	/**
 	 *  @return int $sHorariosAtencion
 	 */
 	public function getHorariosAtencion(){
-		return $this->$sHorariosAtencion ;
+		return $this->sHorariosAtencion ;
 	}
 	/**
 	 *  @return int $sAutoridades
 	 */
 	public function getAutoridades(){
-		return $this->$sAutoridades ;
+		return $this->sAutoridades ;
 	}
 	/**
 	 *  @return int $sCargo
 	 */
 	public function getCargo(){
-		return $this->$sCargo ;
+		return $this->sCargo ;
 	}
 	/**
 	 *  @return int $sPersoneriaJuridica
 	 */
 	public function getPersoneriaJuridica(){
-		return $this->$sPersoneriaJuridica ;
+		return $this->sPersoneriaJuridica ;
 	}
 	/**
 	 *  @return int $sSedes
 	 */
 	public function getSedes(){
-		return $this->$sSedes ;
+		return $this->sSedes ;
 	}
 	/**
 	 *  @return int $sActividadesMes
 	 */
 	public function getActividadesMes(){
-		return $this->$sActividadesMes ;
+		return $this->sActividadesMes ;
 	}
 	
 }
