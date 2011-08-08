@@ -71,6 +71,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->iId 			= $oObj->iId;
                 $oUsuario->sNombre 		= $oObj->sNombre;
                 $oUsuario->sApellido 	= $oObj->sApellido;
+                $oUsuario->sNacionalidad 	= $oObj->sNacionalidad;
                 $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
                 $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
                 $oUsuario->sSexo 		= $oObj->sSexo;
@@ -173,6 +174,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$sSQL =	" update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+					" nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
 					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
@@ -397,6 +399,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+            		" nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
 					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
@@ -473,6 +476,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$sSQL =	" insert into personas ".
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+					" nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
 					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
