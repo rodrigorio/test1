@@ -40,6 +40,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
             $sSQL = "SELECT
                         p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.nacionalidad as sNacionalidad,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
                         p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
                         p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
@@ -69,6 +70,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $oDiscapacitado->iId 			= $oObj->iId;
                 $oDiscapacitado->sNombre 		= $oObj->sNombre;
                 $oDiscapacitado->sApellido 	= $oObj->sApellido;
+                $oDiscapacitado->sNacionalidad 	= $oObj->sNacionalidad;
                 $oDiscapacitado->sSexo 		= $oObj->sSexo;
                 $oDiscapacitado->dFechaNacimiento = $oObj->dFechaNacimiento;
                 $oDiscapacitado->sEmail 		= $oObj->sEmail;
@@ -161,6 +163,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oDiscapacitado->getNombre(),true).", " .
                     " apellido =".$db->escape($oDiscapacitado->getApellido(),true).", " .
+            		" nacionalidad =".$db->escape($oDiscapacitado->getNacionalidad(),true).", " .
 					" documento_tipos_id =".$db->escape($oDiscapacitado->getDocumentoId(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oDiscapacitado->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oDiscapacitado->getSexo(),true).", " .
@@ -234,6 +237,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 			$sSQL =	" insert into personas ".
                     " set nombre =".$db->escape($oDiscapacitado->getNombre(),true).", " .
                     " apellido =".$db->escape($oDiscapacitado->getApellido(),true).", " .
+					" nacionalidad =".$db->escape($oDiscapacitado->getNacionalidad(),true).", " .
 					" documento_tipos_id =".$db->escape($oDiscapacitado->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oDiscapacitado->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo =".$db->escape($oDiscapacitado->getSexo(),true).", " .
