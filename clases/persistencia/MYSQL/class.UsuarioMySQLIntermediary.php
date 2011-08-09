@@ -416,15 +416,15 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
                     " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
                     " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." ".
-            		" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)."";
+            		" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 			$db->execSQL($sSQL);
 
             $sSQL =" update usuarios ".
                     " set sitioWeb=".$db->escape($oUsuario->getSitioWeb(),true).", " .
 					" especialidades_id =".$db->escape($oUsuario->getEspecialidad(),false,MYSQL_TYPE_INT).", ".
                //     " perfiles_id =".$db->escape($oUsuario->getPerfiles_id(),false,MYSQL_TYPE_INT).", ".
-					" contrasenia =".$db->escape($oUsuario->getContrasenia(),true)."".
-            		" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)."";
+					" contrasenia =".$db->escape($oUsuario->getContrasenia(),true)." ".
+            		" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 			$db->execSQL($sSQL);
 			$db->commit();
 			return true;
@@ -507,7 +507,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					" especialidades_id =".$db->escape($iEspecialidadId,true).", ".
                     " perfiles_id =".self::PERFIL_INTEGRANTE_INACTIVO.", ".
 					" nombre=".$db->escape($oUsuario->getNombreUsuario(),true).",".
-					" contrasenia=".$db->escape(md5($oUsuario->getContrasenia()),true)."";
+					" contrasenia=".$db->escape(md5($oUsuario->getContrasenia()),true)." ";
 
 			 $db->execSQL($sSQL);
 			 $db->commit();

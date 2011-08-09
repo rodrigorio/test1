@@ -69,7 +69,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into paises ".
-                    " set nombre =".$db->escape($oPais->getNombre(),true).", ";
+                    " set nombre =".$db->escape($oPais->getNombre(),true)." ";
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -84,7 +84,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" update paises ".
-                    " set nombre =".$db->escape($oPais->getNombre(),true).", " .
+                    " set nombre =".$db->escape($oPais->getNombre(),true)." " .
                     " where id =".$db->escape($oPais->getId(),false,MYSQL_TYPE_INT)." ";
                     			 
 			 $db->execSQL($sSQL);
