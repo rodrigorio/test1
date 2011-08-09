@@ -192,8 +192,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " fechaNacimientoMadre =".$db->escape($oDiscapacitado->getFechaNacimientoMadre(),false,MYSQL_TYPE_DATE).", ".
 					" ocupacionPadre =".$db->escape($oDiscapacitado->getOcupacionPadre(),true).", " .
                     " ocupacionMadre =".$db->escape($oDiscapacitado->getOcupacionMadre(),true).", " .
-			        " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", " .
-                    " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)."";
+			        " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true)." " .
+                    " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
@@ -266,7 +266,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " fechaNacimientoMadre =".$db->escape($oDiscapacitado->getFechaNacimientoMadre(),false,MYSQL_TYPE_DATE).", ".
 					" ocupacionPadre =".$db->escape($oDiscapacitado->getOcupacionPadre(),true).", " .
                     " ocupacionMadre =".$db->escape($oDiscapacitado->getOcupacionMadre(),true).", " .
-			        " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", " ;
+			        " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true)." " ;
 					
 			 $db->execSQL($sSQL);
 			 $db->commit();

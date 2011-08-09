@@ -117,7 +117,7 @@ static $singletonInstance = 0;
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ";
+                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ";
 			
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
@@ -128,7 +128,7 @@ static $singletonInstance = 0;
 			
 			$sSQL =" insert into seguimientos_personalizados set ".
                     " id=".$db->escape($iLastId,false).", " .
-                    " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT).", " ;	
+                    " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." " ;	
 		
 			$db->execSQL($sSQL);
 			 $db->commit();

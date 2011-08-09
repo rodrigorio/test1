@@ -61,7 +61,7 @@ static $singletonInstance = 0;
 			 $diagnosticoSCCId = null;
 			 
              $sSQL =" update seguimiento_scc ".
-                    " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT).", ".
+                    " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
 					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -115,7 +115,7 @@ static $singletonInstance = 0;
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) .", ";
+                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ";
 			
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
@@ -126,7 +126,7 @@ static $singletonInstance = 0;
 			
 			$sSQL =" insert into seguimientos_scc set ".
                     " id=".$db->escape($iLastId,false).", " .
-                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT).", " ;	
+                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;	
 		
 			$db->execSQL($sSQL);
 			 $db->commit();

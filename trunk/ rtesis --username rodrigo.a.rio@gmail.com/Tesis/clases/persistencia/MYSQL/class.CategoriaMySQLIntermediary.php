@@ -34,7 +34,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into categorias ".
-                    " set nombre =".$db->escape($oCategoria->getNombre(),true).", ";
+                    " set nombre =".$db->escape($oCategoria->getNombre(),true)." ";
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -50,7 +50,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" update categorias ".
-                    " set nombre =".$db->escape($oCategoria->getNombre(),true).", " .
+                    " set nombre =".$db->escape($oCategoria->getNombre(),true)." " .
                     " where id =".$db->escape($oCategoria->getId(),false,MYSQL_TYPE_INT)." ";
                     			 
 			 $db->execSQL($sSQL);

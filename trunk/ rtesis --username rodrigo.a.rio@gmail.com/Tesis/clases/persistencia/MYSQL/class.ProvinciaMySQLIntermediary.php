@@ -89,7 +89,7 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
         
 			$sSQL =	" update provincias ".
                     " set nombre =".$db->escape($oProvincia->getNombre(),true).", " .
-                    " paises_id =".escape($paisId,false,MYSQL_TYPE_INT).
+                    " paises_id =".escape($paisId,false,MYSQL_TYPE_INT)." ".
                     " where id =".$db->escape($oProvincias->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();

@@ -80,7 +80,7 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
 					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
 					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
-					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ";
+					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true)." ";
 						 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -116,8 +116,8 @@ private  function actualizar(Intitucion $oInstitucion)
 					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
 					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
 					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
-					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ".
-                    " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." " ;
+					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true)." ".
+                    " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." ";
 						 
 			 $db->execSQL($sSQL);
 			 $db->commit();

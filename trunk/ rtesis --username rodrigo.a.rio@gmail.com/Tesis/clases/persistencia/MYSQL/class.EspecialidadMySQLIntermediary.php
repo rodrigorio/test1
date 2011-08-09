@@ -35,7 +35,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into especialidades ".
-                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true).", ";
+                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true)." ";
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -51,7 +51,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" update especialidades ".
-                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true).", " .
+                    " set nombre =".$db->escape($oEspecialidad->getNombre(),true)." " .
                     " where id =".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)." ";
                     			 
 			 $db->execSQL($sSQL);
