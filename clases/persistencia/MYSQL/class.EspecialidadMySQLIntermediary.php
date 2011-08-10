@@ -30,7 +30,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
     public function existe($filtro){}
 
           
-    private  function insertar(Especialidad $oEspecialidad)
+    public  function insertar(Especialidad $oEspecialidad)
    {
 		try{
 			$db = $this->conn;
@@ -46,7 +46,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 		}
 	}
     
- private  function actualizar(Especialidad $oEspecialidad)
+ public  function actualizar(Especialidad $oEspecialidad)
    {
 		try{
 			$db = $this->conn;
@@ -66,16 +66,16 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
     {
         try{
 			if($oEspecialidad->getId() != null){
-            	return actualizar($oEspecilaidad);
+            	return $this->actualizar($oEspecilaidad);
             }else{
-				return insertar($oEspecialidad);
+				return $this->insertar($oEspecialidad);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
 
-public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro, &$foundRows = 0){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);

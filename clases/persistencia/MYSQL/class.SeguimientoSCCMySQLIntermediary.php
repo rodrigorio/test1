@@ -23,7 +23,6 @@ static $singletonInstance = 0;
 		return(self::$singletonInstance);
 	}
 	public function actualizar($oSeguimientoSCC)
-
     {
         try{
 			$db = $this->conn;

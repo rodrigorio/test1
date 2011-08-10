@@ -378,7 +378,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		}
     }
 
-
     public function actualizar($oUsuario)
     {
         try{

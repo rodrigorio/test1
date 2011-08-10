@@ -29,7 +29,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 	}
 	
 	
- private  function insertar(Categoria $oCategoria)
+ public  function insertar(Categoria $oCategoria)
    {
 		try{
 			$db = $this->conn;
@@ -45,7 +45,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		}
 	}
     
- private  function actualizar(Categoria $oCategoria)
+ public  function actualizar(Categoria $oCategoria)
    {
 		try{
 			$db = $this->conn;
@@ -65,16 +65,16 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
     {
         try{
 			if($oCategoria->getId() != null){
-            	return actualizar($oCategoria);
+            	return $this->actualizar($oCategoria);
             }else{
-				return insertar($oCategoria);
+				return $this->insertar($oCategoria);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
 
-public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro, &$foundRows = 0){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);

@@ -69,5 +69,11 @@ class PersistenceFactory {
 			return (PaisMySQLIntermediary::getInstance($conn));
         }          
     }
+    public static function getInstitucionIntermediary(IMYSQL $conn)
+    {
+  		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+			return (InstitucionMySQLIntermediary::getInstance($conn));
+        }          
+    }
 }
 ?>

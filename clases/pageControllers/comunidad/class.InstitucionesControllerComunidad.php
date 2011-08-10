@@ -75,20 +75,29 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
    			$oInstitucion				= new stdClass();
 			$oInstitucion->sNombre 		= $this->getRequest()->getPost('nombre');
 	   		$oInstitucion->sDescripcion	= $this->getRequest()->getPost('descripcion');
-			$oInstitucion->iTipo 	= $this->getRequest()->getPost('tipo');
+			$oInstitucion->iTipoInstitucion = $this->getRequest()->getPost('tipo');
+			$oInstitucion->sCargo 		= $this->getRequest()->getPost('cargo');
+			$oInstitucion->sPersoneriaJuridica	= $this->getRequest()->getPost('personaJuridica');
+			$oInstitucion->sDireccion 		= $this->getRequest()->getPost('direccion');
+			$oCiudad 		= ComunidadController::getInstance()->getCiudadById($this->getRequest()->getPost('ciudad'));
+			$oInstitucion->oCiudad 		=  $oCiudad[0];
+			$oInstitucion->sTelefono	= $this->getRequest()->getPost('tel');
+			$oInstitucion->sSitioWeb	= $this->getRequest()->getPost('web');
 			$oInstitucion->sEmail 		= $this->getRequest()->getPost('email');
-		//	$sDescripcion			= $this->getRequest()->getPost('sDescripcion');
-			$sDescripcion="";
-			ComunidadController::getInstance()->crearInstitucion($oUsuario, $oInvitado, $sDescripcion);
+			$oInstitucion->sHorariosAtencion	= $this->getRequest()->getPost('horarioAtencion');
+			$oInstitucion->sSedes 		= $this->getRequest()->getPost('sedes');
+			$oInstitucion->sAutoridades	= $this->getRequest()->getPost('autoridades');
+			$oInstitucion->sActividadesMes	= $this->getRequest()->getPost('actividadesMes');
+			$oInstitucion->iModerado	= 0;
+			$oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
+			$res = ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+			
 			$this->getJsonHelper()->setSuccess(true);
-                                      //->setRedirect($redirect);
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
-    	
     }
 
     /**
@@ -122,7 +131,10 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
-	public function provinciasByPais(){
+	/**
+	 * 
+	 */
+    public function provinciasByPais(){
 		 if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
     	 try{
     	 	$iPaisId =  $this->getRequest()->getPost("iPaisId");

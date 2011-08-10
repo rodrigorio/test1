@@ -4,15 +4,13 @@
  *
  *
  */
-class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermediary
+class InstitucionMySQLIntermediary extends InstitucionIntermediary
 {
-     static $singletonInstance = 0;
-
+	private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
 	}
-
 
 	/**
 	 * Singleton
@@ -21,11 +19,10 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 	 * @return InstitucionMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
 	
 	public  function existe($filtro){
@@ -56,19 +53,19 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
     public function actualizarCampoArray($objects, $cambios){}
 
     
-    private  function insertar(Institucion $oInstitucion)
-   {
+    public  function insertar($oInstitucion)
+    {
 		try{
 			$db = $this->conn;
-		if($oInstitucion->getCiudad()!= null){
-			$ciudadId = ($oInstitucion->getCiudad()->getId());
+			if($oInstitucion->getCiudad()!= null){
+				$ciudadId = ($oInstitucion->getCiudad()->getId());
 			}else {
 				$ciudadId = null;
 			}
 			$sSQL =	" insert into instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", ".
-                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ".
-					" moderado_id =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($ciudadId,false,MYSQL_TYPE_INT).", ".
+					" moderado =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
 					" descripcion =".$db->escape($oInstitucion->getDescripcion(),true).", ".
 					" tipoInstitucion_id =".$db->escape($oInstitucion->getTipoInstitucion(),false,MYSQL_TYPE_INT).", ".
 					" direccion =".$db->escape($oInstitucion->getDireccion(),true).", ".
@@ -84,15 +81,15 @@ class InstitucionMySQLIntermediaryMySQLIntermediary extends InstitucionIntermedi
 						 
 			 $db->execSQL($sSQL);
 			 $db->commit();
-
-             
+			 return true;
 		}catch(Exception $e){
+			return false;
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
     
-private  function actualizar(Intitucion $oInstitucion)
-   {
+	public function actualizar($oInstitucion)
+   	{
 		try{
 			$db = $this->conn;
 		if($oInstitucion->getCiudad()!= null){
@@ -127,13 +124,13 @@ private  function actualizar(Intitucion $oInstitucion)
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    public function guardar(Institucion $oInstitucion)
+    public function guardar($oInstitucion)
     {
         try{
 			if($oInstitucion->getId() != null){
-            	return actualizar($oInstitucion);
+            	return $this->actualizar($oInstitucion);
             }else{
-				return insertar($oInstitucion);
+				return $this->insertar($oInstitucion);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
@@ -198,7 +195,7 @@ private  function actualizar(Intitucion $oInstitucion)
 	//public function borrar($objects){}
     
     //borra una Institucion
-    public function borrar(Institucion $oInstitucion) {
+    public function borrar($oInstitucion) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from instituciones where id=".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT));

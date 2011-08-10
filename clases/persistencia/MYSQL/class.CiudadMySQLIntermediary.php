@@ -74,7 +74,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 		}
 	}
     
-	public  function actualizar($oCiudad)
+	public function actualizar($oCiudad)
    {
 		try{
 			$db = $this->conn;

@@ -80,7 +80,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
 		}
 	}
 	public  function actualizar($oPais)
-   {
+   	{
 		try{
 			$db = $this->conn;
 			$sSQL =	" update paises ".

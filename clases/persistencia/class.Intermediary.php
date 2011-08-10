@@ -279,7 +279,7 @@ abstract class Intermediary
      *         con posibles alteraciones en sus atributos dependiendo la actualizacion (por ejemplo, inserta el id en el objeto si no lo tenia)
      * @throws Exception si hubo error en la consulta
      */
-    abstract public function insertar($objects);
+     abstract public function insertar($objects);
 
     /**
      * Este es un metodo de conveniencia, recibe un objeto y se fija si posee clave primaria.

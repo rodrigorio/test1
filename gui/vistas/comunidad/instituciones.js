@@ -14,9 +14,19 @@ $(function(){
 	    });
 	    if(!error) {
 		    var fields = "nombre="+$('#nombre').val()+
-			"&apellido="+$('#apellido').val()+
+			"&tipo="+$('#tipo').val()+
 			"&email="+$('#email').val()+
-			"&relacion="+$('#relacion').val();
+			"&cargo="+$('#cargo').val()+
+			"&personaJuridica="+$('#personaJuridica').val()+
+			"&direccion="+$('#direccion').val()+
+			"&ciudad="+$('#ciudad').val()+
+			"&tel="+$('#tel').val()+
+			"&web="+$('#web').val()+
+			"&horarioAtencion="+$('horarioAtencion').val()+
+			"&sedes="+$('#sedes').val()+
+			"&autoridades="+$('#autoridades').val()+
+			"&actividadesMes="+$('#actividadesMes').val()+
+			"&descripcion="+$('#descripcion').val();
 			$.ajax({
 				type:	"POST",
 				url: 	"comunidad/institucion-procesar",
@@ -26,7 +36,7 @@ $(function(){
 				},
 				success: function(data){
 					$("#ajax_loading").hide();
-					var resp = $.parseJSON(data);
+					//var resp = $.parseJSON(data);
 					if(data.success==1){
 						$("#msg_conf").addClass("correcto");
 						$("#msg_conf").html("Se ha creado la institucion correctamente");
