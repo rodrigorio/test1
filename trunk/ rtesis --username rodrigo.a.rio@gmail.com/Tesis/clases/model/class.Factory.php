@@ -90,4 +90,12 @@ class Factory
         $oUsuario = new Usuario($obj);
         return $oUsuario;
     }
+    /**
+     * @param stdClass $obj
+     * @return $oInstitucion|null
+     */
+    public static function &getInstitucionInstance(stdClass $obj){
+        $oInstitucion = new Institucion($obj);
+        return $oInstitucion;
+    }
 }

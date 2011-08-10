@@ -25,7 +25,6 @@ static $singletonInstance = 0;
 
 
      public function actualizar($oSeguimientoPersonalizado)
-
     {
         try{
 			$db = $this->conn;

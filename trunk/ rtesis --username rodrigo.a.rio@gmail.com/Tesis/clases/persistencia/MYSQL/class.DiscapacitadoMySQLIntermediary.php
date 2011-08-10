@@ -142,8 +142,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
-	 public function actualizar($oDiscapacitado)
-
+	 public  function actualizar($oDiscapacitado)
     {
         try{
 			$db = $this->conn;
@@ -216,7 +215,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-    public function insertar($oDiscapacitado)
+    public  function insertar($oDiscapacitado)
    {
 		try{
 			$db = $this->conn;

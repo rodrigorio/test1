@@ -69,37 +69,6 @@ class SysController
         }else{
             return $array;
         }
-        //123probando...
-        /*return array("index_publicaciones_index" => true,
-                     "index_publicaciones_redireccion404" => true,
-
-                     "index_index_index" => true,
-                     "index_index_redireccion404" => true,
-                     "index_index_sitioOffline" => true,
-                     "index_index_sitioEnConstruccion" => true,
-                     "index_index_ajaxError" => true,
-
-                     "index_login_index" => true,
-                     "index_login_procesar" => true,
-                     "index_login_redireccion404" => true,
-
-                     "index_registracion_index" => true,
-                     "index_registracion_formulario" => true,
-                     "index_registracion_procesar" => true,
-                     "index_registracion_redireccion404" => true,
-                     "index_registracion_recuperarContrasenia" => true,
-
-                     "admin_index_redireccion404" => true,
-                     "admin_index_index" => true,
-
-                     "comunidad_index_index" => true,
-            
-                     "comunidad_invitaciones_index" => true,
-                     "comunidad_invitaciones_procesar" => true,
-                     "comunidad_invitaciones_formulario" => true,
-                     "comunidad_invitaciones_listado" => true,
-                     "comunidad_invitaciones_redireccion404" => true);
-                     */
     }
 
     /**

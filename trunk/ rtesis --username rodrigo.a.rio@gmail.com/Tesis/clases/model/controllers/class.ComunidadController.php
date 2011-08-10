@@ -68,7 +68,7 @@ class ComunidadController
     	try{
 			$oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
             return $oPaisIntermediary->obtener(array());
-		}catch(Exception $e){
+			}catch(Exception $e){
 			echo $e->getMessage();
 		}
     }
@@ -90,9 +90,21 @@ class ComunidadController
 			echo $e->getMessage();
 		}
     }
-    
+	/**
+	 * 
+	 */
+	public function getCiudadById($iId){
+		try{
+			$filtro = array('c.id' => $iId);
+			$oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
+			return $oCiudadIntermediary ->obtener($filtro);
+		}catch(Exception $e){
+			throw new Exception($e);
+			return false; 
+		}
+	}
     ///tipea andres
-public function guardarInstitucion($oInstitucion){
+	public function guardarInstitucion($oInstitucion){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->guardar($oInstitucion);
@@ -100,7 +112,7 @@ public function guardarInstitucion($oInstitucion){
 			echo $e->getMessage();
 		}
     }
-public function borrarInstitucion($oInstitucion){
+	public function borrarInstitucion($oInstitucion){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->borrar($oInstitucion);
@@ -110,7 +122,7 @@ public function borrarInstitucion($oInstitucion){
     }
     
     //ver lo del filtro Andres
-public function obtenerInstitucion($filtro){
+	public function obtenerInstitucion($filtro){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->obtener($filtro);
@@ -118,7 +130,7 @@ public function obtenerInstitucion($filtro){
 			echo $e->getMessage();
 		}
     }
-public function existeInstitucion($filtro){
+	public function existeInstitucion($filtro){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->existe($filtro);
@@ -136,7 +148,7 @@ public function existeInstitucion($filtro){
 			echo $e->getMessage();
 		}
     }
-public function borrarDiscapacitado($oDiscapacitado){
+	public function borrarDiscapacitado($oDiscapacitado){
     	try{
 			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->borrar($oDiscapacitado);
@@ -144,7 +156,7 @@ public function borrarDiscapacitado($oDiscapacitado){
 			echo $e->getMessage();
 		}
     }
-public function obtenerDiscapacitado($filtro){
+	public function obtenerDiscapacitado($filtro){
     	try{
 			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->obtener($filtro);
@@ -152,7 +164,7 @@ public function obtenerDiscapacitado($filtro){
 			echo $e->getMessage();
 		}
     }
-public function existeDiscapacitado($filtro){
+	public function existeDiscapacitado($filtro){
     	try{
 			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->existe($filtro);
@@ -160,6 +172,4 @@ public function existeDiscapacitado($filtro){
 			echo $e->getMessage();
 		}
     }
-    
-    
 }
