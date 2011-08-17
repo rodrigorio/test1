@@ -130,10 +130,26 @@ class ComunidadController
 			echo $e->getMessage();
 		}
     }
+	public function obtenerMisInstituciones($filtro){
+    	try{
+			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->obtenerMisInstituciones($filtro);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
 	public function existeInstitucion($filtro){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->existe($filtro);
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
+    }
+	public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount){
+    	try{
+			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}

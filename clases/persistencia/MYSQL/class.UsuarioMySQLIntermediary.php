@@ -53,7 +53,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
   						p.`numeroDocumento` as sNumeroDocumento,
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
-                        u.invitacionesDisponibles as iInvitacionesDisponibles
+                        u.invitacionesDisponibles as iInvitacionesDisponibles,
+                        p.nacionalidad as sNacionalidad
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id ";
                     if(!empty($filtro)){

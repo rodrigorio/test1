@@ -16,6 +16,7 @@ class Institucion {
   	private $sPersoneriaJuridica;
   	private $sSedes;
   	private $sActividadesMes;
+  	private $oPerfilUsuario;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
@@ -130,6 +131,12 @@ class Institucion {
 	public function setActividadesMes($sActividadesMes){
 		$this->sActividadesMes = $sActividadesMes;
 	}
+	/**
+	 *  @param PerfilAbstract oPerfilUsuario
+	 */
+	public function setPerfilUsuario($oPerfilUsuario){
+		$this->oPerfilUsuario  =$oPerfilUsuario;
+	}
 	///////////////gets//////////////
 	/**
 	 *  @return int $iId
@@ -226,6 +233,12 @@ class Institucion {
 	 */
 	public function getActividadesMes(){
 		return $this->sActividadesMes ;
+	}
+	/**
+	 *  @return PerfilAbstract $oUsuario
+	 */
+	public function getPerfilUsuario(){
+		return $this->oPerfilUsuario ;
 	}
 	
 }

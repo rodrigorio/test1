@@ -85,7 +85,6 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
     	

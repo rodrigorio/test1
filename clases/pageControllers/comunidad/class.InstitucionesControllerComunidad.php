@@ -89,9 +89,12 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 			$oInstitucion->sAutoridades	= $this->getRequest()->getPost('autoridades');
 			$oInstitucion->sActividadesMes	= $this->getRequest()->getPost('actividadesMes');
 			$oInstitucion->iModerado	= 0;
-			$oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
-			$res = ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+			$oInstitucion->oUsuario		= $oUsuario;
 			
+			$oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
+			ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+			echo 1;
+			exit;
 			$this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
@@ -127,10 +130,50 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
     	    $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
     	    $this->getTemplate()->parse("ListaPaisesBlock", true);
 		}
+		$filtro = array();
+		$iRecordsTotal=0;
+		$sOrderBy= $sOrder= $iIniLimit= $iRecordCount= null;
+		$vListaInstitucionTipos	= ComunidadController::getInstance()->listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+		foreach ($vListaInstitucionTipos as $oInstitucionTipos){
+    	    $this->getTemplate()->set_var("iInstitucionTiposId", $oInstitucionTipos->iId);
+    	    $this->getTemplate()->set_var("sInstitucionTiposNombre", $oInstitucionTipos->sNombre);
+    	    $this->getTemplate()->parse("ListaTipoDeInstitucionesBlock", true);
+		}
         	
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
+    public function listadoInstituciones(){
+    	try{
+    		$this->restartTemplate();
+    		$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+       		$usuario = $perfil->getUsuario();
+	        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
+	        $this->setHeadTag();
+	        IndexControllerComunidad::setCabecera($this->getTemplate());
+	        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+	        //titulo seccion
+	        $this->getTemplate()->set_var("tituloSeccion", "Mis instituciones");
+	        //menu derecha
+	        $this->setMenuDerecha();
+	        //contenido ppal
+	        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "ListadoInstitucionBlock");
+			$filtro = array("i.usuario_id"=>$usuario->getId());
+			$iRecordsTotal=0;
+			$sOrderBy= $sOrder= $iIniLimit= $iRecordCount= null;
+			$vListaInstitucion	= ComunidadController::getInstance()->obtenerMisInstituciones($filtro);
+			foreach ($vListaInstitucion as $oInstitucion){
+	    	    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+	    	    $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
+	    	    $this->getTemplate()->parse("ListaDeInstitucionesBlock", true);
+			}
+       	 	$this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    	}catch(Exception $e){
+        	print_r($e);
+            throw new Exception('Error Template');
+            //return;
+    	}
+    }
 	/**
 	 * 
 	 */

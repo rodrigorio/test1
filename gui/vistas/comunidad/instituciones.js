@@ -37,7 +37,7 @@ $(function(){
 				success: function(data){
 					$("#ajax_loading").hide();
 					//var resp = $.parseJSON(data);
-					if(data.success==1){
+					if(data==1){
 						$("#msg_conf").addClass("correcto");
 						$("#msg_conf").html("Se ha creado la institucion correctamente");
 					}else{
@@ -46,7 +46,6 @@ $(function(){
 					}
 					$("#formCrearInstitucion").hide();
 					$("#msg_conf").show();
-					
 				}
 			});
 	    }else{
