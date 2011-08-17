@@ -77,8 +77,10 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
 					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
 					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
-					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true)." ";
-						 
+					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ".
+					" usuario_id =".$db->escape($oInstitucion->getPerfilUsuario()->getUsuario()->getId(),true)." ";
+
+			
 			 $db->execSQL($sSQL);
 			 $db->commit();
 			 return true;
@@ -142,7 +144,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         i.id as iId, i.nombre as sNombre
                         FROM
                        instituciones i ";
@@ -190,6 +192,68 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
+	public final function obtenerMisInstituciones($filtro, &$foundRows = 0){
+	 	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+           $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                          i.id as iId, 
+                          i.nombre as sNombre,
+						  i.`ciudades_id` as iCiudad,
+						  i.`moderado` as iModerado,
+						  i.`descripcion` as sDescripcion,
+						  i.`tipoInstitucion_id` as iTipoInstitucion,
+						  i.`direccion` as sDireccion,
+						  i.`email` as sEmail,
+						  i.`telefono` as sTelefono,
+						  i.`sitioWeb` as sSitioWeb,
+						  i.`horariosAtencion` as sHorariosAtencion,
+						  i.`autoridades` as sAutoridades,
+						  i.`cargo` as sCargo,
+						  i.`personeriaJuridica` as sPersoneriaJuridica,
+						  i.`sedes` as sSedes,
+						  i.`actividadesMes` as sActividadesMes,
+						  i.`usuario_id`
+                     FROM
+                       	instituciones i 
+                     JOIN 
+                     	usuarios u ON u.id = i.usuario_id ";
+                    if(!empty($filtro)){     
+                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
+                    }
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+
+			$aInstituciones = array();
+            while($oObj = $db->oNextRecord()){
+            	$oInstitucion 			= new stdClass();
+            	$oInstitucion->iId 		= $oObj->iId;
+            	$oInstitucion->sNombre	= $oObj->sNombre;
+            	$oInstitucion->iModerado 	= $oObj->iModerado;
+            	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
+            	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucion;
+            	$oInstitucion->sDireccion 	= $oObj->sDireccion;
+            	$oInstitucion->sEmail 	= $oObj->sEmail;
+            	$oInstitucion->sTelefono= $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb= $oObj->sSitioWeb;
+            	$oInstitucion->sHorariosAtencion= $oObj->sHorariosAtencion;
+            	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
+            	$oInstitucion->sCargo 	= $oObj->sCargo;
+            	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
+            	$oInstitucion->sSedes 	= $oObj->sSedes;
+            	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
+            	$aInstituciones[]		= Factory::getInstitucionInstance($oInstitucion);
+            }
+
+           return $aInstituciones;
+        }catch(Exception $e){
+           return null;
+            throw new Exception($e->getMessage(), 0);
+        }
+	}
     
 	//borra muchas instituciones
 	//public function borrar($objects){}
@@ -208,6 +272,34 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
    
-    
+    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    	try{
+   	        $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+                        it.id as iId, it.nombre as sNombre
+                        FROM
+                       instituciones_tipos it ";
+                    if(!empty($filtro)){     
+                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    }
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+			$vInstitucionesTipos = array();
+            while($oObj = $db->oNextRecord()){
+            	$vInstitucionesTipos[]	= $oObj;
+            }
+
+           return $vInstitucionesTipos;
+        }catch(Exception $e){
+        	return null;
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 }
 ?>	

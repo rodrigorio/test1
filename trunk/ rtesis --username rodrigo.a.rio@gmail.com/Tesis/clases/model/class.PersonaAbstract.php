@@ -151,6 +151,6 @@ abstract class PersonaAbstract
         return $this->sUniversidad;
     }
     public function getSecundaria(){
-       return $this->sSecundaria;
+       	return $this->sSecundaria;
     }
 }
