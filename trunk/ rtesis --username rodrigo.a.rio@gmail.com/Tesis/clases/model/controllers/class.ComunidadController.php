@@ -56,61 +56,67 @@ class ComunidadController
     {
 
     }
+
     public function enviarInvitacion($oUsuario, $oInvitado, $sDescripcion){
-    	try{
-			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->enviarInvitacion($oUsuario,Factory::getInvitadoInstance($oInvitado), $sDescripcion);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
+
     public function listaPaises(){
     	try{
-			$oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
+            $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
             return $oPaisIntermediary->obtener(array());
-			}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
+
     public function listaProvinciasByPais($iPaisId){
     	try{
-    		$filtro = array("p.paises_id"=>$iPaisId);
-			$oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
+            $filtro = array("p.paises_id"=>$iPaisId);
+            $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
             return $oProvinciaIntermediary ->obtener($filtro);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
+
     public function listaCiudadByProvincia($iProvinciaId){
     	try{
-    		$filtro = array("c.provincia_id"=>$iProvinciaId);
-			$oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
+            $filtro = array("c.provincia_id"=>$iProvinciaId);
+            $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
             return $oCiudadIntermediary->obtener($filtro);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
-	/**
-	 * 
-	 */
-	public function getCiudadById($iId){
-		try{
-			$filtro = array('c.id' => $iId);
-			$oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
-			return $oCiudadIntermediary ->obtener($filtro);
-		}catch(Exception $e){
-			throw new Exception($e);
-			return false; 
-		}
-	}
+
+    /**
+     *
+     */
+    public function getCiudadById($iId){
+        try{
+            $filtro = array('c.id' => $iId);
+            $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
+            return $oCiudadIntermediary ->obtener($filtro);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
     ///tipea andres
-	public function guardarInstitucion($oInstitucion){
-    	try{
-			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+    public function guardarInstitucion($oInstitucion){
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->guardar($oInstitucion);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
 	public function borrarInstitucion($oInstitucion){
     	try{
@@ -138,21 +144,23 @@ class ComunidadController
 			echo $e->getMessage();
 		}
     }
-	public function existeInstitucion($filtro){
-    	try{
-			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+
+    public function existeInstitucion($filtro){
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->existe($filtro);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+           echo $e->getMessage();
+        }
     }
-	public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount){
-    	try{
-			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+
+    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount){
+    try{
+        $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+        return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
     
     
