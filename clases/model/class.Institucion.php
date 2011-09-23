@@ -154,7 +154,10 @@ class Institucion {
 	 * @return  Ciudad $oCiudad
 	 */
 	public function getCiudad(){
-		return $this->oCiudad;
+            if($this->oCiudad == null){
+    		//$this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iId);///ver esto
+            }
+            return $this->oCiudad;
 	}
 	/**
 	 *  @return int $iModerado

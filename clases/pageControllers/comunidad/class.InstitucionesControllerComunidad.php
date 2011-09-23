@@ -67,11 +67,10 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
     public function procesar(){
     	 //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
         try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $oUsuario					= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $oUsuario			= SessionAutentificacion::getInstance()->obtenerIdentificacion();
    			$oInstitucion				= new stdClass();
 			$oInstitucion->sNombre 		= $this->getRequest()->getPost('nombre');
 	   		$oInstitucion->sDescripcion	= $this->getRequest()->getPost('descripcion');
@@ -89,15 +88,15 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 			$oInstitucion->sAutoridades	= $this->getRequest()->getPost('autoridades');
 			$oInstitucion->sActividadesMes	= $this->getRequest()->getPost('actividadesMes');
 			$oInstitucion->iModerado	= 0;
-			$oInstitucion->oUsuario		= $oUsuario;
-			
+			$oInstitucion->oPerfilUsuario	= $oUsuario;
+
 			$oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
 			ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
 			echo 1;
 			exit;
 			$this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
+           $this->getJsonHelper()->setSuccess(false);
         }
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -126,18 +125,18 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
 		$listaPaises	= ComunidadController::getInstance()->listaPaises();
 		foreach ($listaPaises as $oPais){
-    	    $this->getTemplate()->set_var("iPaisId", $oPais->getId());
-    	    $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
-    	    $this->getTemplate()->parse("ListaPaisesBlock", true);
+                    $this->getTemplate()->set_var("iPaisId", $oPais->getId());
+                    $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
+                    $this->getTemplate()->parse("ListaPaisesBlock", true);
 		}
 		$filtro = array();
 		$iRecordsTotal=0;
 		$sOrderBy= $sOrder= $iIniLimit= $iRecordCount= null;
-		$vListaInstitucionTipos	= ComunidadController::getInstance()->listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+		$vListaInstitucionTipos	= ComunidadController::getInstance()->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
 		foreach ($vListaInstitucionTipos as $oInstitucionTipos){
-    	    $this->getTemplate()->set_var("iInstitucionTiposId", $oInstitucionTipos->iId);
-    	    $this->getTemplate()->set_var("sInstitucionTiposNombre", $oInstitucionTipos->sNombre);
-    	    $this->getTemplate()->parse("ListaTipoDeInstitucionesBlock", true);
+                    $this->getTemplate()->set_var("iInstitucionTiposId", $oInstitucionTipos->iId);
+                    $this->getTemplate()->set_var("sInstitucionTiposNombre", $oInstitucionTipos->sNombre);
+                    $this->getTemplate()->parse("ListaTipoDeInstitucionesBlock", true);
 		}
         	
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -145,29 +144,37 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 
     public function listadoInstituciones(){
     	try{
-    		$this->restartTemplate();
-    		$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-       		$usuario = $perfil->getUsuario();
-	        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
-	        $this->setHeadTag();
-	        IndexControllerComunidad::setCabecera($this->getTemplate());
-	        IndexControllerComunidad::setCenterHeader($this->getTemplate());
-	        //titulo seccion
-	        $this->getTemplate()->set_var("tituloSeccion", "Mis instituciones");
-	        //menu derecha
-	        $this->setMenuDerecha();
-	        //contenido ppal
-	        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "ListadoInstitucionBlock");
-			$filtro = array("i.usuario_id"=>$usuario->getId());
-			$iRecordsTotal=0;
-			$sOrderBy= $sOrder= $iIniLimit= $iRecordCount= null;
-			$vListaInstitucion	= ComunidadController::getInstance()->obtenerMisInstituciones($filtro);
-			foreach ($vListaInstitucion as $oInstitucion){
-	    	    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
-	    	    $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
-	    	    $this->getTemplate()->parse("ListaDeInstitucionesBlock", true);
-			}
-       	 	$this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            $this->restartTemplate();
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+            $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
+            $this->setHeadTag();
+            IndexControllerComunidad::setCabecera($this->getTemplate());
+            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Mis instituciones");
+            //menu derecha
+            $this->setMenuDerecha();
+            //contenido ppal
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "ListadoInstitucionesBlock");
+            //$filtro = array("i.usuario_id"=>$usuario->getId());
+            $filtro = array();
+            $iRecordsTotal=0;
+            $sOrderBy= $sOrder= $iIniLimit= $iRecordCount= null;
+            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro);
+            $i = 0;
+            foreach ($vListaInstitucion as $oInstitucion){
+                $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "par" : "impar");
+                $this->getTemplate()->set_var("iInstitucionId",     $oInstitucion->getId());
+                $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
+                $this->getTemplate()->set_var("sInstitucionTipo",   $oInstitucion->getTipoInstitucion() );
+               // $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
+                //$this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
+                //$this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
+                $this->getTemplate()->parse("ListaDeInstitucionesBlock", true);
+                $i++;
+            }
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     	}catch(Exception $e){
         	print_r($e);
             throw new Exception('Error Template');

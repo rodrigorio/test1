@@ -36,7 +36,7 @@ a img{border:none}
 #wrapper, .grupo{display:block}
 
 /*resetea extra padding en buttons*/
-button::-moz-focus-inner{border:0; padding:0}
+button:-moz-focus-inner{border:0; padding:0}
 
 
 
@@ -58,6 +58,8 @@ a{text-decoration:none; color:#1111CC; outline:0;}
 a:hover{text-decoration:underline}
 
 #dialog{display:none}
+table tr{}
+table td{ width: 100px;}
 
 /* Form Elements */
 form{position:relative}
@@ -218,8 +220,6 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .bosh{-moz-box-shadow:0 1px 2px #333; box-shadow:0 1px 2px #333; -webkit-box-shadow:0 1px 2px #333;}
 .bosh2{-moz-box-shadow:1px 2px 6px 0; box-shadow:1px 2px 6px 0; -webkit-box-shadow:1px 2px 6px 0 #333;}
 .bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
-
-
 
 /****************************************/
 /* TEMPLATES */
@@ -504,6 +504,13 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .buttonSpecial:active{border-color:#548E54; background-color: #78C978; -moz-box-shadow:0 0 2px green inset; box-shadow:0 0 2px green inset; -webkit-box-shadow:0 0 2px green inset}
 
 .buttonConfirm button, .buttonSpecial button, .buttonSpecial .buttonText, .buttonConfirm .buttonText{color:#FFF; text-shadow:#666 1px 1px 1px}
+
+/*** TABLAS ***/
+.table01 td{font-size: 12px;}
+.table01 tr.inpar{background-color: #E0EAFF;}
+.table01 tr.par{background-color: #E6EBF4;}
+.table01 .encabezado{background-color: #000;height: 20px; text-align: center;}
+.table01 .encabezado td{font-size: 13px; color: #ddd; text-transform: uppercase;}
 
 /*** VARIOS ***/
 .fte2{font-size:0.8em}
