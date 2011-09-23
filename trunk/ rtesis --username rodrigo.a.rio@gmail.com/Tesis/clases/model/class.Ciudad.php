@@ -58,7 +58,10 @@ class Ciudad {
 	 * @return Provincia $oProvincia
 	 */
 	public function getProvincia(){
-		return $this->oProvincia;
+            if($this->oProvincia==null){
+
+            }
+            return $this->oProvincia;
 	}
 }
 ?>

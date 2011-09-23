@@ -55,14 +55,14 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
     
     public  function insertar($oInstitucion)
     {
-		try{
-			$db = $this->conn;
-			if($oInstitucion->getCiudad()!= null){
-				$ciudadId = ($oInstitucion->getCiudad()->getId());
-			}else {
-				$ciudadId = null;
-			}
-			$sSQL =	" insert into instituciones ".
+        try{
+                $db = $this->conn;
+                if($oInstitucion->getCiudad()!= null){
+                        $ciudadId = ($oInstitucion->getCiudad()->getId());
+                }else {
+                        $ciudadId = null;
+                }
+                $sSQL =	" insert into instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", ".
                     " ciudades_id =".$db->escape($ciudadId,false,MYSQL_TYPE_INT).", ".
 					" moderado =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
@@ -192,7 +192,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
-	public final function obtenerMisInstituciones($filtro, &$foundRows = 0){
+	public final function obtenerInstituciones($filtro, &$foundRows = 0){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -231,20 +231,21 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             while($oObj = $db->oNextRecord()){
             	$oInstitucion 			= new stdClass();
             	$oInstitucion->iId 		= $oObj->iId;
-            	$oInstitucion->sNombre	= $oObj->sNombre;
+            	$oInstitucion->sNombre          = $oObj->sNombre;
             	$oInstitucion->iModerado 	= $oObj->iModerado;
             	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
             	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucion;
             	$oInstitucion->sDireccion 	= $oObj->sDireccion;
-            	$oInstitucion->sEmail 	= $oObj->sEmail;
-            	$oInstitucion->sTelefono= $oObj->sTelefono;
-            	$oInstitucion->sSitioWeb= $oObj->sSitioWeb;
+            	$oInstitucion->sEmail           = $oObj->sEmail;
+            	$oInstitucion->sTelefono        = $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb        = $oObj->sSitioWeb;
             	$oInstitucion->sHorariosAtencion= $oObj->sHorariosAtencion;
             	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
-            	$oInstitucion->sCargo 	= $oObj->sCargo;
+            	$oInstitucion->sCargo           = $oObj->sCargo;
             	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
-            	$oInstitucion->sSedes 	= $oObj->sSedes;
+            	$oInstitucion->sSedes           = $oObj->sSedes;
             	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
+            	$oInstitucion->oCiudad          = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
             	$aInstituciones[]		= Factory::getInstitucionInstance($oInstitucion);
             }
 
@@ -286,9 +287,9 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                     }
             $db->query($sSQL);
 
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
 			$vInstitucionesTipos = array();
             while($oObj = $db->oNextRecord()){

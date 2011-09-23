@@ -1,7 +1,7 @@
 $(function(){
 	$('#formCrearInstitucion').submit(function(){ return false; });
 	$('#crearInstitucion').click(function(){
-		var fields = $('#formCrearInstitucion input[type=text],#formCrearInstitucion select');
+            var fields = $('#formCrearInstitucion input[type=text],#formCrearInstitucion select');
 	    var error = 0;
 	    fields.each(function(){
 	        var value = $(this).val();
@@ -37,7 +37,7 @@ $(function(){
 				success: function(data){
 					$("#ajax_loading").hide();
 					//var resp = $.parseJSON(data);
-					if(data==1){
+                                        if(data==1){
 						$("#msg_conf").addClass("correcto");
 						$("#msg_conf").html("Se ha creado la institucion correctamente");
 					}else{
