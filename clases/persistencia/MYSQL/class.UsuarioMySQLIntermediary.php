@@ -275,7 +275,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     }
     
     public function sendMail($orig, $dest, $asunto, $body){
-    	// Varios destinatarios
+    	  // Varios destinatarios
 			$para  = $dest;
 			
 			// subject
