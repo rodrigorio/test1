@@ -74,7 +74,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		}
     }
 
-	public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro,&$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -89,9 +89,9 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 
             $db->query($sSQL);
 
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
 			$acategoriasategorias = array();
             while($oObj = $db->oNextRecord()){

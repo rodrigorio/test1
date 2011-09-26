@@ -2,10 +2,12 @@
 class Institucion {
 	private $iId;
 	private $sNombre;
+	private $iCiudadId;
 	private $oCiudad;
  	private $iModerado;
  	private $sDescripcion;
   	private $iTipoInstitucion;
+  	private $sNombreTipoInstitucion;
   	private $sDireccion;
   	private $sEmail;
   	private $sTelefono;
@@ -64,6 +66,12 @@ class Institucion {
 	 */
 	public function setTipoInstitucion($iTipoInstitucion){
 		$this->iTipoInstitucion = (int)$iTipoInstitucion;
+	}
+	/**
+ 	 *  @param string $sNombreTipoInstitucion
+	 */
+	public function setNombreTipoInstitucion($sNombreTipoInstitucion){
+		$this->sNombreTipoInstitucion = $sNombreTipoInstitucion;
 	}
 	/**
 	 * @param string $sDescripcion
@@ -154,10 +162,10 @@ class Institucion {
 	 * @return  Ciudad $oCiudad
 	 */
 	public function getCiudad(){
-            if($this->oCiudad == null){
-    		//$this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iId);///ver esto
-            }
-            return $this->oCiudad;
+		if($this->oCiudad == null){
+    		$this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
+        }
+        return $this->oCiudad;
 	}
 	/**
 	 *  @return int $iModerado
@@ -170,6 +178,12 @@ class Institucion {
 	 */
 	public function getTipoInstitucion(){
 		return $this->iTipoInstitucion ;
+	}
+	/**
+ 	 *  @return string $sNombreTipoInstitucion
+	 */
+	public function getNombreTipoInstitucion(){
+		return $this->sNombreTipoInstitucion ;
 	}
 	/**
 	 *  @return int $sDescripcion

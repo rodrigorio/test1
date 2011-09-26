@@ -66,10 +66,10 @@ class ComunidadController
         }
     }
 
-    public function listaPaises(){
+    public function listaPaises($array, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
-            return $oPaisIntermediary->obtener(array());
+            return $oPaisIntermediary->obtener($array, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             echo $e->getMessage();
         }
@@ -77,20 +77,25 @@ class ComunidadController
     /**
      *
      */
-    public function getPaisById($filtro){
+    public function getPaisById($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
-            return $oPaisIntermediary ->obtener($filtro);
+            $r = $oPaisIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+       		if(count($r) == 1){
+                return $r[0];
+            }else{
+                return $r;
+            }
         }catch(Exception $e){
             throw new Exception($e);
             return false;
         }
     }
-    public function listaProvinciasByPais($iPaisId){
+    public function listaProvinciasByPais($iPaisId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $filtro = array("p.paises_id"=>$iPaisId);
             $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
-            return $oProvinciaIntermediary ->obtener($filtro);
+            return $oProvinciaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             echo $e->getMessage();
         }
@@ -99,21 +104,26 @@ class ComunidadController
     /**
      *
      */
-    public function getProvinciaById($filtro){
+    public function getProvinciaById($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
-            return $oProvinciaIntermediary ->obtener($filtro);
+            $r = $oProvinciaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+       		if(count($r) == 1){
+                return $r[0];
+            }else{
+                return $r;
+            }
         }catch(Exception $e){
             throw new Exception($e);
             return false;
         }
     }
     
-    public function listaCiudadByProvincia($iProvinciaId){
+    public function listaCiudadByProvincia($iProvinciaId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $filtro = array("c.provincia_id"=>$iProvinciaId);
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
-            return $oCiudadIntermediary->obtener($filtro);
+            return $oCiudadIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             echo $e->getMessage();
         }
@@ -122,11 +132,16 @@ class ComunidadController
     /**
      *
      */
-    public function getCiudadById($iId){
+    public function getCiudadById($iId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $filtro = array('c.id' => $iId);
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
-            return $oCiudadIntermediary ->obtener($filtro);
+            $r =  $oCiudadIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        	if(count($r) == 1){
+                return $r[0];
+            }else{
+                return $r;
+            }
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -152,18 +167,18 @@ class ComunidadController
     }
     
     //ver lo del filtro Andres
-	public function obtenerInstitucion($filtro){
+	public function obtenerInstitucion($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
 			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->obtener($filtro);
+            return $oInstitucionIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}
     }
-	public function obtenerInstituciones($filtro){
+	public function obtenerInstituciones($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
             try{
                 $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-                return $oInstitucionIntermediary->obtenerInstituciones($filtro);
+                return $oInstitucionIntermediary->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}
@@ -178,7 +193,7 @@ class ComunidadController
         }
     }
 
-    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount){
+    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     try{
         $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
         return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
@@ -204,10 +219,10 @@ class ComunidadController
 			echo $e->getMessage();
 		}
     }
-	public function obtenerDiscapacitado($filtro){
+	public function obtenerDiscapacitado($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
 			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            return $oDiscapacitadoIntermediary->obtener($filtro);
+            return $oDiscapacitadoIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
 		}catch(Exception $e){
 			echo $e->getMessage();
 		}

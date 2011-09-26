@@ -37,9 +37,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
      * Retorna null si no encuentra resutados, un objeto PerfilAbstract o un array de objetos PerfilAbstract.
      * arroja excepcion si hubo algun problema en la consulta.
      */
-    public function obtener($filtro, &$foundRows = 0){
+    public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
-            $db = $this->conn;
+            $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
@@ -60,11 +60,18 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     if(!empty($filtro)){
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
+                    
+        	if (isset($sOrderBy) && isset($sOrder)){
+				$sSQL .= " order by $sOrderBy $sOrder ";
+			}
+			if ($iIniLimit!==null && $iRecordCount!==null){
+				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+			}
             $db->query($sSQL);
 
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
             $aUsuarios = array();
             while($oObj = $db->oNextRecord()){
