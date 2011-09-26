@@ -31,9 +31,9 @@ class PaisMySQLIntermediary extends PaisIntermediary
         return self::$instance;
 	}
 	
-	public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 		try{
-            $db = $this->conn;
+            $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
@@ -45,9 +45,9 @@ class PaisMySQLIntermediary extends PaisIntermediary
                     }
 
             $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
 			$aPaises = array();
             while($oObj = $db->oNextRecord()){

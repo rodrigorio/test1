@@ -139,7 +139,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 		}
     }
 
-	public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -152,27 +152,32 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
+	 		if (isset($sOrderBy) && isset($sOrder)){
+				$sSQL .= " order by $sOrderBy $sOrder ";
+			}
+			if ($iIniLimit!==null && $iRecordCount!==null){
+				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+			}
             $db->query($sSQL);
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
 			$aInstituciones = array();
             while($oObj = $db->oNextRecord()){
-            	$oInstitucion 		= new stdClass();
-            	$oInstitucion->iId 	= $oObj->iId;
+            	$oInstitucion 			= new stdClass();
+            	$oInstitucion->iId 		= $oObj->iId;
             	$oInstitucion->sNombre= $oObj->sNombre;
             	$oUsuario->oCiudades 	= null;
-            	$oInstitucion->iModerado 	= $oObj->iModerado;
+            	$oInstitucion->iModerado= $oObj->iModerado;
             	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
             	$oInstitucion->iTipoInstitucion 	= $oObj->iTipoInstitucion;
             	$oInstitucion->sDireccion 	= $oObj->sDireccion;
             	$oInstitucion->sEmail 	= $oObj->sEmail;
-            	$oInstitucion->sTelefono 	= $oObj->sTelefono;
-            	$oInstitucion->sSitioWeb 	= $oObj->sSitioWeb;
+            	$oInstitucion->sTelefono= $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb	= $oObj->sSitioWeb;
             	$oInstitucion->sHorariosAtencion 	= $oObj->sHorariosAtencion;
-            	$oInstitucion->sAutoridades 	= $oObj->sAutoridades;
+            	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
             	$oInstitucion->sCargo 	= $oObj->sCargo;
             	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
             	$oInstitucion->sSedes 	= $oObj->sSedes;
@@ -192,18 +197,19 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
 	}
-	public final function obtenerInstituciones($filtro, &$foundRows = 0){
+	public final function obtenerInstituciones($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
-           $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                           i.id as iId, 
                           i.nombre as sNombre,
 						  i.`ciudades_id` as iCiudad,
 						  i.`moderado` as iModerado,
 						  i.`descripcion` as sDescripcion,
 						  i.`tipoInstitucion_id` as iTipoInstitucion,
+						  it.`nombre` as sNombreTipoInstitucion,
 						  i.`direccion` as sDireccion,
 						  i.`email` as sEmail,
 						  i.`telefono` as sTelefono,
@@ -214,42 +220,52 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 						  i.`personeriaJuridica` as sPersoneriaJuridica,
 						  i.`sedes` as sSedes,
 						  i.`actividadesMes` as sActividadesMes,
-						  i.`usuario_id`
+						  i.`usuario_id` as iUsuarioId
                      FROM
                        	instituciones i 
                      JOIN 
-                     	usuarios u ON u.id = i.usuario_id ";
+                     	usuarios u ON u.id = i.usuario_id 
+                     JOIN
+                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id ";
                     if(!empty($filtro)){     
                     	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
                     }
+	 		if (isset($sOrderBy) && isset($sOrder)){
+				$sSQL .= " order by $sOrderBy $sOrder ";
+			}
+			if ($iIniLimit!==null && $iRecordCount!==null){
+				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+			}
             $db->query($sSQL);
 
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
 			$aInstituciones = array();
             while($oObj = $db->oNextRecord()){
             	$oInstitucion 			= new stdClass();
             	$oInstitucion->iId 		= $oObj->iId;
-            	$oInstitucion->sNombre          = $oObj->sNombre;
-            	$oInstitucion->iModerado 	= $oObj->iModerado;
+            	$oInstitucion->sNombre  = $oObj->sNombre;
+            	$oInstitucion->iModerado= $oObj->iModerado;
             	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
             	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucion;
+            	$oInstitucion->sNombreTipoInstitucion = $oObj->sNombreTipoInstitucion;
             	$oInstitucion->sDireccion 	= $oObj->sDireccion;
-            	$oInstitucion->sEmail           = $oObj->sEmail;
-            	$oInstitucion->sTelefono        = $oObj->sTelefono;
-            	$oInstitucion->sSitioWeb        = $oObj->sSitioWeb;
+            	$oInstitucion->sEmail   = $oObj->sEmail;
+            	$oInstitucion->sTelefono= $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb= $oObj->sSitioWeb;
             	$oInstitucion->sHorariosAtencion= $oObj->sHorariosAtencion;
             	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
-            	$oInstitucion->sCargo           = $oObj->sCargo;
+            	$oInstitucion->sCargo   = $oObj->sCargo;
             	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
-            	$oInstitucion->sSedes           = $oObj->sSedes;
+            	$oInstitucion->sSedes   = $oObj->sSedes;
             	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
-            	$oInstitucion->oCiudad          = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
+            	$oInstitucion->iCiudadId= $oObj->iCiudad;
+            	$oInstitucion->oCiudad  = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
+            	$oInstitucion->oPerfilUsuario  = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
             	$aInstituciones[]		= Factory::getInstitucionInstance($oInstitucion);
             }
 
-           return $aInstituciones;
+          	return $aInstituciones;
         }catch(Exception $e){
            return null;
             throw new Exception($e->getMessage(), 0);

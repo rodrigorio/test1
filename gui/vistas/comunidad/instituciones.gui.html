@@ -310,33 +310,36 @@
 <div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <div class="di_no" id="msg_conf"></div>
-        <!--BeginGrillaInstitucionBlock-->
-        <table class="table01">
-            <tr class="encabezado">
-                <td>Id</td>
-                <td>Nombre</td>
-                <td>Tipo</td>
-                <td>Ciudad</td>
-                <td>Provincia</td>
-                <td>Pais</td>
-                <td>Ampliar</td>
-                <td>Modificar</td>
-            </tr>
-            <!--BeginListaDeInstitucionesBlock-->
-            <tr class="{odd}">
-                <td>{iInstitucionId}</td>
-                <td>{sInstitucionNombre}</td>
-                <td>{sInstitucionTipo}</td>
-                <td>{sInstitucionCiudad}</td>
-                <td>{sInstitucionProvincia}</td>
-                <td>{sInstitucionPais}</td>
-                <td><span class="i mi expand"></span></td>
-                <td><span class="i bs edit"></span></td>
-            </tr>
-            <!--EndListaDeInstitucionesBlock-->
-        </table>
-        <!--EndGrillaInstitucionBlock-->
-    <div>
-    </div>
+    <!--BeginGrillaInstitucionBlock-->
+	<div id="listadoInstituciones">
+       <table class="table01" >
+           <tr class="encabezado">
+               <td>Id</td>
+               <td>Nombre</td>
+               <td>Tipo</td>
+               <td>Ciudad</td>
+               <td>Provincia</td>
+               <td>Pais</td>
+               <td>Ampliar</td>
+               <td>Modificar</td>
+           </tr>
+           <!--BeginListaDeInstitucionesBlock-->
+           <tr class="{odd}" >
+               <td>{iInstitucionId}</td>
+               <td>{sInstitucionNombre}</td>
+               <td>{sInstitucionTipo}</td>
+               <td>{sInstitucionCiudad}</td>
+               <td>{sInstitucionProvincia}</td>
+               <td>{sInstitucionPais}</td>
+               <td><span class="i mi expand"></span></td>
+               <!--BeginPermisoEditarInstitucionBlock-->
+               <td><span class="i bs edit"></span></td>
+               <!--EndPermisoEditarInstitucionBlock-->
+           </tr>
+           <!--EndListaDeInstitucionesBlock-->
+       </table>
+       {paginacion}
+       <!--EndGrillaInstitucionBlock-->
+	</div>
 </div> 
 <!--EndListadoInstitucionesBlock-->

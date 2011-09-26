@@ -42,7 +42,7 @@ class Provincia {
 	 * @param Pais $oPais
 	 */
 	public function setPais($oPais){
-		$this->$oPais = $oPais;
+		$this->oPais = $oPais;
 	}
 	/**
 	 *  @return int 
@@ -60,7 +60,7 @@ class Provincia {
 	 * @return Pais 
 	 */
 	public function getPais(){
-		return $this->$oPais;
+		return $this->oPais;
 	}
 }
 ?>

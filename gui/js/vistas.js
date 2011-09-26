@@ -261,3 +261,18 @@ $(document).ready(function(){
     });
     // FIN PUNTUAR PUBLICACIONES, ETC //
 });
+
+function paginar(iPage,toUrl,div){
+	$.ajax({
+		type: "POST",
+	   	url: toUrl,
+	   	data: "iPage="+iPage,
+	   	beforeSend:function(data){
+	   		$("#ajax_loading").show();
+	   	},
+	   	success: function(data){
+	   		$("#ajax_loading").hide();
+	   		$("#"+div).html(data);
+	   	}
+	});
+ }

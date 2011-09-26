@@ -329,7 +329,10 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .toggleTabs li{display:inline; border-bottom:0px !important;}
 
 
-
+.paginacion a{background-color:#EEE; color:#333; border:1px #999 solid; padding:3px 5px 3px 5px; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; text-decoration:none;}
+.paginacion a:hover{border:1px #000 solid; text-decoration:none;}
+.paginacion .activo{background-color: WindowFrame;color:#FFFFFF;}
+.paginacion .activo span{font-weight: bold;text-transform: capitalize;}
 /****************************************/
 /* SKINS (ASPECTO VISUAL) */
 /****************************************/

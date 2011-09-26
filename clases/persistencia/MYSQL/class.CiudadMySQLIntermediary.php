@@ -26,9 +26,9 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
         return self::$instance;
 	}
 	
-	public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 		try{
-            $db = $this->conn;
+            $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
@@ -40,16 +40,17 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
                     }
 
             $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
             
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
             
 			$aCiudades = array();
             while($oObj = $db->oNextRecord()){
             	$oCiudad 			= new stdClass();
             	$oCiudad->iId 		= $oObj->iId;
             	$oCiudad->sNombre	= $oObj->sNombre;
-            	$oCiudad->oProvincia    = null;
+            	$filtroProv = array("p.id"=>$oObj->iProvinciaId);
+            	$oCiudad->oProvincia= ComunidadController::getInstance()->getProvinciaById($filtroProv);
             	$aCiudades[]		= Factory::getCiudadInstance($oCiudad);
             }
             return $aCiudades;
@@ -109,7 +110,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 		}
     }
 	public function borrar($oCiudad) {
-			try{
+		try{
 			$db = $this->conn;
 			$db->execSQL("delete from ciudades where id=".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();

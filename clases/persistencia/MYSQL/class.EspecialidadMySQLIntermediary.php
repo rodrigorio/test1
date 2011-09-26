@@ -75,7 +75,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 		}
     }
 
-	public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -90,9 +90,9 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 
             $db->query($sSQL);
 
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
 			$aEspecialidades = array();
             while($oObj = $db->oNextRecord()){

@@ -28,9 +28,9 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
         return self::$instance;
 	}
 	
-	public final function obtener($filtro, &$foundRows = 0){
+	public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
-            $db = $this->conn;
+            $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
@@ -42,16 +42,17 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
                     }
 
             $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ return null; }
+            if(empty($iRecordsTotal)){ return null; }
 
 			$aProvincias = array();
             while($oObj = $db->oNextRecord()){
             	$oProvincia 		= new stdClass();
             	$oProvincia->iId 	= $oObj->iId;
             	$oProvincia->sNombre= $oObj->sNombre;
-            	//$oProvincia->oPais= $oObj->iPaisId;
+            	$filtroPais = array("p.id"=>$oObj->iPaisId);
+            	$oProvincia->oPais= ComunidadController::getInstance()->getPaisById($filtroPais);
             	$aProvincias[]		= Factory::getProvinciaInstance($oProvincia);
             }
           	return $aProvincias;
