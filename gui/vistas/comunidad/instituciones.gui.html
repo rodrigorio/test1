@@ -82,7 +82,7 @@
 	     }
 	   });
 	 }
- 
+	
     $LAB
    .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
@@ -210,7 +210,7 @@
                     	<option value="">Selecciones una provincia</option>
                     	<!--BeginListaProvinciasBlock-->
                     	<option value="{iProvinciaId}">{sProvinciaNombre}</option>
-                    	<!--EndListaProvinciaaBlock-->
+                    	<!--EndListaProvinciasBlock-->
                     </select>
                 </div>
             </div>
@@ -309,6 +309,56 @@
 <!--BeginListadoInstitucionesBlock-->
 <div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
+    <div id="">
+    <form action="" method="post">
+    	<div>
+    		Nombre <input type="text" name="institucion_nombre" id="institucion_nombre"/>
+    	</div>
+    	<div>
+    		Pais
+           <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
+           		<option value="">Seleccione un pais</option>
+           		<!--BeginListaPaisesBlock-->
+           		<option value="{iPaisId}">{sPaisNombre}</option>
+           		<!--EndListaPaisesBlock-->
+           </select>
+    	</div>
+    	<div>
+    	Provincia
+           <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
+          		<option value="">Selecciones una provincia</option>
+           		<!--BeginListaProvinciasBlock-->
+           		<option value="{iProvinciaId}">{sProvinciaNombre}</option>
+           		<!--EndListaProvinciasBlock-->
+           </select>
+    	</div>
+    	<div>
+    	Ciudad
+           <select class="defVal requerido" name="ciudad" id="ciudad" >
+           		<option value="">Selecciones una ciudad</option>
+           		<!--BeginListaCiudadesBlock-->
+           		<option value="{iCiudadId}">{sCiudadNombre}</option>
+           		<!--EndListaCiudadesBlock-->
+           </select>
+    	</div>
+    	<div>
+    	Tipo de institucion
+           <select class="defVal requerido" name="tipoInstitucion" id="tipoInstitucion" >
+           		<option value="">Selecciones un tipo</option>
+           		<!--BeginListaTipoDeInstitucionesBlock-->
+           		<option value="{iInstitucionTiposId}">{sInstitucionTiposNombre}</option>
+           		<!--EndListaTipoDeInstitucionesBlock-->
+           </select>
+    	</div>
+    	<div>
+    	 	<label for="BuscarInstitucion" class="button buttonConfirm buttonLarge mari3">
+                <button id="buscarInstitucion" type="button" name="buscarInstitucion" class="btn01" onclick="searchInstitucion();">
+                    Buscar Institucion
+                </button>
+            </label>
+        </div>
+    </form>
+    </div>
     <div class="di_no" id="msg_conf"></div>
     <!--BeginGrillaInstitucionBlock-->
 	<div id="listadoInstituciones">
