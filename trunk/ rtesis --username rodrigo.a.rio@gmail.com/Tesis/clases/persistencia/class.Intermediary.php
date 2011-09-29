@@ -200,7 +200,7 @@ abstract class Intermediary
      * @return boolean dependiendo si ya existe la clausula WHERE en la query
      */
     protected final function existeWhere($consulta){
-        return (strpos(strtolower($consulta), "where") === false);
+        return (strpos(strtolower($consulta), "where") === true);
     }
 
     /**
@@ -229,12 +229,12 @@ abstract class Intermediary
      */
     protected final function agregarFiltrosConsulta($consulta, $filtrosBuscar){
         if(is_array($filtrosBuscar) && count($filtrosBuscar) > 0){
-            if(!existeWhere($consulta)){
+            if(!$this->existeWhere($consulta)){
                 $consulta .= " WHERE ";
             }else{
                 $consulta .= " AND ";
             }
-            $consulta .= implode("AND", $condiciones);
+            $consulta .= implode("AND", $filtrosBuscar);
         }
         return $consulta;
     }

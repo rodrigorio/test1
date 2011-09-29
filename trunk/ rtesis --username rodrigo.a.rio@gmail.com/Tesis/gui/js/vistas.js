@@ -262,11 +262,11 @@ $(document).ready(function(){
     // FIN PUNTUAR PUBLICACIONES, ETC //
 });
 
-function paginar(iPage,toUrl,div){
+function paginar(iPage,toUrl,div,params){
 	$.ajax({
 		type: "POST",
 	   	url: toUrl,
-	   	data: "iPage="+iPage,
+	   	data: "iPage="+iPage+"&"+params,
 	   	beforeSend:function(data){
 	   		$("#ajax_loading").show();
 	   	},

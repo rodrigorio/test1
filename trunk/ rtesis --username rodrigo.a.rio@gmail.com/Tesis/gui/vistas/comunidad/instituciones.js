@@ -69,6 +69,7 @@ function listaProvinciasByPais(me){
 				}
 	   		}else{
 	   			$('#provincia').append(new Option('Selecciones una provincia', '',true));
+	   			$('#ciudad').append(new Option('Selecciones una ciudad', '',true));
 	   		}
 	   	}
 	});
@@ -89,6 +90,21 @@ function listaCiudadesByProvincia(me){
 			}else{
 				$('#ciudad').append(new Option('Selecciones una ciudad', '',true));
 			}
+		}
+	});
+}
+function searchInstitucion(){
+	var nombre 	= $('#institucion_nombre').val();
+	var ciudad 	= $('#ciudad').val();
+	var provincia = $('#provincia').val();
+	var pais 	= $('#pais').val();
+	var tipoInstitucion 	= $('#tipoInstitucion').val();
+	$.ajax({
+		type: "POST",
+		url: "comunidad/masInstituciones",
+		data: "busquedaInstitucion=1&institucion_nombre="+nombre+"&ciudad="+ciudad+"&provincia="+provincia+"&pais="+pais+"&tipoInstitucion="+tipoInstitucion+"",
+		success: function(data){
+			$("#listadoInstituciones").html(data);
 		}
 	});
 }

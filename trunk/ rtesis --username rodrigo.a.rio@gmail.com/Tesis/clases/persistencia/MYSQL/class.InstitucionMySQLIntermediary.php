@@ -200,7 +200,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 	public final function obtenerInstituciones($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
             $db = $this->conn;
-            $filtro = $this->escapeStringArray($filtro);
+            //$filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                           i.id as iId, 
@@ -220,16 +220,49 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 						  i.`personeriaJuridica` as sPersoneriaJuridica,
 						  i.`sedes` as sSedes,
 						  i.`actividadesMes` as sActividadesMes,
-						  i.`usuario_id` as iUsuarioId
+						  i.`usuario_id` as iUsuarioId,
+						  prov.`id` as provinciaId, 
+						  pais.id as paisId
                      FROM
                        	instituciones i 
                      JOIN 
                      	usuarios u ON u.id = i.usuario_id 
                      JOIN
-                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id ";
-                    if(!empty($filtro)){     
-                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
-                    }
+                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id
+ 					LEFT JOIN `ciudades` c on c.`id` = i.`ciudades_id`
+ 					LEFT JOIN `provincias` prov on prov.`id` = c.`provincia_id`
+ 					LEFT JOIN `paises` pais on pais.`id` = prov.`paises_id` ";
+            $WHERE = array();
+           	if(isset($filtro['i.nombre']) && $filtro['i.nombre']!=""){
+	           	$WHERE[]= $this->crearFiltroTexto('i.nombre', $filtro['i.nombre']);
+           	}
+           	if(isset($filtro['i.id']) && $filtro['i.id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('i.id', $filtro['i.id'], MYSQL_TYPE_INT);
+           	}
+           	if(isset($filtro['i.tipoInstitucion_id']) && $filtro['i.tipoInstitucion_id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('i.tipoInstitucion_id', $filtro['i.tipoInstitucion_id'], MYSQL_TYPE_INT);
+           	}
+           	if(isset($filtro['pais.id']) && $filtro['pais.id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('pais.id', $filtro['pais.id'], MYSQL_TYPE_INT);
+           	}
+           	if(isset($filtro['prov.id']) && $filtro['prov.id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('prov.id', $filtro['prov.id'], MYSQL_TYPE_INT);
+           	}
+           	if(isset($filtro['i.ciudades_id']) && $filtro['i.ciudades_id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('i.ciudades_id', $filtro['i.ciudades_id'], MYSQL_TYPE_INT);
+           	}
+           	if(isset($filtro['i.usuario_id']) && $filtro['i.usuario_id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('i.usuario_id', $filtro['i.usuario_id'], MYSQL_TYPE_INT);
+           	}
+           	if(isset($filtro['i.tipoInstitucion_id']) && $filtro['i.tipoInstitucion_id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('i.tipoInstitucion_id', $filtro['i.tipoInstitucion_id'], MYSQL_TYPE_INT);
+           	}
+            $sSQL 	= $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            
+			/*if(!empty($filtro)){     
+            	$sSQL .=" AND ".$this->crearCondicionSimple($filtro);
+            }*/
+                    
 	 		if (isset($sOrderBy) && isset($sOrder)){
 				$sSQL .= " order by $sOrderBy $sOrder ";
 			}

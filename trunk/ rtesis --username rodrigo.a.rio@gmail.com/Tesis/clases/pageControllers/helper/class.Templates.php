@@ -296,7 +296,6 @@ class Templates extends HelperAbstract
         if($bTranslate){
                 $this->Translate();
         }
-
         if(isset($this->DBlocks[$sBlockName])){
             if($bRepeat && isset($this->ParsedBlocks[$sBlockName])){
                 $this->ParsedBlocks[$sBlockName] .= $this->ProceedTpl($this->DBlocks[$sBlockName]);
