@@ -93,7 +93,7 @@ class SysController
             $filtro = array('documento_tipos_id' => $tipoDocumento, 'numeroDocumento' => $nroDocumento, 'contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $iRecordsTotal = 0;
-            $perfil = $oUsuarioIntermediary->obtener($filtro,&$iRecordsTotal,null,null,null,null);
+            $perfil = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
             if(null !== $perfil){
                 $perfil->iniciarPermisos();
                 SessionAutentificacion::getInstance()->cargarAutentificacion($perfil)
@@ -120,7 +120,7 @@ class SysController
 	   		$filtro = array('u.id' => $iId);
 	        $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
 	        $iRecordsTotal = 0;
-	        return $oUsuarioIntermediary->obtener($filtro, &$iRecordsTotal,null,null,null,null);
+	        return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
    		}catch (Exception $e){
    			
    		}

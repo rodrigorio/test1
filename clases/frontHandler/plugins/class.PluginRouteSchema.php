@@ -183,6 +183,20 @@ class PluginRouteSchema extends PluginAbstract
         $router->addRoute('comunidadDatosPersonalesProcesar', $route);
 
         //INSITUCIONES//
+        $route = new RegexRoute('comunidad/editar-institucion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "editarInstitucion"
+                                ));
+        $router->addRoute('comunidadInstitucionesEditarInstitucion', $route);
+        $route = new RegexRoute('comunidad/ampliar-institucion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "ampliarInstitucion"
+                                ));
+        $router->addRoute('comunidadInstitucionesAmpliarInstitucion', $route);
         $route = new RegexRoute('comunidad/masInstituciones',
                                 array(
                                         'module' => "comunidad",

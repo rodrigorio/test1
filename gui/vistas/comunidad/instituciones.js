@@ -1,5 +1,5 @@
 $(function(){
-	$('#formCrearInstitucion').submit(function(){ return false; });
+	$('#formCrearInstitucion').submit(function(){return false;});
 	$('#crearInstitucion').click(function(){
             var fields = $('#formCrearInstitucion input[type=text],#formCrearInstitucion select');
 	    var error = 0;
@@ -13,7 +13,9 @@ $(function(){
 	        }
 	    });
 	    if(!error) {
-		    var fields = "nombre="+$('#nombre').val()+
+		    var fields =
+                        "id="+$('#idInstitucion').val()+
+                        "nombre="+$('#nombre').val()+
 			"&tipo="+$('#tipo').val()+
 			"&email="+$('#email').val()+
 			"&cargo="+$('#cargo').val()+
@@ -26,6 +28,8 @@ $(function(){
 			"&sedes="+$('#sedes').val()+
 			"&autoridades="+$('#autoridades').val()+
 			"&actividadesMes="+$('#actividadesMes').val()+
+			"&latitud="+$('#latitud').val()+
+			"&longitud="+$('#longitud').val()+
 			"&descripcion="+$('#descripcion').val();
 			$.ajax({
 				type:	"POST",
@@ -107,4 +111,11 @@ function searchInstitucion(){
 			$("#listadoInstituciones").html(data);
 		}
 	});
+}
+
+function ampliarInstitucion(id){
+   window.location = "comunidad/ampliar-institucion?iInstitucionId="+id;
+}
+function editarInstitucion(id){
+   window.location = "comunidad/editar-institucion?iInstitucionId="+id;
 }

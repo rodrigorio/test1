@@ -18,6 +18,8 @@ class Institucion {
   	private $sPersoneriaJuridica;
   	private $sSedes;
   	private $sActividadesMes;
+  	private $sLatitud;
+  	private $sLongitud;
   	private $oPerfilUsuario;
 	
  	/**
@@ -145,6 +147,18 @@ class Institucion {
 	public function setPerfilUsuario($oPerfilUsuario){
 		$this->oPerfilUsuario  =$oPerfilUsuario;
 	}
+        /**
+	 *  @return PerfilAbstract $oUsuario
+	 */
+	public function setLatitud($latitud){
+            $this->sLatitud  =$latitud;
+	}
+	/**
+	 *  @return PerfilAbstract $oUsuario
+	 */
+	public function setLongitud($longitud){
+            $this->sLongitud = $longitud;
+	}
 	///////////////gets//////////////
 	/**
 	 *  @return int $iId
@@ -256,6 +270,18 @@ class Institucion {
 	 */
 	public function getPerfilUsuario(){
 		return $this->oPerfilUsuario ;
+	}
+	/**
+	 *  @return PerfilAbstract $oUsuario
+	 */
+	public function getLatitud(){
+		return $this->sLatitud ;
+	}
+	/**
+	 *  @return PerfilAbstract $oUsuario
+	 */
+	public function getLongitud(){
+		return $this->sLongitud;
 	}
 	
 }
