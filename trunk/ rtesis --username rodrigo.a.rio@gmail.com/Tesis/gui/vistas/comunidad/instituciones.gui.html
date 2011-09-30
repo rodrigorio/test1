@@ -26,6 +26,8 @@
 	      browserSupportFlag = true;
 	      navigator.geolocation.getCurrentPosition(function(position) {
 	        initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+                $("#latitud").val(position.coords.latitude);
+                $("#longitud").val(position.coords.longitude);
 	        contentString = "Localizacion encontrada usando W3C standard";
 	        map.setCenter(initialLocation);
 	        infowindow.setContent(contentString);
@@ -40,6 +42,8 @@
 	      var geo = google.gears.factory.create('beta.geolocation');
 	      geo.getCurrentPosition(function(position) {
 	        initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
+                $("#latitud").val(position.latitude);
+                $("#longitud").val(position.longitude);
 	        contentString = "Localizacion encontrada usando Google Gears";
 	        map.setCenter(initialLocation);
 	        infowindow.setContent(contentString);
@@ -73,6 +77,8 @@
 	   geocoder.geocode( { 'address': address}, function(results, status) {
 	     if (status == google.maps.GeocoderStatus.OK) {
 	       map.setCenter(results[0].geometry.location);
+               $("#latitud").val(results[0].geometry.location.lat());
+               $("#longitud").val(results[0].geometry.location.lng());
 	       var marker = new google.maps.Marker({
 	           map: map, 
 	           position: results[0].geometry.location
@@ -138,63 +144,63 @@
         	<span class="msg"></span>
         </div>
 
-        <div id="msg_nombre" class="form_line">
+        <div id="msg_nombre" class="form_line">Nombre
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal requerido" type="text" name="nombre" id="nombre" title="Nombre de la institucion" maxlength="40" value="Nombre de la institucion" />
+                    <input class="requerido" type="text" name="nombre" id="nombre" title="Nombre de la institucion" maxlength="40" value="{sInstitucionNombre}" />
                 </div>
             </div>
         </div>
-        <div id="msg_descripcion" class="form_line">
+        <div id="msg_descripcion" class="form_line">Descripcion
             <div id="hintDescripcion" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">aaaa</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow defVal maxlength requerido" title="Breve descripcion de la institucion">Breve descripcion de la institucion</textarea>
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow maxlength requerido" title="Breve descripcion de la institucion">{sIntitucionDescripcion}</textarea>
                 </div>
             </div>
         </div>
 
-        <div id="msg_tipo" class="form_line">
+        <div id="msg_tipo" class="form_line">Tipo de institucion
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal requerido" name="tipo" id="tipo" >
+                    <select class="requerido" name="tipo" id="tipo" >
                     	<option value="-1">Seleccione el tipo de institucion</option>
                     	<!--BeginListaTipoDeInstitucionesBlock-->
-                    	<option value="{iInstitucionTiposId}">{sInstitucionTiposNombre}</option>
+                    	<option value="{iInstitucionTiposId}" {sInstitucionTiposSelect}>{sInstitucionTiposNombre}</option>
                     	<!--EndListaTipoDeInstitucionesBlock-->
                     </select>
                 </div>
             </div>
         </div>
-        <div id="msg_email" class="form_line">
+        <div id="msg_email" class="form_line">Cargo que ocupa en la institucion
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal requerido" type="text" name="cargo" id="cargo" title="Cargo que ocupa en la institucion" maxlength="40" value="Cargo que ocupa en la institucion" />
+                    <input class="requerido" type="text" name="cargo" id="cargo" title="Cargo que ocupa en la institucion" maxlength="40" value="{sInstitucionCargo}" />
                 </div>
             </div>
         </div>
-        <div id="msg_email" class="form_line">
+        <div id="msg_email" class="form_line">Persona juridica
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="personaJuridica" id="personaJuridica" title="Persona juridica" maxlength="40" value="Persona juridica" />
+                    <input class="" type="text" name="personaJuridica" id="personaJuridica" title="Persona juridica" maxlength="40" value="{sInstitucionPersonaJuridica}" />
                 </div>
             </div>
         </div>
-        <div id="msg_email" class="form_line">
+        <div id="msg_email" class="form_line">Direccion
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal requerido" type="text" name="direccion" id="direccion" title="Direccion" maxlength="40" value="Direccion" />
+                    <input class="requerido" type="text" name="direccion" id="direccion" title="Direccion" maxlength="40" value="{sInstitucionDireccion}" />
                 </div>
             </div>
         </div>
 
-		  <div id="msg_tipo" class="form_line">
+	  <div id="msg_tipo" class="form_line">Pais
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
+                    <select class="requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
                     	<option value="">Seleccione un pais</option>
                     	<!--BeginListaPaisesBlock-->
                     	<option value="{iPaisId}">{sPaisNombre}</option>
@@ -203,10 +209,10 @@
                 </div>
             </div>
         </div>
-          <div id="msg_tipo" class="form_line">
+          <div id="msg_tipo" class="form_line">Provincia
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
+                    <select class="requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
                     	<option value="">Selecciones una provincia</option>
                     	<!--BeginListaProvinciasBlock-->
                     	<option value="{iProvinciaId}">{sProvinciaNombre}</option>
@@ -215,10 +221,10 @@
                 </div>
             </div>
         </div>
-          <div id="msg_tipo" class="form_line">
+          <div id="msg_tipo" class="form_line">Ciudad
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="defVal requerido" name="ciudad" id="ciudad" >
+                    <select class="requerido" name="ciudad" id="ciudad" >
                     	<option value="">Selecciones una ciudad</option>
                     	<!--BeginListaCiudadesBlock-->
                     	<option value="{iCiudadId}">{sCiudadNombre}</option>
@@ -227,59 +233,59 @@
                 </div>
             </div>
         </div>
-        <div id="msg_email" class="form_line">
+        <div id="msg_email" class="form_line">Email
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal requerido" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="Email de la institucion" />
+                    <input class="requerido" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="Email de la institucion" />
                 </div>
             </div>
         </div>
-         <div id="msg_email" class="form_line">
+         <div id="msg_email" class="form_line">Telefono de contacto
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal requerido" type="text" name="tel" id="tel" title="Telefono de contacto" maxlength="40" value="Telefono de contacto" />
+                    <input class="requerido" type="text" name="tel" id="tel" title="Telefono de contacto" maxlength="40" value="{sInstitucionTelefono}" />
                 </div>
             </div>
          </div>
-         <div id="msg_email" class="form_line">
+         <div id="msg_email" class="form_line">Sitio web
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="web" id="web" title="Sitio web" maxlength="40" value="Sitio web" />
+                    <input class="" type="text" name="web" id="web" title="Sitio web" maxlength="40" value="{sInstitucionSitioWeb}" />
                 </div>
             </div>
         </div>
-         <div id="msg_email" class="form_line">
+         <div id="msg_email" class="form_line">Horario de atencion
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="horarioAtencion" id="horarioAtencion" title="Horario de atencion" maxlength="40" value="Horario de atencion" />
+                    <input class="" type="text" name="horarioAtencion" id="horarioAtencion" title="Horario de atencion" maxlength="40" value="{sInstitucionHorarios}" />
                 </div>
             </div>
         </div>
-         <div id="msg_email" class="form_line">
+         <div id="msg_email" class="form_line">Sedes
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="sedes" id="sedes" title="Sedes" maxlength="40" value="Sedes" />
+                    <input class="" type="text" name="sedes" id="sedes" title="Sedes" maxlength="40" value="{sInstitucionSedes}" />
                 </div>
             </div>
         </div>
-         <div id="msg_email" class="form_line">
+         <div id="msg_email" class="form_line">Autoridades
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="autoridades" id="autoridades" title="Autoridades" maxlength="40" value="Autoridades" />
+                    <input class="" type="text" name="autoridades" id="autoridades" title="Autoridades" maxlength="40" value="{sInstitucionAutoridades}" />
                 </div>
             </div>
         </div>
-         <div id="msg_email" class="form_line">
+         <div id="msg_email" class="form_line">Actividades del mes
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="defVal" type="text" name="actividadesMes" id="actividadesMes" title="Actividades del mes" maxlength="40" value="Actividades del mes" />
+                    <input class="" type="text" name="actividadesMes" id="actividadesMes" title="Actividades del mes" maxlength="40" value="{sInstitucionActividades}" />
                 </div>
             </div>
         </div>
@@ -291,6 +297,9 @@
                 </button>
             </label>
         </div>
+        <input type="hidden" name="latitud" id="latitud" value="" >
+        <input type="hidden" name="longitud" id="longitud" value="" >
+        <input type="hidden" name="idInstitucion" id="idInstitucion" value="{idInstitucion}" >
     </form>
 </div>
 <div id="map_canvas" style="float: left;  border: 3px solid;margin: 20px; height: 400px; width: 400px; display:block;"></div>
@@ -374,16 +383,16 @@
                <td>Modificar</td>
            </tr>
            <!--BeginListaDeInstitucionesBlock-->
-           <tr class="{odd}" >
+           <tr class="{odd}">
                <td>{iInstitucionId}</td>
                <td>{sInstitucionNombre}</td>
                <td>{sInstitucionTipo}</td>
                <td>{sInstitucionCiudad}</td>
                <td>{sInstitucionProvincia}</td>
                <td>{sInstitucionPais}</td>
-               <td><span class="i mi expand"></span></td>
+               <td><span class="i mi expand" onclick="ampliarInstitucion({iInstitucionId});"></span></td>
                <!--BeginPermisoEditarInstitucionBlock-->
-               <td><span class="i bs edit"></span></td>
+               <td><span class="i bs edit" onclick="editarInstitucion({iInstitucionId});"></span></td>
                <!--EndPermisoEditarInstitucionBlock-->
            </tr>
            <!--EndListaDeInstitucionesBlock-->
@@ -393,3 +402,22 @@
 	</div>
 </div> 
 <!--EndListadoInstitucionesBlock-->
+
+<!--BeginFichaInstitucionBlock-->
+<div class="ficha02">
+    <h2>{sInstitucionNombre}</h2>
+    <div>{sInstitucionTipo}</div>
+    <div>{sInstitucionDescripcion}</div>
+    <div>{sInstitucionActividades}</div>
+    <div>{sInstitucionAutoridades}</div>
+    <div>{sInstitucionSedes}</div>
+    <div><b>Direccion:</b>{sInstitucionDireccion}</div>
+    <div>{sInstitucionCiudad}</div>
+    <div>{sInstitucionProvincia}</div>
+    <div>{sInstitucionPais}</div>
+    <div><b>Horarios de atencion :</b>{sInstitucionHorarios}</div>
+    <div><b>Email: </b>{sInstitucionEmail}</div>
+    <div><b>Telefono:</b> {sInstitucionTelefono}</div>
+    <div>{sInstitucionSitioWeb}</div>
+</div>
+<!--EndFichaInstitucionBlock-->

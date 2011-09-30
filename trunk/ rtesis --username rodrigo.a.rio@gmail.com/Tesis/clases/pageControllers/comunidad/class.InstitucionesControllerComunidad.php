@@ -71,30 +71,32 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
             $oUsuario			= SessionAutentificacion::getInstance()->obtenerIdentificacion();
-   			$oInstitucion				= new stdClass();
-			$oInstitucion->sNombre 		= $this->getRequest()->getPost('nombre');
-	   		$oInstitucion->sDescripcion	= $this->getRequest()->getPost('descripcion');
-			$oInstitucion->iTipoInstitucion = $this->getRequest()->getPost('tipo');
-			$oInstitucion->sCargo 		= $this->getRequest()->getPost('cargo');
-			$oInstitucion->sPersoneriaJuridica	= $this->getRequest()->getPost('personaJuridica');
-			$oInstitucion->sDireccion 		= $this->getRequest()->getPost('direccion');
-			$oCiudad 		= ComunidadController::getInstance()->getCiudadById($this->getRequest()->getPost('ciudad'));
-			$oInstitucion->oCiudad 		=  $oCiudad[0];
-			$oInstitucion->sTelefono	= $this->getRequest()->getPost('tel');
-			$oInstitucion->sSitioWeb	= $this->getRequest()->getPost('web');
-			$oInstitucion->sEmail 		= $this->getRequest()->getPost('email');
-			$oInstitucion->sHorariosAtencion	= $this->getRequest()->getPost('horarioAtencion');
-			$oInstitucion->sSedes 		= $this->getRequest()->getPost('sedes');
-			$oInstitucion->sAutoridades	= $this->getRequest()->getPost('autoridades');
-			$oInstitucion->sActividadesMes	= $this->getRequest()->getPost('actividadesMes');
-			$oInstitucion->iModerado	= 0;
-			$oInstitucion->oPerfilUsuario	= $oUsuario;
+            $oInstitucion		= new stdClass();
+            $oInstitucion->sNombre 	= $this->getRequest()->getPost('nombre');
+            $oInstitucion->sDescripcion	= $this->getRequest()->getPost('descripcion');
+            $oInstitucion->iTipoInstitucion = $this->getRequest()->getPost('tipo');
+            $oInstitucion->sCargo 	= $this->getRequest()->getPost('cargo');
+            $oInstitucion->sPersoneriaJuridica	= $this->getRequest()->getPost('personaJuridica');
+            $oInstitucion->sDireccion 	= $this->getRequest()->getPost('direccion');
+            $oCiudad 		= ComunidadController::getInstance()->getCiudadById($this->getRequest()->getPost('ciudad'));
+            $oInstitucion->oCiudad 	=  $oCiudad;
+            $oInstitucion->sTelefono	= $this->getRequest()->getPost('tel');
+            $oInstitucion->sSitioWeb	= $this->getRequest()->getPost('web');
+            $oInstitucion->sEmail 	= $this->getRequest()->getPost('email');
+            $oInstitucion->sHorariosAtencion	= $this->getRequest()->getPost('horarioAtencion');
+            $oInstitucion->sSedes 	= $this->getRequest()->getPost('sedes');
+            $oInstitucion->sAutoridades	= $this->getRequest()->getPost('autoridades');
+            $oInstitucion->sActividadesMes	= $this->getRequest()->getPost('actividadesMes');
+            $oInstitucion->sLatitud 	= $this->getRequest()->getPost('latitud');
+            $oInstitucion->sLongitud	= $this->getRequest()->getPost('longitud');
+            $oInstitucion->iModerado	= 0;
+            $oInstitucion->oPerfilUsuario	= $oUsuario;
 
-			$oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
-			ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
-			echo 1;
-			exit;
-			$this->getJsonHelper()->setSuccess(true);
+            $oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
+            ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+            echo 1;
+            exit;
+            $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
            $this->getJsonHelper()->setSuccess(false);
         }
@@ -125,7 +127,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
         $array = array();
 		$iRecordsTotalPais=0;
-		$listaPaises	= ComunidadController::getInstance()->listaPaises($array, &$iRecordsTotalPais, null,  null,  null,  null);
+		$listaPaises	= ComunidadController::getInstance()->listaPaises($array, $iRecordsTotalPais, null,  null,  null,  null);
 		foreach ($listaPaises as $oPais){
                     $this->getTemplate()->set_var("iPaisId", $oPais->getId());
                     $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
@@ -164,7 +166,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $array = array();
             $params = array();
 	    	$iRecordsTotalPais=0;
-			$listaPaises	= ComunidadController::getInstance()->listaPaises($array, &$iRecordsTotalPais, null,  null,  null,  null);
+			$listaPaises	= ComunidadController::getInstance()->listaPaises($array, $iRecordsTotalPais, null,  null,  null,  null);
 			foreach ($listaPaises as $oPais){
                 $this->getTemplate()->set_var("iPaisId", $oPais->getId());
                 $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
@@ -188,7 +190,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 			$sOrderBy		= null;	
 			$sOrder			= null;
 			$iRecordsTotal	= 0;
-            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro,&$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
             $i 				= 0;
            	if(count($vListaInstitucion)>0){
 	            foreach ($vListaInstitucion as $oInstitucion){
@@ -263,7 +265,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "GrillaInstitucionBlock");
             $this->setHeadTag();
             $filtro = array();
-          	$params = array();
+            $params = array();
             if($this->getRequest()->getPost("busquedaInstitucion")==1){
             	$params[]= "busquedaInstitucion=1";
             	if($this->getRequest()->getPost("institucion_nombre")!= ""){
@@ -293,65 +295,65 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             	$params = "";
             }
             $iRecordPerPage	= 5;
-	    	$iPage			= $this->getRequest()->getPost("iPage");
-		   	$iPage			= strlen($iPage) ? $iPage : 1;
-		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-			$iMinLimit	= ($iPage-1) * $iItemsForPage;
-			$sOrderBy		= null;	
-			$sOrder		= null;
-			$iRecordsTotal= 0;
-            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro,&$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+	    $iPage		= $this->getRequest()->getPost("iPage");
+            $iPage		= strlen($iPage) ? $iPage : 1;
+            $iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+            $iMinLimit          = ($iPage-1) * $iItemsForPage;
+            $sOrderBy		= null;
+            $sOrder		= null;
+            $iRecordsTotal      = 0;
+            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
             $i = 0;
-			$this->getTemplate()->load_file_section("gui/componentes/paginacion.gui.html", "paginacion", "Paginacion01Block");
-           	$this->getTemplate()->set_var("iPageActual", $iPage);
-           	if(count($vListaInstitucion)>0){
-	            foreach ($vListaInstitucion as $oInstitucion){
-	                $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "par" : "impar");
-	                $this->getTemplate()->set_var("iInstitucionId",     $oInstitucion->getId());
-	                $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
-	                $this->getTemplate()->set_var("sInstitucionTipo",   $oInstitucion->getNombreTipoInstitucion() );
-	                $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
-	                $this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
-	                $this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
-	                if($oInstitucion->getPerfilUsuario()->getUsuario()->getId() == $usuario->getId()){
-	                	$this->getTemplate()->parse("PermisoEditarInstitucionBlock",false);
-	                }else{
-	                	$this->getTemplate()->set_var("PermisoEditarInstitucionBlock","");
-	                }
-	                $this->getTemplate()->parse("ListaDeInstitucionesBlock", true);
-	                $i++;
-	            }
-           	}else{
-    			$this->getTemplate()->set_var("Block", "");
-			}
+            $this->getTemplate()->load_file_section("gui/componentes/paginacion.gui.html", "paginacion", "Paginacion01Block");
+            $this->getTemplate()->set_var("iPageActual", $iPage);
+            if(count($vListaInstitucion)>0){
+                foreach ($vListaInstitucion as $oInstitucion){
+                    $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "par" : "impar");
+                    $this->getTemplate()->set_var("iInstitucionId",     $oInstitucion->getId());
+                    $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
+                    $this->getTemplate()->set_var("sInstitucionTipo",   $oInstitucion->getNombreTipoInstitucion() );
+                    $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
+                    $this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
+                    $this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
+                    if($oInstitucion->getPerfilUsuario()->getUsuario()->getId() == $usuario->getId()){
+                            $this->getTemplate()->parse("PermisoEditarInstitucionBlock",false);
+                    }else{
+                            $this->getTemplate()->set_var("PermisoEditarInstitucionBlock","");
+                    }
+                    $this->getTemplate()->parse("ListaDeInstitucionesBlock", true);
+                    $i++;
+                }
+            }else{
+                $this->getTemplate()->set_var("Block", "");
+            }
     		
-    		// Navigator
-			if($iRecordsTotal > $iItemsForPage){
-				$TotalPages = ceil($iRecordsTotal / $iItemsForPage);
-				//$tpl->set_var("iLastPage",	$TotalPages);
-				$iPageMin = $iPage-2;
-				$iPageMax = $iPage+2;
-				if($iPageMin < 1){
-					$iPageMin = 1;
-					$iPageMax = 5;
-				}
-				if($iPageMax > $TotalPages){
-					$iPageMax = $TotalPages;
-					if ($TotalPages - 4 >= 1){
-						$iPageMin = $TotalPages - 4;
-					}
-				}
-				for($i=$iPageMin; $i<=$iPageMax; $i++){
-			        $this->getTemplate()->set_var("iPage", $i);
-			        $this->getTemplate()->set_var("funcion", "paginar($i,'comunidad/masInstituciones','listadoInstituciones','$params');");
-					$class = $i==$iPage ? "activo" : "";
-					$this->getTemplate()->set_var("ClassPag", $class);
-			        $this->getTemplate()->parse("PaginaListBlock", true);
-				}
-				$this->getTemplate()->parse("paginacion", false);	
-			}else{
-				$this->getTemplate()->set_var("paginacion", "");	
-			}
+    	    // Navigator
+            if($iRecordsTotal > $iItemsForPage){
+                    $TotalPages = ceil($iRecordsTotal / $iItemsForPage);
+                    //$tpl->set_var("iLastPage",	$TotalPages);
+                    $iPageMin = $iPage-2;
+                    $iPageMax = $iPage+2;
+                    if($iPageMin < 1){
+                            $iPageMin = 1;
+                            $iPageMax = 5;
+                    }
+                    if($iPageMax > $TotalPages){
+                            $iPageMax = $TotalPages;
+                            if ($TotalPages - 4 >= 1){
+                                    $iPageMin = $TotalPages - 4;
+                            }
+                    }
+                    for($i=$iPageMin; $i<=$iPageMax; $i++){
+                    $this->getTemplate()->set_var("iPage", $i);
+                    $this->getTemplate()->set_var("funcion", "paginar($i,'comunidad/masInstituciones','listadoInstituciones','$params');");
+                            $class = $i==$iPage ? "activo" : "";
+                            $this->getTemplate()->set_var("ClassPag", $class);
+                    $this->getTemplate()->parse("PaginaListBlock", true);
+                    }
+                    $this->getTemplate()->parse("paginacion", false);
+            }else{
+                    $this->getTemplate()->set_var("paginacion", "");
+            }
 			
             $this->getResponse()->setBody($this->getTemplate()->pparse('pageRightInnerMainCont', false));
     	}catch(Exception $e){
@@ -367,17 +369,17 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 		 if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
     	 try{
     	 	$iPaisId =  $this->getRequest()->getPost("iPaisId");
-			$result = array();
+		$result = array();
     	 	if($iPaisId != 0){
-				$vListaProvincias	= ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
-				if(count($vListaProvincias)>0){
-					foreach($vListaProvincias as $oProvincia){
-						$obj 		= new stdClass();
-						$obj->id 	= $oProvincia->getId();
-						$obj->sNombre = $oProvincia->getNombre();
-						array_push($result,$obj);
-					}
-				}
+                        $vListaProvincias	= ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
+                        if(count($vListaProvincias)>0){
+                                foreach($vListaProvincias as $oProvincia){
+                                        $obj 		= new stdClass();
+                                        $obj->id 	= $oProvincia->getId();
+                                        $obj->sNombre = $oProvincia->getNombre();
+                                        array_push($result,$obj);
+                                }
+                        }
     	 	}
 			echo json_encode($result);
         }catch(Exception $e){
@@ -407,7 +409,139 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             //return;
         }
     }
-	/**
+     public function ampliarInstitucion(){
+    	try{
+            $this->restartTemplate();
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+            $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
+            $this->setHeadTag();
+
+            IndexControllerComunidad::setCabecera($this->getTemplate());
+            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Mis instituciones");
+            //menu derecha
+            $this->setMenuDerecha();
+
+            //contenido ppal
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FichaInstitucionBlock");
+            $this->setHeadTag();
+            $iRecordPerPage	= 5;
+	    $iInstitucionId     = $this->getRequest()->getPost("iInstitucionId");
+	    $iPage		= $this->getRequest()->getPost("iPage");
+            $iPage		= strlen($iPage) ? $iPage : 1;
+            $iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+            $iMinLimit          = ($iPage-1) * $iItemsForPage;
+            $sOrderBy		= null;
+            $sOrder		= null;
+            $iRecordsTotal      = 0;
+            $filtro             = array("i.id"=>$iInstitucionId);
+            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            if(count($vListaInstitucion)>0){
+                foreach ($vListaInstitucion as $oInstitucion){
+                    $this->getTemplate()->set_var("iInstitucionId",     $oInstitucion->getId());
+                    $this->getTemplate()->set_var("sInstitucionTipo",   $oInstitucion->getNombreTipoInstitucion() );
+                    $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
+                    $this->getTemplate()->set_var("sInstitucionDescripcion", $oInstitucion->getDescripcion());
+                    $this->getTemplate()->set_var("sInstitucionActividades", $oInstitucion->getActividadesMes());
+                    $this->getTemplate()->set_var("sInstitucionAutoridades", $oInstitucion->getAutoridades());
+                    $this->getTemplate()->set_var("sInstitucionSedes", $oInstitucion->getSedes());
+                    $this->getTemplate()->set_var("sInstitucionHorarios", $oInstitucion->getHorariosAtencion());
+                    $this->getTemplate()->set_var("sInstitucionEmail", $oInstitucion->getEmail());
+                    $this->getTemplate()->set_var("sInstitucionTelefono", $oInstitucion->getTelefono());
+                    $this->getTemplate()->set_var("sInstitucionSitioWeb", $oInstitucion->getSitioWeb());
+                    $this->getTemplate()->set_var("sInstitucionDireccion", $oInstitucion->getDireccion());
+                    $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
+                    $this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
+                    $this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
+                }
+            }
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+            //throw new Exception('Error Template');
+            //return;
+        }
+     }
+
+      public function editarInstitucion(){
+    	try{
+            $this->restartTemplate();
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+            $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
+            $this->setHeadTag();
+
+            IndexControllerComunidad::setCabecera($this->getTemplate());
+            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Mis instituciones");
+            //menu derecha
+            $this->setMenuDerecha();
+
+            //contenido ppal
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+            $array = array();
+            $iRecordsTotalPais=0;
+            $listaPaises	= ComunidadController::getInstance()->listaPaises($array, $iRecordsTotalPais, null,  null,  null,  null);
+            foreach ($listaPaises as $oPais){
+                $this->getTemplate()->set_var("iPaisId", $oPais->getId());
+                $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
+                $this->getTemplate()->parse("ListaPaisesBlock", true);
+            }
+            $iRecordsTotal=0;
+            $sOrderBy= $sOrder= $iIniLimit= $iRecordCount= null;
+
+            $iRecordPerPage	= 5;
+	    $iInstitucionId     = $this->getRequest()->getPost("iInstitucionId");
+            $this->getTemplate()->set_var("idInstitucion", $iInstitucionId);
+	    $iPage		= $this->getRequest()->getPost("iPage");
+            $iPage		= strlen($iPage) ? $iPage : 1;
+            $iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+            $iMinLimit          = ($iPage-1) * $iItemsForPage;
+            $sOrderBy		= null;
+            $sOrder		= null;
+            $iRecordsTotal      = 0;
+            $filtro             = array("i.id"=>$iInstitucionId);
+            $filtro1 = array();
+            $vListaInstitucion	= ComunidadController::getInstance()->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            if(count($vListaInstitucion)>0){
+                $oInstitucion  = $vListaInstitucion[0];
+                $this->getTemplate()->set_var("iInstitucionId",     $oInstitucion->getId());
+                $vListaInstitucionTipos = ComunidadController::getInstance()->listaTiposDeInstitucion($filtro1, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+                foreach ($vListaInstitucionTipos as $oInstitucionTipos){
+                    $this->getTemplate()->set_var("iInstitucionTiposId", $oInstitucionTipos->iId);
+                    $this->getTemplate()->set_var("sInstitucionTiposNombre", $oInstitucionTipos->sNombre);
+                    if($oInstitucion->getTipoInstitucion() == $oInstitucionTipos->iId){
+                        $this->getTemplate()->set_var("sInstitucionTiposSelect", "selected='selected'");
+                    }else{
+                        $this->getTemplate()->set_var("sInstitucionTiposSelect", "");
+                    }
+                    $this->getTemplate()->parse("ListaTipoDeInstitucionesBlock", true);
+                }
+                $this->getTemplate()->set_var("sInstitucionNombre", $oInstitucion->getNombre());
+                $this->getTemplate()->set_var("sInstitucionDescripcion", $oInstitucion->getDescripcion());
+                $this->getTemplate()->set_var("sInstitucionActividades", $oInstitucion->getActividadesMes());
+                $this->getTemplate()->set_var("sInstitucionAutoridades", $oInstitucion->getAutoridades());
+                $this->getTemplate()->set_var("sInstitucionSedes", $oInstitucion->getSedes());
+                $this->getTemplate()->set_var("sInstitucionHorarios", $oInstitucion->getHorariosAtencion());
+                $this->getTemplate()->set_var("sInstitucionEmail", $oInstitucion->getEmail());
+                $this->getTemplate()->set_var("sInstitucionTelefono", $oInstitucion->getTelefono());
+                $this->getTemplate()->set_var("sInstitucionSitioWeb", $oInstitucion->getSitioWeb());
+                $this->getTemplate()->set_var("sInstitucionDireccion", $oInstitucion->getDireccion());
+                $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
+                $this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
+                $this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
+            }
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+            //throw new Exception('Error Template');
+            //return;
+        }
+     }
+     /**
      * Muestra pagina de sitio en construccion
      */
     public function sitioEnConstruccion()

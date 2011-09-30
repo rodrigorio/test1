@@ -77,6 +77,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
 					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
 					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
+                                        " latitud =".$db->escape($oInstitucion->getLatitud(),true).", ".
+					" longitud =".$db->escape($oInstitucion->getLongitud(),true).", ".
 					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ".
 					" usuario_id =".$db->escape($oInstitucion->getPerfilUsuario()->getUsuario()->getId(),true)." ";
 
@@ -115,6 +117,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
 					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
 					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
+					" latitud =".$db->escape($oInstitucion->getLatitud(),true).", ".
+					" longitud =".$db->escape($oInstitucion->getLongitud(),true).", ".
 					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true)." ".
                     " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." ";
 						 
@@ -167,7 +171,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             while($oObj = $db->oNextRecord()){
             	$oInstitucion 			= new stdClass();
             	$oInstitucion->iId 		= $oObj->iId;
-            	$oInstitucion->sNombre= $oObj->sNombre;
+            	$oInstitucion->sNombre  = $oObj->sNombre;
             	$oUsuario->oCiudades 	= null;
             	$oInstitucion->iModerado= $oObj->iModerado;
             	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
@@ -221,6 +225,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 						  i.`sedes` as sSedes,
 						  i.`actividadesMes` as sActividadesMes,
 						  i.`usuario_id` as iUsuarioId,
+						  i.`latitud` as sLatitud,
+						  i.`longitud` as sLongitud,
 						  prov.`id` as provinciaId, 
 						  pais.id as paisId
                      FROM
@@ -293,6 +299,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sSedes   = $oObj->sSedes;
             	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
             	$oInstitucion->iCiudadId= $oObj->iCiudad;
+            	$oInstitucion->sLatitud= $oObj->sLatitud;
+            	$oInstitucion->sLongitud= $oObj->sLongitud;
             	$oInstitucion->oCiudad  = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
             	$oInstitucion->oPerfilUsuario  = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
             	$aInstituciones[]		= Factory::getInstitucionInstance($oInstitucion);
