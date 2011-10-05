@@ -230,7 +230,8 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .columnas2 .col2 .bottom{clear: both; height: 50px; top: 0}
 
 .columnas2A .col1, .columnas2A .col2{float:left; text-align:left}
-.columnas2A .col1, .columnas2A .col2{width:480px; min-height:200px;}
+.columnas2A .col1, .columnas2A .col2{width:475px; min-height:200px;}
+.columnas2A .col1{margin-right:10px}
 
 /*** THUMBNAILS GRANDES, MEDIANOS Y CHICOS ***/
 .th_fto_m, .th_fto_s{background: none repeat scroll 0 0; display:inline-block; outline:medium none; position:relative; vertical-align: bottom; text-align:left; border-collapse:collapse; border-spacing:0; line-height:0 !important}
@@ -661,9 +662,10 @@ a .i{margin-right:4px; float:left}
 
 /*** ACA REESCRIBO ALGUNAS REGLAS DE LAS CLASES BASE, LO HAGO ACA ASI CUANDO SALEN ACTUALIZACIONES NO HAY LIO ***/
 /* dialog */
-.ui-dialog-content, .ui-dialog{padding:0px !important; min-height:0px; overflow:visible !important}
+.ui-dialog-content{background-color:#FFF !important; padding:5px !important;}
+.ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important}
 .ui-dialog-buttonpane{padding:0px; margin:0px; background-color:#DDD; border-top:1px solid #BBB}
-.ui-dialog{-moz-box-shadow:0 0 5px #000; box-shadow:0 0 5px #000; -webkit-box-shadow:0 0 5px #000}
+.ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 5px #000; -webkit-box-shadow:0 0 5px #000}
 .ui-dialog-titlebar{padding:8px; font-size:1.7em; background:#CCC url("images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:1px solid #FFF; border-bottom:1px solid #999}
 .ui-dialog-titlebar-close{padding:1px !important;}
 .ui-dialog-title{margin:0px; text-shadow:#666 1px 1px 1px}
