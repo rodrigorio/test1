@@ -48,6 +48,8 @@ class RegistracionControllerIndex extends PageControllerAbstract
             $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
             $this->setHeadTag();
             
+            $this->printMsgTop();
+            
             IndexControllerIndex::setCabecera($this->getTemplate());
 
             $this->getTemplate()->set_var("topPageContent", "Registracion");

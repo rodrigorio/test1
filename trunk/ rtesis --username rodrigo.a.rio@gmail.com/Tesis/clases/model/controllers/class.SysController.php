@@ -55,9 +55,6 @@ class SysController
      * $activo es boolean que indica si una funcion esta activada o no.
      *
      * @param integer $idPerfil - id del perfil del que tiene que obtener permisos.
-     *
-     * @TODO llamar a la factoria de sistema que construya este array dependiendo el perfil.
-     * Reemplazar en el campo 'activo' el 0 y el 1 que esta en la DB por false o true cuando se guarden valores en dicho array.
      */
     public function cargarPermisosPerfil($idPerfil)
     {

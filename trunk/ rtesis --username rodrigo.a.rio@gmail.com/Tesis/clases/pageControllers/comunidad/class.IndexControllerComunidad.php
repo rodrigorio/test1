@@ -79,6 +79,7 @@ class IndexControllerComunidad extends PageControllerAbstract
 
             $this->setCabecera($this->getTemplate());
             $this->setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
 
             //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Comunidad - Inicio");

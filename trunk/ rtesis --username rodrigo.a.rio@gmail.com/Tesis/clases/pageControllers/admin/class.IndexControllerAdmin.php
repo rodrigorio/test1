@@ -70,6 +70,8 @@ class IndexControllerAdmin extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setHeadTag();
 
+            $this->printMsgTop();
+
             $this->setCabecera($this->getTemplate());
             $this->setMenu($this->getTemplate());
 

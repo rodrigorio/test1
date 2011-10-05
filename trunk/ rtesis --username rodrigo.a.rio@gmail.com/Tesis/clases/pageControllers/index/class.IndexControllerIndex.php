@@ -80,6 +80,8 @@ class IndexControllerIndex extends PageControllerAbstract
             $this->setCabecera($this->getTemplate());
             $this->setFooter($this->getTemplate());
 
+            $this->printMsgTop();
+
             //nombre seccion
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Inicio");
 

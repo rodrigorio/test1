@@ -204,6 +204,7 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "masInstituciones"
                                 ));
         $router->addRoute('comunidadInstitucionesMasInstituciones', $route);
+        
         $route = new RegexRoute('comunidad/provinciasByPais',
                                 array(
                                         'module' => "comunidad",
@@ -227,6 +228,7 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "nuevaInstitucion"
                                 ));
         $router->addRoute('comunidadInstitucionesNueva', $route);
+
         $route = new RegexRoute('comunidad/institucion-procesar',
                                 array(
                                         'module' => "comunidad",

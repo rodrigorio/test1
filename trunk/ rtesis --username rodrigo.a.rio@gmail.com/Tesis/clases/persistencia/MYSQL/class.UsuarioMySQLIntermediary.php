@@ -226,14 +226,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		  	//Asignamos a Host el nombre de nuestro servidor smtp
 		  	$mail->Host = "smtp.hotpop.com";
 
-		  	//Le indicamos que el servidor smtp requiere autenticación
+		  	//Le indicamos que el servidor smtp requiere autenticaciï¿½n
 		  	$mail->SMTPAuth = true;
 		
 		  	//Le decimos cual es nuestro nombre de usuario y password
 		  	$mail->Username = "rrio@HotPOP.com"; 
 		  	$mail->Password = "mipassword";
 		
-		  	//Indicamos cual es nuestra dirección de correo y el nombre que 
+		  	//Indicamos cual es nuestra direcciï¿½n de correo y el nombre que 
 		  	//queremos que vea el usuario que lee nuestro correo
 		 	$mail->From = $orig;
 		 	$mail->FromName = "Eduardo Garcia";
@@ -242,7 +242,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			//una cuenta gratuita, por tanto lo pongo a 30  
 			$mail->Timeout=30;
 		
-	  		//Indicamos cual es la dirección de destino del correo
+	  		//Indicamos cual es la direcciï¿½n de destino del correo
 			$mail->AddAddress($dest);
 			
 			//Asignamos asunto y cuerpo del mensaje
@@ -270,7 +270,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 		     	$intentos=$intentos+1;	
 	   		}
 		   if(!$exito) {
-				echo "Problemas enviando correo electrónico a ".$valor;
+				echo "Problemas enviando correo electrï¿½nico a ".$valor;
 				echo "<br/>".$mail->ErrorInfo;	
 		   }else{
 				echo "Mensaje enviado correctamente";
@@ -308,6 +308,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 				return false;
 			}
     }
+    
     /**
      * 
      * Enter description here ...
