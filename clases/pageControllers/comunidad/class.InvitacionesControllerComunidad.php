@@ -44,6 +44,7 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
     {
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         $this->setHeadTag();
+        $this->printMsgTop();
 
         IndexControllerComunidad::setCabecera($this->getTemplate());
         IndexControllerComunidad::setCenterHeader($this->getTemplate());

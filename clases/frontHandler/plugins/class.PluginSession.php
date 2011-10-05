@@ -21,7 +21,7 @@ class PluginSession extends PluginAbstract
 
     private function startSession()
     {
-        try{
+        try{           
             //A partir del 2do request puede tirar excepcion si el userAgent cambia segun SessionValidator.
             Session::start();
             
@@ -54,6 +54,7 @@ class PluginSession extends PluginAbstract
         try{            
             $this->startSession();
         }catch (Exception $e){
+
             //si habia un perfil cargado identificado en session lo obtengo para extraer la clase (Visitante, Administrador, etc).
             $perfilAbstract = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             if (null !== $perfilAbstract){

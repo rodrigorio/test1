@@ -55,6 +55,21 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
+    /**
+     * Si entro a login por error de permiso guardo la url original donde queria ir el user.
+     * Esta funcion devuelve esa url.
+     */
+    private function getNextUrl()
+    {
+        $nextFormUrl = "";
+        $pathInfo = $this->getRequest()->getPathInfo();
+        if($pathInfo != '/login'){
+            $nextFormUrl = $this->getRequest()->get('REQUEST_URI');
+            $nextFormUrl = str_replace($nextFormUrl, "",$pathInfo);
+        }
+        return $nextFormUrl;
+    }
+
     public function mostrarFormularioPopUp()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-01.gui.html", "frame");
@@ -62,7 +77,7 @@ class LoginControllerIndex extends PageControllerAbstract
         //si ya esta logueado cancelo la accion y redirecciono a url por defecto.
         if(SessionAutentificacion::getInstance()->realizoLogin()){
             $pathInfo = true;
-            $url = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccionLoginDefecto($pathInfo);
+            $url = $this->getRequest()->getBaseUrl().SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccionLoginDefecto($pathInfo);
 
             $tituloMensajeError = "Ya existe un perfil autentificado";
             $ficha = "MsgFichaInfoBlock";
@@ -82,13 +97,8 @@ class LoginControllerIndex extends PageControllerAbstract
 
         }else{
 
-            $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";
-
-            //Si entro a login por error de permiso guardo la url original donde queria ir el user.
-            $nextFormUrl = "";
-            if($this->getRequest()->getPathInfo() != '/login'){
-                $nextFormUrl = $this->getRequest()->get('REQUEST_URI');
-            }
+            $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";           
+            $nextFormUrl = $this->getNextUrl();
             //se procesa el envio del form en un metodo de esta misma clase.
             $actionFormUrl = "login-procesar";
             
@@ -118,11 +128,7 @@ class LoginControllerIndex extends PageControllerAbstract
         $fileNameLogo = $parametros->obtener('FILE_NAME_LOGO_SITIO');
         $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";
 
-        //Si entro a login por error de permiso guardo la url original donde queria ir el user.
-        $nextFormUrl = "";
-        if($this->getRequest()->getPathInfo() != '/login'){
-            $nextFormUrl = $this->getRequest()->get('REQUEST_URI');
-        }
+        $nextFormUrl = $this->getNextUrl();
         //se procesa el envio del form en un metodo de esta misma clase.
         $actionFormUrl = "login-procesar";
 
@@ -135,6 +141,8 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
         IndexControllerIndex::setCabecera($this->getTemplate());
+
+        $this->printMsgTop();
 
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "columnaIzquierdaContent", "FormularioBlock");
         $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
