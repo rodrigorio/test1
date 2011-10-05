@@ -10,6 +10,7 @@ var optionsAjaxFormLogin = {
     dataType: 'jsonp',
     resetForm: true,
     url: 'login-procesar',
+    forceSync: true,
 
     beforeSerialize: function($form, options){
         if($("#formLogin").valid() == true){
@@ -94,10 +95,12 @@ $("#contrasenia").live("focus", function(){
 $("#contrasenia").live("blur", function(){
     $("#hintContrasenia").hide();
 });
+
+
 function recuperarPass(){
-	var nombreUsuario = $("#rec_nombre_usuario").val();
-	var email = $("#rec_email").val();
-	var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;  
+    var nombreUsuario = $("#rec_nombre_usuario").val();
+    var email = $("#rec_email").val();
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     var fields = $('#recuperarContrasenia input[type=text]');
     var error = 0;
     fields.each(function(){
