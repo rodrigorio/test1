@@ -110,16 +110,17 @@ class SysController
         }catch(Exception $e){
             throw $e;
         }
-   	}
+    }
    
-	public function getUsuarioById($iId){
-   		try{
-	   		$filtro = array('u.id' => $iId);
-	        $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-	        $iRecordsTotal = 0;
-	        return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
-   		}catch (Exception $e){
-   			
-   		}
+    public function getUsuarioById($iId){
+        try{
+            $filtro = array('u.id' => $iId);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
+        }catch (Exception $e){
+
+        }
    }
+
 }

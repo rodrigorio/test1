@@ -121,6 +121,14 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('indexLoginProcesar', $route);
 
+        $route = new RegexRoute('logout',
+                                array(
+                                        'module' => 'index',
+                                        'controller' => 'login',
+                                        'action'     => 'logout'
+                                ));
+        $router->addRoute('indexLoginLogout', $route);
+               
         ////////////////////////////////////
         ////// RUTAS MODULO COMUNIDAD //////
         ////////////////////////////////////

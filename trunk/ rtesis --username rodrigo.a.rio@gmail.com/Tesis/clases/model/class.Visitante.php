@@ -51,7 +51,7 @@ class Visitante extends PerfilAbstract
             $homeSitioModulo = $parametros->obtener('HOME_SITIO_MODULO', $soloSistema);
             $homeSitioControlador = $parametros->obtener('HOME_SITIO_CONTROLADOR', $soloSistema);
             $homeSitioAccion = $parametros->obtener('HOME_SITIO_ACCION', $soloSistema);
-            return array($modulo, $controlador, $accion);
+            return array($homeSitioModulo, $homeSitioControlador, $homeSitioAccion);
         }else{
             return '/';
         }

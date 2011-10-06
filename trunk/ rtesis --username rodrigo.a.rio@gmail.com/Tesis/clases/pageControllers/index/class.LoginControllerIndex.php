@@ -18,6 +18,15 @@ class LoginControllerIndex extends PageControllerAbstract
     }
 
     /**
+     * Ejecuta el logout y redirecciona al home de la pagina
+     */
+    public function logout()
+    {
+        SysController::getInstance()->cerrarSesion();
+        $this->getRedirectorHelper()->gotoUrl("/");
+    }
+
+    /**
      * Procesa el envio desde un formulario de login.
      * El metodo es ajax, si se detecta que la peticion fue a traves de otro metodo tira excepcion 404
      * Este metodo resuelve tambien a que url tiene que dirigirse el usuario una vez que se loguea.
@@ -39,7 +48,7 @@ class LoginControllerIndex extends PageControllerAbstract
             }else{
                 
                 $redirect = $this->getRequest()->getPost('next');
-                if(empty($redirect)){
+                if(empty($redirect)){                    
                     $redirect = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccionLoginDefecto(true);
                 }
                 

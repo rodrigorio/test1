@@ -51,7 +51,7 @@ class PluginSession extends PluginAbstract
    
     public function routeStartup(HttpRequest $request)
     {
-        try{            
+        try{
             $this->startSession();
         }catch (Exception $e){
 
