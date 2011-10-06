@@ -15,7 +15,7 @@ $(function(){
 	    if(!error) {
 		    var fields =
                         "id="+$('#idInstitucion').val()+
-                        "nombre="+$('#nombre').val()+
+                        "&nombre="+$('#nombre').val()+
 			"&tipo="+$('#tipo').val()+
 			"&email="+$('#email').val()+
 			"&cargo="+$('#cargo').val()+
@@ -24,7 +24,7 @@ $(function(){
 			"&ciudad="+$('#ciudad').val()+
 			"&tel="+$('#tel').val()+
 			"&web="+$('#web').val()+
-			"&horarioAtencion="+$('horarioAtencion').val()+
+			"&horarioAtencion="+$('#horarioAtencion').val()+
 			"&sedes="+$('#sedes').val()+
 			"&autoridades="+$('#autoridades').val()+
 			"&actividadesMes="+$('#actividadesMes').val()+
@@ -49,6 +49,8 @@ $(function(){
 						$("#msg_conf").html("No se ha creado la institucion correctamente");
 					}
 					$("#formCrearInstitucion").hide();
+					$("#map_canvas").hide();
+					$("#ubicarBtn").hide();
 					$("#msg_conf").show();
 				}
 			});
@@ -72,8 +74,8 @@ function listaProvinciasByPais(me){
 	   				$('#provincia').append(new Option(lista[i].sNombre, lista[i].id));
 				}
 	   		}else{
-	   			$('#provincia').append(new Option('Selecciones una provincia', '',true));
-	   			$('#ciudad').append(new Option('Selecciones una ciudad', '',true));
+	   			$('#provincia').html(new Option('Selecciones una provincia', '',true));
+	   			$('#ciudad').html(new Option('Selecciones una ciudad', '',true));
 	   		}
 	   	}
 	});

@@ -155,7 +155,7 @@
             <div id="hintDescripcion" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">aaaa</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow maxlength requerido" title="Breve descripcion de la institucion">{sIntitucionDescripcion}</textarea>
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="textareaAutoGrow maxlength requerido" title="Breve descripcion de la institucion">{sInstitucionDescripcion}</textarea>
                 </div>
             </div>
         </div>
@@ -203,7 +203,7 @@
                     <select class="requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
                     	<option value="">Seleccione un pais</option>
                     	<!--BeginListaPaisesBlock-->
-                    	<option value="{iPaisId}">{sPaisNombre}</option>
+                    	<option value="{iPaisId}" {sInstitucionPaisSelect}>{sPaisNombre}</option>
                     	<!--EndListaPaisesBlock-->
                     </select>
                 </div>
@@ -215,7 +215,7 @@
                     <select class="requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
                     	<option value="">Selecciones una provincia</option>
                     	<!--BeginListaProvinciasBlock-->
-                    	<option value="{iProvinciaId}">{sProvinciaNombre}</option>
+                    	<option value="{iProvinciaId}" {sInstitucionProvinciaSelect}>{sProvinciaNombre}</option>
                     	<!--EndListaProvinciasBlock-->
                     </select>
                 </div>
@@ -227,7 +227,7 @@
                     <select class="requerido" name="ciudad" id="ciudad" >
                     	<option value="">Selecciones una ciudad</option>
                     	<!--BeginListaCiudadesBlock-->
-                    	<option value="{iCiudadId}">{sCiudadNombre}</option>
+                    	<option value="{iCiudadId}" {sInstitucionCiudadSelect}>{sCiudadNombre}</option>
                     	<!--EndListaCiudadesBlock-->
                     </select>
                 </div>
@@ -237,7 +237,7 @@
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="requerido" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="Email de la institucion" />
+                    <input class="requerido" type="text" name="email" id="email" title="Email de la institucion" maxlength="40" value="{sInstitucionEmail}" />
                 </div>
             </div>
         </div>
@@ -297,13 +297,13 @@
                 </button>
             </label>
         </div>
-        <input type="hidden" name="latitud" id="latitud" value="" >
-        <input type="hidden" name="longitud" id="longitud" value="" >
+        <input type="hidden" name="latitud" id="latitud" value="{sInstitucionLatitud}" >
+        <input type="hidden" name="longitud" id="longitud" value="{sInstitucionLongitud}" >
         <input type="hidden" name="idInstitucion" id="idInstitucion" value="{idInstitucion}" >
     </form>
 </div>
 <div id="map_canvas" style="float: left;  border: 3px solid;margin: 20px; height: 400px; width: 400px; display:block;"></div>
-<div style="float: left;">
+<div style="float: left;" id="ubicarBtn">
   	<label for="ubicarInstitucion" class="button buttonConfirm buttonLarge mari3">
 		<button type="button" onclick="codeAddress();" name="geoCoder" class="btn01" >
 			Ubicar institucion segun direccion 
