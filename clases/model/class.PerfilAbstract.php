@@ -32,6 +32,7 @@ abstract class PerfilAbstract
     public function iniciarPermisos()
     {
         $this->oPermisos = new SessionNamespace('permisos');
+        $this->oPermisos->unsetAll();
     }
     
     public function setUsuario(Usuario $oUsuario)
@@ -92,7 +93,7 @@ abstract class PerfilAbstract
         return $this;
     }
 
-    public function tiene($funcion)//??es un string?
+    public function tiene($funcion)
     {
         if(!isset($this->oPermisos->acciones))
         {

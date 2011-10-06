@@ -149,6 +149,7 @@ class PluginParametros extends PluginAbstract
                         'HOME_SITIO_MODULO' => 'index',
                         'HOME_SITIO_CONTROLADOR' => 'index',
                         'HOME_SITIO_ACCION' => 'index',
+                        'HOME_SITIO_PATH' => '/',
 
                         //ojo que los nombres corresponden con el nombre de los archivos y carpetas fisicos
                         'ACTIVO_MODULO_ADMIN' => '1', //este no deberia desactivarse nunca
