@@ -104,8 +104,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         
 			$sSQL =	" update instituciones ".
                     " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " ciudades_id =".escape($ciudadId,false,MYSQL_TYPE_INT)." ".
-					" moderado_id =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
+                    " ciudades_id =".$db->escape($ciudadId,false,MYSQL_TYPE_INT).", ".
+					" moderado =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
 					" descripcion =".$db->escape($oInstitucion->getDescripcion(),true).", ".
 					" tipoInstitucion_id =".$db->escape($oInstitucion->getTipoInstitucion(),false,MYSQL_TYPE_INT).", ".
 					" direccion =".$db->escape($oInstitucion->getDireccion(),true).", ".
@@ -149,9 +149,37 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        i.id as iId, i.nombre as sNombre
+                          i.id as iId, 
+                          i.nombre as sNombre,
+						  i.`ciudades_id` as iCiudad,
+						  i.`moderado` as iModerado,
+						  i.`descripcion` as sDescripcion,
+						  i.`tipoInstitucion_id` as iTipoInstitucion,
+						  it.`nombre` as sNombreTipoInstitucion,
+						  i.`direccion` as sDireccion,
+						  i.`email` as sEmail,
+						  i.`telefono` as sTelefono,
+						  i.`sitioWeb` as sSitioWeb,
+						  i.`horariosAtencion` as sHorariosAtencion,
+						  i.`autoridades` as sAutoridades,
+						  i.`cargo` as sCargo,
+						  i.`personeriaJuridica` as sPersoneriaJuridica,
+						  i.`sedes` as sSedes,
+						  i.`actividadesMes` as sActividadesMes,
+						  i.`usuario_id` as iUsuarioId,
+						  i.`latitud` as sLatitud,
+						  i.`longitud` as sLongitud,
+						  prov.`id` as provinciaId, 
+						  pais.id as paisId
                         FROM
-                       instituciones i ";
+                          	instituciones i 
+	                    JOIN 
+	                     	usuarios u ON u.id = i.usuario_id 
+	                    JOIN
+	                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id
+	 					LEFT JOIN `ciudades` c on c.`id` = i.`ciudades_id`
+	 					LEFT JOIN `provincias` prov on prov.`id` = c.`provincia_id`
+	 					LEFT JOIN `paises` pais on pais.`id` = prov.`paises_id` ";
                     if(!empty($filtro)){     
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
