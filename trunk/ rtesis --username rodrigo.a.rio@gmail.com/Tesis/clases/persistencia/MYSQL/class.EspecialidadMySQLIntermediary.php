@@ -46,21 +46,16 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 
                 if(empty($iRecordsTotal)){ return null; }
 
-                            $aEspecialidades = array();
+                $aEspecialidades = array();
                 while($oObj = $db->oNextRecord()){
                     $oEspecialidad 		= new stdClass();
                     $oEspecialidad->iId 	= $oObj->iId;
                     $oEspecialidad->sNombre= $oObj->sNombre;
                     $oEspecialidad->sDescripcion= $oObj->sDescripcion;
-                    $aEspecialidades[]		= Factory::getEspecilidadInstance($oEspecialidad);
+                    $aEspecialidades[]		= Factory::getEspecialidadInstance($oEspecialidad);
                 }
 
-                //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-                if(count($aEspecialidads) == 1){
-                    return $aEspecialidades[0];
-                }else{
-                    return $aEspecialidades;
-                }
+                return $aEspecialidades;
             }catch(Exception $e){
                 throw new Exception($e->getMessage(), 0);
             }
@@ -95,9 +90,9 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
-
              
 		}catch(Exception $e){
+			echo $e->getMessage();
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
@@ -105,7 +100,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
     {
         try{
 			if($oEspecialidad->getId() != null){
-            	return $this->actualizar($oEspecilaidad);
+            	return $this->actualizar($oEspecialidad);
             }else{
 				return $this->insertar($oEspecialidad);
             }

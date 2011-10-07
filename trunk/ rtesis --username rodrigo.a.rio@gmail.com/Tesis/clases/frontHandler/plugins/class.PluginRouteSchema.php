@@ -297,7 +297,7 @@ class PluginRouteSchema extends PluginAbstract
                                 array(
                                         'module' => 'admin',
                                         'controller' => 'especialidad',
-                                        'action'     => 'listarEspecialidades'
+                                        'action'     => 'index'
                                 ));
         $router->addRoute('adminIndexListarEspecialidades', $route);
         
@@ -308,6 +308,13 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'nuevaEspecialidad'
                                 ));
         $router->addRoute('adminIndexNuevaEspecialidad', $route);
+        $route = new RegexRoute('admin/editar-especialidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'especialidad',
+                                        'action'     => 'editarEspecialidad'
+                                ));
+        $router->addRoute('adminIndexEditarEspecialidad', $route);
        
         $route = new RegexRoute('admin/administrar-especialidad',
                                 array(
