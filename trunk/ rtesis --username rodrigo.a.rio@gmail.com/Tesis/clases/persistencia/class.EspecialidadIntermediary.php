@@ -1,5 +1,5 @@
 <?php
-class EspecialidadIntermediary extends Intermediary{
+abstract class EspecialidadIntermediary extends Intermediary{
 	
 }
 ?>
