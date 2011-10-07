@@ -5,7 +5,7 @@
  *
  * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.*
  */
-class IndexControllerAdmin extends PageControllerAbstract
+class EspecialidadControllerAdmin extends PageControllerAbstract
 {
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
@@ -27,7 +27,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
         //js de home
-        $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "jsContent", "JsContent");
         
         return $this;
     }
@@ -63,28 +63,64 @@ class IndexControllerAdmin extends PageControllerAbstract
     static function setMenu(Templates &$template, $currentOption = '')
     {
         $request = FrontController::getInstance()->getRequest();
+
         //menu cabecera
-        $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."/admin/administrar-especialidad");
+        $template->set_var("sHrefEspecialidadCargar", $request->getBaseTagUrl()."admin/nueva-especialidad");
+        $template->set_var("sHrefEspecialidadListar", $request->getBaseTagUrl()."admin/listar-especialidad");
+
     }
 
     public function index(){
         try{
             $this->setFrameTemplate()
                  ->setHeadTag();
-
             $this->printMsgTop();
-
             $this->setCabecera($this->getTemplate());
             $this->setMenu($this->getTemplate());
-
+            $this->getTemplate()->set_var("CargarEspecialidadBlock","");
             //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "widgetsContent", "WidgetsContent");
-
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
             //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "mainContent", "MainContent");
-
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-            
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+    public function nuevaEspecialidad(){
+         try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+            $this->printMsgTop();
+            $this->setCabecera($this->getTemplate());
+            $this->setMenu($this->getTemplate());
+            //widgets
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
+            //contenido ppal home
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+    public function procesarEspecialidad(){
+        try{
+            $sNombre        = $this->getRequest()->getPost("nombre");
+            $sDescripcion   = $this->getRequest()->getPost("descripcion");
+            if($sNombre == "" && $sDescripcion==""){
+                $this->index();
+                return;
+            }
+            if($this->getRequest()->getPost("id")!=""){
+                $filtro = array("e.id"=>$this->getRequest()->getPost("id"));
+                $oEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
+            }else{
+                $oEspecialidad = Factory::getEspecialidadInstance(new stdClass());
+                $oEspecialidad->setDescripcion($sDescripcion);
+                $oEspecialidad->setNombre($sNombre);
+            }
+            $r = AdminController::getInstance()->guardarEspecialidad($oEspecialidad);
+            $this->index();
         }catch(Exception $e){
             print_r($e);
         }

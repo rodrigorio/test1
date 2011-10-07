@@ -98,4 +98,12 @@ class Factory
         $oInstitucion = new Institucion($obj);
         return $oInstitucion;
     }
+    /**
+     * @param stdClass $obj
+     * @return $oEspecialidad|null
+     */
+    public static function &getEspecialidadInstance(stdClass $obj){
+        $oEspecialidad = new Especialidad($obj);
+        return $oEspecialidad;
+    }
 }

@@ -1,0 +1,112 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginWidgetsContent-->
+<div class="widget increase" id="new-visitors">
+    <a href="#" class="close-widget" title="Hide Widget" rel="tooltip">x</a>
+    <span>increase</span>
+    <p><strong>+35,18<sup>%</sup></strong> +2489 new visitors</p>
+</div>
+<div class="widget decrease" id="new-orders">
+    <a href="#" class="close-widget" title="Hide Widget" rel="tooltip">x</a>
+    <span>decrease</span>
+    <p><strong>-12,50<sup>%</sup></strong> -311 new orders</p>
+</div>
+<!--EndWidgetsContent-->
+
+<!--BeginMainContent-->
+<article class="full-block clearfix"> 
+<header>
+    <h2>Administrador BackEnd del Sistema</h2>
+</header>
+<section>
+    <h3>Administrar especialidades</h3>
+    <nav class="">
+    <ul>
+        <li><a href="{sHrefEspecialidadListar}" >Listar especialidades</a></li>
+        <li><a href="{sHrefEspecialidadCargar}" class="default-sidetab">Nueva especialidad</a></li>
+    </ul>
+</nav>
+</section>
+
+<!--BeginCargarEspecialidadBlock-->
+<!-- Side Tab Content #sidetab2 -->
+<div class="sidetab default-sidetab" id="sidetab2">
+    <h3></h3>
+    <form action="admin/procesar-especialidad" method="post" name="nueva-especialidad" >
+        <!-- Inputs -->
+        <!-- Use class .small, .medium or .large for predefined size -->
+        <fieldset>
+                <legend>Nueva especialidad o áreas de desempeño profesional.</legend>
+                <dl>
+                    <dt>
+                        <label>Nombre</label>
+                    </dt>
+                    <dd>
+                        <input type="hidden" name="id" value="{iEspecialidadId}">
+                        <input type="text" class="small" name="nombre">
+                        <p>Nombre de la especialidad o área de desempeño profesional.</p>
+                    </dd>
+                    <dt>
+                        <label>Descripcion</label>
+                    </dt>
+                    <dd>
+                        <!-- Use class .wysiwyg for jQuery jWYSIWYG initiation -->
+                        <textarea name="descripcion" rows="5" cols="40" class="wysiwyg large"></textarea>
+                        <p>Breve descripcion.</p>
+                    </dd>
+                </dl>
+        </fieldset>
+        <button type="submit">Submit</button> or <a href="javascript: reset();">Cancel</a>
+    </form>
+</div>
+<!-- /Side Tab Content #sidetab2 -->
+<!--EndCargarEspecialidadBlock-->
+
+<!--BeginListaEspecialidadesBlock-->
+<table class="datatable">
+    <thead>
+        <tr>
+        <th>Rendering engine</th>
+        <th>Browser</th>
+        <th>Platform(s)</th>
+        <th>Engine version</th>
+        <th>CSS grade</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="gradeX">
+            <td>Trident</td>
+            <td>Internet Explorer 4.0</td>
+            <td>Win 95+</td>
+            <td class="center"> 4</td>
+            <td class="center">X</td>
+        </tr>
+        <tr class="gradeC">
+            <td>Trident</td>
+            <td>Internet  Explorer 5.0</td>
+            <td>Win 95+</td>
+            <td class="center">5</td>
+            <td class="center">C</td>
+        </tr>
+    </tbody>
+</table>
+<!--EndListaEspecialidadesBlock-->
+<!--EndMainContent-->

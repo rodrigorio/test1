@@ -284,5 +284,37 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('adminIndexIndex', $route);
+
+        $route = new RegexRoute('admin/procesar-especialidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'especialidad',
+                                        'action'     => 'procesarEspecialidad'
+                                ));
+        $router->addRoute('adminIndexProcesarEspecialidad', $route);
+        
+        $route = new RegexRoute('admin/listar-especialidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'especialidad',
+                                        'action'     => 'listarEspecialidades'
+                                ));
+        $router->addRoute('adminIndexListarEspecialidades', $route);
+        
+        $route = new RegexRoute('admin/nueva-especialidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'especialidad',
+                                        'action'     => 'nuevaEspecialidad'
+                                ));
+        $router->addRoute('adminIndexNuevaEspecialidad', $route);
+       
+        $route = new RegexRoute('admin/administrar-especialidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'especialidad',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminIndexAdministrarEspecialidad', $route);
     }
 }
