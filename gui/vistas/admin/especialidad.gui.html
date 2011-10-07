@@ -14,7 +14,8 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js");
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/especialidad.js");
 </script>
 <!--EndJsContent-->
 
@@ -47,7 +48,6 @@
 </section>
 
 <!--BeginCargarEspecialidadBlock-->
-<!-- Side Tab Content #sidetab2 -->
 <div class="sidetab default-sidetab" id="sidetab2">
     <h3></h3>
     <form action="admin/procesar-especialidad" method="post" name="nueva-especialidad" >
@@ -61,7 +61,7 @@
                     </dt>
                     <dd>
                         <input type="hidden" name="id" value="{iEspecialidadId}">
-                        <input type="text" class="small" name="nombre">
+                        <input type="text" class="small" name="nombre" value="{sNombre}">
                         <p>Nombre de la especialidad o área de desempeño profesional.</p>
                     </dd>
                     <dt>
@@ -69,7 +69,7 @@
                     </dt>
                     <dd>
                         <!-- Use class .wysiwyg for jQuery jWYSIWYG initiation -->
-                        <textarea name="descripcion" rows="5" cols="40" class="wysiwyg large"></textarea>
+                        <textarea name="descripcion" rows="5" cols="40" class="wysiwyg large">{sDescripcion}</textarea>
                         <p>Breve descripcion.</p>
                     </dd>
                 </dl>
@@ -77,36 +77,37 @@
         <button type="submit">Submit</button> or <a href="javascript: reset();">Cancel</a>
     </form>
 </div>
-<!-- /Side Tab Content #sidetab2 -->
 <!--EndCargarEspecialidadBlock-->
 
-<!--BeginListaEspecialidadesBlock-->
+<!--BeginListadoEspecialidadesBlock-->
+<form name="editar" action="admin/editar-especialidad" method="post">
+  	<input type="hidden" name="iEspecialidadId" id="iEspecialidadId">
+</form>
+
 <table class="datatable">
     <thead>
         <tr>
-        <th>Rendering engine</th>
-        <th>Browser</th>
-        <th>Platform(s)</th>
-        <th>Engine version</th>
-        <th>CSS grade</th>
+        <th>&nbsp;</th>
+        <th>Nombre</th>
+        <th>Descripcion</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
-        <tr class="gradeX">
-            <td>Trident</td>
-            <td>Internet Explorer 4.0</td>
-            <td>Win 95+</td>
-            <td class="center"> 4</td>
-            <td class="center">X</td>
+    
+    <!--BeginListaEspecialidadesBlock-->
+        <tr class="{odd}">
+        	<td>
+        	<input type="checkbox">
+        	</td>
+            <td>{sNombre}</td>
+            <td>{sDescripcion}</td>
+            <td><span class="i bs edit" onclick="editarEspecialidad({iEspecialidadId});"></span></td>
+            <td><span class="i bs delete" onclick="eliminarEspecialidad({iEspecialiadId});"></span></td>
         </tr>
-        <tr class="gradeC">
-            <td>Trident</td>
-            <td>Internet  Explorer 5.0</td>
-            <td>Win 95+</td>
-            <td class="center">5</td>
-            <td class="center">C</td>
-        </tr>
+    <!--EndListaEspecialidadesBlock-->
     </tbody>
 </table>
-<!--EndListaEspecialidadesBlock-->
+<!--EndListadoEspecialidadesBlock-->
 <!--EndMainContent-->

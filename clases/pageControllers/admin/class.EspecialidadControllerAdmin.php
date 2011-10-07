@@ -82,6 +82,29 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
             //contenido ppal home
             $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
+            $filtro = array();
+           	$iRecordPerPage	= 5;
+	    	$iPage			= $this->getRequest()->getPost("iPage");
+		   	$iPage			= strlen($iPage) ? $iPage : 1;
+		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+			$iMinLimit		= ($iPage-1) * $iItemsForPage;
+			$sOrderBy		= null;	
+			$sOrder			= null;
+			$iRecordsTotal	= 0;
+            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            if(count($vEspecialidad)>0){
+            	$i=0;
+	            foreach ($vEspecialidad as $oEspecialidad){
+	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
+	                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
+	                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
+	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
+	                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
+	                $i++;
+	            }
+            }else{
+                $this->getTemplate()->set_var("ListaEspecialidadesBlock", "");
+            }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
@@ -94,10 +117,41 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             $this->printMsgTop();
             $this->setCabecera($this->getTemplate());
             $this->setMenu($this->getTemplate());
+            
+            $this->getTemplate()->set_var("ListadoEspecialidadesBlock","");
             //widgets
             $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
             //contenido ppal home
             $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+    public function editarEspecialidad(){
+         try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+            $this->printMsgTop();
+            $this->setCabecera($this->getTemplate());
+            $this->setMenu($this->getTemplate());
+            
+            $this->getTemplate()->set_var("ListadoEspecialidadesBlock","");
+            //widgets
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
+            //contenido ppal home
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
+            
+            if($this->getRequest()->getPost("iEspecialidadId")!=""){
+                $filtro = array("e.id"=>$this->getRequest()->getPost("iEspecialidadId"));
+                $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
+                foreach ($vEspecialidad as $oEspecialidad){
+	                $this->getTemplate()->set_var("iEspecialidadId",     $oEspecialidad->getId());
+	                $this->getTemplate()->set_var("sNombre",     $oEspecialidad->getNombre());
+	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
+                }
+            }
+                
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
@@ -114,11 +168,12 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             if($this->getRequest()->getPost("id")!=""){
                 $filtro = array("e.id"=>$this->getRequest()->getPost("id"));
                 $oEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
+                $oEspecialidad = $oEspecialidad[0];
             }else{
                 $oEspecialidad = Factory::getEspecialidadInstance(new stdClass());
-                $oEspecialidad->setDescripcion($sDescripcion);
-                $oEspecialidad->setNombre($sNombre);
             }
+			$oEspecialidad->setDescripcion($sDescripcion);
+            $oEspecialidad->setNombre($sNombre);
             $r = AdminController::getInstance()->guardarEspecialidad($oEspecialidad);
             $this->index();
         }catch(Exception $e){
