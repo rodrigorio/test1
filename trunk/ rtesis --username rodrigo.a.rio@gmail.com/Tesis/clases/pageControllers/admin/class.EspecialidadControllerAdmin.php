@@ -102,8 +102,12 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
 	                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
 	                $i++;
 	            }
+                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
             }else{
                 $this->getTemplate()->set_var("ListaEspecialidadesBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
+	            $this->getTemplate()->parse("noRecords", false);
             }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -157,6 +161,66 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    public function verificarUsoDeEspecialidad() {
+    	try{
+			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
+            $filtroEliminar = array("e.id"=>$this->getRequest()->getParam("id") );
+            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtroEliminar);
+            $res = false;
+			if(count($vEspecialidad)>0){
+            	$oEspecialidad = $vEspecialidad[0];
+            	$res = AdminController::getInstance()->especialidadUsadaPorUsuario($oEspecialidad);
+			}
+			echo $res;
+    	}catch(Exception $e){
+            print_r($e);
+        }
+    }
+    
+    public function eliminarEspecialidad(){
+		try{
+			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
+            $filtroEliminar = array("e.id"=>$this->getRequest()->getPost("id"));
+            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtroEliminar);
+            if(count($vEspecialidad)>0){
+            	$oEspecialidad = $vEspecialidad[0];
+	            $res = AdminController::getInstance()->eliminarEspecialidad($oEspecialidad);
+	            if($res){
+		            $filtro			 = array();
+		           	$iRecordPerPage	= 5;
+			    	$iPage			= $this->getRequest()->getPost("iPage");
+				   	$iPage			= strlen($iPage) ? $iPage : 1;
+				  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+					$iMinLimit		= ($iPage-1) * $iItemsForPage;
+					$sOrderBy		= null;	
+					$sOrder			= null;
+					$iRecordsTotal	= 0;
+		            $vEspecialidad 	= AdminController::getInstance()->obtenerEspecialidad($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+		            if(count($vEspecialidad)>0){
+		            	$i=0;
+			            foreach ($vEspecialidad as $oEspecialidad){
+			            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
+			                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
+			                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
+			                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
+			                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
+			                $i++;
+			            }
+		                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
+		            }else{
+		                $this->getTemplate()->set_var("listaEspecialidad", "");
+		                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
+		                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
+			            $this->getTemplate()->parse("noRecords", false);
+		            }
+	            }
+            }
+            $this->getResponse()->setBody($this->getTemplate()->pparse('listaEspecialidad', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+    
     public function procesarEspecialidad(){
         try{
             $sNombre        = $this->getRequest()->getPost("nombre");
@@ -176,6 +240,41 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             $oEspecialidad->setNombre($sNombre);
             $r = AdminController::getInstance()->guardarEspecialidad($oEspecialidad);
             $this->index();
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+  	public function buscarEspecialidad(){
+		try{
+			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
+            $filtro = array("e.nombre"=>$this->getRequest()->getPost("nombre"));
+           	$iRecordPerPage	= 5;
+	    	$iPage			= $this->getRequest()->getPost("iPage");
+		   	$iPage			= strlen($iPage) ? $iPage : 1;
+		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+			$iMinLimit		= ($iPage-1) * $iItemsForPage;
+			$sOrderBy		= null;	
+			$sOrder			= null;
+			$iRecordsTotal	= 0;
+            $vEspecialidad 	= AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            if(count($vEspecialidad)>0){
+            	$i=0;
+	            foreach ($vEspecialidad as $oEspecialidad){
+	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
+	                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
+	                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
+	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
+	                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
+	                $i++;
+	            }
+                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
+            }else{
+                $this->getTemplate()->set_var("listaEspecialidad", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
+	            $this->getTemplate()->parse("noRecords", false);
+            }
+            $this->getResponse()->setBody($this->getTemplate()->pparse('listaEspecialidad', false));
         }catch(Exception $e){
             print_r($e);
         }

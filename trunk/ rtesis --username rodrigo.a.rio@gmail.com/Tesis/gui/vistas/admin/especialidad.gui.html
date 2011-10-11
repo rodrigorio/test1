@@ -51,8 +51,6 @@
 <div class="sidetab default-sidetab" id="sidetab2">
     <h3></h3>
     <form action="admin/procesar-especialidad" method="post" name="nueva-especialidad" >
-        <!-- Inputs -->
-        <!-- Use class .small, .medium or .large for predefined size -->
         <fieldset>
                 <legend>Nueva especialidad o áreas de desempeño profesional.</legend>
                 <dl>
@@ -80,10 +78,10 @@
 <!--EndCargarEspecialidadBlock-->
 
 <!--BeginListadoEspecialidadesBlock-->
+<div class="col2" id="especialidades">
 <form name="editar" action="admin/editar-especialidad" method="post">
   	<input type="hidden" name="iEspecialidadId" id="iEspecialidadId">
 </form>
-
 <table class="datatable">
     <thead>
         <tr>
@@ -95,7 +93,6 @@
         </tr>
     </thead>
     <tbody>
-    
     <!--BeginListaEspecialidadesBlock-->
         <tr class="{odd}">
         	<td>
@@ -104,10 +101,16 @@
             <td>{sNombre}</td>
             <td>{sDescripcion}</td>
             <td><span class="i bs edit" onclick="editarEspecialidad({iEspecialidadId});"></span></td>
-            <td><span class="i bs delete" onclick="eliminarEspecialidad({iEspecialiadId});"></span></td>
+            <td><span class="i bs delete" onclick="verificarUsoEspecialidad({iEspecialidadId});"></span></td>
         </tr>
     <!--EndListaEspecialidadesBlock-->
+    <!--BeginNoRecordsListaEspecialidadesBlock-->
+	    <tr>
+	       	<td colspan="5">{sNoRecords}</td>
+	    </tr>
+    <!--EndNoRecordsListaEspecialidadesBlock-->
     </tbody>
 </table>
+</div>
 <!--EndListadoEspecialidadesBlock-->
 <!--EndMainContent-->
