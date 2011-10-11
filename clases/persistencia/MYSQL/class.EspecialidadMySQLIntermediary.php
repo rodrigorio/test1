@@ -27,9 +27,9 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
         return self::$instance;
 	}
 
-        public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
             try{
-                    $db = $this->conn;
+                $db = $this->conn;
                 $filtro = $this->escapeStringArray($filtro);
 
                 $sSQL = "SELECT
@@ -61,8 +61,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
             }
 	}
 
-        public  function insertar($oEspecialidad)
-       {
+    public  function insertar($oEspecialidad){
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into especialidades ".
@@ -115,9 +114,11 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 			$db = $this->conn;
 			$db->execSQL("delete from especialidades where id=".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();
-
+			return true;
 		}catch(Exception $e){
+			echo $e->getMessage();
 			throw new Exception($e->getMessage(), 0);
+			return false;
 		}
 	}
 
@@ -127,5 +128,74 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 
     public function actualizarCampoArray($objects, $cambios){}
 
+    public function especialidadUsadaPorUsuario($oEspecialidad){
+    	try{
+	    	$db = $this->conn;
+	    	
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+            			u.id as iId
+                	FROM
+                		usuarios u
+            		WHERE u.especialidades_id=".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)."";
+            $db->query($sSQL);
+            
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+			if(empty($iRecordsTotal)){ 
+				return false; 
+			}
+			return true;
+	    }catch(Exception $e){
+        	throw new Exception($e->getMessage(), 0);
+        }	
+    }
+    public function search($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+	 	try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                            e.id as iId, e.nombre as sNombre, e.descripcion as sDescripcion
+                            FROM
+                           especialidades e ";
+            $WHERE = array();
+           	if(isset($filtro['e.nombre']) && $filtro['e.nombre']!=""){
+	           	$WHERE[]= $this->crearFiltroTexto('e.nombre', $filtro['e.nombre']);
+           	}
+           	if(isset($filtro['e.descripcion']) && $filtro['e.descripcion']!=""){
+	           	$WHERE[]= $this->crearFiltroTexto('e.descripcion', $filtro['e.descripcion']);
+           	}
+           	if(isset($filtro['e.id']) && $filtro['e.id']!=""){
+	           	$WHERE[]= $this->crearFiltroSimple('e.id', $filtro['e.id'], MYSQL_TYPE_INT);
+           	}
+           	
+            $sSQL 	= $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            
+                    
+	 		if (isset($sOrderBy) && isset($sOrder)){
+				$sSQL .= " order by $sOrderBy $sOrder ";
+			}
+			if ($iIniLimit!==null && $iRecordCount!==null){
+				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+			}
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+			if(empty($iRecordsTotal)){ return null; }
+
+			$aEspecialidades = array();
+			while($oObj = $db->oNextRecord()){
+            	$oEspecialidad 		= new stdClass();
+                $oEspecialidad->iId 	= $oObj->iId;
+                $oEspecialidad->sNombre= $oObj->sNombre;
+                $oEspecialidad->sDescripcion= $oObj->sDescripcion;
+                $aEspecialidades[]		= Factory::getEspecialidadInstance($oEspecialidad);
+            }
+
+			return $aEspecialidades;
+        }catch(Exception $e){
+           return null;
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 }
 ?>	

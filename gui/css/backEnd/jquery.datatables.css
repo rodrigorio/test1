@@ -86,10 +86,10 @@
 	float: left;
 	cursor:pointer;
 }
-.paginate_disabled_previous { background-image: url('../img/jquery/back_disabled.png'); }
-.paginate_enabled_previous { background-image: url('../img/jquery/back_enabled.png'); }
-.paginate_disabled_next { background-image: url('../img/jquery/forward_disabled.png'); }
-.paginate_enabled_next { background-image: url('../img/jquery/forward_enabled.png'); }
+.paginate_disabled_previous { background-image: url('../../images/backend/jquery/back_disabled.png'); }
+.paginate_enabled_previous { background-image: url('../../images/backend/jquery/back_enabled.png'); }
+.paginate_disabled_next { background-image: url('../../images/backend/jquery/forward_disabled.png'); }
+.paginate_enabled_next { background-image: url('../../images/backend/jquery/forward_enabled.png'); }
 
 table.datatable {
 	margin:0 auto;
@@ -106,11 +106,11 @@ table.datatable td.center { text-align: center; }
  * DataTables sorting
  */
 
-.sorting_asc { background:url('../img/jquery/sort_asc.png') no-repeat center right; }
-.sorting_desc { background: url('../img/jquery/sort_desc.png') no-repeat center right; }
-.sorting { background: url('../img/jquery/sort_both.png') no-repeat center right; }
-.sorting_asc_disabled { background: url('../img/jquery/sort_asc_disabled.png') no-repeat center right; }
-.sorting_desc_disabled { background: url('../img/jquery/sort_desc_disabled.png') no-repeat center right; }
+.sorting_asc { background:url('../../images/backend/jquery/sort_asc.png') no-repeat center right; }
+.sorting_desc { background: url('../../images/backend/jquery/sort_desc.png') no-repeat center right; }
+.sorting { background: url('../../images/backend/jquery/sort_both.png') no-repeat center right; }
+.sorting_asc_disabled { background: url('../../images/backend/jquery/sort_asc_disabled.png') no-repeat center right; }
+.sorting_desc_disabled { background: url('../../images/backend/jquery/sort_desc_disabled.png') no-repeat center right; }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Misc

@@ -52,10 +52,34 @@ class AdminController
             echo $e->getMessage();
         }
     }
-     public function guardarEspecialidad($oEspecialidad){
+    public function buscar($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
+            return $oEspecialidadIntermediary->search($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+    public function guardarEspecialidad($oEspecialidad){
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->guardar($oEspecialidad);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+     public function eliminarEspecialidad($oEspecialidad){
+        try{
+            $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
+            return $oEspecialidadIntermediary->borrar($oEspecialidad);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+     public function especialidadUsadaPorUsuario($oEspecialidad){
+        try{
+            $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
+            return $oEspecialidadIntermediary->especialidadUsadaPorUsuario($oEspecialidad);
         }catch(Exception $e){
             echo $e->getMessage();
         }
