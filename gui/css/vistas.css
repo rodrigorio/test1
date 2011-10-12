@@ -132,6 +132,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
+.teta_up{text-transform:uppercase}
 .co{color:#333 !important}
 .po_re{position:relative !important}
 .veal_mi{vertical-align:middle !important}

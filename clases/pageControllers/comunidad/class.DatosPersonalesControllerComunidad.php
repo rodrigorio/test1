@@ -60,7 +60,14 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         //privacidad (columna)
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-
+        //seteo los valores actuales para los campos
+        $aPrivacidad = $usuario->obtenerPrivacidad();
+        $this->getTemplate()->set_var($aPrivacidad['email']."EmailSelected", "selected = 'selected' ");
+        $this->getTemplate()->set_var($aPrivacidad['telefono']."TelefonoSelected", "selected = 'selected' ");
+        $this->getTemplate()->set_var($aPrivacidad['celular']."CelularSelected", "selected = 'selected' ");
+        $this->getTemplate()->set_var($aPrivacidad['fax']."FaxSelected", "selected = 'selected' ");
+        $this->getTemplate()->set_var($aPrivacidad['curriculum']."CurriculumSelected", "selected = 'selected' ");
+        
         //contenido ppal
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioBlock");
 

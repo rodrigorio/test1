@@ -41,6 +41,23 @@ class Usuario extends PersonaAbstract
         }
     }
 
+    /**
+     * Recibe un campo de la tabla 'privacidad' y devuelve el valor
+     * para el usuario actual.
+     *
+     * Solo los usuarios que operan el sistema van a tener valores de privacidad.
+     * A su vez se puede consultar la privacidad de campos para usuarios que no estan
+     * logueados (sin perfil asociado) por eso el metodo va en esta clase.
+     */
+    public function obtenerPrivacidadCampo($nombreCampo)
+    {
+        return SysController::getInstance()->getPrivacidadCampo($this->iId, $nombreCampo);
+    }
+    public function obtenerPrivacidad()
+    {
+        return SysController::getInstance()->getPrivacidad($this->iId);
+    }
+
     public function getNombreUsuario(){
         return $this->sNombreUsuario;
     }
