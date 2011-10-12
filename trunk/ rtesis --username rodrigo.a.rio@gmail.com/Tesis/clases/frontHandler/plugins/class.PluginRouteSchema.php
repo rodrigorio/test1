@@ -284,7 +284,7 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('adminIndexIndex', $route);
-
+		//especialidades
         $route = new RegexRoute('admin/procesar-especialidad',
                                 array(
                                         'module' => 'admin',
@@ -345,5 +345,66 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'buscarEspecialidad'
                                 ));
         $router->addRoute('adminEspecialidadBuscar', $route);
+        //categorias
+        $route = new RegexRoute('admin/procesar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'procesarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaProcesarCategoria', $route);
+        
+        $route = new RegexRoute('admin/listar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminCategoriaListarCategoriaes', $route);
+        
+        $route = new RegexRoute('admin/nueva-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'nuevaCategoria'
+                                ));
+        $router->addRoute('adminCategoriaNuevaCategoria', $route);
+        $route = new RegexRoute('admin/editar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'editarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaEditarCategoria', $route);
+       
+        $route = new RegexRoute('admin/administrar-categorias',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminCategoriaAdministrarCategoria', $route);
+        
+        $route = new RegexRoute('admin/eliminar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'eliminarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaEliminarCategoria', $route);
+        $route = new RegexRoute('admin/verfificar-uso-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'verificarUsoDeCategoria'
+                                ));
+        $router->addRoute('adminCategoriaVerificarUsoDeCategoria', $route);
+        $route = new RegexRoute('admin/buscar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'buscarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaBuscar', $route);
     }
 }

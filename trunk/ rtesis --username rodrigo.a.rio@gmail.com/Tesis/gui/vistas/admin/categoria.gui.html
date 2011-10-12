@@ -38,11 +38,11 @@
     <h2>Administrador BackEnd del Sistema</h2>
 </header>
 <section>
-    <h3>Administrar Categorias</h3>
+    <h3>Administrar categorias</h3>
     <nav class="">
     <ul>
         <li><a href="{sHrefCategoriaListar}" >Listar categorias</a></li>
-        <li><a href="{sHrefCategoriaCargar}" class="default-sidetab">Nueva categorias</a></li>
+        <li><a href="{sHrefCategoriaCargar}" class="default-sidetab">Nueva categoria</a></li>
     </ul>
 </nav>
 </section>
@@ -52,7 +52,7 @@
     <h3></h3>
     <form action="admin/procesar-categoria" method="post" name="nueva-categoria" >
         <fieldset>
-                <legend>Nueva categoria.</legend>
+                <legend>Nueva categoria o áreas de desempeño profesional.</legend>
                 <dl>
                     <dt>
                         <label>Nombre</label>
@@ -60,7 +60,7 @@
                     <dd>
                         <input type="hidden" name="id" value="{iCategoriaId}">
                         <input type="text" class="small" name="nombre" value="{sNombre}">
-                        <p>Nombre de la categoria.</p>
+                        <p>Nombre de la categoria o área de desempeño profesional.</p>
                     </dd>
                     <dt>
                         <label>Descripcion</label>
@@ -76,10 +76,9 @@
     </form>
 </div>
 <!--EndCargarCategoriaBlock-->
-
 <!--BeginListadoCategoriasBlock-->
 <div class="col2" id="categorias">
-<form name="editacategoriadmin/editar-categoria" method="post">
+<form name="editar" action="admin/editar-categoria" method="post">
   	<input type="hidden" name="iCategoriaId" id="iCategoriaId">
 </form>
 <table class="datatable">
