@@ -6,8 +6,7 @@
  
 class CategoriaMySQLIntermediary extends CategoriaIntermediary
 {
-     static $singletonInstance = 0;
-
+    private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
@@ -21,20 +20,20 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 	 * @return CategoriaMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
 	
 	
- public  function insertar(Categoria $oCategoria)
+ public  function insertar($oCategoria)
    {
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into categorias ".
-                    " set nombre =".$db->escape($oCategoria->getNombre(),true)." ";
+                    " set nombre =".$db->escape($oCategoria->getNombre(),true).",".
+                    " descripcion=".$db->escape($oCategoria->getDescripcion(),true)." ";
                     			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -45,12 +44,13 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		}
 	}
     
- public  function actualizar(Categoria $oCategoria)
+ public  function actualizar($oCategoria)
    {
 		try{
 			$db = $this->conn;
 			$sSQL =	" update categorias ".
-                    " set nombre =".$db->escape($oCategoria->getNombre(),true)." " .
+                    " set nombre =".$db->escape($oCategoria->getNombre(),true).", " .
+                    " descripcion=".$db->escape($oCategoria->getDescripcion(),true)." " .
                     " where id =".$db->escape($oCategoria->getId(),false,MYSQL_TYPE_INT)." ";
                     			 
 			 $db->execSQL($sSQL);
@@ -61,7 +61,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    public function guardar(Categoria $oCategoria)
+    public function guardar($oCategoria)
     {
         try{
 			if($oCategoria->getId() != null){
@@ -80,34 +80,28 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        c.id as iId, c.nombre as sNombre
+                        c.id as iId, c.nombre as sNombre, c.descripcion as sDescripcion
                         FROM
                        categorias c ";
                     if(!empty($filtro)){     
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
-
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
-			$acategoriasategorias = array();
+			$aCategorias = array();
             while($oObj = $db->oNextRecord()){
             	$oCategoria 		= new stdClass();
             	$oCategoria->iId 	= $oObj->iId;
             	$oCategoria->sNombre= $oObj->sNombre;
-            	$acategoriasategorias[]		= Factory::getCategoriaInstance($oCategoria);
+            	$oCategoria->sDescripcion= $oObj->sDescripcion;
+            	$aCategorias[]		= Factory::getCategoriaInstance($oCategoria);
             }
 
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($acategoriasategorias) == 1){
-                return $aCategorias[0];
-            }else{
-                return $aCategorias;
-            }
-
+            return $aCategorias;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -117,14 +111,15 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 	//public function borrar($objects){}
     
     //borra una especialidad
-    public function borrar(Categoria $oCategoria) {
+    public function borrar($oCategoria) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from categorias where id=".$db->escape($oCategoria->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();
-
+			return true;
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
+			return false;
 		}
 	}
 
@@ -134,7 +129,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
     public function listar(&$iRecordsTotal,$sOrderBy=null,$sOrder=null,$iIniLimit = null,$iRecordCount = null){
     	try{
 			$db = $this->conn;
-			$sSQL = "select SQL_CALC_FOUND_ROWS id as iICategoria, nombre as sNombre from categorias " ;
+			$sSQL = "select SQL_CALC_FOUND_ROWS id as iICategoria, nombre as sNombre, descripcion as sDescripcion from categorias " ;
 			
 			if (isset($sOrderBy) && isset($sOrder)){
 				$sSQL .= " order by $sOrderBy $sOrder ";
@@ -158,7 +153,8 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		}	
 	}
     
-
+ 	public function actualizarCampoArray($objects, $cambios){}
+ 	
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
 ?>	

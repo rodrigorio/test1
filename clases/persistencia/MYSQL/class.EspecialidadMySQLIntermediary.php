@@ -18,7 +18,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return PaisMySQLIntermediary
+	 * @return EspecialidadMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
 		if (null === self::$instance){

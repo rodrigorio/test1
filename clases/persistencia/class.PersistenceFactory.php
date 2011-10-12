@@ -81,5 +81,11 @@ class PersistenceFactory {
             return (EspecialidadMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getCategoriaIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (CategoriaMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
 ?>

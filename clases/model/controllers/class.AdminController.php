@@ -43,7 +43,9 @@ class AdminController
     public function setDBDriver(DB $db){
         $this->db = $db;
     }
-
+	/**********************************
+	 *********ESPECIALIDADES*********** 	
+	 *********************************/
     public function obtenerEspecialidad($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
@@ -80,6 +82,41 @@ class AdminController
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->especialidadUsadaPorUsuario($oEspecialidad);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+    /**********************************
+	 **********CATEGORIAS************** 	
+	 *********************************/
+ public function obtenerCategoria($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            return $oCategoriaIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+    public function guardarCategoria($oCategoria){
+        try{
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            return $oCategoriaIntermediary->guardar($oCategoria);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+     public function eliminarCategoria($oCategoria){
+        try{
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            return $oCategoriaIntermediary->borrar($oCategoria);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+     public function categoriaUsadaPorUsuario($oCategoria){
+        try{
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            return $oCategoriaIntermediary->especialidadUsadaPorUsuario($oCategoria);
         }catch(Exception $e){
             echo $e->getMessage();
         }

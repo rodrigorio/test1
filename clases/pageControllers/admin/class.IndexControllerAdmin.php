@@ -65,6 +65,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $request = FrontController::getInstance()->getRequest();
         //menu cabecera
         $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."/admin/administrar-especialidad");
+        $template->set_var("sHrefCategoriaIndex", $request->getBaseTagUrl()."/admin/administrar-categorias");
     }
 
     public function index(){

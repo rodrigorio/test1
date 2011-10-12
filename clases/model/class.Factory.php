@@ -106,4 +106,12 @@ class Factory
         $oEspecialidad = new Especialidad($obj);
         return $oEspecialidad;
     }
+    /**
+     * @param stdClass $obj
+     * @return $oCatgoria|null
+     */
+    public static function &getCategoriaInstance(stdClass $obj){
+        $oCatgoria = new Categoria($obj);
+        return $oCatgoria;
+    }
 }
