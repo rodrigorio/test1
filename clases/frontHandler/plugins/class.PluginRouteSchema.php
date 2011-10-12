@@ -189,7 +189,16 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "procesar"
                                 ));
         $router->addRoute('comunidadDatosPersonalesProcesar', $route);
-
+        
+        //ajax
+        $route = new RegexRoute('comunidad/modificarPrivacidadCampo',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "datosPersonales",
+                                        'action'     => "modificarPrivacidadCampo"
+                                ));
+        $router->addRoute('comunidadModificarPrivacidadCampo', $route);
+        
         //INSITUCIONES//
         $route = new RegexRoute('comunidad/editar-institucion',
                                 array(

@@ -73,4 +73,14 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
+
+    public function modificarPrivacidadCampo()
+    {
+        //si accedio a traves de la url muestra pagina 404 porq es ajax
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+        $usuario->guardarPrivacidadCampo($this->getRequest()->getPost('nombreCampo'), $this->getRequest()->getPost('valorPrivacidad'));
+    }
 }

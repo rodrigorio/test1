@@ -155,7 +155,7 @@ class IndexControllerIndex extends PageControllerAbstract
                 $ficha = "MsgInfoBlockI32";
                 break;
             }
-            case $this->request->has('msgError'):
+            case $request->has('msgError'):
             {
                 $mensaje = $request->getParam('msgError');
                 $ficha = "MsgErrorBlockI32";

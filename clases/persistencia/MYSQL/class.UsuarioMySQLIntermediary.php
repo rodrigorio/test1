@@ -703,4 +703,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             throw new Exception($e->getMessage(), 0);
         }            
     }
+
+    public function updatePrivacidadCampo($filtro, $nombreCampo, $valorPrivacidad)
+    {
+        $db = $this->conn;
+        $sSQL = "UPDATE privacidad p SET ".$nombreCampo." = ".$this->escStr($valorPrivacidad)."
+                 WHERE ".$this->crearCondicionSimple($filtro);
+        
+        $db->execSQL($sSQL);
+        $db->commit();
+    }
 }

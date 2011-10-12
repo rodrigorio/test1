@@ -139,4 +139,10 @@ class SysController
         $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
         return $oUsuarioIntermediary->obtenerPrivacidad($filtro);
     }
+
+    public function setPrivacidadCampo($usuarioId, $nombreCampo, $valorPrivacidad){
+        $filtro = array('p.usuarios_id' => $usuarioId);
+        $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+        $oUsuarioIntermediary->updatePrivacidadCampo($filtro, $nombreCampo, $valorPrivacidad);
+    }
 }
