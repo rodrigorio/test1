@@ -118,9 +118,25 @@ class SysController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
-        }catch (Exception $e){
+        }catch (Exception $e){}
+    }
 
-        }
-   }
-
+    /**
+     * Devuelve el estado de privacidad para un dato de un usuario
+     * @return string en la DB es un enum puede ser uno de tres 'comunidad' 'privado' 'publico'
+     */
+    public function getPrivacidadCampo($usuarioId, $nombreCampo){
+        $filtro = array('p.usuarios_id' => $usuarioId);
+        $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+        return $oUsuarioIntermediary->obtenerPrivacidadCampo($filtro, $nombreCampo);
+    }
+    /**
+     * Devuelve array de privacidad de un usuario en el sistema
+     * @return array
+     */
+    public function getPrivacidad($usuarioId){
+        $filtro = array('p.usuarios_id' => $usuarioId);
+        $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+        return $oUsuarioIntermediary->obtenerPrivacidad($filtro);
+    }
 }

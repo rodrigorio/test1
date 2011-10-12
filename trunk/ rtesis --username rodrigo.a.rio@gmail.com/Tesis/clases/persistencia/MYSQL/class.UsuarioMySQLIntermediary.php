@@ -654,4 +654,53 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			return false;
 		}
 	}
+
+    public function obtenerPrivacidadCampo($filtro, $nombreCampo)
+    {
+    	try{
+            $db = $this->conn;
+            $sSQL = "SELECT ".$nombreCampo." as priv
+                     FROM
+                        privacidad p
+                     WHERE ".$this->crearCondicionSimple($filtro);
+            
+            $db->query($sSQL);            
+            return $db->oNextRecord()->priv;
+
+    	}catch(Exception $e){
+            return "";
+            throw new Exception($e->getMessage(), 0);
+        }        
+    }
+
+    /**
+     * Devuelve la privacidad de todos los campos para un usuario.
+     * crea un array ['nombreCampo'] = "publicoPorEj"
+     */
+    public function obtenerPrivacidad($filtro)
+    {
+    	try{
+            $db = $this->conn;
+            $sSQL = "SELECT
+                        email, telefono, celular, fax, curriculum
+                     FROM
+                        privacidad p
+                     WHERE ".$this->crearCondicionSimple($filtro);
+
+            $db->query($sSQL);
+            $record = $db->oNextRecord();
+
+            $privacidad = array('email' => $record->email,
+                                'telefono' => $record->telefono,
+                                'celular' => $record->celular,
+                                'fax' => $record->fax,
+                                'curriculum' => $record->curriculum);
+
+            return $privacidad;
+            
+    	}catch(Exception $e){
+            return "";
+            throw new Exception($e->getMessage(), 0);
+        }            
+    }
 }

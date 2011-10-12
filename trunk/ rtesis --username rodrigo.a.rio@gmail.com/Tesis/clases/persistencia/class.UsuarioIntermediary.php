@@ -6,4 +6,7 @@
  *
  * @author Andres
  */
-abstract class UsuarioIntermediary extends Intermediary {}
+abstract class UsuarioIntermediary extends Intermediary{
+    abstract public function obtenerPrivacidadCampo($filtro, $nombreCampo);
+    abstract public function obtenerPrivacidad($filtro);
+}
