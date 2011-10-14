@@ -1,0 +1,1 @@
+autoCompleteInput("persona","seguimientos/buscar-usuarios");

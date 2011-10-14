@@ -31,5 +31,18 @@ class SeguimientosController
      */
     public function setDBDriver(DB $db){
         $this->db = $db;
-    }    
+    }
+
+    public function guardarSeguimiento($oSeguimiento){
+    	try{
+            if($oSeguimiento->getTipoSeguimiento() == 1){
+                 $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoPersonalizadoIntermediary($this->db);
+            }else{
+                 $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoSCCIntermediary($this->db);
+            }
+            return $oSeguimientoIntermediary->guardar($oSeguimiento);
+        }catch(Exception $e){
+                echo $e->getMessage();
+        }
+    }
 }

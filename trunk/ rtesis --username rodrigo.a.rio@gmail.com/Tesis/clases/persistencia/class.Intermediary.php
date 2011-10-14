@@ -160,12 +160,12 @@ abstract class Intermediary
      */
     protected final function crearFiltroTexto($campo, $valor, $bRigthLeft = null){
     	$return = "";
-		if($bRigthLeft===true){
-    		$return = " $campo like '".$this->conn->escape($valor, false)."%' ";
+	if($bRigthLeft===true){
+    		$return = " $campo like '".$valor."%' ";
     	}elseif($bRigthLeft===false){
-    		$return = " $campo like '%".$this->conn->escape($valor, false)."' ";
+    		$return = " $campo like '%".$valor."' ";
     	}else{
-    		$return = " $campo like '%".$this->conn->escape($valor, false)."%' ";
+    		$return = " $campo like '%".$valor."%' ";
     	}
     	return $return;
     }

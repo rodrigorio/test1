@@ -281,6 +281,34 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('seguimientosIndexIndex', $route);
+        $route = new RegexRoute('seguimientos/nuevo-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'index',
+                                        'action'     => 'nuevoSeguimiento'
+                                ));
+        $router->addRoute('seguimientosIndexNuevoSeguimiento', $route);
+        $route = new RegexRoute('seguimientos/editar-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'index',
+                                        'action'     => 'editarSeguimiento'
+                                ));
+        $router->addRoute('seguimientosIndexEditarSeguimientos', $route);
+        $route = new RegexRoute('seguimientos/buscar-usuarios',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'index',
+                                        'action'     => 'buscarUsuarios'
+                                ));
+        $router->addRoute('seguimientosIndexBuscarUsuarios', $route);
+        $route = new RegexRoute('seguimientos/procesar-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'index',
+                                        'action'     => 'procesarSeguimiento'
+                                ));
+        $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
 
         ////////////////////////////////////
         ////// RUTAS MODULO ADMIN //////////
