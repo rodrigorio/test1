@@ -87,5 +87,17 @@ class PersistenceFactory {
             return (CategoriaMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getSeguimientoSCCIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (SeguimientoSCCMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getSeguimientoPersonalizadoIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (SeguimientoPersonalizadoMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
 ?>

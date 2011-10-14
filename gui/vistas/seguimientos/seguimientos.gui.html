@@ -1,0 +1,210 @@
+<!--BeginPageRightInnerMainContBlock-->
+<div class="pato3">
+    <div class="mabo2">
+        <div class="iveal mabo2">
+            <h2 class="di_in"><a href="{hrefNuevaSeguimiento}">Crear un seguimiento</a></h2> <span class="i32 bs user32Add male"></span>
+        </div>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
+            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
+            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
+        </p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
+            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
+            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
+        </p>
+    </div>
+</div>
+<!--EndPageRightInnerMainContBlock-->
+
+<!--BeginPageRightInnerContBlock-->
+<div class="mabo2">
+    <ul class="menu02">
+        <li class="mabo2"><a href="{hrefSeguimiento}">Inicio</a></li>
+        <li class="mabo2"><a href="{hrefMisSeguimientos}">Mis Seguimientos</a></li>
+        <li><a href="{hrefNuevaSeguimiento}">Crear nuevo Seguimiento</a></li>
+    </ul>
+</div>
+<!--EndPageRightInnerContBlock-->
+
+<!--BeginFormularioBlock-->
+<div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
+    <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
+    <div class="di_no" id="msg_conf"></div>
+    <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="seguimientos/procesar-seguimiento" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <div id='msg_form_crearSeguimiento' class="msg_form iveal di_no">
+        	<span class="bs i"></span>
+        	<span class="msg"></span>
+        </div>
+
+        <div id="msg_tipo" class="form_line">Tipo de Seguimiento
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select class="requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
+                    	<option value="-1">Seleccione el tipo de Seguimiento</option>
+                    	<!--BeginListaTipoDeSeguimientosBlock-->
+                    	<option value="{iSeguimientoTiposId}" {sSeguimientoTiposSelect}>{sSeguimientoTiposNombre}</option>
+                    	<!--EndListaTipoDeSeguimientosBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="msg_nombre" class="form_line">Persona
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="requerido" type="text" name="persona" id="persona" title="Persona" maxlength="40" value="{sSeguimientoPersona}" />
+                </div>
+            </div>
+        </div>
+        <div id="msg_email" class="form_line">Frecuencia de encuentros
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="requerido" type="text" name="frecuencias" id="frecuencias" title="Frecuencia de encuentros" maxlength="40" value="{sSeguimientoFrecuencia}" />
+                </div>
+            </div>
+        </div>
+        <div id="msg_email" class="form_line">Dias y horarios estipulados de encuentros
+            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input class="" type="text" name="diaHorario" id="diaHorario" title="Dias y horarios" maxlength="40" value="{sSeguimientoDiaHorario}" />
+                </div>
+            </div>
+        </div>
+        <div id="msg_tipo" class="form_line">Tipo de pr&aacute;ctica
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select class="requerido" name="tipoPractica" id="tipoPractica" >
+                    	<option value="-1">Seleccione el tipo de pr&aacute;ctica</option>
+                    	<!--BeginListaTipoDePracticaSeguimientosBlock-->
+                    	<option value="{iSeguimientoTiposPracticaId}" {sSeguimientoTiposPracticaSelect}>{sSeguimientoTiposPracticaNombre}</option>
+                    	<!--EndListaTipoDePracticaSeguimientosBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="fl_le">
+            <label for="CrearSeguimiento" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearSeguimiento" type="submit" name="crearSeguimiento" class="btn01">
+                    Guardar Seguimiento
+                </button>
+            </label>
+        </div>
+        <input type="hidden" name="latitud" id="latitud" value="{sSeguimientoLatitud}" >
+        <input type="hidden" name="longitud" id="longitud" value="{sSeguimientoLongitud}" >
+        <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{idSeguimiento}" >
+    </form>
+</div>
+<!--EndFormularioBlock-->
+
+<!--BeginListadoSeguimientoesBlock-->
+<div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
+    <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
+    <div id="">
+    <form action="" method="post">
+    	<div>
+    		Nombre <input type="text" name="Seguimiento_nombre" id="Seguimiento_nombre"/>
+    	</div>
+    	<div>
+    		Pais
+           <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
+           		<option value="">Seleccione un pais</option>
+           		<!--BeginListaPaisesBlock-->
+           		<option value="{iPaisId}">{sPaisNombre}</option>
+           		<!--EndListaPaisesBlock-->
+           </select>
+    	</div>
+    	<div>
+    	Provincia
+           <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
+          		<option value="">Selecciones una provincia</option>
+           		<!--BeginListaProvinciasBlock-->
+           		<option value="{iProvinciaId}">{sProvinciaNombre}</option>
+           		<!--EndListaProvinciasBlock-->
+           </select>
+    	</div>
+    	<div>
+    	Ciudad
+           <select class="defVal requerido" name="ciudad" id="ciudad" >
+           		<option value="">Selecciones una ciudad</option>
+           		<!--BeginListaCiudadesBlock-->
+           		<option value="{iCiudadId}">{sCiudadNombre}</option>
+           		<!--EndListaCiudadesBlock-->
+           </select>
+    	</div>
+    	<div>
+    	Tipo de Seguimiento
+           <select class="defVal requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
+           		<option value="">Selecciones un tipo</option>
+           		<!--BeginListaTipoDeSeguimientoesBlock-->
+           		<option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
+           		<!--EndListaTipoDeSeguimientoesBlock-->
+           </select>
+    	</div>
+    	<div>
+    	 	<label for="BuscarSeguimiento" class="button buttonConfirm buttonLarge mari3">
+                <button id="buscarSeguimiento" type="button" name="buscarSeguimiento" class="btn01" onclick="searchSeguimiento();">
+                    Buscar Seguimiento
+                </button>
+            </label>
+        </div>
+    </form>
+    </div>
+    <div class="di_no" id="msg_conf"></div>
+    <!--BeginGrillaSeguimientoBlock-->
+	<div id="listadoSeguimientoes">
+       <table class="table01" >
+           <tr class="encabezado">
+               <td>Id</td>
+               <td>Nombre</td>
+               <td>Tipo</td>
+               <td>Ciudad</td>
+               <td>Provincia</td>
+               <td>Pais</td>
+               <td>Ampliar</td>
+               <td>Modificar</td>
+           </tr>
+           <!--BeginListaDeSeguimientoesBlock-->
+           <tr class="{odd}">
+               <td>{iSeguimientoId}</td>
+               <td>{sSeguimientoNombre}</td>
+               <td>{sSeguimientoTipo}</td>
+               <td>{sSeguimientoCiudad}</td>
+               <td>{sSeguimientoProvincia}</td>
+               <td>{sSeguimientoPais}</td>
+               <td><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
+               <!--BeginPermisoEditarSeguimientoBlock-->
+               <td><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
+               <!--EndPermisoEditarSeguimientoBlock-->
+           </tr>
+           <!--EndListaDeSeguimientoesBlock-->
+       </table>
+       {paginacion}
+       <!--EndGrillaSeguimientoBlock-->
+	</div>
+</div> 
+<!--EndListadoSeguimientoesBlock-->
+
+<!--BeginFichaSeguimientoBlock-->
+<div class="ficha02">
+    <h2>{sSeguimientoNombre}</h2>
+    <div>{sSeguimientoTipo}</div>
+    <div>{sSeguimientoDescripcion}</div>
+    <div>{sSeguimientoActividades}</div>
+    <div>{sSeguimientoAutoridades}</div>
+    <div>{sSeguimientoSedes}</div>
+    <div><b>Direccion:</b>{sSeguimientoDireccion}</div>
+    <div>{sSeguimientoCiudad}</div>
+    <div>{sSeguimientoProvincia}</div>
+    <div>{sSeguimientoPais}</div>
+    <div><b>Horarios de atencion :</b>{sSeguimientoHorarios}</div>
+    <div><b>Email: </b>{sSeguimientoEmail}</div>
+    <div><b>Telefono:</b> {sSeguimientoTelefono}</div>
+    <div>{sSeguimientoSitioWeb}</div>
+</div>
+<!--EndFichaSeguimientoBlock-->

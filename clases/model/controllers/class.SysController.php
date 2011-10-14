@@ -120,6 +120,12 @@ class SysController
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
         }catch (Exception $e){}
     }
+    public function buscarUsuarios($filtro,$iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->buscar($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
+        }catch (Exception $e){}
+    }
 
     /**
      * Devuelve el estado de privacidad para un dato de un usuario

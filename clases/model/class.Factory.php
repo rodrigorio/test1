@@ -111,7 +111,23 @@ class Factory
      * @return $oCatgoria|null
      */
     public static function &getCategoriaInstance(stdClass $obj){
-        $oCatgoria = new Categoria($obj);
-        return $oCatgoria;
+        $oCategoria = new Categoria($obj);
+        return $oCategoria;
+    }
+    /**
+     * @param stdClass $obj
+     * @return $oTipoSeguimiento|null
+     */
+    public static function &getTipoSeguimientoInstance(stdClass $obj){
+        $oTipoSeguimiento = new TipoSeguimiento($obj);
+        return $oTipoSeguimiento;
+    }
+    /**
+     * @param stdClass $obj
+     * @return $oTipoPracticasSeguimiento|null
+     */
+    public static function &getTipoPracticasSeguimientoInstance(stdClass $obj){
+        $oTipoPracticasSeguimiento = new TipoPracticasSeguimiento($obj);
+        return $oTipoPracticasSeguimiento;
     }
 }

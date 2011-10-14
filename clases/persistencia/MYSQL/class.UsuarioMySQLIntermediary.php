@@ -75,21 +75,21 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $aUsuarios = array();
             while($oObj = $db->oNextRecord()){
-                $oUsuario 				= new stdClass();
-                $oUsuario->iId 			= $oObj->iId;
-                $oUsuario->sNombre 		= $oObj->sNombre;
+                $oUsuario 		= new stdClass();
+                $oUsuario->iId 		= $oObj->iId;
+                $oUsuario->sNombre 	= $oObj->sNombre;
                 $oUsuario->sApellido 	= $oObj->sApellido;
                 $oUsuario->sNacionalidad 	= $oObj->sNacionalidad;
                 $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
                 $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
-                $oUsuario->sSexo 		= $oObj->sSexo;
+                $oUsuario->sSexo 	= $oObj->sSexo;
                 $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
-                $oUsuario->sEmail 		= $oObj->sEmail;
+                $oUsuario->sEmail 	= $oObj->sEmail;
                 $oUsuario->sTelefono 	= $oObj->sTelefono;
-                $oUsuario->sCelular	 	= $oObj->sCelular;
-                $oUsuario->sFax 		= $oObj->sFax;
+                $oUsuario->sCelular	= $oObj->sCelular;
+                $oUsuario->sFax 	= $oObj->sFax;
                 $oUsuario->sDomicilio 	= $oObj->sDomicilio;
-                $oUsuario->oCiudad 		= null;
+                $oUsuario->oCiudad 	= null;
                 $oUsuario->oInstitucion = null;
                 $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
                 $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
@@ -161,7 +161,103 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     public function actualizarCampoArray($objects, $cambios){}
 
 
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+    public function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+         try{
+            $db = clone($this->conn);
+            //$filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
+                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
+                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
+                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+						p.`documento_tipos_id` as iTipoDocumentoId,
+  						p.`numeroDocumento` as sNumeroDocumento,
+                        u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
+                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
+                        u.invitacionesDisponibles as iInvitacionesDisponibles,
+                        p.nacionalidad as sNacionalidad
+                    FROM
+                        personas p
+                    JOIN usuarios u ON p.id = u.id ";
+            $WHERE = array();
+            if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
+                $WHERE[]= $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+            }
+            if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
+                $WHERE[]= $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['p.id']) && $filtro['p.id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
+            }
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aUsuarios = array();
+            while($oObj = $db->oNextRecord()){
+                $oUsuario 				= new stdClass();
+                $oUsuario->iId 			= $oObj->iId;
+                $oUsuario->sNombre 		= $oObj->sNombre;
+                $oUsuario->sApellido 	= $oObj->sApellido;
+                $oUsuario->sNacionalidad 	= $oObj->sNacionalidad;
+                $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
+                $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
+                $oUsuario->sSexo 		= $oObj->sSexo;
+                $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
+                $oUsuario->sEmail 		= $oObj->sEmail;
+                $oUsuario->sTelefono 	= $oObj->sTelefono;
+                $oUsuario->sCelular	 	= $oObj->sCelular;
+                $oUsuario->sFax 		= $oObj->sFax;
+                $oUsuario->sDomicilio 	= $oObj->sDomicilio;
+                $oUsuario->oCiudad 		= null;
+                $oUsuario->oInstitucion = null;
+                $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal= $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa		= $oObj->sEmpresa;
+                $oUsuario->sUniversidad = $oObj->sUniversidad;
+                $oUsuario->sSecundaria 	= $oObj->sSecundaria;
+                $oUsuario->sSitioWeb 	= $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario 	= $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta 	= $oObj->dFechaAlta;
+                $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
+                //creo el usuario
+                $oUsuario = Factory::getUsuarioInstance($oUsuario);
+
+                //creo el perfil con el usuario asignado
+                $oPerfilAbstract            = new stdClass();
+                $oPerfilAbstract->iId       = $oObj->perfiles_id;
+                $oPerfilAbstract->oUsuario   = $oUsuario;
+                switch($oObj->perfiles_id){
+                    case self::PERFIL_ADMINISTRADOR:{ $oPerfil       = Factory::getAdministradorInstance($oPerfilAbstract); break; }
+                    case self::PERFIL_MODERADOR:{ $oPerfil           = Factory::getModeradorInstance($oPerfilAbstract); break; }
+                    case self::PERFIL_INTEGRANTE_ACTIVO:{ $oPerfil   = Factory::getIntegranteActivoInstance($oPerfilAbstract); break; }
+                    case self::PERFIL_INTEGRANTE_INACTIVO:{ $oPerfil = Factory::getIntegranteInactivoInstance($oPerfilAbstract); break; }
+                }
+
+                $aUsuarios[] = $oPerfil;
+            }
+
+           return $aUsuarios;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+
+    }
 
 	public function registrar(Usuario $oUsuario,$iUserId){
         try{
@@ -283,30 +379,30 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     
     public function sendMail($orig, $dest, $asunto, $body){
     	  // Varios destinatarios
-			$para  = $dest;
-			
-			// subject
-			$titulo = $asunto;
-			
-			// message
-			$mensaje = $body;
-			
-			// Para enviar un correo HTML mail, la cabecera Content-type debe fijarse
-			$cabeceras  = 'MIME-Version: 1.0' . "\r\n";
-			$cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			
-			// Cabeceras adicionales
-			$cabeceras .= "To: ".$dest. "\r\n";
-			$cabeceras .= 'From: Registracion <'.$orig.'>' . "\r\n";
-			$cabeceras .= 'Cc:' . "\r\n";
-			$cabeceras .= 'Bcc: ' . "\r\n";
-			
-			// Mail it
-			if (mail($para, $titulo, $mensaje, $cabeceras)){
-				return true;
-			}else{
-				return false;
-			}
+            $para  = $dest;
+
+            // subject
+            $titulo = $asunto;
+
+            // message
+            $mensaje = $body;
+
+            // Para enviar un correo HTML mail, la cabecera Content-type debe fijarse
+            $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
+            $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+            // Cabeceras adicionales
+            $cabeceras .= "To: ".$dest. "\r\n";
+            $cabeceras .= 'From: Registracion <'.$orig.'>' . "\r\n";
+            $cabeceras .= 'Cc:' . "\r\n";
+            $cabeceras .= 'Bcc: ' . "\r\n";
+
+            // Mail it
+            if (mail($para, $titulo, $mensaje, $cabeceras)){
+                    return true;
+            }else{
+                    return false;
+            }
     }
     
     /**

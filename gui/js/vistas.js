@@ -276,3 +276,26 @@ function paginar(iPage,toUrl,div,params){
 	   	}
 	});
  }
+ function autoCompleteInput(div,action){
+    $( "#"+div ).autocomplete({
+        source: function( request, response ) {
+                $.ajax({
+                        url: action,
+                        dataType: "jsonp",
+                        data: {
+                                limit: 12,
+                                str: request.term
+                        },
+                        success: function( data ) {
+                                response( $.map( data.usuarios, function( item ) {
+                                        return {
+                                                label: item.sNombre,
+                                                value: item.sNombre
+                                        }
+                                }));
+                        }
+                });
+            }  ,
+        minLength: 8
+    });
+ }
