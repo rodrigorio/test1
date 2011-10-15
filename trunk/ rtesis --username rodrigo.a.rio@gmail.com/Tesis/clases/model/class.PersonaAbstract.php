@@ -20,6 +20,10 @@ abstract class PersonaAbstract
     protected $sFax;
     protected $sDomicilio;
     protected $oInstitucion;
+    /*
+     * este atributo es para pedir por demanda el objeto ciudad si $oCiudad = null.
+     */
+    protected $iCiudadId;
     protected $oCiudad;
     protected $sCiudadOrigen;
     protected $sCodigoPostal;

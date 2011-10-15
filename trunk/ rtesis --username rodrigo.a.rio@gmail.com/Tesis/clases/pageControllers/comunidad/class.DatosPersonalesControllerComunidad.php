@@ -35,7 +35,26 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
      */
     public function procesar()
     {
+        //segun que seccion del formulario proceso de manera diferente
+        $seccion = $this->getRequest()->getPost('seccion');
+        switch($seccion){
+            case 'basica': $this->procesarFormInfoBasica(); break;
+            case 'contacto': $this->procesarFormInfoContacto();  break;
+            case 'profesional': $this->procesarFormInfoProfesional(); break;
+            case 'foto': $this->procesarFormFotoPerfil();  break;
+        }
+    }
+    private function procesarFormInfoBasica(){
         
+    }
+    private function procesarFormInfoContacto(){
+
+    }
+    private function procesarFormInfoProfesional(){
+
+    }
+    private function procesarFormFotoPerfil(){
+
     }
 
     /**
@@ -67,11 +86,135 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var($aPrivacidad['celular']."CelularSelected", "selected = 'selected' ");
         $this->getTemplate()->set_var($aPrivacidad['fax']."FaxSelected", "selected = 'selected' ");
         $this->getTemplate()->set_var($aPrivacidad['curriculum']."CurriculumSelected", "selected = 'selected' ");
+
+        //menu con los distintos formularios (info basica, info contacto, etc)
+        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "pageRightInnerMainCont", "MenuHorizontal02Block");
+        $this->getTemplate()->set_var("idOpcion", 'optFormInfoBasica');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=basica');
+        $this->getTemplate()->set_var("sNombreOpcion", "Información básica");
+        $this->getTemplate()->parse("OpcionesMenu", true);
+
+        $this->getTemplate()->set_var("idOpcion", 'optFormInfoContacto');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=contacto');
+        $this->getTemplate()->set_var("sNombreOpcion", "Información Contacto");
+        $this->getTemplate()->parse("OpcionesMenu", true);
+
+        $this->getTemplate()->set_var("idOpcion", 'optFormPerfilProfesional');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=profesional');
+        $this->getTemplate()->set_var("sNombreOpcion", "Perfil Profesional");
+        $this->getTemplate()->parse("OpcionesMenu", true);
+
+        $this->getTemplate()->set_var("idOpcion", 'optFormFotoPerfil');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=foto');
+        $this->getTemplate()->set_var("sNombreOpcion", "Foto de Perfil");
+        $this->getTemplate()->parse("OpcionMenuLastOpt");
         
-        //contenido ppal
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+        //contenido ppal, carga formulario dependiendo una variable por get
+        $seccion = $this->getRequest()->get('seccion');
+        switch($seccion){
+            case 'basica': $this->formInfoBasica(); break;
+            case 'contacto': $this->formInfoContacto();  break;
+            case 'profesional': $this->formInfoProfesional(); break;
+            case 'foto': $this->formFotoPerfil();  break;
+            default: $this->formInfoBasica(); break;
+        }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+    }
+
+    private function formInfoBasica()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoBasicaBlock", true);
+
+        //obtengo los valores iniciales desde el usuario
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+        $tipoDocumentoId = $usuario->getTipoDocumento();
+        $numeroDocumento = $usuario->getNumeroDocumento();
+        $nombre = $usuario->getNombre();
+        $apellido = $usuario->getApellido();
+        $email = $usuario->getEmail();
+        $sexo = $usuario->getSexo();
+        $fechaNacimiento = $usuario->getFechaNacimiento();
+        list($nacimientoAnio, $nacimientoMes, $nacimientoDia) = explode("-", $fechaNacimiento);
+        
+        //armo el select con los tipos de documentos cargados en db
+        $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+        foreach ($aTiposDocumentos as $value => $text){
+            $this->getTemplate()->set_var("iValue", $value);
+            $this->getTemplate()->set_var("sDescripcion", $text);
+            if($tipoDocumentoId == $value){
+                $this->getTemplate()->set_var("sSelected", "selected='selected'");
+            }
+            $this->getTemplate()->parse("OptionSelectDocumento", true);
+            $this->getTemplate()->set_var("sSelected", "");
+        }
+
+        $this->getTemplate()->set_var("sNumeroDocumento", $numeroDocumento);
+        $this->getTemplate()->set_var("sNombre", $nombre);
+        $this->getTemplate()->set_var("sApellido", $apellido);
+        $this->getTemplate()->set_var("sEmail", $email);
+        
+        if($sexo == 'm'){
+            $this->getTemplate()->set_var("sSelectedMasculino", "selected='selected'");
+        }else{
+            $this->getTemplate()->set_var("sSelectedFemenino", "selected='selected'");
+        }
+
+        for($i = 1; $i <= 31; $i++){  
+            $value = (string)$i;
+            if($i<10){ $value = "0".$value; }
+            
+            $this->getTemplate()->set_var("iValue", $value);
+            $this->getTemplate()->set_var("sDescripcion", $value);
+            if($nacimientoDia == $i){
+                $this->getTemplate()->set_var("sSelected", "selected='selected'");
+            }
+            $this->getTemplate()->parse("OptionSelectDia", true);
+            $this->getTemplate()->set_var("sSelected", "");
+        }
+
+        $aMeses = array('01' => 'enero', '02' => 'febrero', '03' => 'marzo', '04' => 'abril', '05' => 'mayo',
+                        '06' => 'junio', '07' => 'julio', '08' => 'agosto', '09' => 'septiembre', '10' => 'octubre',
+                        '11' => 'noviembre', '12' => 'diciembre');
+        
+        foreach ($aMeses as $value => $text){
+            $this->getTemplate()->set_var("iValue", $value);
+            $this->getTemplate()->set_var("sDescripcion", $text);
+            if($nacimientoMes == $value){
+                $this->getTemplate()->set_var("sSelected", "selected='selected'");
+            }
+            $this->getTemplate()->parse("OptionSelectMes", true);
+            $this->getTemplate()->set_var("sSelected", "");
+        }
+
+        $anioActual = date("Y");                
+        for($i = $anioActual; $i >= 1905; $i--){
+            $value = (string)$i;            
+            $this->getTemplate()->set_var("iValue", $value);
+            $this->getTemplate()->set_var("sDescripcion", $value);
+            if($nacimientoAnio == $i){
+                $this->getTemplate()->set_var("sSelected", "selected='selected'");
+            }
+            $this->getTemplate()->parse("OptionSelectAnio", true);
+            $this->getTemplate()->set_var("sSelected", "");
+        }
+        
+    }
+
+    private function formInfoContacto()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoContactoBlock", true);
+    }
+
+    private function formInfoProfesional()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoProfesionalBlock", true);
+    }
+
+    private function formFotoPerfil()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioFotoPerfilBlock", true);
     }
 
     public function modificarPrivacidadCampo()

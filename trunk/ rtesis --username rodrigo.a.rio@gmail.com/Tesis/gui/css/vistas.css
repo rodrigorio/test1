@@ -132,7 +132,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
-.teta_up{text-transform:uppercase}
+.teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
 .co{color:#333 !important}
 .po_re{position:relative !important}
 .veal_mi{vertical-align:middle !important}
@@ -251,8 +251,8 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #msg_top{left:50%; width:480px; text-align:center; overflow:hidden; position:absolute; top:-1px; z-index:10000; margin-left:-250px}
 .msg_form{margin-bottom:10px;}
 .msg_campo_izq, .msg_campo_der{position:absolute; width:200px; z-index:101;}
-.msg_campo_der{left:445px; text-align:left !important}
-.msg_campo_izq{right:445px; text-align:right !important}
+/* left y right se setean por style='' en cada form */
+.msg_campo_der{text-align:left !important} .msg_campo_izq{text-align:right !important}
 /* slides */
 .slide{position:relative; padding-top:20px; margin:20px 0 10px 0; clear:both;}
 .slide .slideExpanded, .slide .slideCollapsed{padding: 5px 5px 5px 0; position:absolute; top:-17px; left:0px}
@@ -464,7 +464,7 @@ p .destacado{font-weight:bold;}
 .defVal{color:#CCC}
 .defVal:focus{color:#333} /* Para textareas e inputs con valores por defecto */
 
-.marca_obligatorio{color:red; font-size:10px; font-weight:bold;}
+.marca_obligatorio{color:red; font-size:12px; font-weight:bold;}
 
 .disabled, .ajaxdelay *{opacity:0.5; filter:alpha(opacity = 40)}
 /* si el contenedor no tiene position relative va a parar a la punta de la pantalla (no esta mal, se puede usar) */
