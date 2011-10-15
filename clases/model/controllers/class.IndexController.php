@@ -77,7 +77,7 @@ class IndexController
             if($oPerfil){
             	$oNuevoPass = $oUsuarioIntermediary->guardarNuevaContrasenia($oPerfil->getUsuario()->getId());
             	if($oNuevoPass){
-	            	$asunto = "Recuperación de contraseña";
+	            	$asunto = "Recuperaciï¿½n de contraseï¿½a";
 					$dest 	= $oPerfil->getUsuario()->getEmail();
 					$orig	= "servicios@sistemadegestion.com";
 					$sToken	= $oNuevoPass->token;
@@ -87,10 +87,10 @@ class IndexController
 								  <title>Usted ha sido invitado para registrarse en .....</title>
 								</head>
 								<body>
-								  <p>Si usted no solicitó cambiar su contraseña omita este mail, en caso contrario 
-								  		haga click en el siguiente enlace para confirmar su nueva contraseña!</p>
+								  <p>Si usted no solicitï¿½ cambiar su contraseï¿½a omita este mail, en caso contrario 
+								  		haga click en el siguiente enlace para confirmar su nueva contraseï¿½a!</p>
 								  <p><a href='".$request->getBaseTagUrl()."confirmarContrasenia?token=$sToken'> Confirmar </a></p>		
-								  <div><p>Nueva contraseña : ".$sNuevaContrasenia."</div>
+								  <div><p>Nueva contraseï¿½a : ".$sNuevaContrasenia."</div>
 								</body>
 							</html>";
 	            	$envio = $oUsuarioIntermediary->sendMail($orig, $dest, $asunto, $body);
@@ -114,7 +114,7 @@ class IndexController
      */
     public function confirmarContrasenia($sToken){
     	try{
-			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $oUsuario = $oUsuarioIntermediary->validarConfirmacionContrasenia($sToken);
             if($oUsuario){
             	return true;
@@ -125,5 +125,14 @@ class IndexController
 			echo $e->getMessage();
 		}
     }
-    
+
+    /**
+     * devuelve array con id de registro y descripcion de documento
+     * para generar el select de tipo documento
+     */
+    public function obtenerTiposDocumentos()
+    {
+        $oDocumentoTiposIntermediary = PersistenceFactory::getDocumentoTiposIntermediary($this->db);
+        return $oDocumentoTiposIntermediary->obtenerTiposDocumentos();
+    }    
 }

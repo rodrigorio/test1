@@ -14,7 +14,187 @@
 </script>
 <!--EndJsContent-->
 
-<!--BeginFormularioBlock-->
+<!--BeginFormularioInfoBasicaBlock-->
+<div class="cl_le pabo3"></div>
+<div class='ficha04 bora grupo' style="width:640px;">
+    <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
+    <form id="formInfoBasica" name="formInfoBasica" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <h2 class="mabo3">Informacion Basica</h2>
+
+        <div id="msg_documento" class="form_line">
+            <label for="documento">
+                <span class="marca_obligatorio">&#8226;</span>
+                Documento
+            </label>
+            <div class="cl_le"></div>
+            <div class="fl_le mari2">
+                <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="tipoDocumento">
+                    <option value="">Tipo:</option>
+                    <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
+                </select>
+            </div>
+            <input style="width:545px" class="defVal" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="{sNumeroDocumento}" />
+        </div>
+
+        <div id="msg_nombre" class="form_line">
+            <label for="nombre">
+                <span class="marca_obligatorio">&#8226;</span>
+                Nombre
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="nombre" id="nombre" title="nombre" maxlength="30" value="{sNombre}" />
+                </div>
+            </div>
+        </div>
+
+        <div id="msg_apellido" class="form_line">
+            <label for="apellido">
+                <span class="marca_obligatorio">&#8226;</span>
+                Apellido
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="apellido" id="apellido" title="apellido" maxlength="40" value="{sApellido}" />
+                </div>
+            </div>
+        </div>
+
+        <div id="msg_email" class="form_line">
+            <label for="email">
+                <span class="marca_obligatorio">&#8226;</span>
+                E-mail
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="email" id="email" title="email" maxlength="70" value="{sEmail}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line teal_ri">
+            <label for="contraseniaActual">
+                <a id="toggleContrasenia" href="#">
+                    Editar Contrase&ntilde;a
+                </a>
+            </label>
+        </div>
+        <div id="contModificarPassword" class="di_no baco1 bora pa2 mabo2">
+            <div id="msg_contraseniaActual" class="form_line">
+                <label for="contraseniaActual">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Actual
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="password" name="contraseniaActual" id="contraseniaActual" title="Contrase&ntilde;a Actual" maxlength="30" />
+                    </div>
+                </div>
+            </div>
+            <div id="msg_contraseniaNueva" class="form_line">
+                <label for="contraseniaNueva">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Nueva
+                </label>
+                <div id="hintContraseniaNueva" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> <span class="msg">La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</span></div>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="password" name="contraseniaNueva" id="contraseniaNueva" title="Contrase&ntilde;a" maxlength="30" />
+                        <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
+                    </div>
+                </div>
+            </div>
+            <div id="msg_contraseniaConfirmar" class="form_line">
+                <label for="contraseniaConfirmar">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Vuelva a ingresar nueva
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="password" name="contraseniaConfirmar" id="contraseniaConfirmar" title="Confirmar Contrase&ntilde;a" maxlength="30" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="msg_sexo" class="form_line">
+            <label for="sexo">
+                <span class="marca_obligatorio">&#8226;</span>
+                Sexo
+            </label>
+            <div class="cl_le"></div>
+            <select style="width:150px" name="sexo" id="sexo" title="sexo">
+                <option value="">Elija Sexo:</option>
+                <option {sSelectedMasculino} value="m">Masculino</option>
+                <option {sSelectedFemenino} value="f">Femenino</option>
+            </select>
+        </div>
+
+        <div id="msg_fechaNacimiento" class="form_line">
+            <label for="fechaNacimientoDia">
+                <span class="marca_obligatorio">&#8226;</span>
+                Fecha de Nacimiento
+            </label>
+            <div class="cl_le"></div>
+            <div class="fl_le mari2">
+                <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia">
+                    <option value="-1">D&iacute;a:</option>
+                    <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
+                </select>
+            </div>
+            <div class="fl_le mari2">
+                <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes">
+                    <option value="">Mes:</option>
+                    <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
+                </select>
+            </div>
+            <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" >
+                <option value="">A&ntilde;o:</option>
+                <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
+            </select>
+        </div>
+       
+        <div class="fl_le">
+            <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
+                <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+                    Actualizar Perfil
+                </button>
+            </label>
+        </div>
+
+        <div id='msg_form_infoBasica' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndFormularioInfoBasicaBlock-->
+
+<!--BeginFormularioInfoContactoBlock-->
+<div class="cl_le pabo3"></div>
+<div class='ficha04 bora grupo' style="width:640px;">
+    <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
+    <form id="formInfoBasica" name="formDatosPersonales" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id='msg_form_datosPersonales' class="msg_form iveal di_no">
+            <span class="bs i"></span>
+            <span class="msg"></span>
+        </div>
+
+        <h2 class="mabo3">Informacion Basica</h2>
+        
+        <div class="fl_le">
+            <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
+                <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+                    Actualizar Perfil
+                </button>
+            </label>
+        </div>
+    </form>
+</div>
+<!--EndFormularioInfoContactoBlock-->
+
+<!--BeginFormularioInfoProfesionalBlock-->
+<div class="cl_le pabo3"></div>
 <div class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
     <form id="formDatosPersonales" name="formDatosPersonales" action="" method="post">
@@ -26,45 +206,6 @@
 
         <h2 class="mabo3">Informacion Basica</h2>
 
-        <div id="msg_documento" class="form_line">
-            <label for="documento">Documento</label>
-            <div class="cl_le"></div>
-            <div class="fl_le mari2">
-                <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="tipoDocumento">
-                    <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
-                </select>
-            </div>
-            <input style="width:545px" class="defVal" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="Numero" />
-        </div>
-
-        <div id="msg_nombre" class="form_line">
-            <label for="nombre">Nombre</label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="nombre" maxlength="30" />
-                </div>
-            </div>
-        </div>
-
-        <div id="msg_apellido" class="form_line">
-            <label for="nombre">Apellido</label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="apellido" id="apellido" title="apellido" maxlength="40" />
-                </div>
-            </div>
-        </div>
-
-        <div id="msg_email" class="form_line">
-            <label for="nombre">E-mail</label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="email" id="email" title="email" maxlength="70" />
-                </div>
-            </div>
-        </div>
-
-
         <div class="fl_le">
             <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
                 <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
@@ -74,7 +215,12 @@
         </div>
     </form>
 </div>
-<!--EndFormularioBlock-->
+<!--EndFormularioInfoProfesionalBlock-->
+
+<!--BeginFormularioFotoPerfilBlock-->
+<div class="cl_le pabo3"></div>
+FOTO PERFIL
+<!--EndFormularioFotoPerfilBlock-->
 
 <!--BeginPageRightInnerContBlock-->
 <h2 class="mabo3">Privacidad</h2>

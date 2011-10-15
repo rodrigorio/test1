@@ -8,7 +8,7 @@
 
 class PersistenceFactory {
 
-	public function __construct() {}
+    public function __construct() {}
 
     public static function getAdministradorIntermediary(IMYSQL $conn)
     {
@@ -50,6 +50,12 @@ class PersistenceFactory {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (IntegranteActivoMySQLIntermediary::getInstance($conn));
         }          
+    }
+    public static function getDocumentoTiposIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (DocumentoTiposMySQLIntermediary::getInstance($conn));
+        }
     }
     public static function getCiudadIntermediary(IMYSQL $conn)
     {
