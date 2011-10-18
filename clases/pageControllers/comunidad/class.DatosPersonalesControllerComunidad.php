@@ -35,6 +35,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
      */
     public function procesar()
     {
+        //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
         //segun que seccion del formulario proceso de manera diferente
         $seccion = $this->getRequest()->getPost('seccion');
         switch($seccion){
@@ -42,10 +45,33 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             case 'contacto': $this->procesarFormInfoContacto();  break;
             case 'profesional': $this->procesarFormInfoProfesional(); break;
             case 'foto': $this->procesarFormFotoPerfil();  break;
+            //ya esta el mail registrado?
+            case 'check-mail-existe': $this->mailDb();  break;
+            //es la contrasenia actual del usuario?
+            case 'check-contrasenia-actual': $this->contraseniaActual(); break;
         }
     }
     private function procesarFormInfoBasica(){
-        
+        try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $tipoDocumento  = $this->getRequest()->getPost("tipoDocumento");
+            $nroDocumento   = $this->getRequest()->getPost("nroDocumento");
+            $nombre         = $this->getRequest()->getPost("nombre");
+            $apellido       = $this->getRequest()->getPost("apellido");
+            $email          = $this->getRequest()->getPost("email");
+            $contraseniaNuevaMD5    = $this->getRequest()->getPost("contraseniaNuevaMD5");
+            $sexo                   = $this->getRequest()->getPost("sexo");
+            $fechaNacimientoDia     = $this->getRequest()->getPost("fechaNacimientoDia");
+            $fechaNacimientoMes     = $this->getRequest()->getPost("fechaNacimientoMes");
+            $fechaNacimientoAnio    = $this->getRequest()->getPost("fechaNacimientoAnio");
+
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
     private function procesarFormInfoContacto(){
 
@@ -56,7 +82,37 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     private function procesarFormFotoPerfil(){
 
     }
+    
+    /**
+     * (AJAX) devuelve 1 si el mail ya existe en la DB asociado a una cuenta que no es la del usuario que modifica sus datos.
+     */
+    private function mailDb(){
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+        $dataResult = '0';
 
+        if(ComunidadController::getInstance()->existeMailDb($this->getRequest()->getPost('email'), $usuario->getId())){
+            $dataResult = '1';
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
+    }
+
+    /**
+     * (AJAX) devuelve 1 si es contrasenia actual, 0 si no es la contrasenia actual
+     */
+    private function contraseniaActual(){
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+        $dataResult = '0';
+
+        if($usuario->getContrasenia() == $this->getRequest()->getPost('contraseniaActual')){
+            $dataResult = '1';
+        }
+        
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
+    }
+    
     /**
      * Vista con el formulario de modificacion de datos personales
      *

@@ -9,8 +9,9 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-   .script("{pathUrlBase}"+"gui/vistas/comunidad/datosPersonales.js")
-   .script("{pathUrlBase}"+"gui/js/vistas.js");
+   .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/comunidad/datosPersonales.js");
 </script>
 <!--EndJsContent-->
 
@@ -23,7 +24,7 @@
 
         <h2 class="mabo3">Informacion Basica</h2>
 
-        <div id="msg_documento" class="form_line">
+        <div class="form_line msg_nroDocumento msg_tipoDocumento">
             <label for="documento">
                 <span class="marca_obligatorio">&#8226;</span>
                 Documento
@@ -35,10 +36,10 @@
                     <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
                 </select>
             </div>
-            <input style="width:545px" class="defVal" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="{sNumeroDocumento}" />
+            <input style="width:545px" class="defVal co" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="{sNumeroDocumento}" />
         </div>
 
-        <div id="msg_nombre" class="form_line">
+        <div class="form_line msg_nombre">
             <label for="nombre">
                 <span class="marca_obligatorio">&#8226;</span>
                 Nombre
@@ -50,7 +51,7 @@
             </div>
         </div>
 
-        <div id="msg_apellido" class="form_line">
+        <div class="form_line msg_apellido">
             <label for="apellido">
                 <span class="marca_obligatorio">&#8226;</span>
                 Apellido
@@ -62,7 +63,7 @@
             </div>
         </div>
 
-        <div id="msg_email" class="form_line">
+        <div class="form_line msg_email">
             <label for="email">
                 <span class="marca_obligatorio">&#8226;</span>
                 E-mail
@@ -82,7 +83,7 @@
             </label>
         </div>
         <div id="contModificarPassword" class="di_no baco1 bora pa2 mabo2">
-            <div id="msg_contraseniaActual" class="form_line">
+            <div class="form_line msg_contraseniaActual">
                 <label for="contraseniaActual">
                     <span class="marca_obligatorio">&#8226;</span>
                     Actual
@@ -90,10 +91,11 @@
                 <div class="fwrap">
                     <div class="inner_fwrap">
                         <input type="password" name="contraseniaActual" id="contraseniaActual" title="Contrase&ntilde;a Actual" maxlength="30" />
+                        <input type="hidden" name="contraseniaActualMD5" id="contraseniaActualMD5" value="" />
                     </div>
                 </div>
             </div>
-            <div id="msg_contraseniaNueva" class="form_line">
+            <div class="form_line msg_contraseniaNueva">
                 <label for="contraseniaNueva">
                     <span class="marca_obligatorio">&#8226;</span>
                     Nueva
@@ -102,11 +104,11 @@
                 <div class="fwrap">
                     <div class="inner_fwrap">
                         <input type="password" name="contraseniaNueva" id="contraseniaNueva" title="Contrase&ntilde;a" maxlength="30" />
-                        <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
+                        <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />
                     </div>
                 </div>
             </div>
-            <div id="msg_contraseniaConfirmar" class="form_line">
+            <div class="form_line msg_contraseniaConfirmar">
                 <label for="contraseniaConfirmar">
                     <span class="marca_obligatorio">&#8226;</span>
                     Vuelva a ingresar nueva
@@ -119,7 +121,7 @@
             </div>
         </div>
         
-        <div id="msg_sexo" class="form_line">
+        <div class="form_line msg_sexo">
             <label for="sexo">
                 <span class="marca_obligatorio">&#8226;</span>
                 Sexo
@@ -132,7 +134,7 @@
             </select>
         </div>
 
-        <div id="msg_fechaNacimiento" class="form_line">
+        <div class="form_line msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
             <label for="fechaNacimientoDia">
                 <span class="marca_obligatorio">&#8226;</span>
                 Fecha de Nacimiento
@@ -140,7 +142,7 @@
             <div class="cl_le"></div>
             <div class="fl_le mari2">
                 <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia">
-                    <option value="-1">D&iacute;a:</option>
+                    <option value="">D&iacute;a:</option>
                     <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
                 </select>
             </div>
@@ -156,15 +158,14 @@
             </select>
         </div>
        
-        <div class="fl_le">
-            <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
-                <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
-                    Actualizar Perfil
-                </button>
-            </label>
-        </div>
+        <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
+            <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+                Actualizar Perfil
+            </button>
+        </label>
 
-        <div id='msg_form_infoBasica' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
+        <div id='msg_form_infoBasica' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <input type="hidden" name="seccion" id="seccion" value="basica" />
     </form>
 </div>
 <!--EndFormularioInfoBasicaBlock-->

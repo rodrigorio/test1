@@ -541,17 +541,18 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     public function guardar($oUsuario)
     {
         try{
-			if($oUsuario->getId() != null){
-            	return $this->actualizar($oUsuario);
+            if($oUsuario->getId() != null){
+                return $this->actualizar($oUsuario);
             }else{
-				return $this->insertar($oUsuario);
+                return $this->insertar($oUsuario);
             }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
+
     public function insertar($oUsuario)
-   {
+    {
 		try{
 			if($oUsuario->getCiudad()!= null){
 				$ciudadId = $oUsuario->getCiudad()->getId();
@@ -808,5 +809,43 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         
         $db->execSQL($sSQL);
         $db->commit();
+    }
+
+    /**
+     * Busca en la DB si existe un mail que este asociado a algun usuario.
+     * Si se le pasa userId exceptua el valor de ese registro
+     */
+    public function existeMailDb($email, $userId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $email = $this->escStr($email);
+            $userId = $this->escInt($userId);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        personas p
+                    JOIN
+                    	usuarios u ON p.id = u.id
+                    WHERE email = ".$email;
+
+            if(!empty($userId)){
+                $sSQL .= " and u.id <> ".$userId;
+            }
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }        
     }
 }
