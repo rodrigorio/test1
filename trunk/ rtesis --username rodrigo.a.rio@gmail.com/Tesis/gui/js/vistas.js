@@ -18,6 +18,7 @@ var MSG_HINT = "hint";
 if(!lang)
 var lang = Array();
 lang['error procesar'] = 'Error al intentar procesar lo solicitado';
+lang['exito procesar'] = 'Los datos se han procesado con éxito';
 
 /* util para cuando el javascript cambia dependiendo el navegador */
 var clientPC = navigator.userAgent.toLowerCase();
@@ -38,7 +39,9 @@ function mensajeValidacion(template, value)
 {
     var mensajes = new Array();
     mensajes['requerido'] = "Este campo es obligatorio";
+    mensajes['requerido2'] = "Debe especificar un {0}";
     mensajes['email'] = "Dirección de correo inválida";
+    mensajes['email2'] = "La cuenta ya se encuentra registrada en el sistema";
     mensajes['url'] = "La URL es inválida o innaccesible";
     mensajes['fecha'] = "La fecha no es válida";
     mensajes['fechaISO'] = "La fecha no es (ISO) válida";
