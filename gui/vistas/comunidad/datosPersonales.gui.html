@@ -241,7 +241,7 @@
         </div>
 
         <div class="form_line msg_direccion">
-            <label for="apellido">
+            <label for="direccion">
                 <span class="marca_obligatorio">&#8226;</span>
                 Direcci&oacute;n <span style="font-style:italic">(Calle, Altura, Dpto.)</span>
             </label>
@@ -302,22 +302,133 @@
 <div class="cl_le pabo3"></div>
 <div class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
-    <form id="formDatosPersonales" name="formDatosPersonales" action="" method="post">
+    <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <div id='msg_form_datosPersonales' class="msg_form iveal di_no">
-            <span class="bs i"></span>
-            <span class="msg"></span>
-        </div>
 
-        <h2 class="mabo3">Informacion Basica</h2>
+        <h2 class="mabo3">Informacion Profesional</h2>
 
-        <div class="fl_le">
-            <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
-                <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
-                    Actualizar Perfil
-                </button>
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Instituci&oacute;n en la que se desempe&ntilde;a
             </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
         </div>
+
+        <div class="pale3">
+            <div class="form_line msg_celular">
+                <label for="celular">
+                    Cargo que desempe&ntilde;a
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Breve Biograf&iacute;a
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="comentarioMensaje" class="defVal maxlength textareaAutoGrow" title="Escribe tu comentario">Escribe tu comentario</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Empresa
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Universidad
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="pale3">
+            <div class="form_line msg_celular">
+                <label for="celular">
+                    Carrera
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form_line msg_celular">
+                <label for="celular">
+                    Finalizada?
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Secundaria
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Sitio Web / Blog
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Especialidad <span style="font-style:italic">(&Aacute;rea de desempe&ntilde;o profesional)</span>
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
+        </div>
+               
+        <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
+            <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+                Actualizar Perfil
+            </button>
+        </label>
+
+        <div id='msg_form_infoProfesional' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <input type="hidden" name="seccion" id="seccion" value="profesional" />
     </form>
 </div>
 <!--EndFormularioInfoProfesionalBlock-->
