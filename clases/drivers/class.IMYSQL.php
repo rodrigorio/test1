@@ -187,13 +187,14 @@ class IMYSQL implements DB
      * @param string $sDateTime (DDMMYYYY HHMMSS)
      * @param bool
      */
-    private function formatDate($sDateTime,$bUseTime = false){
-            if(strlen($sDateTime) < 8){
-                    return null;
-            }
-            list($sDate,$sTime) = split(" ",$sDateTime);
-            list($iDay,$iMonth,$iYear) = split("[/.-]",$sDate);
-            return $bUseTime ? $iYear . "-" . $iMonth . "-" . $iDay . " $sTime" : $iYear . "-" . $iMonth . "-" . $iDay;
+    private function formatDate($sDateTime, $bUseTime = false){
+        if(strlen($sDateTime) < 8){
+            return null;
+        }
+        list($sDate,$sTime) = explode(" ",$sDateTime);
+        list($iDay,$iMonth,$iYear) = preg_split("[/.-]",$sDate);
+        
+        return $bUseTime ? $iYear . "-" . $iMonth . "-" . $iDay . " $sTime" : $iYear . "-" . $iMonth . "-" . $iDay;
     }
 
     /**
@@ -201,7 +202,7 @@ class IMYSQL implements DB
      * @param bool $bQuote
      * @return string
      */
-    public function escape($str=null,$bQuote = false,$iType = MYSQL_TYPE_STRING){
+    public function escape($str=null, $bQuote = false, $iType = MYSQL_TYPE_STRING){
             if (is_null($str) || strlen($str) == 0){
                     return "NULL";
             }

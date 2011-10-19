@@ -71,14 +71,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $fechaNacimientoAnio    = $this->getRequest()->getPost("fechaNacimientoAnio");
             $aFechaNacimiento = array($fechaNacimientoAnio, $fechaNacimientoMes, $fechaNacimientoDia);
             $fechaNacimiento = implode('-', $aFechaNacimiento);
-            $fechaNacimiento .= " 00:00";
 
             $usuario->setTipoDocumento($tipoDocumento);
             $usuario->setNumeroDocumento($nroDocumento);
             $usuario->setNombre($nombre);
             $usuario->setApellido($apellido);
             $usuario->setEmail($email);
-            //todos los demas son obligatorios
+            //sino se borra la que ya estaba
             if(!empty($contraseniaNuevaMD5)){
                 $usuario->setContrasenia($contraseniaNuevaMD5);
             }
@@ -95,7 +94,38 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     }
 
     private function procesarFormInfoContacto(){
+        try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
 
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+
+            $iCiudadId      = $this->getRequest()->getPost("ciudad");            
+            $sCiudadOrigen  = $this->getRequest()->getPost("ciudadOrigen");
+            $sCodigoPostal  = $this->getRequest()->getPost("codigoPostal");
+            $sDomicilio     = $this->getRequest()->getPost("direccion");
+            $sTelefono      = $this->getRequest()->getPost("telefono");
+            $sCelular       = $this->getRequest()->getPost("celular");
+            $sFax           = $this->getRequest()->getPost("fax");
+
+            //internamente se fija de levantar de nuevo el objeto ciudad si es != null
+            $usuario->setCiudadId($iCiudadId);
+            $usuario->setCiudadOrigen($sCiudadOrigen);
+            $usuario->setCodigoPostal($sCodigoPostal);
+            $usuario->setDomicilio($sDomicilio);
+            $usuario->setTelefono($sTelefono);
+            //estos dos no son obligatorios, si se envian con cadena vacia elimina los valores viejos
+            $usuario->setCelular($sCelular);
+            $usuario->setFax($sFax);
+            
+            ComunidadController::getInstance()->guardarUsuario($usuario);
+
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
     private function procesarFormInfoProfesional(){
@@ -277,8 +307,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             }
             $this->getTemplate()->parse("OptionSelectAnio", true);
             $this->getTemplate()->set_var("sSelected", "");
-        }
-        
+        }        
     }
 
     private function formInfoContacto()
@@ -287,7 +316,6 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
-
 
         $arrayPaises = array();
         $iRecordsTotalPais = 0;
@@ -327,7 +355,21 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sCiudadNombre", $oCiudad->getNombre());
                 $this->getTemplate()->parse("ListaCiudadesBlock", true);
             }
-        }            
+        }
+
+        $sCiudadOrigen   = $usuario->getCiudadOrigen();
+        $sCodigoPostal   = $usuario->getCodigoPostal();
+        $sDomicilio      = $usuario->getDomicilio();
+        $sTelefono       = $usuario->getTelefono();
+        $sCelular        = $usuario->getCelular();
+        $sFax            = $usuario->getFax();
+
+        $this->getTemplate()->set_var("sCiudadOrigen", $sCiudadOrigen);
+        $this->getTemplate()->set_var("sCodigoPostal", $sCodigoPostal);
+        $this->getTemplate()->set_var("sDireccion", $sDomicilio);
+        $this->getTemplate()->set_var("sTelefono", $sTelefono);
+        $this->getTemplate()->set_var("sCelular", $sCelular);
+        $this->getTemplate()->set_var("sFax", $sFax);
     }
 
     private function formInfoProfesional()

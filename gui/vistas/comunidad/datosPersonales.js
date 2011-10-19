@@ -156,7 +156,7 @@ $("#formInfoBasica").validate(validateFormInfoBasica);
 
 var optionsAjaxFormInfoBasica = {
     dataType: 'jsonp',
-    resetForm: true,
+    resetForm: false,
     url: 'comunidad/datos-personales-procesar',
 
     beforeSerialize: function($form, options){
@@ -198,11 +198,11 @@ $("#formInfoBasica").ajaxForm(optionsAjaxFormInfoBasica);
 function listaProvinciasByPais(idPais){
     //si el valor elegido es '' entonces marco como disabled
     if(idPais == ''){ 
-        $('#provincia').addClass("disabled");
-        $('#ciudad').addClass("disabled");
+        $('#provincia').addClass("disabled");        
     }else{
         $('#provincia').removeClass("disabled");
     }
+    $('#ciudad').addClass("disabled");
     
     $.ajax({
         type: "POST",
@@ -259,4 +259,79 @@ function listaCiudadesByProvincia(idProvincia){
 }
 $("#pais").change(function(){ listaProvinciasByPais($("#pais option:selected").val()); });
 $("#provincia").change(function(){ listaCiudadesByProvincia($("#provincia option:selected").val()); });
+
+//validacion y submit form info contacto
+var validateFormInfoContacto = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        pais:{required:true, digits: true},
+        provincia:{required:function(element){
+                            return $("#pais option:selected").val() != "";
+                  }, digits: true},
+        ciudad:{required:function(element){
+                            return $("#provincia option:selected").val() != "";
+               }, digits: true},
+        codigoPostal:{required:true},
+        direccion:{required:true},
+        telefono:{required:true}
+    },
+    messages:{
+        pais:{
+            required: mensajeValidacion("requerido"),
+            digits: mensajeValidacion("digitos")
+        },
+        provincia:{
+            required: mensajeValidacion("requerido"),
+            digits: mensajeValidacion("digitos")
+        },
+        ciudad:{
+            required: mensajeValidacion("requerido"),
+            digits: mensajeValidacion("digitos")            
+        },
+        codigoPostal: mensajeValidacion("requerido"),
+        direccion: mensajeValidacion("requerido"),
+        telefono: mensajeValidacion("requerido")
+    }
+}
+$("#formInfoContacto").validate(validateFormInfoContacto);
+
+var optionsAjaxFormInfoContacto = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'comunidad/datos-personales-procesar',
+
+    beforeSerialize: function($form, options){
+        if($("#formInfoContacto").valid() == true){
+            $('#msg_form_infoContacto').hide();
+            $('#msg_form_infoContacto').removeClass("correcto").removeClass("error");
+            $('#msg_form_infoContacto .msg').html("");
+            setWaitingStatus('formInfoContacto', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formInfoContacto', false);
+        if(data.success == undefined || data.success == 0){
+            $('#msg_form_infoContacto .msg').html(lang['error procesar']);
+            $('#msg_form_infoContacto').addClass("error").fadeIn('slow');
+        }else{
+            $('#msg_form_infoContacto .msg').html(lang['exito procesar']);
+            $('#msg_form_infoContacto').addClass("correcto").fadeIn('slow');
+        }
+    }
+};
+$("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
 
