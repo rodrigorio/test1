@@ -174,22 +174,57 @@
 <div class="cl_le pabo3"></div>
 <div class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
-    <form id="formInfoBasica" name="formDatosPersonales" action="" method="post">
+    <form id="formInfoContacto" name="formInfoContacto" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <div id='msg_form_datosPersonales' class="msg_form iveal di_no">
-            <span class="bs i"></span>
-            <span class="msg"></span>
+
+        <h2 class="mabo3">Informacion de Contacto</h2>
+
+        <div id="selectsUbicacion" class="grupo">
+        <div class="form_line msg_pais">
+            <label for="pais">
+                <span class="marca_obligatorio">&#8226;</span>
+                Pa&iacute;s
+            </label>
+            <div class="cl_le"></div>
+            <select style="width:250px" name="pais" id="pais" title="pais">
+                <option value="">Elija Pa&iacute;s:</option>
+                <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sDatosPersonalesPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
+            </select>
         </div>
 
-        <h2 class="mabo3">Informacion Basica</h2>
-        
-        <div class="fl_le">
-            <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
-                <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
-                    Actualizar Perfil
-                </button>
+        <div class="form_line msg_provincia">
+            <label for="provincia">
+                <span class="marca_obligatorio">&#8226;</span>
+                Provincia
             </label>
+            <div class="cl_le"></div>
+            <select style="width:250px" name="provincia" id="provincia" title="provincia">
+                <option value="">Elija Provincia:</option>
+                <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sDatosPersonalesProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
+            </select>
         </div>
+
+        <div class="form_line msg_ciudad">
+            <label for="ciudad">
+                <span class="marca_obligatorio">&#8226;</span>
+                Ciudad
+            </label>
+            <div class="cl_le"></div>
+            <select style="width:250px" name="ciudad" id="ciudad" title="ciudad">
+                <option value="">Elija Ciudad:</option>
+                <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sDatosPersonalesCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
+            </select>
+        </div>
+        </div>
+                
+        <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
+            <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+                Actualizar Perfil
+            </button>
+        </label>
+
+        <div id='msg_form_infoBasica' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <input type="hidden" name="seccion" id="seccion" value="contacto" />
     </form>
 </div>
 <!--EndFormularioInfoContactoBlock-->

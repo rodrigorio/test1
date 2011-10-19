@@ -194,3 +194,69 @@ var optionsAjaxFormInfoBasica = {
 $("#formInfoBasica").ajaxForm(optionsAjaxFormInfoBasica);
 
 
+//combo pais provincia ciudad form info contacto
+function listaProvinciasByPais(idPais){
+    //si el valor elegido es '' entonces marco como disabled
+    if(idPais == ''){ 
+        $('#provincia').addClass("disabled");
+        $('#ciudad').addClass("disabled");
+    }else{
+        $('#provincia').removeClass("disabled");
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "comunidad/provinciasByPais",
+        data: "iPaisId="+idPais,
+        beforeSend: function(){
+            setWaitingStatus('selectsUbicacion', true);
+        },
+        success: function(data){
+            var lista = $.parseJSON(data);
+            $('#provincia').html("");
+            //dejo vacio el de ciudad si cambio de pais hasta que elija una provincia
+            $('#ciudad').html("");
+            $('#ciudad').html(new Option('Elija Ciudad:', '',true));
+            if(lista.length != undefined && lista.length > 0){
+                $('#provincia').append(new Option('Elija Provincia:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#provincia').append(new Option(lista[i].sNombre, lista[i].id));
+                }
+            }else{
+                $('#provincia').html(new Option('Elija Provincia:', '',true));                
+            }
+            setWaitingStatus('selectsUbicacion', false);
+        }
+    });
+ }
+function listaCiudadesByProvincia(idProvincia){
+    if(idProvincia == ''){
+        $('#ciudad').addClass("disabled");
+    }else{
+        $('#ciudad').removeClass("disabled");
+    }
+    $.ajax({
+        type: "POST",
+        url: "comunidad/ciudadesByProvincia",
+        data: "iProvinciaId="+idProvincia,
+        beforeSend: function(){
+            setWaitingStatus('selectsUbicacion', true);
+        },
+        success: function(data){
+            var lista = $.parseJSON(data);
+            $('#ciudad').html("");
+            if(lista.length != undefined && lista.length > 0){
+                $('#ciudad').append(new Option('Elija Ciudad:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#ciudad').append(new Option(lista[i].sNombre, lista[i].id));
+                }
+            }else{
+                $('#ciudad').append(new Option('Elija Ciudad:', '',true));
+            }
+            setWaitingStatus('selectsUbicacion', false);
+        }
+    });
+}
+$("#pais").change(function(){ listaProvinciasByPais($("#pais option:selected").val()); });
+$("#provincia").change(function(){ listaCiudadesByProvincia($("#provincia option:selected").val()); });
+

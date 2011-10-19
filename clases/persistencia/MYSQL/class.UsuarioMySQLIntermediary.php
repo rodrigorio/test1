@@ -47,10 +47,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
                         p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
                         p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        p.ciudades_id as iCiudadId,
                         p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
-						p.`documento_tipos_id` as iTipoDocumentoId,
-  						p.`numeroDocumento` as sNumeroDocumento,
+                        p.`documento_tipos_id` as iTipoDocumentoId,
+                        p.`numeroDocumento` as sNumeroDocumento,
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
@@ -89,6 +90,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sCelular	= $oObj->sCelular;
                 $oUsuario->sFax 	= $oObj->sFax;
                 $oUsuario->sDomicilio 	= $oObj->sDomicilio;
+                $oUsuario->iCiudadId    = $oObj->iCiudadId; //para sacar objeto ciudad por demanda
                 $oUsuario->oCiudad 	= null;
                 $oUsuario->oInstitucion = null;
                 $oUsuario->sCiudadOrigen= $oObj->sCiudadOrigen;
