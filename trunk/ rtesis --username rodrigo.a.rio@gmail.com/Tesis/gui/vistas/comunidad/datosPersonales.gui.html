@@ -31,7 +31,7 @@
             </label>
             <div class="cl_le"></div>
             <div class="fl_le mari2">
-                <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="tipoDocumento">
+                <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
                     <option value="">Tipo:</option>
                     <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
                 </select>
@@ -46,7 +46,7 @@
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="nombre" maxlength="30" value="{sNombre}" />
+                    <input type="text" name="nombre" id="nombre" title="Nombre" maxlength="30" value="{sNombre}" />
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="apellido" id="apellido" title="apellido" maxlength="40" value="{sApellido}" />
+                    <input type="text" name="apellido" id="apellido" title="Apellido" maxlength="40" value="{sApellido}" />
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="email" id="email" title="email" maxlength="70" value="{sEmail}" />
+                    <input type="text" name="email" id="email" title="E-mail" maxlength="70" value="{sEmail}" />
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
                 <div id="hintContraseniaNueva" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> <span class="msg">La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</span></div>
                 <div class="fwrap">
                     <div class="inner_fwrap">
-                        <input type="password" name="contraseniaNueva" id="contraseniaNueva" title="Contrase&ntilde;a" maxlength="30" />
+                        <input type="password" name="contraseniaNueva" id="contraseniaNueva" title="Nueva Contrase&ntilde;a" maxlength="30" />
                         <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />
                     </div>
                 </div>
@@ -127,7 +127,7 @@
                 Sexo
             </label>
             <div class="cl_le"></div>
-            <select style="width:150px" name="sexo" id="sexo" title="sexo">
+            <select style="width:150px" name="sexo" id="sexo" title="Sexo">
                 <option value="">Elija Sexo:</option>
                 <option {sSelectedMasculino} value="m">Masculino</option>
                 <option {sSelectedFemenino} value="f">Femenino</option>
@@ -141,18 +141,18 @@
             </label>
             <div class="cl_le"></div>
             <div class="fl_le mari2">
-                <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia">
+                <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
                     <option value="">D&iacute;a:</option>
                     <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
                 </select>
             </div>
             <div class="fl_le mari2">
-                <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes">
+                <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
                     <option value="">Mes:</option>
                     <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
                 </select>
             </div>
-            <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" >
+            <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
                 <option value="">A&ntilde;o:</option>
                 <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
             </select>
@@ -186,7 +186,7 @@
                 Pa&iacute;s
             </label>
             <div class="cl_le"></div>
-            <select style="width:250px" name="pais" id="pais" title="pais">
+            <select style="width:250px" name="pais" id="pais" title="Pais">
                 <option value="">Elija Pa&iacute;s:</option>
                 <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sDatosPersonalesPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
             </select>
@@ -198,7 +198,7 @@
                 Provincia
             </label>
             <div class="cl_le"></div>
-            <select style="width:250px" name="provincia" id="provincia" title="provincia">
+            <select style="width:250px" name="provincia" id="provincia" title="Provincia">
                 <option value="">Elija Provincia:</option>
                 <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sDatosPersonalesProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
             </select>
@@ -210,20 +210,89 @@
                 Ciudad
             </label>
             <div class="cl_le"></div>
-            <select style="width:250px" name="ciudad" id="ciudad" title="ciudad">
+            <select style="width:250px" name="ciudad" id="ciudad" title="Ciudad">
                 <option value="">Elija Ciudad:</option>
                 <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sDatosPersonalesCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
             </select>
         </div>
         </div>
-                
+
+        <div class="form_line msg_ciudadOrigen">
+            <label for="ciudadOrigen">
+                Ciudad de Origen
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="ciudadOrigen" id="ciudadOrigen" title="Ciudad de Origen" maxlength="60" value="{sCiudadOrigen}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_codigoPostal">
+            <label for="codigoPostal">
+                <span class="marca_obligatorio">&#8226;</span>
+                C&oacute;digo Postal
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="codigoPostal" id="codigoPostal" title="Codigo Postal" maxlength="20" value="{sCodigoPostal}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_direccion">
+            <label for="apellido">
+                <span class="marca_obligatorio">&#8226;</span>
+                Direcci&oacute;n <span style="font-style:italic">(Calle, Altura, Dpto.)</span>
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="direccion" id="direccion" title="Direccion" maxlength="60" value="{sDireccion}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_telefono">
+            <label for="telefono">
+                <span class="marca_obligatorio">&#8226;</span>
+                Tel&eacute;fono de Contacto
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="telefono" id="telefono" title="Telefono" maxlength="40" value="{sTelefono}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_celular">
+            <label for="celular">
+                Celular
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_fax">
+            <label for="fax">
+                Fax
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="fax" id="fax" title="Fax" maxlength="40" value="{sFax}" />
+                </div>
+            </div>
+        </div>
+                        
         <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
             <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
                 Actualizar Perfil
             </button>
         </label>
 
-        <div id='msg_form_infoBasica' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <div id='msg_form_infoContacto' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
         <input type="hidden" name="seccion" id="seccion" value="contacto" />
     </form>
 </div>

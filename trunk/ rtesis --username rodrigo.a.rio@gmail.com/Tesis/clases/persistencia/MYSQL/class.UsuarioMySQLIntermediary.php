@@ -505,11 +505,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-            		" nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
+                    " nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
+                    " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE).",".
+                    " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".
                     " email =".$db->escape($oUsuario->getEmail(),true).", " .
                     " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
                     " celular =".$db->escape($oUsuario->getCelular(),true).", " .
@@ -587,7 +587,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE).", " .
+                    " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".
                     " email =".$db->escape($oUsuario->getEmail(),true).", " .
                     " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
                     " celular =".$db->escape($oUsuario->getCelular(),true).", " .

@@ -89,8 +89,15 @@ abstract class PersonaAbstract
         $this->oInstitucion = $oInstitucion;
     }
 
+    /**
+     * Si se setea el id de ciudad y ya hay un objeto ciudad cargado
+     * se fija si corresponde a la misma ciudad, de lo contrario levanta de nuevo el objeto
+     */
     public function setCiudadId($iCiudadId){
-        $this->$iCiudadId = $iCiudadId;
+        $this->iCiudadId = $iCiudadId;
+        if(null !== $this->oCiudad && $this->oCiudad->getId() != $iCiudadId){
+            $this->oCiudad = ComunidadController::getInstance()->getCiudadById($iCiudadId);
+        }
     }
 
     public function setCiudad($oCiudad){
