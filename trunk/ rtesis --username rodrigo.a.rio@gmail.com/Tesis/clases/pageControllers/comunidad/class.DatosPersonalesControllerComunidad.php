@@ -56,6 +56,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
 
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+
             $tipoDocumento  = $this->getRequest()->getPost("tipoDocumento");
             $nroDocumento   = $this->getRequest()->getPost("nroDocumento");
             $nombre         = $this->getRequest()->getPost("nombre");
@@ -66,6 +69,23 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $fechaNacimientoDia     = $this->getRequest()->getPost("fechaNacimientoDia");
             $fechaNacimientoMes     = $this->getRequest()->getPost("fechaNacimientoMes");
             $fechaNacimientoAnio    = $this->getRequest()->getPost("fechaNacimientoAnio");
+            $aFechaNacimiento = array($fechaNacimientoAnio, $fechaNacimientoMes, $fechaNacimientoDia);
+            $fechaNacimiento = implode('-', $aFechaNacimiento);
+            $fechaNacimiento .= " 00:00";
+
+            $usuario->setTipoDocumento($tipoDocumento);
+            $usuario->setNumeroDocumento($nroDocumento);
+            $usuario->setNombre($nombre);
+            $usuario->setApellido($apellido);
+            $usuario->setEmail($email);
+            //todos los demas son obligatorios
+            if(!empty($contraseniaNuevaMD5)){
+                $usuario->setContrasenia($contraseniaNuevaMD5);
+            }
+            $usuario->setSexo($sexo);
+            $usuario->setFechaNacimiento($fechaNacimiento);
+
+            ComunidadController::getInstance()->guardarUsuario($usuario);
 
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
@@ -73,12 +93,15 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         }
         $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
+
     private function procesarFormInfoContacto(){
 
     }
+
     private function procesarFormInfoProfesional(){
 
     }
+    
     private function procesarFormFotoPerfil(){
 
     }
@@ -261,6 +284,50 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     private function formInfoContacto()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoContactoBlock", true);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+
+
+        $arrayPaises = array();
+        $iRecordsTotalPais = 0;
+        $listaPaises = ComunidadController::getInstance()->listaPaises($arrayPaises, $iRecordsTotalPais, null,  null,  null,  null);
+        foreach ($listaPaises as $oPais){
+            if(null !== $usuario->getCiudadId() && $usuario->getCiudad()->getProvincia()->getPais()->getId() == $oPais->getId()){
+                $this->getTemplate()->set_var("sDatosPersonalesPaisSelect", "selected='selected'");
+            }else{
+                $this->getTemplate()->set_var("sDatosPersonalesPaisSelect", "");
+            }
+            $this->getTemplate()->set_var("iPaisId", $oPais->getId());
+            $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
+            $this->getTemplate()->parse("ListaPaisesBlock", true);
+        }
+
+        if(null !== $usuario->getCiudadId()){
+            $listaProvincias = ComunidadController::getInstance()->listaProvinciasByPais($usuario->getCiudad()->getProvincia()->getPais()->getId());
+            foreach ($listaProvincias as $oProvincia){
+                if($usuario->getCiudad()->getProvincia()->getId() == $oProvincia->getId()){
+                    $this->getTemplate()->set_var("sDatosPersonalesProvinciaSelect", "selected='selected'");
+                }else{
+                    $this->getTemplate()->set_var("sDatosPersonalesProvinciaSelect", "");
+                }
+                $this->getTemplate()->set_var("iProvinciaId", $oProvincia->getId());
+                $this->getTemplate()->set_var("sProvinciaNombre", $oProvincia->getNombre());
+                $this->getTemplate()->parse("ListaProvinciasBlock", true);
+            }
+
+            $listaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($usuario->getCiudad()->getProvincia()->getId());
+            foreach($listaCiudades as $oCiudad){
+                if($usuario->getCiudad()->getId() == $oCiudad->getId()){
+                    $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "selected='selected'");
+                }else{
+                    $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "");
+                }
+                $this->getTemplate()->set_var("iCiudadId", $oCiudad->getId());
+                $this->getTemplate()->set_var("sCiudadNombre", $oCiudad->getNombre());
+                $this->getTemplate()->parse("ListaCiudadesBlock", true);
+            }
+        }            
     }
 
     private function formInfoProfesional()

@@ -89,6 +89,10 @@ abstract class PersonaAbstract
         $this->oInstitucion = $oInstitucion;
     }
 
+    public function setCiudadId($iCiudadId){
+        $this->$iCiudadId = $iCiudadId;
+    }
+
     public function setCiudad($oCiudad){
         $this->oCiudad = $oCiudad;
     }
@@ -150,9 +154,13 @@ abstract class PersonaAbstract
        return $this->sEmail;
     }
 
+    public function getCiudadId(){
+    	return $this->iCiudadId;
+    }
+
     public function getCiudad(){
     	if($this->oCiudad == null){
-    		//$this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iId);///ver esto
+            $this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
     	}
     	return $this->oCiudad;
     }

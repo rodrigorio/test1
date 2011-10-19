@@ -90,7 +90,7 @@ class RegistracionControllerIndex extends PageControllerAbstract
 	        $sSex	 	= $this->getRequest()->getPost("sex");
 	        $iUserId 	= $this->getRequest()->getPost("us");
 	        $iInvId	 	= $this->getRequest()->getPost("inv");
-	        $dFechaNacimiento	 	= trim($this->getRequest()->getPost("fechaNacimiento"));
+	        $dFechaNacimiento = trim($this->getRequest()->getPost("fechaNacimiento"));
 	        $oObj		= new stdClass();
 	        $oObj->iId 	= $iInvId;
 	        $oObj->sNombreUsuario 	= $sUserName;

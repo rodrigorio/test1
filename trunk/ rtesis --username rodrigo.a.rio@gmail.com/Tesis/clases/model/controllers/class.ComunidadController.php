@@ -132,7 +132,7 @@ class ComunidadController
     /**
      *
      */
-    public function getCiudadById($iId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function getCiudadById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $filtro = array('c.id' => $iId);
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
@@ -248,5 +248,17 @@ class ComunidadController
         }catch(Exception $e){
             echo $e->getMessage();
         }            
+    }
+
+    /**
+     * @param stdClass $obj
+     */
+    public function guardarUsuario($oUsuario){
+    	try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oUsuarioIntermediary->guardar($oUsuario);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
 }
