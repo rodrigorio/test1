@@ -54,8 +54,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.`numeroDocumento` as sNumeroDocumento,
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
-                        u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        p.nacionalidad as sNacionalidad
+                        u.invitacionesDisponibles as iInvitacionesDisponibles
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id ";
                     if(!empty($filtro)){
@@ -80,7 +79,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->iId 		= $oObj->iId;
                 $oUsuario->sNombre 	= $oObj->sNombre;
                 $oUsuario->sApellido 	= $oObj->sApellido;
-                $oUsuario->sNacionalidad 	= $oObj->sNacionalidad;
                 $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
                 $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
                 $oUsuario->sSexo 	= $oObj->sSexo;
@@ -175,12 +173,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
                         p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
-						p.`documento_tipos_id` as iTipoDocumentoId,
-  						p.`numeroDocumento` as sNumeroDocumento,
+                        p.`documento_tipos_id` as iTipoDocumentoId,
+                        p.`numeroDocumento` as sNumeroDocumento,
                         u.sitioWeb as sSitioWeb, u.perfiles_id, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
-                        u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        p.nacionalidad as sNacionalidad
+                        u.invitacionesDisponibles as iInvitacionesDisponibles
                     FROM
                         personas p
                     JOIN usuarios u ON p.id = u.id ";
@@ -214,7 +211,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->iId 			= $oObj->iId;
                 $oUsuario->sNombre 		= $oObj->sNombre;
                 $oUsuario->sApellido 	= $oObj->sApellido;
-                $oUsuario->sNacionalidad 	= $oObj->sNacionalidad;
                 $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
                 $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
                 $oUsuario->sSexo 		= $oObj->sSexo;
@@ -280,27 +276,27 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$sSQL =	" update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
                     " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE);
-					if($oUsuario->getEmail()){
-	                	$sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
-					}
-					$sSQL .=" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
-			 $sSQL =" insert usuarios ".
-			        " set id=  ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ".
+                    if($oUsuario->getEmail()){
+                        $sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
+                    }
+                    $sSQL .=" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
+                    $db->execSQL($sSQL);
+
+                    $sSQL =" insert usuarios ".
+		    " set id=  ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ".
                     " perfiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ".
                     " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ".
                     " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
 
-			 $db->execSQL($sSQL);
-			 $sSQL =" update usuario_x_invitado ".
-			        " SET estado = 'aceptada' ".
-			        " WHERE usuarios_id= ".$db->escape($iUserId,false,MYSQL_TYPE_INT)." ".
-                    " AND invitados_id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
+                     $db->execSQL($sSQL);
+                     $sSQL =" update usuario_x_invitado ".
+                            " SET estado = 'aceptada' ".
+                            " WHERE usuarios_id= ".$db->escape($iUserId,false,MYSQL_TYPE_INT)." ".
+                            " AND invitados_id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
 			 $db->commit();
 		}catch(Exception $e){
@@ -505,7 +501,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " update personas " .
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-                    " nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
                     " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
@@ -583,8 +578,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			$sSQL =	" insert into personas ".
                     " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
                     " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-					" nacionalidad =".$db->escape($oUsuario->getNacionalidad(),true).", " .
-					" documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
                     " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".

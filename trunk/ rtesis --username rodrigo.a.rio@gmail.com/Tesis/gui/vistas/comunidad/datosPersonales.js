@@ -335,3 +335,6 @@ var optionsAjaxFormInfoContacto = {
 };
 $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
 
+//form informacion profesional
+
+autoCompleteInput("institucion","comunidad/buscar-instituciones");

@@ -9,7 +9,6 @@ abstract class PersonaAbstract
     protected $iId;
     protected $sNombre;
     protected $sApellido;
-    protected $sNacionalidad;
     protected $sSexo;
     protected $iTipoDocumentoId;
     protected $sNumeroDocumento;
@@ -43,10 +42,6 @@ abstract class PersonaAbstract
 
     public function setApellido($sApellido){
         $this->sApellido = $sApellido;
-    }
-
-    public function setNacionalidad($sNacionalidad){
-        $this->sNacionalidad = $sNacionalidad;
     }
 
     public function setSexo($sSexo){
@@ -135,10 +130,6 @@ abstract class PersonaAbstract
 
     public function getApellido(){
         return $this->sApellido;
-    }
-
-    public function getNacionalidad(){
-        return $this->sNacionalidad;
     }
 
     public function getSexo(){
