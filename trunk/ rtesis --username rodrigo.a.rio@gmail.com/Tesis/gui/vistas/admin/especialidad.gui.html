@@ -15,7 +15,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
-   .script("{pathUrlBase}"+"gui/vistas/admin/categoria.js");
+   .script("{pathUrlBase}"+"gui/vistas/admin/especialidad.js");
 </script>
 <!--EndJsContent-->
 
@@ -38,29 +38,29 @@
     <h2>Administrador BackEnd del Sistema</h2>
 </header>
 <section>
-    <h3>Administrar Categorias</h3>
+    <h3>Administrar especialidades</h3>
     <nav class="">
     <ul>
-        <li><a href="{sHrefCategoriaListar}" >Listar categorias</a></li>
-        <li><a href="{sHrefCategoriaCargar}" class="default-sidetab">Nueva categorias</a></li>
+        <li><a href="{sHrefEspecialidadListar}" >Listar especialidades</a></li>
+        <li><a href="{sHrefEspecialidadCargar}" class="default-sidetab">Nueva especialidades</a></li>
     </ul>
 </nav>
 </section>
 
-<!--BeginCargarCategoriaBlock-->
+<!--BeginCargarEspecialidadBlock-->
 <div class="sidetab default-sidetab" id="sidetab2">
     <h3></h3>
-    <form action="admin/procesar-categoria" method="post" name="nueva-categoria" >
+    <form action="admin/procesar-especialidad" method="post" name="nueva-especialidad" >
         <fieldset>
-                <legend>Nueva categoria.</legend>
+                <legend>Nueva especialidad.</legend>
                 <dl>
                     <dt>
                         <label>Nombre</label>
                     </dt>
                     <dd>
-                        <input type="hidden" name="id" value="{iCategoriaId}">
+                        <input type="hidden" name="id" value="{iEspecialidadId}">
                         <input type="text" class="small" name="nombre" value="{sNombre}">
-                        <p>Nombre de la categoria.</p>
+                        <p>Nombre de la especialidad.</p>
                     </dd>
                     <dt>
                         <label>Descripcion</label>
@@ -75,12 +75,12 @@
         <button type="submit">Submit</button> or <a href="javascript: reset();">Cancel</a>
     </form>
 </div>
-<!--EndCargarCategoriaBlock-->
+<!--EndCargarEspecialidadBlock-->
 
-<!--BeginListadoCategoriasBlock-->
-<div class="col2" id="categorias">
-<form name="editacategoriadmin/editar-categoria" method="post">
-  	<input type="hidden" name="iCategoriaId" id="iCategoriaId">
+<!--BeginListadoEspecialidadesBlock-->
+<div class="col2" id="especialidades">
+<form name="editar" action="admin/editar-especialidad" method="post">
+  	<input type="hidden" name="iEspecialidadId" id="iEspecialidadId">
 </form>
 <table class="datatable">
     <thead>
@@ -93,24 +93,24 @@
         </tr>
     </thead>
     <tbody>
-    <!--BeginListaCategoriasBlock-->
+    <!--BeginListaEspecialidadesBlock-->
         <tr class="{odd}">
         	<td>
         	<input type="checkbox">
         	</td>
             <td>{sNombre}</td>
             <td>{sDescripcion}</td>
-            <td><span class="i bs edit" onclick="editarCategoria({iCategoriaId});"></span></td>
-            <td><span class="i bs delete" onclick="verificarUsoCategoria({iCategoriaId});"></span></td>
+            <td><span class="i bs edit" onclick="editarEspecialidad({iEspecialidadId});"></span></td>
+            <td><span class="i bs delete" onclick="verificarUsoEspecialidad({iEspecialidadId});"></span></td>
         </tr>
-    <!--EndListaCategoriasBlock-->
-    <!--BeginNoRecordsListaCategoriasBlock-->
+    <!--EndListaEspecialidadesBlock-->
+    <!--BeginNoRecordsListaEspecialidadesBlock-->
 	    <tr>
 	       	<td colspan="5">{sNoRecords}</td>
 	    </tr>
-    <!--EndNoRecordsListaCategoriasBlock-->
+    <!--EndNoRecordsListaEspecialidadesBlock-->
     </tbody>
 </table>
 </div>
-<!--EndListadoCategoriasBlock-->
+<!--EndListadoEspecialidadesBlock-->
 <!--EndMainContent-->
