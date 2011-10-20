@@ -67,6 +67,8 @@ class CategoriaControllerAdmin extends PageControllerAbstract
         //menu cabecera
         $template->set_var("sHrefCategoriaCargar", $request->getBaseTagUrl()."admin/nueva-categoria");
         $template->set_var("sHrefCategoriaListar", $request->getBaseTagUrl()."admin/listar-categoria");
+        $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."/admin/administrar-especialidad");
+        $template->set_var("sHrefCategoriaIndex", $request->getBaseTagUrl()."/admin/administrar-categorias");
 
     }
 
