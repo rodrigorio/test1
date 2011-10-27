@@ -307,120 +307,130 @@
 
         <h2 class="mabo3">Informacion Profesional</h2>
 
-        <div class="form_line msg_celular">
-            <label for="celular">
+        <div class="form_line msg_institucion">
+            <label for="institucion">
                 Instituci&oacute;n en la que se desempe&ntilde;a
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
+                    <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
+                    <input type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />                    
+                    <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
                 </div>
             </div>
+            <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
         </div>
 
-        <div class="pale3">
-            <div class="form_line msg_celular">
-                <label for="celular">
+        <div id="contCargoInstitucion" class="pale3">
+            <div class="form_line msg_cargoInstitucion">
+                <label for="cargoInstitucion">
+                    <span class="marca_obligatorio">&#8226;</span>
                     Cargo que desempe&ntilde;a
                 </label>
                 <div class="fwrap">
                     <div class="inner_fwrap">
-                        <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                        <input type="text" name="cargoInstitucion" id="cargoInstitucion" title="Cargo que desempe&ntilde;a" maxlength="40" value="{sCargoInstitucion}" />
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="form_line msg_celular">
-            <label for="celular">
+        <div class="form_line msg_biografia">
+            <label for="biografia">
                 Breve Biograf&iacute;a
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="comentarioMensaje" class="defVal maxlength textareaAutoGrow" title="Escribe tu comentario">Escribe tu comentario</textarea>
+                    <textarea rows="0" cols="0" id="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
                 </div>
             </div>
         </div>
 
-        <div class="form_line msg_celular">
-            <label for="celular">
+        <div class="form_line msg_empresa">
+            <label for="empresa">
                 Empresa
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    <input type="text" name="empresa" id="empresa" title="Empresa" maxlength="40" value="{sEmpresa}" />
                 </div>
             </div>
         </div>
 
-        <div class="form_line msg_celular">
-            <label for="celular">
-                Universidad
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
-                </div>
-            </div>
-        </div>
-        
-        <div class="pale3">
-            <div class="form_line msg_celular">
-                <label for="celular">
-                    Carrera
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="form_line msg_celular">
-                <label for="celular">
-                    Finalizada?
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form_line msg_celular">
-            <label for="celular">
+        <div class="form_line msg_secundaria">
+            <label for="secundaria">
+                <span class="marca_obligatorio">&#8226;</span>
                 Secundaria
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    <input type="text" name="secundaria" id="secundaria" title="Secundaria" maxlength="40" value="{sSecundaria}" />
                 </div>
             </div>
         </div>
 
-        <div class="form_line msg_celular">
-            <label for="celular">
+        <div class="form_line msg_universidad">
+            <label for="universidad">
+                Universidad
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="universidad" id="universidad" title="Universidad" maxlength="40" value="{sUniversidad}" />
+                </div>
+            </div>
+        </div>
+        
+        <div id="universidadInfo" class="pale3">
+            <div class="form_line msg_universidadCarrera">
+                <label for="universidadCarrera">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Carrera
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="text" name="universidadCarrera" id="universidadCarrera" title="Carrera" maxlength="40" value="{sUniversidadCarrera}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form_line msg_carreraFinalizada">
+                <label for="carreraFinalizada">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Finalizada?
+                </label>
+                <div class="cl_le"></div>
+                <select style="width:150px" name="carreraFinalizada" id="carreraFinalizada" title="Finalizada?">
+                    <option value="">Elija opci&oacute;n:</option>
+                    <option {sSelectedFinalizadaSi} value="1">S&iacute;</option>
+                    <option {sSelectedFinalizadaNo} value="0">No</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form_line msg_sitioWeb">
+            <label for="sitioWeb">
                 Sitio Web / Blog
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                    <input type="text" name="sitioWeb" id="sitioWeb" title="Sitio Web / Blog" maxlength="40" value="{sSitioWeb}" />
                 </div>
             </div>
         </div>
 
-        <div class="form_line msg_celular">
-            <label for="celular">
+        <div class="form_line msg_especialidad">
+            <label for="especialidad">
+                <span class="marca_obligatorio">&#8226;</span>
                 Especialidad <span style="font-style:italic">(&Aacute;rea de desempe&ntilde;o profesional)</span>
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
-                </div>
-            </div>
+            <div class="cl_le"></div>
+            <select style="width:250px" name="especialidad" id="especialidad" title="Especialidad - (&Aacute;rea de desempe&ntilde;o profesional)">
+                <option value="">Elija especialidad:</option>
+                <!--BeginListaEspecialidadesBlock--><option value="{iEspecialidadId}" {sDatosPersonalesEspecialidadSelect}>{sEspecialidadNombre}</option><!--EndListaEspecialidadesBlock-->
+            </select>
         </div>
-               
+                       
         <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
             <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
                 Actualizar Perfil

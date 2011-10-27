@@ -112,7 +112,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 	            $oInstitucion->sLatitud 	= $this->getRequest()->getPost('latitud');
 	            $oInstitucion->sLongitud	= $this->getRequest()->getPost('longitud');
 	            $oInstitucion->iModerado	= 0;
-	            $oInstitucion->oPerfilUsuario	= $oUsuario;
+	            $oInstitucion->oUsuario	= $oUsuario;
 	            $oInstitucion	= Factory::getInstitucionInstance($oInstitucion);
             }
             ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
@@ -223,7 +223,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 	                $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
 	                $this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
 	                $this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
-	                if($oInstitucion->getPerfilUsuario()->getUsuario()->getId() == $usuario->getId()){
+	                if($oInstitucion->getUsuario()->getId() == $usuario->getId()){
 	                	$this->getTemplate()->parse("PermisoEditarInstitucionBlock",false);
 	                }else{
 	                	$this->getTemplate()->set_var("PermisoEditarInstitucionBlock","");
@@ -337,7 +337,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sInstitucionCiudad", $oInstitucion->getCiudad()->getNombre() );
                     $this->getTemplate()->set_var("sInstitucionProvincia", $oInstitucion->getCiudad()->getProvincia()->getNombre() );
                     $this->getTemplate()->set_var("sInstitucionPais",   $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre() );
-                    if($oInstitucion->getPerfilUsuario()->getUsuario()->getId() == $usuario->getId()){
+                    if($oInstitucion->getUsuario()->getId() == $usuario->getId()){
                             $this->getTemplate()->parse("PermisoEditarInstitucionBlock",false);
                     }else{
                             $this->getTemplate()->set_var("PermisoEditarInstitucionBlock","");
@@ -599,34 +599,36 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             //return;
         }
      }
-     /**
-     * Muestra pagina de sitio en construccion
+
+    /**
+     * Devuelve las instituciones para el autocomplete de la busqueda de instituciones
      */
-    public function sitioEnConstruccion()
-    {
-        $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
-        
-        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
-        $this->getTemplate()->set_var("sTituloVista", "Sitio en construccion");
-        $this->getTemplate()->set_var("sMetaDescription", "");
-        $this->getTemplate()->set_var("sMetaKeywords", "");
+    public function buscarInstituciones(){
+        //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
-        $this->getTemplate()->set_var("tituloVista", "Sitio en construccion");
-        $this->getTemplate()->set_var("subtituloVista", "Estamos trabajando, muy pronto estaremos en línea");
-            
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $iRecordsTotal = 0;
+            $sOrderBy=$sOrder=$iIniLimit=$iRecordCount=null;
+            $filtro = array("i.nombre" => $this->getRequest()->get('str'));
+            $vInstituciones = ComunidadController::getInstance()->obtenerInstituciones($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
+            $vResult = array();
+            if(count($vInstituciones)>0){
+                foreach($vInstituciones as $oInstitucion){
+                    $obj = new stdClass();
+                    $obj->id = $oInstitucion->getId();
+                    $obj->nombre = $oInstitucion->getNombre();
+                    $vResult[] = $obj;
+                }
+            }
+            //agrega una url para que el js redireccione
+            $this->getJsonHelper()->setSuccess(true)->setValor("instituciones", $vResult);
+         }catch(Exception $e){
+            print_r($e);
+        }
+
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
-
-    public function sitioOffline()
-    {
-        $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
-
-        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
-        $this->getTemplate()->set_var("sTituloVista", "Sitio fuera de linea");
-        $this->getTemplate()->set_var("sMetaDescription", "");
-        $this->getTemplate()->set_var("sMetaKeywords", "");
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-    }
-    
 }

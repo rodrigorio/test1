@@ -146,7 +146,7 @@ class IndexControllerSeguimientos extends PageControllerAbstract
                 foreach($vUsuarios as $oUsuario){
                     $obj        = new stdClass();
                     $obj->iId   = $oUsuario->getId();
-                    $obj->sNombre   = $oUsuario->getUsuario()->getNombre() . " " . $oUsuario->getUsuario()->getApellido();
+                    $obj->sNombre   = $oUsuario->getNombre() . " " . $oUsuario->getApellido();
                     $vResult[] = $obj;
                 }
             }

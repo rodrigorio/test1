@@ -270,6 +270,15 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('comunidadInstitucionesIndex', $route);
         
+        //para el autocomplete de elegir institucion
+        $route = new RegexRoute('comunidad/buscar-instituciones',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "buscarInstituciones"
+                                ));
+        $router->addRoute('comunidadInstitucionesBuscarInstituciones', $route);
+
         ///////////////////////////////////////////
         ////// RUTAS MODULO SEGUIMIENTOS //////////
         ///////////////////////////////////////////

@@ -17,8 +17,6 @@ var optionsAjaxFormLogin = {
 
             //calculo MD5
             hashPassword("contrasenia", "contraseniaMD5");
-            //borro la contraseania asi no se envia
-            $("#contrasenia").val("");
 
             //reseteo el contenedor del mensaje de resultado
             $('#msg_form_login').removeClass("correcto").removeClass("error");
@@ -30,6 +28,11 @@ var optionsAjaxFormLogin = {
             //cancelo el submit
             return false;
         }
+    },
+
+    beforeSubmit: function(arr, $form, options){
+        //borro la contraseania asi no se envia
+        arr[1]['value'] = "";
     },
 
     success:function(data){

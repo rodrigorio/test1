@@ -129,7 +129,48 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     }
 
     private function procesarFormInfoProfesional(){
+        try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
 
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+
+            $iInstitucionId     = $this->getRequest()->getPost("institucionId");
+            $sCargoInstitucion  = $this->getRequest()->getPost("cargoInstitucion");
+            $sBiografia         = $this->getRequest()->getPost("biografia");
+            $sEmpresa           = $this->getRequest()->getPost("empresa");
+            $sUniversidad       = $this->getRequest()->getPost("universidad");
+            $sUniveridadCarrera = $this->getRequest()->getPost("universidadCarrera");
+            $bCarreraFinalizada = $this->getRequest()->getPost("carreraFinalizada") ? true : false;
+            $sSecundaria        = $this->getRequest()->getPost("secundaria");
+            $sSitioWeb          = $this->getRequest()->getPost("sitioWeb");
+            $iEspecialidadId    = $this->getRequest()->getPost("especialidad");
+            
+            $usuario->setInstitucionId($iInstitucionId);
+            $usuario->setCargoInstitucion($sCargoInstitucion);
+            $usuario->setBiografia($sBiografia);
+            $usuario->setEmpresa($sEmpresa);
+            $usuario->setUniversidad($sUniversidad);
+            $usuario->setUniversidadCarrera($sUniveridadCarrera);
+            $usuario->isCarreraFinalizada($bCarreraFinalizada);
+            $usuario->setSecundaria($sSecundaria);
+            $usuario->setSitioWeb($sSitioWeb);
+
+            //no piso de una porque hay que hacer una consulta para obtener, entonces me gasto en fijarme si es diferente
+            if(null === $usuario->getEspecialidad() || $usuario->getEspecialidad()->getId() != $iEspecialidadId){
+                $filtro = array("e.id" => $iEspecialidadId);
+                $oEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
+                $usuario->setEspecialidad($oEspecialidad);
+            }
+
+            ComunidadController::getInstance()->guardarUsuario($usuario);
+
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+        $this->getJsonHelper()->sendJsonAjaxResponse();         
     }
     
     private function procesarFormFotoPerfil(){
@@ -375,6 +416,51 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     private function formInfoProfesional()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoProfesionalBlock", true);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+
+        $iInstitucionId     = $usuario->getInstitucion()->getId();
+        $sInstitucion       = $usuario->getInstitucion()->getNombre();
+        $sCargoInstitucion  = $usuario->getCargoInstitucion();
+        $sBiografia         = $usuario->getBiografia();
+        $sEmpresa           = $usuario->getEmpresa();
+        $sUniversidad       = $usuario->getUniversidad();
+        $sUniversidadCarrera = $usuario->getUniversidadCarrera();
+        $bCarreraFinalizada = $usuario->isCarreraFinalizada();
+        $sSecundaria        = $usuario->getSecundaria();
+        $sSitioWeb          = $usuario->getSitioWeb();
+        $iEspecialidadId    = $usuario->getEspecialidad()->getId();
+
+        $this->getTemplate()->set_var("sInstitucion", $sInstitucion);
+        $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
+        $this->getTemplate()->set_var("sCargoInstitucion", $sCargoInstitucion);
+        $this->getTemplate()->set_var("sBiografia", $sBiografia);
+        $this->getTemplate()->set_var("sEmpresa", $sEmpresa);
+        $this->getTemplate()->set_var("sUniversidad", $sUniversidad);
+        $this->getTemplate()->set_var("sUniversidadCarrera", $sUniversidadCarrera);
+        $this->getTemplate()->set_var("sSecundaria", $sSecundaria);
+        $this->getTemplate()->set_var("sSitioWeb", $sSitioWeb);
+
+        if($bCarreraFinalizada){
+            $this->getTemplate()->set_var("sSelectedFinalizadaSi", "selected='selected'");
+        }else{
+            $this->getTemplate()->set_var("sSelectedFinalizadaNo", "selected='selected'");
+        }
+
+        //select con especialidades
+        $aEspecialidades = AdminController::getInstance()->obtenerEspecialidad();
+        foreach ($aEspecialidades as $oEspecialidad){
+            $value = $oEspecialidad->getId();
+            $text = $oEspecialidad->getNombre();
+            $this->getTemplate()->set_var("iEspecialidadId", $value);
+            $this->getTemplate()->set_var("sEspecialidadNombre", $text);
+            if($iEspecialidadId == $value){
+                $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "selected='selected'");
+            }
+            $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
+            $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "");
+        }
     }
 
     private function formFotoPerfil()

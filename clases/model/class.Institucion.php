@@ -20,7 +20,7 @@ class Institucion {
   	private $sActividadesMes;
   	private $sLatitud;
   	private $sLongitud;
-  	private $oPerfilUsuario;
+  	private $oUsuario;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
@@ -141,21 +141,15 @@ class Institucion {
 	public function setActividadesMes($sActividadesMes){
 		$this->sActividadesMes = $sActividadesMes;
 	}
-	/**
-	 *  @param PerfilAbstract oPerfilUsuario
-	 */
-	public function setPerfilUsuario($oPerfilUsuario){
-		$this->oPerfilUsuario  =$oPerfilUsuario;
+
+	public function setUsuario($oUsuario){
+            $this->oUsuario = $oUsuario;
 	}
-        /**
-	 *  @return PerfilAbstract $oUsuario
-	 */
+
 	public function setLatitud($latitud){
             $this->sLatitud  =$latitud;
 	}
-	/**
-	 *  @return PerfilAbstract $oUsuario
-	 */
+
 	public function setLongitud($longitud){
             $this->sLongitud = $longitud;
 	}
@@ -265,24 +259,16 @@ class Institucion {
 	public function getActividadesMes(){
 		return $this->sActividadesMes ;
 	}
-	/**
-	 *  @return PerfilAbstract $oUsuario
-	 */
-	public function getPerfilUsuario(){
-		return $this->oPerfilUsuario ;
+
+	public function getUsuario(){
+            return $this->oUsuario ;
 	}
-	/**
-	 *  @return PerfilAbstract $oUsuario
-	 */
+
 	public function getLatitud(){
 		return $this->sLatitud ;
 	}
-	/**
-	 *  @return PerfilAbstract $oUsuario
-	 */
+
 	public function getLongitud(){
 		return $this->sLongitud;
-	}
-	
+	}	
 }
-?>
