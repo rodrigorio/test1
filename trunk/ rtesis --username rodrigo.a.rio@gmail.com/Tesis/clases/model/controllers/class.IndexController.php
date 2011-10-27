@@ -70,15 +70,15 @@ class IndexController
      */
     public function recuperarContrasenia($sNombreUsuario,$sEmail){
     	try{
-    		$request = FrontController::getInstance()->getRequest();
-    		$filtro = array('u.nombre' => $sNombreUsuario, 'p.email' =>  $sEmail);
-			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            $oPerfil= $oUsuarioIntermediary->obtener($filtro);
-            if($oPerfil){
-            	$oNuevoPass = $oUsuarioIntermediary->guardarNuevaContrasenia($oPerfil->getUsuario()->getId());
+            $request = FrontController::getInstance()->getRequest();
+            $filtro = array('u.nombre' => $sNombreUsuario, 'p.email' =>  $sEmail);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oUsuario = $oUsuarioIntermediary->obtener($filtro);
+            if($oUsuario){
+            	$oNuevoPass = $oUsuarioIntermediary->guardarNuevaContrasenia($oUsuario->getId());
             	if($oNuevoPass){
 	            	$asunto = "Recuperaci�n de contrase�a";
-					$dest 	= $oPerfil->getUsuario()->getEmail();
+					$dest 	= $oUsuario()->getEmail();
 					$orig	= "servicios@sistemadegestion.com";
 					$sToken	= $oNuevoPass->token;
 					$sNuevaContrasenia	= $oNuevoPass->nuevaContrasenia;

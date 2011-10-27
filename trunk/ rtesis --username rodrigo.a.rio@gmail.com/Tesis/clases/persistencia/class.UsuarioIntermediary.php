@@ -11,4 +11,6 @@ abstract class UsuarioIntermediary extends Intermediary{
     abstract public function obtenerPrivacidad($filtro);
     abstract public function updatePrivacidadCampo($filtro, $nombreCampo, $valorPrivacidad);
     abstract public function existeMailDb($email, $userId);
+    abstract public function obtenerPerfil($oUsuario);
+    abstract public function guardarPerfil($oPerfil);
 }

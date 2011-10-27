@@ -21,6 +21,18 @@ class Usuario extends PersonaAbstract
 
     private $oEspecialidad;
 
+    /**
+     * en la clase abstracta persona se relaciona el objeto usuario con una institucion
+     * en este campo se puede guardar el cargo que desempenia. (form editar datos personales)
+     */
+    private $sCargoInstitucion;
+
+    private $sBiografia;
+
+    private $sUniveridadCarrera;
+    
+    private $bCarreraFinalizada;
+
     private $iInvitacionesDisponibles;
     
     private $sContraseniaNueva;
@@ -78,6 +90,26 @@ class Usuario extends PersonaAbstract
         return $this->sSitioWeb;
     }
 
+    public function getCargoInstitucion(){
+        return $this->sCargoInstitucion;
+    }
+
+    public function getBiografia(){
+        return $this->sBiografia;
+    }
+    
+    public function getUniversidadCarrera(){
+        return $this->sUniveridadCarrera;
+    }
+
+    public function isCarreraFinalizada($flag = null){
+        if(null !== $flag){
+            $this->bCarreraFinalizada = $flag ? true : false;
+        }else{
+            return $this->bCarreraFinalizada;
+        }
+    }
+
     public function getEspecialidad(){
         return $this->oEspecialidad;
     }
@@ -117,5 +149,19 @@ class Usuario extends PersonaAbstract
     public function setContraseniaNueva($pass){
         $this->sContraseniaNueva = $pass;
     }
-    
+
+    public function setBiografia($sBiografia){
+        $this->sBiografia = $sBiografia;
+        return $this;
+    }
+
+    public function setUniversidadCarrera($sUniversidadCarrera){
+        $this->sUniveridadCarrera = $sUniversidadCarrera;
+        return $this;
+    }
+
+    public function setCargoInstitucion($sCargoInstitucion){
+        $this->sCargoInstitucion = $sCargoInstitucion;
+        return $this;
+    }    
 }

@@ -90,10 +90,11 @@ class SysController
             $filtro = array('documento_tipos_id' => $tipoDocumento, 'numeroDocumento' => $nroDocumento, 'contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $iRecordsTotal = 0;
-            $perfil = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
-            if(null !== $perfil){
-                $perfil->iniciarPermisos();
-                SessionAutentificacion::getInstance()->cargarAutentificacion($perfil)
+            $oUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
+            if(null !== $oUsuario){
+                $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
+                $oPerfil->iniciarPermisos();
+                SessionAutentificacion::getInstance()->cargarAutentificacion($oPerfil)
                                                      ->realizoLogin(true);
             }
         }catch(Exception $e){
@@ -120,6 +121,7 @@ class SysController
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
         }catch (Exception $e){}
     }
+
     public function buscarUsuarios($filtro,$iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);

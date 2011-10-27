@@ -80,7 +80,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                                         " latitud =".$db->escape($oInstitucion->getLatitud(),true).", ".
 					" longitud =".$db->escape($oInstitucion->getLongitud(),true).", ".
 					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ".
-					" usuario_id =".$db->escape($oInstitucion->getPerfilUsuario()->getUsuario()->getId(),true)." ";
+					" usuario_id =".$db->escape($oInstitucion->getUsuario()->getId(),true)." ";
 
 			
 			 $db->execSQL($sSQL);
@@ -143,59 +143,60 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 		}
     }
 
-	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-	 	try{
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                           i.id as iId, 
                           i.nombre as sNombre,
-						  i.`ciudades_id` as iCiudad,
-						  i.`moderado` as iModerado,
-						  i.`descripcion` as sDescripcion,
-						  i.`tipoInstitucion_id` as iTipoInstitucion,
-						  it.`nombre` as sNombreTipoInstitucion,
-						  i.`direccion` as sDireccion,
-						  i.`email` as sEmail,
-						  i.`telefono` as sTelefono,
-						  i.`sitioWeb` as sSitioWeb,
-						  i.`horariosAtencion` as sHorariosAtencion,
-						  i.`autoridades` as sAutoridades,
-						  i.`cargo` as sCargo,
-						  i.`personeriaJuridica` as sPersoneriaJuridica,
-						  i.`sedes` as sSedes,
-						  i.`actividadesMes` as sActividadesMes,
-						  i.`usuario_id` as iUsuarioId,
-						  i.`latitud` as sLatitud,
-						  i.`longitud` as sLongitud,
-						  prov.`id` as provinciaId, 
-						  pais.id as paisId
-                        FROM
-                          	instituciones i 
-	                    JOIN 
-	                     	usuarios u ON u.id = i.usuario_id 
-	                    JOIN
-	                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id
-	 					LEFT JOIN `ciudades` c on c.`id` = i.`ciudades_id`
-	 					LEFT JOIN `provincias` prov on prov.`id` = c.`provincia_id`
-	 					LEFT JOIN `paises` pais on pais.`id` = prov.`paises_id` ";
-                    if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
-                    }
+                          i.`ciudades_id` as iCiudad,
+                          i.`moderado` as iModerado,
+                          i.`descripcion` as sDescripcion,
+                          i.`tipoInstitucion_id` as iTipoInstitucion,
+                          it.`nombre` as sNombreTipoInstitucion,
+                          i.`direccion` as sDireccion,
+                          i.`email` as sEmail,
+                          i.`telefono` as sTelefono,
+                          i.`sitioWeb` as sSitioWeb,
+                          i.`horariosAtencion` as sHorariosAtencion,
+                          i.`autoridades` as sAutoridades,
+                          i.`cargo` as sCargo,
+                          i.`personeriaJuridica` as sPersoneriaJuridica,
+                          i.`sedes` as sSedes,
+                          i.`actividadesMes` as sActividadesMes,
+                          i.`usuario_id` as iUsuarioId,
+                          i.`latitud` as sLatitud,
+                          i.`longitud` as sLongitud,
+                          prov.`id` as provinciaId,
+                          pais.id as paisId
+                    FROM
+                        instituciones i
+                    JOIN
+                        usuarios u ON u.id = i.usuario_id
+                    JOIN
+                        instituciones_tipos it ON it.id = i.tipoInstitucion_id
+                    LEFT JOIN `ciudades` c on c.`id` = i.`ciudades_id`
+                    LEFT JOIN `provincias` prov on prov.`id` = c.`provincia_id`
+                    LEFT JOIN `paises` pais on pais.`id` = prov.`paises_id` ";
 
-	 		if (isset($sOrderBy) && isset($sOrder)){
-				$sSQL .= " order by $sOrderBy $sOrder ";
-			}
-			if ($iIniLimit!==null && $iRecordCount!==null){
-				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-			}
+            if(!empty($filtro)){
+                $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+            }
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
-			$aInstituciones = array();
+            $aInstituciones = array();
             while($oObj = $db->oNextRecord()){
             	$oInstitucion 			= new stdClass();
             	$oInstitucion->iId 		= $oObj->iId;
@@ -215,7 +216,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sSedes 	= $oObj->sSedes;
             	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
   
-            	$aInstituciones[]		= Factory::getInstitucionInstance($oinstitucion);
+            	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }
 
             //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
@@ -228,7 +229,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-	}
+    }
+
 	public final function obtenerInstituciones($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 	 	try{
             $db = $this->conn;
@@ -330,7 +332,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sLatitud= $oObj->sLatitud;
             	$oInstitucion->sLongitud= $oObj->sLongitud;
             	$oInstitucion->oCiudad  = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
-            	$oInstitucion->oPerfilUsuario  = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+            	$oInstitucion->oUsuario  = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
             	$aInstituciones[]		= Factory::getInstitucionInstance($oInstitucion);
             }
 

@@ -30,15 +30,14 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
     public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
             try{
                 $db = $this->conn;
-                $filtro = $this->escapeStringArray($filtro);
 
                 $sSQL = "SELECT
                             e.id as iId, e.nombre as sNombre, e.descripcion as sDescripcion
                             FROM
                            especialidades e ";
-                        if(!empty($filtro)){
-                            $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
-                        }
+                if(!empty($filtro)){
+                    $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                }
 
                 $db->query($sSQL);
 

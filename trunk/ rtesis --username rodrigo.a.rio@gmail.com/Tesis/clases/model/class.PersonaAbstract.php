@@ -18,12 +18,15 @@ abstract class PersonaAbstract
     protected $sCelular;
     protected $sFax;
     protected $sDomicilio;
-    protected $oInstitucion;
     /*
      * este atributo es para pedir por demanda el objeto ciudad si $oCiudad = null.
      */
     protected $iCiudadId;
     protected $oCiudad;
+
+    protected $oInstitucion;
+    protected $iInstitucionId;
+
     protected $sCiudadOrigen;
     protected $sCodigoPostal;
     protected $sEmpresa;
@@ -92,6 +95,14 @@ abstract class PersonaAbstract
         $this->iCiudadId = $iCiudadId;
         if(null !== $this->oCiudad && $this->oCiudad->getId() != $iCiudadId){
             $this->oCiudad = ComunidadController::getInstance()->getCiudadById($iCiudadId);
+        }
+    }
+
+    public function setInstitucionId($iInstitucionId){
+        $this->iInstitucionId = $iInstitucionId;
+        if(null !== $this->oInstitucion && $this->oInstitucion->getId() != $iInstitucionId){
+            $filtro = array("i.id" => $iInstitucionId);
+            $this->oInstitucion = ComunidadController::getInstance()->obtenerInstitucion($filtro);
         }
     }
 
@@ -180,7 +191,15 @@ abstract class PersonaAbstract
     }
 
     public function getInstitucion(){
-        return $this->oInstitucion ;
+    	if($this->oInstitucion == null){
+            $filtro = array("i.id" => $this->iInstitucionId);
+            $this->oInstitucion = ComunidadController::getInstance()->obtenerInstitucion($filtro);
+    	}
+        return $this->oInstitucion;
+    }
+
+    public function getInstitucionId(){
+    	return $this->iInstitucionId;
     }
 
     public function getCiudadOrigen(){
