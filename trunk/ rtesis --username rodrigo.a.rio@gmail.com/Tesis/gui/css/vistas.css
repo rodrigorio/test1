@@ -71,7 +71,7 @@ input, textarea{color:#333}
 input[type="text"], input[type="password"], select{-moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
 textarea{outline:0px; vertical-align:bottom}
 .textareaAutoGrow{resize:none; overflow:hidden}
-.textAreaExpanded{height:70px !important}
+.textAreaExpanded{height:300px !important}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
 
@@ -677,6 +677,10 @@ a .i{margin-right:4px; float:left}
 .ui-tabs{padding:0px; position:relative; overflow:hidden;}
 .ui-tabs .ui-tabs-nav{margin:0; padding:0}
 .ui-tabs .ui-tabs-panel{display:block; padding:10px; border-top:0px}
+/* autocomplete */
+.ui-autocomplete{max-height:100px; max-width:300px; overflow-x:hidden; overflow-y:auto; padding-right:20px; background:#FFF; border: 1px solid #CCC}
+.ui-autocomplete a{color:#333; text-decoration:none}
+.ui-autocomplete .ui-state-hover{background-color:#EEEFFF}
 
 /*** ICONS (AGREGAR A MEDIDA QUE SE VAYA NECESITANDO PORQUE EN REALIDAD YA TENEMOS LOS NUESTROS Q SON MEJORES)***/
 /* states and images */
@@ -691,59 +695,3 @@ a .i{margin-right:4px; float:left}
 /*** OVERLAYS ***/
 .ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity: .3;filter:Alpha(Opacity=30)}
 .ui-widget-shadow{margin:-8px 0 0 -8px; padding:8px; background:#aaaaaa url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity:.3;filter:Alpha(Opacity=30); -moz-border-radius:8px; -webkit-border-radius:8px; border-radius: 8px}
-
-/*
-.ui-autocomplete {
-    max-height: 100px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-right: 20px;
-    background: #ccc;
-}
-.ui-widget-content a {
-    color: #333333;
-}
-.ui-widget-header {
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background-attachment: scroll;
-    background-clip: border-box;
-    background-color: #F6A828;
-    background-origin: padding-box;
-    background-position: 50% 50%;
-    background-repeat: repeat-x;
-    background-size: auto auto;
-    border-bottom-color: #E78F08;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-top-color: #E78F08;
-    border-top-style: solid;
-    border-top-width: 1px;
-    color: #FFFFFF;
-    font-weight: bold;
-}
-.ui-widget-header a {
-    color: #FFFFFF;
-}
-.ui-state-default, .ui-widget-content .ui-state-default {
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background-attachment: scroll;
-    background-clip: border-box;
-    background-color: #F6F6F6;
-    background-origin: padding-box;
-    background-position: 50% 50%;
-    background-repeat: repeat-x;
-    background-size: auto auto;
-    border-bottom-color: #CCCCCC;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    outline-width: medium;
-}
-*/
