@@ -93,14 +93,14 @@ abstract class PersonaAbstract
      */
     public function setCiudadId($iCiudadId){
         $this->iCiudadId = $iCiudadId;
-        if(null !== $this->oCiudad && $this->oCiudad->getId() != $iCiudadId){
+        if(!empty($iCiudadId) && null !== $this->oCiudad && $this->oCiudad->getId() != $iCiudadId){
             $this->oCiudad = ComunidadController::getInstance()->getCiudadById($iCiudadId);
         }
     }
 
     public function setInstitucionId($iInstitucionId){
         $this->iInstitucionId = $iInstitucionId;
-        if(null !== $this->oInstitucion && $this->oInstitucion->getId() != $iInstitucionId){
+        if(!empty($iInstitucionId) && null !== $this->oInstitucion && $this->oInstitucion->getId() != $iInstitucionId){
             $filtro = array("i.id" => $iInstitucionId);
             $this->oInstitucion = ComunidadController::getInstance()->obtenerInstitucion($filtro);
         }
@@ -168,7 +168,7 @@ abstract class PersonaAbstract
     }
 
     public function getCiudad(){
-    	if($this->oCiudad == null){
+    	if($this->oCiudad == null && !empty($this->iCiudadId)){
             $this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
     	}
     	return $this->oCiudad;
@@ -191,7 +191,7 @@ abstract class PersonaAbstract
     }
 
     public function getInstitucion(){
-    	if($this->oInstitucion == null){
+    	if($this->oInstitucion == null && !empty($this->iInstitucionId)){
             $filtro = array("i.id" => $this->iInstitucionId);
             $this->oInstitucion = ComunidadController::getInstance()->obtenerInstitucion($filtro);
     	}

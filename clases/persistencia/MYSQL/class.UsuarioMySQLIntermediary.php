@@ -76,7 +76,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     /**
      * Se fija si existen objetos usuarios que cumplan con el filtro,
      * al objeto/s le asigna el perfil dependiendo lo que levanto de la DB.
-     * Retorna null si no encuentra resutados, un objeto PerfilAbstract o un array de objetos PerfilAbstract.
+     * Retorna null si no encuentra resutados, un objeto Usuario o un array de objetos Usuario.
      * arroja excepcion si hubo algun problema en la consulta.
      */
     public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
@@ -548,23 +548,25 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = $this->conn;
 
-            if($oUsuario->getCiudad() != null){
+            if(null != $oUsuario->getCiudad()){
                 $ciudadId = $oUsuario->getCiudad()->getId();
             }else{
                 $ciudadId = 'null';
             }
 
-            if($oUsuario->getInstitucion() != null){
+            if(null != $oUsuario->getInstitucion()){
                 $institucionId = $oUsuario->getInstitucion()->getId();
             }else{
                 $institucionId = 'null';
             }
 
-            if($oUsuario->getEspecialidad() != null){
+            if(null != $oUsuario->getEspecialidad()){
                 $especialidadId = $oUsuario->getEspecialidad()->getId();
             }else{
                 $especialidadId = 'null';
             }
+
+            $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
 			
             $db->begin_transaction();
             $sSQL = " update personas " .
@@ -593,6 +595,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL =" update usuarios ".
                    " set sitioWeb = ".$db->escape($oUsuario->getSitioWeb(),true).", " .
                    " especialidades_id = ".$especialidadId.", ".
+                   " cargoInstitucion = ".$this->escStr($oUsuario->getCargoInstitucion()).", ".
+                   " biografia = ".$this->escStr($oUsuario->getBiografia()).", ".
+                   " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
+                   " carreraFinalizada = ".$carreraFinalizada.", ".
                    " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ".
                    " WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 
@@ -658,6 +664,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 return 12;
             }
 
+            $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
+
             $db->begin_transaction();
             $sSQL = " insert into personas ".
             " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
@@ -692,6 +700,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " sitioWeb = ".$db->escape($oUsuario->getSitioWeb(),true).", " .
                     " especialidades_id = ".$especialidadId.", ".
                     " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
+                    " cargoInstitucion = ".$this->escStr($oUsuario->getCargoInstitucion()).", ".
+                    " biografia = ".$this->escStr($oUsuario->getBiografia()).", ".
+                    " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
+                    " carreraFinalizada = ".$carreraFinalizada.", ".
                     " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).",".
                     " contrasenia = ".$db->escape(md5($oUsuario->getContrasenia()),true)." ";
 

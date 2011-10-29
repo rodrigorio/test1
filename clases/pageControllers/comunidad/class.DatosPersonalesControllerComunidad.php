@@ -160,8 +160,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             //no piso de una porque hay que hacer una consulta para obtener, entonces me gasto en fijarme si es diferente
             if(null === $usuario->getEspecialidad() || $usuario->getEspecialidad()->getId() != $iEspecialidadId){
                 $filtro = array("e.id" => $iEspecialidadId);
-                $oEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
-                $usuario->setEspecialidad($oEspecialidad);
+                $aEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
+                $usuario->setEspecialidad($aEspecialidad[0]);
             }
 
             ComunidadController::getInstance()->guardarUsuario($usuario);
@@ -420,18 +420,28 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
 
-        $iInstitucionId     = $usuario->getInstitucion()->getId();
-        $sInstitucion       = $usuario->getInstitucion()->getNombre();
-        $sCargoInstitucion  = $usuario->getCargoInstitucion();
-        $sBiografia         = $usuario->getBiografia();
-        $sEmpresa           = $usuario->getEmpresa();
-        $sUniversidad       = $usuario->getUniversidad();
+        $sCargoInstitucion   = $usuario->getCargoInstitucion();
+        $sBiografia          = $usuario->getBiografia();
+        $sEmpresa            = $usuario->getEmpresa();
+        $sUniversidad        = $usuario->getUniversidad();
         $sUniversidadCarrera = $usuario->getUniversidadCarrera();
-        $bCarreraFinalizada = $usuario->isCarreraFinalizada();
-        $sSecundaria        = $usuario->getSecundaria();
-        $sSitioWeb          = $usuario->getSitioWeb();
-        $iEspecialidadId    = $usuario->getEspecialidad()->getId();
+        $bCarreraFinalizada  = $usuario->isCarreraFinalizada();
+        $sSecundaria         = $usuario->getSecundaria();
+        $sSitioWeb           = $usuario->getSitioWeb();
 
+        //verifico que posea los objetos asociados
+        $iInstitucionId = "";
+        $sInstitucion = "";
+        if(null != $usuario->getInstitucion()){
+            $iInstitucionId = $usuario->getInstitucion()->getId();
+            $sInstitucion = $usuario->getInstitucion()->getNombre();
+        }
+
+        $iEspecialidadId = "";
+        if(null != $usuario->getEspecialidad()){
+            $iEspecialidadId = $usuario->getEspecialidad()->getId();
+        }
+                
         $this->getTemplate()->set_var("sInstitucion", $sInstitucion);
         $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
         $this->getTemplate()->set_var("sCargoInstitucion", $sCargoInstitucion);
@@ -450,16 +460,18 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         //select con especialidades
         $aEspecialidades = AdminController::getInstance()->obtenerEspecialidad();
-        foreach ($aEspecialidades as $oEspecialidad){
-            $value = $oEspecialidad->getId();
-            $text = $oEspecialidad->getNombre();
-            $this->getTemplate()->set_var("iEspecialidadId", $value);
-            $this->getTemplate()->set_var("sEspecialidadNombre", $text);
-            if($iEspecialidadId == $value){
-                $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "selected='selected'");
+        if(!empty($aEspecialidades)){
+            foreach ($aEspecialidades as $oEspecialidad){
+                $value = $oEspecialidad->getId();
+                $text = $oEspecialidad->getNombre();
+                $this->getTemplate()->set_var("iEspecialidadId", $value);
+                $this->getTemplate()->set_var("sEspecialidadNombre", $text);
+                if($iEspecialidadId == $value){
+                    $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "selected='selected'");
+                }
+                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
+                $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "");
             }
-            $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
-            $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "");
         }
     }
 

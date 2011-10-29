@@ -164,7 +164,7 @@
             </button>
         </label>
 
-        <div id='msg_form_infoBasica' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_infoBasica' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
         <input type="hidden" name="seccion" id="seccion" value="basica" />
     </form>
 </div>
@@ -292,7 +292,7 @@
             </button>
         </label>
 
-        <div id='msg_form_infoContacto' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_infoContacto' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
         <input type="hidden" name="seccion" id="seccion" value="contacto" />
     </form>
 </div>
@@ -302,7 +302,7 @@
 <div class="cl_le pabo3"></div>
 <div class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
-    <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post">
+    <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post" enctype="multipart/form-data">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
         <h2 class="mabo3">Informacion Profesional</h2>
@@ -342,7 +342,7 @@
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                    <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
                 </div>
             </div>
         </div>
@@ -419,6 +419,18 @@
             </div>
         </div>
 
+        <div class="form_line msg_curriculum">
+            <label for="curriculum">
+                Curriculum Vitae
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="hidden" value="100000" name="MAX_FILE_SIZE">
+                    <input type="file" name="curriculum" id="curriculum" title="Suba su curriculum vitae al sistema">
+                </div>
+            </div>
+        </div>
+
         <div class="form_line msg_especialidad">
             <label for="especialidad">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -437,7 +449,7 @@
             </button>
         </label>
 
-        <div id='msg_form_infoProfesional' class="msg_form iveal cl_le di_no mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_infoProfesional' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
         <input type="hidden" name="seccion" id="seccion" value="profesional" />
     </form>
 </div>

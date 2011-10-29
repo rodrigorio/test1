@@ -186,7 +186,7 @@ var optionsAjaxFormInfoBasica = {
     },
 
     success:function(data){
-        setWaitingStatus('formInfoBasica', false);        
+        setWaitingStatus('formInfoBasica', false);
         if(data.success == undefined || data.success == 0){
             $('#msg_form_infoBasica .msg').html(lang['error procesar']);
             $('#msg_form_infoBasica').addClass("error").fadeIn('slow');
@@ -197,6 +197,7 @@ var optionsAjaxFormInfoBasica = {
     }
 };
 $("#formInfoBasica").ajaxForm(optionsAjaxFormInfoBasica);
+
 
 //////////////////////////////////
 // FORM INFO CONTACTO
@@ -345,11 +346,14 @@ var optionsAjaxFormInfoContacto = {
 };
 $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
 
+
+
 //////////////////////////////////
 // FORM INFO PROFESIONAL
 //////////////////////////////////
 
 //para el estado inicial del formulario
+
 $(document).ready(function(){
     if($("#institucionId").val() == ""){
         $('#contCargoInstitucion').addClass("disabled");
