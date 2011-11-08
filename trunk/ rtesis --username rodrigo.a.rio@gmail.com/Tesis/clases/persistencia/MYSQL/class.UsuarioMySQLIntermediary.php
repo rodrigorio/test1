@@ -61,14 +61,21 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     /**
      * Sirve para guardar en DB la modificacion de un perfil para un usuario
      * Luego guarda el usuario
+     *
+     * @param Perfil $oPerfil El objeto perfil a guardar
+     * @param boolean $bGuardarUsuario si se pasa falso no guarda el objeto usuario
      */
-    public function guardarPerfil($oPerfil){
-        $this->guardar($oPerfil->getUsuario());
-        $db = clone($this->conn);
+    public function guardarPerfil($oPerfil, $bGuardarUsuario = true){
+        if($bGuardarUsuario){
+            $this->guardar($oPerfil->getUsuario());
+            $db = clone($this->conn);
+        }else{
+            $db = $this->conn;
+        }
 
         $sSQL = "UPDATE usuarios
-                 SET perfiles_id = ".$oPerfil->getId()."
-                 WHERE id = ".$oUsuario->getId();
+                 SET perfiles_id = ".$this->escInt($oPerfil->getId())."
+                 WHERE id = ".$this->escInt($oPerfil->getUsuario()->getId());
 
         $db->execSQL($sSQL);
     }
@@ -94,16 +101,33 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
                         p.`documento_tipos_id` as iTipoDocumentoId,
                         p.`numeroDocumento` as sNumeroDocumento,
+
                         u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+
                         e.id as iEspecialidadId,
                         e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion
+
+                        a.id as iCvId, a.nombre as sCvNombre,
+                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
+                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
+                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
+                        a.moderado as bCvModerado, a.activo as bCvActivo,
+                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios,
+
+                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
-                        LEFT JOIN especialidades e ON u.especialidades_id = e.id "; //como no es un obj pesado y es relacion de composicion lo saco desde la consulta
+                        LEFT JOIN especialidades e ON u.especialidades_id = e.id
+                        LEFT JOIN archivos a ON a.usuarios_id = u.id
+                        LEFT JOIN fotos f ON f.personas_id = u.id";
             
                     if(!empty($filtro)){
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
@@ -142,6 +166,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->oCiudad          = null;
                 $oUsuario->oInstitucion     = null;
                 $oUsuario->oEspecialidad    = null;
+                $oUsuario->oFotoPerfil      = null;
+                $oUsuario->oCurriculumVitae = null;
                 $oUsuario->sCiudadOrigen    = $oObj->sCiudadOrigen;
                 $oUsuario->sCodigoPostal    = $oObj->sCodigoPostal;
                 $oUsuario->sEmpresa         = $oObj->sEmpresa;
@@ -164,6 +190,38 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oEspecialidad->sNombre         = $oObj->sEspecialidadNombre;
                     $oEspecialidad->sDescripcion    = $oObj->sEspecialidadDescripcion;
                     $oUsuario->oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
+                }
+
+                if(null !== $oObj->iCvId){
+                    $oCurriculumVitae = new stdClass();
+                    $oCurriculumVitae->iId = $oObj->iCvId;
+                    $oCurriculumVitae->sNombre = $oObj->sCvNombre;
+                    $oCurriculumVitae->sNombreServidor = $oObj->sCvNombreServidor;
+                    $oCurriculumVitae->sDescripcion = $oObj->sCvDescripcion;
+                    $oCurriculumVitae->sTipoMime = $oObj->sCvTipoMime;
+                    $oCurriculumVitae->iTamanio = $oObj->iCvTamanio;
+                    $oCurriculumVitae->sFechaAlta = $oObj->sCvFechaAlta;
+                    $oCurriculumVitae->iOrden = $oObj->iCvOrden;
+                    $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
+                    $oCurriculumVitae->sTipo = $oObj->sCvTipo;
+                    $oCurriculumVitae->bModerado = $oObj->bCvModerado;
+                    $oCurriculumVitae->bActivo = $oObj->bCvActivo;
+                    $oCurriculumVitae->bPublico = $oObj->bCvPublico;
+                    $oCurriculumVitae->bActivoComentarios = $oObj->bCvActivoComentarios;
+                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
+                }
+
+                if(null !== $oObj->iFotoId){
+                    $fotoPerfil = new stdClass();
+                    $fotoPerfil->iId = $oObj->iFotoId;
+                    $fotoPerfil->sNombreBigSize = $oObj->sFotoNombreBigSize;
+                    $fotoPerfil->sNombreMediumSize = $oObj->sFotoNombreMediumSize;
+                    $fotoPerfil->sNombreSmallSize = $oObj->sFotoNombreSmallSize;
+                    $fotoPerfil->iOrden = $oObj->iFotoOrden;
+                    $fotoPerfil->sTitulo = $oObj->sFotoTitulo;
+                    $fotoPerfil->sDescripcion = $oObj->sFotoDescripcion;
+                    $fotoPerfil->sTipo = $oObj->sFotoTipo;
+                    $oUsuario->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
                 }
 
                 //creo el usuario
@@ -229,16 +287,33 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
                         p.`documento_tipos_id` as iTipoDocumentoId,
                         p.`numeroDocumento` as sNumeroDocumento,
+
                         u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+
                         e.id as iEspecialidadId,
                         e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion
-                    FROM
+
+                        a.id as iCvId, a.nombre as sCvNombre,
+                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
+                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
+                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
+                        a.moderado as bCvModerado, a.activo as bCvActivo,
+                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios,
+
+                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
+                    FROM               
                         personas p JOIN usuarios u ON p.id = u.id
-                        LEFT JOIN especialidades e ON u.especialidades_id = e.id "; //como no es un obj pesado y es relacion de composicion lo saco desde la consulta
+                        LEFT JOIN especialidades e ON u.especialidades_id = e.id
+                        LEFT JOIN archivos a ON a.usuarios_id = u.id
+                        LEFT JOIN fotos f ON f.personas_id = u.id";
             
             $WHERE = array();
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
@@ -306,6 +381,38 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oEspecialidad->sNombre         = $oObj->sEspecialidadNombre;
                     $oEspecialidad->sDescripcion    = $oObj->sEspecialidadDescripcion;
                     $oUsuario->oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
+                }
+
+                if(null !== $oObj->iCvId){
+                    $oCurriculumVitae = new stdClass();
+                    $oCurriculumVitae->iId = $oObj->iCvId;
+                    $oCurriculumVitae->sNombre = $oObj->sCvNombre;
+                    $oCurriculumVitae->sNombreServidor = $oObj->sCvNombreServidor;
+                    $oCurriculumVitae->sDescripcion = $oObj->sCvDescripcion;
+                    $oCurriculumVitae->sTipoMime = $oObj->sCvTipoMime;
+                    $oCurriculumVitae->iTamanio = $oObj->iCvTamanio;
+                    $oCurriculumVitae->sFechaAlta = $oObj->sCvFechaAlta;
+                    $oCurriculumVitae->iOrden = $oObj->iCvOrden;
+                    $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
+                    $oCurriculumVitae->sTipo = $oObj->sCvTipo;
+                    $oCurriculumVitae->bModerado = $oObj->bCvModerado;
+                    $oCurriculumVitae->bActivo = $oObj->bCvActivo;
+                    $oCurriculumVitae->bPublico = $oObj->bCvPublico;
+                    $oCurriculumVitae->bActivoComentarios = $oObj->bCvActivoComentarios;
+                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
+                }
+
+                if(null !== $oObj->iFotoId){
+                    $fotoPerfil = new stdClass();
+                    $fotoPerfil->iId = $oObj->iFotoId;
+                    $fotoPerfil->sNombreBigSize = $oObj->sFotoNombreBigSize;
+                    $fotoPerfil->sNombreMediumSize = $oObj->sFotoNombreMediumSize;
+                    $fotoPerfil->sNombreSmallSize = $oObj->sFotoNombreSmallSize;
+                    $fotoPerfil->iOrden = $oObj->iFotoOrden;
+                    $fotoPerfil->sTitulo = $oObj->sFotoTitulo;
+                    $fotoPerfil->sDescripcion = $oObj->sFotoDescripcion;
+                    $fotoPerfil->sTipo = $oObj->sFotoTipo;
+                    $oUsuario->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
                 }
 
                 $aUsuarios[] = $oUsuario;
@@ -718,18 +825,16 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
 
-   
     public function borrar($oUsuario) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from usuarios where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from usuarios where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
             $db->execSQL("delete from personas where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
-
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+            $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 
     /**
      *  El array se arma con las tablas 'controladores_pagina', 'acciones', 'acciones_x_perfil' y 'perfiles'

@@ -236,7 +236,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 
 /*** THUMBNAILS GRANDES, MEDIANOS Y CHICOS ***/
 .th_fto_m, .th_fto_s{background: none repeat scroll 0 0; display:inline-block; outline:medium none; position:relative; vertical-align: bottom; text-align:left; border-collapse:collapse; border-spacing:0; line-height:0 !important}
-.th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:80px; width:105px}
+.th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:70px; width:90px}
 .th_vid_m{display:inline-block; padding:5px; position:relative}
 .th_vid_m span{bottom:4px; display:block; position:absolute; right:4px}
 .th_fto_m i, .th_fto_s i, .th_vid_m i{background-position:center 25%; background-repeat:no-repeat; display:block}	

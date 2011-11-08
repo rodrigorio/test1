@@ -262,4 +262,223 @@ class ComunidadController
             echo $e->getMessage();
         }
     }
+
+    /**
+     *
+     * El objeto archivo se levanta en el metodo de obtener usuario pero no se guarda
+     * cuando se guarda el usuario.
+     * Se guarda cuando se envia el formulario y este metodo actualiza el usuario en session.
+     *
+     */
+    public function guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor)
+    {
+    	try{
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+            
+            //creo el objeto archivo y lo guardo.
+            $oArchivo = new stdClass();
+            $oArchivo->sNombre = $nombreArchivo;
+            $oArchivo->iUsuarioId = $usuario->getId();
+            $oArchivo->sNombreServidor = $nombreServidorArchivo;
+            $oArchivo->sTipoMime = $tipoMimeArchivo;
+            $oArchivo->iTamanio = $tamanioArchivo;
+            $curriculumVitae = Factory::getArchivoInstance($oArchivo);
+
+            $curriculumVitae->setTipoCurriculum();
+            $curriculumVitae->isModerado(false);
+            $curriculumVitae->isActivo(true);
+            $curriculumVitae->isPublico(false);
+            $curriculumVitae->isActivoComentarios(false);
+            
+            //si ya tenia cv el usuario borro el actual
+            if(null !== $usuario->getCurriculumVitae())
+            {
+                $this->borrarCurriculumUsuario($usuario, $pathServidor);
+            }            
+            
+            //asociarlo al usuario en sesion            
+            $usuario()->setCurriculumVitae($curriculumVitae);
+
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $oArchivoIntermediary->guardarCurriculumVitae($usuario);
+            
+        }catch(Exception $e){
+            $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                unlink($pathServidorArchivo);
+            }
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param Usuario $usuario el usuario al que se le va a eliminar el CV
+     * @param string $pathServidor el path al directorio donde esta el archivo que se va a borrar
+     */
+    public function borrarCurriculumUsuario($usuario, $pathServidor)
+    {
+    	try{
+            if(null === $usuario->getCurriculumVitae()){
+                throw new Exception("El usuario no posee Curriculum");
+            }
+
+            $pathServidorArchivo = $pathServidor.$usuario->getCurriculumVitae()->getNombreServidor();
+
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $oArchivoIntermediary->borrar($usuario->getCurriculumVitae());
+            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                unlink($pathServidorArchivo);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Este devuelve un unico archivo a partir de un Id.
+     * Si se necesita obtener un array de objetos hay que hacer otro metodo
+     * con el algoritmo de la busqueda.
+     *
+     * este metodo se usa en el descargarArchivo del page controller index de los modulos 
+     */
+    public function obtenerArchivo($idArchivo)
+    {
+    	try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.id' => $idArchivo);
+            $oArchivo = $oArchivoIntermediary->obtener($filtro);
+            return $oArchivo;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    /**
+     *
+     * @param array $aNombreArchivos 3 celdas con los nombres de los archivos ['nombreFotoGrande'] ['nombreFotoMediana'] ['nombreFotoChica']
+     * @param string $pathServidor directorio donde estan guardadas las fotos
+     */
+    public function guardarFotoPerfilUsuario($aNombreArchivos, $pathServidor)
+    {
+    	try{
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $usuario = $perfil->getUsuario();
+
+            //creo el objeto Foto y lo guardo.
+            $oFoto = new stdClass();
+            $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
+            $oFoto->sNombreMediumSize = $aNombreArchivos['nombreFotoMediana'];
+            $oFoto->sNombreSmallSize = $aNombreArchivos['nombreFotoChica'];
+            $oFoto->iPersonasId = $usuario->getId();
+
+            $oFotoPerfil = Factory::getFotoInstance($oFoto);
+
+            $oFotoPerfil->setOrden(0);
+            $oFotoPerfil->setTitulo('Foto de perfil');
+            $oFotoPerfil->setDescripcion('');
+            $oFotoPerfil->setTipoPerfil();
+
+            //si ya tenia foto de perfil borro la actual
+            if(null !== $usuario->getFotoPerfil())
+            {
+                $this->borrarFotoPerfilUsuario($usuario, $pathServidor);
+            }
+
+            //asociarlo al usuario en sesion
+            $usuario()->setFotoPerfil($oFotoPerfil);
+
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $oFotoIntermediary->guardarFotoPerfil($usuario);
+
+        }catch(Exception $e){
+            //si hubo error borro los archivos en disco
+            foreach($aNombreArchivos as $nombreServidorArchivo){
+                $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                    unlink($pathServidorArchivo);
+                }
+            }           
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    public function borrarFotoPerfilUsuario($usuario, $pathServidor)
+    {
+    	try{
+            if(null === $usuario->getFotoPerfil()){
+                throw new Exception("El usuario no posee foto de perfil");
+            }
+
+            $aNombreArchivos = $usuario->getFotoPerfil()->getArrayNombres();
+
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $oFotoIntermediary->borrar($usuario->getFotoPerfil());
+
+            foreach($aNombreArchivos as $nombreServidorArchivo){
+                $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                    unlink($pathServidorArchivo);
+                }
+            }
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    /**
+     * Devuelve verdadero si el usuario tiene los datos minimos
+     * requeridos para el perfil Integrante Activo
+     */
+    public function cumpleIntegranteActivo($oUsuario)
+    {
+        //serian los campos obligatorios para pasar de perfil
+        if(
+            null !== $oUsuario->getNombre() &&
+            null !== $oUsuario->getApellido() &&
+            null !== $oUsuario->getMail() &&
+            null !== $oUsuario->getSexo() &&
+            null !== $oUsuario->getFechaNacimiento() &&
+
+            null !== $oUsuario->getCiudad() &&
+            null !== $oUsuario->getCodigoPostal() &&
+            null !== $oUsuario->getDomicilio() &&
+            null !== $oUsuario->getTelefono() &&
+
+            null !== $oUsuario->getSecundaria() &&
+            null !== $oUsuario->getCurriculumVitae() &&
+            null !== $oUsuario->getEspecialidad()                     
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Este metodo toma un usuario cargado en sesion en perfil Integrante Inactivo
+     * y le cambia el perfil a Integrante Activo, tambien actualiza los permisos.
+     * 
+     */
+    public function cambiarIntegranteActivoUsuarioSesion()
+    {
+    	try{
+            if("IntegranteInactivo" == SessionAutentificacion::getInstance()->getClassPerfilAutentificado())
+            {
+                $oPerfil = new stdClass();
+                $oPerfil->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+                $oIntegranteActivo = Factory::getIntegranteActivoInstance($oPerfil);
+                $oIntegranteActivo->iniciarPermisos();
+                SessionAutentificacion::getInstance()->cargarAutentificacion($oIntegranteActivo);
+
+                //guardo la info en la DB
+                $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+                $oUsuarioIntermediary->guardarPerfil($oIntegranteActivo, false);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }

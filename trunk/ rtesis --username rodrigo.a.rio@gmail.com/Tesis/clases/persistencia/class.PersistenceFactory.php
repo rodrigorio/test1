@@ -105,5 +105,16 @@ class PersistenceFactory {
             return (SeguimientoPersonalizadoMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getArchivoIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (ArchivoMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getFotoIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (FotoMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
-?>

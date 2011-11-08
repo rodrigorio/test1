@@ -93,4 +93,14 @@ class SessionAutentificacion
         $this->autentificacion->perfil = $perfil;
         return $this;
     }
+
+    /**
+     * Devuelve el nombre de la clase del perfil autentificado
+     *
+     * @return string Visitante | IntegranteInactivo etc
+     */
+    public function getClassPerfilAutentificado()
+    {
+        return getClass($this->autentificacion->perfil);
+    }
 }

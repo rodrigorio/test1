@@ -50,7 +50,7 @@ class SysController
     }
 
     /**
-     * Retorna un array con elmentos que tienen la estructura ['funcion']=$activo
+     * Retorna un array con elmentos que tienen la estructura ['funcion'] = $activo
      * funcion es el key que se genera a partir de modulo_controlador_accion
      * $activo es boolean que indica si una funcion esta activada o no.
      *

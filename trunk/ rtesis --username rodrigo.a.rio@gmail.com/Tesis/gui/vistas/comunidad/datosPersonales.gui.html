@@ -120,7 +120,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="form_line msg_sexo">
             <label for="sexo">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -157,9 +157,9 @@
                 <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
             </select>
         </div>
-       
-        <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
-            <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+
+        <label for="actualizarPerfilBa" class="button buttonConfirm buttonLarge mari3">
+            <button id="actualizarPerfilBa" type="submit" name="actualizarPerfilBa" class="btn01">
                 Actualizar Perfil
             </button>
         </label>
@@ -285,9 +285,9 @@
                 </div>
             </div>
         </div>
-                        
-        <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
-            <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
+
+        <label for="actualizarPerfilCo" class="button buttonConfirm buttonLarge mari3">
+            <button id="actualizarPerfilCo" type="submit" name="actualizarPerfilCo" class="btn01">
                 Actualizar Perfil
             </button>
         </label>
@@ -300,164 +300,284 @@
 
 <!--BeginFormularioInfoProfesionalBlock-->
 <div class="cl_le pabo3"></div>
-<div class='ficha04 bora grupo' style="width:640px;">
-    <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
-    <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post" enctype="multipart/form-data">
-        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+<div class="slide slide01 grupo">
+    <div class="slideExpanded iveal"><span class="i mi ihover"></span>Formulario informaci&oacute;n profesional general</div>
+    <div class="contenido">
 
-        <h2 class="mabo3">Informacion Profesional</h2>
+        <div class='ficha04 bora grupo' style="width:640px;">
+            <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
+            <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post">
+                <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-        <div class="form_line msg_institucion">
-            <label for="institucion">
-                Instituci&oacute;n en la que se desempe&ntilde;a
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
-                    <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
-                    <input type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />                    
-                    <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
+                <h2 class="mabo3">Informacion Profesional</h2>
+
+                <div class="form_line msg_institucion">
+                    <label for="institucion">
+                        Instituci&oacute;n en la que se desempe&ntilde;a
+                    </label>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
+                            <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
+                            <input type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
+                            <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
+                        </div>
+                    </div>
+                    <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
                 </div>
-            </div>
-            <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
-        </div>
 
-        <div id="contCargoInstitucion" class="pale3">
-            <div class="form_line msg_cargoInstitucion">
-                <label for="cargoInstitucion">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Cargo que desempe&ntilde;a
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <input type="text" name="cargoInstitucion" id="cargoInstitucion" title="Cargo que desempe&ntilde;a" maxlength="40" value="{sCargoInstitucion}" />
+                <div id="contCargoInstitucion" class="pale3">
+                    <div class="form_line msg_cargoInstitucion">
+                        <label for="cargoInstitucion">
+                            <span class="marca_obligatorio">&#8226;</span>
+                            Cargo que desempe&ntilde;a
+                        </label>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <input type="text" name="cargoInstitucion" id="cargoInstitucion" title="Cargo que desempe&ntilde;a" maxlength="40" value="{sCargoInstitucion}" />
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="form_line msg_biografia">
-            <label for="biografia">
-                Breve Biograf&iacute;a
-            </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="form_line msg_empresa">
-            <label for="empresa">
-                Empresa
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="empresa" id="empresa" title="Empresa" maxlength="40" value="{sEmpresa}" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form_line msg_secundaria">
-            <label for="secundaria">
-                <span class="marca_obligatorio">&#8226;</span>
-                Secundaria
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="secundaria" id="secundaria" title="Secundaria" maxlength="40" value="{sSecundaria}" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form_line msg_universidad">
-            <label for="universidad">
-                Universidad
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="universidad" id="universidad" title="Universidad" maxlength="40" value="{sUniversidad}" />
-                </div>
-            </div>
-        </div>
-        
-        <div id="universidadInfo" class="pale3">
-            <div class="form_line msg_universidadCarrera">
-                <label for="universidadCarrera">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Carrera
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <input type="text" name="universidadCarrera" id="universidadCarrera" title="Carrera" maxlength="40" value="{sUniversidadCarrera}" />
+                <div class="form_line msg_biografia">
+                    <label for="biografia">
+                        Breve Biograf&iacute;a
+                    </label>
+                    <div class="fwrap mabo2">
+                        <div class="inner_fwrap">
+                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form_line msg_carreraFinalizada">
-                <label for="carreraFinalizada">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Finalizada?
+                <div class="form_line msg_empresa">
+                    <label for="empresa">
+                        Empresa
+                    </label>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <input type="text" name="empresa" id="empresa" title="Empresa" maxlength="40" value="{sEmpresa}" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form_line msg_secundaria">
+                    <label for="secundaria">
+                        <span class="marca_obligatorio">&#8226;</span>
+                        Secundaria
+                    </label>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <input type="text" name="secundaria" id="secundaria" title="Secundaria" maxlength="40" value="{sSecundaria}" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form_line msg_universidad">
+                    <label for="universidad">
+                        Universidad
+                    </label>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <input type="text" name="universidad" id="universidad" title="Universidad" maxlength="40" value="{sUniversidad}" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="universidadInfo" class="pale3">
+                    <div class="form_line msg_universidadCarrera">
+                        <label for="universidadCarrera">
+                            <span class="marca_obligatorio">&#8226;</span>
+                            Carrera
+                        </label>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <input type="text" name="universidadCarrera" id="universidadCarrera" title="Carrera" maxlength="40" value="{sUniversidadCarrera}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form_line msg_carreraFinalizada">
+                        <label for="carreraFinalizada">
+                            <span class="marca_obligatorio">&#8226;</span>
+                            Finalizada?
+                        </label>
+                        <div class="cl_le"></div>
+                        <select style="width:150px" name="carreraFinalizada" id="carreraFinalizada" title="Finalizada?">
+                            <option value="">Elija opci&oacute;n:</option>
+                            <option {sSelectedFinalizadaSi} value="1">S&iacute;</option>
+                            <option {sSelectedFinalizadaNo} value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form_line msg_sitioWeb">
+                    <label for="sitioWeb">
+                        Sitio Web / Blog
+                    </label>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <input type="text" name="sitioWeb" id="sitioWeb" title="Sitio Web / Blog" maxlength="40" value="{sSitioWeb}" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form_line msg_especialidad">
+                    <label for="especialidad">
+                        <span class="marca_obligatorio">&#8226;</span>
+                        Especialidad <span style="font-style:italic">(&Aacute;rea de desempe&ntilde;o profesional)</span>
+                    </label>
+                    <div class="cl_le"></div>
+                    <select style="width:250px" name="especialidad" id="especialidad" title="Especialidad - (&Aacute;rea de desempe&ntilde;o profesional)">
+                        <option value="">Elija especialidad:</option>
+                        <!--BeginListaEspecialidadesBlock--><option value="{iEspecialidadId}" {sDatosPersonalesEspecialidadSelect}>{sEspecialidadNombre}</option><!--EndListaEspecialidadesBlock-->
+                    </select>
+                </div>
+
+                <label for="actualizarPerfilPr" class="button buttonConfirm buttonLarge mari3">
+                    <button id="actualizarPerfilPr" type="submit" name="actualizarPerfilPr" class="btn01">
+                        Actualizar Perfil
+                    </button>
                 </label>
-                <div class="cl_le"></div>
-                <select style="width:150px" name="carreraFinalizada" id="carreraFinalizada" title="Finalizada?">
-                    <option value="">Elija opci&oacute;n:</option>
-                    <option {sSelectedFinalizadaSi} value="1">S&iacute;</option>
-                    <option {sSelectedFinalizadaNo} value="0">No</option>
-                </select>
-            </div>
-        </div>
 
-        <div class="form_line msg_sitioWeb">
-            <label for="sitioWeb">
-                Sitio Web / Blog
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="sitioWeb" id="sitioWeb" title="Sitio Web / Blog" maxlength="40" value="{sSitioWeb}" />
+                <div style="display:none;" id='msg_form_infoProfesional' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
+                <input type="hidden" name="seccion" id="seccion" value="profesional" />
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="slide slide01 grupo">
+    <div class="slideExpanded iveal"><span class="i mi ihover"></span>Agregar Curriculum Vitae al perfil</div>
+    <div class="contenido">
+
+        <div class='ficha04 bora grupo' style="width:640px;">
+            <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
+            <form id="formCurriculum" name="formCurriculum" action="" method="post" enctype="multipart/form-data">
+                <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+                <!--BeginCurriculumActualBlock-->
+                <div id="cvActual">
+                    <h2 class="mabo3">Curriculum Actual</h2>
+                    <ul class="m_vert">
+                        <li>
+                            <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Extensi&oacute;n:</span> {sExtensionArchivo}
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Tama&ntilde;o:</span> {sTamanioArchivo} Kb.
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Fecha Alta:</span> {sFechaArchivo}
+                        </li>
+                        <li>
+                            <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                        </li>
+                    </ul>                    
                 </div>
-            </div>
-        </div>
+                <!--EndCurriculumActualBlock-->
 
-        <div class="form_line msg_curriculum">
-            <label for="curriculum">
-                Curriculum Vitae
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="hidden" value="100000" name="MAX_FILE_SIZE">
-                    <input type="file" name="curriculum" id="curriculum" title="Suba su curriculum vitae al sistema">
+                <h2 class="mabo3">Suba un archivo desde su equipo</h2>
+
+                <div class="form_line msg_curriculum">
+                    <label for="curriculum">
+                        Curriculum Vitae
+                    </label>
+                    <div id="hintCurriculum" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> 
+                        <span class="msg">
+                            <ul class="m_vert">
+                                <li>
+                                    <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosArchivo}
+                                </li>
+                                <li>
+                                    <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+                                </li>
+                                <li>
+                                    <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; el curriculum actual si ya tiene uno.
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <input type="hidden" value="{iMaxFileSizeForm}" name="MAX_FILE_SIZE">
+                            <input type="file" name="curriculum" id="curriculum" title="Elija un archivo">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="form_line msg_especialidad">
-            <label for="especialidad">
-                <span class="marca_obligatorio">&#8226;</span>
-                Especialidad <span style="font-style:italic">(&Aacute;rea de desempe&ntilde;o profesional)</span>
-            </label>
-            <div class="cl_le"></div>
-            <select style="width:250px" name="especialidad" id="especialidad" title="Especialidad - (&Aacute;rea de desempe&ntilde;o profesional)">
-                <option value="">Elija especialidad:</option>
-                <!--BeginListaEspecialidadesBlock--><option value="{iEspecialidadId}" {sDatosPersonalesEspecialidadSelect}>{sEspecialidadNombre}</option><!--EndListaEspecialidadesBlock-->
-            </select>
-        </div>
-                       
-        <label for="actualizarPerfil" class="button buttonConfirm buttonLarge mari3">
-            <button id="actualizarPerfil" type="submit" name="actualizarPerfil" class="btn01">
-                Actualizar Perfil
-            </button>
-        </label>
+                <label for="actualizarPerfilCv" class="button buttonConfirm buttonLarge mari3">
+                    <button id="actualizarPerfilCv" type="submit" name="actualizarPerfilCv" class="btn01">
+                        Subir Archivo
+                    </button>
+                </label>
 
-        <div style="display:none;" id='msg_form_infoProfesional' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
-        <input type="hidden" name="seccion" id="seccion" value="profesional" />
-    </form>
+                <div style="display:none;" id='msg_form_curriculum' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
+                <input type="hidden" name="seccion" id="seccion" value="curriculum" />
+            </form>
+        </div>
+    </div>
 </div>
 <!--EndFormularioInfoProfesionalBlock-->
 
 <!--BeginFormularioFotoPerfilBlock-->
 <div class="cl_le pabo3"></div>
-FOTO PERFIL
+<div class='ficha04 bora grupo' style="width:640px;">
+    <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
+    <form id="formFotoPerfil" name="formFotoPerfil" action="" method="post" enctype="multipart/form-data">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <!--BeginFotoPerfilActualBlock-->
+        <div id="fotoPerfilActual">
+            <h2 class="mabo3">Foto Actual</h2>
+            <a href="" class="th_fto_m thumb01">
+                <i style="background-image:url('{scrFotoPerfilActual}');"></i>
+            </a>
+        </div>
+        <!--EndFotoPerfilActualBlock-->
+
+        <h2 class="mabo3">Suba un archivo desde su equipo</h2>
+
+        <div class="form_line msg_fotoPerfil">
+            <label for="fotoPerfil">
+                Foto perfil usuario
+            </label>
+            <div id="hintFotoPerfil" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span>
+                <span class="msg">
+                    <ul class="m_vert">
+                        <li>
+                            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="hidden" value="{iMaxFileSizeForm}" name="MAX_FILE_SIZE">
+                    <input type="file" name="fotoPerfil" id="fotoPerfil" title="Elija una foto">
+                </div>
+            </div>
+        </div>
+
+        <label for="actualizarFotoPerfil" class="button buttonConfirm buttonLarge mari3">
+            <button id="actualizarFotoPerfil" type="submit" name="actualizarFotoPerfil" class="btn01">
+                Subir Foto
+            </button>
+        </label>
+
+        <div style="display:none;" id='msg_form_fotoPerfil' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
+        <input type="hidden" name="seccion" id="seccion" value="foto" />
+    </form>
+</div>
 <!--EndFormularioFotoPerfilBlock-->
 
 <!--BeginPageRightInnerContBlock-->
