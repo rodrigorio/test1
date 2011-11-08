@@ -22,6 +22,8 @@
 
 #desactiva busqueda por directorio
 Options All -Indexes
+php_value post_max_size 16M
+php_value upload_max_filesize 6M
 
 #primero las condiciones de rewrite, si cumple se aplican las reglas rewrite, sino existe el [OR] se asume un AND
 #las condiciones hacen que se acepte cualquier directorio o archivo que exista o cualquier url que sea 'amigable'

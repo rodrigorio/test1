@@ -34,6 +34,10 @@ class PageControllerAbstract implements PageControllerInterface
      * Instancia de AjaxHelper
      */
     private $ajax = null;
+    /**
+     * Instancia de UploadHelper
+     */
+    private $upload = null;
 
     public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array())
     {
@@ -104,6 +108,15 @@ class PageControllerAbstract implements PageControllerInterface
             $this->ajax = new AjaxHelper();
         }
         return $this->ajax;
+    }
+
+    protected final function getUploadHelper()
+    {
+        if(null === $this->upload)
+        {
+            $this->upload = new UploadHelper();
+        }
+        return $this->upload;
     }
 
     protected final function getRequest()

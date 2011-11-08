@@ -44,6 +44,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             case 'basica': $this->procesarFormInfoBasica(); break;
             case 'contacto': $this->procesarFormInfoContacto();  break;
             case 'profesional': $this->procesarFormInfoProfesional(); break;
+            case 'curriculum': $this->procesarFormCurriculum(); break;
             case 'foto': $this->procesarFormFotoPerfil();  break;
             //ya esta el mail registrado?
             case 'check-mail-existe': $this->mailDb();  break;
@@ -172,9 +173,69 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         }
         $this->getJsonHelper()->sendJsonAjaxResponse();         
     }
-    
-    private function procesarFormFotoPerfil(){
 
+    private function procesarFormCurriculum(){
+        try{                   
+            $nombreInputFile = 'curriculum';
+
+            $this->getUploadHelper()->setTiposValidosDocumentos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+                $usuario = $perfil->getUsuario();
+                $idItem = $usuario->getId();
+
+                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'curriculum', 'curriculum');
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos();
+
+                try{
+                    ComunidadController::getInstance()->guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
+                    $respuesta = "1; El curriculum se guardo correctamente.";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+                    $respuesta = "0; ".$e->getMessage();
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;                    
+                }
+            }           
+        }catch(Exception $e){
+            $respuesta = "0; ".$e->getMessage();
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
+        }
+    }
+    
+    private function procesarFormFotoPerfil()
+    {
+        try{
+            $nombreInputFile = 'fotoPerfil';
+
+            $this->getUploadHelper()->setTiposValidosFotos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+                $usuario = $perfil->getUsuario();
+                $idItem = $usuario->getId();
+
+                //un array con los datos de las fotos
+                list($aNombreArchivos) = $this->getUploadHelper()->generarFotosSistema($idItem, 'fotoPerfil');
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos();
+
+                try{
+                    ComunidadController::getInstance()->guardarFotoPerfilUsuario($aNombreArchivos, $pathServidor);
+                    $respuesta = "1; La foto de perfil se guardo correctamente.";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+                    $respuesta = "0; ".$e->getMessage();
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;
+                }
+            }
+        }catch(Exception $e){
+            $respuesta = "0; ".$e->getMessage();
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
+        }        
     }
     
     /**
@@ -473,11 +534,56 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sDatosPersonalesEspecialidadSelect", "");
             }
         }
+
+        //APARTADO CON EL FORMULARIO PARA UPLOAD DE CURRICULUM VITAE
+        $nombreInputFile = 'curriculum';
+        $this->getUploadHelper()->setTiposValidosDocumentos();
+
+        //si ya tiene curriculum que aparezca.
+        if(null !== $usuario->getCurriculumVitae()){
+            $oArchivo = $usuario->getCurriculumVitae();
+            
+            $this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
+            $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+            $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+            $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
+            $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?archivoId='.$oArchivo->getId());
+
+            $this->getTemplate()->parse("CurriculumActualBlock");           
+        }
+
+        //form para ingresar uno nuevo
+        $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
+        $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+        $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
     }
 
     private function formFotoPerfil()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioFotoPerfilBlock", true);
+        
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $usuario = $perfil->getUsuario();
+
+        if(null !== $usuario->getFotoPerfil()){
+            $oFoto = $usuario->getFotoPerfil();
+
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadArchivos().$oArchivo->getNombreServidor();
+            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadArchivos().$oArchivo->getNombreServidor();
+            
+            $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
+            $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
+
+            $this->getTemplate()->parse("FotoPerfilActualBlock");
+        }
+
+        $nombreInputFile = 'fotoPerfil';
+        $this->getUploadHelper()->setTiposValidosFotos();
+
+        $this->getTemplate()->set_var("sTiposPermitidosFoto", $this->getUploadHelper()->getStringTiposValidos());
+        $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+        $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
     }
 
     public function modificarPrivacidadCampo()

@@ -175,7 +175,6 @@ class IndexControllerIndex extends PageControllerAbstract
                                   ->sendJsonAjaxResponse();
         }else{
             //devuelvo error ajax en formato html
-
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "respuesta", $ficha);
             $this->getTemplate()->set_var("sMensaje", $mensaje);
             

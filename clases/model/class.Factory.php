@@ -130,4 +130,22 @@ class Factory
         $oTipoPracticasSeguimiento = new TipoPracticasSeguimiento($obj);
         return $oTipoPracticasSeguimiento;
     }
+
+    /**
+     * @param stdClass $obj
+     * @return Archivo|null
+     */
+    public static function &getArchivoInstance(stdClass $obj){
+        $oArchivo = new Archivo($obj);
+        return $oArchivo;
+    }
+    
+    /**
+     * @param stdClass $obj
+     * @return Foto|null
+     */
+    public static function &getFotoInstance(stdClass $obj){
+        $oFoto = new Foto($obj);
+        return $oFoto;
+    }
 }

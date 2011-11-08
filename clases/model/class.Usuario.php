@@ -22,6 +22,16 @@ class Usuario extends PersonaAbstract
     private $oEspecialidad;
 
     /**
+     * Instancia de clase Foto
+     */
+    private $oFotoPerfil;
+
+    /**
+     * Instancia de clase Archivo
+     */
+    private $oCurriculumVitae;
+
+    /**
      * en la clase abstracta persona se relaciona el objeto usuario con una institucion
      * en este campo se puede guardar el cargo que desempenia. (form editar datos personales)
      */
@@ -119,6 +129,13 @@ class Usuario extends PersonaAbstract
     public function getInvitacionesDisponibles(){
         return $this->iInvitacionesDisponibles;
     }
+    
+    public function getFotoPerfil(){
+        return $this->oFotoPerfil;
+    }    
+    public function getCurriculumVitae(){
+        return $this->oCurriculumVitae;
+    }
 
     ///////////////////////SETS//////////////////////////
     public function setNombreUsuario($sNombreUsuario){
@@ -163,5 +180,14 @@ class Usuario extends PersonaAbstract
     public function setCargoInstitucion($sCargoInstitucion){
         $this->sCargoInstitucion = $sCargoInstitucion;
         return $this;
-    }    
+    }
+
+    public function setFotoPerfil($oFotoPerfil){
+        $this->oFotoPerfil = $oFotoPerfil;
+        return $this;
+    }
+    public function setCurriculumVitae($oCurriculumVitae){
+        $this->oCurriculumVitae = $oCurriculumVitae;
+        return $this;
+    }
 }

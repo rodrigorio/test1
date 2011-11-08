@@ -92,5 +92,22 @@ class IndexControllerComunidad extends PageControllerAbstract
          }catch(Exception $e){
             print_r($e);
         }
-    }    
+    }
+
+    /**
+     * Sirve para crear enlaces de descarga para cualquier archivo en general del modulo comunidad
+     */
+    public function descargarArchivo()
+    {
+    	try{
+            $idArchivo = $this->getRequest()->get('archivoId');
+            $oArchivo = ComunidadController::getInstance()->obtenerArchivo($idArchivo);
+
+            $this->getDownloadHelper()->utilizarDirectorioUploadUsuarios();
+            //generar descarga
+            $this->getDownloadHelper()->generarDescarga($oArchivo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }
