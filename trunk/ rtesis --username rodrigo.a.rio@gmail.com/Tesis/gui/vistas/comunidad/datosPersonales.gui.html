@@ -14,6 +14,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
    .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/comunidad/datosPersonales.js");
@@ -457,7 +458,7 @@
     <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Agregar Curriculum Vitae al perfil</div>
     <div class="contenido" style="display:none;">
 
-        <div id="formCurriculum" class='ficha04 bora grupo' style="width:640px;">
+        <div id="formCurriculum" class='ficha04 bora' style="width:640px;">
             <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
             
                 <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -465,23 +466,25 @@
                 <!--BeginCurriculumActualBlock-->
                 <div id="cvActual" class="mabo3">
                     <h2 class="mabo3">Curriculum Actual</h2>
-                    <ul class="m_vert pa2 baco1">
-                        <li>
-                            <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
-                        </li>
-                        <li>
-                            <span class="fte2 txt_imp2">Extensi&oacute;n:</span> {sExtensionArchivo}
-                        </li>
-                        <li>
-                            <span class="fte2 txt_imp2">Tama&ntilde;o:</span> {sTamanioArchivo} Kb.
-                        </li>
-                        <li>
-                            <span class="fte2 txt_imp2">Fecha Alta:</span> {sFechaArchivo}
-                        </li>
-                        <li>
-                            <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
-                        </li>
-                    </ul>                    
+                    <div id="contCvActual">
+                        <ul class="m_vert pa2 baco1">
+                            <li>
+                                <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
+                            </li>
+                            <li>
+                                <span class="fte2 txt_imp2">Extensi&oacute;n:</span> {sExtensionArchivo}
+                            </li>
+                            <li>
+                                <span class="fte2 txt_imp2">Tama&ntilde;o:</span> {sTamanioArchivo} Kb.
+                            </li>
+                            <li>
+                                <span class="fte2 txt_imp2">Fecha Alta:</span> {sFechaArchivo}
+                            </li>
+                            <li>
+                                <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <!--EndCurriculumActualBlock-->
 
@@ -524,9 +527,11 @@
         <!--BeginFotoPerfilActualBlock-->
         <div id="fotoPerfilActual" class="mabo3">
             <h2 class="mabo3">Foto Actual</h2>
-            <a href="" class="th_fto_m thumb01">
-                <i style="background-image:url('{scrFotoPerfilActual}');"></i>
-            </a>
+            <div id="contFotoPerfilActual">
+                <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
+                    <i style="background-image:url('{scrFotoPerfilActual}');"></i>
+                </a>
+            </div>
         </div>
         <!--EndFotoPerfilActualBlock-->
 

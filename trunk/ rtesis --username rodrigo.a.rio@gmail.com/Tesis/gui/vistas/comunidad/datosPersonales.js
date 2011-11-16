@@ -524,113 +524,115 @@ var optionsAjaxFormInfoProfesional = {
 $("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
 
 
-
-//////////////////////////////////
-// FORM CURRICULUM VITAE
-//////////////////////////////////
-
 $(document).ready(function(){
-    //plugin ajax upload
-    new Ajax_upload('cvUpload', {
-        action: 'comunidad/datos-personales-procesar',
-        data: {seccion:'curriculum'},
-        name: 'curriculum',
-        onSubmit : function(file , ext){
-            $('#msg_form_curriculum').hide();
-            $('#msg_form_curriculum').removeClass("correcto").removeClass("error");
-            $('#msg_form_curriculum .msg').html("");
-            setWaitingStatus('formCurriculum', true);
-            this.disable(); //solo un archivo a la vez
-        },
-        onComplete : function(file, response){
-            setWaitingStatus('formCurriculum', false);
-            this.enable();
-            
-            if(response == undefined){
-                $('#msg_form_curriculum .msg').html(lang['error procesar']);
-                $('#msg_form_curriculum').addClass("error").fadeIn('slow');
-                return;
-            }
 
-            var dataInfo = response.split(';');
-            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
-            var mensaje = dataInfo[1];
+    //////////////////////////////////
+    // FORM CURRICULUM VITAE /////////
+    //////////////////////////////////
 
-            //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
-            if(resultado != "0" && resultado != "1" && resultado != "2"){
-                $('#msg_form_curriculum .msg').html(lang['error permiso']);
-                $('#msg_form_curriculum').addClass("info").fadeIn('slow');
-                return;
-            }
+    //esto es porque depende la subseccion puede tirar error si el boton no esta
+    if($('#cvUpload').length){
+        //plugin ajax upload
+        new Ajax_upload('#cvUpload',{
+            action: 'comunidad/datos-personales-procesar',
+            data: {seccion:'curriculum'},
+            name: 'curriculum',
+            onSubmit : function(file , ext){
+                $('#msg_form_curriculum').hide();
+                $('#msg_form_curriculum').removeClass("correcto").removeClass("error");
+                $('#msg_form_curriculum .msg').html("");
+                setWaitingStatus('formCurriculum', true);
+                this.disable(); //solo un archivo a la vez
+            },
+            onComplete : function(file, response){
+                setWaitingStatus('formCurriculum', false);
+                this.enable();
 
-            if(resultado == '0'){
-                $('#msg_form_curriculum .msg').html(mensaje);
-                $('#msg_form_curriculum').addClass("error").fadeIn('slow');
-            }else{
-                $('#msg_form_curriculum .msg').html(mensaje);
-                $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
-                if(resultado == "2"){
-                    alert("Pasaste a ser Integrante activo");
-                    //redireccionar a pagina de bienvenida para integrantes activos
-                    //en esa pagina tirar bleble y link a pagina de manual de usuario
+                if(response == undefined){
+                    $('#msg_form_curriculum .msg').html(lang['error procesar']);
+                    $('#msg_form_curriculum').addClass("error").fadeIn('slow');
+                    return;
                 }
+
+                var dataInfo = response.split(';');
+                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+                var mensaje = dataInfo[1];
+
+                //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
+                if(resultado != "0" && resultado != "1" && resultado != "2"){
+                    $('#msg_form_curriculum .msg').html(lang['error permiso']);
+                    $('#msg_form_curriculum').addClass("info").fadeIn('slow');
+                    return;
+                }
+
+                if(resultado == '0'){
+                    $('#msg_form_curriculum .msg').html(mensaje);
+                    $('#msg_form_curriculum').addClass("error").fadeIn('slow');
+                }else{
+                    $('#contCvActual').html("<span class='fost_it'>Recargar para generar link de descarga</span>");
+                    $('#msg_form_curriculum .msg').html(mensaje);
+                    $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
+                    if(resultado == "2"){
+                        alert("Pasaste a ser Integrante activo");
+                        //redireccionar a pagina de bienvenida para integrantes activos
+                        //en esa pagina tirar bleble y link a pagina de manual de usuario
+                    }
+                }
+                return;
             }
-            return;                                  
-        }
-    });
+        });
+    }
+   
+    //////////////////////////////////
+    // FORM FOTO PERFIL    ///////////
+    //////////////////////////////////
+
+    if($('#fotoUpload').length){
+        new Ajax_upload('#fotoUpload', {
+            action: 'comunidad/datos-personales-procesar',
+            data: {seccion:'foto'},
+            name: 'fotoPerfil',
+            onSubmit:function(file , ext){
+                $('#msg_form_fotoPerfil').hide();
+                $('#msg_form_fotoPerfil').removeClass("correcto").removeClass("error");
+                $('#msg_form_fotoPerfil .msg').html("");
+                setWaitingStatus('formFotoPerfil', true);
+                this.disable(); //solo un archivo a la vez
+            },
+            onComplete:function(file, response){
+                setWaitingStatus('formFotoPerfil', false);
+                this.enable();
+                
+                if(response == undefined){
+                    $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
+                    $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+                    return;
+                }
+
+                var dataInfo = response.split(';');
+                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+                var mensaje = dataInfo[1];
+
+                if(resultado != "0" && resultado != "1"){
+                    $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
+                    $('#msg_form_fotoPerfil').addClass("info").fadeIn('slow');
+                    return;
+                }
+
+                if(resultado == '0'){
+                    $('#msg_form_fotoPerfil .msg').html(mensaje);
+                    $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+                }else{
+                    $('#contFotoPerfilActual').html("<span class='fost_it'>Recargar para ver nueva imagen</span>");
+                    $('#msg_form_fotoPerfil .msg').html(mensaje);
+                    $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
+                }
+                return;
+            }
+        });
+    }
 });
 
-//////////////////////////////////
-// FORM FOTO PERFIL
-//////////////////////////////////
-
 $(document).ready(function(){
-    //plugin ajax upload
-    new Ajax_upload('fotoUpload', {
-        action: 'comunidad/datos-personales-procesar',
-        data: {seccion:'foto'},
-        name: 'fotoPerfil',
-        onSubmit : function(file , ext){
-            $('#msg_form_fotoPerfil').hide();
-            $('#msg_form_fotoPerfil').removeClass("correcto").removeClass("error");
-            $('#msg_form_fotoPerfil .msg').html("");
-            setWaitingStatus('formFotoPerfil', true);
-            this.disable(); //solo un archivo a la vez
-        },
-        onComplete : function(file, response){
-            setWaitingStatus('formFotoPerfil', false);
-            this.enable();
-
-            if(response == undefined){
-                $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
-                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-                return;
-            }
-
-            var dataInfo = response.split(';');
-            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
-            var mensaje = dataInfo[1];
-
-            //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
-            if(resultado != "0" && resultado != "1" && resultado != "2"){
-                $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
-                $('#msg_form_fotoPerfil').addClass("info").fadeIn('slow');
-                return;
-            }
-
-            if(resultado == '0'){
-                $('#msg_form_fotoPerfil .msg').html(mensaje);
-                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-            }else{
-                $('#msg_form_fotoPerfil .msg').html(mensaje);
-                $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
-                if(resultado == "2"){
-                    alert("Pasaste a ser Integrante activo");
-                    //redireccionar a pagina de bienvenida para integrantes activos
-                    //en esa pagina tirar bleble y link a pagina de manual de usuario
-                }
-            }
-            return;
-        }
-    });
+    $("a[rel^='prettyPhoto']").prettyPhoto();
 });

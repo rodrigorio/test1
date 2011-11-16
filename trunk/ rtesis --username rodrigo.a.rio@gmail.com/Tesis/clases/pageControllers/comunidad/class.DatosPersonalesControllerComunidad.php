@@ -195,6 +195,17 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 try{
                     ComunidadController::getInstance()->guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
                     $respuesta = "1; El curriculum se guardo correctamente.";
+
+                    /*
+                     * HACER EL JS QUE LEVANTE LAS RESPUESTAS DESDE AJAX Y HACER UNA PAGINA DE BIENVENIDA PARA USUARIOS ACTIVOS
+                    if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario)){
+                        ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion();
+                        $respuesta = "2; Pasaste a ser un integrante activo de la comunidad.";
+                    }else{
+                        $respuesta = "1; El curriculum se guardo correctamente.";
+                    }
+                    */
+
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
                     $respuesta = "0; Error al guardar en base de datos";
@@ -222,8 +233,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 $idItem = $usuario->getId();
 
                 //un array con los datos de las fotos
-                list($aNombreArchivos) = $this->getUploadHelper()->generarFotosSistema($idItem, 'fotoPerfil');
-                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos();
+                $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($idItem, 'fotoPerfil');
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
 
                 try{
                     ComunidadController::getInstance()->guardarFotoPerfilUsuario($aNombreArchivos, $pathServidor);
@@ -577,8 +588,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $oFoto = $usuario->getFotoPerfil();
 
             $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
-            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadArchivos().$oArchivo->getNombreServidor();
-            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadArchivos().$oArchivo->getNombreServidor();
+            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
             
             $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
             $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
