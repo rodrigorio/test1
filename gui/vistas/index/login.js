@@ -3,9 +3,50 @@
  * Para ayuda acerca de validate plugin: http://docs.jquery.com/Plugins/Validation/validate#options
  */
 
-// SUBMIT FORMULARIO LOGIN//
+// HINTS FORMULARIO LOGIN//
+$("#contrasenia").live("focus", function(){
+    revelarElemento($("#hintContrasenia"));
+});
+$("#contrasenia").live("blur", function(){
+    ocultarElemento($("#hintContrasenia"));
+});
 
-//preparo el objeto de opciones para el submit
+// VALIDACION FORMULARIO LOGIN//
+var validateFormLogin = {
+    errorElement: "div",
+    validClass: "correcto",
+
+    //algunos parametros los seteamos para que no haya incompatibilidades con navegadores viejos
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+
+    //ubico la etiqueta con el resultado y el mensaje en el contenedor de form_linea del campo
+    errorPlacement:function(error, element){
+        error.appendTo("#msg_"+element.attr("id"));
+    },
+
+    //no quiero que el plugin agregue ni saque clases me gusta todo como esta
+    highlight: function(element){},
+    unhighlight: function(element){},
+
+    //reglas que tiene que verificar en los campos
+    rules:{
+        documento:{required:true},
+        contrasenia:{required:true}
+    },
+
+    //mensajes que devuelve si campo es invalido (ver la funcion en el archivo funciones-globales.js)
+    messages:{
+        documento: mensajeValidacion("requerido"),
+        contrasenia: mensajeValidacion("requerido")
+    }
+}
+$("#formLogin").validate(validateFormLogin);
+
+// SUBMIT FORMULARIO LOGIN//
 var optionsAjaxFormLogin = {
     dataType: 'jsonp',
     resetForm: true,
@@ -53,52 +94,6 @@ var optionsAjaxFormLogin = {
     }
 };
 $("#formLogin").ajaxForm(optionsAjaxFormLogin);
-
-// VALIDACION FORMULARIO LOGIN//
-
-var validateFormLogin = {
-    errorElement: "div",
-    validClass: "correcto",
-
-    //algunos parametros los seteamos para que no haya incompatibilidades con navegadores viejos
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-
-
-    //ubico la etiqueta con el resultado y el mensaje en el contenedor de form_linea del campo
-    errorPlacement:function(error, element){
-        error.appendTo("#msg_"+element.attr("id"));
-    },
-
-    //no quiero que el plugin agregue ni saque clases me gusta todo como esta
-    highlight: function(element){},
-    unhighlight: function(element){},
-
-    //reglas que tiene que verificar en los campos
-    rules:{
-        documento:{required:true},
-        contrasenia:{required:true}
-    },
-
-    //mensajes que devuelve si campo es invalido (ver la funcion en el archivo funciones-globales.js)
-    messages:{
-        documento: mensajeValidacion("requerido"),
-        contrasenia: mensajeValidacion("requerido")
-    }
-}
-$("#formLogin").validate(validateFormLogin);
-
-// HINTS FORMULARIO LOGIN//
-$("#contrasenia").live("focus", function(){
-    $("#hintContrasenia").show();
-});
-$("#contrasenia").live("blur", function(){
-    $("#hintContrasenia").hide();
-});
-
 
 function recuperarPass(){
     var nombreUsuario = $("#rec_nombre_usuario").val();

@@ -35,6 +35,12 @@ class JsonHelper extends HelperAbstract
     private $jsonAjaxResponseIniciada = false;
 
     /**
+     * si esta en falso devuelve json pero sin los headers, para el servidor la respuesta sera html
+     * esto es util para devolver json encode en los file uploads que soportan solo respuestas html
+     */
+    private $setHeaders = true;
+
+    /**
      *
      * Encode data as JSON and set response header
      *
@@ -71,7 +77,9 @@ class JsonHelper extends HelperAbstract
         $data = $this->encodeJson($data, $options);
 
         $response = $this->getResponse();
-        $response->setHeader('Content-Type', 'application/json', true);        
+        if($this->setHeaders){
+            $response->setHeader('Content-Type', 'application/json', true);
+        }        
         $response->setBody($data);       
     }
 
@@ -135,6 +143,11 @@ class JsonHelper extends HelperAbstract
     {
         $this->jsonAjaxResponse[$nombre] = $valor;
         return $this;
+    }
+
+    public function sendHeaders($flag = true)
+    {
+        $this->setHeaders = $flag ? true : false;
     }
 
     /**

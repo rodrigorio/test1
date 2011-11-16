@@ -26,7 +26,7 @@ class UploadHelper extends HelperAbstract
     /**
      * Referencia: http://www.htmlquick.com/es/reference/mime-types.html
      */
-    const TIPOS_MIME_DOCUMENTOS = array(
+    private $tiposMimeDocumentos = array(
         "application/excel" => ".xls",
         "application/vnd.ms-excel" => ".xls",
         "application/x-excel" => ".xls",
@@ -43,7 +43,7 @@ class UploadHelper extends HelperAbstract
         "text/richtext" => ".rtf"
     );
 
-    const TIPOS_MIME_COMPRESIONES = array(
+    private $tiposMimeCompresiones = array(
         "application/x-compressed" => ".zip",
         "application/x-zip-compressed" => ".zip",
         "application/zip" => ".zip",
@@ -52,7 +52,7 @@ class UploadHelper extends HelperAbstract
         "application/x-gzip" => ".gz"
     );
 
-    const TIPOS_MIME_FOTOS = array (
+    private $tiposMimeFotos = array (
         "application/octet-stream" => ".psd",
         "image/bmp" => ".bmp",
         "image/x-windows-bmp" => ".bmp",
@@ -67,7 +67,7 @@ class UploadHelper extends HelperAbstract
         "image/x-icon" => ".ico"
     );
 
-    const TIPOS_MIME_AUDIO_VIDEO = array (
+    private $tiposMimeAudioVideo = array (
         "application/x-shockwave-flash" => ".swf",
         "application/x-troff-msvideo" => ".avi",
         "video/avi" => ".avi",
@@ -126,7 +126,7 @@ class UploadHelper extends HelperAbstract
      */
     public function __construct()
     {
-        $this->tiposMimeDocumentosCompresiones = array_merge(self::TIPOS_MIME_DOCUMENTOS, self::TIPOS_MIME_COMPRESIONES);
+        $this->tiposMimeDocumentosCompresiones = array_merge($this->tiposMimeDocumentos, $this->tiposMimeCompresiones);
 
         $this->tamanioMaximo = 5000; //kb
         $this->maxFileSize = 5000000; //bytes
@@ -139,25 +139,25 @@ class UploadHelper extends HelperAbstract
 
     public function setTiposValidosDocumentos()
     {
-        $this->tiposValidos = self::TIPOS_MIME_DOCUMENTOS;
+        $this->tiposValidos = $this->tiposMimeDocumentos;
         return $this;
     }
 
     public function setTiposValidosCompresiones()
     {
-        $this->tiposValidos = self::TIPOS_MIME_COMPRESIONES;
+        $this->tiposValidos = $this->tiposMimeCompresiones;
         return $this;
     }
 
     public function setTiposValidosAudioVideo()
     {
-        $this->tiposValidos = self::TIPOS_MIME_AUDIO_VIDEO;
+        $this->tiposValidos = $this->tiposMimeAudioVideo;
         return $this;
     }
 
     public function setTiposValidosFotos()
     {
-        $this->tiposValidos = self::TIPOS_MIME_FOTOS;
+        $this->tiposValidos = $this->tiposMimeFotos;
         return $this;
     }
 
@@ -221,7 +221,6 @@ class UploadHelper extends HelperAbstract
         $directorioUpload = $baseUrl."/uploads/usuarios/";
         $this->directorioUploadArchivos = $directorioUpload."archivos/";
         $this->directorioUploadFotos = $directorioUpload."fotos/";
-
         return $this;
     }
 
@@ -249,19 +248,36 @@ class UploadHelper extends HelperAbstract
     /**
      * Devuelve el directorio de upload para archivos con el que actualmente opera el helper
      * Util para generar el src de descargas
+     *
+     * Si se le pasa true entonces la funcion devuelve el path completo con server root
+     * util para las funciones copy, unlink, move_uploaded_file, etc.
      */
-    public function getDirectorioUploadArchivos()
+    public function getDirectorioUploadArchivos($serverRoot = false)
     {
-        return $this->directorioUploadArchivos;
+        if($serverRoot){
+            //le saco la ultima barra porque el getBaseUrl ya la incorpora al string
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $root = substr($root,0,-1);
+            return $root.$this->directorioUploadArchivos;
+        }else{
+            return $this->directorioUploadArchivos;
+        }
     }
 
     /**
      * Devuelve el directorio de upload para fotos con el que actualmente opera el helper
      * Util para generar el src de las imagenes
      */
-    public function getDirectorioUploadFotos()
+    public function getDirectorioUploadFotos($serverRoot = false)
     {
-        return $this->directorioUploadFotos;
+        if($serverRoot){
+            //le saco la ultima barra porque el getBaseUrl ya la incorpora al string
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $root = substr($root,0,-1);
+            return $root.$this->directorioUploadFotos;
+        }else{
+            return $this->directorioUploadFotos;
+        }
     }
 
     /**
@@ -290,16 +306,16 @@ class UploadHelper extends HelperAbstract
      */
     public function limpiarNombreArchivo($s)
     {
-        $s = ereg_replace("[áàâãª]", "a", $s);
-        $s = ereg_replace("[ÁÀÂÃ]", "A", $s);
-        $s = ereg_replace("[éèê]", "e", $s);
-        $s = ereg_replace("[ÉÈÊ]", "E", $s);
-        $s = ereg_replace("[ÍÌÎ]", "I", $s);
-        $s = ereg_replace("[íìî]", "i", $s);
-        $s = ereg_replace("[óòôõº]", "o", $s);
-        $s = ereg_replace("[ÓÒÔÕ]", "O", $s);
-        $s = ereg_replace("[úùû]", "u", $s);
-        $s = ereg_replace("[ÚÙÛ]", "U", $s);
+        $s = preg_replace("[áàâãª]", "a", $s);
+        $s = preg_replace("[ÁÀÂÃ]", "A", $s);
+        $s = preg_replace("[éèê]", "e", $s);
+        $s = preg_replace("[ÉÈÊ]", "E", $s);
+        $s = preg_replace("[ÍÌÎ]", "I", $s);
+        $s = preg_replace("[íìî]", "i", $s);
+        $s = preg_replace("[óòôõº]", "o", $s);
+        $s = preg_replace("[ÓÒÔÕ]", "O", $s);
+        $s = preg_replace("[úùû]", "u", $s);
+        $s = preg_replace("[ÚÙÛ]", "U", $s);
         $s = str_replace("ç", "c", $s);
         $s = str_replace("Ç", "C", $s);
         $s = str_replace("ñ", "n", $s);
@@ -324,12 +340,12 @@ class UploadHelper extends HelperAbstract
     public function generarNombreArchivo($nombreOriginal, $idItem, $extra="")
     {
         $separador = "_";
-        $nombreNuevo = limpiarNombreArchivo($nombreOriginal);
+        $nombreNuevo = $this->limpiarNombreArchivo($nombreOriginal);
         $prefijo = "";
         $prefijo .= ($idItem != "") ? $idItem.$separador : "" ;
         $prefijo .= ($extra != "") ? $extra.$separador : "" ;
         $prefijo .= time().$separador;
-        return $prefijo.$nombre_nuevo;
+        return $prefijo.$nombreNuevo;
     }
 
     /**
@@ -414,7 +430,7 @@ class UploadHelper extends HelperAbstract
         }
         
         //no dio error de PHP me fijo si cumple con el tipo mime permitido
-        if(!in_array($file_type, $this->getTiposValidos())){
+        if(!array_key_exists($file_type, $this->getTiposValidos())){
             $mensaje = "El tipo del archivo no es v&aacute;lido.<br>
                         S&oacute;lo se permiten archivos: ".$this->getStringTiposValidos()."<br>
                         Su archivo es de tipo ".str_replace("image/", "", $file_type).".";
@@ -487,8 +503,10 @@ class UploadHelper extends HelperAbstract
             $fileType = $_FILES[$inputFileName]['type'];
             $fileSize = $_FILES[$inputFileName]['size'];
             $nombreArchivo = $this->generarNombreArchivo($fileName, $idItem, $extra);
-            $rutaDestino = $this->getDirectorioUploadArchivos().$nombreArchivo;
-            copy($_FILES[$inputFileName]["tmp_name"], $rutaDestino);
+            $rutaDestino = $this->getDirectorioUploadArchivos(true).$nombreArchivo;
+            
+            move_uploaded_file($_FILES[$inputFileName]["tmp_name"], $rutaDestino);            
+
             return array($fileName, $fileType, $fileSize, $nombreArchivo);
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -515,9 +533,9 @@ class UploadHelper extends HelperAbstract
             $aNombreArchivos['nombreFotoChica'] = $this->generarNombreArchivo($fileName, $idItem, "small");
 
             //genera las fotos y las guarda en el servidor
-            $this->generarFotoRedimensionada(self::ANCHO_FOTO_GRANDE, self::ALTO_FOTO_GRANDE, $this->getDirectorioUploadFotos().$aNombreArchivos['nombreFotoGrande'], $inputFileName);
-            $this->generarFotoRedimensionada(self::ANCHO_FOTO_MEDIANA, self::ALTO_FOTO_MEDIANA, $this->getDirectorioUploadFotos().$aNombreArchivos['nombreFotoMediana'], $inputFileName);
-            $this->generarFotoRedimensionada(self::ANCHO_FOTO_CHICA, self::ALTO_FOTO_CHICA, $this->getDirectorioUploadFotos().$aNombreArchivos['nombreFotoChica'], $inputFileName);
+            $this->generarFotoRedimensionada(self::ANCHO_FOTO_GRANDE, self::ALTO_FOTO_GRANDE, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoGrande'], $inputFileName);
+            $this->generarFotoRedimensionada(self::ANCHO_FOTO_MEDIANA, self::ALTO_FOTO_MEDIANA, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoMediana'], $inputFileName);
+            $this->generarFotoRedimensionada(self::ANCHO_FOTO_CHICA, self::ALTO_FOTO_CHICA, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoChica'], $inputFileName);
 
             return $aNombreArchivos;
 

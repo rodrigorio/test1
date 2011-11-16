@@ -38,6 +38,10 @@ class PageControllerAbstract implements PageControllerInterface
      * Instancia de UploadHelper
      */
     private $upload = null;
+    /**
+     * Instancia de DownloadHelper
+     */
+    private $download = null;
 
     public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array())
     {
@@ -117,6 +121,15 @@ class PageControllerAbstract implements PageControllerInterface
             $this->upload = new UploadHelper();
         }
         return $this->upload;
+    }
+
+    protected final function getDownloadHelper()
+    {
+        if(null === $this->download)
+        {
+            $this->download = new DownloadHelper();
+        }
+        return $this->download;
     }
 
     protected final function getRequest()

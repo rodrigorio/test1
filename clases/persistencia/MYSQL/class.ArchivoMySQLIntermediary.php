@@ -2,15 +2,33 @@
 
 class ArchivoMySQLIntermediary extends ArchivoIntermediary
 {
+    private static $instance = null;
+
+    protected function __construct($conn) {
+        parent::__construct($conn);
+    }
+
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return GroupMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn) {
+        if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
+    }
+    
     public function guardarCurriculumVitae($oUsuario)
     {
         $iIdUsuario = $oUsuario->getId();
-        $oArchivo = $oUsuario->getCurriculumVitae();
 
-        if(null !== $oArchivo->getId()){
-            $this->actualizar($oArchivo);
+        if(null !== $oUsuario->getCurriculumVitae()->getId()){
+            return $this->actualizar($oArchivo);
         }else{
-            $this->insertarAsociado($oArchivo, $iIdUsuario, get_class($oUsuario));
+            return $this->insertarAsociado($oUsuario->getCurriculumVitae(), $iIdUsuario, get_class($oUsuario));
         }
     }    
 
@@ -27,7 +45,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $db->commit();
                 return true;
             }else{
-                $db->execSQL("DELETE FROM archivos WHERE id = ".$this->escInt($oArchivo->getId()));
+                $db->execSQL("DELETE FROM archivos WHERE id = ".$this->escInt($aArchivos->getId()));
                 return true;
             }
             
@@ -101,13 +119,13 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 case "Categoria": $sSQL .= "categorias_id = ".$iIdItem.", "; break;
             }
 
+            //orden y fecha quedan con valores por defecto en la insercion.
+            
             $sSQL .= " nombre = ".$this->escStr($oArchivo->getNombre()).", " .
             " nombreServidor = ".$this->escStr($oArchivo->getNombreServidor()).", " .
             " descripcion = ".$this->escStr($oArchivo->getDescripcion()).", ".
             " tipoMime = ".$this->escStr($oArchivo->getTipoMime()).", " .
             " tamanio = ".$this->escInt($oArchivo->getTamanio()).", " .
-            " fechaAlta = '".$oArchivo->getFechaAlta()."', ".
-            " orden = ".$this->escInt($oArchivo->getOrden()).", " .
             " titulo = ".$this->escStr($oArchivo->getTitulo()).", " .
             " tipo = ".$this->escStr($oArchivo->getTipo()).", " .
             " moderado = ".$this->escInt($moderado).", " .
@@ -117,6 +135,8 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
+            
+            $db->commit();
 
             $oArchivo->setId($iLastId);
 
@@ -129,7 +149,77 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
    
     public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
-        
+        try{
+            $db = clone($this->conn);
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        a.id as iId,
+                        a.nombre as sNombre,
+                        a.nombreServidor as sNombreServidor,
+                        a.tipoMime as sTipoMime,
+                        a.tamanio as iTamanio,
+                        a.fechaAlta as sFechaAlta,
+                        a.orden as iOrden,
+                        a.titulo as sTitulo,
+                        a.tipo as sTipo,
+                        a.moderado as bModerado,
+                        a.activo as bActivo,
+                        a.publico as bPublico,
+                        a.activoComentarios as bActivoComentarios
+                    FROM
+                        archivos a ";
+
+                    if(!empty($filtro)){
+                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
+                    }
+
+                    if (isset($sOrderBy) && isset($sOrder)){
+                        $sSQL .= " order by $sOrderBy $sOrder ";
+                    }
+                    if ($iIniLimit!==null && $iRecordCount!==null){
+                        $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+                    }
+            
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aArchivos = array();
+            while($oObj = $db->oNextRecord()){
+                $oArchivo                       = new stdClass();
+                $oArchivo->iId                  = $oObj->iId;
+                $oArchivo->sNombre              = $oObj->sNombre;
+                $oArchivo->sNombreServidor      = $oObj->sNombreServidor;
+                $oArchivo->sTipoMime            = $oObj->sTipoMime;
+                $oArchivo->iTamanio             = $oObj->iTamanio;
+                $oArchivo->sFechaAlta           = $oObj->sFechaAlta;
+                $oArchivo->iOrden               = $oObj->iOrden;
+                $oArchivo->sTitulo              = $oObj->sTitulo;
+                $oArchivo->sTipo                = $oObj->sTipo;
+                $oArchivo->bModerado            = $oObj->bModerado;
+                $oArchivo->bActivo              = $oObj->bActivo;
+                $oArchivo->bPublico             = $oObj->bPublico;
+                $oArchivo->bActivoComentarios   = $oObj->bActivoComentarios;
+
+                //creo el usuario
+                $oArchivo = Factory::getArchivoInstance($oArchivo);
+
+                $aArchivos[] = $oArchivo;
+            }
+
+            //si es solo un elemento devuelvo el objeto si hay mas de un elemento devuelvo el array.
+            if(count($aArchivos) == 1){
+                return $aArchivos[0];
+            }else{
+                return $aArchivos;
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
 
     public function existe($filtro){}

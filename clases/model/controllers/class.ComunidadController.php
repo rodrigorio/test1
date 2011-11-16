@@ -279,7 +279,6 @@ class ComunidadController
             //creo el objeto archivo y lo guardo.
             $oArchivo = new stdClass();
             $oArchivo->sNombre = $nombreArchivo;
-            $oArchivo->iUsuarioId = $usuario->getId();
             $oArchivo->sNombreServidor = $nombreServidorArchivo;
             $oArchivo->sTipoMime = $tipoMimeArchivo;
             $oArchivo->iTamanio = $tamanioArchivo;
@@ -295,19 +294,21 @@ class ComunidadController
             if(null !== $usuario->getCurriculumVitae())
             {
                 $this->borrarCurriculumUsuario($usuario, $pathServidor);
-            }            
+            }
             
             //asociarlo al usuario en sesion            
-            $usuario()->setCurriculumVitae($curriculumVitae);
+            $usuario->setCurriculumVitae($curriculumVitae);
 
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
-            $oArchivoIntermediary->guardarCurriculumVitae($usuario);
+            return $oArchivoIntermediary->guardarCurriculumVitae($usuario);
             
-        }catch(Exception $e){
+        }catch(Exception $e){            
             $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
             if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                 unlink($pathServidorArchivo);
             }
+            $usuario->setCurriculumVitae(null);
+            
             throw new Exception($e->getMessage());
         }
     }
@@ -337,19 +338,34 @@ class ComunidadController
     }
 
     /**
-     * Este devuelve un unico archivo a partir de un Id.
-     * Si se necesita obtener un array de objetos hay que hacer otro metodo
-     * con el algoritmo de la busqueda.
+     * Este devuelve un unico archivo a partir de un Id o del nombreServidor
+     * Si se necesita obtener un array de objetos hay que hacer otro metodo con el algoritmo de la busqueda.
      *
      * este metodo se usa en el descargarArchivo del page controller index de los modulos 
      */
-    public function obtenerArchivo($idArchivo)
+    public function obtenerArchivo($aParams)
     {
-    	try{
+    	try{            
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
-            $filtro = array('a.id' => $idArchivo);
-            $oArchivo = $oArchivoIntermediary->obtener($filtro);
+
+            $filtro = array();
+            if(array_key_exists('id', $aParams)){ 
+                $filtro['a.id'] = $aParams['id'];
+            }else{
+                if(array_key_exists('nombreServidor', $aParams)){ 
+                    $filtro['a.nombreServidor'] = $aParams['nombreServidor'];
+                }
+            }
+
+            if(empty($filtro)){
+                throw new Exception("se llamo a la funcion sin filtro");
+                return;
+            }
+            
+            $oArchivo = $oArchivoIntermediary->obtener($filtro, $iRecordsTotal);
+
             return $oArchivo;
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
@@ -371,7 +387,6 @@ class ComunidadController
             $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
             $oFoto->sNombreMediumSize = $aNombreArchivos['nombreFotoMediana'];
             $oFoto->sNombreSmallSize = $aNombreArchivos['nombreFotoChica'];
-            $oFoto->iPersonasId = $usuario->getId();
 
             $oFotoPerfil = Factory::getFotoInstance($oFoto);
 
@@ -387,7 +402,7 @@ class ComunidadController
             }
 
             //asociarlo al usuario en sesion
-            $usuario()->setFotoPerfil($oFotoPerfil);
+            $usuario->setFotoPerfil($oFotoPerfil);
 
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             $oFotoIntermediary->guardarFotoPerfil($usuario);
@@ -399,7 +414,9 @@ class ComunidadController
                 if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                     unlink($pathServidorArchivo);
                 }
-            }           
+            }
+            $usuario->setFotoPerfil(null);
+            
             throw new Exception($e->getMessage());
         }        
     }
