@@ -24,7 +24,6 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
     public function guardarCurriculumVitae($oUsuario)
     {
         $iIdUsuario = $oUsuario->getId();
-
         if(null !== $oUsuario->getCurriculumVitae()->getId()){
             return $this->actualizar($oArchivo);
         }else{

@@ -329,9 +329,12 @@ class ComunidadController
 
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             $oArchivoIntermediary->borrar($usuario->getCurriculumVitae());
+
             if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                 unlink($pathServidorArchivo);
             }
+
+            $usuario->setCurriculumVitae(null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -405,7 +408,7 @@ class ComunidadController
             $usuario->setFotoPerfil($oFotoPerfil);
 
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
-            $oFotoIntermediary->guardarFotoPerfil($usuario);
+            return $oFotoIntermediary->guardarFotoPerfil($usuario);
 
         }catch(Exception $e){
             //si hubo error borro los archivos en disco
@@ -439,6 +442,8 @@ class ComunidadController
                     unlink($pathServidorArchivo);
                 }
             }
+
+            $usuario->setFotoPerfil(null);
             
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -448,6 +453,8 @@ class ComunidadController
     /**
      * Devuelve verdadero si el usuario tiene los datos minimos
      * requeridos para el perfil Integrante Activo
+     *
+     * @todo hay que probarlo y ademas el javascript que toma el resultado de esto
      */
     public function cumpleIntegranteActivo($oUsuario)
     {

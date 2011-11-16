@@ -532,10 +532,10 @@ class UploadHelper extends HelperAbstract
             $aNombreArchivos['nombreFotoMediana'] = $this->generarNombreArchivo($fileName, $idItem, "medium");
             $aNombreArchivos['nombreFotoChica'] = $this->generarNombreArchivo($fileName, $idItem, "small");
 
-            //genera las fotos y las guarda en el servidor
-            $this->generarFotoRedimensionada(self::ANCHO_FOTO_GRANDE, self::ALTO_FOTO_GRANDE, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoGrande'], $inputFileName);
-            $this->generarFotoRedimensionada(self::ANCHO_FOTO_MEDIANA, self::ALTO_FOTO_MEDIANA, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoMediana'], $inputFileName);
-            $this->generarFotoRedimensionada(self::ANCHO_FOTO_CHICA, self::ALTO_FOTO_CHICA, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoChica'], $inputFileName);
+            //genera las fotos y las guarda en el servidor.
+            $this->generarFotoRedimensionada(self::ANCHO_FOTO_GRANDE, self::ALTO_FOTO_GRANDE, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoGrande'], true, $inputFileName);
+            $this->generarFotoRedimensionada(self::ANCHO_FOTO_MEDIANA, self::ALTO_FOTO_MEDIANA, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoMediana'], false, $inputFileName);
+            $this->generarFotoRedimensionada(self::ANCHO_FOTO_CHICA, self::ALTO_FOTO_CHICA, $this->getDirectorioUploadFotos(true).$aNombreArchivos['nombreFotoChica'], false, $inputFileName);
 
             return $aNombreArchivos;
 
@@ -547,12 +547,22 @@ class UploadHelper extends HelperAbstract
     /**
      * Generar una foto con las dimensiones transformadas según los valores de referencia.
      */
-    private function generarFotoRedimensionada($anchoMaximo, $altoMaximo, $rutaDestino, $inputFileName = 'archivo'){
+    private function generarFotoRedimensionada($anchoMaximo, $altoMaximo, $rutaDestino, $isBigSize = false, $inputFileName = 'archivo'){
 
         //Obtener información de la imagen original:
         $tmpName = $_FILES[$inputFileName]['tmp_name'];
-        list($anchoActual, $altoActual, $mimeType, $attr) = getimagesize($tmpName);
-        
+        $mimeType = $_FILES[$inputFileName]['type'];
+                
+        list($anchoActual, $altoActual, $iMimeType, $attr) = getimagesize($tmpName);
+
+        //la foto de tamaño grande solo se redimensiona si se pasa de las dimensiones maximas,
+        //es decir: NO SE AGRANDA, SOLO SE REDUCE
+        //Si es la foto grande y si es menor que el tamaño maximo no redimensiono y copio de una
+        if($isBigSize && $anchoActual < $anchoMaximo && $altoActual < $altoMaximo){
+            copy($tmpName, $rutaDestino);
+            return;
+        }
+
         list($anchoRedimension, $altoRedimension) = $this->recalcularDimensionesFoto($anchoActual, $altoActual, $anchoMaximo, $altoMaximo);
 
         //Solo si la imagen cambio de dimensiones, sino copio el archivo de una.
@@ -560,12 +570,14 @@ class UploadHelper extends HelperAbstract
             
             //Crear con las dimensiones calculadas:
             $newImg = imagecreatetruecolor($anchoRedimension, $altoRedimension);
+                        
             switch($mimeType){
                 case 'image/gif':   $imagenOrigen = imagecreatefromgif($tmpName); break;
                 case 'image/pjpeg': $imagenOrigen = imagecreatefromjpeg($tmpName); break;
                 case 'image/jpeg':  $imagenOrigen = imagecreatefromjpeg($tmpName); break;
                 case 'image/png':   $imagenOrigen = imagecreatefrompng($tmpName); break;
             }
+
             imagecopyresampled($newImg, $imagenOrigen, 0, 0, 0, 0, $anchoRedimension, $altoRedimension, imagesx($imagenOrigen), imagesy($imagenOrigen));
 
             //Graba con el nombre de destino:
@@ -595,8 +607,8 @@ class UploadHelper extends HelperAbstract
             $sigue = true;
             while($sigue){
                 $proporcion = round(($anchoSalida * 100) / $ancho);
-                $porcentaje_lado_contrario = round(($alto * $proporcion) / 100);
-                if ( $porcentaje_lado_contrario >= $altoMaximo ){
+                $porcentajeLadoContrario = round(($alto * $proporcion) / 100);
+                if ( $porcentajeLadoContrario >= $altoMaximo ){
                     $ancho = $anchoSalida;
                     $alto = $porcentajeLadoContrario;
                     $sigue = false;

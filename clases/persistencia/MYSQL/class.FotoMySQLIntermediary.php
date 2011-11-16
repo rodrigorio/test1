@@ -24,12 +24,10 @@ class FotoMySQLIntermediary extends FotoIntermediary
     public function guardarFotoPerfil($oUsuario)
     {
         $iIdUsuario = $oUsuario->getId();
-        $oFoto = $oUsuario->getFotoPerfil();
-
-        if(null !== $oFoto->getId()){
-            return $this->actualizar($oFoto);
+        if(null !== $oUsuario->getFotoPerfil()->getId()){
+            return $this->actualizar($oUsuario->getFotoPerfil());
         }else{
-            return $this->insertarAsociado($oFoto, $iIdUsuario, get_class($oUsuario));
+            return $this->insertarAsociado($oUsuario->getFotoPerfil(), $iIdUsuario, get_class($oUsuario));
         }        
     }
 
@@ -46,7 +44,8 @@ class FotoMySQLIntermediary extends FotoIntermediary
                 $db->commit();
                 return true;
             }else{
-                $db->execSQL("DELETE FROM archivos WHERE id = ".$this->escInt($aFotos->getId()));
+                $db->execSQL("DELETE FROM fotos WHERE id = ".$this->escInt($aFotos->getId()));
+                $db->commit();
                 return true;
             }
 
@@ -112,10 +111,9 @@ class FotoMySQLIntermediary extends FotoIntermediary
                     " tipo = ".$this->escStr($oFoto->getTipo())." ";
 
             $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();            
             $db->commit();
-            
-            $iLastId = $db->insert_id();
-
+                        
             $oFoto->setId($iLastId);
 
             return true;
