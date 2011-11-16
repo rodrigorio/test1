@@ -124,7 +124,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .ma0{margin:0 !important} .male0{margin-left:0 !important} .mari0{margin-right:0 !important} .mato0{margin-top:0 !important} .mabo0{margin-bottom:0 !important}
 
 .di_bl{display:block} .di_no{display:none !important} .di_in{display:inline}
-.cl_bo{clear:both} .cl_le{clear:left} .cl_ri{clear:right}
+.cl_bo{clear:both} .cl_le{clear:left !important} .cl_ri{clear:right !important}
 .teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center}
 .tetr_ca{text-transform:capitalize}
 .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
@@ -254,7 +254,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 /* left y right se setean por style='' en cada form */
 .msg_campo_der{text-align:left !important} .msg_campo_izq{text-align:right !important}
 /* slides */
-.slide{position:relative; padding-top:20px; margin:20px 0 10px 0; clear:both;}
+.slide{position:relative; padding-top:20px; margin:20px 0 10px 0}
 .slide .slideExpanded, .slide .slideCollapsed{padding: 5px 5px 5px 0; position:absolute; top:-17px; left:0px}
 .slide .slideExpanded .i, .slide .slideCollapsed .i{margin-right:5px;}
 /* tabs */

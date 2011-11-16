@@ -21,7 +21,7 @@
     <div class="titulo iveal" id="title"><span class="i32 mi authenticate32"></span></div>
     <form id="formLogin" name="formLogin" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <div id='msg_form_login' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_login' class="msg_form iveal"><span class="bs i"></span> <span class="msg"></span></div>
         <div id="msg_documento" class="form_line">
             <label for="documento">Documento</label>
             <div class="fwrap">
@@ -57,7 +57,7 @@
         <input type="hidden" value="{sNextUrl}" name="next" id="next">
     </form>
     
-    <div class="di_no" id="recuperarContrasenia">
+    <div style="display:none;" id="recuperarContrasenia">
 		<div id="titleRecPass"><h2>Recuperar contrase&ntilde;a</h2></div>
 		<div id="msg_email" class="form_line">
 			<div style='right:-220px' id="hintrec_email" class="msg_campo_der hint iveal di_no">

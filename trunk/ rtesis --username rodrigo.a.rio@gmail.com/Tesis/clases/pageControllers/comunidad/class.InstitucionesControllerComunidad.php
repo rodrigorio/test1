@@ -410,21 +410,25 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             //return;
         }
     }
+
+        /**
+         * @todo tira error si la lista de ciudades esta vacia 
+         */
 	public function ciudadesByProvincia(){
-		 if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
     	 try{
-    	 	$iProvinciaId =  $this->getRequest()->getPost("iProvinciaId");
-			$result = array();
-    	 	if($iProvinciaId != 0){
-				$vListaCiudades	= ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
-				foreach($vListaCiudades as $oCiudad){
-					$obj = new stdClass();
-					$obj->id = $oCiudad->getId();
-					$obj->sNombre = $oCiudad->getNombre();
-					array_push($result,$obj);
-				}
-    	 	}
-			echo json_encode($result);
+            $iProvinciaId =  $this->getRequest()->getPost("iProvinciaId");
+            $result = array();
+            if($iProvinciaId != 0){
+                $vListaCiudades	= ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
+                foreach($vListaCiudades as $oCiudad){
+                    $obj = new stdClass();
+                    $obj->id = $oCiudad->getId();
+                    $obj->sNombre = $oCiudad->getNombre();
+                    array_push($result,$obj);
+                }
+            }
+            echo json_encode($result);
         }catch(Exception $e){
         	print_r($e);
             //throw new Exception('Error Template');

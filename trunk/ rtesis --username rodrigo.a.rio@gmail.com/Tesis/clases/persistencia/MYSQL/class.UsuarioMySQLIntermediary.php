@@ -109,7 +109,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
 
                         e.id as iEspecialidadId,
-                        e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion
+                        e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion,
 
                         a.id as iCvId, a.nombre as sCvNombre,
                         a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
@@ -127,10 +127,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         personas p JOIN usuarios u ON p.id = u.id
                         LEFT JOIN especialidades e ON u.especialidades_id = e.id
                         LEFT JOIN archivos a ON a.usuarios_id = u.id
-                        LEFT JOIN fotos f ON f.personas_id = u.id";
+                        LEFT JOIN fotos f ON f.personas_id = u.id ";
             
                     if(!empty($filtro)){
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
                     }
                     
                     if (isset($sOrderBy) && isset($sOrder)){
@@ -295,7 +295,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
 
                         e.id as iEspecialidadId,
-                        e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion
+                        e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion,
 
                         a.id as iCvId, a.nombre as sCvNombre,
                         a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
@@ -313,7 +313,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         personas p JOIN usuarios u ON p.id = u.id
                         LEFT JOIN especialidades e ON u.especialidades_id = e.id
                         LEFT JOIN archivos a ON a.usuarios_id = u.id
-                        LEFT JOIN fotos f ON f.personas_id = u.id";
+                        LEFT JOIN fotos f ON f.personas_id = u.id ";
             
             $WHERE = array();
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
@@ -333,6 +333,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -584,6 +585,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
      * }
      * @throws Exception
      */
+    
 	public function enviarInvitacion($oUsuario , Invitado $oInvitado){
 		
         try{
@@ -649,6 +651,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
+
 
     public function actualizar($oUsuario)
     {       
@@ -859,8 +862,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 						join `acciones` a on a.`grupo` =  ap.`grupo`
 						join `controladores_pagina` cp on cp.`id` = a.`controladores_pagina_id`
 						WHERE p.`id` = $iIdPerfil";
+                        
             $db->query($sSQL);
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
             if(empty($foundRows)){ return null; }
 
             return $db->getDBArrayQuery($sSQL);

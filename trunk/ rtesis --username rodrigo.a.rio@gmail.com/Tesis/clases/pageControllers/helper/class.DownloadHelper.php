@@ -13,7 +13,7 @@ class DownloadHelper extends HelperAbstract
     {
         $this->utilizarDirectorioUploadUsuarios();
     }
-
+      
     /**
      * Genera e inicializa el helper para trabajar en los directorios
      * de uploads destinado a los usuarios.
@@ -53,7 +53,10 @@ class DownloadHelper extends HelperAbstract
             $nombreDestino = $oArchivo->getNombreServidor();
         }
 
-        $archivoPathServidor = $this->directorioUploadArchivos.$oArchivo->getNombreServidor();
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $root = substr($root,0,-1);
+
+        $archivoPathServidor = $root.$this->directorioUploadArchivos.$oArchivo->getNombreServidor();
 
         $this->getResponse()->setRawHeader("Content-type: ".$oArchivo->getTipoMime())
                             ->setRawHeader("Content-Disposition: attachment; filename=\"$nombreDestino\"\n")

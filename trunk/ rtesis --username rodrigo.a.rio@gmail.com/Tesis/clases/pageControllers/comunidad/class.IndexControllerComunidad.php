@@ -26,7 +26,7 @@ class IndexControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        //js de home
+        //js de home NO DEBERIA ESTAR ACA SI EL JS Y EL CSS CAMBIA DEPENDIENDO EL CONTROLADOR DE PAGINA
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "jsContent", "JsContent");
         
         return $this;
@@ -96,12 +96,20 @@ class IndexControllerComunidad extends PageControllerAbstract
 
     /**
      * Sirve para crear enlaces de descarga para cualquier archivo en general del modulo comunidad
+     *
      */
     public function descargarArchivo()
     {
-    	try{
+    	try{            
             $idArchivo = $this->getRequest()->get('archivoId');
-            $oArchivo = ComunidadController::getInstance()->obtenerArchivo($idArchivo);
+            $nombreServidor = $this->getRequest()->get('nombreServidor');
+
+            $filtro = array();
+
+            if(!empty($idArchivo)){ $filtro['id'] = $idArchivo; }
+            if(!empty($nombreServidor)){ $filtro['nombreServidor'] = $nombreServidor; }
+
+            $oArchivo = ComunidadController::getInstance()->obtenerArchivo($filtro);
 
             $this->getDownloadHelper()->utilizarDirectorioUploadUsuarios();
             //generar descarga

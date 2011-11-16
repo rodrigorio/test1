@@ -189,6 +189,14 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "procesar"
                                 ));
         $router->addRoute('comunidadDatosPersonalesProcesar', $route);
+
+        $route = new RegexRoute('comunidad/descargar',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "index",
+                                        'action'     => "descargarArchivo"
+                                ));
+        $router->addRoute('comunidadIndexDescargarArchivo', $route);
         
         //ajax
         $route = new RegexRoute('comunidad/modificarPrivacidadCampo',

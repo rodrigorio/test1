@@ -2,15 +2,34 @@
 
 class FotoMySQLIntermediary extends FotoIntermediary
 {
+    private static $instance = null;
+
+    protected function __construct($conn) {
+        parent::__construct($conn);
+    }
+
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return GroupMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn) {
+        if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
+    }
+    
     public function guardarFotoPerfil($oUsuario)
     {
         $iIdUsuario = $oUsuario->getId();
         $oFoto = $oUsuario->getFotoPerfil();
 
         if(null !== $oFoto->getId()){
-            $this->actualizar($oFoto);
+            return $this->actualizar($oFoto);
         }else{
-            $this->insertarAsociado($oFoto, $iIdUsuario, get_class($oUsuario));
+            return $this->insertarAsociado($oFoto, $iIdUsuario, get_class($oUsuario));
         }        
     }
 
@@ -27,7 +46,7 @@ class FotoMySQLIntermediary extends FotoIntermediary
                 $db->commit();
                 return true;
             }else{
-                $db->execSQL("DELETE FROM archivos WHERE id = ".$this->escInt($oFoto->getId()));
+                $db->execSQL("DELETE FROM archivos WHERE id = ".$this->escInt($aFotos->getId()));
                 return true;
             }
 
@@ -88,12 +107,13 @@ class FotoMySQLIntermediary extends FotoIntermediary
             $sSQL .= " nombreBigSize = ".$this->escStr($oFoto->getNombreBigSize()).", " .
                     " nombreMediumSize = ".$this->escStr($oFoto->getNombreMediumSize()).", " .
                     " nombreSmallSize = ".$this->escStr($oFoto->getNombreSmallSize()).", ".
-                    " orden = ".$this->escInt($oFoto->getOrden()).", " .
                     " titulo = ".$this->escStr($oFoto->getTitulo()).", " .
                     " descripcion = ".$this->escStr($oFoto->getDescripcion()).", " .
                     " tipo = ".$this->escStr($oFoto->getTipo())." ";
 
             $db->execSQL($sSQL);
+            $db->commit();
+            
             $iLastId = $db->insert_id();
 
             $oFoto->setId($iLastId);

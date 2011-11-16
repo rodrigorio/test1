@@ -609,11 +609,12 @@ class IMYSQL implements DB
 
 
             if($iQuery !== false){
-                    if($iQuery instanceof mysqli_result){
-                            mysqli_free_result($iQuery);
-                    }
+                if($iQuery instanceof mysqli_result){
+                    mysqli_free_result($iQuery);
+                }
             }elseif($this->error()){
-                    $this->halt();
+                echo "entro aca?? ";
+                $this->halt();
             }
     }
 }

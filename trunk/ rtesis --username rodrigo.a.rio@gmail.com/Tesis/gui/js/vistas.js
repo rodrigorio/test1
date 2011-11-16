@@ -18,6 +18,7 @@ var MSG_HINT = "hint";
 if(!lang)
 var lang = Array();
 lang['error procesar'] = 'Error al intentar procesar lo solicitado';
+lang['error permiso'] = 'La accion se encuentra desactivada o no tienes permiso para realizarla';
 lang['exito procesar'] = 'Los datos se han procesado con éxito';
 
 /* util para cuando el javascript cambia dependiendo el navegador */

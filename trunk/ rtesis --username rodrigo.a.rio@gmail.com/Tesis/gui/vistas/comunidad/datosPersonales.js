@@ -1,4 +1,6 @@
-//////////////////////////////////
+//file upload plugin: http://valums.com/ajax-upload/
+
+////////////////////////////////////
 // MODIFICAR PRIVACIDAD
 //////////////////////////////////
 
@@ -35,10 +37,10 @@ $("#toggleContrasenia").click(function(){
 
 // hints formularios
 $("#contraseniaNueva").live("focus", function(){
-    $("#hintContraseniaNueva").show();
+    revelarElemento($("#hintContraseniaNueva"));
 });
 $("#contraseniaNueva").live("blur", function(){
-    $("#hintContraseniaNueva").hide();
+    ocultarElemento($("#hintContraseniaNueva"));
 });
 
 //ya esta el mail registrado?
@@ -527,169 +529,108 @@ $("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
 // FORM CURRICULUM VITAE
 //////////////////////////////////
 
-// hints formularios
-$("#curriculum").live("focus", function(){
-    $("#hintCurriculum").show();
-});
-$("#curriculum").live("blur", function(){
-    $("#hintCurriculum").hide();
-});
-
-//validacion y submit
-var validateFormCurriculum = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
-    },
-    highlight: function(element){},
-    unhighlight: function(element){},
-    rules:{
-        curriculum:{required:true}
-    },
-    messages:{
-        curriculum:mensajeValidacion("requerido")
-    }
-}
-$("#formCurriculum").validate(validateFormCurriculum);
-
-//no es json porque es un upload y es mas natural que la respuesta sea html
-var optionsAjaxFormCurriculum = {
-    resetForm: true,
-    url: 'comunidad/datos-personales-procesar',
-
-    beforeSerialize: function($form, options){
-        if($("#formCurriculum").valid() == true){
+$(document).ready(function(){
+    //plugin ajax upload
+    new Ajax_upload('cvUpload', {
+        action: 'comunidad/datos-personales-procesar',
+        data: {seccion:'curriculum'},
+        name: 'curriculum',
+        onSubmit : function(file , ext){
             $('#msg_form_curriculum').hide();
             $('#msg_form_curriculum').removeClass("correcto").removeClass("error");
             $('#msg_form_curriculum .msg').html("");
             setWaitingStatus('formCurriculum', true);
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formCurriculum', false);
-
-        if(data == undefined){
-            $('#msg_form_infoProfesional .msg').html(lang['error procesar']);
-            $('#msg_form_infoProfesional').addClass("error").fadeIn('slow');
-            return;
-        }
-        
-        var dataInfo = data.split(';');
-        var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
-        var mensaje = dataInfo[1];
-
-        //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
-        if(resultado != "0" && resultado != "1" && resultado != "2"){
-            $('#msg_form_infoProfesional .msg').html(data);
-            $('#msg_form_infoProfesional').addClass("info").fadeIn('slow');
-            return;
-        }
-
-        if(resultado == '0'){
-            $('#msg_form_infoProfesional .msg').html(mensaje);
-            $('#msg_form_infoProfesional').addClass("error").fadeIn('slow');
-        }else{
-            $('#msg_form_infoProfesional .msg').html(mensaje);
-            $('#msg_form_infoProfesional').addClass("correcto").fadeIn('slow');
-            if(resultado == "2"){
-                alert("Pasaste a ser Integrante activo");
-                //redireccionar a pagina de bienvenida para integrantes activos
-                //en esa pagina tirar bleble y link a pagina de manual de usuario
+            this.disable(); //solo un archivo a la vez
+        },
+        onComplete : function(file, response){
+            setWaitingStatus('formCurriculum', false);
+            this.enable();
+            
+            if(response == undefined){
+                $('#msg_form_curriculum .msg').html(lang['error procesar']);
+                $('#msg_form_curriculum').addClass("error").fadeIn('slow');
+                return;
             }
+
+            var dataInfo = response.split(';');
+            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+            var mensaje = dataInfo[1];
+
+            //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
+            if(resultado != "0" && resultado != "1" && resultado != "2"){
+                $('#msg_form_curriculum .msg').html(lang['error permiso']);
+                $('#msg_form_curriculum').addClass("info").fadeIn('slow');
+                return;
+            }
+
+            if(resultado == '0'){
+                $('#msg_form_curriculum .msg').html(mensaje);
+                $('#msg_form_curriculum').addClass("error").fadeIn('slow');
+            }else{
+                $('#msg_form_curriculum .msg').html(mensaje);
+                $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
+                if(resultado == "2"){
+                    alert("Pasaste a ser Integrante activo");
+                    //redireccionar a pagina de bienvenida para integrantes activos
+                    //en esa pagina tirar bleble y link a pagina de manual de usuario
+                }
+            }
+            return;                                  
         }
-        return;
-    }
-};
-$("#formCurriculum").ajaxForm(optionsAjaxFormCurriculum);
+    });
+});
 
 //////////////////////////////////
 // FORM FOTO PERFIL
 //////////////////////////////////
 
-// hints formularios
-$("#fotoPerfil").live("focus", function(){
-    $("#hintFotoPerfil").show();
-});
-$("#fotoPerfil").live("blur", function(){
-    $("#hintFotoPerfil").hide();
-});
-
-//validacion y submit
-var validateFormFotoPerfil = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
-    },
-    highlight: function(element){},
-    unhighlight: function(element){},
-    rules:{
-        fotoPerfil:{required:true}
-    },
-    messages:{
-        fotoPerfil:mensajeValidacion("requerido")
-    }
-}
-$("#formFotoPerfil").validate(validateFormFotoPerfil);
-
-//no es json porque es un upload y es mas natural que la respuesta sea html
-var optionsAjaxFormFotoPerfil = {
-    resetForm: true,
-    url: 'comunidad/datos-personales-procesar',
-
-    beforeSerialize: function($form, options){
-        if($("#formFotoPerfil").valid() == true){
+$(document).ready(function(){
+    //plugin ajax upload
+    new Ajax_upload('fotoUpload', {
+        action: 'comunidad/datos-personales-procesar',
+        data: {seccion:'foto'},
+        name: 'fotoPerfil',
+        onSubmit : function(file , ext){
             $('#msg_form_fotoPerfil').hide();
             $('#msg_form_fotoPerfil').removeClass("correcto").removeClass("error");
             $('#msg_form_fotoPerfil .msg').html("");
             setWaitingStatus('formFotoPerfil', true);
-        }else{
-            return false;
-        }
-    },
+            this.disable(); //solo un archivo a la vez
+        },
+        onComplete : function(file, response){
+            setWaitingStatus('formFotoPerfil', false);
+            this.enable();
 
-    success:function(data){
-        setWaitingStatus('formFotoPerfil', false);
+            if(response == undefined){
+                $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
+                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+                return;
+            }
 
-        if(data == undefined){
-            $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
-            $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+            var dataInfo = response.split(';');
+            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+            var mensaje = dataInfo[1];
+
+            //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
+            if(resultado != "0" && resultado != "1" && resultado != "2"){
+                $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
+                $('#msg_form_fotoPerfil').addClass("info").fadeIn('slow');
+                return;
+            }
+
+            if(resultado == '0'){
+                $('#msg_form_fotoPerfil .msg').html(mensaje);
+                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+            }else{
+                $('#msg_form_fotoPerfil .msg').html(mensaje);
+                $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
+                if(resultado == "2"){
+                    alert("Pasaste a ser Integrante activo");
+                    //redireccionar a pagina de bienvenida para integrantes activos
+                    //en esa pagina tirar bleble y link a pagina de manual de usuario
+                }
+            }
             return;
         }
-
-        var dataInfo = data.split(';');
-        var resultado = dataInfo[0]; 
-        var mensaje = dataInfo[1];
-
-        //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
-        if(resultado != "0" && resultado != "1"){
-            $('#msg_form_infoProfesional .msg').html(data);
-            $('#msg_form_infoProfesional').addClass("info").fadeIn('slow');
-            return;
-        }
-
-        if(resultado == "0"){
-            $('#msg_form_fotoPerfil .msg').html(mensaje);
-            $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-        }else{
-            $('#msg_form_fotoPerfil .msg').html(mensaje);
-            $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
-        }
-        return;
-    }
-};
-$("#formFotoPerfil").ajaxForm(optionsAjaxFormFotoPerfil);
+    });
+});

@@ -1,3 +1,7 @@
+<!--BeginCssContent-->
+
+<!--EndCssContent-->
+
 <!--BeginJsContent-->
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
@@ -9,6 +13,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/comunidad/datosPersonales.js");
@@ -300,9 +305,9 @@
 
 <!--BeginFormularioInfoProfesionalBlock-->
 <div class="cl_le pabo3"></div>
-<div class="slide slide01 grupo">
-    <div class="slideExpanded iveal"><span class="i mi ihover"></span>Formulario informaci&oacute;n profesional general</div>
-    <div class="contenido">
+<div class="slide slide01">
+    <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Formulario informaci&oacute;n profesional general</div>
+    <div class="contenido" style="display:none">
 
         <div class='ficha04 bora grupo' style="width:640px;">
             <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
@@ -447,20 +452,20 @@
         </div>
     </div>
 </div>
+<div class="cl_le pabo2"></div>
+<div class="slide slide01">
+    <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Agregar Curriculum Vitae al perfil</div>
+    <div class="contenido" style="display:none;">
 
-<div class="slide slide01 grupo">
-    <div class="slideExpanded iveal"><span class="i mi ihover"></span>Agregar Curriculum Vitae al perfil</div>
-    <div class="contenido">
-
-        <div class='ficha04 bora grupo' style="width:640px;">
+        <div id="formCurriculum" class='ficha04 bora grupo' style="width:640px;">
             <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
-            <form id="formCurriculum" name="formCurriculum" action="" method="post" enctype="multipart/form-data">
+            
                 <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
                 <!--BeginCurriculumActualBlock-->
-                <div id="cvActual">
+                <div id="cvActual" class="mabo3">
                     <h2 class="mabo3">Curriculum Actual</h2>
-                    <ul class="m_vert">
+                    <ul class="m_vert pa2 baco1">
                         <li>
                             <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
                         </li>
@@ -481,43 +486,29 @@
                 <!--EndCurriculumActualBlock-->
 
                 <h2 class="mabo3">Suba un archivo desde su equipo</h2>
-
-                <div class="form_line msg_curriculum">
-                    <label for="curriculum">
-                        Curriculum Vitae
-                    </label>
-                    <div id="hintCurriculum" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> 
-                        <span class="msg">
-                            <ul class="m_vert">
-                                <li>
-                                    <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosArchivo}
-                                </li>
-                                <li>
-                                    <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
-                                </li>
-                                <li>
-                                    <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; el curriculum actual si ya tiene uno.
-                                </li>
-                            </ul>
-                        </span>
-                    </div>
-                    <div class="fwrap">
-                        <div class="inner_fwrap">
-                            <input type="hidden" value="{iMaxFileSizeForm}" name="MAX_FILE_SIZE">
-                            <input type="file" name="curriculum" id="curriculum" title="Elija un archivo">
-                        </div>
-                    </div>
-                </div>
-
-                <label for="actualizarPerfilCv" class="button buttonConfirm buttonLarge mari3">
-                    <button id="actualizarPerfilCv" type="submit" name="actualizarPerfilCv" class="btn01">
-                        Subir Archivo
+                
+                <label for="cvUpload" class="button buttonConfirm buttonLarge mari3 mabo2">
+                    <button id="cvUpload" name="cvUpload" class="btn01">
+                        Click para seleccionar
                     </button>
                 </label>
 
-                <div style="display:none;" id='msg_form_curriculum' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
-                <input type="hidden" name="seccion" id="seccion" value="curriculum" />
-            </form>
+                <div class='ficha05 bora'>
+                    <span class="i bs infoo"></span>
+                    <ul class="m_vert">
+                        <li>
+                            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosArchivo}
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; el curriculum actual si ya tiene uno.
+                        </li>
+                    </ul>                    
+                </div>
+                
+                <div style="display:none;" id='msg_form_curriculum' class="msg_form iveal cl_le mato3"><span class="msg"></span></div>
         </div>
     </div>
 </div>
@@ -525,13 +516,13 @@
 
 <!--BeginFormularioFotoPerfilBlock-->
 <div class="cl_le pabo3"></div>
-<div class='ficha04 bora grupo' style="width:640px;">
+<div id="formFotoPerfil" class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
-    <form id="formFotoPerfil" name="formFotoPerfil" action="" method="post" enctype="multipart/form-data">
+
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
         <!--BeginFotoPerfilActualBlock-->
-        <div id="fotoPerfilActual">
+        <div id="fotoPerfilActual" class="mabo3">
             <h2 class="mabo3">Foto Actual</h2>
             <a href="" class="th_fto_m thumb01">
                 <i style="background-image:url('{scrFotoPerfilActual}');"></i>
@@ -541,42 +532,28 @@
 
         <h2 class="mabo3">Suba un archivo desde su equipo</h2>
 
-        <div class="form_line msg_fotoPerfil">
-            <label for="fotoPerfil">
-                Foto perfil usuario
-            </label>
-            <div id="hintFotoPerfil" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span>
-                <span class="msg">
-                    <ul class="m_vert">
-                        <li>
-                            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
-                        </li>
-                        <li>
-                            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
-                        </li>
-                        <li>
-                            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
-                        </li>
-                    </ul>
-                </span>
-            </div>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="hidden" value="{iMaxFileSizeForm}" name="MAX_FILE_SIZE">
-                    <input type="file" name="fotoPerfil" id="fotoPerfil" title="Elija una foto">
-                </div>
-            </div>
-        </div>
-
-        <label for="actualizarFotoPerfil" class="button buttonConfirm buttonLarge mari3">
-            <button id="actualizarFotoPerfil" type="submit" name="actualizarFotoPerfil" class="btn01">
-                Subir Foto
+        <label for="fotoUpload" class="button buttonConfirm buttonLarge mari3 mabo2">
+            <button id="fotoUpload" name="fotoUpload" class="btn01">
+                Click para seleccionar
             </button>
         </label>
 
-        <div style="display:none;" id='msg_form_fotoPerfil' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
-        <input type="hidden" name="seccion" id="seccion" value="foto" />
-    </form>
+        <div class='ficha05 bora'>
+            <span class="i bs infoo"></span>
+            <ul class="m_vert">
+                <li>
+                    <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
+                </li>
+                <li>
+                    <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+                </li>
+                <li>
+                    <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
+                </li>
+            </ul>
+        </div>
+
+        <div style="display:none;" id='msg_form_fotoPerfil' class="msg_form iveal cl_le mato3"><span class="msg"></span></div>
 </div>
 <!--EndFormularioFotoPerfilBlock-->
 

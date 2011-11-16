@@ -35,11 +35,14 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
      */
     public function procesar()
     {
-        //si accedio a traves de la url muestra pagina 404
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
-        //segun que seccion del formulario proceso de manera diferente
         $seccion = $this->getRequest()->getPost('seccion');
+        
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if($seccion != 'curriculum' && $seccion != 'foto' && !$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+               
+        //segun que seccion del formulario proceso de manera diferente
         switch($seccion){
             case 'basica': $this->procesarFormInfoBasica(); break;
             case 'contacto': $this->procesarFormInfoContacto();  break;
@@ -52,6 +55,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             case 'check-contrasenia-actual': $this->contraseniaActual(); break;
         }
     }
+
     private function procesarFormInfoBasica(){
         try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
@@ -175,7 +179,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     }
 
     private function procesarFormCurriculum(){
-        try{                   
+        try{
             $nombreInputFile = 'curriculum';
 
             $this->getUploadHelper()->setTiposValidosDocumentos();
@@ -186,20 +190,20 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 $idItem = $usuario->getId();
 
                 list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'curriculum', 'curriculum');
-                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos();
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
                 try{
                     ComunidadController::getInstance()->guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
                     $respuesta = "1; El curriculum se guardo correctamente.";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
-                    $respuesta = "0; ".$e->getMessage();
+                    $respuesta = "0; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
-                    return;                    
+                    return;
                 }
-            }           
+            }
         }catch(Exception $e){
-            $respuesta = "0; ".$e->getMessage();
+            $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }
@@ -226,13 +230,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                     $respuesta = "1; La foto de perfil se guardo correctamente.";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
-                    $respuesta = "0; ".$e->getMessage();
+                    $respuesta = "0; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                     return;
                 }
             }
         }catch(Exception $e){
-            $respuesta = "0; ".$e->getMessage();
+            $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }        
@@ -279,6 +283,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         $this->setHeadTag();
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "cssContent", "CssContent");
 
         $this->printMsgTop();
 
@@ -547,9 +552,12 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
             $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
             $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
-            $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?archivoId='.$oArchivo->getId());
+           
+            $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor());
 
             $this->getTemplate()->parse("CurriculumActualBlock");           
+        }else{
+            $this->getTemplate()->unset_blocks("CurriculumActualBlock");
         }
 
         //form para ingresar uno nuevo
@@ -576,6 +584,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
 
             $this->getTemplate()->parse("FotoPerfilActualBlock");
+        }else{
+            $this->getTemplate()->unset_blocks("FotoPerfilActualBlock");
         }
 
         $nombreInputFile = 'fotoPerfil';
