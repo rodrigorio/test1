@@ -49,8 +49,12 @@ class IndexControllerAdmin extends PageControllerAbstract
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $perfilDesc = $perfil->getDescripcion();
         $nombreUsuario = $perfil->getNombreUsuario();
+
+        //lo hago asi para no enroscarme porq es un metodo estatico no puedo usar $this
+        $oUploadHelper = new UploadHelper();
+        $srcAvatar = $oUploadHelper->getDirectorioUploadFotos().$perfil->getAvatarUsuario();
         
-        $template->set_var("srcImageUser", "#");
+        $template->set_var("scrAvatarSession", $srcAvatar);
         $template->set_var("userName", $nombreUsuario);
         $template->set_var("hrefEditarPerfil", $request->getBaseTagUrl().'/comunidad/datos-personales');
         $template->set_var("perfilDescripcion", $perfilDesc);

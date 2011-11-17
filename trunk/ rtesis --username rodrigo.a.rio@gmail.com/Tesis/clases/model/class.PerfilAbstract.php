@@ -79,6 +79,11 @@ abstract class PerfilAbstract
         return $this->oUsuario->getNombreUsuario();
     }
 
+    public function getAvatarUsuario($medium = false)
+    {
+        return $this->oUsuario->getNombreAvatar($medium);
+    }
+
     protected function cargarPermisos()
     {
         if(!isset($this->oPermisos->acciones))

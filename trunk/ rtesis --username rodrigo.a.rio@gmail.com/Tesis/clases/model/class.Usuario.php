@@ -137,6 +137,14 @@ class Usuario extends PersonaAbstract
         return $this->oCurriculumVitae;
     }
 
+    public function getNombreAvatar($medium = false){
+        if(null == $this->oFotoPerfil){
+            return $medium ? "defaultAvatarMedium.png" : "defaultAvatarSmall.png";
+        }
+
+        return $medium ? $this->oFotoPerfil->getNombreMediumSize() : $this->oFotoPerfil->getNombreSmallSize();
+    }
+
     ///////////////////////SETS//////////////////////////
     public function setNombreUsuario($sNombreUsuario){
     	$this->sNombreUsuario = $sNombreUsuario;

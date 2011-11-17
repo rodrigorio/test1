@@ -1,5 +1,26 @@
 //file upload plugin: http://valums.com/ajax-upload/
 
+//funcion para el dialog si paso a ser integrante activo
+function showDialogIntegranteActivo(){
+    var dialog = $("#dialog");
+    if ($("#dialog").length == 0){ dialog = $('<div id="dialog" title="Comunidad SGPAPD"></div>').appendTo('body'); }
+
+    dialog.load(
+        "comunidad/datos-personales-procesar",
+        {seccion:'dialogIntegranteActivo'},
+        function(data){
+            dialog.dialog({
+                position:['center',5],
+                width:650,
+                resizable:false,
+                draggable:false,
+                modal:true,
+                closeOnEscape:true
+            });
+        }
+    );
+}
+
 ////////////////////////////////////
 // MODIFICAR PRIVACIDAD
 //////////////////////////////////
@@ -193,6 +214,9 @@ var optionsAjaxFormInfoBasica = {
             $('#msg_form_infoBasica .msg').html(lang['error procesar']);
             $('#msg_form_infoBasica').addClass("error").fadeIn('slow');
         }else{
+            if(data.integranteActivo == "1"){
+                showDialogIntegranteActivo();
+            }
             $('#msg_form_infoBasica .msg').html(lang['exito procesar']);
             $('#msg_form_infoBasica').addClass("correcto").fadeIn('slow');
         }
@@ -341,6 +365,9 @@ var optionsAjaxFormInfoContacto = {
             $('#msg_form_infoContacto .msg').html(lang['error procesar']);
             $('#msg_form_infoContacto').addClass("error").fadeIn('slow');
         }else{
+            if(data.integranteActivo == "1"){
+                showDialogIntegranteActivo();
+            }
             $('#msg_form_infoContacto .msg').html(lang['exito procesar']);
             $('#msg_form_infoContacto').addClass("correcto").fadeIn('slow');
         }
@@ -516,6 +543,9 @@ var optionsAjaxFormInfoProfesional = {
             $('#msg_form_infoProfesional .msg').html(lang['error procesar']);
             $('#msg_form_infoProfesional').addClass("error").fadeIn('slow');
         }else{
+            if(data.integranteActivo == "1"){
+                showDialogIntegranteActivo();
+            }
             $('#msg_form_infoProfesional .msg').html(lang['exito procesar']);
             $('#msg_form_infoProfesional').addClass("correcto").fadeIn('slow');
         }

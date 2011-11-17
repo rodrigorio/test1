@@ -38,11 +38,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $seccion = $this->getRequest()->getPost('seccion');
         
         //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
-        if($seccion != 'curriculum' && $seccion != 'foto' && !$this->getAjaxHelper()->isAjaxContext()){
+        if($seccion != 'curriculum' && 
+           $seccion != 'foto' &&
+           !$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
                
-        //segun que seccion del formulario proceso de manera diferente
+        //segun seccion del formulario proceso de manera diferente
         switch($seccion){
             case 'basica': $this->procesarFormInfoBasica(); break;
             case 'contacto': $this->procesarFormInfoContacto();  break;
@@ -53,7 +55,16 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             case 'check-mail-existe': $this->mailDb();  break;
             //es la contrasenia actual del usuario?
             case 'check-contrasenia-actual': $this->contraseniaActual(); break;
+            //dialog si paso a ser integrante activo
+            case 'dialogIntegranteActivo': $this->dialogIntegranteActivo(); break;
         }
+    }
+
+    private function dialogIntegranteActivo()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-01.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "popUpContent", "DialogIntegranteActivoBlock");
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     private function procesarFormInfoBasica(){
@@ -91,6 +102,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
             ComunidadController::getInstance()->guardarUsuario($usuario);
 
+            if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
+               ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
+                $this->getJsonHelper()->setValor('integranteActivo', '1');
+            }else{
+                $this->getJsonHelper()->setValor('integranteActivo', '0');
+            }
+
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
@@ -125,6 +143,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $usuario->setFax($sFax);
             
             ComunidadController::getInstance()->guardarUsuario($usuario);
+
+            if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
+               ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
+                $this->getJsonHelper()->setValor('integranteActivo', '1');
+            }else{
+                $this->getJsonHelper()->setValor('integranteActivo', '0');
+            }
 
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
@@ -173,9 +198,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
             if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
                ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
-                $this->getJsonHelper()->setValor('integranteActivo', true);
+                $this->getJsonHelper()->setValor('integranteActivo', '1');
             }else{
-                $this->getJsonHelper()->setValor('integranteActivo', false);
+                $this->getJsonHelper()->setValor('integranteActivo', '0');
             }
 
             $this->getJsonHelper()->setSuccess(true);
