@@ -171,6 +171,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
             ComunidadController::getInstance()->guardarUsuario($usuario);
 
+            if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
+               ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
+                $this->getJsonHelper()->setValor('integranteActivo', true);
+            }else{
+                $this->getJsonHelper()->setValor('integranteActivo', false);
+            }
+
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
@@ -194,18 +201,25 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
                 try{
                     ComunidadController::getInstance()->guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
-                    $respuesta = "1; El curriculum se guardo correctamente.";
+                    $oArchivo = $usuario->getCurriculumVitae();
 
-                    /*
-                     * HACER EL JS QUE LEVANTE LAS RESPUESTAS DESDE AJAX Y HACER UNA PAGINA DE BIENVENIDA PARA USUARIOS ACTIVOS
-                    if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario)){
-                        ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion();
-                        $respuesta = "2; Pasaste a ser un integrante activo de la comunidad.";
+                    $this->restartTemplate();
+                    $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "curriculumActual", "CurriculumActualBlock");
+
+                    $this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
+                    $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                    $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                    $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
+                    $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor());
+                    
+                    if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
+                       ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
+                        $respuesta = "2; ";
                     }else{
-                        $respuesta = "1; El curriculum se guardo correctamente.";
+                        $respuesta = "1; ";
                     }
-                    */
 
+                    $respuesta .= $this->getTemplate()->pparse('curriculumActual', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
                     $respuesta = "0; Error al guardar en base de datos";
@@ -238,7 +252,19 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
                 try{
                     ComunidadController::getInstance()->guardarFotoPerfilUsuario($aNombreArchivos, $pathServidor);
-                    $respuesta = "1; La foto de perfil se guardo correctamente.";
+
+                    $oFoto = $usuario->getFotoPerfil();
+
+                    $this->restartTemplate();
+                    $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "contFotoPerfilActual", "FotoPerfilActualBlock");
+
+                    $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
+            
+                    $respuesta = "1; ".$this->getTemplate()->pparse('contFotoPerfilActual', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
                     $respuesta = "0; Error al guardar en base de datos";

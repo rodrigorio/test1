@@ -78,6 +78,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                  WHERE id = ".$this->escInt($oPerfil->getUsuario()->getId());
 
         $db->execSQL($sSQL);
+        $db->commit();
+
+        return true;
     }
 
     /**

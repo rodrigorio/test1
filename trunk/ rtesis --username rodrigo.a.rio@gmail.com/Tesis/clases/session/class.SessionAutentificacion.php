@@ -101,6 +101,6 @@ class SessionAutentificacion
      */
     public function getClassPerfilAutentificado()
     {
-        return getClass($this->autentificacion->perfil);
+        return get_class($this->autentificacion->perfil);
     }
 }
