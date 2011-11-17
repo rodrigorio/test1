@@ -6,7 +6,7 @@
 abstract class PerfilAbstract
 {
     const SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES = 120; //2 minutos
-
+    
     /**
      * Instancia de Usuario
      */

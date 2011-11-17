@@ -292,8 +292,10 @@ class UploadHelper extends HelperAbstract
     {
         $cadena = "";
         if(empty($this->tiposValidos)){ return $cadena; }
+
+        $tiposValidos = array_unique($this->tiposValidos);
         
-        foreach ($this->tiposValidos as $ftv) {
+        foreach ($tiposValidos as $ftv) {
             $ftv = str_replace("image/", "", $ftv);
             $cadena .= $ftv." ";
         }

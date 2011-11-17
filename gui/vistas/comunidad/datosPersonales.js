@@ -556,7 +556,7 @@ $(document).ready(function(){
 
                 var dataInfo = response.split(';');
                 var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
-                var mensaje = dataInfo[1];
+                var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
 
                 //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
                 if(resultado != "0" && resultado != "1" && resultado != "2"){
@@ -566,12 +566,13 @@ $(document).ready(function(){
                 }
 
                 if(resultado == '0'){
-                    $('#msg_form_curriculum .msg').html(mensaje);
+                    $('#msg_form_curriculum .msg').html(html);
                     $('#msg_form_curriculum').addClass("error").fadeIn('slow');
                 }else{
-                    $('#contCvActual').html("<span class='fost_it'>Recargar para generar link de descarga</span>");
-                    $('#msg_form_curriculum .msg').html(mensaje);
+                    $('#msg_form_curriculum .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
+                    $('#wrapCvActual').html(html);
+                    
                     if(resultado == "2"){
                         alert("Pasaste a ser Integrante activo");
                         //redireccionar a pagina de bienvenida para integrantes activos
@@ -611,7 +612,7 @@ $(document).ready(function(){
 
                 var dataInfo = response.split(';');
                 var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
-                var mensaje = dataInfo[1];
+                var html = dataInfo[1]; //si se proceso bien aca queda el bloque del html con el nuevo thumbnail
 
                 if(resultado != "0" && resultado != "1"){
                     $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
@@ -620,11 +621,12 @@ $(document).ready(function(){
                 }
 
                 if(resultado == '0'){
-                    $('#msg_form_fotoPerfil .msg').html(mensaje);
+                    $('#msg_form_fotoPerfil .msg').html(html);
                     $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-                }else{
-                    $('#contFotoPerfilActual').html("<span class='fost_it'>Recargar para ver nueva imagen</span>");
-                    $('#msg_form_fotoPerfil .msg').html(mensaje);
+                }else{                    
+                    $('#msg_form_fotoPerfil .msg').html(lang['exito procesar archivo']);
+                    $('#contFotoPerfilActual').html(html);
+                    $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
                     $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
                 }
                 return;

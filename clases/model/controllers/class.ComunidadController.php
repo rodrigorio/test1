@@ -462,7 +462,7 @@ class ComunidadController
         if(
             null !== $oUsuario->getNombre() &&
             null !== $oUsuario->getApellido() &&
-            null !== $oUsuario->getMail() &&
+            null !== $oUsuario->getEmail() &&
             null !== $oUsuario->getSexo() &&
             null !== $oUsuario->getFechaNacimiento() &&
 
@@ -490,7 +490,7 @@ class ComunidadController
     {
     	try{
             if("IntegranteInactivo" == SessionAutentificacion::getInstance()->getClassPerfilAutentificado())
-            {
+            {                
                 $oPerfil = new stdClass();
                 $oPerfil->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
                 $oIntegranteActivo = Factory::getIntegranteActivoInstance($oPerfil);
@@ -500,6 +500,9 @@ class ComunidadController
                 //guardo la info en la DB
                 $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
                 $oUsuarioIntermediary->guardarPerfil($oIntegranteActivo, false);
+                return true;
+            }else{
+                return false;
             }
         }catch(Exception $e){
             throw new Exception($e->getMessage());

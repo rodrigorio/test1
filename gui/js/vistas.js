@@ -20,6 +20,8 @@ var lang = Array();
 lang['error procesar'] = 'Error al intentar procesar lo solicitado';
 lang['error permiso'] = 'La accion se encuentra desactivada o no tienes permiso para realizarla';
 lang['exito procesar'] = 'Los datos se han procesado con éxito';
+lang['exito procesar archivo'] = 'El archivo se logro subir con exito';
+lang['error procesar archivo'] = 'Hubo un error al tratar de procesar el archivo';
 
 /* util para cuando el javascript cambia dependiendo el navegador */
 var clientPC = navigator.userAgent.toLowerCase();
