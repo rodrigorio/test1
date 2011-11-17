@@ -237,7 +237,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 
 /*** THUMBNAILS GRANDES, MEDIANOS Y CHICOS ***/
 .th_fto_m, .th_fto_s{background: none repeat scroll 0 0; display:inline-block; outline:medium none; position:relative; vertical-align: bottom; text-align:left; border-collapse:collapse; border-spacing:0; line-height:0 !important}
-.th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:70px; width:90px}
+.th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:48px; width:48px}
 .th_vid_m{display:inline-block; padding:5px; position:relative}
 .th_vid_m span{bottom:4px; display:block; position:absolute; right:4px}
 .th_fto_m i, .th_fto_s i, .th_vid_m i{background-position:center 25%; background-repeat:no-repeat; display:block}	
@@ -671,7 +671,7 @@ a .i{margin-right:4px; float:left}
 .ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important}
 .ui-dialog-buttonpane{padding:0px; margin:0px; background-color:#DDD; border-top:1px solid #BBB}
 .ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 5px #000; -webkit-box-shadow:0 0 5px #000}
-.ui-dialog-titlebar{padding:8px; font-size:1.7em; background:#CCC url("images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:1px solid #FFF; border-bottom:1px solid #999}
+.ui-dialog-titlebar{padding:8px; font-size:1.7em; background:#CCC url("../images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:1px solid #FFF; border-bottom:1px solid #999}
 .ui-dialog-titlebar-close{padding:1px !important;}
 .ui-dialog-title{margin:0px; text-shadow:#666 1px 1px 1px}
 /* tabs */

@@ -74,24 +74,27 @@
         </div>
         <div id="centerHeaderCont">
             <div id="centerHeaderContRight" class="di_in">
-                <div class="teal_ri">
+                <div class="teal_ri fl_le">
                     <div class="fte3 mabo2">Bienvenido {nombreUsuarioLogged}</div>
                     <ul class="m_horiz cl_bo">
-                        <li>
-                            <a class="button" href="{hrefEditarPerfil}">
-                                <span class="i bs userEdit"></span>
-                                <span class="buttonText">Editar Perfil</span>
-                            </a>
-                        </li>
                         <!--BeginAdministradorButton-->
-                        <li class="mari0">
+                        <li>
                             <a class="button" href="{hrefAdministrador}">
                                 <span class="i bs admin"></span>
                                 <span class="buttonText">Administrador</span>
                             </a>
                         </li>
                         <!--EndAdministradorButton-->
+                        <li class="mari0">
+                            <a class="button" href="{hrefEditarPerfil}">
+                                <span class="i bs userEdit"></span>
+                                <span class="buttonText">Editar Perfil</span>
+                            </a>
+                        </li>
                     </ul>
+                </div>
+                <div class="fl_ri male2 th_fto_s thumb01">
+                    <i style="background-image:url('{scrAvatarSession}')"></i>
                 </div>
             </div>
             {centerHeaderCont}

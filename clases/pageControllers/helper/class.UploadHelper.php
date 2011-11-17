@@ -20,8 +20,8 @@ class UploadHelper extends HelperAbstract
     const ANCHO_FOTO_MEDIANA = 170; 
     const ALTO_FOTO_MEDIANA = 120;
 
-    const ANCHO_FOTO_CHICA = 90; 
-    const ALTO_FOTO_CHICA = 70;
+    const ANCHO_FOTO_CHICA = 48;
+    const ALTO_FOTO_CHICA = 48;
 
     /**
      * Referencia: http://www.htmlquick.com/es/reference/mime-types.html
