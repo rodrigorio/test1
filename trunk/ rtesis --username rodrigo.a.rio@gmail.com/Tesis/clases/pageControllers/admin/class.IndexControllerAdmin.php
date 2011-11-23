@@ -1,8 +1,6 @@
 <?php
 
 /**
- *  Action Controller Publicaciones
- *
  * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.*
  */
 class IndexControllerAdmin extends PageControllerAbstract

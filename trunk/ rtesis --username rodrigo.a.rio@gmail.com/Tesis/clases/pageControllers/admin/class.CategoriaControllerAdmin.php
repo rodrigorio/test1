@@ -116,6 +116,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function nuevaCategoria(){
          try{
             $this->setFrameTemplate()
@@ -134,6 +135,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function editarCategoria(){
          try{
             $this->setFrameTemplate()
@@ -163,6 +165,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function verificarUsoDeCategoria() {
     	try{
 			$this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "listaCategoria", "ListadoCategoriasBlock");
@@ -246,6 +249,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
   	public function buscarCategoria(){
 		try{
 			$this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "listaCategoria", "ListadoCategoriasBlock");
