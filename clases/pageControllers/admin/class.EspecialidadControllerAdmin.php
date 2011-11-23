@@ -67,7 +67,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
         //menu cabecera
         $template->set_var("sHrefEspecialidadCargar", $request->getBaseTagUrl()."admin/nueva-especialidad");
         $template->set_var("sHrefEspecialidadListar", $request->getBaseTagUrl()."admin/listar-especialidad");
-         $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."/admin/administrar-especialidad");
+        $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."/admin/administrar-especialidad");
         $template->set_var("sHrefCategoriaIndex", $request->getBaseTagUrl()."/admin/administrar-categorias");
 
     }
@@ -116,6 +116,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function nuevaEspecialidad(){
          try{
             $this->setFrameTemplate()
@@ -134,6 +135,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function editarEspecialidad(){
          try{
             $this->setFrameTemplate()
@@ -163,6 +165,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
     public function verificarUsoDeEspecialidad() {
     	try{
 			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
@@ -246,6 +249,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+    
   	public function buscarEspecialidad(){
 		try{
 			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
