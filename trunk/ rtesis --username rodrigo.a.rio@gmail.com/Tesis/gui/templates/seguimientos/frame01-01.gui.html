@@ -32,14 +32,14 @@
         <div id="topHeaderMenuLeft">
             <ul class="m_horiz menu01 menuList iveal">
                 <li>
-                    <a href="{topHeaderMenuHrefComunidad}" class="optionSelected"><span class="i bs group"></span> Comunidad</a>
+                    <a href="{topHeaderMenuHrefComunidad}"><span class="i bs group"></span> Comunidad</a>
                     <ul>
                         <li><a href="{topHeaderMenuHrefPublicaciones}"><span class="i mi publish"></span> Publicaciones</a></li>
                         <li><a href="{topHeaderMenuHrefInstituciones}"><span class="i mc bank"></span> Instituciones</a></li>
                         <li><a href="{topHeaderMenuHrefDescargas}"><span class="i mi download"></span> Catalogo Descargas</a></li>
                     </ul>
                 </li>
-                <li><a href="{topHeaderMenuHrefSeguimientos}"><span class="i mi relationshipPeople"></span> Seguimientos</a></li>
+                <li><a href="{topHeaderMenuHrefSeguimientos}" class="optionSelected"><span class="i mi relationshipPeople"></span> Seguimientos</a></li>
             </ul>
         </div>
         <div id="topHeaderMenuRight">
@@ -73,24 +73,27 @@
         </div>
         <div id="centerHeaderCont">
             <div id="centerHeaderContRight" class="di_in">
-                <div class="teal_ri">
+                <div class="teal_ri fl_le">
                     <div class="fte3 mabo2">Bienvenido {nombreUsuarioLogged}</div>
                     <ul class="m_horiz cl_bo">
-                        <li>
-                            <a class="button" href="{hrefEditarPerfil}">
-                                <span class="i bs userEdit"></span>
-                                <span class="buttonText">Editar Perfil</span>
-                            </a>
-                        </li>
                         <!--BeginAdministradorButton-->
-                        <li class="mari0">
+                        <li>
                             <a class="button" href="{hrefAdministrador}">
                                 <span class="i bs admin"></span>
                                 <span class="buttonText">Administrador</span>
                             </a>
                         </li>
                         <!--EndAdministradorButton-->
+                        <li class="mari0">
+                            <a class="button" href="{hrefEditarPerfil}">
+                                <span class="i bs userEdit"></span>
+                                <span class="buttonText">Editar Perfil</span>
+                            </a>
+                        </li>
                     </ul>
+                </div>
+                <div class="fl_ri male2 th_fto_s thumb01">
+                    <i style="background-image:url('{scrAvatarSession}')"></i>
                 </div>
             </div>
             {centerHeaderCont}

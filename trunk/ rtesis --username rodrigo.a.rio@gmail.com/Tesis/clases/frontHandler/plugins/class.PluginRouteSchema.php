@@ -286,7 +286,7 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => "buscarInstituciones"
                                 ));
         $router->addRoute('comunidadInstitucionesBuscarInstituciones', $route);
-
+       
         ///////////////////////////////////////////
         ////// RUTAS MODULO SEGUIMIENTOS //////////
         ///////////////////////////////////////////
@@ -326,6 +326,22 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'procesarSeguimiento'
                                 ));
         $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
+        //PERSONAS
+        $route = new RegexRoute('seguimientos/agregar-persona',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'personas',
+                                        'action'     => 'agregar'
+                                ));
+        $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
+        $route = new RegexRoute('seguimientos/personas-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'personas',
+                                        'action'     => 'agregar'
+                                ));
+        $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
+
 
         ////////////////////////////////////
         ////// RUTAS MODULO ADMIN //////////

@@ -18,12 +18,9 @@ class Discapacitado extends PersonaAbstract
     private $sOcupacionPadre;
     private $sOcupacionMadre;
     private $sNombreHermanos;
-    
-	
-	
- public function __construct(stdClass $oParams = null){
+    		
+    public function __construct(stdClass $oParams = null){
         parent::__construct();
-
         $vArray = get_object_vars($oParams);
         $vThisVars = get_class_vars(__CLASS__);
         if(is_array($vArray)){
@@ -35,43 +32,42 @@ class Discapacitado extends PersonaAbstract
                 }
             }
         }
-    
- }
-  public function getNombreApellidoPadre(){
+    }
+
+    public function getNombreApellidoPadre(){
         return $this->sNombreApellidoPadre;
     }
- public function getNombreApellidoMadre(){
+    public function getNombreApellidoMadre(){
         return $this->sNombreApellidoMadre;
     }
- public function getFechaNacimientoPadre(){
+    public function getFechaNacimientoPadre(){
         return $this->dFechaNacimientoPadre;
     }
- public function getFechaNacimientoMadre(){
+    public function getFechaNacimientoMadre(){
         return $this->dFechaNacimientoMadre;
     }
- public function getOcupacionPadre(){
+    public function getOcupacionPadre(){
         return $this->sOcupacionPadre;
     }
-  public function getOcupacionMadre(){
+    public function getOcupacionMadre(){
         return $this->sOcupacionMadre;
     }
- public function getNombreHermanos(){
+    public function getNombreHermanos(){
         return $this->sNombreHermanos;
     }
-  public function setNombreApellidoPadre($sNombreApellidoPadre){
-    	$this->sNombreApellidoPadre = $sNombreApellidoPadre;
+    public function setNombreApellidoPadre($sNombreApellidoPadre){
+        $this->sNombreApellidoPadre = $sNombreApellidoPadre;
     }
- public function setNombreApellidoMadre($sNombreApellidoMadre){
-    	$this->sNombreApellidoMadre = $sNombreApellidoMadre;
+    public function setNombreApellidoMadre($sNombreApellidoMadre){
+        $this->sNombreApellidoMadre = $sNombreApellidoMadre;
     }
- public function setFechaNacimientoPadre($dFechaNacimientoPadre){
-    	$this->dFechaNacimientoPadre = $dFechaNacimientoPadre;
+    public function setFechaNacimientoPadre($dFechaNacimientoPadre){
+        $this->dFechaNacimientoPadre = $dFechaNacimientoPadre;
     }
- public function setFechaNacimientoMadre($dFechaNacimientoMadre){
-    	$this->dFechaNacimientoMadre = $dFechaNacimientoMadre;
+    public function setFechaNacimientoMadre($dFechaNacimientoMadre){
+        $this->dFechaNacimientoMadre = $dFechaNacimientoMadre;
     }
- public function setNombreHermanos($sNombreHermanos){
-    	$this->sNombreHermanos = $sNombreHermanos;
+    public function setNombreHermanos($sNombreHermanos){
+        $this->sNombreHermanos = $sNombreHermanos;
     }
 }
-?>

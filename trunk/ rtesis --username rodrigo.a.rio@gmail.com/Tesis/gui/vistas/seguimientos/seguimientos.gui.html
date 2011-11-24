@@ -1,31 +1,34 @@
-<!--BeginPageRightInnerMainContBlock-->
-<div class="pato3">
-    <div class="mabo2">
-        <div class="iveal mabo2">
-            <h2 class="di_in"><a href="{hrefNuevaSeguimiento}">Crear un seguimiento</a></h2> <span class="i32 bs user32Add male"></span>
-        </div>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
-            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
-            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
-            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
-            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
-        </p>
-    </div>
-</div>
-<!--EndPageRightInnerMainContBlock-->
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientos.js");
+</script>
+<!--EndJsContent-->
 
 <!--BeginPageRightInnerContBlock-->
-<div class="mabo2">
-    <ul class="menu02">
-        <li class="mabo2"><a href="{hrefSeguimiento}">Inicio</a></li>
-        <li class="mabo2"><a href="{hrefMisSeguimientos}">Mis Seguimientos</a></li>
-        <li><a href="{hrefNuevaSeguimiento}">Crear nuevo Seguimiento</a></li>
-    </ul>
-</div>
+<ul class="m_vert">
+    <li>
+        <a id="crearSeguimiento" href="{hrefCrearSeguimientos}">
+            <span class="i mi relationshipPeople"></span>
+            Crear nuevo seguimiento
+        </a>
+    </li>
+    <li>
+        <a id="agregarPersona" href="{hrefAgregarPersona}">
+            <span class="i bs userAdd"></span>
+            Agregar persona
+        </a>
+    </li>
+</ul>
 <!--EndPageRightInnerContBlock-->
 
 <!--BeginFormularioBlock-->
@@ -102,7 +105,7 @@
 </div>
 <!--EndFormularioBlock-->
 
-<!--BeginListadoSeguimientoesBlock-->
+<!--BeginListadoSeguimientosBlock-->
 <div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <div id="">
@@ -188,7 +191,7 @@
        <!--EndGrillaSeguimientoBlock-->
 	</div>
 </div> 
-<!--EndListadoSeguimientoesBlock-->
+<!--EndListadoSeguimientosBlock-->
 
 <!--BeginFichaSeguimientoBlock-->
 <div class="ficha02">
