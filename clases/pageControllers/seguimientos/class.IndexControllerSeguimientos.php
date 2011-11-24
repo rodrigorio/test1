@@ -7,7 +7,7 @@
  */
 class IndexControllerSeguimientos extends PageControllerAbstract
 {    
-   private function setFrameTemplate(){
+    private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/seguimientos/frame01-01.gui.html", "frame");
         return $this;
     }
@@ -63,6 +63,11 @@ class IndexControllerSeguimientos extends PageControllerAbstract
         $perfilDesc = $perfil->getDescripcion();
         $nombreUsuario = $perfil->getNombreUsuario();
 
+        //lo hago asi para no enroscarme porq es un metodo estatico no puedo usar $this
+        $oUploadHelper = new UploadHelper();
+        $srcAvatar = $oUploadHelper->getDirectorioUploadFotos().$perfil->getAvatarUsuario();
+
+        $template->set_var("scrAvatarSession", $srcAvatar);
         $template->set_var("nombreUsuarioLogged", $nombreUsuario);
         $template->set_var("hrefEditarPerfil", $request->getBaseUrl().'/comunidad/datos-personales');
         $template->set_var("hrefAdministrador", $request->getBaseUrl().'/admin/home');
@@ -72,65 +77,14 @@ class IndexControllerSeguimientos extends PageControllerAbstract
         }        
     }
 
+    /**
+     * Es un caso especial, el index del modulo es el listar seguimientos del page controller de seguimientos
+     */
     public function index(){
-        try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            $this->setCabecera($this->getTemplate());
-            $this->setCenterHeader($this->getTemplate());
-            $this->printMsgTop();
-
-            //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
-            
-            //contenido ppal home comunidad
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/home.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
-
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));            
-         }catch(Exception $e){
-            print_r($e);
-        }
-    }    
-    public function nuevoSeguimiento(){
-        try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            $this->setCabecera($this->getTemplate());
-            $this->setCenterHeader($this->getTemplate());
-            $this->printMsgTop();
-
-            //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
-
-            //contenido ppal home comunidad
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-            $listaTiposSeguimiento = array();
-            $obj = new stdClass();
-            $oTipoSeg = Factory::getTipoSeguimientoInstance($obj);
-            $listaTiposSeguimiento = $oTipoSeg->getLista();
-            foreach ($listaTiposSeguimiento as $key=>$value){
-                $this->getTemplate()->set_var("iSeguimientoTiposId", $key);
-                $this->getTemplate()->set_var("sSeguimientoTiposNombre", $value);
-                $this->getTemplate()->parse("ListaTipoDeSeguimientosBlock", true);
-            }
-            $oTipoPractica = Factory::getTipoPracticasSeguimientoInstance($obj);
-            $listaTiposPracticaSeguimiento = $oTipoPractica->getLista();
-            foreach ($listaTiposPracticaSeguimiento as $key=>$value){
-                $this->getTemplate()->set_var("iSeguimientoTiposPracticaId", $key);
-                $this->getTemplate()->set_var("sSeguimientoTiposPracticaNombre", $value);
-                $this->getTemplate()->parse("ListaTipoDePracticaSeguimientosBlock", true);
-            }
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-         }catch(Exception $e){
-            print_r($e);
-        }
+        $seguimientosControllerSeguimientos = new SeguimientosControllerSeguimientos($this->request, $this->response, $this->invokeArgs);
+        $seguimientosControllerSeguimientos->listar();
     }
+    
     public function buscarUsuarios(){
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
@@ -157,24 +111,5 @@ class IndexControllerSeguimientos extends PageControllerAbstract
         }
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-    public function procesarSeguimiento(){
-        try{
-            $iTipoSeguimiento = $this->getRequest()->getPost('tipoSeguimiento');
-            $iPersona       = $this->getRequest()->getPost('persona');
-            $sFrecuencias   = $this->getRequest()->getPost('frecuencias');
-            $sDiaHorario    = $this->getRequest()->getPost('diaHorario');
-            $iTipoPractica  = $this->getRequest()->getPost('tipoPractica');
-            $obj = new stdClass();
-            $oTipoSeg = Factory::getTipoSeguimientoInstance($obj);
-            $sTipoSeguimiento = $oTipoSeg->getTipoById($iTipoSeguimiento);
-            if($sTipoSeguimiento == "SCC" ){
-
-            }elseif( $sTipoSeguimiento == "PERSONALIZADO"){
-
-            }
-         }catch(Exception $e){
-            print_r($e);
-        }
-    }
+    }    
 }
