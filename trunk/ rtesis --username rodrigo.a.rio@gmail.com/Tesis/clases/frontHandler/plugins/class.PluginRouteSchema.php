@@ -298,20 +298,15 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'index'
                                 ));
         $router->addRoute('seguimientosIndexIndex', $route);
+
         $route = new RegexRoute('seguimientos/nuevo-seguimiento',
                                 array(
                                         'module' => 'seguimientos',
-                                        'controller' => 'index',
+                                        'controller' => 'seguimientos',
                                         'action'     => 'nuevoSeguimiento'
                                 ));
-        $router->addRoute('seguimientosIndexNuevoSeguimiento', $route);
-        $route = new RegexRoute('seguimientos/editar-seguimiento',
-                                array(
-                                        'module' => 'seguimientos',
-                                        'controller' => 'index',
-                                        'action'     => 'editarSeguimiento'
-                                ));
-        $router->addRoute('seguimientosIndexEditarSeguimientos', $route);
+        $router->addRoute('seguimientosSeguimientosNuevoSeguimiento', $route);
+
         $route = new RegexRoute('seguimientos/buscar-usuarios',
                                 array(
                                         'module' => 'seguimientos',
@@ -319,28 +314,39 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'buscarUsuarios'
                                 ));
         $router->addRoute('seguimientosIndexBuscarUsuarios', $route);
+        
         $route = new RegexRoute('seguimientos/procesar-seguimiento',
                                 array(
                                         'module' => 'seguimientos',
-                                        'controller' => 'index',
+                                        'controller' => 'seguimientos',
                                         'action'     => 'procesarSeguimiento'
                                 ));
-        $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
+        $router->addRoute('seguimientosSeguimientosProcesarSeguimiento', $route);
+        
         //PERSONAS
+        $route = new RegexRoute('seguimientos/personas',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'personas',
+                                        'action'     => 'index' //listar
+                                ));
+        $router->addRoute('seguimientosPersonasIndex', $route);
+
         $route = new RegexRoute('seguimientos/agregar-persona',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'personas',
                                         'action'     => 'agregar'
                                 ));
-        $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
+        $router->addRoute('seguimientosPersonasAgregar', $route);
+        
         $route = new RegexRoute('seguimientos/personas-procesar',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'personas',
-                                        'action'     => 'agregar'
+                                        'action'     => 'procesar'
                                 ));
-        $router->addRoute('seguimientosIndexProcesarSeguimiento', $route);
+        $router->addRoute('seguimientosPersonasProcesar', $route);
 
 
         ////////////////////////////////////

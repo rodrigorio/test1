@@ -7,31 +7,6 @@
  */
 class IndexControllerSeguimientos extends PageControllerAbstract
 {    
-    private function setFrameTemplate(){
-        $this->getTemplate()->load_file("gui/templates/seguimientos/frame01-01.gui.html", "frame");
-        return $this;
-    }
-
-    private function setHeadTag()
-    {
-        $front = FrontController::getInstance();
-        $parametros = $front->getPlugin('PluginParametros');
-        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
-        $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
-        $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
-        $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
-
-        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
-        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
-        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
-        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
-
-        //js de home
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/home.gui.html", "jsContent", "JsContent");
-        
-        return $this;
-    }
-
     /**
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      *
@@ -81,7 +56,7 @@ class IndexControllerSeguimientos extends PageControllerAbstract
      * Es un caso especial, el index del modulo es el listar seguimientos del page controller de seguimientos
      */
     public function index(){
-        $seguimientosControllerSeguimientos = new SeguimientosControllerSeguimientos($this->request, $this->response, $this->invokeArgs);
+        $seguimientosControllerSeguimientos = new SeguimientosControllerSeguimientos($this->getRequest(), $this->getResponse(), $this->getInvokeArgs());
         $seguimientosControllerSeguimientos->listar();
     }
     

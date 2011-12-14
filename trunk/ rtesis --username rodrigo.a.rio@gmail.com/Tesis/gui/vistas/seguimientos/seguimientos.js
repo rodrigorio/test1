@@ -9,39 +9,20 @@ $(document).ready(function(){
         var dialog = $("#dialog");
         if ($("#dialog").length == 0){ dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body'); }
 
-    dialog.load(
-        "comunidad/datos-personales-procesar",
-        {seccion:'dialogIntegranteActivo'},
-        function(data){
-            dialog.dialog({
-                position:['center',5],
-                width:650,
-                resizable:false,
-                draggable:false,
-                modal:true,
-                closeOnEscape:true
-            });
-        }
-    );
-
         dialog.load(
-            "seguimientos/personas-",
+            "seguimientos/agregar-persona?popUp=1",
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                    dialog.dialog({
-                        width:550,
-                        resizable:false,
-                        draggable:false,
-                        modal:true,
-                        closeOnEscape:true
-                    });
-                    $("#formLogin").validate(validateFormLogin);
-                    $("#formLogin").ajaxForm(optionsAjaxFormLogin);
-                    $("#rec_pass").live('click',function(){
-                    	$("#formLogin").hide();
-                    	$("#recuperarContrasenia").show();
-                    });
-            }
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:650,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                $("#tabsFormPersona" ).tabs();
+            }            
         );
         return false;
     });

@@ -195,8 +195,8 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
     
-	public function recuperarContrasenia(){
-		if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+    public function recuperarContrasenia(){
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         
     	try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
@@ -219,6 +219,7 @@ class LoginControllerIndex extends PageControllerAbstract
     	//setea headers y body en el response con los valores codificados
        	$this->getJsonHelper()->sendJsonAjaxResponse();
     }
+    
     function confirmarContrasenia(){
     	try{
     		$sToken 	= $this->getRequest()->get("token");

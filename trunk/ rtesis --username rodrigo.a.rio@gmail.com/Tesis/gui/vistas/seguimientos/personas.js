@@ -5,6 +5,8 @@
 //para el estado inicial del formulario
 
 $(document).ready(function(){
+    $( "#tabsFormPersona" ).tabs();
+    
     if($("#institucionId").val() == ""){
         $('#contCargoInstitucion').addClass("disabled");
         $('#cargoInstitucion').attr('readonly', 'readonly');
