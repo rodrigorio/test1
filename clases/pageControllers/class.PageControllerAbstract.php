@@ -155,6 +155,11 @@ class PageControllerAbstract implements PageControllerInterface
         return $default;
     }
 
+    protected final function getInvokeArgs()
+    {
+        return $this->invokeArgs;
+    }
+
     protected function imprimirInvokeParams()
     {
         echo "<pre>"; print_r($this->invokeArgs); echo "</pre>"; exit();

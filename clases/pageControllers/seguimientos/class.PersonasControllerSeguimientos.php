@@ -40,9 +40,17 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    public function mostrarFormularioPopUp(){}
+    private function mostrarFormularioPopUp()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/personas.gui.html", "popUpContent", "FormularioBlock");
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
 
-    public function mostrarFormulario(){}
+    private function mostrarFormulario()
+    {
+        
+    }
 
     /**
      * Con un post se determina si es edicion o alta.

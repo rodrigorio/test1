@@ -6,6 +6,30 @@
  */
 class SeguimientosControllerSeguimientos extends PageControllerAbstract
 {
+    private function setFrameTemplate(){
+        $this->getTemplate()->load_file("gui/templates/seguimientos/frame01-01.gui.html", "frame");
+        return $this;
+    }
+
+    private function setHeadTag()
+    {
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+        $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
+        $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
+        $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "jsContent", "JsContent");
+
+        return $this;
+    }
+    
     public function index(){
         $this->listar();
     }
@@ -16,8 +40,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setHeadTag();
 
-            $this->setCabecera($this->getTemplate());
-            $this->setCenterHeader($this->getTemplate());
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
 
             //titulo seccion
@@ -27,8 +51,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
             $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
 
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/home.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/home.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "ListadoSeguimientosBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
@@ -41,8 +65,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setHeadTag();
 
-            $this->setCabecera($this->getTemplate());
-            $this->setCenterHeader($this->getTemplate());
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
 
             //titulo seccion
