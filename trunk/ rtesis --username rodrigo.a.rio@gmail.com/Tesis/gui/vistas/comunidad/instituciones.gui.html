@@ -19,8 +19,26 @@
 	      center: myLatlng,
 	      mapTypeId: google.maps.MapTypeId.ROADMAP
 	    }
+            var marker = null;
 	    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-	    
+            google.maps.event.addListener(map, 'click', function(event) {
+                var location = event.latLng;
+                if(marker==null){
+                    marker = new google.maps.Marker({
+                      map: map
+                      ,position: location
+                      ,markerOptions:{
+                        draggable:false
+                        ,clickable:false
+                      }
+                    });
+                }else{
+                    marker.setPosition(location);
+                }
+                $("#latitud").val(location.lat());
+                $("#longitud").val(location.lng());
+              });
+
 	 // Try W3C Geolocation method (Preferred)
 	    if(navigator.geolocation) {
 	      browserSupportFlag = true;
