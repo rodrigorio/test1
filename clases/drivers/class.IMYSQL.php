@@ -613,7 +613,7 @@ class IMYSQL implements DB
                     mysqli_free_result($iQuery);
                 }
             }elseif($this->error()){
-                echo "entro aca?? ";
+                
                 $this->halt();
             }
     }
