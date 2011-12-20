@@ -29,7 +29,7 @@ class PluginConexionDataBase extends PluginAbstract
             IndexController::getInstance()->setDBDriver($oDB);
             SeguimientosController::getInstance()->setDBDriver($oDB);
             self::$connected = true;           
-        }catch(Exception $e){
+        }catch(Exception $e){                       
             self::$connected = false;
             //saco los plugins que no quiero que ya no quiero que se ejecuten
             $front->unregisterPlugin('PluginRedireccion404')
