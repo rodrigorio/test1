@@ -1,27 +1,27 @@
 <?php
 class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
 {
-static $singletonInstance = 0;
-
+	private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
 	}
 
-
 	/**
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return CategoriaMySQLIntermediary
+	 * @return InstitucionMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
+	
+	public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+	
 	public function actualizar($oSeguimientoSCC)
     {
         try{
@@ -153,8 +153,12 @@ static $singletonInstance = 0;
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+	
+	public function existe($filtro){}
 
-    } 
+	public function actualizarCampoArray($objects, $cambios){}
 
-
+    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+	  
+} 
 ?>

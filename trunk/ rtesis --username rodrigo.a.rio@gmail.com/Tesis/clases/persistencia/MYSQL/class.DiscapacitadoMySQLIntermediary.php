@@ -11,26 +11,23 @@
  */
 class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 {
-   static $singletonInstance = 0;
-
+	private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
 	}
 
-
 	/**
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return GroupMySQLIntermediary
+	 * @return InstitucionMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
 	
 	public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
@@ -40,7 +37,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
             $sSQL = "SELECT
                         p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
-                        p.nacionalidad as sNacionalidad,
+                        #p.nacionalidad as sNacionalidad,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
                         p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
                         p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
@@ -53,24 +50,24 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                         d.ocupacionPadre as sOcupacionPadre, d.ocupacionMadre as sOcupacionMadre,
                         d.nombreHermanos as sNombreHermanos
                     FROM
-                        personas p JOIN discapacitados d ON p.id = d.id ";
+                        personas p 
+                    JOIN discapacitados d ON p.id = d.id ";
                     if(!empty($filtro)){
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
-
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
-            $aUsuarios = array();
+            $aDiscapacitado = array();
             while($oObj = $db->oNextRecord()){
                 $oDiscapacitado 				= new stdClass();
                 $oDiscapacitado->iId 			= $oObj->iId;
                 $oDiscapacitado->sNombre 		= $oObj->sNombre;
                 $oDiscapacitado->sApellido 	= $oObj->sApellido;
-                $oDiscapacitado->sNacionalidad 	= $oObj->sNacionalidad;
+            //    $oDiscapacitado->sNacionalidad 	= $oObj->sNacionalidad;
                 $oDiscapacitado->sSexo 		= $oObj->sSexo;
                 $oDiscapacitado->dFechaNacimiento = $oObj->dFechaNacimiento;
                 $oDiscapacitado->sEmail 		= $oObj->sEmail;
@@ -92,16 +89,16 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $oDiscapacitado->sOcupacionMadre = $oObj->sOcupacionMadre;
                 $oDiscapacitado->sNombreHermanos = $oObj->sNombreHermanos;
                 //creo el discapacitado
-                $oDiscapacitado = Factory::getUsuarioInstance($oDiscapacitado);
-
-   /////hasta aca 10 de julio 2011            
+                $oDiscapacitado = Factory::getDiscapacitadoInstance($oDiscapacitado);
+				$aDiscapacitado[] = $oDiscapacitado;
+		   /////hasta aca 10 de julio 2011            
             }
 
             //si es solo un elemento devuelvo el objeto si hay mas de un elemento devuelvo el array.
-            if(count($aUsuarios) == 1){
-                return $aUsuarios[0];
+            if(count($aDiscapacitado) == 1){
+                return $aDiscapacitado[0];
             }else{
-                return $aUsuarios;
+                return $aDiscapacitado;
             }
 
         }catch(Exception $e){
@@ -138,7 +135,6 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
     
     public function actualizarCampoArray($objects, $cambios){}
-
 
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
@@ -290,7 +286,5 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-
-    
 }
 ?>

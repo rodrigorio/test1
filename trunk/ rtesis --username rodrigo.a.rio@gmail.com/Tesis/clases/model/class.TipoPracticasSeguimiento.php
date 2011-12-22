@@ -7,7 +7,7 @@
 class TipoPracticasSeguimiento {
 	private $iId;
 	private $sNombre;
-        private $vLista = array("1"=>"Grupal","2"=>"Institucional","3"=>"Pareja","4"=>"Individual");
+    private $vLista = array("1"=>"Grupal","2"=>"Institucional","3"=>"Pareja","4"=>"Individual");
 
 
         /**

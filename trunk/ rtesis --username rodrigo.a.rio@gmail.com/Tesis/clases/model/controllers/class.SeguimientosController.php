@@ -35,7 +35,7 @@ class SeguimientosController
 
     public function guardarSeguimiento($oSeguimiento){
     	try{
-            if($oSeguimiento->getTipoSeguimiento() == 1){
+            if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
                  $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoPersonalizadoIntermediary($this->db);
             }else{
                  $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoSCCIntermediary($this->db);

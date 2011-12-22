@@ -148,4 +148,28 @@ class Factory
         $oFoto = new Foto($obj);
         return $oFoto;
     }
+    /**
+     * @param stdClass $obj
+     * @return SeguimientoSCC|null
+     */
+    public static function &getSeguimientoSCCInstance(stdClass $obj){
+        $oSeguimientoSCC = new SeguimientoSCC($obj);
+        return $oSeguimientoSCC ;
+    }
+    /**
+     * @param stdClass $obj
+     * @return SeguimientoPersonalizado|null
+     */
+    public static function &getSeguimientoPersonalizadoInstance(stdClass $obj){
+        $oSeguimientoPersonalizado = new SeguimientoPersonalizado($obj);
+        return $oSeguimientoPersonalizado ;
+    }
+    /**
+     * @param stdClass $obj
+     * @return Discapacitado|null
+     */
+    public static function &getDiscapacitadoInstance(stdClass $obj){
+        $oDiscapacitado= new Discapacitado($obj);
+        return $oDiscapacitado;
+    }
 }
