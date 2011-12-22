@@ -1,6 +1,5 @@
 <?php
-class SeguimientoSCCIntermediary extends Intermediary{
+abstract class SeguimientoSCCIntermediary extends Intermediary{
 
 }
-
 ?>

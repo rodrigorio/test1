@@ -100,19 +100,38 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
     public function procesarSeguimiento(){
         try{
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iTipoSeguimiento = $this->getRequest()->getPost('tipoSeguimiento');
-            $iPersona       = $this->getRequest()->getPost('persona');
+            $iPersona       = $this->getRequest()->getPost('personaId');
             $sFrecuencias   = $this->getRequest()->getPost('frecuencias');
             $sDiaHorario    = $this->getRequest()->getPost('diaHorario');
             $iTipoPractica  = $this->getRequest()->getPost('tipoPractica');
-            $obj = new stdClass();
-            $oTipoSeg = Factory::getTipoSeguimientoInstance($obj);
+            
+            $oTipoSeg 		= Factory::getTipoSeguimientoInstance(new stdClass());
             $sTipoSeguimiento = $oTipoSeg->getTipoById($iTipoSeguimiento);
+            $obj 			= new stdClass();
+            $oTipoPractica 	= Factory::getTipoPracticasSeguimientoInstance(new stdClass());
+            $oTipoPractica->setId($iTipoPractica); 
+            $iRecordsTotal	= 0;
+            $sOrderBy 		= null;
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $filtro = array("p.id"=>$iPersona);
+            $oDiscapacitado	= ComunidadController::getInstance()->obtenerDiscapacitado($filtro,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $obj->oPractica 		= $oTipoPractica;
+            $obj->sFrecuenciaEncuentros = $sFrecuencias;
+            $obj->sDiaHorario 			= $sDiaHorario;
+            $obj->oDiscapacitado		= $oDiscapacitado;
+            $obj->oUsuario		= $perfil->getUsuario();
             if($sTipoSeguimiento == "SCC" ){
-
+				$oSeguimiento = Factory::getSeguimientoSCCInstance($obj);
             }elseif( $sTipoSeguimiento == "PERSONALIZADO"){
-
+				$oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($obj);
             }
+            
+            SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+            $this->listar();
          }catch(Exception $e){
             print_r($e);
         }

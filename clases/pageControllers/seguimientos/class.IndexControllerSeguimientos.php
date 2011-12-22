@@ -67,10 +67,10 @@ class IndexControllerSeguimientos extends PageControllerAbstract
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
             $iRecordsTotal = 0;
-            $sOrderBy=$sOrder=$iIniLimit=$iRecordCount=null;
-            $filtro = array("p.numeroDocumento"=>$this->getRequest()->get('str'));
-            $vUsuarios = SysController::getInstance()->buscarUsuarios($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
-            $vResult = array();
+            $sOrderBy	= $sOrder=$iIniLimit=$iRecordCount=null;
+            $filtro 	= array("p.numeroDocumento"=>$this->getRequest()->get('str'));
+            $vUsuarios 	= SysController::getInstance()->buscarUsuarios($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
+            $vResult 	= array();
             if(count($vUsuarios)>0){
                 foreach($vUsuarios as $oUsuario){
                     $obj        = new stdClass();
@@ -81,9 +81,9 @@ class IndexControllerSeguimientos extends PageControllerAbstract
             }
             //agrega una url para que el js redireccione
             $this->getJsonHelper()->setSuccess(true)->setValor("usuarios",$vResult);
-         }catch(Exception $e){
+        }catch(Exception $e){
             print_r($e);
-        }
+		}
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }    
