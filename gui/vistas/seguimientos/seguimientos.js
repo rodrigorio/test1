@@ -1,5 +1,72 @@
-
 $(document).ready(function(){
+
+   
+    var validateFormSeguimiento = {
+            errorElement: "div",
+            validClass: "correcto",
+            onfocusout: false,
+            onkeyup: false,
+            onclick: false,
+            focusInvalid: false,
+            focusCleanup: true,
+            errorPlacement:function(error, element){
+                error.appendTo(".msg_"+element.attr("id"));
+            },
+             highlight: function(element){},
+            unhighlight: function(element){},
+            rules:{
+                personaId:{required:true},
+                tipoPractica:{required:true},
+                tipoSeguimiento:{required:true}
+            },
+            messages:{
+                personaId:{
+                        required: mensajeValidacion("requerido")
+                },
+                tipoPractica:{
+                        required: mensajeValidacion("requerido")
+                },
+                tipoSeguimiento:{
+                        required: mensajeValidacion("requerido")
+                }
+            }
+        }
+        $("#formCrearSeguimiento").validate(validateFormSeguimiento);
+    
+	var optionsAjaxFormSeguimiento = {
+                dataType: 'jsonp',
+                resetForm: false,
+                url: 	"seguimientos/procesar-seguimiento",
+                beforeSerialize: function($form, options){
+                    if($("#formCrearSeguimiento").valid() == true){
+                        $('#msg_form_crearSeguimiento').hide();
+                        $('#msg_form_crearSeguimiento').removeClass("correcto").removeClass("error");
+                        $('#msg_form_crearSeguimiento .msg').html("");
+                        //setWaitingStatus('formInfoBasica', true);
+                    }else{
+                        return false;
+                    }
+                },
+
+                success:function(data){
+                    setWaitingStatus('formCrearSeguimiento', false);
+                    if(data.success == undefined || data.success == 0){
+                        $('#msg_form_crearSeguimiento .msg').html(lang['error procesar']);
+                        $('#msg_form_crearSeguimiento').addClass("error").fadeIn('slow');
+                    }else{
+                        $('#msg_form_crearSeguimiento .msg').html(lang['exito procesar']);
+                        $('#msg_form_crearSeguimiento').addClass("correcto").fadeIn('slow');
+                        $('#formCrearSeguimiento input[type=text],#formCrearSeguimiento select,#formCrearSeguimiento textarea').val("");
+                        $("#persona").removeClass("selected");
+                        $("#persona").removeAttr("readonly");
+                        $("#persona").val("");
+                        $("#personaId").val("");
+                        ocultarElemento($('#persona_clean'));
+                    }
+                }
+            };
+            
+	$("#formCrearSeguimiento").ajaxForm(optionsAjaxFormSeguimiento);
 
     $("#agregarPersona").live('click',function(){
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
@@ -50,7 +117,7 @@ $(document).ready(function(){
                 }
             });
         },
-        minLength: 1,
+        minLength: 8,
         select: function(event, ui){
             if(ui.item){
                 $("#personaId").val(ui.item.id);

@@ -1,28 +1,24 @@
 <?php
-class SeguimientoPerzonalizadoMySQLIntermediary extends SeguimientoPersonalizadoIntermediary
+class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizadoIntermediary
 {
-static $singletonInstance = 0;
-
+        private static $instance = null;
 
 	protected function __construct( $conn) {
 		parent::__construct($conn);
 	}
 
-
 	/**
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return CategoriaMySQLIntermediary
+	 * @return InstitucionMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
-		if (!self::$singletonInstance){
-			$sClassName = __CLASS__;
-			self::$singletonInstance = new $sClassName($conn);
-		}
-		return(self::$singletonInstance);
+		if (null === self::$instance){
+            self::$instance = new self($conn);
+        }
+        return self::$instance;
 	}
-
 
      public function actualizar($oSeguimientoPersonalizado)
     {
@@ -96,12 +92,12 @@ static $singletonInstance = 0;
 			}else {
 				$usuarioId = null;
 			}
-        	if($oSeguimientoPersonalizado->getDiscapacitado()!= null){
+                        if($oSeguimientoPersonalizado->getDiscapacitado()!= null){
 				$discapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
 			}else {
 				$discapacitadoId = null;
 			}
-            if($oSeguimientoPersonalizado->getPractica()!= null){
+                        if($oSeguimientoPersonalizado->getPractica()!= null){
 				$practicaId = $oSeguimientoPersonalizado->getpractica()->getId();
 			}else {
 				$practicaId = null;
@@ -110,28 +106,37 @@ static $singletonInstance = 0;
 			
 			$db->begin_transaction();
 			$sSQL =	" insert into seguimientos ".
-                    " set frecuenciaEncuentros =".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario =".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ";
+                        " set frecuenciaEncuentros =".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
+                        " diaHorario =".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
+                                            " discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
+                        " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
+                        " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
+                        " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
+                        " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ";
 			
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
 			
-			//ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
 			$diagnosticoPersonalizadoId = null;
 			
 			$sSQL =" insert into seguimientos_personalizados set ".
-                    " id=".$db->escape($iLastId,false).", " .
-                    " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." " ;	
-		
+                        " id=".$db->escape($iLastId,false).", " .
+                        " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." " ;
 			$db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+
+                        $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1 ";
+                        $db->query($sSQL);
+                        while($oObj = $db->oNextRecord()){
+                            $iUnidadId = $oObj->iId;
+                        }
+
+                        $sSQL =" insert into seguimiento_x_unidades set ".
+                        " unidad_id = ".$db->escape($iUnidadId,false).", " .
+                        " seguimiento_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT)." " ;
+
+			$db->execSQL($sSQL);
+			$db->commit();
+			return true;
 
 		}catch(Exception $e){
 			$db->rollback_transaction();
@@ -153,6 +158,14 @@ static $singletonInstance = 0;
 		}
 	}
 
-    } 
 
+
+    public function existe($filtro) {
+    }
+    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    }
+
+    public function actualizarCampoArray($objects, $cambios){}
+    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+ }
 ?>

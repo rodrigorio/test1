@@ -99,7 +99,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     }
 
     public function procesarSeguimiento(){
+        //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iTipoSeguimiento = $this->getRequest()->getPost('tipoSeguimiento');
             $iPersona       = $this->getRequest()->getPost('personaId');
@@ -109,7 +113,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             
             $oTipoSeg 		= Factory::getTipoSeguimientoInstance(new stdClass());
             $sTipoSeguimiento = $oTipoSeg->getTipoById($iTipoSeguimiento);
-            $obj 			= new stdClass();
+            $obj 		= new stdClass();
             $oTipoPractica 	= Factory::getTipoPracticasSeguimientoInstance(new stdClass());
             $oTipoPractica->setId($iTipoPractica); 
             $iRecordsTotal	= 0;
@@ -119,21 +123,27 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iRecordCount 	= null;
             $filtro = array("p.id"=>$iPersona);
             $oDiscapacitado	= ComunidadController::getInstance()->obtenerDiscapacitado($filtro,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
-            $obj->oPractica 		= $oTipoPractica;
+            $obj->oPractica 	= $oTipoPractica;
             $obj->sFrecuenciaEncuentros = $sFrecuencias;
-            $obj->sDiaHorario 			= $sDiaHorario;
+            $obj->sDiaHorario 	= $sDiaHorario;
             $obj->oDiscapacitado		= $oDiscapacitado;
-            $obj->oUsuario		= $perfil->getUsuario();
+            $obj->oUsuario	= $perfil->getUsuario();
             if($sTipoSeguimiento == "SCC" ){
-				$oSeguimiento = Factory::getSeguimientoSCCInstance($obj);
+                $oSeguimiento = Factory::getSeguimientoSCCInstance($obj);
             }elseif( $sTipoSeguimiento == "PERSONALIZADO"){
-				$oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($obj);
+                $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($obj);
             }
             
-            SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-            $this->listar();
-         }catch(Exception $e){
-            print_r($e);
+            $res = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+            if($res){
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $this->getJsonHelper()->setSuccess(false);
+            }
+        }catch(Exception $e){
+           $this->getJsonHelper()->setSuccess(false);
         }
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }
