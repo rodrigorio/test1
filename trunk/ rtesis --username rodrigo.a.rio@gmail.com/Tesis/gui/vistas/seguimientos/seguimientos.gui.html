@@ -9,8 +9,8 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-   .script("{pathUrlBase}"+"gui/js/vistas.js")
-   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientos.js");
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientos.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js");
 </script>
 <!--EndJsContent-->
 
@@ -35,19 +35,19 @@
 <div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <div class="di_no" id="msg_conf"></div>
-    <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="seguimientos/procesar-seguimiento" method="post">
+    <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="" method="post" >
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-        <div id='msg_form_crearSeguimiento' class="msg_form iveal di_no">
+        <div id='msg_form_crearSeguimiento' class="msg_form iveal" style="display:none;">
         	<span class="bs i"></span>
         	<span class="msg"></span>
         </div>
 
-        <div id="msg_tipo" class="form_line">Tipo de Seguimiento
+        <div id="msg_tipo" class="form_line msg_tipoSeguimiento">Tipo de Seguimiento
             <div class="fwrap">
                 <div class="inner_fwrap">
                     <select class="requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
-                    	<option value="-1">Seleccione el tipo de Seguimiento</option>
+                    	<option value="">Seleccione el tipo de Seguimiento</option>
                     	<!--BeginListaTipoDeSeguimientosBlock-->
                     	<option value="{iSeguimientoTiposId}" {sSeguimientoTiposSelect}>{sSeguimientoTiposNombre}</option>
                     	<!--EndListaTipoDeSeguimientosBlock-->
@@ -55,10 +55,10 @@
                 </div>
             </div>
         </div>
-        <div id="msg_nombre" class="form_line">Persona
+        <div id="msg_nombre" class="form_line msg_personaId">Persona
             <div class="fwrap">
                 <div class="inner_fwrap">
-               		 <div id='persona_loading' class="i ajax_wait16 di_no"></div>
+                     <div id='persona_loading' class="i ajax_wait16 di_no"></div>
                      <span title="Quitar persona" id='persona_clean' class='i bs close ihover di_no'></span>
                      <input type="text" name="persona" id="persona" title="persona" maxlength="40" value="{sPersona}" />
                      <input type="hidden" name="personaId" id="personaId" value="{iPersonaId}" />
@@ -66,7 +66,7 @@
                 </div>
             </div>
         </div>
-        <div id="msg_email" class="form_line">Frecuencia de encuentros
+        <div id="msg_email" class="form_line msg_frecuencias">Frecuencia de encuentros
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -74,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <div id="msg_email" class="form_line">Dias y horarios estipulados de encuentros
+        <div id="msg_email" class="form_line msg_diaHorario">Dias y horarios estipulados de encuentros
             <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -82,11 +82,11 @@
                 </div>
             </div>
         </div>
-        <div id="msg_tipo" class="form_line">Tipo de pr&aacute;ctica
+        <div id="msg_tipo" class="form_line msg_tipoPractica">Tipo de pr&aacute;ctica
             <div class="fwrap">
                 <div class="inner_fwrap">
                     <select class="requerido" name="tipoPractica" id="tipoPractica" >
-                    	<option value="-1">Seleccione el tipo de pr&aacute;ctica</option>
+                    	<option value="">Seleccione el tipo de pr&aacute;ctica</option>
                     	<!--BeginListaTipoDePracticaSeguimientosBlock-->
                     	<option value="{iSeguimientoTiposPracticaId}" {sSeguimientoTiposPracticaSelect}>{sSeguimientoTiposPracticaNombre}</option>
                     	<!--EndListaTipoDePracticaSeguimientosBlock-->

@@ -1,5 +1,5 @@
 <?php
-class SeguimientoPersonalizadoIntermediary extends Intermediary{
+abstract class SeguimientoPersonalizadoIntermediary extends Intermediary{
 
 }
 ?>
