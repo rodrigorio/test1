@@ -11,7 +11,8 @@
  */
 class Discapacitado extends PersonaAbstract
  {
-    private $sNombreApellidoPadre;
+    private $id;
+ 	private $sNombreApellidoPadre;
     private $sNombreApellidoMadre;
     private $dFechaNacimientoPadre;
     private $dFechaNacimientoMadre;
@@ -33,7 +34,9 @@ class Discapacitado extends PersonaAbstract
             }
         }
     }
-
+ 	public function getId(){
+        return $this->iId;
+    }
     public function getNombreApellidoPadre(){
         return $this->sNombreApellidoPadre;
     }
@@ -54,6 +57,9 @@ class Discapacitado extends PersonaAbstract
     }
     public function getNombreHermanos(){
         return $this->sNombreHermanos;
+    }
+    public function setId($iId){
+        $this->iId = $iId;
     }
     public function setNombreApellidoPadre($sNombreApellidoPadre){
         $this->sNombreApellidoPadre = $sNombreApellidoPadre;

@@ -19,7 +19,34 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
         }
         return self::$instance;
 	}
-	
+	public function existe($filtro){
+    	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        seguimientos s 
+                    JOIN 
+                    	usuarios u ON s.usuarios_id = u.id
+                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+    public function actualizarCampoArray($objects, $cambios){}
+    
 	public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 	
 	public function actualizar($oSeguimientoSCC)

@@ -45,4 +45,22 @@ class SeguimientosController
                 echo $e->getMessage();
         }
     }
+/**
+     *
+     */
+    public function getDiscapacitadoById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro = array('c.id' => $iId);
+            $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
+            $r =  $oDiscapacitadoIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        	if(count($r) == 1){
+                return $r[0];
+            }else{
+                return $r;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
 }
