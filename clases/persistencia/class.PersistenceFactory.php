@@ -117,4 +117,10 @@ class PersistenceFactory {
             return (FotoMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getPracticaIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (PracticaMySQLIntermediary::getInstance($conn));
+        }
+    }
 }

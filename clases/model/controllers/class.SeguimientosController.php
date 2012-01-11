@@ -63,4 +63,22 @@ class SeguimientosController
             return false;
         }
     }
+/**
+     *
+     */
+    public function getPracticaById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro = array('c.id' => $iId);
+            $oPracticaIntermediary = PersistenceFactory::getPracticaIntermediary($this->db);
+            $r =  $oPracticaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        	if(count($r) == 1){
+                return $r[0];
+            }else{
+                return $r;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
 }
