@@ -59,12 +59,15 @@ static $singletonInstance = 0;
                           s.discapacitados_id as iDiscapacitadoId, 
                           s.frecuenciaEncuentros as sFrecuenciaEncuentros,
                           s.diaHorario as sDiaHorario,
-                          s.practicas_id as iPractica,
-                          s.usuarios_id as iUsuario,
+                          s.practicas_id as iPracticaId,
+                          s.usuarios_id as iUsuarioId,
                           s.antecedentes as sAntecedentes,
                           s.pronostico as sPronostico,                                                 
                     FROM
-                        seguimientos s ";
+                        seguimientos s 
+                        
+                    JOIN usuarios u ON u.id = s.usuarios_id";
+                        
 
             if(!empty($filtro)){
                 $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
@@ -86,29 +89,13 @@ static $singletonInstance = 0;
             	$oSeguimiento 			= new stdClass();
             	$oSeguimiento->iId 		= $oObj->iId;
             	$oSeguimiento->oDiscapacitado = SeguimientoController::getInstance()->getDiscapacitadoById($Obj->iDispacitadoId);
-            	
-            	
-            	
-            	
-            	
-            	
-            	$this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
-            	
-            	$oUsuario->oCiudades 	= null;
-            	$oSeguimiento->iModerado= $oObj->iModerado;
-            	$oSeguimiento->sDescripcion	= $oObj->sDescripcion;
-            	$oSeguimiento->iTipoSeguimiento 	= $oObj->iTipoInstitucion;
-            	$oSeguimiento->sDireccion 	= $oObj->sDireccion;
-            	$oSeguimiento->sEmail 	= $oObj->sEmail;
-            	$oSeguimiento->sTelefono= $oObj->sTelefono;
-            	$oSeguimiento->sSitioWeb	= $oObj->sSitioWeb;
-            	$oSeguimiento->sHorariosAtencion 	= $oObj->sHorariosAtencion;
-            	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
-            	$oInstitucion->sCargo 	= $oObj->sCargo;
-            	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
-            	$oInstitucion->sSedes 	= $oObj->sSedes;
-            	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
-  
+            	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
+            	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
+            	$oSeguimiento->oPractica = SeguimientoController::getInstance()->getPracticaById($Obj->iPracticaId);
+            	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($Obj->iUsuarioId);
+            	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
+            	$oSeguimiento->sPronostico = $oObj->sPronostico;
+            	   	
             	$aSeguimientos[] = Factory::getSeguimientoInstance($oSeguimiento);
             }
 
@@ -253,7 +240,7 @@ static $singletonInstance = 0;
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-
+	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
     } 
 
 ?>
