@@ -53,7 +53,21 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "ListadoSeguimientosBlock");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-
+			$oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $filtro 		= array("s.usuarios_id"=>$oUsuario->getId());
+            $iRecordsTotal 	= 0;
+            $sOrderBy 		= null; 
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimiento($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
+            if(count($listaSeguimientos)>0){
+            	foreach ($listaSeguimientos as $seguimiento){
+            		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
+            		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
+            		$this->getTemplate()->parse("ListaDeSeguimientoesBlock",true);
+            	}
+            }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);

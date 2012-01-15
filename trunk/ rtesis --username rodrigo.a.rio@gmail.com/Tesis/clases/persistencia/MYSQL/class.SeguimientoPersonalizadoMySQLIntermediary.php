@@ -20,6 +20,92 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
         return self::$instance;
 	}
 
+	public function existe($filtro){
+    	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        seguimientos s 
+                    JOIN 
+                    	usuarios u ON s.usuarios_id = u.id
+                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $db = clone($this->conn);
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                          s.id as iId, 
+                          s.discapacitados_id as iDiscapacitadoId, 
+                          s.frecuenciaEncuentros as sFrecuenciaEncuentros,
+                          s.diaHorario as sDiaHorario,
+                          s.practicas_id as iPracticaId,
+                          s.usuarios_id as iUsuarioId,
+                          s.antecedentes as sAntecedentes,
+                          s.pronostico as sPronostico                                                
+                    FROM
+                        seguimientos s 
+                        
+                    JOIN usuarios u ON u.id = s.usuarios_id";
+                        
+
+            if(!empty($filtro)){
+                $sSQL .=" WHERE ".$this->crearCondicionSimple($filtro);
+            }
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+            $db->query($sSQL);
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aSeguimientos = array();
+            while($oObj = $db->oNextRecord()){
+            	$oSeguimiento 			= new stdClass();
+            	$oSeguimiento->iId 		= $oObj->iId;
+            	$oSeguimiento->oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
+            	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
+            	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
+            //	$oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+            	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+            	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
+            	$oSeguimiento->sPronostico = $oObj->sPronostico;
+            	   	
+            	$aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+            }
+
+            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
+            if(count($aSeguimientos) == 1){
+                return $aSeguimientos[0];
+            }else{
+                return $aSeguimientos;
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
      public function actualizar($oSeguimientoPersonalizado)
     {
         try{
@@ -108,7 +194,7 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
 			$sSQL =	" insert into seguimientos ".
                         " set frecuenciaEncuentros =".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
                         " diaHorario =".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
-                                            " discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
+						" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
                         " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                         " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
                         " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
@@ -124,15 +210,15 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
                         " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." " ;
 			$db->execSQL($sSQL);
 
-                        $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1 ";
-                        $db->query($sSQL);
-                        while($oObj = $db->oNextRecord()){
-                            $iUnidadId = $oObj->iId;
-                        }
+			$sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1 ";
+            $db->query($sSQL);
+            while($oObj = $db->oNextRecord()){
+            	$iUnidadId = $oObj->iId;
+            }
 
-                        $sSQL =" insert into seguimiento_x_unidades set ".
-                        " unidad_id = ".$db->escape($iUnidadId,false).", " .
-                        " seguimiento_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT)." " ;
+            $sSQL =" insert into seguimiento_x_unidades set ".
+            " unidad_id = ".$db->escape($iUnidadId,false).", " .
+            " seguimiento_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT)." " ;
 
 			$db->execSQL($sSQL);
 			$db->commit();
@@ -157,13 +243,6 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-
-
-
-    public function existe($filtro) {
-    }
-    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-    }
 
     public function actualizarCampoArray($objects, $cambios){}
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
