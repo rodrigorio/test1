@@ -64,14 +64,72 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if(count($listaSeguimientos)>0){
             	foreach ($listaSeguimientos as $seguimiento){
             		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
-            		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
-            		$this->getTemplate()->parse("ListaDeSeguimientoesBlock",true);
+            		$this->getTemplate()->set_var("sSeguimientoPersona",$seguimiento->getDiscapacitado()->getNombreCompleto());
+            		$this->getTemplate()->set_var("sSeguimientoTipo",$seguimiento->getTipoSeguimiento());
+            		$this->getTemplate()->set_var("sSeguimientoPersonaDNI",$seguimiento->getDiscapacitado()->getNumeroDocumento());
+            		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
+            		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
             }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);
-        }        
+        } 
+    }       
+    
+    public function buscarSeguimientos(){
+    	  //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->setFrameTemplate();
+            $this->printMsgTop();
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "body", "GrillaSeguimientoBlock");
+            
+			$oUsuario 	= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+			
+			$filtro 		= array("s.usuarios_id"=>$oUsuario->getId());
+			$nombre 	= $this->getRequest()->getPost('nombre');
+			if($nombre!=""){
+				$filtro["p.nombre"] = $nombre;
+			}
+			$tipo 		= $this->getRequest()->getPost('tipoSeguimiento');
+			if($tipo!=""){
+				$filtro["p.tipoSeguimiento"] = $tipo;
+			}
+			$dni 		= $this->getRequest()->getPost('dni');
+			if($dni!=""){
+				$filtro["p.numeroDocumento"] = $dni;
+			}
+			$estado 	= $this->getRequest()->getPost('estado');
+			if($estado!=""){
+				$filtro["s.estado"] = $estado;
+			}
+			$fechaCreacion 	= $this->getRequest()->getPost('fechaCreacion');
+			if($fechaCreacion!=""){
+				$filtro["s.fechaCreacion"] = $fechaCreacion;
+			}
+            $iRecordsTotal 	= 0;
+            $sOrderBy 		= null; 
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimiento($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
+            if( count($listaSeguimientos) > 0 ){
+            	foreach($listaSeguimientos as $seguimiento){
+            		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
+            		$this->getTemplate()->set_var("sSeguimientoPersona",$seguimiento->getDiscapacitado()->getNombreCompleto());
+            		$this->getTemplate()->set_var("sSeguimientoTipo",$seguimiento->getTipoSeguimiento());
+            		$this->getTemplate()->set_var("sSeguimientoPersonaDNI",$seguimiento->getDiscapacitado()->getNumeroDocumento());
+            		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
+            		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
+            	}
+            }
+            $this->getResponse()->setBody($this->getTemplate()->pparse('body', false));
+            
+        }catch(Exception $e){
+           $this->getResponse()->setBody($this->getTemplate()->pparse('body', false));
+           print_r($e->getMessage());
+        }
     }
 
     public function nuevoSeguimiento(){
@@ -127,7 +185,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             
             $oTipoSeg 		= Factory::getTipoSeguimientoInstance(new stdClass());
             $sTipoSeguimiento = $oTipoSeg->getTipoById($iTipoSeguimiento);
-            $obj 		= new stdClass();
+            $obj 			= new stdClass();
             $oTipoPractica 	= Factory::getTipoPracticasSeguimientoInstance(new stdClass());
             $oTipoPractica->setId($iTipoPractica); 
             $iRecordsTotal	= 0;

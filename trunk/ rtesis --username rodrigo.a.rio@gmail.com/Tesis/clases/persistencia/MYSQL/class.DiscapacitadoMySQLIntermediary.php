@@ -36,14 +36,13 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido, p.numeroDocumento as sNumeroDocumento,
                         #p.nacionalidad as sNacionalidad,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
                         p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
                         p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
                         p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
                         p.universidad as sUniversidad, p.secundaria as sSecundaria,
-
                         d.nombreApellidoPadre as sNombreApellidoPadre, d.nombreApellidoMadre as sNombreApellidoMadre,
                         d.fechaNacimientoPadre as dFechaNacimientoPadre,
                         d.fechaNacimientoMadre as dFechaNacimientoMadre,
@@ -68,6 +67,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $oDiscapacitado->sNombre 		= $oObj->sNombre;
                 $oDiscapacitado->sApellido 	= $oObj->sApellido;
             //    $oDiscapacitado->sNacionalidad 	= $oObj->sNacionalidad;
+                $oDiscapacitado->sNumeroDocumento 		= $oObj->sNumeroDocumento;
                 $oDiscapacitado->sSexo 		= $oObj->sSexo;
                 $oDiscapacitado->dFechaNacimiento = $oObj->dFechaNacimiento;
                 $oDiscapacitado->sEmail 		= $oObj->sEmail;

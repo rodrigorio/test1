@@ -59,11 +59,14 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
                           s.practicas_id as iPracticaId,
                           s.usuarios_id as iUsuarioId,
                           s.antecedentes as sAntecedentes,
-                          s.pronostico as sPronostico                                                
+                          s.pronostico as sPronostico,
+                          s.fechaCreacion as dFechaCreacion ,
+                          s.estado as iEstado                                              
                     FROM
                         seguimientos s 
                         
-                    JOIN usuarios u ON u.id = s.usuarios_id";
+                    JOIN usuarios u ON u.id = s.usuarios_id
+                    JOIN personas p ON p.id = s.discapacitados_id ";
                         
 
             if(!empty($filtro)){
@@ -91,6 +94,8 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
             	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;
+            	$oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
+            	$oSeguimiento->iEstado = $oObj->iEstado;
             	   	
             	$aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
             }

@@ -108,36 +108,21 @@
 <!--EndFormularioBlock-->
 
 <!--BeginListadoSeguimientosBlock-->
-<form action="" method="post">
+<form action="" method="post" class="form_line">
     <div>
-            Nombre <input type="text" name="Seguimiento_nombre" id="Seguimiento_nombre"/>
+            Estado <input type="text" name="seguimiento_estado" id="seguimiento_estado"/>
     </div>
     <div>
-            Pais
-       <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
-                    <option value="">Seleccione un pais</option>
-                    <!--BeginListaPaisesBlock-->
-                    <option value="{iPaisId}">{sPaisNombre}</option>
-                    <!--EndListaPaisesBlock-->
-       </select>
+            Fecha de creacion
+       <input type="text" name="seguimiento_fechaCreacion" id="seguimiento_fechaCreacion"/>
     </div>
     <div>
-    Provincia
-       <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
-                    <option value="">Selecciones una provincia</option>
-                    <!--BeginListaProvinciasBlock-->
-                    <option value="{iProvinciaId}">{sProvinciaNombre}</option>
-                    <!--EndListaProvinciasBlock-->
-       </select>
+            Nombre de la persona
+       <input type="text" name="seguimiento_nombrePersona" id="seguimiento_nombrePersona"/>
     </div>
     <div>
-    Ciudad
-       <select class="defVal requerido" name="ciudad" id="ciudad" >
-                    <option value="">Selecciones una ciudad</option>
-                    <!--BeginListaCiudadesBlock-->
-                    <option value="{iCiudadId}">{sCiudadNombre}</option>
-                    <!--EndListaCiudadesBlock-->
-       </select>
+            Dni de la persona
+       <input type="text" name="seguimiento_dniPersona" id="seguimiento_dniPersona"/>
     </div>
     <div>
     Tipo de Seguimiento
@@ -150,7 +135,7 @@
     </div>
     <div>
         <label for="BuscarSeguimiento" class="button buttonConfirm buttonLarge mari3">
-            <button id="buscarSeguimiento" type="button" name="buscarSeguimiento" class="btn01" onclick="searchSeguimiento();">
+            <button id="buscarSeguimiento" type="button" name="buscarSeguimiento" class="btn01" onclick="buscarSeguimientos();">
                 Buscar Seguimiento
             </button>
         </label>
@@ -159,31 +144,29 @@
 
     <!--BeginGrillaSeguimientoBlock-->
     <div id="listadoSeguimientoes">
-       <table class="table01" >
+       <table class="table01 wi100p" >
            <tr class="encabezado">
                <td>Id</td>
-               <td>Nombre</td>
+               <td>Persona  </td>
+               <td>Dni</td>
                <td>Tipo</td>
-               <td>Ciudad</td>
-               <td>Provincia</td>
-               <td>Pais</td>
+               <td>FechaCreacion</td>
                <td>Ampliar</td>
                <td>Modificar</td>
            </tr>
-           <!--BeginListaDeSeguimientoesBlock-->
+           <!--BeginListaDeSeguimientosBlock-->
            <tr class="{odd}">
                <td>{iSeguimientoId}</td>
-               <td>{sSeguimientoNombre}</td>
+               <td>{sSeguimientoPersona}</td>
+               <td>{sSeguimientoPersonaDNI}</td>
                <td>{sSeguimientoTipo}</td>
-               <td>{sSeguimientoCiudad}</td>
-               <td>{sSeguimientoProvincia}</td>
-               <td>{sSeguimientoPais}</td>
+               <td>{sSeguimientoFechaCreacion}</td>
                <td><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
                <!--BeginPermisoEditarSeguimientoBlock-->
                <td><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
                <!--EndPermisoEditarSeguimientoBlock-->
            </tr>
-           <!--EndListaDeSeguimientoesBlock-->
+           <!--EndListaDeSeguimientosBlock-->
        </table>
        {paginacion}
     </div>
