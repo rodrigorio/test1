@@ -143,6 +143,10 @@ abstract class PersonaAbstract
         return $this->sApellido;
     }
 
+    public function getNombreCompleto(){
+        return $this->sApellido.", ".$this->sNombre;
+    }
+    
     public function getSexo(){
         return $this->sSexo;
     }

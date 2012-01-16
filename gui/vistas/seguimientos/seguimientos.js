@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
    
     var validateFormSeguimiento = {
             errorElement: "div",
@@ -133,6 +132,7 @@ $(document).ready(function(){
             }
         }
     });
+    
 });
 //para borrar la institucion seleccionada con el autocomplete
 $('#persona_clean').click(function(){
@@ -142,3 +142,30 @@ $('#persona_clean').click(function(){
     $("#personaId").val("");
     ocultarElemento($(this));
 });
+
+function buscarSeguimientos(){
+	var estadoSeg 		= $("#seguimiento_estado").val();
+	var fechaCreacionSeg= $("#seguimiento_fechaCreacion").val();
+	var nombrePersonaSeg= $("#seguimiento_nombrePersona").val();
+	var dniPersonaSeg	= $("#seguimiento_dniPersona").val();
+	var tipoSeg			= $("#tipoSeguimiento").val();
+	$.ajax({
+        url: "seguimientos/buscar-seguimientos",
+        type: "POST",
+        dataType: "jsonp",
+        data:{
+            limit	:12,
+            estado	: estadoSeg,
+            fechaCreacion: fechaCreacionSeg,
+            nombre	: nombrePersonaSeg,
+            dni		: dniPersonaSeg,
+            tipoSeguimiento: tipoSeg
+        },
+        beforeSend: function(){
+        },
+        success: function(data){
+        	$("#listadoSeguimientoes").html(data);
+        	
+        }
+	});
+}

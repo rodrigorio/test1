@@ -16,6 +16,8 @@ abstract class SeguimientoAbstract
    protected $sAntecedentes;
    protected $sPronostico;
    protected $sDiaHorario;
+   protected $dFechaCreacion;
+   protected $iEstado;
 
 public function __construct(){}
    
@@ -42,6 +44,13 @@ public function setPronostico($sPronostico){
     }
 public function setDiaHorario($sDiaHorario){
         $this->sDiaHorario = $sDiaHorario;
+    }
+public function setFechaCreacion($dFechaCreacion){
+        $this->dFechaCreacion = $dFechaCreacion;
+    }
+    
+public function setEstado($iEstado){
+        $this->iEstado = $iEstado;
     }
     
     /////////////////////////////
@@ -71,5 +80,11 @@ public function getPronostico(){
 public function getDiaHorario(){
         return $this->sDiaHorario;
     }      
+public function getFechaCreacion(){
+	return $this->dFechaCreacion;
+	}
+public function getEstado(){
+      return  $this->iEstado;
+    }
 }
 ?>
