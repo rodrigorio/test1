@@ -19,9 +19,33 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
         }
         return self::$instance;
 	}
-	
-	public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
-	
+	public function existe($filtro){
+    	try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        seguimientos s 
+                    JOIN 
+                    	usuarios u ON s.usuarios_id = u.id
+                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+    
 	public function actualizar($oSeguimientoSCC)
     {
         try{
@@ -119,7 +143,7 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
 			
-			
+			//ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			
 			$diagnosticoSCCId = null;
 			
@@ -154,11 +178,153 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
 		}
 	}
 	
-	public function existe($filtro){}
-
+	
 	public function actualizarCampoArray($objects, $cambios){}
+	
+	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
 
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                          s.id as iId, 
+                          s.discapacitados_id as iDiscapacitadoId, 
+                          s.frecuenciaEncuentros as sFrecuenciaEncuentros,
+                          s.diaHorario as sDiaHorario,
+                          s.practicas_id as iPracticaId,
+                          s.usuarios_id as iUsuarioId,
+                          s.antecedentes as sAntecedentes,
+                          s.pronostico as sPronostico,                                                 
+                    FROM
+                        seguimientos s 
+                        
+                    JOIN usuarios u ON u.id = s.usuarios_id";
+                        
+
+            if(!empty($filtro)){
+                $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+            }
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+
+            $db->query($sSQL);
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aSeguimientos = array();
+            while($oObj = $db->oNextRecord()){
+            	$oSeguimiento 			= new stdClass();
+            	$oSeguimiento->iId 		= $oObj->iId;
+            	$oSeguimiento->oDiscapacitado = SeguimientoController::getInstance()->getDiscapacitadoById($Obj->iDispacitadoId);
+            	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
+            	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
+            	$oSeguimiento->oPractica = SeguimientoController::getInstance()->getPracticaById($Obj->iPracticaId);
+            	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($Obj->iUsuarioId);
+            	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
+            	$oSeguimiento->sPronostico = $oObj->sPronostico;
+            	   	
+            	$aSeguimientos[] = Factory::getSeguimientoInstance($oSeguimiento);
+            }
+
+            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
+            if(count($aSeguimientos) == 1){
+                return $aSeguimientos[0];
+            }else{
+                return $aSeguimientos;
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+	{
+		 try{
+            $db = clone($this->conn);
+            //$filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        u.id as iId, p.nombre as sNombre, p.apellido as sApellido
+                        s.id AS iDId, s.discapacitados_id AS iDiscapacitadoId                    
+                        FROM               
+                        personas p JOIN usuarios u ON p.id = u.id
+                        JOIN seguimientos s ON u.id = s.usuarios_id
+                        JOIN discapacitados d ON s.discapacitados_id = d.id
+                        JOIN personas pp ON d.id = pp.id";
+                        
+                        
+              
+			$WHERE = array();
+            if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
+                $WHERE[]= $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+            }
+            if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
+                $WHERE[]= $this->crearFiltroSimple('p.apellido', $filtro['p.apellido'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['u.id']) && $filtro['u.id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('u.id', $filtro['u.id'], MYSQL_TYPE_INT);
+            }
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aSeguimiento = array();
+            while($oObj = $db->oNextRecord()){
+                $oSeguimiento 				= new stdClass();
+                $oSeguimiento->iId 			= $oObj->iId;
+                $oSeguimiento->iDiscapacitadoId = null;
+                $oSeguimiento->iUsuarioId = null;
+                    
+                //creo el seguimiento
+                $oSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
+
+                //creo el objeto discapacitado o lo creo despues
+                
+                if(null !== $oObj->iDiscapacitadoId){
+                
+                    $oDiscapacitado = new stdClass();
+                    $oDiscapacitado->iId             = $oObj->iDiscapacitadoId;
+                    $oSeguimiento->oDiscapacitado = Factory::getDiscapacitadoInstance($oDiscapacitado);
+                }
+                
+               /* else  try {}
+                
+                catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        	}*/
+                           
+
+                if(null !== $oObj->iUsuarioId){
+                    $oUsuario = new stdClass();
+                    $oUsuario->iId = $oObj->iId;
+                    $oSeguimiento->oUsuario = Factory::getUsuarioInstance($oUsuario);
+                }
+                
+                $aSeguimiento[] = $oSeguimiento;
+            }
+
+           return $aSeguimiento;
+
+			}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+
+	}
 	  
 } 
-?>
