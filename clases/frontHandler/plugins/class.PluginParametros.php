@@ -33,6 +33,15 @@
  * 1) Lo ideal es programar creando parametros estaticos, cuando se termina de programar una funcionalidad
  * se analiza luego que parametro conviene guardarlo en la base de datos para que pueda ser modificado de ser necesario.
  * 2) Los paramatros de entidad siempre son dinamicos, los parametros estaticos unicamente son los de controlador y de sistema.
+ *
+ *
+ *   'DATABASE_HOST' => '190.190.234.167',
+ *   'DATABASE_DRIVER' => 'IMYSQL',
+ *   'DATABASE_USER' => 'usuariodetest',
+ *   'DATABASE_PASSWORD' => 'usuariodetest1234',
+ *   'DATABASE_NAME' => 'tesis',
+ *   'DATABASE_PORT' => '3306',
+ *   'DATABASE_AUTOCOMMIT' => '0',
  * 
  * @author Matias Velilla
  */

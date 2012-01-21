@@ -51,7 +51,7 @@ class SeguimientosController
      	    return $listaSegPers = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
           	
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoSCCIntermediary($this->db);
-          	$listaSegSCC = $oSeguimientoIntermediary->obtener($filtro, &$iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
+          	$listaSegSCC = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
           	$res = array();
           	array_push($res,$listaSegPers);
           	array_push($res,$listaSegSCC);
