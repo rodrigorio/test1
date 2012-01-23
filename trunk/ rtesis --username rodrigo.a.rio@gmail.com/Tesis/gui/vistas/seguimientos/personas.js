@@ -1,114 +1,3 @@
-//////////////////////////////////
-// FORM INFO PROFESIONAL
-//////////////////////////////////
-
-//para el estado inicial del formulario
-
-$(document).ready(function(){
-    $( "#tabsFormPersona" ).tabs();
-    
-    if($("#institucionId").val() == ""){
-        $('#contCargoInstitucion').addClass("disabled");
-        $('#cargoInstitucion').attr('readonly', 'readonly');
-    }else{
-        $("#institucion").addClass("selected");
-        $("#institucion").attr("readonly", "readonly");
-        revelarElemento($('#institucion_clean'));
-    }
-
-    if($("#universidad").val() == ""){
-        $('#universidadInfo').addClass("disabled");
-        $('#universidadCarrera').attr('readonly', 'readonly');
-        $('#carreraFinalizada').attr('readonly', 'readonly');
-    }
-});
-
-$('#institucion').blur(function(){
-    if($("#institucionId").val() == ""){
-        $("#institucion").val("");
-    }
-    if($("#institucion").val() == ""){
-        $("#institucionId").val("");
-        $('#contCargoInstitucion').addClass("disabled");
-        $('#cargoInstitucion').val("");
-        $('#cargoInstitucion').attr('readonly', 'readonly');
-    }
-});
-
-$('#universidad').blur(function(){
-    if($("#universidad").val() == ""){
-        $("#universidadCarrera").val("");
-        $("#carreraFinalizada").val("");
-        $('#universidadInfo').addClass("disabled");
-        $('#universidadCarrera').attr('readonly', 'readonly');
-        $('#carreraFinalizada').attr('readonly', 'readonly');
-    }
-});
-
-$('#universidad').focus(function(){
-    $('#universidadInfo').removeClass("disabled");
-    $('#universidadCarrera').removeAttr('readonly');
-    $('#carreraFinalizada').removeAttr('readonly');
-});
-
-$("#institucion").autocomplete({
-    source:function(request, response){
-        $.ajax({
-            url: "comunidad/buscar-instituciones",
-            dataType: "jsonp",
-            data:{
-                limit:12,
-                str:request.term
-            },
-            beforeSend: function(){
-                revelarElemento($("#institucion_loading"));
-            },
-            success: function(data){
-                ocultarElemento($("#institucion_loading"));
-                response( $.map(data.instituciones, function(institucion){
-                    return{
-                        //lo que aparece en el input
-                        value:institucion.nombre,
-                        //lo que aparece en la lista generada para elegir
-                        label:institucion.nombre,
-                        //valor extra que se devuelve para completar el hidden
-                        id:institucion.id
-                    }
-                }));
-            }
-        });
-    },
-    minLength: 1,
-    select: function(event, ui){
-        if(ui.item){
-            $("#institucionId").val(ui.item.id);
-        }else{
-            $("#institucionId").val("");
-        }
-    },
-    close: function(){
-        if($("#institucionId").val() != ""){
-            $(this).addClass("selected");
-            $(this).attr('readonly', 'readonly');
-            revelarElemento($('#institucion_clean'));
-            $('#contCargoInstitucion').removeClass("disabled");
-            $('#cargoInstitucion').removeAttr('readonly');
-        }
-    }
-});
-
-//para borrar la institucion seleccionada con el autocomplete
-$('#institucion_clean').click(function(){
-    $("#institucion").removeClass("selected");
-    $("#institucion").removeAttr("readonly");
-    $("#institucion").val("");
-    $("#institucionId").val("");
-    $('#contCargoInstitucion').addClass("disabled");
-    $('#cargoInstitucion').val("");
-    ocultarElemento($(this));
-});
-
-
 //validacion y submit
 var validateFormInfoProfesional = {
     errorElement: "div",
@@ -124,25 +13,16 @@ var validateFormInfoProfesional = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        cargoInstitucion:{required:true},
-        secundaria:{required:true},
-        universidadCarrera:{required:function(element){
-                                return $("#universidad").val() != "";
-                           }},
-        carreraFinalizada:{required:function(element){
-                                return $("#universidad").val() != "";
-                          }},
-        especialidad:{required:true}
+        nombre:{required:true},
+        apellido:{required:true},
+        fechaNacimientoDia:{required:true, digits: true},
+        fechaNacimientoMes:{required:true, digits: true},
+        fechaNacimientoAnio:{required:true, digits: true}
     },
     messages:{
-        cargoInstitucion:mensajeValidacion("requerido"),
-        secundaria:mensajeValidacion("requerido"),
-        universidadCarrera:mensajeValidacion("requerido"),
-        carreraFinalizada:mensajeValidacion("requerido"),
-        especialidad:mensajeValidacion("requerido")
+
     }
 }
-$("#formInfoProfesional").validate(validateFormInfoProfesional);
 
 var optionsAjaxFormInfoProfesional = {
     dataType: 'jsonp',
@@ -174,7 +54,97 @@ var optionsAjaxFormInfoProfesional = {
         }
     }
 };
-$("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
+
+function bindEventsPersonaForm(){
+
+    $("#tabsFormPersona" ).tabs();
+    
+    $("#toggleContInfoExtra").click(function(){
+        if($(this).attr("rel") == "open"){
+            revelarElemento($("#contInfoExtra"));
+            $(this).attr("rel", "close");
+        }else{
+            ocultarElemento($("#contInfoExtra"));
+            $(this).attr("rel", "open");
+        }
+        return false;
+    });
+
+    if($("#institucionId").val() != ""){
+        $("#institucion").addClass("selected");
+        $("#institucion").attr("readonly", "readonly");
+        revelarElemento($('#institucion_clean'));
+    }
+
+    $('#institucion').blur(function(){
+        if($("#institucionId").val() == ""){
+            $("#institucion").val("");
+        }
+        if($("#institucion").val() == ""){
+            $("#institucionId").val("");
+        }
+    });
+    
+    $("#institucion").autocomplete({
+        source:function(request, response){
+            $.ajax({
+                url: "comunidad/buscar-instituciones",
+                dataType: "jsonp",
+                data:{
+                    limit:12,
+                    str:request.term
+                },
+                beforeSend: function(){
+                    revelarElemento($("#institucion_loading"));
+                },
+                success: function(data){
+                    ocultarElemento($("#institucion_loading"));
+                    response( $.map(data.instituciones, function(institucion){
+                        return{
+                            //lo que aparece en el input
+                            value:institucion.nombre,
+                            //lo que aparece en la lista generada para elegir
+                            label:institucion.nombre,
+                            //valor extra que se devuelve para completar el hidden
+                            id:institucion.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 1,
+        select: function(event, ui){
+            if(ui.item){
+                $("#institucionId").val(ui.item.id);
+            }else{
+                $("#institucionId").val("");
+            }
+        },
+        close: function(){
+            if($("#institucionId").val() != ""){
+                $(this).addClass("selected");
+                $(this).attr('readonly', 'readonly');
+                revelarElemento($('#institucion_clean'));
+            }
+        }
+    });
+
+    //para borrar la institucion seleccionada con el autocomplete
+    $('#institucion_clean').click(function(){
+        $("#institucion").removeClass("selected");
+        $("#institucion").removeAttr("readonly");
+        $("#institucion").val("");
+        $("#institucionId").val("");
+        ocultarElemento($(this));
+    });
+
+    $("#formInfoProfesional").validate(validateFormInfoProfesional);
+    $("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
+}
+
+
+
+/*
 
 //////////////////////////////////
 // FORM FOTO PERFIL    ///////////
@@ -228,7 +198,4 @@ $(document).ready(function(){
         });
     }
 });
-
-$(document).ready(function(){
-    $("a[rel^='prettyPhoto']").prettyPhoto();
-});
+*/

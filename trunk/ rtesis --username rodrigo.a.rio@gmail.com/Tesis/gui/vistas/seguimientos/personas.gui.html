@@ -16,15 +16,11 @@
 
 <!--BeginFormularioBlock-->
 <div class="tabs01 pato2" id="tabsFormPersona">
-    <div class="tabs grupo" >
-        <center>
-            <div class="leftTabs">
-                <ul class="toggleTabs">
-                    <li class=""><a href="#tabFormularioPersona">Formulario Persona</a></li>
-                    <li class=""><a href="#tabFormularioFotoPerfil">Foto de Perfil</a></li>
-                </ul>
-            </div>
-        </center>
+    <div class="tabs pale2 grupo" >
+        <ul class="toggleTabs">
+            <li class=""><a href="#tabFormularioPersona">Formulario Persona</a></li>
+            <li class=""><a href="#tabFormularioFotoPerfil">Foto de Perfil</a></li>
+        </ul>
     </div>
 
     <div class="tabContent pa2 grupo" id="tabFormularioPersona">
@@ -33,26 +29,26 @@
             <div id='ajax_loading' class="ajax_wait30 di_no"></div>
             <div style="display:none;" id='msg_form_persona' class="msg_form iveal"><span class="bs i"></span> <span class="msg"></span></div>
 
-            <div id="msg_nombre" class="form_line">
+            <div class="form_line msg_nombre">
                 <label for="nombre">
                     <span class="marca_obligatorio">&#8226;</span>
                     Nombre
                 </label>
                 <div class="fwrap">
                     <div class="inner_fwrap">
-                        <input type="text" name="nombre" id="nombre" title="Nombre" maxlength="60" />
+                        <input type="text" name="nombre" id="nombre" title="Nombre" value="{sNombre}" maxlength="60" />
                     </div>
                 </div>
             </div>
 
-            <div id="msg_apellido" class="form_line">
+            <div class="form_line msg_apellido">
                 <label for="apellido">
                     <span class="marca_obligatorio">&#8226;</span>
                     Apellido
                 </label>
                 <div class="fwrap">
                     <div class="inner_fwrap">
-                        <input type="text" name="apellido" id="apellido" title="Apellido" maxlength="60" />
+                        <input type="text" name="apellido" id="apellido" title="Apellido" value="{sApellido}" maxlength="60" />
                     </div>
                 </div>
             </div>
@@ -82,45 +78,45 @@
             </div>
 
             <div id="selectsUbicacion" class="grupo">
-            <div class="form_line msg_pais">
-                <label for="pais">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Pa&iacute;s
-                </label>
-                <div class="cl_le"></div>
-                <select style="width:250px" name="pais" id="pais" title="Pais">
-                    <option value="">Elija Pa&iacute;s:</option>
-                    <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sDatosPersonalesPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
-                </select>
-            </div>
+                <div class="form_line msg_pais">
+                    <label for="pais">
+                        <span class="marca_obligatorio">&#8226;</span>
+                        Pa&iacute;s
+                    </label>
+                    <div class="cl_le"></div>
+                    <select style="width:250px" name="pais" id="pais" title="Pais">
+                        <option value="">Elija Pa&iacute;s:</option>
+                        <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
+                    </select>
+                </div>
 
-            <div class="form_line msg_provincia">
-                <label for="provincia">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Provincia
-                </label>
-                <div class="cl_le"></div>
-                <select style="width:250px" name="provincia" id="provincia" title="Provincia">
-                    <option value="">Elija Provincia:</option>
-                    <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sDatosPersonalesProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
-                </select>
-            </div>
+                <div class="form_line msg_provincia">
+                    <label for="provincia">
+                        <span class="marca_obligatorio">&#8226;</span>
+                        Provincia
+                    </label>
+                    <div class="cl_le"></div>
+                    <select style="width:250px" name="provincia" id="provincia" title="Provincia">
+                        <option value="">Elija Provincia:</option>
+                        <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
+                    </select>
+                </div>
 
-            <div class="form_line msg_ciudad">
-                <label for="ciudad">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Ciudad
-                </label>
-                <div class="cl_le"></div>
-                <select style="width:250px" name="ciudad" id="ciudad" title="Ciudad">
-                    <option value="">Elija Ciudad:</option>
-                    <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sDatosPersonalesCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
-                </select>
-            </div>
+                <div class="form_line msg_ciudad">
+                    <label for="ciudad">
+                        <span class="marca_obligatorio">&#8226;</span>
+                        Ciudad
+                    </label>
+                    <div class="cl_le"></div>
+                    <select style="width:250px" name="ciudad" id="ciudad" title="Ciudad">
+                        <option value="">Elija Ciudad:</option>
+                        <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
+                    </select>
+                </div>
             </div>
 
             <div class="form_line msg_nroDocumento msg_tipoDocumento">
-                <label for="documento">
+                <label for="nroDocumento">
                     <span class="marca_obligatorio">&#8226;</span>
                     Documento
                 </label>
@@ -159,101 +155,99 @@
 
             <div class="form_line">
                 <label for="nombrePadre">
-                    <a id="toggleContInfoExtra" href="#">
+                    <a id="toggleContInfoExtra" rel="open" href="#">
                         Editar informaci&oacute;n extra
                     </a>
                 </label>
             </div>
             <div id="contInfoExtra" class="di_no baco1 bora pa2 mabo2">
-                <div class="form_line msg_nombrePadre">
-                    <label for="nombrePadre">Nombre completo del padre</label>
+                <div class="form_line msg_nombreApellidoPadre">
+                    <label for="nombreApellidoPadre">Nombre completo del padre</label>
                     <div class="fwrap">
                         <div class="inner_fwrap">
-                            <input type="text" name="nombrePadre" id="nombrePadre" title="Nombre completo del padre" maxlength="70" value="{sNombreApellidoPadre}" />
+                            <input type="text" name="nombreApellidoPadre" id="nombreApellidoPadre" title="Nombre completo del padre" maxlength="70" value="{sNombreApellidoPadre}" />
                         </div>
                     </div>
                 </div>
-                <div class="form_line msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
-                    <label for="fechaNacimientoDia">
-                        <span class="marca_obligatorio">&#8226;</span>
+                <div class="form_line msg_fechaNacimientoPadreDia msg_fechaNacimientoPadreMes msg_fechaNacimientoPadreAnio">
+                    <label for="fechaNacimientoPadreDia">
                         Fecha de Nacimiento del padre
                     </label>
                     <div class="cl_le"></div>
                     <div class="fl_le mari2">
-                        <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
+                        <select class="teta_ca" style="width:150px" name="fechaNacimientoPadreDia" id="fechaNacimientoPadreDia" title="D&iacute;a de Nacimiento">
                             <option value="">D&iacute;a:</option>
-                            <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
+                            <!--BeginOptionSelectPadreDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectPadreDia-->
                         </select>
                     </div>
                     <div class="fl_le mari2">
-                        <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
+                        <select class="teta_ca" style="width:150px" id="fechaNacimientoPadreMes" name="fechaNacimientoPadreMes" title="Mes de Nacimiento">
                             <option value="">Mes:</option>
-                            <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
+                            <!--BeginOptionSelectPadreMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectPadreMes-->
                         </select>
                     </div>
-                    <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
+                    <select style="width:150px" name="fechaNacimientoPadreAnio" id="fechaNacimientoPadreAnio" title="A&ntilde;o de Nacimiento" >
                         <option value="">A&ntilde;o:</option>
-                        <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
+                        <!--BeginOptionSelectPadreAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectPadreAnio-->
                     </select>
                 </div>
                 <div class="form_line msg_biografia">
-                    <label for="biografia">
+                    <label for="ocupacionPadre">
                         Ocupaci&oacute;n del padre / estudios realizados
                     </label>
                     <div class="fwrap mabo2">
                         <div class="inner_fwrap">
-                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Ingrese descripci&oacute;n">{sOcupacionPadre}</textarea>
                         </div>
                     </div>
                 </div>
                 <div class="form_line msg_nombrePadre">
-                    <label for="nombrePadre">Nombre completo de la madre</label>
+                    <label for="nombreApellidoMadre">Nombre completo de la madre</label>
                     <div class="fwrap">
                         <div class="inner_fwrap">
-                            <input type="text" name="nombrePadre" id="nombrePadre" title="Nombre completo del padre" maxlength="70" value="{sNombreApellidoPadre}" />
+                            <input type="text" name="nombreApellidoMadre" id="nombreApellidoMadre" title="Nombre completo de la madre" maxlength="70" value="{sNombreApellidoMadre}" />
                         </div>
                     </div>
                 </div>
-                <div class="form_line msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
-                    <label for="fechaNacimientoDia">
-                        <span class="marca_obligatorio">&#8226;</span>
+                <div class="form_line msg_fechaNacimientoMadreDia msg_fechaNacimientoMadreMes msg_fechaNacimientoMadreAnio">
+                    <label for="fechaNacimientoMadreDia">
                         Fecha de Nacimiento de la madre
                     </label>
                     <div class="cl_le"></div>
                     <div class="fl_le mari2">
-                        <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
+                        <select class="teta_ca" style="width:150px" name="fechaNacimientoMadreDia" id="fechaNacimientoMadreDia" title="D&iacute;a de Nacimiento">
                             <option value="">D&iacute;a:</option>
-                            <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
+                            <!--BeginOptionSelectMadreDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMadreDia-->
                         </select>
                     </div>
                     <div class="fl_le mari2">
-                        <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
+                        <select class="teta_ca" style="width:150px" id="fechaNacimientoMadreMes" name="fechaNacimientoMadreMes" title="Mes de Nacimiento">
                             <option value="">Mes:</option>
-                            <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
+                            <!--BeginOptionSelectMadreMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMadreMes-->
                         </select>
                     </div>
-                    <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
+                    <select style="width:150px" name="fechaNacimientoMadreAnio" id="fechaNacimientoMadreAnio" title="A&ntilde;o de Nacimiento" >
                         <option value="">A&ntilde;o:</option>
-                        <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
+                        <!--BeginOptionSelectMadreAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMadreAnio-->
                     </select>
                 </div>
-                <div class="form_line msg_biografia">
-                    <label for="biografia">
+                <div class="form_line ocupacionMadre">
+                    <label for="ocupacionMadre">
                         Ocupaci&oacute;n de la madre / estudios realizados
                     </label>
                     <div class="fwrap mabo2">
                         <div class="inner_fwrap">
-                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                            <textarea rows="0" cols="0" id="ocupacionMadre" name="ocupacionMadre" class="defVal co maxlength textareaAutoGrow" title="Ingrese descripci&oacute;n">{sOcupacionMadre}</textarea>
                         </div>
                     </div>
                 </div>
-                <div class="form_line msg_biografia">
-                    <label for="biografia">
+                <div class="form_line msg_nombreHermanos">
+                    <label for="nombreHermanos">
                         Nombre hermanos / edades
                     </label>
                     <div class="fwrap mabo2">
                         <div class="inner_fwrap">
-                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                            <textarea rows="0" cols="0" id="nombreHermanos" name="nombreHermanos" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
                         </div>
                     </div>
                 </div>
@@ -261,7 +255,7 @@
 
             <div class="form_line msg_institucion">
                 <label for="institucion">
-                    Instituci&oacute;n en la que se desempe&ntilde;a
+                    Instituci&oacute;n a la que asiste
                 </label>
                 <div class="fwrap">
                     <div class="inner_fwrap">
@@ -276,9 +270,8 @@
 
             <div class="fl_le iveal">
                 <label for="acceder" class="button buttonConfirm buttonLarge mari3">
-                    <button id="acceder" type="submit" name="acceder" class="btn01">
-                        <span class="i mi signIn"></span>
-                        Acceder
+                    <button id="crearPersona" type="submit" name="acceder" class="btn01">
+                        Crear Persona
                     </button>
                 </label>
             </div>
@@ -322,6 +315,8 @@
             </ul>
         </div>
 
+        <input type="hidden" value="" name="personaId" />
+        
         <div style="display:none;" id='msg_form_fotoPerfil' class="msg_form iveal cl_le mato3"><span class="msg"></span></div>
     </div>
 </div>

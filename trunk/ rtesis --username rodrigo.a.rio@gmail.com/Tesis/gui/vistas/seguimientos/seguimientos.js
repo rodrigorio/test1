@@ -68,9 +68,12 @@ $(document).ready(function(){
 	$("#formCrearSeguimiento").ajaxForm(optionsAjaxFormSeguimiento);
 
     $("#agregarPersona").live('click',function(){
+
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
+        
         var dialog = $("#dialog");
         if ($("#dialog").length == 0){ dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body'); }
+
         dialog.load(
             "seguimientos/agregar-persona?popUp=1",
             {},
@@ -83,7 +86,7 @@ $(document).ready(function(){
                     modal:false,
                     closeOnEscape:true
                 });
-                $("#tabsFormPersona" ).tabs();
+                bindEventsPersonaForm(); //la funcion esta en personas.js
             }            
         );
         return false;
