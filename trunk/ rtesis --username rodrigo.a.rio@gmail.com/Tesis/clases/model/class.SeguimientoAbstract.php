@@ -17,7 +17,7 @@ abstract class SeguimientoAbstract
    protected $sPronostico;
    protected $sDiaHorario;
    protected $dFechaCreacion;
-   protected $iEstado;
+   protected $sEstado;
 
 public function __construct(){}
    
@@ -49,8 +49,8 @@ public function setFechaCreacion($dFechaCreacion){
         $this->dFechaCreacion = $dFechaCreacion;
     }
     
-public function setEstado($iEstado){
-        $this->iEstado = $iEstado;
+public function setEstado($sEstado){
+        $this->sEstado = $sEstado;
     }
     
     /////////////////////////////
@@ -84,7 +84,7 @@ public function getFechaCreacion(){
 	return $this->dFechaCreacion;
 	}
 public function getEstado(){
-      return  $this->iEstado;
+      return  $this->sEstado;
     }
 }
 ?>

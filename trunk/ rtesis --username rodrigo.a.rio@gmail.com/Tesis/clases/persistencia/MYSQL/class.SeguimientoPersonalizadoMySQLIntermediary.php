@@ -61,7 +61,7 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
                           s.antecedentes as sAntecedentes,
                           s.pronostico as sPronostico,
                           s.fechaCreacion as dFechaCreacion ,
-                          s.estado as iEstado                                              
+                          s.estado as sEstado
                     FROM
                         seguimientos s 
                         
@@ -95,7 +95,7 @@ class SeguimientoPersonalizadoMySQLIntermediary extends SeguimientoPersonalizado
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;
             	$oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
-            	$oSeguimiento->iEstado = $oObj->iEstado;
+            	$oSeguimiento->sEstado = $oObj->sEstado;
             	   	
             	$aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
             }
