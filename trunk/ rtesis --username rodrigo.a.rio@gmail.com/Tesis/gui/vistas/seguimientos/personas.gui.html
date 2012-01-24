@@ -18,8 +18,8 @@
 <div class="tabs01 pato2" id="tabsFormPersona">
     <div class="tabs pale2 grupo" >
         <ul class="toggleTabs">
-            <li class=""><a href="#tabFormularioPersona">Formulario Persona</a></li>
-            <li class=""><a href="#tabFormularioFotoPerfil">Foto de Perfil</a></li>
+            <li class="" id="tabFormularioPersona"><a href="#tabFormularioPersona">Formulario Persona</a></li>
+            <li class="" id="tabFotoPerfilPersona"><a href="#tabFormularioFotoPerfil">Foto de Perfil</a></li>
         </ul>
     </div>
 
@@ -28,6 +28,21 @@
 
             <div id='ajax_loading' class="ajax_wait30 di_no"></div>
             <div style="display:none;" id='msg_form_persona' class="msg_form iveal"><span class="bs i"></span> <span class="msg"></span></div>
+
+            <div class="form_line msg_nroDocumento msg_tipoDocumento">
+                <label for="nroDocumento">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Documento
+                </label>
+                <div class="cl_le"></div>
+                <div class="fl_le mari2">
+                    <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
+                        <option value="">Tipo:</option>
+                        <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
+                    </select>
+                </div>
+                <input style="width:200px" class="defVal co" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="{sNumeroDocumento}" />
+            </div>
 
             <div class="form_line msg_nombre">
                 <label for="nombre">
@@ -115,21 +130,6 @@
                 </div>
             </div>
 
-            <div class="form_line msg_nroDocumento msg_tipoDocumento">
-                <label for="nroDocumento">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Documento
-                </label>
-                <div class="cl_le"></div>
-                <div class="fl_le mari2">
-                    <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
-                        <option value="">Tipo:</option>
-                        <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
-                    </select>
-                </div>
-                <input style="width:200px" class="defVal co" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="{sNumeroDocumento}" />
-            </div>
-
             <div class="form_line msg_telefono">
                 <label for="telefono">
                     <span class="marca_obligatorio">&#8226;</span>
@@ -154,7 +154,7 @@
             </div>
 
             <div class="form_line">
-                <label for="nombrePadre">
+                <label for="nombreApellidoPadre">
                     <a id="toggleContInfoExtra" rel="open" href="#">
                         Editar informaci&oacute;n extra
                     </a>
@@ -191,13 +191,13 @@
                         <!--BeginOptionSelectPadreAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectPadreAnio-->
                     </select>
                 </div>
-                <div class="form_line msg_biografia">
+                <div class="form_line msg_ocupacionPadre">
                     <label for="ocupacionPadre">
                         Ocupaci&oacute;n del padre / estudios realizados
                     </label>
                     <div class="fwrap mabo2">
                         <div class="inner_fwrap">
-                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="defVal co maxlength textareaAutoGrow" title="Ingrese descripci&oacute;n">{sOcupacionPadre}</textarea>
+                            <textarea rows="0" cols="0" id="ocupacionPadre" name="ocupacionPadre" class="defVal co maxlength textareaAutoGrow" title="Ingrese descripci&oacute;n">{sOcupacionPadre}</textarea>
                         </div>
                     </div>
                 </div>
@@ -247,7 +247,7 @@
                     </label>
                     <div class="fwrap mabo2">
                         <div class="inner_fwrap">
-                            <textarea rows="0" cols="0" id="nombreHermanos" name="nombreHermanos" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                            <textarea rows="0" cols="0" id="nombreHermanos" name="nombreHermanos" class="defVal co maxlength textareaAutoGrow" title="Escribe unas l&iacute;neas referidas a tu persona">{sNombreHermanos}</textarea>
                         </div>
                     </div>
                 </div>
@@ -268,19 +268,33 @@
                 <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
             </div>
 
+            <!--BeginSubmitCrearPersonaBlock-->
             <div class="fl_le iveal">
-                <label for="acceder" class="button buttonConfirm buttonLarge mari3">
-                    <button id="crearPersona" type="submit" name="acceder" class="btn01">
+                <label for="submitFormPersona" class="button buttonConfirm buttonLarge mari3">
+                    <button id="crearPersona" type="submit" name="submitFormPersona" id="submitFormPersona" class="btn01">
                         Crear Persona
                     </button>
                 </label>
             </div>
+            <!--EndSubmitCrearPersonaBlock-->
+
+            <!--BeginSubmitModificarPersonaBlock-->
+            <div class="fl_le iveal">
+                <label for="submitFormPersona" class="button buttonConfirm buttonLarge mari3">
+                    <button id="crearPersona" type="submit" name="submitFormPersona" id="submitFormPersona" class="btn01">
+                        Modificar Persona
+                    </button>
+                </label>
+            </div>
+            <input type="hidden" value="{iPersonaIdForm}" name="personaIdForm" id="personaIdForm" />
+            <!--EndSubmitModificarPersonaBlock-->
+
         </form>
     </div>
     
     <div class="tabContent pa2 grupo" id="tabFormularioFotoPerfil">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-
+        
         <div id="contFotoPerfilActual">
         <!--BeginFotoPerfilActualBlock-->
         <div id="fotoPerfilActual" class="mabo3">
@@ -315,7 +329,7 @@
             </ul>
         </div>
 
-        <input type="hidden" value="" name="personaId" />
+        <input type="hidden" value="{iPersonaIdFoto}" name="personaIdFoto" id="personaIdFoto" />
         
         <div style="display:none;" id='msg_form_fotoPerfil' class="msg_form iveal cl_le mato3"><span class="msg"></span></div>
     </div>

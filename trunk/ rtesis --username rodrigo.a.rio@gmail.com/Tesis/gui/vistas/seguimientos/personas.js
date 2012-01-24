@@ -1,5 +1,5 @@
 //validacion y submit
-var validateFormInfoProfesional = {
+var validateFormPersona = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -17,40 +17,93 @@ var validateFormInfoProfesional = {
         apellido:{required:true},
         fechaNacimientoDia:{required:true, digits: true},
         fechaNacimientoMes:{required:true, digits: true},
-        fechaNacimientoAnio:{required:true, digits: true}
+        fechaNacimientoAnio:{required:true, digits: true},
+        pais:{required:true, digits: true},
+        provincia:{required:function(element){
+                            return $("#pais option:selected").val() != "";
+                  }, digits: true},
+        ciudad:{required:function(element){
+                            return $("#provincia option:selected").val() != "";
+               }, digits: true},
+        tipoDocumento:{required:true},
+        nroDocumento:{required:true, ignorarDefault:true, digits:true},
+        telefono:{required:true}        
     },
     messages:{
-
+        tipoDocumento: "Debe especificar tipo de documento",
+        nroDocumento:{
+                        required: "Debe ingresar numero de documento",
+                        ignorarDefault: "Debe ingresar numero de documento",
+                        digits: mensajeValidacion("digitos")
+                      },
+        nombre: mensajeValidacion("requerido"),
+        apellido: mensajeValidacion("requerido"),
+        telefono: mensajeValidacion("requerido"),
+        fechaNacimientoDia:{
+                            required: mensajeValidacion("requerido", 'día'),
+                            digits: mensajeValidacion("digitos")
+        },
+        fechaNacimientoMes:{
+                            required: mensajeValidacion("requerido", 'mes'),
+                            digits: mensajeValidacion("digitos")
+        },
+        fechaNacimientoAnio:{
+                            required: mensajeValidacion("requerido", 'año'),
+                            digits: mensajeValidacion("digitos")
+        },
+        pais:{
+            required: mensajeValidacion("requerido"),
+            digits: mensajeValidacion("digitos")
+        },
+        provincia:{
+            required: mensajeValidacion("requerido"),
+            digits: mensajeValidacion("digitos")
+        },
+        ciudad:{
+            required: mensajeValidacion("requerido"),
+            digits: mensajeValidacion("digitos")
+        }
     }
 }
 
-var optionsAjaxFormInfoProfesional = {
+var optionsAjaxFormPersona = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/datos-personales-procesar',
+    url: 'seguimientos/personas-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formInfoProfesional").valid() == true){
-            $('#msg_form_infoProfesional').hide();
-            $('#msg_form_infoProfesional').removeClass("correcto").removeClass("error");
-            $('#msg_form_infoProfesional .msg').html("");
-            setWaitingStatus('formInfoProfesional', true);
+        if($("#formPersona").valid() == true){
+            $('#msg_form_persona').hide();
+            $('#msg_form_persona').removeClass("correcto").removeClass("error");
+            $('#msg_form_persona .msg').html("");
+            verificarValorDefecto("ocupacionPadre");
+            verificarValorDefecto("ocupacionMadre");
+            verificarValorDefecto("nombreHermanos");
+            setWaitingStatus('formPersona', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formInfoProfesional', false);
+        setWaitingStatus('formPersona', false);
         if(data.success == undefined || data.success == 0){
-            $('#msg_form_infoProfesional .msg').html(lang['error procesar']);
-            $('#msg_form_infoProfesional').addClass("error").fadeIn('slow');
-        }else{
-            if(data.integranteActivo == "1"){
-                showDialogIntegranteActivo();
+            $('#msg_form_persona .msg').html(lang['error procesar']);
+            $('#msg_form_persona').addClass("error").fadeIn('slow');
+        }else{            
+            if(data.agregarPersona == "1"){
+                //si el submit fue para agregar una nueva persona al sistema...
+                $('#msg_form_fotoPerfil .msg').html("La persona ha sido creada exitosamente. Puede agregar una foto de perfil si lo desea.");
+                $('#msg_form_fotoPerfil').addClass("correcto").show();
+                
+                $('#tabFormularioPersona').html("");
+                
+            }else{
+                //el submit fue la modificacion de una persona
+
             }
-            $('#msg_form_infoProfesional .msg').html(lang['exito procesar']);
-            $('#msg_form_infoProfesional').addClass("correcto").fadeIn('slow');
+
+            $('#msg_form_persona').addClass("correcto").fadeIn('slow');
         }
     }
 };
@@ -138,8 +191,8 @@ function bindEventsPersonaForm(){
         ocultarElemento($(this));
     });
 
-    $("#formInfoProfesional").validate(validateFormInfoProfesional);
-    $("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
+    $("#formPersona").validate(validateFormPersona);
+    $("#formPersona").ajaxForm(optionsAjaxFormPersona);
 }
 
 
