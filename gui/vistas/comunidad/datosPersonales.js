@@ -202,6 +202,8 @@ var optionsAjaxFormInfoBasica = {
                 $("#contraseniaActualMD5").val("");
             }
 
+            verificarValorDefecto("nroDocumento");
+
             setWaitingStatus('formInfoBasica', true);
         }else{
             return false;
@@ -531,6 +533,7 @@ var optionsAjaxFormInfoProfesional = {
             $('#msg_form_infoProfesional').hide();
             $('#msg_form_infoProfesional').removeClass("correcto").removeClass("error");
             $('#msg_form_infoProfesional .msg').html("");
+            verificarValorDefecto("biografia"); //no envia el msg de ayuda en gris
             setWaitingStatus('formInfoProfesional', true);
         }else{
             return false;

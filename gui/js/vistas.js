@@ -182,6 +182,62 @@ function setMsgResultado(contenedorId, show, tipoMsg, mensaje)
     }
 }
 
+/**
+ * En el before serialize o bien antes del submit verificar que el valor que se envia por post
+ * para un input/textarea que tiene valor por defecto es un valor ingresado por el usuario
+ * y no el texto en gris que aparece de referencia antes de completar el campo del formulario.
+ *
+ * en esta funcion, si el elemento no fue modificado por el usuario limpia el contenido
+ */
+function verificarValorDefecto(elementId)
+{
+    var campo = $("#" + elementId);    
+    //puede ser textarea o input
+    if(campo.attr("title") == campo.attr("value") || campo.attr("title") == campo.html()){
+        campo.attr("value", "");
+        campo.html("");
+    }
+}
+
+function paginar(iPage,toUrl,div,params){
+	$.ajax({
+		type: "POST",
+	   	url: toUrl,
+	   	data: "iPage="+iPage+"&"+params,
+	   	beforeSend:function(data){
+	   		$("#ajax_loading").show();
+	   	},
+	   	success: function(data){
+	   		$("#ajax_loading").hide();
+	   		$("#"+div).html(data);
+	   	}
+	});
+ }
+
+ function autoCompleteInput(div,action){
+    $( "#"+div ).autocomplete({
+        source: function( request, response ) {
+                $.ajax({
+                        url: action,
+                        dataType: "jsonp",
+                        data: {
+                                limit: 12,
+                                str: request.term
+                        },
+                        success: function( data ) {
+                                response( $.map( data.usuarios, function( item ) {
+                                        return {
+                                                label: item.sNombre,
+                                                value: item.sNombre
+                                        }
+                                }));
+                        }
+                });
+            }  ,
+        minLength: 8
+    });
+ }
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,41 +323,3 @@ $(document).ready(function(){
     });
     // FIN PUNTUAR PUBLICACIONES, ETC //
 });
-
-function paginar(iPage,toUrl,div,params){
-	$.ajax({
-		type: "POST",
-	   	url: toUrl,
-	   	data: "iPage="+iPage+"&"+params,
-	   	beforeSend:function(data){
-	   		$("#ajax_loading").show();
-	   	},
-	   	success: function(data){
-	   		$("#ajax_loading").hide();
-	   		$("#"+div).html(data);
-	   	}
-	});
- }
- function autoCompleteInput(div,action){
-    $( "#"+div ).autocomplete({
-        source: function( request, response ) {
-                $.ajax({
-                        url: action,
-                        dataType: "jsonp",
-                        data: {
-                                limit: 12,
-                                str: request.term
-                        },
-                        success: function( data ) {
-                                response( $.map( data.usuarios, function( item ) {
-                                        return {
-                                                label: item.sNombre,
-                                                value: item.sNombre
-                                        }
-                                }));
-                        }
-                });
-            }  ,
-        minLength: 8
-    });
- }
