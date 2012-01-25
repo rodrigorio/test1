@@ -82,6 +82,15 @@ class SeguimientosController
             return false;
         }
     }
+    public function eliminarSeguimiento($oSeguimiento){
+        try{
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->borrar($oSeguimiento);
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    
+    }
     
     
 }
