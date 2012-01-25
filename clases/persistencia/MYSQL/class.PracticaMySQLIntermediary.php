@@ -25,6 +25,6 @@ class PracticaMySQLIntermediary extends PracticaIntermediary
     public function insertar($objects){}
     public function guardar($object){}
     public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
-    
+    public function borrar($oPractica) {}
+    public function actualizar($oPractica){}
 }
-?>
