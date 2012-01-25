@@ -157,7 +157,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             	$oSeguimiento->oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
             	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
             	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
-            //	$oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+            	$oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
             	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;
@@ -228,11 +228,65 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 		}
     }
 
+    public function actualizarSCC($oSeguimientoSCC)
+    {
+        try{
+			$db = $this->conn;
+					
+			if($oSeguimientoSCC->getUsuario()!= null){
+				$usuarioId = $oSeguimientoSCC->getUsuario()->getId();
+			}else {
+				$usuarioId = null;
+			}
+        	if($oSeguimientoSCC->getDiscapacitado()!= null){
+				$discapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
+			}else {
+				$discapacitadoId = null;
+			}
+            if($oSeguimientoSCC->getPractica()!= null){
+				$practicaId = $oSeguimientoSCC->getpractica()->getId();
+			}else {
+				$practicaId = null;
+			}
+			
+            $db->begin_transaction();
+            $sSQL = " update seguimientos " .
+                    " set frecuenciaEncuentros =".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
+                    " diaHorario =".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
+					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
+                    " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
+                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ".
+                    " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
+
+			 $db->execSQL($sSQL);
+
+			 // ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			 $diagnosticoSCCId = null;
+			 
+             $sSQL =" update seguimiento_scc ".
+                    " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
+					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
+			 $db->execSQL($sSQL);
+			 $db->commit();
+
+
+		}catch(Exception $e){
+            $db->rollback_transaction();
+			throw new Exception($e->getMessage(), 0);
+		}
+    }
+    
     public function guardar($oSeguimiento)
     {
         try{
             if($oSeguimiento->getId() != null){
-            	return $this->actualizar($oSeguimiento);
+            	if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
+                    return $this->insertar($oSeguimiento);
+                 }else{
+            	return $this->actualizarSCC($oSeguimiento);
+                 }
             }else{
                  if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
                     return $this->insertar($oSeguimiento);
@@ -307,8 +361,75 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 		}
    }
 
-    //el borrado debe ser logico sino vamos a tener problemas, mirar diagramas de base de datos
-    public function borrar($oSeguimientoPersonalizado) {
+   
+public function insertarSCC($oSeguimientoSCC)
+   {
+		try{
+		    $db = $this->conn;
+					
+			if($oSeguimientoSCC->getUsuario()!= null){
+				$usuarioId = $oSeguimientoSCC->getUsuario()->getId();
+			}else {
+				$usuarioId = null;
+			}
+        	if($oSeguimientoSCC->getDiscapacitado()!= null){
+				$discapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
+			}else {
+				$discapacitadoId = null;
+			}
+            if($oSeguimientoSCC->getPractica()!= null){
+				$practicaId = $oSeguimientoSCC->getpractica()->getId();
+			}else {
+				$practicaId = null;
+			}
+			
+			
+			$db->begin_transaction();
+			$sSQL =	" insert into seguimientos ".
+                    " set frecuenciaEncuentros =".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
+                    " diaHorario =".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
+					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
+                    " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
+                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ";
+			
+			$db->execSQL($sSQL);
+			$iLastId = $db->insert_id();
+			
+			//ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			$diagnosticoSCCId = null;
+			
+			$sSQL =" insert into seguimientos_scc set ".
+                    " id=".$db->escape($iLastId,false).", " .
+                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;	
+		
+			$db->execSQL($sSQL);
+			 $db->commit();
+			 return true;
+
+		}catch(Exception $e){
+			$db->rollback_transaction();
+			throw new Exception($e->getMessage(), 0);
+			return false;
+		}
+   }
+    
+   public function borrar($oSeguimiento) {
+		try{
+   			if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
+                    $this->borrarPersonalizado($oSeguimiento);
+                 }else{
+            	    $this->borrarSCC($oSeguimiento);
+                 }
+                 	}catch(Exception $e){
+			throw new Exception($e->getMessage(), 0);
+		}
+		}
+   	
+   
+    public function borrarPersonalizado($oSeguimientoPersonalizado) {
 		try{
 			$db = $this->conn;
 			$db->execSQL("delete from seguimientos where id=".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT));
@@ -319,94 +440,25 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+	
+public function borrarSCC($oSeguimientoSCC) {
+		try{
+			
+			$db = $this->conn;
+			$db->begin_transaction();
+			$db->execSQL("delete from seguimientos where id=".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT));
+            $db->execSQL("delete from seguimientos_scc where id=".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT));
+			$db->commit();
 
-    public function actualizarCampoArray($objects, $cambios){}
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, 
-
-$iRecordCount = null)
-	{
-		 try{
-            $db = clone($this->conn);
-            //$filtro = $this->escapeStringArray($filtro);
-
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        u.id as iId, p.nombre as sNombre, p.apellido as sApellido
-                        s.id AS iDId, s.discapacitados_id AS iDiscapacitadoId                    
-                        FROM               
-                        personas p JOIN usuarios u ON p.id = u.id
-                        JOIN seguimientos s ON u.id = s.usuarios_id
-                        JOIN discapacitados d ON s.discapacitados_id = d.id
-                        JOIN personas pp ON d.id = pp.id";
-                        
-                        
-              
-			$WHERE = array();
-            if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
-                $WHERE[]= $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
-            }
-            if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
-                $WHERE[]= $this->crearFiltroSimple('p.apellido', $filtro['p.apellido'], MYSQL_TYPE_INT);
-            }
-            if(isset($filtro['u.id']) && $filtro['u.id']!=""){
-                $WHERE[]= $this->crearFiltroSimple('u.id', $filtro['u.id'], MYSQL_TYPE_INT);
-            }
-            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-            
-            if (isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by $sOrderBy $sOrder ";
-            }
-            if ($iIniLimit!==null && $iRecordCount!==null){
-                $sSQL .= " limit".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-            }
-            $db->query($sSQL);
-
-            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($iRecordsTotal)){ return null; }
-
-            $aSeguimiento = array();
-            while($oObj = $db->oNextRecord()){
-                $oSeguimiento 				= new stdClass();
-                $oSeguimiento->iId 			= $oObj->iId;
-                $oSeguimiento->iDiscapacitadoId = null;
-                $oSeguimiento->iUsuarioId = null;
-                    
-                //creo el seguimiento
-                $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
-
-                //creo el objeto discapacitado o lo creo despues
-                
-                if(null !== $oObj->iDiscapacitadoId){
-                
-                    $oDiscapacitado = new stdClass();
-                    $oDiscapacitado->iId             = $oObj->iDiscapacitadoId;
-                    $oSeguimiento->oDiscapacitado = Factory::getDiscapacitadoInstance($oDiscapacitado);
-                }
-                
-               /* else  try {}
-                
-                catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        	}*/
-                           
-
-                if(null !== $oObj->iUsuarioId){
-                    $oUsuario = new stdClass();
-                    $oUsuario->iId = $oObj->iId;
-                    $oSeguimiento->oUsuario = Factory::getUsuarioInstance($oUsuario);
-                }
-                
-                $aSeguimiento[] = $oSeguimiento;
-            }
-
-           return $aSeguimiento;
-
-	}catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        
-
+		}catch(Exception $e){
+			$db->rollback_transaction();
+			throw new Exception($e->getMessage(), 0);
 		}
 	}
+
+    public function actualizarCampoArray($objects, $cambios){}
+    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+	
 }
 
 	
