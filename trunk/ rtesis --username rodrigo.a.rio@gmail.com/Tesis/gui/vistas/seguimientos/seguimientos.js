@@ -153,22 +153,23 @@ function buscarSeguimientos(){
 	var dniPersonaSeg	= $("#seguimiento_dniPersona").val();
 	var tipoSeg			= $("#tipoSeguimiento").val();
 	$.ajax({
-        url: "seguimientos/buscar-seguimientos",
-        type: "POST",
-        dataType: "jsonp",
-        data:{
-            limit	:12,
-            estado	: estadoSeg,
-            fechaCreacion: fechaCreacionSeg,
-            nombre	: nombrePersonaSeg,
-            dni		: dniPersonaSeg,
-            tipoSeguimiento: tipoSeg
-        },
-        beforeSend: function(){
-        },
-        success: function(data){
-        	$("#listadoSeguimientoes").html(data);
-        	
-        }
+            url: "seguimientos/buscar-seguimientos",
+            type: "POST",
+           
+            data:{
+                limit	:12,
+                estado	: estadoSeg,
+                fechaCreacion: fechaCreacionSeg,
+                nombre	: nombrePersonaSeg,
+                dni		: dniPersonaSeg,
+                tipoSeguimiento: tipoSeg
+            },
+            beforeSend: function(){
+                setWaitingStatus('listadoSeguimientos', true);
+            },
+            success: function(data){
+                $("#listadoSeguimientos").html(data);
+                setWaitingStatus('listadoSeguimientos', false);
+            }
 	});
 }

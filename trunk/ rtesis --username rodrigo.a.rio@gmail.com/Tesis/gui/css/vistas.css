@@ -133,8 +133,9 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
-.co{color:#333 !important}
 .po_re{position:relative !important}
+.po_ab{position:absolute !important}
+.co{color:#333 !important}
 .veal_mi{vertical-align:middle !important}
 .mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
 .miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}

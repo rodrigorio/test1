@@ -23,7 +23,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
         public final function obtenerSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
             try{
-                $db = $this->conn;
+                $db = clone($this->conn);
                 $filtro = $this->escapeStringArray($filtro);
 
                 $sSQL = "SELECT SQL_CALC_FOUND_ROWS
@@ -35,6 +35,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                               s.usuarios_id as iUsuarioId,
                               s.antecedentes as sAntecedentes,
                               s.pronostico as sPronostico,
+                              s.fechaCreacion as dFechaCreacion,
                               IF(sp.id IS NULL,'scc','pers') AS tipo
                         FROM
                             seguimientos s
@@ -42,10 +43,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                             seguimientos_personalizados sp ON sp.id = s.id
                         LEFT JOIN
                             seguimientos_scc sscc ON s.id = sscc.id
-                        JOIN usuarios u ON u.id = s.usuarios_id";
+                        JOIN
+                            usuarios u ON u.id = s.usuarios_id ";
 
                 if(!empty($filtro)){
-                    $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    $sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
                 }
                 if (isset($sOrderBy) && isset($sOrder)){
                     $sSQL .= " order by $sOrderBy $sOrder ";
@@ -62,13 +64,14 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 while($oObj = $db->oNextRecord()){
                     $oSeguimiento 			= new stdClass();
                     $oSeguimiento->iId 		= $oObj->iId;
-                    $oSeguimiento->oDiscapacitado   = SeguimientoController::getInstance()->getDiscapacitadoById($Obj->iDispacitadoId);
+                    $oSeguimiento->oDiscapacitado   = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
                     $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
                     $oSeguimiento->sDiaHorario      = $oObj->sDiaHorario;
-                    $oSeguimiento->oPractica        = SeguimientoController::getInstance()->getPracticaById($Obj->iPracticaId);
-                    $oSeguimiento->oUsuario         = SysController::getInstance()->getUsuarioById($Obj->iUsuarioId);
+                    //$oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                    $oSeguimiento->oUsuario         = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
                     $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
                     $oSeguimiento->sPronostico      = $oObj->sPronostico;
+                    $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
                     if($oObj->tipo=='scc'){
                         $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
                     }else{
@@ -76,12 +79,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     }
                 }
 
-                //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-                if(count($aSeguimientos) == 1){
-                    return $aSeguimientos[0];
-                }else{
-                    return $aSeguimientos;
-                }
+                 return $aSeguimientos;
 
             }catch(Exception $e){
                 throw new Exception($e->getMessage(), 0);
