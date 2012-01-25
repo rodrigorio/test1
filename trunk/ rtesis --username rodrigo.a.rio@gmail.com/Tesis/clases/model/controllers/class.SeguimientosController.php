@@ -35,11 +35,7 @@ class SeguimientosController
 
     public function guardarSeguimiento($oSeguimiento){
     	try{
-            if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
-                 $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoPersonalizadoIntermediary($this->db);
-            }else{
-                 $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoSCCIntermediary($this->db);
-            }
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->guardar($oSeguimiento);
         }catch(Exception $e){
                 echo $e->getMessage();
@@ -47,15 +43,9 @@ class SeguimientosController
     }
     public function listarSeguimiento($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
-        	$oSeguimientoIntermediary = PersistenceFactory::getSeguimientoPersonalizadoIntermediary($this->db);
-     	    return $listaSegPers = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
-          	
-            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoSCCIntermediary($this->db);
-          	$listaSegSCC = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
-          	$res = array();
-          	array_push($res,$listaSegPers);
-          	array_push($res,$listaSegSCC);
-          	return $res;
+                $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+          	$listaSeg = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
+          	return $listaSeg;
         }catch(Exception $e){
                 echo $e->getMessage();
         }
