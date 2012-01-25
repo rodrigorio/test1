@@ -41,10 +41,10 @@ class SeguimientosController
                 echo $e->getMessage();
         }
     }
-    public function listarSeguimiento($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function listarSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
                 $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-          	$listaSeg = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
+          	$listaSeg = $oSeguimientoIntermediary->obtenerSeguimientos($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
           	return $listaSeg;
         }catch(Exception $e){
                 echo $e->getMessage();

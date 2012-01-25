@@ -60,7 +60,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $sOrder 		= null;
             $iIniLimit 		= null;
             $iRecordCount 	= null;
-            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimiento($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
+            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimientos($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
             if(count($listaSeguimientos)>0){
             	foreach ($listaSeguimientos as $seguimiento){
             		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
@@ -113,7 +113,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $sOrder 		= null;
             $iIniLimit 		= null;
             $iRecordCount 	= null;
-            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimiento($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
+            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimientos($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
             if( count($listaSeguimientos) > 0 ){
             	foreach($listaSeguimientos as $seguimiento){
             		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
@@ -178,7 +178,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iTipoSeguimiento = $this->getRequest()->getPost('tipoSeguimiento');
-            $iPersona       = $this->getRequest()->getPost('personaId');
+            
+            $iPersona           = $this->getRequest()->getPost('personaId');
+            $filtro             = array("s.discapacitados_id"=>$iPersona);
+            $iRecordsTotal 	= 0;
+            $sOrderBy 		= null;
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $listaSeguimientos  = SeguimientosController::getInstance()->listarSeguimientos($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
+            if(count($listaSeguimientos)>1){
+
+            }else if(count($listaSeguimientos)>0){
+                $listaSeguimientos[0]->getTipoSeguimiento();
+            }
+            print_r($listaSeguimientos);exit;
+
             $sFrecuencias   = $this->getRequest()->getPost('frecuencias');
             $sDiaHorario    = $this->getRequest()->getPost('diaHorario');
             $iTipoPractica  = $this->getRequest()->getPost('tipoPractica');
