@@ -383,7 +383,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oEspecialidad->iId             = $oObj->iEspecialidadId;
                     $oEspecialidad->sNombre         = $oObj->sEspecialidadNombre;
                     $oEspecialidad->sDescripcion    = $oObj->sEspecialidadDescripcion;
-                    $oUsuario->oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
+                    $oUsuario->setEspecialidad(Factory::getEspecialidadInstance($oEspecialidad));
                 }
 
                 if(null !== $oObj->iCvId){
@@ -402,7 +402,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oCurriculumVitae->bActivo = $oObj->bCvActivo;
                     $oCurriculumVitae->bPublico = $oObj->bCvPublico;
                     $oCurriculumVitae->bActivoComentarios = $oObj->bCvActivoComentarios;
-                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
+                    $oUsuario->setCurriculumVitae(Factory::getArchivoInstance($oCurriculumVitae));
                 }
 
                 if(null !== $oObj->iFotoId){
@@ -415,7 +415,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $fotoPerfil->sTitulo = $oObj->sFotoTitulo;
                     $fotoPerfil->sDescripcion = $oObj->sFotoDescripcion;
                     $fotoPerfil->sTipo = $oObj->sFotoTipo;
-                    $oUsuario->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
+                    $oUsuario->setFotoPerfil(Factory::getFotoInstance($fotoPerfil));
                 }
 
                 $aUsuarios[] = $oUsuario;

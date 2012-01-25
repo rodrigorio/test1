@@ -93,16 +93,10 @@ class PersistenceFactory {
             return (CategoriaMySQLIntermediary::getInstance($conn));
         }
     }
-    public static function getSeguimientoSCCIntermediary(IMYSQL $conn)
+    public static function getSeguimientoIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-            return (SeguimientoSCCMySQLIntermediary::getInstance($conn));
-        }
-    }
-    public static function getSeguimientoPersonalizadoIntermediary(IMYSQL $conn)
-    {
-        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-            return (SeguimientoPersonalizadoMySQLIntermediary::getInstance($conn));
+            return (SeguimientoMySQLIntermediary::getInstance($conn));
         }
     }
     public static function getArchivoIntermediary(IMYSQL $conn)

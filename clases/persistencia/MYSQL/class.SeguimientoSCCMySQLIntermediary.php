@@ -1,5 +1,5 @@
 <?php
-class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
+class SeguimientoSCCMySQLIntermediary extends SeguimientoIntermediary
 {
 	private static $instance = null;
 
@@ -187,7 +187,7 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                          s.id as iId, 
+                          s.id as iId,
                           s.discapacitados_id as iDiscapacitadoId, 
                           s.frecuenciaEncuentros as sFrecuenciaEncuentros,
                           s.diaHorario as sDiaHorario,
@@ -228,7 +228,7 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoSCCIntermediary
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;
             	   	
-            	$aSeguimientos[] = Factory::getSeguimientoInstance($oSeguimiento);
+            	$aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
             }
 
             //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
