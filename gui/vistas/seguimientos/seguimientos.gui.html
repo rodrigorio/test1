@@ -128,9 +128,9 @@
     Tipo de Seguimiento
        <select class="defVal requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
                     <option value="">Selecciones un tipo</option>
-                    <!--BeginListaTipoDeSeguimientoesBlock-->
+                    <!--BeginListaTipoDeSeguimientosBlock-->
                     <option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
-                    <!--EndListaTipoDeSeguimientoesBlock-->
+                    <!--EndListaTipoDeSeguimientosBlock-->
        </select>
     </div>
     <div>
@@ -168,6 +168,11 @@
                <!--EndPermisoEditarSeguimientoBlock-->
            </tr>
            <!--EndListaDeSeguimientosBlock-->
+           <!--BeginNoRecordsListaDeSeguimientosBlock-->
+           <tr class="{odd} ficha01">
+           		<td colspan="7" class="titulo">{sNoRecords}</td>
+           </tr>
+           <!--EndNoRecordsListaDeSeguimientosBlock-->
        </table>
        {paginacion}
     </div>

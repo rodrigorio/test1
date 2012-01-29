@@ -43,7 +43,7 @@ class SeguimientosController
     }
     public function listarSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
-                $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
           	$listaSeg = $oSeguimientoIntermediary->obtenerSeguimientos($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
           	return $listaSeg;
         }catch(Exception $e){

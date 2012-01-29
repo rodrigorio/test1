@@ -50,7 +50,7 @@ $(document).ready(function(){
                 success:function(data){
                     setWaitingStatus('formCrearSeguimiento', false);
                     if(data.success == undefined || data.success == 0){
-                        $('#msg_form_crearSeguimiento .msg').html(lang['error procesar']);
+                        $('#msg_form_crearSeguimiento .msg').html(data.mensaje);
                         $('#msg_form_crearSeguimiento').addClass("error").fadeIn('slow');
                     }else{
                         $('#msg_form_crearSeguimiento .msg').html(lang['exito procesar']);

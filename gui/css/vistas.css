@@ -341,7 +341,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .form_line .selected{font-weight:bold; background-color:#EEEFFF !important}
 
 .ficha01{background-color:#CCC; font-family:Arial; padding:10px;}
-.ficha01 .titulo, .ficha01 .titulo{text-transform:uppercase; font-weight:bold}
+.ficha01 .titulo{text-transform:uppercase; font-weight:bold}
 .ficha01 .subtitulo{font-size:1.7em}
 .ficha01 .detalle{font-size:0.8em}
 

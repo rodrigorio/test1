@@ -54,6 +54,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "ListadoSeguimientosBlock");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
 			$oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+			$obj = new stdClass();
+        	$oTipoSeg = Factory::getTipoSeguimientoInstance($obj);
+            $listaTiposSeguimiento = $oTipoSeg->getLista();
+            foreach ($listaTiposSeguimiento as $key=>$value){
+                $this->getTemplate()->set_var("iSeguimientoTiposId", $key);
+                $this->getTemplate()->set_var("sSeguimientoTiposNombre", $value);
+                $this->getTemplate()->parse("ListaTipoDeSeguimientosBlock", true);
+            }
+            
             $filtro 		= array("s.usuarios_id"=>$oUsuario->getId());
             $iRecordsTotal 	= 0;
             $sOrderBy 		= null; 
@@ -70,6 +79,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
             		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
+           		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
+            }else{
+            	$this->getTemplate()->set_var("ListaDeSeguimientosBlock","");
+           		$this->getTemplate()->set_var("sNoRecords","No se encontraron seguimientos.");
+           		$this->getTemplate()->parse("NoRecordsListaDeSeguimientosBlock",false);
             }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
@@ -94,7 +108,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			}
 			$tipo 		= $this->getRequest()->getPost('tipoSeguimiento');
 			if($tipo!=""){
-				$filtro["p.tipoSeguimiento"] = $tipo;
+				$filtro["tipo"] = $tipo==1?"SCC":"PERSONALIZADO";
 			}
 			$dni 		= $this->getRequest()->getPost('dni');
 			if($dni!=""){
@@ -106,7 +120,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			}
 			$fechaCreacion 	= $this->getRequest()->getPost('fechaCreacion');
 			if($fechaCreacion!=""){
-				$filtro["s.fechaCreacion"] = $fechaCreacion;
+				$filtro["s.fechaCreacion"] = Utils::fechaAFormatoSQL($fechaCreacion);
 			}
             $iRecordsTotal 	= 0;
             $sOrderBy 		= null; 
@@ -123,6 +137,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
             		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
+           		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
+            }else{
+            	$this->getTemplate()->set_var("ListaDeSeguimientosBlock","");
+           		$this->getTemplate()->set_var("sNoRecords","No se encontraron seguimientos.");
+           		$this->getTemplate()->parse("NoRecordsListaDeSeguimientosBlock",false);
             }
             $this->getResponse()->setBody($this->getTemplate()->pparse('body', false));
             
@@ -187,12 +206,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iIniLimit 		= null;
             $iRecordCount 	= null;
             $listaSeguimientos  = SeguimientosController::getInstance()->listarSeguimientos($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
+            
             if(count($listaSeguimientos)>1){
-
+				$this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
+                $this->getJsonHelper()->sendJsonAjaxResponse(); 
+			 	return;
             }else if(count($listaSeguimientos)>0){
-                $listaSeguimientos[0]->getTipoSeguimiento();
+                if($listaSeguimientos[0]->getTipoSeguimientoId() == $iTipoSeguimiento){
+                	 $this->getJsonHelper()->setSuccess(false)->setMessage("No puede agregar 2 seguimientos del mismo tipo a una persona");
+                	 $this->getJsonHelper()->sendJsonAjaxResponse(); 
+                	 return;
+                }
             }
-            print_r($listaSeguimientos);exit;
 
             $sFrecuencias   = $this->getRequest()->getPost('frecuencias');
             $sDiaHorario    = $this->getRequest()->getPost('diaHorario');
