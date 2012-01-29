@@ -36,14 +36,18 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                               s.antecedentes as sAntecedentes,
                               s.pronostico as sPronostico,
                               s.fechaCreacion as dFechaCreacion,
-                              IF(sp.id IS NULL,'scc','pers') AS tipo
+                              IF(sp.id IS NULL,'SCC','PERSONALIZADO') as tipo
                         FROM
                             seguimientos s
                         LEFT JOIN
                             seguimientos_personalizados sp ON sp.id = s.id
                         LEFT JOIN
                             seguimientos_scc sscc ON s.id = sscc.id
-                        JOIN
+                       	JOIN
+							`discapacitados` d ON d.`id` = s.`discapacitados_id`
+						JOIN 
+							`personas` p ON p.`id` = d.`id`
+						JOIN
                             usuarios u ON u.id = s.usuarios_id ";
 
                 if(!empty($filtro)){
@@ -59,7 +63,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
                 if(empty($iRecordsTotal)){ return null; }
-
                 $aSeguimientos = array();
                 while($oObj = $db->oNextRecord()){
                     $oSeguimiento 			= new stdClass();
@@ -72,7 +75,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
                     $oSeguimiento->sPronostico      = $oObj->sPronostico;
                     $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
-                    if($oObj->tipo=='scc'){
+                    if($oObj->tipo=='SCC'){
                         $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
                     }else{
                         $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);

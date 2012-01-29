@@ -28,5 +28,8 @@ class SeguimientoSCC extends SeguimientoAbstract{
     public function getTipoSeguimiento(){
     	return "SCC";
     }
+    public function getTipoSeguimientoId(){
+    	return 1;
+    }
 }
 ?>

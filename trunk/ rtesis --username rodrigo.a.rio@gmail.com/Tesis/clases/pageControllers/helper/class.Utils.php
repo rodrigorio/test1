@@ -22,4 +22,23 @@ class Utils {
         return date($formato,$time);
     }
 
+    /**
+     * 
+     * Devuelve una fecha en formato valido para sql yyyy-mm-dd HH:MM:SS
+     * @param String $dFecha con formato:
+     * dd-mm-yyyy o dd/mm/yyyy
+     * @param boolean $time
+     */
+    public static function fechaAFormatoSQL($dFecha,$time = FALSE){
+    	$vFecha  = preg_split("/ /",$dFecha);
+		$vFechaD = preg_split("/(\/)|(-)/", $vFecha[0]);
+		$fechaForm = $vFechaD[2]."-".$vFechaD[1]."-".$vFechaD[0];
+		if($time){
+			$sTime	= $vFecha[1];
+			$fechaForm.= " ".$sTime;			
+		}	
+    	return $fechaForm;
+    }
+
+    
 }

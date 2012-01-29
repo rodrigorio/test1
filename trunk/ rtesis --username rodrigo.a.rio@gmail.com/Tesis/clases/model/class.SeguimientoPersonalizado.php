@@ -31,5 +31,9 @@ class SeguimientoPersonalizado extends SeguimientoAbstract {
     public function getTipoSeguimiento(){
     	return "PERSONALIZADO";
     }
+    
+	public function getTipoSeguimientoId(){
+    	return 2;
+    }
 }
 ?>
