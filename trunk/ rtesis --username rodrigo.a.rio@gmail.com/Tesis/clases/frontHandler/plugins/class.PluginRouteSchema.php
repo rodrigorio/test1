@@ -347,6 +347,14 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'agregar'
                                 ));
         $router->addRoute('seguimientosPersonasAgregar', $route);
+
+        $route = new RegexRoute('seguimientos/modificar-persona',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'personas',
+                                        'action'     => 'modificar'
+                                ));
+        $router->addRoute('seguimientosPersonasModificar', $route);
         
         $route = new RegexRoute('seguimientos/personas-procesar',
                                 array(

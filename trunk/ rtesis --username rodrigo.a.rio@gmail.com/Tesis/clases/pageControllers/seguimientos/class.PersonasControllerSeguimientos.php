@@ -40,10 +40,30 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         }
     }
 
+    public function modificar()
+    {
+        if($this->getRequest()->has("popUp")){
+            $this->mostrarFormularioPopUp();
+        }else{
+            $this->mostrarFormulario();
+        }
+    }
+
     private function mostrarFormularioPopUp()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/personas.gui.html", "popUpContent", "FormularioBlock");
+
+        if($this->getRequest()->getAction() == "agregar"){
+            $this->getTemplate()->unset_blocks("SubmitModificarPersonaBlock");
+        }else{
+            $iPersonaIdForm = $this->getRequest()->getParam('personaId');
+            if(empty($iPersonaIdForm)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+            $this->getTemplate()->unset_blocks("SubmitCrearPersonaBlock");
+        }
+        
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
