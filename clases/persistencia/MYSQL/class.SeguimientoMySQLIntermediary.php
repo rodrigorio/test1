@@ -36,7 +36,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                               s.antecedentes as sAntecedentes,
                               s.pronostico as sPronostico,
                               s.fechaCreacion as dFechaCreacion,
-                              IF(sp.id IS NULL,'SCC','PERSONALIZADO') as tipo
+                              IF(sp.id IS NULL,'SCC','PERSONALIZADO') as tipo,
+                              s.estado AS sEstado
                         FROM
                             seguimientos s
                         LEFT JOIN
@@ -51,7 +52,20 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                             usuarios u ON u.id = s.usuarios_id ";
 
                 if(!empty($filtro)){
-                    $sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
+                    $val='';
+                    if (array_key_exists('sp.id', $filtro)) {
+                        $val = $filtro['sp.id'];
+                        unset($filtro['sp.id']);
+                    }
+                    $sSQL .=" WHERE ";
+                    if($val!=""){
+                        if($val=="IS NULL"){
+                            $sSQL .=" sp.id IS NULL AND";
+                        }else{
+                            $sSQL .=" sp.id IS NOT NULL AND ";
+                        }
+                    }
+                    $sSQL .= $this->crearCondicionSimple($filtro);
                 }
                 if (isset($sOrderBy) && isset($sOrder)){
                     $sSQL .= " order by $sOrderBy $sOrder ";
@@ -65,6 +79,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 if(empty($iRecordsTotal)){ return null; }
                 $aSeguimientos = array();
                 while($oObj = $db->oNextRecord()){
+                   
                     $oSeguimiento 			= new stdClass();
                     $oSeguimiento->iId 		= $oObj->iId;
                     $oSeguimiento->oDiscapacitado   = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
@@ -75,14 +90,14 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
                     $oSeguimiento->sPronostico      = $oObj->sPronostico;
                     $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
+                    $oSeguimiento->sEstado          = $oObj->sEstado;
                     if($oObj->tipo=='SCC'){
                         $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
                     }else{
                         $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                     }
                 }
-
-                 return $aSeguimientos;
+                return $aSeguimientos;
 
             }catch(Exception $e){
                 throw new Exception($e->getMessage(), 0);

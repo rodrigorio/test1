@@ -330,7 +330,17 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'buscarSeguimientos'
                                 ));
         $router->addRoute('seguimientosSeguimientosBuscarSeguimiento', $route);
-        
+
+        $route = new RegexRoute('seguimientos/cambiar-estado-seguimientos',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'cambiarEstadoSeguimientos'
+                                ));
+        $router->addRoute('seguimientosSeguimientosCambiarEstadoSeguimiento', $route);
+
+
+
         //PERSONAS
         $route = new RegexRoute('seguimientos/personas',
                                 array(

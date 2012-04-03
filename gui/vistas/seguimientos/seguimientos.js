@@ -173,3 +173,22 @@ function buscarSeguimientos(){
             }
 	});
 }
+
+function cambiarEstadoSeguimiento(me, id){
+    if(confirm("Está seguro de cambiar el estado al seguimiento?")){
+        $.ajax({
+            url: "seguimientos/cambiarEstado-seguimientos",
+            type: "POST",
+            data:{
+                id	:id,
+                estado	: me.value
+            },
+            beforeSend: function(){
+                setWaitingStatus('listadoSeguimientos', true);
+            },
+            success: function(data){
+                setWaitingStatus('listadoSeguimientos', false);
+            }
+	});
+    }
+}

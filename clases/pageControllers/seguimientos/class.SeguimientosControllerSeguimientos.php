@@ -77,7 +77,24 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             		$this->getTemplate()->set_var("sSeguimientoTipo",$seguimiento->getTipoSeguimiento());
             		$this->getTemplate()->set_var("sSeguimientoPersonaDNI",$seguimiento->getDiscapacitado()->getNumeroDocumento());
             		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
-            		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
+
+                        $this->getTemplate()->set_var("sEstadoSeguimiento","Activo");
+                        if($seguimiento->getEstado()=="activo"){
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
+                        }else{
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
+                        }
+            		$this->getTemplate()->parse("EstadoSeguimientoBlock",false);
+            		$this->getTemplate()->set_var("sEstadoSeguimiento","Detenido");
+                          if($seguimiento->getEstado()=="detenido"){
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
+                        }else{
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
+                        }
+            		$this->getTemplate()->parse("EstadoSeguimientoBlock",true);
+
+
+                        $this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
            		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
             }else{
@@ -101,14 +118,14 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             
 			$oUsuario 	= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 			
-			$filtro 		= array("s.usuarios_id"=>$oUsuario->getId());
+			$filtro 	= array("s.usuarios_id"=>$oUsuario->getId());
 			$nombre 	= $this->getRequest()->getPost('nombre');
 			if($nombre!=""){
 				$filtro["p.nombre"] = $nombre;
 			}
 			$tipo 		= $this->getRequest()->getPost('tipoSeguimiento');
 			if($tipo!=""){
-				$filtro["tipo"] = $tipo==1?"SCC":"PERSONALIZADO";
+                            $filtro["sp.id"] = $tipo==1? "IS NULL" : "NOT NULL";
 			}
 			$dni 		= $this->getRequest()->getPost('dni');
 			if($dni!=""){
@@ -135,6 +152,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             		$this->getTemplate()->set_var("sSeguimientoTipo",$seguimiento->getTipoSeguimiento());
             		$this->getTemplate()->set_var("sSeguimientoPersonaDNI",$seguimiento->getDiscapacitado()->getNumeroDocumento());
             		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
+
+            		$this->getTemplate()->set_var("sEstadoSeguimiento","Activo");
+                        if($seguimiento->getEstado()=="activo"){
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
+                        }else{
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
+                        }
+            		$this->getTemplate()->parse("EstadoSeguimientoBlock",false);
+            		$this->getTemplate()->set_var("sEstadoSeguimiento","Detenido");
+                          if($seguimiento->getEstado()=="detenido"){
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
+                        }else{
+                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
+                        }
+            		$this->getTemplate()->parse("EstadoSeguimientoBlock",true);
+
             		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
            		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
