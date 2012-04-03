@@ -110,7 +110,12 @@
 <!--BeginListadoSeguimientosBlock-->
 <form action="" method="post" class="form_line">
     <div>
-            Estado <input type="text" name="seguimiento_estado" id="seguimiento_estado"/>
+            Estado
+             <select name="seguimiento_estado" id="seguimiento_estado">
+                  <option value="">Todos</option>
+                  <option value="activo">Activo</option>
+                  <option value="detenido">Detenido</option>
+             </select>
     </div>
     <div>
             Fecha de creacion
@@ -152,6 +157,7 @@
                <td>Dni</td>
                <td>Tipo</td>
                <td>FechaCreacion</td>
+               <td>Estado</td>
                <td>Ampliar</td>
                <td>Modificar</td>
            </tr>
@@ -162,6 +168,13 @@
                <td>{sSeguimientoPersonaDNI}</td>
                <td>{sSeguimientoTipo}</td>
                <td>{sSeguimientoFechaCreacion}</td>
+               <td>
+                    <select name="estado" id="estado" onchange="cambiarEstadoSeguimiento(this,{iSeguimientoId});">
+                        <!--BeginEstadoSeguimientoBlock-->
+                        <option value="{sEstadoSeguimiento}" {sSelectedEstadoSeguimiento}>{sEstadoSeguimiento}</option>
+                        <!--EndEstadoSeguimientoBlock-->
+                    </select>
+               </td>
                <td><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
                <!--BeginPermisoEditarSeguimientoBlock-->
                <td><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
