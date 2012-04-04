@@ -19,7 +19,8 @@ class PracticaMySQLIntermediary extends PracticaIntermediary
         }
         return self::$instance;
     }
-    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    }
     public function existe($filtro){}
     public function actualizarCampoArray($objects, $cambios){}
     public function insertar($objects){}

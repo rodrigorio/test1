@@ -125,7 +125,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			}
 			$tipo 		= $this->getRequest()->getPost('tipoSeguimiento');
 			if($tipo!=""){
-                            $filtro["sp.id"] = $tipo==1? "IS NULL" : "NOT NULL";
+                $filtro["sp.id"] = $tipo==1 ? "IS NULL" : "NOT NULL";
 			}
 			$dni 		= $this->getRequest()->getPost('dni');
 			if($dni!=""){
@@ -280,6 +280,35 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
             
             $res = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+            if($res){
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $this->getJsonHelper()->setSuccess(false);
+            }
+        }catch(Exception $e){
+           $this->getJsonHelper()->setSuccess(false);
+        }
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+    
+    public function cambiarEstadoSeguimientos(){
+    	 //si accedio a traves de la url muestra pagina 404
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $perfil 		= SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iIdSeguimiento = $this->getRequest()->getPost('id');
+            $sEstadoSeguimiento = $this->getRequest()->getPost('estado');
+            $iRecordsTotal	= 0;
+            $sOrderBy 		= null;
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $oSeguimiento 	= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+			$oSeguimiento->setEstado(strtolower($sEstadoSeguimiento));
+            $res 			= SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
             if($res){
                 $this->getJsonHelper()->setSuccess(true);
             }else{

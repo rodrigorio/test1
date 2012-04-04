@@ -50,6 +50,16 @@ class SeguimientosController
                 echo $e->getMessage();
         }
     }
+    public function getSeguimientoById($iId, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    	try{
+    		$filtro = array('s.id' => $iId);
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+          	$listaSeg = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
+          	return $listaSeg;
+        }catch(Exception $e){
+                echo $e->getMessage();
+        }
+    }
 /**
      *
      */
