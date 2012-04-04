@@ -177,7 +177,7 @@ function buscarSeguimientos(){
 function cambiarEstadoSeguimiento(me, id){
     if(confirm("Está seguro de cambiar el estado al seguimiento?")){
         $.ajax({
-            url: "seguimientos/cambiarEstado-seguimientos",
+            url: "seguimientos/cambiar-estado-seguimientos",
             type: "POST",
             data:{
                 id	:id,

@@ -24,8 +24,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         public final function obtenerSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
             try{
                 $db = clone($this->conn);
-                $filtro = $this->escapeStringArray($filtro);
-
                 $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                               s.id as iId,
                               s.discapacitados_id as iDiscapacitadoId,
@@ -65,6 +63,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                             $sSQL .=" sp.id IS NOT NULL AND ";
                         }
                     }
+                    $filtro = $this->escapeStringArray($filtro);
                     $sSQL .= $this->crearCondicionSimple($filtro);
                 }
                 if (isset($sOrderBy) && isset($sOrder)){
@@ -85,7 +84,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $oSeguimiento->oDiscapacitado   = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
                     $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
                     $oSeguimiento->sDiaHorario      = $oObj->sDiaHorario;
-                    //$oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                    $oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
                     $oSeguimiento->oUsuario         = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
                     $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
                     $oSeguimiento->sPronostico      = $oObj->sPronostico;
@@ -194,8 +193,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-     public function actualizar($oSeguimientoPersonalizado)
-    {
+     public function actualizar($oSeguimientoPersonalizado) {
         try{
 			$db = $this->conn;
 					
@@ -210,7 +208,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 				$discapacitadoId = null;
 			}
             if($oSeguimientoPersonalizado->getPractica()!= null){
-				$practicaId = $oSeguimientoPersonalizado->getpractica()->getId();
+				$practicaId = $oSeguimientoPersonalizado->getPractica()->getId();
 			}else {
 				$practicaId = null;
 			}
@@ -223,7 +221,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ".
+                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ".
+                    " estado= ".$db->escape($oSeguimientoPersonalizado->getEstado(), true) ." ".
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 
 			 $db->execSQL($sSQL);
@@ -231,14 +230,15 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			 // ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			 $diagnosticoPersonalizadoId = null;
 			 
-             $sSQL =" update seguimiento_personalizados ".
-                    " set diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT).", ".
+             $sSQL =" update seguimientos_personalizados ".
+                    " set diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." ".
 					" WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
 
 		}catch(Exception $e){
+			echo $e->getMessage();
             $db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -260,7 +260,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 				$discapacitadoId = null;
 			}
             if($oSeguimientoSCC->getPractica()!= null){
-				$practicaId = $oSeguimientoSCC->getpractica()->getId();
+				$practicaId = $oSeguimientoSCC->getPractica()->getId();
 			}else {
 				$practicaId = null;
 			}
@@ -273,7 +273,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ".
+                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) .", ".
+            		" estado= ".$db->escape($oSeguimientoSCC->getEstado(), true) ." ".
                     " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 
 			 $db->execSQL($sSQL);
@@ -281,7 +282,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			 // ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			 $diagnosticoSCCId = null;
 			 
-             $sSQL =" update seguimiento_scc ".
+             $sSQL =" update seguimientos_scc ".
                     " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
 					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
@@ -299,9 +300,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         try{
             if($oSeguimiento->getId() != null){
             	if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
-                    return $this->insertar($oSeguimiento);
+                    return $this->actualizar($oSeguimiento);
                  }else{
-            	return $this->actualizarSCC($oSeguimiento);
+            		return $this->actualizarSCC($oSeguimiento);
                  }
             }else{
                  if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
@@ -330,7 +331,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 				$discapacitadoId = null;
 			}
                         if($oSeguimientoPersonalizado->getPractica()!= null){
-				$practicaId = $oSeguimientoPersonalizado->getpractica()->getId();
+				$practicaId = $oSeguimientoPersonalizado->getPractica()->getId();
 			}else {
 				$practicaId = null;
 			}
