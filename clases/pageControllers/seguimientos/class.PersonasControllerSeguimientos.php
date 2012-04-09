@@ -83,7 +83,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
            
-            $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitado($iPersonaIdForm);
+            $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaIdForm);
 
             $moderacionPendiente = SeguimientosController::getInstance()->existeModeracionPendiente($oDiscapacitado);
             if($moderacionPendiente){
@@ -630,5 +630,81 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
     }
 
-    public function listar(){}
+    /**
+     * Se amplia la persona en popup porque no queremos paginas individuales para los
+     * discapacitados.
+     */
+    public function ver(){
+        $iPersonaIdForm = $this->getRequest()->getParam('personaId');
+        if(empty($iPersonaIdForm)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+        
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/personas.gui.html", "popUpContent", "FichaPersonaBlock");
+
+        $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaIdForm);
+
+        //extraigo los datos
+        $iTipoDocumentoId = $oDiscapacitado->getTipoDocumento();
+        $sNumeroDocumento = $oDiscapacitado->getNumeroDocumento();
+        $sSexo = $oDiscapacitado->getSexo();
+        $sNombre = $oDiscapacitado->getNombre();
+        $sApellido = $oDiscapacitado->getApellido();
+
+        $iPaisId = "";
+        $iProvinciaId = "";
+        $iCiudadId = "";
+        if(null != $oDiscapacitado->getCiudad()){
+            $iCiudadId = $oDiscapacitado->getCiudad()->getId();
+            if(null != $oDiscapacitado->getCiudad()->getProvincia()){
+            $iProvinciaId = $oDiscapacitado->getCiudad()->getProvincia()->getId();
+                if(null != $oDiscapacitado->getCiudad()->getProvincia()->getPais()){
+                    $iPaisId = $oDiscapacitado->getCiudad()->getProvincia()->getPais()->getId();
+                }
+            }
+        }
+
+        $sDomicilio = $oDiscapacitado->getDomicilio();
+        $sTelefono = $oDiscapacitado->getTelefono();
+        $sNombreApellidoPadre = $oDiscapacitado->getNombreApellidoPadre();
+        $sNombreApellidoMadre = $oDiscapacitado->getNombreApellidoMadre();
+        $sOcupacionPadre = $oDiscapacitado->getOcupacionPadre();
+        $sOcupacionMadre = $oDiscapacitado->getOcupacionMadre();
+        $sNombreHermanos = $oDiscapacitado->getNombreHermanos();
+
+        $iInstitucionId = "";
+        $sInstitucion = "";
+        if(null != $oDiscapacitado->getInstitucion()){
+            $iInstitucionId = $oDiscapacitado->getInstitucion()->getId();
+            $sInstitucion = $oDiscapacitado->getInstitucion()->getNombre();
+        }
+
+        $nacimientoDia = ""; $nacimientoPadreDia = ""; $nacimientoMadreDia = "";
+        $nacimientoMes = ""; $nacimientoPadreMes = ""; $nacimientoMadreMes = "";
+        $nacimientoAnio = ""; $nacimientoPadreAnio = ""; $nacimientoMadreAnio = "";
+        list($nacimientoAnio, $nacimientoMes, $nacimientoDia) = explode("-", $oDiscapacitado->getFechaNacimiento());
+        list($nacimientoPadreAnio, $nacimientoPadreMes, $nacimientoPadreDia) = explode("-", $oDiscapacitado->getFechaNacimientoPadre());
+        list($nacimientoMadreAnio, $nacimientoMadreMes, $nacimientoMadreDia) = explode("-", $oDiscapacitado->getFechaNacimientoMadre());
+
+        //foto de perfil actual
+        if(null != $oDiscapacitado->getFotoPerfil()){
+            $oFoto = $oDiscapacitado->getFotoPerfil();
+
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+
+            $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
+            $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
+
+            $this->getTemplate()->parse("FotoPerfilActualBlock");
+        }else{
+            $this->getTemplate()->unset_blocks("FotoPerfilActualBlock");
+        }
+
+        $this->getTemplate()->set_var("idPersonaVer", $iPersonaIdForm);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
 }

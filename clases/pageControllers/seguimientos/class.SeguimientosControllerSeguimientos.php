@@ -74,6 +74,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             	foreach ($listaSeguimientos as $seguimiento){
             		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
             		$this->getTemplate()->set_var("sSeguimientoPersona",$seguimiento->getDiscapacitado()->getNombreCompleto());
+                        $this->getTemplate()->set_var("iPersonaId",$seguimiento->getDiscapacitado()->getId());
             		$this->getTemplate()->set_var("sSeguimientoTipo",$seguimiento->getTipoSeguimiento());
             		$this->getTemplate()->set_var("sSeguimientoPersonaDNI",$seguimiento->getDiscapacitado()->getNumeroDocumento());
             		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
