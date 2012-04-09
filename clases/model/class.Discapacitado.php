@@ -12,13 +12,22 @@
 class Discapacitado extends PersonaAbstract
  {
     private $id;
- 	private $sNombreApellidoPadre;
+    private $sNombreApellidoPadre;
     private $sNombreApellidoMadre;
     private $dFechaNacimientoPadre;
     private $dFechaNacimientoMadre;
     private $sOcupacionPadre;
     private $sOcupacionMadre;
     private $sNombreHermanos;
+    /**
+     * Es una relacion de agregacion
+     * Puede ser una persona y que el usuario que la creo ya no exista
+     *
+     * Hacemos que se obtenga a demanda el objeto usuario porque
+     * se necesita en la minoria de los casos
+     */
+    private $oUsuario = null;
+    private $iUsuarioId;
     		
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -58,6 +67,26 @@ class Discapacitado extends PersonaAbstract
     public function getNombreHermanos(){
         return $this->sNombreHermanos;
     }
+
+    /*
+     * Objeto usuario se devuelve on demand
+     */
+    public function getUsuario(){
+    	if($this->oUsuario == null && !empty($this->iUsuarioId)){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($this->iUsuarioId);
+    	}
+        return $this->oUsuario;
+    }
+    public function setUsuario($oUsuario){
+        $this->oUsuario = $oUsuario;
+    }
+    public function setUsuarioId($iUsuarioId){
+        $this->iUsuarioId = $iUsuarioId;
+        if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        }
+    }
+    
     public function setId($iId){
         $this->iId = $iId;
     }
@@ -75,5 +104,11 @@ class Discapacitado extends PersonaAbstract
     }
     public function setNombreHermanos($sNombreHermanos){
         $this->sNombreHermanos = $sNombreHermanos;
+    }
+    public function setOcupacionPadre($sOcupacionPadre){
+        $this->sOcupacionPadre = $sOcupacionPadre;
+    }
+    public function setOcupacionMadre($sOcupacionMadre){
+        $this->sOcupacionMadre = $sOcupacionMadre;
     }
 }
