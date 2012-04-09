@@ -219,12 +219,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }
 
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($aInstituciones) == 1){
-                return $aInstituciones[0];
-            }else{
-                return $aInstituciones;
-            }
+            return $aInstituciones;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -332,8 +327,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sLatitud= $oObj->sLatitud;
             	$oInstitucion->sLongitud= $oObj->sLongitud;
             	$oInstitucion->oCiudad  = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
-            	$oInstitucion->oUsuario  = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
-            	$aInstituciones[]		= Factory::getInstitucionInstance($oInstitucion);
+            	$oInstitucion->oUsuario  = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+            	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }
 
           	return $aInstituciones;
@@ -357,8 +352,6 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
    
     public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{

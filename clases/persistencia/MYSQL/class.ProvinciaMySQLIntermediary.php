@@ -29,7 +29,7 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 	}
 	
 	public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-	 	try{
+        try{
             $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
@@ -46,16 +46,17 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 
             if(empty($iRecordsTotal)){ return null; }
 
-			$aProvincias = array();
+            $aProvincias = array();
             while($oObj = $db->oNextRecord()){
             	$oProvincia 		= new stdClass();
             	$oProvincia->iId 	= $oObj->iId;
             	$oProvincia->sNombre= $oObj->sNombre;
             	$filtroPais = array("p.id"=>$oObj->iPaisId);
             	$oProvincia->oPais= ComunidadController::getInstance()->getPaisById($filtroPais);
-            	$aProvincias[]		= Factory::getProvinciaInstance($oProvincia);
+            	$aProvincias[] = Factory::getProvinciaInstance($oProvincia);
             }
-          	return $aProvincias;
+
+            return $aProvincias;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -121,9 +122,6 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
-	}
-	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-		
 	}
 	
 	public function actualizarCampoArray($objects, $cambios){

@@ -153,8 +153,5 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 		}	
 	}
     
- 	public function actualizarCampoArray($objects, $cambios){}
- 	
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+ 	public function actualizarCampoArray($objects, $cambios){} 	
 }
-?>	

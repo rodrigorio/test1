@@ -224,27 +224,17 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoIntermediary
             	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
             	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
             	$oSeguimiento->oPractica = SeguimientoController::getInstance()->getPracticaById($Obj->iPracticaId);
-            	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($Obj->iUsuarioId);
+            	$oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($Obj->iUsuarioId);
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;
             	   	
             	$aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
             }
-
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($aSeguimientos) == 1){
-                return $aSeguimientos[0];
-            }else{
-                return $aSeguimientos;
-            }
+            
+            return $aSeguimientos;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-    }
-
-	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
-	
-	
-	  
+    }	  
 } 
