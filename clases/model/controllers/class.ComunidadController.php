@@ -62,7 +62,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->enviarInvitacion($oUsuario,Factory::getInvitadoInstance($oInvitado), $sDescripcion);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ class ComunidadController
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
             return $oPaisIntermediary->obtener($array, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
     /**
@@ -80,15 +80,14 @@ class ComunidadController
     public function getPaisById($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
-            $r = $oPaisIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
-       		if(count($r) == 1){
-                return $r[0];
+            $aPais = $oPaisIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            if(null !== $aPais){
+                return $aPais[0];
             }else{
-                return $r;
+                return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw new Exception($e->getMessage());
         }
     }
     public function listaProvinciasByPais($iPaisId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
@@ -97,7 +96,7 @@ class ComunidadController
             $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
             return $oProvinciaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -107,25 +106,24 @@ class ComunidadController
     public function getProvinciaById($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
-            $r = $oProvinciaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
-       		if(count($r) == 1){
-                return $r[0];
+            $aProvincia = $oProvinciaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            if(null !== $aProvincia){
+                return $aProvincia[0];
             }else{
-                return $r;
+                return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw new Exception($e->getMessage());
         }
     }
     
     public function listaCiudadByProvincia($iProvinciaId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
-            $filtro = array("c.provincia_id"=>$iProvinciaId);
+            $filtro = array("c.provincia_id" => $iProvinciaId);
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
             return $oCiudadIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -136,15 +134,14 @@ class ComunidadController
         try{
             $filtro = array('c.id' => $iId);
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
-            $r =  $oCiudadIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
-        	if(count($r) == 1){
-                return $r[0];
+            $aCiudad = $oCiudadIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            if(null !== $aCiudad){
+                return $aCiudad[0];
             }else{
-                return $r;
+                return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -154,16 +151,17 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->guardar($oInstitucion);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
-	public function borrarInstitucion($oInstitucion){
-    	try{
-			$oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+
+    public function borrarInstitucion($oInstitucion){
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->borrar($oInstitucion);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
     
     //ver lo del filtro Andres
@@ -172,7 +170,23 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-                echo $e->getMessage();
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function getInstitucionById($iInstitucionId){
+    	try{
+            $filtro = array('i.id' => $iInstitucionId);
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aInstitucion = $oInstitucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aInstitucion){
+                return $aInstitucion[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -181,7 +195,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
         }catch(Exception $e){
-                echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -190,7 +204,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->existe($filtro);
         }catch(Exception $e){
-           echo $e->getMessage();
+           throw new Exception($e->getMessage());
         }
     }
 
@@ -199,44 +213,10 @@ class ComunidadController
         $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
         return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
     }
-    
-    
-    public function guardarDiscapacitado($oDiscapacitado){
-    	try{
-			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            return $oDiscapacitadoIntermediary->guardar($oDiscapacitado);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
-    }
-	public function borrarDiscapacitado($oDiscapacitado){
-    	try{
-			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            return $oDiscapacitadoIntermediary->borrar($oDiscapacitado);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
-    }
-	public function obtenerDiscapacitado($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-    	try{
-			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            return $oDiscapacitadoIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
-    }
-	public function existeDiscapacitado($filtro){
-    	try{
-			$oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            return $oDiscapacitadoIntermediary->existe($filtro);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
-    }
-
+       
     /**
      * Sirve para determinar si un mail ya existe asociado a alguna cuenta de la db, independientemente del estado, perfil de usuario, etc.
      * Se puede pasar el id de usuario (se usa para no tener en cuenta el mail de la cuenta activa)
@@ -247,7 +227,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->existeMailDb($email, $userId);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }            
     }
 
@@ -259,7 +239,35 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $oUsuarioIntermediary->guardar($oUsuario);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Tiene que devolver null si el usuario no existe.
+     */
+    public function getUsuarioById($iUsuarioId){
+    	try{
+            $filtro = array('p.id' => $iUsuarioId);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aUsuario = $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aUsuario){
+                return $aUsuario[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function buscarUsuarios($filtro,$iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -365,9 +373,12 @@ class ComunidadController
                 return;
             }
             
-            $oArchivo = $oArchivoIntermediary->obtener($filtro, $iRecordsTotal);
-
-            return $oArchivo;
+            $aArchivo = $oArchivoIntermediary->obtener($filtro, $iRecordsTotal);
+            if(null !== $aArchivo){
+                return $aArchivo[0];
+            }else{
+                return false;
+            }
             
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -378,13 +389,11 @@ class ComunidadController
      *
      * @param array $aNombreArchivos 3 celdas con los nombres de los archivos ['nombreFotoGrande'] ['nombreFotoMediana'] ['nombreFotoChica']
      * @param string $pathServidor directorio donde estan guardadas las fotos
+     * @param PersonaAbstract puede ser tanto un discapacitado, un usuario o cualquiera que herede de persona
      */
-    public function guardarFotoPerfilUsuario($aNombreArchivos, $pathServidor)
+    public function guardarFotoPerfil($aNombreArchivos, $pathServidor, $oPersona)
     {
     	try{
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $usuario = $perfil->getUsuario();
-
             //creo el objeto Foto y lo guardo.
             $oFoto = new stdClass();
             $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
@@ -399,16 +408,16 @@ class ComunidadController
             $oFotoPerfil->setTipoPerfil();
 
             //si ya tenia foto de perfil borro la actual
-            if(null !== $usuario->getFotoPerfil())
+            if(null !== $oPersona->getFotoPerfil())
             {
-                $this->borrarFotoPerfilUsuario($usuario, $pathServidor);
+                $this->borrarFotoPerfil($oPersona, $pathServidor);
             }
 
-            //asociarlo al usuario en sesion
-            $usuario->setFotoPerfil($oFotoPerfil);
+            //asociarlo al objeto
+            $oPersona->setFotoPerfil($oFotoPerfil);
 
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
-            return $oFotoIntermediary->guardarFotoPerfil($usuario);
+            return $oFotoIntermediary->guardarFotoPerfil($oPersona);
 
         }catch(Exception $e){
             //si hubo error borro los archivos en disco
@@ -418,23 +427,23 @@ class ComunidadController
                     unlink($pathServidorArchivo);
                 }
             }
-            $usuario->setFotoPerfil(null);
+            $oPersona->setFotoPerfil(null);
             
             throw new Exception($e->getMessage());
         }        
     }
 
-    public function borrarFotoPerfilUsuario($usuario, $pathServidor)
+    public function borrarFotoPerfil($oPersona, $pathServidor)
     {
     	try{
-            if(null === $usuario->getFotoPerfil()){
+            if(null === $oPersona->getFotoPerfil()){
                 throw new Exception("El usuario no posee foto de perfil");
             }
 
-            $aNombreArchivos = $usuario->getFotoPerfil()->getArrayNombres();
+            $aNombreArchivos = $oPersona->getFotoPerfil()->getArrayNombres();
 
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
-            $oFotoIntermediary->borrar($usuario->getFotoPerfil());
+            $oFotoIntermediary->borrar($oPersona->getFotoPerfil());
 
             foreach($aNombreArchivos as $nombreServidorArchivo){
                 $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
@@ -443,7 +452,7 @@ class ComunidadController
                 }
             }
 
-            $usuario->setFotoPerfil(null);
+            $oPersona->setFotoPerfil(null);
             
         }catch(Exception $e){
             throw new Exception($e->getMessage());
