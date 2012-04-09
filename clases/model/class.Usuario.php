@@ -22,11 +22,6 @@ class Usuario extends PersonaAbstract
     private $oEspecialidad;
 
     /**
-     * Instancia de clase Foto
-     */
-    private $oFotoPerfil;
-
-    /**
      * Instancia de clase Archivo
      */
     private $oCurriculumVitae;
@@ -129,20 +124,9 @@ class Usuario extends PersonaAbstract
     public function getInvitacionesDisponibles(){
         return $this->iInvitacionesDisponibles;
     }
-    
-    public function getFotoPerfil(){
-        return $this->oFotoPerfil;
-    }    
+      
     public function getCurriculumVitae(){
         return $this->oCurriculumVitae;
-    }
-
-    public function getNombreAvatar($medium = false){
-        if(null == $this->oFotoPerfil){
-            return $medium ? "defaultAvatarMedium.png" : "defaultAvatarSmall.png";
-        }
-
-        return $medium ? $this->oFotoPerfil->getNombreMediumSize() : $this->oFotoPerfil->getNombreSmallSize();
     }
 
     ///////////////////////SETS//////////////////////////
@@ -190,10 +174,6 @@ class Usuario extends PersonaAbstract
         return $this;
     }
 
-    public function setFotoPerfil($oFotoPerfil){
-        $this->oFotoPerfil = $oFotoPerfil;
-        return $this;
-    }
     public function setCurriculumVitae($oCurriculumVitae){
         $this->oCurriculumVitae = $oCurriculumVitae;
         return $this;
