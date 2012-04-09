@@ -32,6 +32,11 @@ abstract class PersonaAbstract
     protected $sEmpresa;
     protected $sUniversidad;
     protected $sSecundaria;
+
+    /**
+     * Instancia de clase Foto
+     */
+    protected $oFotoPerfil;
     
     public function __construct(){}
 
@@ -102,7 +107,7 @@ abstract class PersonaAbstract
         $this->iInstitucionId = $iInstitucionId;
         if(!empty($iInstitucionId) && null !== $this->oInstitucion && $this->oInstitucion->getId() != $iInstitucionId){
             $filtro = array("i.id" => $iInstitucionId);
-            $this->oInstitucion = ComunidadController::getInstance()->obtenerInstitucion($filtro);
+            $this->oInstitucion = ComunidadController::getInstance()->getInstitucionById($this->iInstitucionId);
         }
     }
 
@@ -130,7 +135,11 @@ abstract class PersonaAbstract
         $this->sSecundaria = $sSecundaria;
     }
 
-    //.....faltan agegar los demas
+    public function setFotoPerfil($oFotoPerfil){
+        $this->oFotoPerfil = $oFotoPerfil;
+        return $this;
+    }
+   
     public function getId(){
         return $this->iId;
     }
@@ -196,8 +205,7 @@ abstract class PersonaAbstract
 
     public function getInstitucion(){
     	if($this->oInstitucion == null && !empty($this->iInstitucionId)){
-            $filtro = array("i.id" => $this->iInstitucionId);
-            $this->oInstitucion = ComunidadController::getInstance()->obtenerInstitucion($filtro);
+            $this->oInstitucion = ComunidadController::getInstance()->getInstitucionById($this->iInstitucionId);
     	}
         return $this->oInstitucion;
     }
@@ -224,5 +232,17 @@ abstract class PersonaAbstract
 
     public function getSecundaria(){
        	return $this->sSecundaria;
+    }
+
+    public function getFotoPerfil(){
+        return $this->oFotoPerfil;
+    }
+
+    public function getNombreAvatar($medium = false){
+        if(null == $this->oFotoPerfil){
+            return $medium ? "defaultAvatarMedium.png" : "defaultAvatarSmall.png";
+        }
+
+        return $medium ? $this->oFotoPerfil->getNombreMediumSize() : $this->oFotoPerfil->getNombreSmallSize();
     }
 }
