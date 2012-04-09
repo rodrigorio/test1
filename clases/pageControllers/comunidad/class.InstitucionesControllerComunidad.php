@@ -71,7 +71,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $oUsuario			= SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             if($this->getRequest()->getPost('id')!=""){
             	 $iRecordsTotal = 0;
             	 $sOrderBy=$sOrder=$iIniLimit=$iRecordCount=null;
