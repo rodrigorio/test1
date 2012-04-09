@@ -247,7 +247,7 @@ abstract class Intermediary
      * @param  array|null $filtro Tiene todos los campos por los que hay que filtrar, puede tener subarray si el filtro es complejo.
      *         $filtro['nombreCampo'] = valorFiltro. Si se pasa null por parametro el obtener() devuelve todos los objetos guardados en persistencia
      * @param  int $foundRows Si existe se pasa por referencia y asigna a la variable la cantidad de filas resultantes de la consulta
-     * @return array|StdClass|null El tipo de objeto que devuelve depende de la clase de model con la que trabaje el Intermediary.
+     * @return array|null El tipo de objeto que devuelve depende de la clase de model con la que trabaje el Intermediary.
      * @throws Exception si hubo error en el metodo
      */
     abstract public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
@@ -298,17 +298,4 @@ abstract class Intermediary
      * @throws Exception si hubo error en la consulta
      */
     abstract public function borrar($objects);
-
-    /**
-     * Metodo utilizado en las busquedas que se realizan desde las vistas: listados, formularios, etc.
-     *
-     * Para crear las condiciones de busqueda en el WHERE utilizar las funciones de esta misma clase, por ejemplo:
-     *
-     * @param array $args Todos los argumentos de busqueda: fechas, valores desde combos, inputs y textarea.
-     *              Puede tener subArray de valores si el name del $_POST por ejemplo es un array.
-     *              Puede recibir arrays creados por el controlador, o parametros desde HttpRequest POST GET REQUEST etc etc.
-     *              La estructura del array es $['nombreArgumentoBusqueda'][{sub array opcional}] = $valor (string|int|date|etc)
-     */
-    abstract public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
 }
-?>
