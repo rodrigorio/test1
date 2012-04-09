@@ -1,75 +1,102 @@
-$(document).ready(function(){
-   
-    var validateFormSeguimiento = {
-            errorElement: "div",
-            validClass: "correcto",
-            onfocusout: false,
-            onkeyup: false,
-            onclick: false,
-            focusInvalid: false,
-            focusCleanup: true,
-            errorPlacement:function(error, element){
-                error.appendTo(".msg_"+element.attr("id"));
-            },
-             highlight: function(element){},
-            unhighlight: function(element){},
-            rules:{
-                personaId:{required:true},
-                tipoPractica:{required:true},
-                tipoSeguimiento:{required:true}
-            },
-            messages:{
-                personaId:{
-                        required: mensajeValidacion("requerido")
-                },
-                tipoPractica:{
-                        required: mensajeValidacion("requerido")
-                },
-                tipoSeguimiento:{
-                        required: mensajeValidacion("requerido")
-                }
-            }
+var validateFormSeguimiento = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        personaId:{required:true},
+        tipoPractica:{required:true},
+        tipoSeguimiento:{required:true}
+    },
+    messages:{
+        personaId:{
+                required: mensajeValidacion("requerido")
+        },
+        tipoPractica:{
+                required: mensajeValidacion("requerido")
+        },
+        tipoSeguimiento:{
+                required: mensajeValidacion("requerido")
         }
-        $("#formCrearSeguimiento").validate(validateFormSeguimiento);
-    
-	var optionsAjaxFormSeguimiento = {
-                dataType: 'jsonp',
-                resetForm: false,
-                url: 	"seguimientos/procesar-seguimiento",
-                beforeSerialize: function($form, options){
-                    if($("#formCrearSeguimiento").valid() == true){
-                        $('#msg_form_crearSeguimiento').hide();
-                        $('#msg_form_crearSeguimiento').removeClass("correcto").removeClass("error");
-                        $('#msg_form_crearSeguimiento .msg').html("");
-                        //setWaitingStatus('formInfoBasica', true);
-                    }else{
-                        return false;
-                    }
-                },
+    }
+}
 
-                success:function(data){
-                    setWaitingStatus('formCrearSeguimiento', false);
-                    if(data.success == undefined || data.success == 0){
-                        $('#msg_form_crearSeguimiento .msg').html(data.mensaje);
-                        $('#msg_form_crearSeguimiento').addClass("error").fadeIn('slow');
-                    }else{
-                        $('#msg_form_crearSeguimiento .msg').html(lang['exito procesar']);
-                        $('#msg_form_crearSeguimiento').addClass("correcto").fadeIn('slow');
-                        $('#formCrearSeguimiento input[type=text],#formCrearSeguimiento select,#formCrearSeguimiento textarea').val("");
-                        $("#persona").removeClass("selected");
-                        $("#persona").removeAttr("readonly");
-                        $("#persona").val("");
-                        $("#personaId").val("");
-                        ocultarElemento($('#persona_clean'));
-                    }
-                }
-            };
-            
-	$("#formCrearSeguimiento").ajaxForm(optionsAjaxFormSeguimiento);
+var optionsAjaxFormSeguimiento = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 	"seguimientos/procesar-seguimiento",
+    beforeSerialize: function($form, options){
+        if($("#formCrearSeguimiento").valid() == true){
+            $('#msg_form_crearSeguimiento').hide();
+            $('#msg_form_crearSeguimiento').removeClass("correcto").removeClass("error");
+            $('#msg_form_crearSeguimiento .msg').html("");
+            //setWaitingStatus('formInfoBasica', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formCrearSeguimiento', false);
+        if(data.success == undefined || data.success == 0){
+            $('#msg_form_crearSeguimiento .msg').html(data.mensaje);
+            $('#msg_form_crearSeguimiento').addClass("error").fadeIn('slow');
+        }else{
+            $('#msg_form_crearSeguimiento .msg').html(lang['exito procesar']);
+            $('#msg_form_crearSeguimiento').addClass("correcto").fadeIn('slow');
+            $('#formCrearSeguimiento input[type=text],#formCrearSeguimiento select,#formCrearSeguimiento textarea').val("");
+            $("#persona").removeClass("selected");
+            $("#persona").removeAttr("readonly");
+            $("#persona").val("");
+            $("#personaId").val("");
+            ocultarElemento($('#persona_clean'));
+        }
+    }
+};
+
+function buscarSeguimientos(){
+    var estadoSeg = $("#seguimiento_estado").val();
+    var fechaCreacionSeg = $("#seguimiento_fechaCreacion").val();
+    var nombrePersonaSeg = $("#seguimiento_nombrePersona").val();
+    var dniPersonaSeg = $("#seguimiento_dniPersona").val();
+    var tipoSeg = $("#tipoSeguimiento").val();
+    $.ajax({
+        url: "seguimientos/buscar-seguimientos",
+        type: "POST",
+
+        data:{
+            limit	:12,
+            estado	: estadoSeg,
+            fechaCreacion: fechaCreacionSeg,
+            nombre	: nombrePersonaSeg,
+            dni		: dniPersonaSeg,
+            tipoSeguimiento: tipoSeg
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoSeguimientos', true);
+        },
+        success: function(data){
+            $("#listadoSeguimientos").html(data);
+            setWaitingStatus('listadoSeguimientos', false);
+        }
+    });
+}
+
+$(document).ready(function(){   
+    $("#formCrearSeguimiento").validate(validateFormSeguimiento);
+    $("#formCrearSeguimiento").ajaxForm(optionsAjaxFormSeguimiento);
 
     $("#agregarPersona").live('click',function(){
-
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
+        $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
         
         var dialog = $("#dialog");
         if ($("#dialog").length == 0){ dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body'); }
@@ -134,6 +161,15 @@ $(document).ready(function(){
                 revelarElemento($('#persona_clean'));
             }
         }
+    });
+
+    //para borrar la institucion seleccionada con el autocomplete
+    $('#persona_clean').click(function(){
+        $("#persona").removeClass("selected");
+        $("#persona").removeAttr("readonly");
+        $("#persona").val("");
+        $("#personaId").val("");
+        ocultarElemento($(this));
     });
     
 });
