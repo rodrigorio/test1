@@ -144,8 +144,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(isset($filtro['p.documento_tipos_id']) && $filtro['p.documento_tipos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.documento_tipos_id', $filtro['p.documento_tipos_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['p.contrasenia']) && $filtro['p.contrasenia']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.contrasenia', $filtro['p.contrasenia']);
+            if(isset($filtro['u.contrasenia']) && $filtro['u.contrasenia']!=""){
+                $WHERE[] = $this->crearFiltroTexto('u.contrasenia', $filtro['u.contrasenia']);
             }
             if(isset($filtro['p.email']) && $filtro['p.email']!=""){
                 $WHERE[] = $this->crearFiltroTexto('p.email', $filtro['p.email']);
