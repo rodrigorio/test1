@@ -473,7 +473,7 @@ p .destacado{font-weight:bold;}
 .marca_obligatorio{color:red; font-size:12px; font-weight:bold;}
 
 .disabled, .ajaxdelay *{opacity:0.5; filter:alpha(opacity = 40)}
-.disabled{color:#AAA !important}
+.disabled{color:#AAA !important; cursor:default !important;}
 /* si el contenedor no tiene position relative va a parar a la punta de la pantalla (no esta mal, se puede usar) */
 #ajax_loading{position:absolute; top:10px; right:10px; background-repeat:no-repeat; background-position:center 25%; z-index:101; opacity:1 !important; filter:alpha(opacity = 100) !important}
 .ajax_wait30{height:27px; width:28px; background-image:url("../images/iconos/wait30trans.gif");}
