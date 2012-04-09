@@ -374,6 +374,14 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('seguimientosPersonasProcesar', $route);
 
+        $route = new RegexRoute('seguimientos/ver-persona',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'personas',
+                                        'action'     => 'ver'
+                                ));
+        $router->addRoute('seguimientosPersonasVer', $route);
+
 
         ////////////////////////////////////
         ////// RUTAS MODULO ADMIN //////////
