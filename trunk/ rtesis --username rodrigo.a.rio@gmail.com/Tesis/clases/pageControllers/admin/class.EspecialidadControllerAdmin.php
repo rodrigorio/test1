@@ -262,7 +262,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
 			$sOrderBy		= null;	
 			$sOrder			= null;
 			$iRecordsTotal	= 0;
-            $vEspecialidad 	= AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $vEspecialidad = AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
             if(count($vEspecialidad)>0){
             	$i=0;
 	            foreach ($vEspecialidad as $oEspecialidad){
