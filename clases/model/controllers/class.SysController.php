@@ -87,7 +87,7 @@ class SysController
      */
     public function loginUsuario($nroDocumento, $sContrasenia, $tipoDocumento = 1){
         try{
-            $filtro = array('documento_tipos_id' => $tipoDocumento, 'numeroDocumento' => $nroDocumento, 'contrasenia' => $sContrasenia);
+            $filtro = array('p.documento_tipos_id' => $tipoDocumento, 'p.numeroDocumento' => $nroDocumento, 'u.contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $iRecordsTotal = 0;
             $aUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
