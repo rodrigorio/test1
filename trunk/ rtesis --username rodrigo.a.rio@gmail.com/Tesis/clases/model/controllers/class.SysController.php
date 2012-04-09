@@ -90,8 +90,9 @@ class SysController
             $filtro = array('documento_tipos_id' => $tipoDocumento, 'numeroDocumento' => $nroDocumento, 'contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $iRecordsTotal = 0;
-            $oUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
-            if(null !== $oUsuario){
+            $aUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
+            if(null !== $aUsuario){
+                $oUsuario = $aUsuario[0];
                 $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
                 $oPerfil->iniciarPermisos();
                 SessionAutentificacion::getInstance()->cargarAutentificacion($oPerfil)
@@ -113,22 +114,6 @@ class SysController
         }
     }
    
-    public function getUsuarioById($iId){
-        try{
-            $filtro = array('u.id' => $iId);
-            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            $iRecordsTotal = 0;
-            return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal,null,null,null,null);
-        }catch (Exception $e){}
-    }
-
-    public function buscarUsuarios($filtro,$iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-        try{
-            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->buscar($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
-        }catch (Exception $e){}
-    }
-
     /**
      * Devuelve el estado de privacidad para un dato de un usuario
      * @return string en la DB es un enum puede ser uno de tres 'comunidad' 'privado' 'publico'
