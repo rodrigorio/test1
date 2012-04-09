@@ -118,6 +118,35 @@ $(document).ready(function(){
         );
         return false;
     });
+
+    $(".verPersona").live('click',function(){
+        
+        $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
+
+        var dialog = $("#dialog");
+        if ($("#dialog").length == 0){ 
+            dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
+        }else{
+            $("#ui-dialog-title-dialog").html($(this).html());
+        }
+
+        dialog.load(
+            "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:650,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                bindEventsPersonaForm(); //la funcion esta en personas.js
+            }
+        );
+        return false;
+    });
     
     $("#persona").autocomplete({
         source:function(request, response){
