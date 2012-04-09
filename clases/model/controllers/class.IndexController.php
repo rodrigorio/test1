@@ -65,6 +65,7 @@ class IndexController
 			echo $e->getMessage();
 		}
     }
+    
     /**
      * @param string $token
      */
@@ -73,8 +74,10 @@ class IndexController
             $request = FrontController::getInstance()->getRequest();
             $filtro = array('u.nombre' => $sNombreUsuario, 'p.email' =>  $sEmail);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            $oUsuario = $oUsuarioIntermediary->obtener($filtro);
-            if($oUsuario){
+            $iRecordsTotal = 0;
+            $aUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
+            if($aUsuario !== null){
+                $oUsuario = $aUsuario[0];
             	$oNuevoPass = $oUsuarioIntermediary->guardarNuevaContrasenia($oUsuario->getId());
             	if($oNuevoPass){
 	            	$asunto = "Recuperaci�n de contrase�a";
