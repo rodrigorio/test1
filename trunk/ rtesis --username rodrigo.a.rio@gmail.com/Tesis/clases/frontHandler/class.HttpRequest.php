@@ -195,9 +195,19 @@ class HttpRequest
     /**
      * Imprime el contenido del objeto para pruebas, etc
      */
-    public function imprimirContenido()
+    public function imprimirContenido($exit = false)
     {
         echo "<pre>"; print_r($this); echo "</pre>";
+        if ($exit){ exit(); }
+    }
+
+    /**
+     * Imprime el contenido del array en $_POST
+     */
+    public function imprimirPost($exit = false)
+    {
+        echo "<pre>"; print_r($this->getPost()); echo "</pre>";
+        if ($exit){ exit(); }
     }
 
     /**
@@ -254,7 +264,7 @@ class HttpRequest
         }
     }	
 	
-	/**
+    /**
      * Check to see if a property is set
      *
      * @param string $key
