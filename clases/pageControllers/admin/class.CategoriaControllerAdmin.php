@@ -262,7 +262,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
 			$sOrderBy		= null;	
 			$sOrder			= null;
 			$iRecordsTotal	= 0;
-            $vCategoria 	= AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $vCategoria = AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
             if(count($vCategoria)>0){
             	$i=0;
 	            foreach ($vCategoria as $oCategoria){
