@@ -276,7 +276,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
 
                 try{
-                    ComunidadController::getInstance()->guardarFotoPerfilUsuario($aNombreArchivos, $pathServidor);
+                    ComunidadController::getInstance()->guardarFotoPerfil($aNombreArchivos, $pathServidor, $usuario);
 
                     $oFoto = $usuario->getFotoPerfil();
 
