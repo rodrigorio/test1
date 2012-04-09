@@ -47,6 +47,5 @@ class DocumentoTiposMySQLIntermediary extends DocumentoTiposIntermediary
     public function insertar($objects){}
     public function guardar($object){}
     public function borrar($objects){}
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
 

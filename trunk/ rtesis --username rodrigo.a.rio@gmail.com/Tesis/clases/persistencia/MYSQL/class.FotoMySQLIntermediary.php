@@ -20,14 +20,17 @@ class FotoMySQLIntermediary extends FotoIntermediary
         }
         return self::$instance;
     }
-    
-    public function guardarFotoPerfil($oUsuario)
+
+    /**
+     * Todos los que heredan de persona tienen foto de perfil
+     */
+    public function guardarFotoPerfil(PersonaAbstract $oPersona)
     {
-        $iIdUsuario = $oUsuario->getId();
-        if(null !== $oUsuario->getFotoPerfil()->getId()){
-            return $this->actualizar($oUsuario->getFotoPerfil());
+        if(null !== $oPersona->getFotoPerfil()->getId()){
+            return $this->actualizar($oPersona->getFotoPerfil());
         }else{
-            return $this->insertarAsociado($oUsuario->getFotoPerfil(), $iIdUsuario, get_class($oUsuario));
+            $iId = $oPersona->getId();
+            return $this->insertarAsociado($oPersona->getFotoPerfil(), $iId, get_class($oPersona));
         }        
     }
 
@@ -99,6 +102,7 @@ class FotoMySQLIntermediary extends FotoIntermediary
                 case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "SeguimientoSCC": $sSQL .= "seguimientos_id = ".$iIdItem.", "; break;
                 case "SeguimientoPersonalizado": $sSQL .= "seguimientos_id = ".$iIdItem.", "; break;
+                case "Discapacitado": $sSQL .= "personas_id = ".$iIdItem.", "; break;
                 case "Usuario": $sSQL .= "personas_id = ".$iIdItem.", "; break;
                 case "Categoria": $sSQL .= "categorias_id = ".$iIdItem.", "; break;
             }
@@ -128,6 +132,4 @@ class FotoMySQLIntermediary extends FotoIntermediary
     public function actualizarCampoArray($objects, $cambios){}
     public function insertar($objects){}
     public function guardar($object){}
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
-?>

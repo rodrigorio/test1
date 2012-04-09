@@ -49,7 +49,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
 
             if(empty($iRecordsTotal)){ return null; }
 
-			$aPaises = array();
+            $aPaises = array();
             while($oObj = $db->oNextRecord()){
             	$oPais 			= new stdClass();
             	$oPais->iId 	= $oObj->iId;
@@ -57,7 +57,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
             	$oPais->sCodigo	= $oObj->sCodigo;
             	$aPaises[]		= Factory::getPaisInstance($oPais);
             }
-
+            
             return $aPaises;
 
         }catch(Exception $e){
@@ -117,11 +117,7 @@ class PaisMySQLIntermediary extends PaisIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-	
-	public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
 		
-	}
-	
 	public function actualizarCampoArray($objects, $cambios){
 		
 	}

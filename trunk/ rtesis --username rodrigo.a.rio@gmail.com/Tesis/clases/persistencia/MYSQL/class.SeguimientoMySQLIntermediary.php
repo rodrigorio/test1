@@ -173,7 +173,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
             	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
             	$oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
-            	$oSeguimiento->oUsuario = SysController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+            	$oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;
             	$oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
@@ -182,12 +182,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             	$aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
             }
 
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento o 0 devuelvo el array.
-            if(count($aSeguimientos) == 1){
-                return $aSeguimientos[0];
-            }else{
-                return $aSeguimientos;
-            }
+            return $aSeguimientos;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -473,9 +468,7 @@ public function borrarSCC($oSeguimientoSCC) {
 		}
 	}
 
-    public function actualizarCampoArray($objects, $cambios){}
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
-	
+    public function actualizarCampoArray($objects, $cambios){}    
 }
 
 	

@@ -209,12 +209,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $aArchivos[] = $oArchivo;
             }
 
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento devuelvo el array.
-            if(count($aArchivos) == 1){
-                return $aArchivos[0];
-            }else{
-                return $aArchivos;
-            }
+            return $aArchivos;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -225,5 +220,4 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
     public function actualizarCampoArray($objects, $cambios){}
     public function insertar($objects){}
     public function guardar($object){}
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }

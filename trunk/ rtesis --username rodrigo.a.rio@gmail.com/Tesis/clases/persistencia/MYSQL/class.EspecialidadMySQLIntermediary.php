@@ -55,6 +55,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
                 }
 
                 return $aEspecialidades;
+
             }catch(Exception $e){
                 throw new Exception($e->getMessage(), 0);
             }
@@ -120,8 +121,6 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
 			return false;
 		}
 	}
-
-    public function buscar($args, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 
     public function existe($filtro){}
 
@@ -197,4 +196,3 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
         }
     }
 }
-?>	
