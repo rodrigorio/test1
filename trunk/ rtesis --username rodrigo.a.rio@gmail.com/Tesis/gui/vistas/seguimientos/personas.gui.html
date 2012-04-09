@@ -8,6 +8,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/seguimientos/personas.js");
@@ -18,12 +19,12 @@
 <div class="tabs01 pato2" id="tabsFormPersona">
     <div class="tabs pale2 grupo" >
         <ul class="toggleTabs">
-            <li class="" id="tabFormularioPersona"><a href="#tabFormularioPersona">Formulario Persona</a></li>
-            <li class="" id="tabFotoPerfilPersona"><a href="#tabFormularioFotoPerfil">Foto de Perfil</a></li>
+            <li><a id="tabFormPersona" href="#tabFormPersonaContent">Formulario Persona</a></li>
+            <li><a id="tabFotoPerfil" href="#tabFormFotoPerfilContent">Foto de Perfil</a></li>
         </ul>
     </div>
 
-    <div class="tabContent pa2 grupo" id="tabFormularioPersona">
+    <div class="tabContent pa2 grupo" id="tabFormPersonaContent">
         <form id="formPersona" name="formPersona" action="" method="post">
 
             <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -42,6 +43,19 @@
                     </select>
                 </div>
                 <input style="width:200px" class="defVal co" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="{sNumeroDocumento}" />
+            </div>
+
+            <div class="form_line msg_sexo">
+                <label for="sexo">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Sexo
+                </label>
+                <div class="cl_le"></div>
+                <select style="width:150px" name="sexo" id="sexo" title="Sexo">
+                    <option value="">Elija Sexo:</option>
+                    <option {sSelectedMasculino} value="m">Masculino</option>
+                    <option {sSelectedFemenino} value="f">Femenino</option>
+                </select>
             </div>
 
             <div class="form_line msg_nombre">
@@ -270,8 +284,8 @@
 
             <!--BeginSubmitCrearPersonaBlock-->
             <div class="fl_le iveal">
-                <label for="submitFormPersona" class="button buttonConfirm buttonLarge mari3">
-                    <button id="crearPersona" type="submit" name="submitFormPersona" id="submitFormPersona" class="btn01">
+                <label for="crearPersona" class="button buttonConfirm buttonLarge mari3">
+                    <button id="crearPersona" type="submit" name="crearPersona" class="btn01">
                         Crear Persona
                     </button>
                 </label>
@@ -280,8 +294,8 @@
 
             <!--BeginSubmitModificarPersonaBlock-->
             <div class="fl_le iveal">
-                <label for="submitFormPersona" class="button buttonConfirm buttonLarge mari3">
-                    <button id="crearPersona" type="submit" name="submitFormPersona" id="submitFormPersona" class="btn01">
+                <label for="modificarPersona" class="button buttonConfirm buttonLarge mari3">
+                    <button id="modificarPersona" type="submit" name="modificarPersona" class="btn01">
                         Modificar Persona
                     </button>
                 </label>
@@ -292,18 +306,18 @@
         </form>
     </div>
     
-    <div class="tabContent pa2 grupo" id="tabFormularioFotoPerfil">
+    <div class="tabContent pa2 grupo" id="tabFormFotoPerfilContent">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
         
         <div id="contFotoPerfilActual">
-        <!--BeginFotoPerfilActualBlock-->
-        <div id="fotoPerfilActual" class="mabo3">
-            <h2 class="mabo3">Foto Actual</h2>
-            <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
-                <i style="background-image:url('{scrFotoPerfilActual}')"></i>
-            </a>
-        </div>
-        <!--EndFotoPerfilActualBlock-->
+            <!--BeginFotoPerfilActualBlock-->
+            <div id="fotoPerfilActual" class="mabo3">
+                <h2 class="mabo3">Foto Actual</h2>
+                <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
+                    <i style="background-image:url('{scrFotoPerfilActual}')"></i>
+                </a>
+            </div>
+            <!--EndFotoPerfilActualBlock-->
         </div>
 
         <h2 class="mabo3">Suba un archivo desde su equipo</h2>
