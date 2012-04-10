@@ -118,7 +118,7 @@ $(document).ready(function(){
         );
         return false;
     });
-
+    
     $(".verPersona").live('click',function(){
         
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
@@ -136,13 +136,13 @@ $(document).ready(function(){
             function(responseText, textStatus, XMLHttpRequest){
                 dialog.dialog({
                     position:['center', '20'],
-                    width:650,
+                    width:450,
                     resizable:false,
                     draggable:false,
                     modal:false,
                     closeOnEscape:true
                 });
-                bindEventsPersonaForm(); //la funcion esta en personas.js
+                bindEventsPersonaVerFicha(); //la funcion esta en personas.js
             }
         );
         return false;
