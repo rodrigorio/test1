@@ -109,44 +109,57 @@
 <!--EndFormularioBlock-->
 
 <!--BeginListadoSeguimientosBlock-->
-<form action="" method="post" class="form_line">
-    <div>
-            Estado
-             <select name="seguimiento_estado" id="seguimiento_estado">
-                  <option value="">Todos</option>
-                  <option value="activo">Activo</option>
-                  <option value="detenido">Detenido</option>
-             </select>
+<div class="ficha01 grupo mabo2">
+    <div class="encabezado">
+        <div class="izq">
+            <div class="icono"><span class="i32 bs search32"></span></div>
+            <span class="titulo">Buscar Seguimientos</span><br>
+            <span class="subtitulo">filtrar los resultados del listado</span>
+        </div>
+        <div class="der"></div>
     </div>
-    <div>
-            Fecha de creacion
-       <input type="text" name="seguimiento_fechaCreacion" id="seguimiento_fechaCreacion"/>
+    <div class="contenido">
+        <form action="" method="post">
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Estado</span>
+                <select name="seguimiento_estado" id="seguimiento_estado">
+                      <option value="">Todos</option>
+                      <option value="activo">Activo</option>
+                      <option value="detenido">Detenido</option>
+                 </select>
+            </div>
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Fecha de creacion</span>
+               <input type="text" name="seguimiento_fechaCreacion" id="seguimiento_fechaCreacion"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Nombre de la persona</span>
+               <input type="text" name="seguimiento_nombrePersona" id="seguimiento_nombrePersona"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Dni de la persona</span>
+               <input type="text" name="seguimiento_dniPersona" id="seguimiento_dniPersona"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Tipo de Seguimiento</span>
+               <select class="defVal requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
+                            <option value="">Selecciones un tipo</option>
+                            <!--BeginListaTipoDeSeguimientosBlock-->
+                            <option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
+                            <!--EndListaTipoDeSeguimientosBlock-->
+               </select>
+            </div>
+
+            <br clear="all" />
+            
+            <label for="BuscarSeguimiento" class="button buttonConfirm buttonLarge mari3">
+                <button id="buscarSeguimiento" type="button" name="buscarSeguimiento" class="btn01" onclick="buscarSeguimientos();">
+                    Buscar Seguimiento
+                </button>
+            </label>
+        </form>
     </div>
-    <div>
-            Nombre de la persona
-       <input type="text" name="seguimiento_nombrePersona" id="seguimiento_nombrePersona"/>
-    </div>
-    <div>
-            Dni de la persona
-       <input type="text" name="seguimiento_dniPersona" id="seguimiento_dniPersona"/>
-    </div>
-    <div>
-    Tipo de Seguimiento
-       <select class="defVal requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
-                    <option value="">Selecciones un tipo</option>
-                    <!--BeginListaTipoDeSeguimientosBlock-->
-                    <option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
-                    <!--EndListaTipoDeSeguimientosBlock-->
-       </select>
-    </div>
-    <div>
-        <label for="BuscarSeguimiento" class="button buttonConfirm buttonLarge mari3">
-            <button id="buscarSeguimiento" type="button" name="buscarSeguimiento" class="btn01" onclick="buscarSeguimientos();">
-                Buscar Seguimiento
-            </button>
-        </label>
-    </div>
-</form>
+</div>
 
     <!--BeginGrillaSeguimientoBlock-->
     <div id="listadoSeguimientos" class="po_re">
