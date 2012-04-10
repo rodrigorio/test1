@@ -361,8 +361,6 @@ function bindEventsPersonaForm(){
 
 function bindEventsPersonaVerFicha()
 {
-    $("a[rel^='prettyPhoto']").prettyPhoto();
-
     $("#modificarPersona").live('click',function(){
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
 
@@ -370,10 +368,9 @@ function bindEventsPersonaVerFicha()
         if ($("#dialog").length == 0){
             dialog = $('<div id="dialog" title="Modificar Persona"></div>').appendTo('body');
         }else{
-            dialog.attr("title", "Modificar Persona");
+            $("#ui-dialog-title-dialog").html("Modificar Persona");
         }
-        
-        dialog.hide("slow");
+
         dialog.load(
             "seguimientos/modificar-persona?popUp=1&personaId="+$(this).attr('rel'),
             {},
@@ -382,7 +379,7 @@ function bindEventsPersonaVerFicha()
                     position:['center', '20'],
                     width:650,
                     resizable:false,
-                    draggable:false,
+                    draggable:true,
                     modal:false,
                     closeOnEscape:true
                 });
