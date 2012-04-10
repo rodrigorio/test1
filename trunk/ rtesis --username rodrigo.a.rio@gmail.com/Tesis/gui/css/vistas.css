@@ -214,7 +214,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #frameComunidad01 #page #pageRight{position:relative; margin-left:235px}
 #frameComunidad01 #page .pageRightExpanded{margin-left:10px !important;}
 #frameComunidad01 #page #pageLeft #pageMenuTopLeft{min-height:22px; padding:5px 10px;}
-#frameComunidad01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:5px 10px; position:relative;}
+#frameComunidad01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:5px 10px; position:relative; overflow:auto;}
 #frameComunidad01 #page #pageRight #pageMenuTopRight #togleInnerCont{position:absolute; top:8px; right:10px;}
 #frameComunidad01 #page #pageRight #pageMenuTopRight li a{margin-top: -5px; padding: 10px;}
 /* tiene el hack para columnas fluidas con igual altura */
@@ -453,11 +453,11 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .buttonConfirm button, .buttonSpecial button, .buttonSpecial .buttonText, .buttonConfirm .buttonText{color:#FFF; text-shadow:#666 1px 1px 1px}
 
 /*** TABLAS ***/
-.table01 td{font-size: 12px;}
-.table01 tr.inpar{background-color: #E0EAFF;}
-.table01 tr.par{background-color: #E6EBF4;}
-.table01 .encabezado{background-color: #000;height: 20px; text-align: center;}
-.table01 .encabezado td{font-size: 13px; color: #ddd; text-transform: uppercase;}
+.table01{background-color:#FFF;}
+.table01 tr:hover{background-color:#EEEFFF}
+.table01 td{border-bottom:1px solid #E5E5E5; padding:10px 4px 10px 4px}
+.table01 .encabezado td{color:#555571; text-transform:uppercase; font-weight:bold}
+.table01 .encabezado:hover{background-color:#FFF !important}
 
 /*** VARIOS ***/
 .fte2{font-size:0.8em}

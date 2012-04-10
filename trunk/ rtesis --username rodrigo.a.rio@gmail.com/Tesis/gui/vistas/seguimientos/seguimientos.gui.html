@@ -166,18 +166,16 @@
        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
        <table class="table01 wi100p" >
            <tr class="encabezado">
-               <td>Id</td>
-               <td>Persona  </td>
+               <td>Persona</td>
                <td>Dni</td>
                <td>Tipo</td>
                <td>FechaCreacion</td>
                <td>Estado</td>
-               <td>Ampliar</td>
-               <td>Modificar</td>
+               <td class="teal_ce">Ampliar</td>
+               <td class="teal_ce">Modificar</td>
            </tr>
            <!--BeginListaDeSeguimientosBlock-->
            <tr class="{odd}">
-               <td>{iSeguimientoId}</td>
                <td><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
                <td>{sSeguimientoPersonaDNI}</td>
                <td>{sSeguimientoTipo}</td>
@@ -189,9 +187,9 @@
                         <!--EndEstadoSeguimientoBlock-->
                     </select>
                </td>
-               <td><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
+               <td class="teal_ce"><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
                <!--BeginPermisoEditarSeguimientoBlock-->
-               <td><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
+               <td class="teal_ce"><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
                <!--EndPermisoEditarSeguimientoBlock-->
            </tr>
            <!--EndListaDeSeguimientosBlock-->
