@@ -332,7 +332,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         if(!empty($iProvinciaId)){
             $listaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
             foreach($listaCiudades as $oCiudad){
-                if($usuario->getCiudad()->getId() == $oCiudad->getId()){
+                if($iProvinciaId == $oCiudad->getId()){
                     $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "selected='selected'");
                 }else{
                     $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "");
@@ -645,22 +645,19 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
 
         $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaIdForm);
 
-        //extraigo los datos
-        $iTipoDocumentoId = $oDiscapacitado->getTipoDocumento();
-        $sNumeroDocumento = $oDiscapacitado->getNumeroDocumento();
-        $sSexo = $oDiscapacitado->getSexo();
-        $sNombre = $oDiscapacitado->getNombre();
-        $sApellido = $oDiscapacitado->getApellido();
-
         $iPaisId = "";
         $iProvinciaId = "";
         $iCiudadId = "";
+        $sUbicacion = "";
         if(null != $oDiscapacitado->getCiudad()){
             $iCiudadId = $oDiscapacitado->getCiudad()->getId();
+            $sUbicacion .= $oDiscapacitado->getCiudad()->getNombre();
             if(null != $oDiscapacitado->getCiudad()->getProvincia()){
-            $iProvinciaId = $oDiscapacitado->getCiudad()->getProvincia()->getId();
+                $iProvinciaId = $oDiscapacitado->getCiudad()->getProvincia()->getId();
+                $sUbicacion .= " ".$oDiscapacitado->getCiudad()->getProvincia()->getNombre();
                 if(null != $oDiscapacitado->getCiudad()->getProvincia()->getPais()){
                     $iPaisId = $oDiscapacitado->getCiudad()->getProvincia()->getPais()->getId();
+                    $sUbicacion .= " ".$oDiscapacitado->getCiudad()->getProvincia()->getPais()->getNombre();
                 }
             }
         }
@@ -680,31 +677,51 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
             $sInstitucion = $oDiscapacitado->getInstitucion()->getNombre();
         }
 
-        $nacimientoDia = ""; $nacimientoPadreDia = ""; $nacimientoMadreDia = "";
-        $nacimientoMes = ""; $nacimientoPadreMes = ""; $nacimientoMadreMes = "";
-        $nacimientoAnio = ""; $nacimientoPadreAnio = ""; $nacimientoMadreAnio = "";
-        list($nacimientoAnio, $nacimientoMes, $nacimientoDia) = explode("-", $oDiscapacitado->getFechaNacimiento());
-        list($nacimientoPadreAnio, $nacimientoPadreMes, $nacimientoPadreDia) = explode("-", $oDiscapacitado->getFechaNacimientoPadre());
-        list($nacimientoMadreAnio, $nacimientoMadreMes, $nacimientoMadreDia) = explode("-", $oDiscapacitado->getFechaNacimientoMadre());
-
         //foto de perfil actual
         if(null != $oDiscapacitado->getFotoPerfil()){
             $oFoto = $oDiscapacitado->getFotoPerfil();
-
             $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
             $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
             $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
-
-            $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
-            $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
-
-            $this->getTemplate()->parse("FotoPerfilActualBlock");
         }else{
-            $this->getTemplate()->unset_blocks("FotoPerfilActualBlock");
+            $pathFotoServidorMediumSize=$pathFotoServidorBigSize=$oDiscapacitado->getNombreAvatar(true);
         }
+        $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
+        $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
 
-        $this->getTemplate()->set_var("idPersonaVer", $iPersonaIdForm);
+        $this->getTemplate()->set_var("iPersonaId", $iPersonaIdForm);
+        
+        $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+        $sDocumento = $aTiposDocumentos[$oDiscapacitado->getTipoDocumento()]." ".$oDiscapacitado->getNumeroDocumento();
 
+        $sSexo = ($oDiscapacitado->getSexo() == 'm')?"Masculino":"Femenino";
+
+        $sFechaNacimiento = Utils::fechaFormateada($oDiscapacitado->getFechaNacimiento(), "d/m/Y");
+        $sNacimientoPadre = Utils::fechaFormateada($oDiscapacitado->getFechaNacimientoPadre(), "d/m/Y");
+        $sNacimientoMadre = Utils::fechaFormateada($oDiscapacitado->getFechaNacimientoMadre(),"d/m/Y");
+       
+        //los textarea si estan vacios le pongo un guion para que quede bien la vista
+        if(empty($sOcupacionPadre)){$sOcupacionPadre = " - ";}
+        if(empty($sOcupacionMadre)){$sOcupacionMadre = " - ";}
+        if(empty($sNombreHermanos)){$sNombreHermanos = " - ";}
+
+        $this->getTemplate()->set_var("sDocumento", $sDocumento);
+        $this->getTemplate()->set_var("sSexo",$sSexo);
+        $this->getTemplate()->set_var("sFechaNacimiento",$sFechaNacimiento);
+        $this->getTemplate()->set_var("sUbicacion",$sUbicacion);
+        $this->getTemplate()->set_var("sTelefono",$sTelefono);
+        $this->getTemplate()->set_var("sDomicilio",$sDomicilio);
+
+        $this->getTemplate()->set_var("sNombreApellidoPadre",$sNombreApellidoPadre);
+        $this->getTemplate()->set_var("sOcupacionPadre",$sOcupacionPadre);
+        $this->getTemplate()->set_var("sNacimientoPadre",$sNacimientoPadre);
+        $this->getTemplate()->set_var("sNombreApellidoMadre",$sNombreApellidoMadre);
+        $this->getTemplate()->set_var("sOcupacionMadre",$sOcupacionMadre);
+        $this->getTemplate()->set_var("sNacimientoMadre",$sNacimientoMadre);
+        $this->getTemplate()->set_var("sNombreHermanos",$sNombreHermanos);
+        $this->getTemplate()->set_var("iInstitucionId",$iInstitucionId);
+        $this->getTemplate()->set_var("sNombreInstitucion",$sInstitucion);
+        
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 }
