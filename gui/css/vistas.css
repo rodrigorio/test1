@@ -339,7 +339,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 /* para cuando seleccionas un valor desde autocomplete al input se le agrega selected */
 .form_line .selected{font-weight:bold; background-color:#EEEFFF !important}
 
-.ficha01{background-color:#E7EBF2; font-family:Arial; padding:3px; border:1px solid #93B5F9; -moz-border-radius:3px 3px 0px 0px; -webkit-border-radius:3px 3px 0px 0px; border-radius:3px 3px 0px 0px}
+.ficha01{background-color:#DEE3EA; font-family:Arial; padding:3px; border:1px solid #93B5F9; -moz-border-radius:3px 3px 0px 0px; -webkit-border-radius:3px 3px 0px 0px; border-radius:3px 3px 0px 0px}
 .ficha01 .encabezado, .ficha01 .contenido{padding:10px; overflow:auto}
 .ficha01 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha01 .encabezado .izq{float:left; position:relative}
@@ -347,7 +347,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha01 .encabezado .izq .titulo{font-size:1.7em}
 .ficha01 .encabezado .izq .subtitulo{font-size:0.8em}
 .ficha01 .encabezado .der{float:right; position:relative}
-.ficha01 .contenido{background-color:#EEEFFF}
+.ficha01 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF}
 
 .ficha02{padding:10px; border:1px solid #999; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #999 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border-top:1px solid #333;}
 .ficha02 .puntuar .desc{font-weight:bold;}
@@ -433,13 +433,17 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu04 a:hover{text-decoration:underline;}
 .menu04 li{border-right:1px solid #999}
 
+/* fotos */
 .thumb01{padding:5px; background-color:#FFF; border:1px solid #CCC; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 .thumb01:hover{border:1px solid #333; text-decoration:none}
+/* videos */
 .thumb02{padding:5px; background-color:#333; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 .thumb02:hover{text-decoration:none}
 .thumb02 i{border:1px solid #333}
 .thumb02 i:hover{border:1px solid #FFF}
 .thumb02 span{padding:1px 5px; background:none repeat scroll 0 0 #333; color:#FFF}
+/* no ampliable */
+.thumb03{padding:3px; border-width:1px 2px 2px 1px; border-style:solid; border-color:#E7EBF2 #AAA #AAA #E7EBF2; cursor:default !important; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 
 /*** BOTONES ***/
 /* confirmar accion */
