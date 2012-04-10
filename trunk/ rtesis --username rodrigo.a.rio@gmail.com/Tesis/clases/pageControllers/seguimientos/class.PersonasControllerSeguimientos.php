@@ -332,7 +332,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         if(!empty($iProvinciaId)){
             $listaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
             foreach($listaCiudades as $oCiudad){
-                if($iProvinciaId == $oCiudad->getId()){
+                if($iCiudadId == $oCiudad->getId()){
                     $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "selected='selected'");
                 }else{
                     $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "");
