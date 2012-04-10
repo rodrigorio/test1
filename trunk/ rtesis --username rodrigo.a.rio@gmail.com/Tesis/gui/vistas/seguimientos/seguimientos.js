@@ -151,7 +151,7 @@ $(document).ready(function(){
     $("#persona").autocomplete({
         source:function(request, response){
             $.ajax({
-                url: "seguimientos/buscar-usuarios",
+                url: "seguimientos/buscar-discapacitados",
                 dataType: "jsonp",
                 data:{
                     limit:12,
@@ -162,14 +162,14 @@ $(document).ready(function(){
                 },
                 success: function(data){
                    ocultarElemento($("#persona_loading"));
-                    response( $.map(data.usuarios, function(usuarios){
+                    response( $.map(data.discapacitados, function(discapacitados){
                         return{
                             //lo que aparece en el input
-                            value:usuarios.sNombre,
+                            value:discapacitados.sNombre,
                             //lo que aparece en la lista generada para elegir
-                            label:usuarios.sNombre,
+                            label:discapacitados.sNombre,
                             //valor extra que se devuelve para completar el hidden
-                            id:usuarios.iId
+                            id:discapacitados.iId
                         }
                     }));
                 }
