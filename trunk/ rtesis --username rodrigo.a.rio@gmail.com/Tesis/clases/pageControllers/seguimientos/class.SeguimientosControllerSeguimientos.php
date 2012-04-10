@@ -267,12 +267,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $sOrder 		= null;
             $iIniLimit 		= null;
             $iRecordCount 	= null;
-            $filtro = array("p.id"=>$iPersona);
-            $oDiscapacitado	= ComunidadController::getInstance()->obtenerDiscapacitado($filtro,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $filtro = array("p.id" => $iPersona);
+            $aDiscapacitado = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $oDiscapacitado = $aDiscapacitado[0];
             $obj->oPractica 	= $oTipoPractica;
             $obj->sFrecuenciaEncuentros = $sFrecuencias;
             $obj->sDiaHorario 	= $sDiaHorario;
-            $obj->oDiscapacitado		= $oDiscapacitado;
+            $obj->oDiscapacitado = $oDiscapacitado;
             $obj->oUsuario	= $perfil->getUsuario();
             if($sTipoSeguimiento == "SCC" ){
                 $oSeguimiento = Factory::getSeguimientoSCCInstance($obj);

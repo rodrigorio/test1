@@ -60,7 +60,7 @@ class IndexControllerSeguimientos extends PageControllerAbstract
         $seguimientosControllerSeguimientos->listar();
     }
     
-    public function buscarUsuarios(){
+    public function buscarDiscapacitados(){
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         try{
@@ -69,21 +69,21 @@ class IndexControllerSeguimientos extends PageControllerAbstract
             $iRecordsTotal = 0;
             $sOrderBy	= $sOrder=$iIniLimit=$iRecordCount=null;
             $filtro 	= array("p.numeroDocumento"=>$this->getRequest()->get('str'));
-            $vUsuarios 	= SysController::getInstance()->buscarUsuarios($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
-            $vResult 	= array();
-            if(count($vUsuarios)>0){
-                foreach($vUsuarios as $oUsuario){
+            $aDiscapacitados = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
+            $vResult = array();
+            if(count($aDiscapacitados)>0){
+                foreach($aDiscapacitados as $oDiscapacitado){
                     $obj        = new stdClass();
-                    $obj->iId   = $oUsuario->getId();
-                    $obj->sNombre   = $oUsuario->getNombre() . " " . $oUsuario->getApellido();
+                    $obj->iId   = $oDiscapacitado->getId();
+                    $obj->sNombre   = $oDiscapacitado->getNombre() . " " . $oDiscapacitado->getApellido();
                     $vResult[] = $obj;
                 }
             }
             //agrega una url para que el js redireccione
-            $this->getJsonHelper()->setSuccess(true)->setValor("usuarios",$vResult);
+            $this->getJsonHelper()->setSuccess(true)->setValor("discapacitados",$vResult);
         }catch(Exception $e){
             print_r($e);
-		}
+	}
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }    
