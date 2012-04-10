@@ -358,3 +358,37 @@ function bindEventsPersonaForm(){
     $("#formPersona").validate(validateFormPersona);
     $("#formPersona").ajaxForm(optionsAjaxFormPersona);
 }
+
+function bindEventsPersonaVerFicha()
+{
+    $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("#modificarPersona").live('click',function(){
+        $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
+
+        var dialog = $("#dialog");
+        if ($("#dialog").length == 0){
+            dialog = $('<div id="dialog" title="Modificar Persona"></div>').appendTo('body');
+        }else{
+            dialog.attr("title", "Modificar Persona");
+        }
+        
+        dialog.hide("slow");
+        dialog.load(
+            "seguimientos/modificar-persona?popUp=1&personaId="+$(this).attr('rel'),
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:650,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                bindEventsPersonaForm(); 
+            }
+        );
+        return false;
+    });
+}

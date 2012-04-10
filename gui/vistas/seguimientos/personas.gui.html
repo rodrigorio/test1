@@ -351,26 +351,48 @@
 <!--EndFormularioBlock-->
 
 <!--BeginFichaPersonaBlock-->
-
-<div class="fl_le mabo">
-    <a class="button" href="{hrefEditarPersona}">
-        <span class="i bs userEdit"></span>
-        <span class="buttonText">Editar Persona</span>
-    </a>
-</div>
-
-<div class="grupo">
-    <!--BeginFotoPerfilActualBlock-->
-    <div class="fl_le mari2">
+<div class="grupo cl_bo mabo2">
+    <div class="fl_le">
         <div id="fotoPerfilActual" class="mabo3">
             <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
                 <i style="background-image:url('{scrFotoPerfilActual}')"></i>
             </a>
         </div>
     </div>
-    <!--EndFotoPerfilActualBlock-->
 
-    <span class="fowe_bo teta_up">documento</span> {sDocumento}<br>
-    <span class="fowe_bo teta_up">documento</span> {sDocumento}<br>
+    <div class="fl_ri">
+        <a class="button" id="modificarPersona" rel="{iPersonaId}" href="">
+            <span class="i bs userEdit"></span>
+            <span class="buttonText">Editar Persona</span>
+        </a>
+    </div>
+</div>
 
+<h2 class="mabo3">Informaci&oacute;n B&aacute;sica</h2>
+
+<span class="fowe_bo teta_up">documento:</span> {sDocumento}<br>
+<span class="fowe_bo teta_up">sexo:</span> {sSexo}<br>
+<span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}<br>
+<span class="fowe_bo teta_up">ubicacion:</span> {sUbicacion}<br>
+<span class="fowe_bo teta_up">telefono:</span> {sTelefono}<br>
+<span class="fowe_bo teta_up">domicilio:</span> {sDomicilio}<br>
+
+<br clear="all" />
+
+<h2 class="mabo3">Informaci&oacute;n Extra</h2>
+
+<span class="fowe_bo teta_up">Nombre Padre:</span> {sNombreApellidoPadre}<br>
+<div class="pato pabo grupo">
+    <span class="fowe_bo teta_up">Ocupaci&oacute;n Padre</span><br>{sOcupacionPadre}
+</div>
+<span class="fowe_bo teta_up">Nacimiento Padre:</span> {sNacimientoPadre}<br>
+<span class="fowe_bo teta_up">Nombre Madre:</span> {sNombreApellidoMadre}<br>
+<div class="pato pabo grupo">
+    <span class="fowe_bo teta_up">Ocupaci&oacute;n Madre</span><br>{sOcupacionMadre}
+</div>
+<span class="fowe_bo teta_up">Nacimiento Madre:</span> {sNacimientoMadre}<br>
+<div class="pato pabo grupo">
+    <span class="fowe_bo teta_up">Hermanos</span><br>{sNombreHermanos}
+</div>
+<span class="fowe_bo teta_up">Instituci&oacute;n:</span> <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
 <!--EndFichaPersonaBlock-->
