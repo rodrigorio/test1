@@ -102,7 +102,7 @@ class SeguimientosController
             //ojo, extraigo el objeto usuario del objeto perfil.
             $oUsuarioSesion = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-                       
+                                   
             //si se modifica (la persona ya existe) y hay moderacion pendiente no se permiten hacer cambios
             if(null !== $oDiscapacitado->getId() && $this->existeModeracionPendiente($oDiscapacitado)){
                 return array(false, false);

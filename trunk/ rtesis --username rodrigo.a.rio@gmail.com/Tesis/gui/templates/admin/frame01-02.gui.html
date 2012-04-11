@@ -57,21 +57,27 @@
 
         <nav id="main-nav">
             <ul>
-<!--                 <li {currentOption}> -->
-<!--                     <a href="#" title="" class="projects">Projects</a><span title="You have 3 new tasks">3</span> -->
-<!--                     <ul> -->
-<!--                         <li><a href="#" title="">Add Project</a></li> -->
-<!--                         <li><a href="#" title="">Edit Project</a></li> -->
-<!--                         <li><a href="#" title="">Project Management</a></li> -->
-<!--                         <li><a href="#" title="">Project Gallery</a></li> -->
-<!--                         <li><a href="#" title="">Settings</a></li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
-                <li {currentOption}>
-                    <a href="{sHrefEspecialidadIndex}" title="Administrar lista de especialidades y Áreas de desempeño profesional" class="no-submenu">Administrar especialidades</a>
+                <li {currentOptionModeracion}>
+                    <a href="#" title="Moderar">Moderacion</a>
+                    <ul>
+                        <li><a class="no-submenu" href="{sHrefPersonasModeracion}" title="">Discapacitados</a></li>
+                        <li><a class="no-submenu" href="{sHrefPublicacionesModeracion}" title="">Publicaciones</a></li>
+                        <li><a class="no-submenu" href="{sHrefSoftwareModeracion}" title="">Software</a></li>
+                    </ul>
                 </li>
-                <li>
-                    <a href="{sHrefCategoriaIndex}" title="Administrar lista de categorias" class="no-submenu">Administrar categorias</a>
+                <li {currentOptionEspecialidades}>
+                    <a href="#" title="Administrar lista de especialidades y Áreas de desempeño profesional">Administrar especialidades</a>
+                    <ul>
+                        <li><a class="no-submenu" href="{sHrefEspecialidadListar}" title="">Listar Especialidades</a></li>
+                        <li><a class="no-submenu" href="{sHrefEspecialidadCargar}" title="">Cargar una nueva Especialidad</a></li>
+                    </ul>                    
+                </li>
+                <li {currentOptionCategorias}>
+                    <a href="#" title="Administrar lista de categorias">Administrar categorias</a>
+                    <ul>
+                        <li><a class="no-submenu" href="{sHrefCategoriaListar}" title="">Listar Categorias</a></li>
+                        <li><a class="no-submenu" href="{sHrefCategoriaCargar}" title="">Cargar una nueva Categoria</a></li>
+                    </ul>
                 </li>
             </ul>
         </nav>

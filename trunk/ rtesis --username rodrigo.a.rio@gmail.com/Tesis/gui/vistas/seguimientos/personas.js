@@ -1,4 +1,4 @@
-//Existe una persona con el numero de documento ingresado ?
+//Existe una persona con el numero de documento ingresado ? (solo se usa en el agregar persona)
 jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
     var result = true;
     if($("#nroDocumento").val() != ""){
@@ -8,7 +8,9 @@ jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
             async:false,
             data:{
                 checkNumeroDocumento:"1",
-                numeroDocumento:function(){return $("#nroDocumento").val();}
+                numeroDocumento:function(){return $("#nroDocumento").val();},
+                //porque si es modificar te tiene que dejar guardar el numero que ya estaba
+                personaId:function(){return $("#personaIdForm").val();}
             },
             success:function(data){
                 //si el mail existe tira el cartel
@@ -108,7 +110,7 @@ var validateFormPersona = {
                }, digits: true},
         tipoDocumento:{required:true},
         nroDocumento:{required:true, ignorarDefault:true, digits:true, existeNumeroDocumento:true},
-        telefono:{required:true}        
+        telefono:{required:true}
     },
     messages:{
         tipoDocumento: "Debe especificar tipo de documento",
@@ -147,7 +149,7 @@ var validateFormPersona = {
             digits: mensajeValidacion("digitos")
         }
     }
-}
+};
 
 var optionsAjaxFormPersona = {
     dataType: 'jsonp',
@@ -170,7 +172,7 @@ var optionsAjaxFormPersona = {
 
     success:function(data){
         setWaitingStatus('tabsFormPersona', false);
-        
+
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
                 $('#msg_form_persona .msg').html(lang['error procesar']);
@@ -178,9 +180,9 @@ var optionsAjaxFormPersona = {
                 $('#msg_form_persona .msg').html(data.mensaje);
             }
             $('#msg_form_persona').addClass("error").fadeIn('slow');
-        }else{            
+        }else{
             if(data.agregarPersona != undefined){
-                //si el submit fue para agregar una nueva persona al sistema...                
+                //si el submit fue para agregar una nueva persona al sistema...
                 $('#msg_form_fotoPerfil .msg').html("La persona ha sido creada exitosamente. Puede agregar una foto de perfil si lo desea.");
                 $('#msg_form_fotoPerfil').addClass("correcto").show();
                 $('#tabFormPersonaContent').html("");
@@ -189,15 +191,15 @@ var optionsAjaxFormPersona = {
                 uploader(data.personaId);
             }else{
                 //el submit fue la modificacion de una persona
-                $('#msg_form_fotoPerfil .msg').html(data.mensaje);
+                $('#msg_form_persona .msg').html(data.mensaje);
                 $('#msg_form_persona').addClass("correcto").fadeIn('slow');
-            }           
+            }
         }
     }
 };
 
 function bindEventsPersonaForm(){
-
+   
     //si entra al form de foto por 'modificar' entonces creo el boton uploader de entrada
     var personaIdFoto = $("#personaIdFoto").val();
     if(personaIdFoto != undefined && personaIdFoto != ""){
@@ -354,22 +356,23 @@ function bindEventsPersonaForm(){
         $("#institucionId").val("");
         ocultarElemento($(this));
     });
-
+    
     $("#formPersona").validate(validateFormPersona);
-    $("#formPersona").ajaxForm(optionsAjaxFormPersona);
+    $("#formPersona").ajaxForm(optionsAjaxFormPersona);    
 }
 
 function bindEventsPersonaVerFicha()
 {
-    $("#modificarPersona").live('click',function(){
+    $("#modificarPersona").click(function(){
+
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
 
         var dialog = $("#dialog");
-        if ($("#dialog").length == 0){
-            dialog = $('<div id="dialog" title="Modificar Persona"></div>').appendTo('body');
-        }else{
-            $("#ui-dialog-title-dialog").html("Modificar Persona");
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
         }
+        dialog = $('<div id="dialog" title="Modificar Persona"></div>').appendTo('body');
 
         dialog.load(
             "seguimientos/modificar-persona?popUp=1&personaId="+$(this).attr('rel'),
@@ -383,7 +386,7 @@ function bindEventsPersonaVerFicha()
                     modal:false,
                     closeOnEscape:true
                 });
-                bindEventsPersonaForm(); 
+                bindEventsPersonaForm();
             }
         );
         return false;
