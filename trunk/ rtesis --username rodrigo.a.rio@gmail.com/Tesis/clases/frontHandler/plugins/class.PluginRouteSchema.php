@@ -307,13 +307,13 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('seguimientosSeguimientosNuevoSeguimiento', $route);
 
-        $route = new RegexRoute('seguimientos/buscar-usuarios',
+        $route = new RegexRoute('seguimientos/buscar-discapacitados',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'index',
-                                        'action'     => 'buscarUsuarios'
+                                        'action'     => 'buscarDiscapacitados'
                                 ));
-        $router->addRoute('seguimientosIndexBuscarUsuarios', $route);
+        $router->addRoute('seguimientosIndexBuscarDiscapacitados', $route);
         
         $route = new RegexRoute('seguimientos/procesar-seguimiento',
                                 array(
@@ -514,6 +514,22 @@ class PluginRouteSchema extends PluginAbstract
                                         'module' => 'admin',
                                         'controller' => 'categoria',
                                         'action'     => 'buscarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaBuscar', $route);
+
+        $route = new RegexRoute('admin/personas-moderacion',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'personas',
+                                        'action'     => 'listarModeracionesPendientes'
+                                ));
+        $router->addRoute('adminCategoriaBuscar', $route);
+
+        $route = new RegexRoute('admin/personas-moderacion-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'personas',
+                                        'action'     => 'procesarModeracion'
                                 ));
         $router->addRoute('adminCategoriaBuscar', $route);
     }
