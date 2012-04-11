@@ -93,8 +93,9 @@ function buscarSeguimientos(){
 $(document).ready(function(){   
     $("#formCrearSeguimiento").validate(validateFormSeguimiento);
     $("#formCrearSeguimiento").ajaxForm(optionsAjaxFormSeguimiento);
-
+    
     $("#agregarPersona").live('click',function(){
+
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
         

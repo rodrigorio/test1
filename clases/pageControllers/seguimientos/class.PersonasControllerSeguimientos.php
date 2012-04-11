@@ -89,12 +89,12 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
             if($moderacionPendiente){
                 //si existe moderacion pendiente no muestra los formularios
                 $tituloMensajeError = "Datos con moderación pendiente";
-                $ficha = "MsgFichaInfoBlock";
                 $mensajeInfoError = "La información de la persona ha sido modificada recientemente.<br> La modificación esta pendiente de ser moderada, no se pueden realizar nuevos cambios por el momento.";
 
-                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "popUpContent", $ficha);
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "popUpContent", "MsgFichaInfoBlock");
                 $this->getTemplate()->set_var("sTituloMsgFicha", $tituloMensajeError);
                 $this->getTemplate()->set_var("sMsgFicha", $mensajeInfoError);
+                $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
                 return;
             }
 
@@ -328,14 +328,14 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->parse("ListaProvinciasBlock", true);
             }
         }
-
+        
         if(!empty($iProvinciaId)){
-            $listaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
+            $listaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);            
             foreach($listaCiudades as $oCiudad){
                 if($iCiudadId == $oCiudad->getId()){
-                    $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "selected='selected'");
+                    $this->getTemplate()->set_var("sCiudadSelect", "selected='selected'");
                 }else{
-                    $this->getTemplate()->set_var("sDatosPersonalesCiudadSelect", "");
+                    $this->getTemplate()->set_var("sCiudadSelect", "");
                 }
                 $this->getTemplate()->set_var("iCiudadId", $oCiudad->getId());
                 $this->getTemplate()->set_var("sCiudadNombre", $oCiudad->getNombre());
@@ -472,7 +472,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
 
             $iId = $this->getRequest()->getPost('personaIdForm');
             $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iId);
-            
+           
             $oDiscapacitado->setTipoDocumento($this->getRequest()->getPost("tipoDocumento"));
             $oDiscapacitado->setNumeroDocumento($this->getRequest()->getPost("nroDocumento"));
             $oDiscapacitado->setSexo($this->getRequest()->getPost("sexo"));
@@ -486,7 +486,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
             $dFechaNacimiento = implode('-', $aFechaNacimiento);
             $oDiscapacitado->setFechaNacimiento($dFechaNacimiento);
 
-            $oDiscapacitado->setCiudad($this->getRequest()->getPost("ciudad"));
+            $oDiscapacitado->setCiudadId($this->getRequest()->getPost("ciudad"));
             $oDiscapacitado->setTelefono($this->getRequest()->getPost("telefono"));
             $oDiscapacitado->setDomicilio($this->getRequest()->getPost("direccion"));
             $oDiscapacitado->setNombreApellidoPadre($this->getRequest()->getPost("nombreApellidoPadre"));
@@ -527,9 +527,9 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
                 $success = false;
             }else{
                 if($moderacion){
-                    $mensaje = "La información se proceso con exito, los cambios seran aplicados luego de que un moderador los apruebe.";
+                    $mensaje = "La información se proceso con exito, los cambios seran aplicados luego de que un moderador los apruebe";
                 }else{
-                    $mensaje = "Los cambios fueron aplicados con exito.";                    
+                    $mensaje = "Los cambios fueron aplicados con exito";                    
                 }
                 $success = true;
             }
@@ -558,11 +558,18 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
                 $iId = $this->getRequest()->getPost('personaIdFoto');
                                
                 $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iId);
-                                
-                //un array con los datos de las fotos
-                $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($iId, 'fotoPerfil');
-                $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-                              
+
+                $moderacionPendiente = SeguimientosController::getInstance()->existeModeracionPendiente($oDiscapacitado);
+                if(!$moderacionPendiente){
+                    //un array con los datos de las fotos
+                    $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($iId, 'fotoPerfil');
+                    $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);        
+                }else{
+                    $respuesta = "0; Existe una moderacion pendiente, no se guardaron los cambios";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;            
+                }
+                                                              
                 try{
                     /*
                      * primero va al controler de seguimientos en lugar
@@ -622,10 +629,18 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
      */
     private function checkNumeroDocumento()
     {
+        $iPersonaId = $this->getRequest()->getPost('personaId');
+        $sNumeroDocumento = $this->getRequest()->getPost('numeroDocumento');
+
+        $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaId);
+
         $dataResult = '0';
-        $filtro = array("p.numeroDocumento" => $this->getRequest()->getPost('numeroDocumento'));
-        if(SeguimientosController::getInstance()->existeDiscapacitado($filtro)){
-            $dataResult = '1';
+        //porque el numero de documento que ya tiene no se contempla.
+        if($oDiscapacitado->getNumeroDocumento() != $sNumeroDocumento){
+            $filtro = array("p.numeroDocumento" => $this->getRequest()->getPost('numeroDocumento'));
+            if(SeguimientosController::getInstance()->existeDiscapacitado($filtro)){
+                $dataResult = '1';
+            }
         }
         $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
     }
@@ -644,7 +659,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/personas.gui.html", "popUpContent", "FichaPersonaBlock");
 
         $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaIdForm);
-
+       
         $iPaisId = "";
         $iProvinciaId = "";
         $iCiudadId = "";
@@ -678,13 +693,13 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         }
 
         //foto de perfil actual
+        $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
         if(null != $oDiscapacitado->getFotoPerfil()){
-            $oFoto = $oDiscapacitado->getFotoPerfil();
-            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            $oFoto = $oDiscapacitado->getFotoPerfil();            
             $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
             $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
         }else{
-            $pathFotoServidorMediumSize=$pathFotoServidorBigSize=$oDiscapacitado->getNombreAvatar(true);
+            $pathFotoServidorMediumSize=$pathFotoServidorBigSize=$this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar(true);
         }
         $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
         $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);

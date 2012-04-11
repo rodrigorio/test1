@@ -43,9 +43,7 @@ class AdminController
     public function setDBDriver(DB $db){
         $this->db = $db;
     }
-	/**********************************
-	 *********ESPECIALIDADES*********** 	
-	 *********************************/
+    
     public function obtenerEspecialidad($filtro = null, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
@@ -86,10 +84,8 @@ class AdminController
             echo $e->getMessage();
         }
     }
-    /**********************************
-	 **********CATEGORIAS************** 	
-	 *********************************/
- public function obtenerCategoria($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+
+    public function obtenerCategoria($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
@@ -121,7 +117,18 @@ class AdminController
             echo $e->getMessage();
         }
     }
-   	public function eliminarInstitucion($oInstitucion){
+
+    public function obtenerModeracionesDiscapacitados($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
+            return $oDiscapacitadoIntermediary->obtenerModeracion($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+    }
+
+    public function eliminarInstitucion($oInstitucion){
         try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->borrar($oInstitucion);
@@ -130,4 +137,3 @@ class AdminController
         }
     }
 }
-?>

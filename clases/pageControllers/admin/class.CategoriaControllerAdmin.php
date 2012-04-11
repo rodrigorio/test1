@@ -32,53 +32,16 @@ class CategoriaControllerAdmin extends PageControllerAbstract
         return $this;
     }
 
-    /*
-     * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
-     */
-    static function setCabecera(Templates &$template)
-    {
-        $request = FrontController::getInstance()->getRequest();
-        
-        //menu cabecera
-        $template->set_var("hrefHomeModuloIndex", $request->getBaseTagUrl()."/");
-        $template->set_var("hrefHomeModuloComunidad", $request->getBaseTagUrl()."/comunidad/home");
-        $template->set_var("hrefHomeModuloSeguimientos", $request->getBaseTagUrl()."/seguimientos/home");
-        $template->set_var("hrefHomeModuloAdmin", $request->getBaseTagUrl()."/admin/home");
-
-        //info user
-        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $perfilDesc = $perfil->getDescripcion();
-        $nombreUsuario = $perfil->getNombreUsuario();
-        
-        $template->set_var("srcImageUser", "#");
-        $template->set_var("userName", $nombreUsuario);
-        $template->set_var("hrefEditarPerfil", $request->getBaseTagUrl().'/comunidad/datos-personales');
-        $template->set_var("perfilDescripcion", $perfilDesc);
-        $template->set_var("hrefCerrarSesion", $request->getBaseTagUrl().'/logout');
-    }
-
-    /*
-     * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
-     */
-    static function setMenu(Templates &$template, $currentOption = '')
-    {
-        $request = FrontController::getInstance()->getRequest();
-
-        //menu cabecera
-        $template->set_var("sHrefCategoriaCargar", $request->getBaseTagUrl()."admin/nueva-categoria");
-        $template->set_var("sHrefCategoriaListar", $request->getBaseTagUrl()."admin/listar-categoria");
-        $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."/admin/administrar-especialidad");
-        $template->set_var("sHrefCategoriaIndex", $request->getBaseTagUrl()."/admin/administrar-categorias");
-
-    }
-
     public function index(){
         try{
             $this->setFrameTemplate()
                  ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+
             $this->printMsgTop();
-            $this->setCabecera($this->getTemplate());
-            $this->setMenu($this->getTemplate());
+
             $this->getTemplate()->set_var("CargarCategoriaBlock","");
             //widgets
             $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "WidgetsContent");
@@ -121,9 +84,11 @@ class CategoriaControllerAdmin extends PageControllerAbstract
          try{
             $this->setFrameTemplate()
                  ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+
             $this->printMsgTop();
-            $this->setCabecera($this->getTemplate());
-            $this->setMenu($this->getTemplate());
             
             $this->getTemplate()->set_var("ListadoCategoriasBlock","");
             //widgets
@@ -140,9 +105,11 @@ class CategoriaControllerAdmin extends PageControllerAbstract
          try{
             $this->setFrameTemplate()
                  ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+            
             $this->printMsgTop();
-            $this->setCabecera($this->getTemplate());
-            $this->setMenu($this->getTemplate());
             
             $this->getTemplate()->set_var("ListadoCategoriasBlock","");
             //widgets

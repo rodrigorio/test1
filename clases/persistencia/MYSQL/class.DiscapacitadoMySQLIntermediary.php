@@ -238,6 +238,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
              $db->execSQL($sSQL);
              $db->commit();
 
+             return true;
 
         }catch(Exception $e){
             $db->rollback_transaction();
@@ -287,7 +288,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $iLastId = $db->insert_id();
 			
             $sSQL = " insert into discapacitados set ".
-                    " id=".$db->escape($iLastId,false).", " .
+                    " id = ".$db->escape($iLastId,false).", " .
                     " nombreApellidoPadre=".$db->escape($oDiscapacitado->getNombreApellidoPadre(),true).", " .
                     " nombreApellidoMadre =".$db->escape($oDiscapacitado->getNombreApellidoMadre(),true).", ".
                     " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
@@ -349,7 +350,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             if($oDiscapacitado->getFotoPerfil() != null){
                 $nombreBigSize = $oDiscapacitado->getFotoPerfil()->getNombreBigSize();
                 $nombreMediumSize = $oDiscapacitado->getFotoPerfil()->getNombreMediumSize();
-                $nombreSmallSize = $oDiscapacitado->getFotoPerfil()->setNombreSmallSize();
+                $nombreSmallSize = $oDiscapacitado->getFotoPerfil()->getNombreSmallSize();
             }else{
                 $nombreBigSize = "";
                 $nombreMediumSize = "";
@@ -359,7 +360,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $db->begin_transaction();
 
             $sSQL = " insert into discapacitados_moderacion ".
-                    " set nombre =".$db->escape($oDiscapacitado->getNombre(),true).", " .
+                    " set id = '".$oDiscapacitado->getId()."', ".
+                    " nombre =".$db->escape($oDiscapacitado->getNombre(),true).", " .
                     " apellido =".$db->escape($oDiscapacitado->getApellido(),true).", " .
                     " documento_tipos_id =".$db->escape($oDiscapacitado->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oDiscapacitado->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
@@ -389,7 +391,6 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             return true;
 
         }catch(Exception $e){
-
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
             return false;
@@ -546,15 +547,10 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
                 //creo el discapacitado
                 $oDiscapacitado = Factory::getDiscapacitadoInstance($oDiscapacitado);
-				$aDiscapacitado[] = $oDiscapacitado;
+                $aDiscapacitado[] = $oDiscapacitado;
             }
 
-            //si es solo un elemento devuelvo el objeto si hay mas de un elemento devuelvo el array.
-            if(count($aDiscapacitado) == 1){
-                return $aDiscapacitado[0];
-            }else{
-                return $aDiscapacitado;
-            }
+            return $aDiscapacitado;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
