@@ -57,27 +57,58 @@ class PersonasControllerAdmin extends PageControllerAbstract
             $iRecordsTotal = 0;
 
             //array con objetos discapacitados desde discapacitados_moderacion (datos sin aprobar).
-            $aDiscapacitadosMod = SeguimientosController::getInstance()->obtenerEspecialidad($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
-            if(count($vEspecialidad)>0){
+            $aDiscapacitadosMod = AdminController::getInstance()->obtenerModeracionesDiscapacitados($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            if(count($aDiscapacitadosMod) > 0){
             	$i=0;
-	            foreach ($vEspecialidad as $oEspecialidad){
-	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-	                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
-	                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
-	                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
-	                $i++;
-	            }
-                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
+                foreach($aDiscapacitadosMod as $oDiscapacitadoMod){
+
+                    
+
+                    $i++;
+                }
+
+                $this->getTemplate()->set_var("NoRecordsDiscapacitadosModBlock", "");
             }else{
-                $this->getTemplate()->set_var("ListaEspecialidadesBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-	            $this->getTemplate()->parse("noRecords", false);
+                $this->getTemplate()->set_var("ListaDiscapacitadosModBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "noRecords", "NoRecordsDiscapacitadosModBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay moderaciones pendientes");
+                $this->getTemplate()->parse("noRecords", false);
             }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
         }
+    }
+
+    /**
+     * Con una misma accion puedo aprobar o rechazar dependiendo un parametro.
+     * Se puede porque el que tiene permiso para rechazar tiene permiso para aprobar cambios.
+     */
+    public function procesarModeracion()
+    {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('rechazar')){
+            $this->rechazarCambiosModeracion();
+            return;
+        }
+
+        if($this->getRequest()->has('aprobar')){
+            $this->aprobarCambiosModeracion();
+            return;
+        }        
+    }
+
+    private function aprobarCambiosModeracion($oDescapacitado)
+    {
+
+    }
+    
+    private function rechazarCambiosModeracion($oDescapacitado)
+    {
+
     }
 }
