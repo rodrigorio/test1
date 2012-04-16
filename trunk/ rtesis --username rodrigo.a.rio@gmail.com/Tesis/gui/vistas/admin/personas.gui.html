@@ -1,0 +1,208 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/personas.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Moderar entidades sistema</h2>
+</header>
+<section>
+    <h3>Aprobar-Rechazar modificaciones en discapacitados</h3>
+</section>
+<!--EndHeaderBlock-->
+
+<!--BeginListadoModeracionesBlock-->
+<section>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre completo persona</th>
+                <th>Integrante a cargo</th>
+                <th>Integrante que solicita Modificacion</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginPersonasModeradasBlock-->
+            <tr class="{personaId}" class="{odd}">
+                <td class="desplegable" rel="{personaId}">{sNombreDiscapacitado}</td>
+                <td class="desplegable" rel="{personaId}">{sNombreUsuarioAsignado}</td>
+                <td class="desplegable" rel="{personaId}">{sNombreUsuarioSolicita}</td>
+            </tr>
+            <tr class="{personaId}">
+                <td id="desplegable_{personaId}" class="pa0" colspan="3" style="display:none;">
+                    <article class="nested clearrm mabo0">
+                        <header>
+                            <h2>Moderar Persona Id: {personaId}</h2>
+                        </header>
+                        <section>
+                            <article class="half-block nested">
+                                <header>
+                                    <h3>Datos Actuales</h3>
+                                </header>
+                                <section class="teal_le">
+                                    <h3 class="mabo3">Informaci&oacute;n B&aacute;sica</h3>
+
+                                    <p class="{destacadoNombre}">
+                                        <span class="fowe_bo teta_up">nombre:</span> {sNombre}
+                                    </p>
+
+                                    <p class="{destacadoDocumento}">
+                                        <span class="fowe_bo teta_up">documento:</span> {sDocumento}
+                                    </p>
+                                    <p class="{destacadoSexo}">
+                                        <span class="fowe_bo teta_up">sexo:</span> {sSexo}
+                                    </p>
+                                    <p class="{destacadoFechaNacimiento}">
+                                        <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}
+                                    </p>
+                                    <p class="{destacadoUbicacion}">
+                                        <span class="fowe_bo teta_up">ubicacion:</span> {sUbicacion}
+                                    </p>
+                                    <p class="{destacadoTelefono}">
+                                        <span class="fowe_bo teta_up">telefono:</span> {sTelefono}
+                                    </p>
+                                    <p class="{destacadoDomicilio}">
+                                        <span class="fowe_bo teta_up">domicilio:</span> {sDomicilio}
+                                    </p>
+                                </section>
+                                <section class="teal_le">
+                                    <h3 class="mabo3">Informaci&oacute;n Extra</h3>
+
+                                    <p class="{destacadoNombrePadre}">
+                                        <span class="fowe_bo teta_up">Nombre Padre:</span> {sNombreApellidoPadre}
+                                    </p>
+                                    <p class="{destacadoOcupacionPadre}">
+                                        <span class="fowe_bo teta_up">Ocupaci&oacute;n Padre</span><br>{sOcupacionPadre}
+                                    </p>
+                                    <p class="{destacadoNacimientoPadre}">
+                                        <span class="fowe_bo teta_up">Nacimiento Padre:</span> {sNacimientoPadre}
+                                    </p>
+                                    <p class="{destacadoNombreMadre}">
+                                        <span class="fowe_bo teta_up">Nombre Madre:</span> {sNombreApellidoMadre}
+                                    </p>
+                                    <p class="{destacadoOcupacionMadre}">
+                                        <span class="fowe_bo teta_up">Ocupaci&oacute;n Madre</span><br>{sOcupacionMadre}
+                                    </p>
+                                    <p class="{destacadoNacimientoMadre}">
+                                        <span class="fowe_bo teta_up">Nacimiento Madre:</span> {sNacimientoMadre}
+                                    </p>
+                                    <p class="{destacadoNombreHermanos}">
+                                        <span class="fowe_bo teta_up">Hermanos</span><br>{sNombreHermanos}
+                                    </p>
+                                    <p class="{destacadoInstitucion}">
+                                        <span class="fowe_bo teta_up">Instituci&oacute;n:</span> <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
+                                    </p>
+                                </section>
+                                <section class="teal_le">
+                                    <p class="{destacadoFotoPerfil}">
+                                        <span class="fowe_bo teta_up">Foto de Perfil</span><br>
+                                        <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">
+                                            <img src="{scrFotoPerfilActual}" />
+                                        </a>
+                                    </p>
+                                </section>
+                            </article>
+                            <article class="half-block nested mari0">
+                                <header>
+                                    <h3>Datos Sin moderar</h3>
+                                </header>
+                                <section class="teal_le">
+                                    <h3 class="mabo3">Informaci&oacute;n B&aacute;sica</h3>
+
+                                    <p class="{destacadoNombre}">
+                                        <span class="fowe_bo teta_up">nombre:</span> {sNombreMod}
+                                    </p>                                    
+                                    <p class="{destacadoDocumento}">
+                                        <span class="fowe_bo teta_up">documento:</span> {sDocumentoMod}
+                                    </p>
+                                    <p class="{destacadoSexo}">
+                                        <span class="fowe_bo teta_up">sexo:</span> {sSexoMod}
+                                    </p>
+                                    <p class="{destacadoFechaNacimiento}">
+                                        <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimientoMod}
+                                    </p>
+                                    <p class="{destacadoUbicacion}">
+                                        <span class="fowe_bo teta_up">ubicacion:</span> {sUbicacionMod}
+                                    </p>
+                                    <p class="{destacadoTelefono}">
+                                        <span class="fowe_bo teta_up">telefono:</span> {sTelefonoMod}
+                                    </p>
+                                    <p class="{destacadoDomicilio}">
+                                        <span class="fowe_bo teta_up">domicilio:</span> {sDomicilioMod}
+                                    </p>
+                                </section>
+                                <section class="teal_le">
+                                    <h3 class="mabo3">Informaci&oacute;n Extra</h3>
+
+                                    <p class="{destacadoNombrePadre}">
+                                        <span class="fowe_bo teta_up">Nombre Padre:</span> {sNombreApellidoPadreMod}
+                                    </p>
+                                    <p class="{destacadoOcupacionPadre}">
+                                        <span class="fowe_bo teta_up">Ocupaci&oacute;n Padre</span><br>{sOcupacionPadreMod}
+                                    </p>
+                                    <p class="{destacadoNacimientoPadre}">
+                                        <span class="fowe_bo teta_up">Nacimiento Padre:</span> {sNacimientoPadreMod}
+                                    </p>
+                                    <p class="{destacadoNombreMadre}">
+                                        <span class="fowe_bo teta_up">Nombre Madre:</span> {sNombreApellidoMadreMod}
+                                    </p>
+                                    <p class="{destacadoOcupacionMadre}">
+                                        <span class="fowe_bo teta_up">Ocupaci&oacute;n Madre</span><br>{sOcupacionMadreMod}
+                                    </p>
+                                    <p class="{destacadoNacimientoMadre}">
+                                        <span class="fowe_bo teta_up">Nacimiento Madre:</span> {sNacimientoMadreMod}
+                                    </p>
+                                    <p class="{destacadoNombreHermanos}">
+                                        <span class="fowe_bo teta_up">Hermanos</span><br>{sNombreHermanosMod}
+                                    </p>
+                                    <p class="{destacadoInstitucion}">
+                                        <span class="fowe_bo teta_up">Instituci&oacute;n:</span> <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionIdMod}">{sNombreInstitucionMod}</a>
+                                    </p>
+                                </section>
+                                <section class="teal_le">
+                                    <p class="{destacadoFotoPerfil}">
+                                        <span class="fowe_bo teta_up">Foto de Perfil</span><br>
+                                        <a href="{hrefFotoPerfilActualAmpliadaMod}" rel="prettyPhoto">
+                                            <img src="{scrFotoPerfilActualMod}" />
+                                        </a>
+                                    </p>
+                                </section>
+                            </article>
+                        </section>
+                        <section class="teal_le">
+                            <button class="aprobarModeracion green" rel="{personaId}">Aprobar</button>
+                            <button class="rechazarModeracion" rel="{personaId}">Rechazar</button>
+                        </section>
+                    </article>
+                </td>
+            </tr>
+        <!--EndPersonasModeradasBlock-->
+        <!--BeginNoRecordsPersonasModeradasBlock-->
+            <tr>
+                <td colspan="3">{sNoRecords}</td>
+            </tr>
+        <!--EndNoRecordsPersonasModeradasBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoModeracionesBlock-->

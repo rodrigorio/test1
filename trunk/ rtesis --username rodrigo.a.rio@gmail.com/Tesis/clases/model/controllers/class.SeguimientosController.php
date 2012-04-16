@@ -69,7 +69,7 @@ class SeguimientosController
 
     public function getDiscapacitadoById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
-            $filtro = array('d.id' => $iId);
+            $filtro = array('p.id' => $iId);
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             $aDiscapacitado = $oDiscapacitadoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
             if(null !== $aDiscapacitado){
@@ -160,8 +160,9 @@ class SeguimientosController
                 
                 $oDiscapacitado->setUsuario($oUsuarioSesion);
                 $oDiscapacitado->setFotoPerfil($oFotoPerfil);
-                
-                $result = $oDiscapacitadoIntermediary->guardarModeracion($oDiscapacitado);
+
+                $cambioFoto = true;
+                $result = $oDiscapacitadoIntermediary->guardarModeracion($oDiscapacitado, $cambioFoto);
                 return array($result, true);
             }else{
                 //si el usuario que creo la persona ya no existe mas
@@ -203,6 +204,7 @@ class SeguimientosController
         try{
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             if(!$oDiscapacitadoIntermediary->tieneSeguimientos($oDiscapacitado->getId())){
+                //FALTA BORRAR LOS ARCHIVOS SI TIENE FOTO PERFIL
                 return $oDiscapacitadoIntermediary->borrar($oDiscapacitado);
             }else{
                 return false;

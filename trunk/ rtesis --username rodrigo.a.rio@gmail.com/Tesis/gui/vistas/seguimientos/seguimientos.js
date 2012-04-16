@@ -115,6 +115,7 @@ $(document).ready(function(){
                     closeOnEscape:true
                 });
                 bindEventsPersonaForm(); //la funcion esta en personas.js
+                $("a[rel^='prettyPhoto']").prettyPhoto();
             }            
         );
         return false;
@@ -144,6 +145,7 @@ $(document).ready(function(){
                     closeOnEscape:true
                 });
                 bindEventsPersonaVerFicha(); //la funcion esta en personas.js
+                $("a[rel^='prettyPhoto']").prettyPhoto();
             }
         );
         return false;

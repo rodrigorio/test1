@@ -101,4 +101,14 @@ $(function () {
 			$(this).parent().parent().find("section, footer").toggle();
 		}
 	);
+
+        //para las filas desplegables de una tabla.
+	$(".desplegable").live("click", function(){
+            var id = $(this).attr("rel");
+            if($("#desplegable_" + id).css("display") == "none"){
+                $("#desplegable_" + id).show();
+            }else{
+                $("#desplegable_" + id).hide();
+            }
+	});
 });

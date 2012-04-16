@@ -13,7 +13,7 @@ function verificarUsoEspecialidad(id){
 	});
 }
 function eliminarEspecialidad(id){
-   if(confirm("Está seguro que desea eliminar esta especialidad?")){
+   if(confirm("Esta seguro que desea eliminar esta especialidad?")){
 		$.ajax({
 			type: "POST",
 		   	url: "admin/eliminar-especialidad",
