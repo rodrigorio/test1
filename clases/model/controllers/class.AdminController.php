@@ -137,11 +137,11 @@ class AdminController
             if($oDiscapacitadoIntermediary->existeModeracion($filtro)){
                 $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iDiscapacitadoId);
                 list($result, $cambioFoto) = $oDiscapacitadoIntermediary->aplicarCambiosModeracion($oDiscapacitado);
-                if($result && $cambioFoto && null !== $oDiscapacitado->getFoto()){
+                if($result && $cambioFoto && null !== $oDiscapacitado->getFotoPerfil()){
                     //si hay foto nueva borro los archivos del sistema. Tengo q pasar el objeto para reutilizar el metodo de comunidad controller
-                    ComunidadController::getInstance()->borrarFotoPerfil($oDiscapacitado, $pathServidor);
-                    $oDiscapacitado = null;
+                    ComunidadController::getInstance()->borrarFotoPerfil($oDiscapacitado, $pathServidor);                    
                 }
+                $oDiscapacitado = null;
             }
             return $result;
         }catch(Exception $e){

@@ -95,11 +95,11 @@ body, select, input, textarea { color:#666; }
 /*  Fonts  */
 @font-face {
 	font-family:'PTSansBoldItalic';
-	src:url('fonts/PTS76F-webfont.eot');
-	src:url('fonts/PTS76F-webfont86d7.eot?iefix') format('eot'),
-		url('fonts/PTS76F-webfont.woff') format('woff'),
-		url('fonts/PTS76F-webfont.ttf') format('truetype'),
-		url('fonts/PTS76F-webfont.svg#webfontj4PX2AeP') format('svg');
+	src:url("fonts/PTS76F-webfont.eot");
+	src:url("fonts/PTS76F-webfont86d7.eot?iefix") format('eot'),
+		url("fonts/PTS76F-webfont.woff") format('woff'),
+		url("fonts/PTS76F-webfont.ttf") format('truetype'),
+		url("fonts/PTS76F-webfont.svg#webfontj4PX2AeP") format('svg');
 	font-weight:normal;
 	font-style:normal;
 }
@@ -1267,3 +1267,29 @@ body.login { background:#e6e6e6; }
 .login form fieldset { margin-bottom:15px; }
 .login form dt { width:50px; }
 .login form dd { left:65px; }
+
+/* mensajes */
+#msg_top{left:50%; width:480px; text-align:center; overflow:hidden; position:absolute; top:-1px; z-index:10000; margin-left:-250px}
+.info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
+.info{border:1px solid #FFCC34; background-color:#FFF4C2}
+.error{border:1px solid #FF3835; background-color:#FFC5C4}
+.correcto{border:1px solid #42FF35; background-color:#C8FFC4}
+
+/* dialog */
+.ui-dialog-content{background-color:#FFF !important; padding:5px !important;}
+.ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important; border-radius:5px;}
+.ui-dialog-buttonpane{padding:0px; margin:0px !important; background-color:#DDD; border-radius:0px 0px 5px 5px;}
+.ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 30px #333; -webkit-box-shadow:0 0 5px #000}
+.ui-dialog-titlebar{border-radius:5px 5px 0 0; padding:8px; font-size:1.7em; background:#CCC url("../../images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #666; border-bottom:1px solid #999}
+.ui-dialog-titlebar-close{padding:1px !important;}
+.ui-dialog-title{margin:0px; text-shadow:#666 1px 1px 1px}
+
+/*** ICONS (AGREGAR A MEDIDA QUE SE VAYA NECESITANDO PORQUE EN REALIDAD YA TENEMOS LOS NUESTROS Q SON MEJORES)***/
+/* states and images */
+.ui-icon{width:16px; height:16px; background-image: url("../../images/iconos/ui-icons_222222_256x240.png")}
+.ui-widget-content .ui-icon {background-image: url("../../images/iconos/ui-icons_222222_256x240.png")}
+.ui-widget-header .ui-icon {background-image: url("../../images/iconos/ui-icons_222222_256x240.png")}
+.ui-state-default .ui-icon { background-image: url("../../images/iconos/ui-icons_888888_256x240.png")}
+
+/* positioning */
+.ui-icon-closethick{background-position:-96px -128px}
