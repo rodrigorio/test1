@@ -160,11 +160,26 @@ class AdminController
     public function rechazarModeracionDiscapacitado($iDiscapacitadoId, $pathServidor)
     {
         try{
-            $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            $filtro = array('dm.id' => $iDiscapacitadoId);
+            $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);            
             $result = false;
+            $filtro = array('dm.id' => $iDiscapacitadoId);            
             if($oDiscapacitadoIntermediary->existeModeracion($filtro)){
-                //falta terminar
+                $aDiscapacitadoMod = $oDiscapacitadoIntermediary->obtenerModeracion($filtro, $iRecordsTotal);
+                $oDiscapacitadoMod = $aDiscapacitadoMod[0];
+                
+                list($result, $cambioFoto) = $oDiscapacitadoIntermediary->rechazarCambiosModeracion($iDiscapacitadoId);
+                //si cambio foto hay que borrar los archivos del servidor.
+                if($result && $cambioFoto){
+                    $oFotoMod = $oDiscapacitadoMod->getFotoPerfil();
+                    $aNombreArchivos = $oFotoMod->getArrayNombres();
+
+                    foreach($aNombreArchivos as $nombreServidorArchivo){
+                        $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
+                        }
+                    }
+                }
             }
             return $result;
         }catch(Exception $e){

@@ -515,15 +515,28 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
         }            
     }
 
-    public function rechazarCambiosModeracion($iDiscapacitadoModId)
+    public function rechazarCambiosModeracion($iDiscapacitadoId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from discapacitados_moderacion where id = ".$db->escape($iDiscapacitadoModId,false,MYSQL_TYPE_INT));
-            //guarda que aca tmb tiene que borrar los archivos de las fotos si no se aprueba.
+
+            $db->begin_transaction();
+
+            //me fijo si la foto es nueva o se mantiene la anterior.
+            $sSQL = "SELECT cambioFoto FROM discapacitados_moderacion dm WHERE dm.id = '".$iDiscapacitadoId."'";
+            $db->query($sSQL);
+            $result = $db->oNextRecord();
+            $cambioFoto = ($result->cambioFoto == "1")?true:false;
+
+            $db->execSQL("delete from discapacitados_moderacion where id = '".$iDiscapacitadoId."'");
+
             $db->commit();
+
+            return array(true, $cambioFoto);
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
+            return array(false, false);
         }        
     }
 
