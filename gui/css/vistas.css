@@ -130,7 +130,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
 .bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
-.bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
+.bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
 .po_re{position:relative !important}
@@ -143,7 +143,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 .fost_it{font-style:italic;}
 
 .baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
-.ba_no{background:none !important}
+.ba_no, .ba_no:hover{background:none !important}
 
 .bora{-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
 .bora2{-moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;}
@@ -364,6 +364,9 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha05{text-align:left; padding:10px; background-color:#FFF; border:1px solid #CCC}
 .ficha05 .titulo{font-size:1.7em; border-bottom:1px solid #AAA; padding-bottom:10px; margin-bottom:10px;}
 
+/* debajo de la ficha como un anexo */
+.anexoFicha{padding:10px; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #999 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border:1px solid #CCC; border-top:1px solid #333}
+
 .slide01{border-top:1px dashed #999; padding-top:20px;}
 .slide01 .slideExpanded, .slide01 .slideCollapsed{background-color:#FFF; font-size:1.7em; cursor:pointer;}
 .slide01 .slideExpanded .mi{background-position:-96px -224px}
@@ -479,6 +482,8 @@ p .destacado{font-weight:bold;}
 .defVal:focus{color:#333} /* Para textareas e inputs con valores por defecto */
 
 .marca_obligatorio{color:red; font-size:12px; font-weight:bold;}
+
+.desplegable{cursor:pointer} /* filas desplegables */
 
 .disabled, .ajaxdelay *{opacity:0.5; filter:alpha(opacity = 40)}
 .disabled{color:#AAA !important; cursor:default !important;}

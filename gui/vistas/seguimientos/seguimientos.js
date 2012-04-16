@@ -90,7 +90,13 @@ function buscarSeguimientos(){
     });
 }
 
-$(document).ready(function(){   
+$(document).ready(function(){
+
+    $(".close.ihover").live("click", function(){
+        var id = $(this).attr("rel");
+        $("#desplegable_" + id).hide();
+    });
+
     $("#formCrearSeguimiento").validate(validateFormSeguimiento);
     $("#formCrearSeguimiento").ajaxForm(optionsAjaxFormSeguimiento);
     

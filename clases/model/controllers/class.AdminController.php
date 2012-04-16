@@ -138,8 +138,15 @@ class AdminController
                 $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iDiscapacitadoId);
                 list($result, $cambioFoto) = $oDiscapacitadoIntermediary->aplicarCambiosModeracion($oDiscapacitado);                
                 if($result && $cambioFoto && null !== $oDiscapacitado->getFotoPerfil()){
-                    //si hay foto nueva borro los archivos del sistema. Tengo q pasar el objeto para reutilizar el metodo de comunidad controller
-                    ComunidadController::getInstance()->borrarFotoPerfil($oDiscapacitado, $pathServidor);                    
+                    //si hay foto nueva borro los archivos del sistema.
+                    $aNombreArchivos = $oDiscapacitado->getFotoPerfil()->getArrayNombres();
+                    
+                    foreach($aNombreArchivos as $nombreServidorArchivo){
+                        $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
+                        }
+                    }
                 }
                 $oDiscapacitado = null;
             }

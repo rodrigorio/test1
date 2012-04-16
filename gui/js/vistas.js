@@ -290,6 +290,16 @@ $(document).ready(function(){
         }       
     });
 
+    //para las filas desplegables de una tabla.
+    $(".desplegable").live("click", function(){
+        var id = $(this).attr("rel");
+        if($("#desplegable_" + id).css("display") == "none"){
+            $("#desplegable_" + id).show();
+        }else{
+            $("#desplegable_" + id).hide();
+        }
+    });
+
     //SUPER FISH MENU
     $(function(){
         $('.menuList').superfish();

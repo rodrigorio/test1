@@ -350,7 +350,7 @@ class PersonasControllerAdmin extends PageControllerAbstract
 
         try{
             $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
-            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos();
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
             $result = AdminController::getInstance()->aprobarModeracionDiscapacitado($iPersonaIdForm, $pathServidor);
 
             $this->restartTemplate();
