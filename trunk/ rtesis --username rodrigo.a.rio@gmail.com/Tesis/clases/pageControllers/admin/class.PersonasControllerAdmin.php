@@ -380,6 +380,42 @@ class PersonasControllerAdmin extends PageControllerAbstract
     
     private function rechazarCambiosModeracion()
     {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
+        $iPersonaIdForm = $this->getRequest()->getParam('personaId');
+        if(empty($iPersonaIdForm)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+
+        try{
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $result = AdminController::getInstance()->rechazarModeracionDiscapacitado($iPersonaIdForm, $pathServidor);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "La accion se proceso con exito";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se proceso la accion";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se proceso la accion";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();           
     }
 }
