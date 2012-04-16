@@ -106,7 +106,7 @@ $(function () {
 	$(".desplegable").live("click", function(){
             var id = $(this).attr("rel");
             if($("#desplegable_" + id).css("display") == "none"){
-                $("#desplegable_" + id).show();
+                $("#desplegable_" + id).show("slow");
             }else{
                 $("#desplegable_" + id).hide();
             }

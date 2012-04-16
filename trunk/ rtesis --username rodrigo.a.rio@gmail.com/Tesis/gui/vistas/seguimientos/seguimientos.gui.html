@@ -175,22 +175,41 @@
                <td class="teal_ce">Modificar</td>
            </tr>
            <!--BeginListaDeSeguimientosBlock-->
-           <tr class="{odd}">
-               <td><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
-               <td>{sSeguimientoPersonaDNI}</td>
-               <td>{sSeguimientoTipo}</td>
-               <td>{sSeguimientoFechaCreacion}</td>
-               <td>
+           <tr class="{iPersonaId}" class="{odd}">
+               <td class="desplegable" rel="{iPersonaId}"><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
+               <td class="desplegable" rel="{iPersonaId}">{sSeguimientoPersonaDNI}</td>
+               <td class="desplegable" rel="{iPersonaId}">{sSeguimientoTipo}</td>
+               <td class="desplegable" rel="{iPersonaId}">{sSeguimientoFechaCreacion}</td>
+               <td class="desplegable" rel="{iPersonaId}">
                     <select name="estado" id="estado" onchange="cambiarEstadoSeguimiento(this,{iSeguimientoId});">
                         <!--BeginEstadoSeguimientoBlock-->
                         <option value="{sEstadoSeguimiento}" {sSelectedEstadoSeguimiento}>{sEstadoSeguimiento}</option>
                         <!--EndEstadoSeguimientoBlock-->
                     </select>
                </td>
-               <td class="teal_ce"><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
+               <td class="desplegable teal_ce" rel="{iPersonaId}"><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
                <!--BeginPermisoEditarSeguimientoBlock-->
-               <td class="teal_ce"><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
+               <td class="desplegable teal_ce" rel="{iPersonaId}"><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
                <!--EndPermisoEditarSeguimientoBlock-->
+           </tr>
+           <tr class="{iPersonaId} ba_no">
+                <td id="desplegable_{iPersonaId}" class="pa0 bobo_no" colspan="7" style="display:none;">
+                    <div class="anexoFicha grupo">
+                        <div class="fte3 pato mabo2 fl_le">Detalles</div>
+                        <span rel="{iPersonaId}" class="i bs close ihover fl_ri"></span>
+                        <br clear="all">
+                        <div class="fl_le mari3 lihe2">
+                            <span class="fowe_bo teta_up">Ultima Modificaci&oacute;n:</span> {sUltimaModificacion}<br>
+                            <span class="fowe_bo teta_up">Cantidad Elementos Multimedia:</span> {sElementosMultimedia}<br>
+                            <span class="fowe_bo teta_up">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}
+                        </div>
+                        <div class="fl_le lihe2">
+                            <span class="fowe_bo teta_up">Frecuencia de Encuentros:</span> {sFrecuenciaEncuentros}<br>
+                            <span class="fowe_bo teta_up">D&iacute;a y horario encuentros:</span> {sDiaHorarioEncuentros}<br>
+                            <span class="fowe_bo teta_up">Tipo de Practica:</span> {sTipoPractica}
+                        </div>
+                    </div>
+                </td>
            </tr>
            <!--EndListaDeSeguimientosBlock-->
            <!--BeginNoRecordsListaDeSeguimientosBlock-->
