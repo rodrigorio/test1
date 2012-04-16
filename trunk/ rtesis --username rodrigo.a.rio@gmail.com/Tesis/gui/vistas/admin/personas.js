@@ -13,15 +13,23 @@ function aprobarModeracion(personaId){
                     //remuevo la fila y la ficha de la persona que se aprobo.
                     $("."+personaId).remove();
                 }
-                
-                //devuelve un msg_top que lo agrego en el body
-                msg_top = $(data.html).appendTo('body');
 
-                msg_top.show('drop', {direction: "down"}, 1000);
-                setTimeout(function(){
-                    msg_top.hide('drop', {direction: "up"}, 1000)
-                    msg_top.remove();
-                }, 5000);
+                dialog = $('<div id="dialog" title="Aprobar Moderacion"></div>').appendTo('body');
+                dialog.html(data.html);
+                               
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
             }
         });
     }

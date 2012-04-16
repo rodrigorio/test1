@@ -76,6 +76,9 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             if(isset($filtro['p.id']) && $filtro['p.id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
             }
+            if(isset($filtro['d.id']) && $filtro['d.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
+            }
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
                 $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
             }
@@ -480,11 +483,11 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                         " WHERE dm.id = f.id ".
                         " AND dm.id = '".$iDiscapacitadoId."'";
             }else{
-                $sSQL = " INSERT INTO fotos f ".
-                        "   (nombreBigSize, nombreMediumSize, nombreSmallSize, ".
+                $sSQL = " INSERT INTO fotos ".
+                        "   (personas_id, nombreBigSize, nombreMediumSize, nombreSmallSize, ".
                         "    orden, titulo, descripcion, tipo) ".
                         " SELECT ".
-                        "    dm.nombreBigSize, dm.nombreMediumSize, dm.nombreSmallSize, ".
+                        "    '".$iDiscapacitadoId."', dm.nombreBigSize, dm.nombreMediumSize, dm.nombreSmallSize, ".
                         "    0, 'Foto de perfil', '', 'perfil' ".                                  
                         " FROM discapacitados_moderacion dm WHERE dm.id = '".$iDiscapacitadoId."'";
             }

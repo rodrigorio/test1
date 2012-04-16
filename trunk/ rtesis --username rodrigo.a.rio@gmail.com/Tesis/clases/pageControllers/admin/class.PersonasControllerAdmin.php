@@ -357,22 +357,23 @@ class PersonasControllerAdmin extends PageControllerAbstract
 
             if($result){
                 $msg = "Los cambios se guardaron con exito";
-                $bloque = 'MsgTopCorrectoBlockI32';
+                $bloque = 'MsgCorrectoBlockI32';
                 $this->getJsonHelper()->setSuccess(true);
             }else{
                 $msg = "Ocurrio un error, no se guardaron los cambios";
-                $bloque = 'MsgTopErrorBlockI32';
+                $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);                
             }
             
         }catch(Exception $e){
-            $msg = "Ocurrio un error, no se guardaron los cambios";
-            $bloque = 'MsgTopErrorBlockI32';
+            //$msg = "Ocurrio un error, no se guardaron los cambios";
+            $msg = $e->getMessage();
+            $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
         }
 
         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
-        $this->getTemplate()->set_var("sMensajeTop", $msg);
+        $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
         $this->getJsonHelper()->sendJsonAjaxResponse();   
