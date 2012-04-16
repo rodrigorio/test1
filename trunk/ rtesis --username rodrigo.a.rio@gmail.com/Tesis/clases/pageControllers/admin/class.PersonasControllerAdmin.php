@@ -366,8 +366,7 @@ class PersonasControllerAdmin extends PageControllerAbstract
             }
             
         }catch(Exception $e){
-            //$msg = "Ocurrio un error, no se guardaron los cambios";
-            $msg = $e->getMessage();
+            $msg = "Ocurrio un error, no se guardaron los cambios";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
         }

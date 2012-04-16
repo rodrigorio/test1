@@ -407,7 +407,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " usuarios_id = ".$iUsuarioId.", ".
                     " nombreBigSize = ".$this->escStr($nombreBigSize).", ".
                     " nombreMediumSize = ".$this->escStr($nombreMediumSize).", ".
-                    " nombreSmallSize = ".$this->escStr($nombreSmallSize)." ".
+                    " nombreSmallSize = ".$this->escStr($nombreSmallSize).", ".
                     " cambioFoto = ".$cambioFoto." ";
 
             $db->execSQL($sSQL);
@@ -475,13 +475,13 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $sSQL = " UPDATE discapacitados_moderacion dm, fotos f ".
                         " SET f.nombreBigSize = dm.nombreBigSize, ".
                         " f.nombreMediumSize = dm.nombreMediumSize, ".
-                        " f.nombreSmallSize = dm.nombreSmallSize, ";
+                        " f.nombreSmallSize = dm.nombreSmallSize, ".
                         " f.orden = 0, ".
                         " f.titulo = 'Foto de perfil', ".
                         " f.descripcion = '', ".
                         " f.tipo = 'perfil' ".
-                        " WHERE dm.id = f.id ".
-                        " AND dm.id = '".$iDiscapacitadoId."'";
+                        " WHERE dm.id = f.personas_id ".
+                        " AND dm.id = '".$iDiscapacitadoId."'";                 
             }else{
                 $sSQL = " INSERT INTO fotos ".
                         "   (personas_id, nombreBigSize, nombreMediumSize, nombreSmallSize, ".
@@ -500,7 +500,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $result = $db->oNextRecord();
             $cambioFoto = ($result->cambioFoto == "1")?true:false;
 
-            $sSQL = " DELETE FROM discapacitados_moderacion WHERE id = '".$iDiscapacitadoId."'";
+            $sSQL = "DELETE FROM discapacitados_moderacion WHERE id = '".$iDiscapacitadoId."'";
 
             $db->execSQL($sSQL);
 

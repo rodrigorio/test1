@@ -539,7 +539,6 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setMessage($mensaje);
 
         }catch(Exception $e){
-
             $this->getJsonHelper()->setSuccess(false);
         }
 
