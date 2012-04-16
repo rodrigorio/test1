@@ -128,6 +128,28 @@ class AdminController
         }
     }
 
+    public function aprobarModeracionDiscapacitado($iDiscapacitadoId, $pathServidor)
+    {
+        try{
+            $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
+            $filtro = array('dm.id' => $iDiscapacitadoId);
+            $result = false;
+            if($oDiscapacitadoIntermediary->existeModeracion($filtro)){
+                $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iDiscapacitadoId);
+                list($result, $cambioFoto) = $oDiscapacitadoIntermediary->aplicarCambiosModeracion($oDiscapacitado);
+                if($result && $cambioFoto && null !== $oDiscapacitado->getFoto()){
+                    //si hay foto nueva borro los archivos del sistema. Tengo q pasar el objeto para reutilizar el metodo de comunidad controller
+                    ComunidadController::getInstance()->borrarFotoPerfil($oDiscapacitado, $pathServidor);
+                    $oDiscapacitado = null;
+                }
+            }
+            return $result;
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
     public function eliminarInstitucion($oInstitucion){
         try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);

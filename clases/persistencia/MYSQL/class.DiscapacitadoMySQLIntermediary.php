@@ -33,8 +33,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 	public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = $this->conn;
-            $filtro = $this->escapeStringArray($filtro);
-
+            
             $sSQL = "SELECT
                         p.id as iId, 
                         p.nombre as sNombre,
@@ -73,10 +72,32 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     JOIN discapacitados d ON p.id = d.id 
                     LEFT JOIN fotos f ON f.personas_id = d.id ";
 
-                    if(!empty($filtro)){
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
-                    }
-                        
+            $WHERE = array();
+            if(isset($filtro['p.id']) && $filtro['p.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
+                $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+            }
+            if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['p.documento_tipos_id']) && $filtro['p.documento_tipos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.documento_tipos_id', $filtro['p.documento_tipos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['p.email']) && $filtro['p.email']!=""){
+                $WHERE[] = $this->crearFiltroTexto('p.email', $filtro['p.email']);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -316,15 +337,15 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
     /**
      * Si o si se inserta no se puede actualizar una moderacion
      */
-    public function guardarModeracion($oDiscapacitado){
+    public function guardarModeracion($oDiscapacitado, $cambioFoto = false){
         try{            
-            return $this->insertarModeracion($oDiscapacitado);
+            return $this->insertarModeracion($oDiscapacitado, $cambioFoto);
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }        
     }
 
-    public function insertarModeracion($oDiscapacitado)
+    public function insertarModeracion($oDiscapacitado, $cambioFoto)
     {
         try{
 
@@ -357,6 +378,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $nombreSmallSize = "";
             }
 
+            $cambioFoto = ($cambioFoto)?"1":"0";
+
             $db->begin_transaction();
 
             $sSQL = " insert into discapacitados_moderacion ".
@@ -381,7 +404,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " usuarios_id = ".$iUsuarioId.", ".
                     " nombreBigSize = ".$this->escStr($nombreBigSize).", ".
                     " nombreMediumSize = ".$this->escStr($nombreMediumSize).", ".
-                    " nombreSmallSize = ".$this->escStr($nombreSmallSize)." ";
+                    " nombreSmallSize = ".$this->escStr($nombreSmallSize)." ".
+                    " cambioFoto = ".$cambioFoto." ";
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
@@ -403,10 +427,13 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
      *
      * Luego borra el registro de la tabla temporal
      */
-    public function aplicarCambiosModeracion($iDiscapacitadoId)
+    public function aplicarCambiosModeracion($oDiscapacitado)
     {
         try{
             $db = $this->conn;
+
+            $iDiscapacitadoId = $oDiscapacitado->getId();
+            $oFoto = $oDiscapacitado->getFotoPerfil();
 
             $db->begin_transaction();
 
@@ -435,37 +462,66 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " d.ocupacionPadre = dm.ocupacionPadre, " .
                     " d.ocupacionMadre = dm.ocupacionMadre, " .
                     " d.nombreHermanos = dm.nombreHermanos ".
-                    " WHERE dm.id = p.id ".
+                    " WHERE dm.id = d.id ".
                     " AND dm.id = '".$iDiscapacitadoId."'";
             
             $db->execSQL($sSQL);
 
-            $sSQL = " UPDATE discapacitados_moderacion dm, fotos f ".
-                    " SET f.nombreBigSize = dm.nombreBigSize, ".
-                    " f.nombreMediumSize = dm.nombreMediumSize, ".
-                    " f.nombreSmallSize = dm.nombreSmallSize, ";
-                    " f.orden = 0, ".
-                    " f.titulo = 'Foto de perfil', ".
-                    " f.descripcion = '', ".
-                    " f.tipo = 'perfil' ".
-                    " WHERE dm.id = p.id ".
-                    " AND dm.id = '".$iDiscapacitadoId."'";
-
+            //porque puede ser que se agrega por primera vez una foto a la persona pero tiene que moderarse
+            if(null !== $oFoto && null !== $oFoto->getId()){
+                $sSQL = " UPDATE discapacitados_moderacion dm, fotos f ".
+                        " SET f.nombreBigSize = dm.nombreBigSize, ".
+                        " f.nombreMediumSize = dm.nombreMediumSize, ".
+                        " f.nombreSmallSize = dm.nombreSmallSize, ";
+                        " f.orden = 0, ".
+                        " f.titulo = 'Foto de perfil', ".
+                        " f.descripcion = '', ".
+                        " f.tipo = 'perfil' ".
+                        " WHERE dm.id = f.id ".
+                        " AND dm.id = '".$iDiscapacitadoId."'";
+            }else{
+                $sSQL = " INSERT INTO fotos f ".
+                        "   (nombreBigSize, nombreMediumSize, nombreSmallSize, ".
+                        "    orden, titulo, descripcion, tipo) ".
+                        " SELECT ".
+                        "    dm.nombreBigSize, dm.nombreMediumSize, dm.nombreSmallSize, ".
+                        "    0, 'Foto de perfil', '', 'perfil' ".                                  
+                        " FROM discapacitados_moderacion dm WHERE dm.id = '".$iDiscapacitadoId."'";
+            }
+            
             $db->execSQL($sSQL);
+
+            //me fijo si la foto es nueva o se mantiene la anterior.
+            $sSQL = "SELECT cambioFoto FROM discapacitados_moderacion dm WHERE dm.id = '".$iDiscapacitadoId."'";
+            $db->query($sSQL);
+            $result = $db->oNextRecord();
+            $cambioFoto = ($result->cambioFoto == "1")?true:false;
 
             $sSQL = " DELETE FROM discapacitados_moderacion WHERE id = '".$iDiscapacitadoId."'";
 
             $db->execSQL($sSQL);
 
             $db->commit();
-            return true;
+
+            return array(true, $cambioFoto);
            
         }catch(Exception $e){
-
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
-            return false;
+            return array(false, false);
         }            
+    }
+
+    public function rechazarCambiosModeracion($iDiscapacitadoModId)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from discapacitados_moderacion where id = ".$db->escape($iDiscapacitadoModId,false,MYSQL_TYPE_INT));
+            //guarda que aca tmb tiene que borrar los archivos de las fotos si no se aprueba.
+            $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }        
     }
 
     /**
@@ -478,10 +534,12 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
             $sSQL = "SELECT
                         dm.id as iId, dm.nombre as sNombre, dm.apellido as sApellido,
+                        dm.documento_tipos_id as iTipoDocumentoId,
                         dm.numeroDocumento as sNumeroDocumento,
                         dm.sexo as sSexo, dm.fechaNacimiento as dFechaNacimiento,
                         dm.telefono as sTelefono,
                         dm.domicilio as sDomicilio,
+                        dm.ciudades_id as iCiudadId, dm.instituciones_id as iInstitucionId,
                         dm.nombreApellidoPadre as sNombreApellidoPadre,
                         dm.nombreApellidoMadre as sNombreApellidoMadre,
                         dm.fechaNacimientoPadre as dFechaNacimientoPadre,
@@ -515,11 +573,14 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $oDiscapacitado->iId = $oObj->iId;
                 $oDiscapacitado->sNombre = $oObj->sNombre;
                 $oDiscapacitado->sApellido = $oObj->sApellido;
+                $oDiscapacitado->iTipoDocumentoId = $oObj->iTipoDocumentoId;
                 $oDiscapacitado->sNumeroDocumento = $oObj->sNumeroDocumento;
                 $oDiscapacitado->sSexo = $oObj->sSexo;
                 $oDiscapacitado->sTelefono = $oObj->sTelefono;
                 $oDiscapacitado->dFechaNacimiento = $oObj->dFechaNacimiento;
                 $oDiscapacitado->sDomicilio = $oObj->sDomicilio;
+                $oDiscapacitado->iCiudadId = $oObj->iCiudadId;
+                $oDiscapacitado->iInstitucionId = $oObj->iInstitucionId;
                 $oDiscapacitado->oCiudad = null; //a demanda
                 $oDiscapacitado->oInstitucion = null; //a demanda
                 $oDiscapacitado->oFotoPerfil = null;
@@ -543,6 +604,20 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     $fotoPerfil->sDescripcion = $oObj->sFotoDescripcion;
                     $fotoPerfil->sTipo = $oObj->sFotoTipo;
                     $oDiscapacitado->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
+                }else{
+                    if(null !== $oObj->sFotoNombreMediumSize){
+                        //se agrega foto x primera vez pero primero se modera la foto (no hay registro en la tabla foto)
+                        $oFoto = new stdClass();
+                        $oFoto->sNombreBigSize = $oObj->sFotoNombreBigSize;
+                        $oFoto->sNombreMediumSize = $oObj->sFotoNombreMediumSize;
+                        $oFoto->sNombreSmallSize = $oObj->sFotoNombreSmallSize;
+                        $oFoto->iOrden = 0;
+                        $oFoto->sTitulo = 'Foto de perfil';
+                        $oFoto->sDescripcion = '';
+                        $oFoto->sTipo = 'perfil';
+
+                        $oDiscapacitado->oFotoPerfil = Factory::getFotoInstance($oFoto);
+                    }
                 }
 
                 //creo el discapacitado
@@ -587,7 +662,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
         }        
     }
   
-    public function borrar($oDiscapacitado) {
+    public function borrar($oDiscapacitado){
         try{
             $db = $this->conn;
             $db->execSQL("delete from personas where id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT));

@@ -358,7 +358,7 @@ function bindEventsPersonaForm(){
     });
     
     $("#formPersona").validate(validateFormPersona);
-    $("#formPersona").ajaxForm(optionsAjaxFormPersona);    
+    $("#formPersona").ajaxForm(optionsAjaxFormPersona);
 }
 
 function bindEventsPersonaVerFicha()
@@ -387,6 +387,7 @@ function bindEventsPersonaVerFicha()
                     closeOnEscape:true
                 });
                 bindEventsPersonaForm();
+                $("a[rel^='prettyPhoto']").prettyPhoto();
             }
         );
         return false;
