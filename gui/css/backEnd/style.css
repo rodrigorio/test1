@@ -636,12 +636,14 @@ section[role=main] .button-link {
 }
 
 /*  Buttons :: Button :: Red  */
-.button, button {
-	border:1px solid;
-	border-color:#cb6652 #b74d39 #803121;
-	background:-moz-linear-gradient(top, #faa796, #d06c57 5%, #ae432e 100%);
-	background:-webkit-gradient(linear, left top, left bottom, from(#faa796), to(#ae432e), color-stop(0.05, #d06c57));
-	background:-o-linear-gradient(top, #faa796, #d06c57 5%, #ae432e 100%);
+.button, button {	
+	background:-moz-linear-gradient(top, #d7fa96, #abd957 5%, #78ac15 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#d7fa96), to(#78ac15), color-stop(0.05, #abd957));
+	background:-o-linear-gradient(top, #d7fa96, #abd957 5%, #78ac15 100%);
+	color:#f7ffe5;
+	border-width:1px;
+        border-style:solid;
+        border-color:#8dcc18 #7cb315 #6a9912;
 	padding:4px 15px 3px;
 	margin-bottom:2px;
 	-webkit-box-shadow:0 1px 2px #999;
@@ -649,7 +651,6 @@ section[role=main] .button-link {
 	box-shadow:0 1px 2px #999;
 	font-weight:normal;
 	font-family:'PTSansBold', Arial, sans-serif;
-	color:#fce8e3;
 	height:28px;
 }
 a.button {
@@ -657,13 +658,13 @@ a.button {
 	padding-top:5px;
 }
 .button:hover, button:hover {
-	background:-moz-linear-gradient(top, #faa796, #d06c57 5%, #943a28 100%);
-	background:-webkit-gradient(linear, left top, left bottom, from(#faa796), to(#943a28), color-stop(0.05, #d06c57));
-	background:-o-linear-gradient(top, #faa796, #d06c57 5%, #943a28 100%);
+	background:-moz-linear-gradient(top, #d7fa96, #abd957 5%, #659111 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#d7fa96), to(#659111), color-stop(0.05, #abd957));
+	background:-o-linear-gradient(top, #d7fa96, #abd957 5%, #659111 100%);
 	color:#fff;
 }
-.no-cssgradients .button, .no-cssgradients button { background:#ae432e url(../../images/backEnd/btns/btn_red.png) repeat-x left top; }
-.no-cssgradients .button:hover, .no-cssgradients button:hover { background:#963c2a url(../../images/backEnd/btns/btn_red_hover.png) repeat-x left top; }
+.no-cssgradients .button, .no-cssgradients button { background:#ae432e url(../../images/backEnd/btns/btn_green.png) repeat-x left top; }
+.no-cssgradients .button:hover, .no-cssgradients button:hover { background:#963c2a url(../../images/backEnd/btns/btn_green_hover.png) repeat-x left top; }
 
 /*  Buttons :: Button :: Blue  */
 .button.blue, button.blue { 
@@ -682,22 +683,22 @@ a.button {
 .no-cssgradients .button.blue, .no-cssgradients button.blue { background:#088ec8 url(../../images/backEnd/btns/btn_blue.png) repeat-x left top; }
 .no-cssgradients .button.blue:hover, .no-cssgradients button.blue:hover { background:#0a7dae url(../../images/backEnd/btns/btn_blue_hover.png) repeat-x left top; }
 
-/*  Buttons :: Button :: Green  */
-.button.green, button.green { 
-	border-color:#8dcc18 #7cb315 #6a9912;
-	background:-moz-linear-gradient(top, #d7fa96, #abd957 5%, #78ac15 100%);
-	background:-webkit-gradient(linear, left top, left bottom, from(#d7fa96), to(#78ac15), color-stop(0.05, #abd957));
-	background:-o-linear-gradient(top, #d7fa96, #abd957 5%, #78ac15 100%);
-	color:#f7ffe5;
+/*  Buttons :: Button :: Red  */
+.button.red, button.red {
+	border-color:#cb6652 #b74d39 #803121;
+	background:-moz-linear-gradient(top, #faa796, #d06c57 5%, #ae432e 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#faa796), to(#ae432e), color-stop(0.05, #d06c57));
+	background:-o-linear-gradient(top, #faa796, #d06c57 5%, #ae432e 100%);
+	color:#fce8e3;        
 }
-.button.green:hover, button.green:hover {
-	background:-moz-linear-gradient(top, #d7fa96, #abd957 5%, #659111 100%);
-	background:-webkit-gradient(linear, left top, left bottom, from(#d7fa96), to(#659111), color-stop(0.05, #abd957));
-	background:-o-linear-gradient(top, #d7fa96, #abd957 5%, #659111 100%);
+.button.red:hover, button.red:hover {
+	background:-moz-linear-gradient(top, #faa796, #d06c57 5%, #943a28 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#faa796), to(#943a28), color-stop(0.05, #d06c57));
+	background:-o-linear-gradient(top, #faa796, #d06c57 5%, #943a28 100%);
 	color:#fff;
 }
-.no-cssgradients .button.green, .no-cssgradients button.green { background:#78ac15 url(../../images/backEnd/btns/btn_green.png) repeat-x left top; }
-.no-cssgradients .button.green:hover, .no-cssgradients button.green:hover { background:#679212 url(../../images/backEnd/btns/btn_green_hover.png) repeat-x left top; }
+.no-cssgradients .button.red, .no-cssgradients button.red { background:#78ac15 url(../../images/backEnd/btns/btn_red.png) repeat-x left top; }
+.no-cssgradients .button.red:hover, .no-cssgradients button.red:hover { background:#679212 url(../../images/backEnd/btns/btn_red_hover.png) repeat-x left top; }
 
 /*  Buttons :: Button :: Gray  */
 .button.gray, button.gray { 
@@ -1279,7 +1280,7 @@ body.login { background:#e6e6e6; }
 .ui-dialog-content{background-color:#FFF !important; padding:5px !important;}
 .ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important; border-radius:5px;}
 .ui-dialog-buttonpane{padding:0px; margin:0px !important; background-color:#DDD; border-radius:0px 0px 5px 5px;}
-.ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 30px #333; -webkit-box-shadow:0 0 5px #000}
+.ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 10px #666; -webkit-box-shadow:0 0 5px #000}
 .ui-dialog-titlebar{border-radius:5px 5px 0 0; padding:8px; font-size:1.7em; background:#CCC url("../../images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #666; border-bottom:1px solid #999}
 .ui-dialog-titlebar-close{padding:1px !important;}
 .ui-dialog-title{margin:0px; text-shadow:#666 1px 1px 1px}
