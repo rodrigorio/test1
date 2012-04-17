@@ -77,7 +77,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['d.id']) && $filtro['d.id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
+                $WHERE[] = $this->crearFiltroSimple('d.id', $filtro['d.id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
                 $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
@@ -332,6 +332,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
         }catch(Exception $e){
             
             $db->rollback_transaction();
+            
             throw new Exception($e->getMessage(), 0);
             return false;
         }
@@ -678,12 +679,14 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
         }        
     }
   
-    public function borrar($oDiscapacitado){
+    public function borrar($iDiscapacitadoId){
         try{
             $db = $this->conn;
-            $db->execSQL("delete from personas where id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT));
+            $db->execSQL("delete from personas where id = '".$iDiscapacitadoId."'");
             $db->commit();
+            return true;
         }catch(Exception $e){
+            return false;
             throw new Exception($e->getMessage(), 0);
         }
     }

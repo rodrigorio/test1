@@ -406,8 +406,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
-            //$this->getRequest()->imprimirPost(true);
+                       
             $oDiscapacitado = new stdClass();
 
             $oDiscapacitado->iTipoDocumentoId = $this->getRequest()->getPost("tipoDocumento");
@@ -452,6 +451,7 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
             $oDiscapacitado->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 
             $oDiscapacitado = Factory::getDiscapacitadoInstance($oDiscapacitado);
+
             SeguimientosController::getInstance()->guardarDiscapacitado($oDiscapacitado);
 
             $this->getJsonHelper()->setValor("agregarPersona", "1");
