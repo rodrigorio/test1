@@ -270,3 +270,43 @@ function cambiarEstadoSeguimiento(me, id){
 	});
     }
 }
+
+function eliminarSeguimiento(seguimientoId)
+{
+    if(confirm("Se eliminara el seguimiento con todo el material adjunto, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"seguimientos/seguimientos-eliminar",
+            data:{seguimientoId:seguimientoId},
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    //remuevo la fila y la ficha de la persona que se aprobo.
+                    $("."+seguimientoId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Seguimiento");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Seguimiento"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}

@@ -305,8 +305,14 @@ class PluginRouteSchema extends PluginAbstract
                                         'controller' => 'seguimientos',
                                         'action'     => 'nuevoSeguimiento'
                                 ));
-        $router->addRoute('seguimientosSeguimientosNuevoSeguimiento', $route);
-
+        $router->addRoute('seguimientosSeguimientosNuevoSeguimiento', $route);        
+        $route = new RegexRoute('seguimientos/seguimientos-eliminar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('seguimientosSeguimientosEliminar', $route);
         $route = new RegexRoute('seguimientos/buscar-discapacitados',
                                 array(
                                         'module' => 'seguimientos',
