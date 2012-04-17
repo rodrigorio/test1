@@ -279,6 +279,8 @@ class SeguimientosController
      */
     public function eliminarSeguimiento($iSeguimientoId, $pathServidor){
         try{
+            return false;
+            
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             $result = $oSeguimientoIntermediary->borrar($oSeguimiento);
             return $result;            
