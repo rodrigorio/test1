@@ -52,11 +52,11 @@ class SeguimientosController
         }
     }
 
-    public function getSeguimientoById($iId, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function getSeguimientoById($iId){
         try{
             $filtro = array('s.id' => $iId);
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            $aSeguimiento = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
+            $aSeguimiento = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
             if(null !== $aSeguimiento){
                 return $aSeguimiento[0];
             }else{
@@ -281,7 +281,7 @@ class SeguimientosController
         try{
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             $filtro = array('f.seguimientos_id' => $iSeguimientoId);
-            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -296,7 +296,7 @@ class SeguimientosController
         try{
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             $filtro = array('a.seguimientos_id' => $iSeguimientoId);
-            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -304,7 +304,7 @@ class SeguimientosController
     }
 
     public function eliminarSeguimiento($iSeguimientoId, $pathServidor){
-        try{
+        try{            
             $oSeguimiento = $this->getSeguimientoById($iSeguimientoId);
             $aFotos = $oSeguimiento->getFotos();
             $aArchivos = $oSeguimiento->getArchivos();
@@ -338,6 +338,7 @@ class SeguimientosController
                     }                    
                 }
             }
+                        
             return $result;            
         }catch(Exception $e){
             throw new Exception($e);
