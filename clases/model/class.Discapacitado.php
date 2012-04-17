@@ -5,7 +5,7 @@
  */
 
 /**
- * Description of classPersona
+ * Description of classDiscapacitado
  *
  * @author Andres
  */

@@ -5,21 +5,39 @@
  *
  *
  */
-class Publicacion
+class Publicacion extends FichaAbstract
 {
-    private $id = null;
+    private $iUsuarioId;
+   // private $moderado?????;
+   //private $activoComentario;
+   private $sDescripcionBreve;
+   private $sKeywords;
 
-    /**
-     * En la db es un campo calculado, aca simplemente se extrae.
-     */
-    private $valoracion = null;
-
-    private $cantidadCriticas = 0;
-
-    private $titulo;
-
-    private $fechaAlta;
-
+    
+public function setUsuarioId($iUsuarioId){
+        $this->iUsuarioId = $iUsuarioId;
+    }
+    
+public function setDescripcionBreve($sDescripcionBreve){
+    	$this->sDescripcionBreve = $sDescripcionBreve;
+    }
+public function setKeywords($sKeywords){
+    	$this->sKeywords = $sKeywords;
+    }
+    
+    //gets
+public function getUsuarioId(){
+        return $this->iUsuarioId;
+    }
+    
+public function getDescripcionBreve(){
+        return $this->sDescripcionBreve;
+    }
+    
+public function getKeywords(){
+        return $this->sKeywords;
+    }
+    
     /**
      * objeto PerfilAbstract
      */

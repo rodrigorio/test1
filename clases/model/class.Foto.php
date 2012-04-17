@@ -5,6 +5,10 @@
 class Foto
 {
     private $iId;
+    private $iSeguimientosId;
+    private $iFichasAbstractasId;
+    private $iPersonasId;
+    private $iCategoriasId;
     private $sNombreBigSize;
     private $sNombreMediumSize;
     private $sNombreSmallSize;
