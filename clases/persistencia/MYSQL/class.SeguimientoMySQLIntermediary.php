@@ -102,6 +102,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 throw new Exception($e->getMessage(), 0);
             }
         }
+
 	public function existe($filtro){
     	try{
             $db = $this->conn;
@@ -128,6 +129,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             return false;
         }
     }
+    
 	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone($this->conn);
@@ -428,45 +430,18 @@ public function insertarSCC($oSeguimientoSCC)
 		}
    }
     
-   public function borrar($oSeguimiento) {
-		try{
-   			if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
-                    $this->borrarPersonalizado($oSeguimiento);
-                 }else{
-            	    $this->borrarSCC($oSeguimiento);
-                 }
-                 	}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-		}
-   	
-   
-    public function borrarPersonalizado($oSeguimientoPersonalizado) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from seguimientos where id=".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT));
-            $db->execSQL("delete from seguimientos_personalizados where id=".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
-
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-	
-public function borrarSCC($oSeguimientoSCC) {
-		try{
-			
-			$db = $this->conn;
-			$db->begin_transaction();
-			$db->execSQL("delete from seguimientos where id=".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT));
-            $db->execSQL("delete from seguimientos_scc where id=".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
-
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-
+   public function borrar($iSeguimientoId)
+   {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from seguimientos where id = '".$iSeguimientoId."'");
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            return false;
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+   	 
     public function actualizarCampoArray($objects, $cambios){}    
 }

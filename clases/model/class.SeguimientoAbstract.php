@@ -18,6 +18,14 @@ abstract class SeguimientoAbstract
    protected $sDiaHorario;
    protected $dFechaCreacion;
    protected $sEstado;
+   /*
+    * array objetos Foto
+    */
+    protected $aFotos = null;
+   /*
+    * array objetos Archivo
+    */
+    protected $aArchivos = null;
 
 public function __construct(){}
    
@@ -52,8 +60,7 @@ public function setFechaCreacion($dFechaCreacion){
 public function setEstado($sEstado){
         $this->sEstado = $sEstado;
     }
-    
-    /////////////////////////////
+
 public function getId(){
         return $this->iId;
     }
@@ -86,5 +93,35 @@ public function getFechaCreacion(){
 public function getEstado(){
       return  $this->sEstado;
     }
+
+
+    public function setFotos($aFotos)
+    {
+        $this->aFotos = $aFotos;
+    }
+    public function setArchivos($aArchivos)
+    {
+        $this->aArchivos = $aArchivos;
+    }
+
+    /**
+     * @return array|null Foto
+     */
+    public function getFotos()
+    {
+    	if($this->aFotos == null){
+            $this->aFotos = SeguimientosController::getInstance()->obtenerFotosSeguimiento($this->iId);
+    	}
+        return $this->aFotos;
+    }
+    /**
+     * @return array|null Archivo
+     */
+    public function getArchivos()
+    {
+    	if($this->aArchivos == null){
+            $this->aArchivos = SeguimientosController::getInstance()->obtenerArchivosSeguimiento($this->iId);
+    	}
+        return $this->aArchivos;
+    }
 }
-?>

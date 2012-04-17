@@ -1277,9 +1277,9 @@ body.login { background:#e6e6e6; }
 .correcto{border:1px solid #42FF35; background-color:#C8FFC4}
 
 /* dialog */
-.ui-dialog-content{background-color:#FFF !important; padding:5px !important;}
+.ui-dialog-content{background-color:#FFF !important; padding:5px !important; min-height:150px !important}
 .ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important; border-radius:5px;}
-.ui-dialog-buttonpane{padding:0px; margin:0px !important; background-color:#DDD; border-radius:0px 0px 5px 5px;}
+.ui-dialog-buttonpane{padding:0px; margin:0px !important; background-color:#EEE; border-top:1px dashed #CCC; border-radius:0px 0px 5px 5px;}
 .ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 10px #666; -webkit-box-shadow:0 0 5px #000}
 .ui-dialog-titlebar{border-radius:5px 5px 0 0; padding:8px; font-size:1.7em; background:#CCC url("../../images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #666; border-bottom:1px solid #999}
 .ui-dialog-titlebar-close{padding:1px !important;}
