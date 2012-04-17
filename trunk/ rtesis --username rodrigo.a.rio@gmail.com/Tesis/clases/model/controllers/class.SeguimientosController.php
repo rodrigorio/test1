@@ -274,15 +274,70 @@ class SeguimientosController
     }
 
     /**
-     *
-     * @TODO OJO QUE ACA HAY QUE BORRAR ARCHIVOS, FOTOS Y TODOS LOS REGISTROS DE LAS TABLAS ASOCIADAS.
+     * @return array|null
      */
+    public function obtenerFotosSeguimiento($iSeguimientoId)
+    {
+        try{
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $filtro = array('f.seguimientos_id' => $iSeguimientoId);
+            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }        
+    }
+
+    /**
+     * @return array|null
+     */
+    public function obtenerArchivosSeguimiento($iSeguimientoId)
+    {
+        try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.seguimientos_id' => $iSeguimientoId);
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }          
+    }
+
     public function eliminarSeguimiento($iSeguimientoId, $pathServidor){
         try{
-            return false;
+            $oSeguimiento = $this->getSeguimientoById($iSeguimientoId);
+            $aFotos = $oSeguimiento->getFotos();
+            $aArchivos = $oSeguimiento->getArchivos();
             
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            $result = $oSeguimientoIntermediary->borrar($oSeguimiento);
+            $result = $oSeguimientoIntermediary->borrar($iSeguimientoId);
+            if($result){
+                //borro archivos de fotos y adjuntos en el servidor, los registros en db volaron en cascada
+                if(null != $aFotos){
+                    foreach($aFotos as $oFoto){
+                        $aNombreArchivos = $oFoto->getArrayNombres();
+
+                        foreach($aNombreArchivos as $nombreServidorArchivo){
+                            $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                                unlink($pathServidorArchivo);
+                            }
+                        }                        
+                    }
+                }
+                if(null != $aArchivos){
+                    foreach($aArchivos as $oArchivo){
+                        $aNombreArchivos = $oArchivo->getArrayNombres();
+
+                        foreach($aNombreArchivos as $nombreServidorArchivo){
+                            $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                                unlink($pathServidorArchivo);
+                            }
+                        }
+                    }                    
+                }
+            }
             return $result;            
         }catch(Exception $e){
             throw new Exception($e);

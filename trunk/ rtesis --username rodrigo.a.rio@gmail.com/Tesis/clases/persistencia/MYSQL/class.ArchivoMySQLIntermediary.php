@@ -150,12 +150,12 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
     {
         try{
             $db = clone($this->conn);
-            $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         a.id as iId,
                         a.nombre as sNombre,
                         a.nombreServidor as sNombreServidor,
+                        a.descripcion as sDescripcion,
                         a.tipoMime as sTipoMime,
                         a.tamanio as iTamanio,
                         a.fechaAlta as sFechaAlta,
@@ -169,16 +169,26 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                     FROM
                         archivos a ";
 
-                    if(!empty($filtro)){
-                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
-                    }
+            $WHERE = array();
+            if(isset($filtro['a.seguimientos_id']) && $filtro['a.seguimientos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('a.seguimientos_id', $filtro['a.seguimientos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['a.fichas_abstractas_id']) && $filtro['a.fichas_abstractas_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('a.fichas_abstractas_id', $filtro['a.fichas_abstractas_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['a.usuarios_id']) && $filtro['a.usuarios_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('a.usuarios_id', $filtro['a.usuarios_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['a.categorias_id']) && $filtro['a.categorias_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('a.categorias_id', $filtro['a.categorias_id'], MYSQL_TYPE_INT);
+            }
 
-                    if (isset($sOrderBy) && isset($sOrder)){
-                        $sSQL .= " order by $sOrderBy $sOrder ";
-                    }
-                    if ($iIniLimit!==null && $iRecordCount!==null){
-                        $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-                    }
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
             
             $db->query($sSQL);
 
@@ -192,6 +202,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $oArchivo->iId                  = $oObj->iId;
                 $oArchivo->sNombre              = $oObj->sNombre;
                 $oArchivo->sNombreServidor      = $oObj->sNombreServidor;
+                $oArchivo->sDescripcion         = $oObj->sDescripcion;
                 $oArchivo->sTipoMime            = $oObj->sTipoMime;
                 $oArchivo->iTamanio             = $oObj->iTamanio;
                 $oArchivo->sFechaAlta           = $oObj->sFechaAlta;
@@ -203,10 +214,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $oArchivo->bPublico             = $oObj->bPublico;
                 $oArchivo->bActivoComentarios   = $oObj->bActivoComentarios;
 
-                //creo el usuario
-                $oArchivo = Factory::getArchivoInstance($oArchivo);
-
-                $aArchivos[] = $oArchivo;
+                $aArchivos[] = Factory::getArchivoInstance($oArchivo);
             }
 
             return $aArchivos;
