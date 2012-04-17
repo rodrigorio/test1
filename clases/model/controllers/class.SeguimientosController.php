@@ -273,10 +273,15 @@ class SeguimientosController
         }
     }
 
-    public function eliminarSeguimiento($oSeguimiento){
+    /**
+     *
+     * @TODO OJO QUE ACA HAY QUE BORRAR ARCHIVOS, FOTOS Y TODOS LOS REGISTROS DE LAS TABLAS ASOCIADAS.
+     */
+    public function eliminarSeguimiento($iSeguimientoId, $pathServidor){
         try{
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            return $oSeguimientoIntermediary->borrar($oSeguimiento);
+            $result = $oSeguimientoIntermediary->borrar($oSeguimiento);
+            return $result;            
         }catch(Exception $e){
             throw new Exception($e);
             return false;

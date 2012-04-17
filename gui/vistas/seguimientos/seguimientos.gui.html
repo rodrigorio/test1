@@ -171,33 +171,35 @@
                <td>Tipo</td>
                <td>FechaCreacion</td>
                <td>Estado</td>
-               <td class="teal_ce">Ampliar</td>
-               <td class="teal_ce">Modificar</td>
+               <td class="teal_ce"></td>
            </tr>
            <!--BeginListaDeSeguimientosBlock-->
-           <tr class="{iPersonaId}" class="{odd}">
-               <td class="desplegable" rel="{iPersonaId}"><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
-               <td class="desplegable" rel="{iPersonaId}">{sSeguimientoPersonaDNI}</td>
-               <td class="desplegable" rel="{iPersonaId}">{sSeguimientoTipo}</td>
-               <td class="desplegable" rel="{iPersonaId}">{sSeguimientoFechaCreacion}</td>
-               <td class="desplegable" rel="{iPersonaId}">
+           <tr class="{iSeguimientoId}" class="{odd}">
+               <td class="desplegable" rel="{iSeguimientoId}"><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
+               <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoPersonaDNI}</td>
+               <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoTipo}</td>
+               <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoFechaCreacion}</td>
+               <td class="desplegable" rel="{iSeguimientoId}">
                     <select name="estado" id="estado" onchange="cambiarEstadoSeguimiento(this,{iSeguimientoId});">
                         <!--BeginEstadoSeguimientoBlock-->
                         <option value="{sEstadoSeguimiento}" {sSelectedEstadoSeguimiento}>{sEstadoSeguimiento}</option>
                         <!--EndEstadoSeguimientoBlock-->
                     </select>
                </td>
-               <td class="desplegable teal_ce" rel="{iPersonaId}"><span class="i mi expand" onclick="ampliarSeguimiento({iSeguimientoId});"></span></td>
-               <!--BeginPermisoEditarSeguimientoBlock-->
-               <td class="desplegable teal_ce" rel="{iPersonaId}"><span class="i bs edit" onclick="editarSeguimiento({iSeguimientoId});"></span></td>
-               <!--EndPermisoEditarSeguimientoBlock-->
+               <td class="desplegable teal_ce" rel="{iSeguimientoId}">
+                   <span title="Ampliar Seguimiento" class="i mi expand ihover mari3" onclick="ampliarSeguimiento({iSeguimientoId});"></span>
+                   <!--BeginPermisoEditarSeguimientoBlock-->
+                   <span title="Editar Seguimiento" class="i bs edit ihover mari3" onclick="editarSeguimiento({iSeguimientoId});"></span>
+                   <!--EndPermisoEditarSeguimientoBlock-->
+                   <span title="Eliminar Seguimiento" class="i bs delete ihover" onclick="eliminarSeguimiento({iSeguimientoId});"></span>
+               </td>
            </tr>
-           <tr class="{iPersonaId} ba_no">
-                <td id="desplegable_{iPersonaId}" class="pa0 bobo_no" colspan="7" style="display:none;">
+           <tr class="{iSeguimientoId} ba_no">
+                <td id="desplegable_{iSeguimientoId}" class="pa0 bobo_no" colspan="6" style="display:none;">
                     <div class="anexoFicha grupo">
                         <div class="titulo grupo">
                             <div class="fte3 fl_le">Detalles</div>
-                            <span rel="{iPersonaId}" class="i bs close ihover fl_ri"></span>
+                            <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
                         </div>
                         <br clear="all">
                         <div class="fl_le mari3 lihe2">
@@ -216,7 +218,7 @@
            <!--EndListaDeSeguimientosBlock-->
            <!--BeginNoRecordsListaDeSeguimientosBlock-->
            <tr class="{odd} ficha01">
-           		<td colspan="7" class="titulo">{sNoRecords}</td>
+                <td colspan="6" class="titulo">{sNoRecords}</td>
            </tr>
            <!--EndNoRecordsListaDeSeguimientosBlock-->
        </table>
