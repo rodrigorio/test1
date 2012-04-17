@@ -30,11 +30,11 @@ CREATE TABLE `acciones` (
   KEY `FK_acciones_controladores_pagina` (`controladores_pagina_id`),
   KEY `grupo` (`grupo`),
   CONSTRAINT `FK_acciones_controladores_pagina` FOREIGN KEY (`controladores_pagina_id`) REFERENCES `controladores_pagina` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=latin1;
 
 /*Data for the table `acciones` */
 
-insert  into `acciones`(`id`,`controladores_pagina_id`,`accion`,`grupo`,`activo`) values (1,1,'index',5,1),(2,1,'redireccion404',5,1),(3,1,'sitioOffline',5,1),(4,1,'sitioEnConstruccion',5,1),(5,1,'ajaxError',5,1),(6,2,'index',5,1),(7,2,'procesar',5,1),(8,2,'redireccion404',5,1),(9,3,'index',5,1),(10,3,'formulario',5,1),(11,3,'procesar',5,1),(12,3,'redireccion404',5,1),(13,4,'index',2,1),(14,4,'redireccion404',2,1),(15,5,'index',4,1),(16,5,'redireccion404',4,1),(17,6,'index',3,1),(18,6,'redireccion404',3,1),(19,6,'procesar',3,1),(20,6,'formulario',3,1),(21,6,'listado',3,1),(22,7,'index',1,1),(23,7,'redireccion404',1,1),(24,2,'recuperarContrasenia',5,1),(25,2,'confirmarContrasenia',5,1),(26,8,'index',5,1),(27,8,'nuevaInstitucion',5,1),(28,8,'listadoInstituciones',5,1),(29,8,'provinciasByPais',5,1),(30,8,'ciudadesByProvincia',5,1),(31,8,'procesar',5,1),(32,9,'index',4,1),(33,9,'formulario',4,1),(34,9,'procesar',4,1),(35,9,'redireccion404',4,1),(36,8,'masInstituciones',5,1),(37,8,'redireccion404',5,1),(38,8,'ampliarInstitucion',5,1),(39,8,'editarInstitucion',5,1),(40,2,'logout',4,1),(41,10,'procesarEspecialidad',1,1),(42,10,'index',1,1),(43,10,'listarEspecialidades',1,1),(44,10,'nuevaEspecialidad',1,1),(45,10,'editarEspecialidad',1,1),(46,10,'eliminarEspecialidad',1,1),(47,10,'verificarUsoDeEspecialidad',1,1),(48,10,'buscarEspecialidad',1,1),(49,11,'nuevaCategoria',1,1),(50,11,'editarCategoria',1,1),(51,11,'listarCategoria',1,1),(52,11,'eliminarCategoria',1,1),(53,11,'index',1,1),(54,11,'procesarCategoria',1,1),(55,9,'modificarPrivacidadCampo',4,1),(56,12,'index',3,1),(59,14,'nuevoSeguimiento',3,1),(62,12,'buscarDiscapacitados',3,1),(63,14,'procesarSeguimiento',3,1),(64,8,'buscarInstituciones',4,1),(65,5,'descargarArchivo',4,1),(67,14,'index',3,1),(68,14,'redireccion404',3,1),(69,12,'redireccion404',3,1),(70,13,'index',3,1),(71,13,'procesar',3,1),(73,13,'agregar',3,1),(74,13,'redireccion404',3,1),(75,14,'listar',3,1),(76,14,'buscarSeguimientos',4,1),(77,13,'modificar',3,1),(78,13,'ver',3,1),(79,15,'index',2,1),(80,15,'redireccion404',2,1),(81,15,'listarModeracionesPendientes',2,1),(82,15,'procesarModeracion',2,1),(83,15,'procesarPersona',2,1);
+insert  into `acciones`(`id`,`controladores_pagina_id`,`accion`,`grupo`,`activo`) values (1,1,'index',5,1),(2,1,'redireccion404',5,1),(3,1,'sitioOffline',5,1),(4,1,'sitioEnConstruccion',5,1),(5,1,'ajaxError',5,1),(6,2,'index',5,1),(7,2,'procesar',5,1),(8,2,'redireccion404',5,1),(9,3,'index',5,1),(10,3,'formulario',5,1),(11,3,'procesar',5,1),(12,3,'redireccion404',5,1),(13,4,'index',2,1),(14,4,'redireccion404',2,1),(15,5,'index',4,1),(16,5,'redireccion404',4,1),(17,6,'index',3,1),(18,6,'redireccion404',3,1),(19,6,'procesar',3,1),(20,6,'formulario',3,1),(21,6,'listado',3,1),(22,7,'index',1,1),(23,7,'redireccion404',1,1),(24,2,'recuperarContrasenia',5,1),(25,2,'confirmarContrasenia',5,1),(26,8,'index',5,1),(27,8,'nuevaInstitucion',5,1),(28,8,'listadoInstituciones',5,1),(29,8,'provinciasByPais',5,1),(30,8,'ciudadesByProvincia',5,1),(31,8,'procesar',5,1),(32,9,'index',4,1),(33,9,'formulario',4,1),(34,9,'procesar',4,1),(35,9,'redireccion404',4,1),(36,8,'masInstituciones',5,1),(37,8,'redireccion404',5,1),(38,8,'ampliarInstitucion',5,1),(39,8,'editarInstitucion',5,1),(40,2,'logout',4,1),(41,10,'procesarEspecialidad',1,1),(42,10,'index',1,1),(43,10,'listarEspecialidades',1,1),(44,10,'nuevaEspecialidad',1,1),(45,10,'editarEspecialidad',1,1),(46,10,'eliminarEspecialidad',1,1),(47,10,'verificarUsoDeEspecialidad',1,1),(48,10,'buscarEspecialidad',1,1),(49,11,'nuevaCategoria',1,1),(50,11,'editarCategoria',1,1),(51,11,'listarCategoria',1,1),(52,11,'eliminarCategoria',1,1),(53,11,'index',1,1),(54,11,'procesarCategoria',1,1),(55,9,'modificarPrivacidadCampo',4,1),(56,12,'index',3,1),(59,14,'nuevoSeguimiento',3,1),(62,12,'buscarDiscapacitados',3,1),(63,14,'procesarSeguimiento',3,1),(64,8,'buscarInstituciones',4,1),(65,5,'descargarArchivo',4,1),(67,14,'index',3,1),(68,14,'redireccion404',3,1),(69,12,'redireccion404',3,1),(70,13,'index',3,1),(71,13,'procesar',3,1),(73,13,'agregar',3,1),(74,13,'redireccion404',3,1),(75,14,'listar',3,1),(76,14,'buscarSeguimientos',4,1),(77,13,'modificar',3,1),(78,13,'ver',3,1),(79,15,'index',2,1),(80,15,'redireccion404',2,1),(81,15,'listarModeracionesPendientes',2,1),(82,15,'procesarModeracion',2,1),(83,15,'procesarPersona',2,1),(84,14,'eliminar',3,1);
 
 /*Table structure for table `acciones_x_perfil` */
 
@@ -653,11 +653,11 @@ CREATE TABLE `personas` (
   CONSTRAINT `FK_personas_ciudades` FOREIGN KEY (`ciudades_id`) REFERENCES `ciudades` (`id`),
   CONSTRAINT `FK_personas_documento_tipos` FOREIGN KEY (`documento_tipos_id`) REFERENCES `documento_tipos` (`id`),
   CONSTRAINT `FK_personas_instituciones` FOREIGN KEY (`instituciones_id`) REFERENCES `instituciones` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
 
 /*Data for the table `personas` */
 
-insert  into `personas`(`id`,`nombre`,`apellido`,`documento_tipos_id`,`numeroDocumento`,`sexo`,`fechaNacimiento`,`email`,`telefono`,`celular`,`fax`,`domicilio`,`instituciones_id`,`ciudades_id`,`ciudadOrigen`,`codigoPostal`,`empresa`,`universidad`,`secundaria`) values (61,'Rodrigo','Rio',1,30061066,'m','1983-02-16','rio_rodrigo@gmail.com',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'dddd','ddd','dddd'),(63,'Matias','Velilla',1,31821427,'m','1985-10-06','matiasvelillamdq@gmail.com','4740327','2236818777','317928372','funes 2862 pa',33,1,'Mar del Plata','7600','Urbis','FASTA','EET N3'),(95,'Mirta','Gilardi',1,31821426,'f','2006-05-08','','91287319288',NULL,NULL,'sdfhsdkjh 2311',34,1,NULL,NULL,NULL,NULL,NULL);
+insert  into `personas`(`id`,`nombre`,`apellido`,`documento_tipos_id`,`numeroDocumento`,`sexo`,`fechaNacimiento`,`email`,`telefono`,`celular`,`fax`,`domicilio`,`instituciones_id`,`ciudades_id`,`ciudadOrigen`,`codigoPostal`,`empresa`,`universidad`,`secundaria`) values (61,'Rodrigo','Rio',1,30061066,'m','1983-02-16','rio_rodrigo@gmail.com',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'dddd','ddd','dddd'),(63,'Matias','Velilla',1,31821427,'m','1985-10-06','matiasvelillamdq@gmail.com','4740327','2236818777','317928372','funes 2862 pa',33,1,'Mar del Plata','7600','Urbis','FASTA','EET N3'),(95,'Mirtaa','Gilardi',1,31821426,'f','2006-05-08','','91287319288',NULL,NULL,'sdfhsdkjh 2311',34,1,NULL,NULL,NULL,NULL,NULL);
 
 /*Table structure for table `practicas` */
 
@@ -808,7 +808,7 @@ CREATE TABLE `seguimiento_x_contenido_variables` (
   `fechaHora` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `FK_seguimiento_x_contenido_variables` (`seguimiento_id`),
   KEY `FK_seguimiento_x_contenido_variables2` (`variable_id`),
-  CONSTRAINT `FK_seguimiento_x_contenido_variables` FOREIGN KEY (`seguimiento_id`) REFERENCES `seguimientos` (`id`),
+  CONSTRAINT `FK_seguimiento_x_contenido_variables` FOREIGN KEY (`seguimiento_id`) REFERENCES `seguimientos` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_seguimiento_x_contenido_variables2` FOREIGN KEY (`variable_id`) REFERENCES `variables` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -824,8 +824,8 @@ CREATE TABLE `seguimiento_x_unidades` (
   `fechaHora` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `NewIndex1` (`unidad_id`,`seguimiento_id`),
   KEY `FK_seguimiento_x_unidades2` (`seguimiento_id`),
-  CONSTRAINT `FK_seguimiento_x_unidades` FOREIGN KEY (`unidad_id`) REFERENCES `unidades` (`id`),
-  CONSTRAINT `FK_seguimiento_x_unidades2` FOREIGN KEY (`seguimiento_id`) REFERENCES `seguimientos` (`id`)
+  CONSTRAINT `FK_seguimiento_x_unidades2` FOREIGN KEY (`seguimiento_id`) REFERENCES `seguimientos` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_seguimiento_x_unidades` FOREIGN KEY (`unidad_id`) REFERENCES `unidades` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `seguimiento_x_unidades` */
@@ -852,7 +852,7 @@ CREATE TABLE `seguimientos` (
   CONSTRAINT `FK_seguimientos_discapacitados` FOREIGN KEY (`discapacitados_id`) REFERENCES `discapacitados` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_seguimientos_practicas` FOREIGN KEY (`practicas_id`) REFERENCES `practicas` (`id`),
   CONSTRAINT `FK_seguimientos_usuarios` FOREIGN KEY (`usuarios_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 /*Data for the table `seguimientos` */
 
