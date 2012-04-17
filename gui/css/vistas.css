@@ -686,7 +686,7 @@ a .i{margin-right:4px; float:left}
 /* dialog */
 .ui-dialog-content{background-color:#FFF !important; padding:5px !important;}
 .ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important}
-.ui-dialog-buttonpane{padding:0px; margin:0px; background-color:#DDD; border-top:1px solid #BBB}
+.ui-dialog-buttonpane{padding:0px; margin:0px !important; background-color:#DDD; border-radius:0px 0px 5px 5px;}
 .ui-dialog{padding:0px !important; -moz-box-shadow:0 0 5px #000; box-shadow:0 0 30px #333; -webkit-box-shadow:0 0 5px #000}
 .ui-dialog-titlebar{padding:8px; font-size:1.7em; background:#CCC url("../images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:1px solid #FFF; border-bottom:1px solid #999}
 .ui-dialog-titlebar-close{padding:1px !important;}
@@ -699,6 +699,9 @@ a .i{margin-right:4px; float:left}
 .ui-autocomplete{max-height:100px; max-width:300px; overflow-x:hidden; overflow-y:auto; padding-right:20px; background:#FFF; border: 1px solid #CCC}
 .ui-autocomplete a{color:#333; text-decoration:none}
 .ui-autocomplete .ui-state-hover{background-color:#EEEFFF}
+/* botones de la parte inferior en los popups */
+.ui-button{border:1px solid #333 !important;}
+.ui-button:hover{font-weight:bold !important}
 
 /*** ICONS (AGREGAR A MEDIDA QUE SE VAYA NECESITANDO PORQUE EN REALIDAD YA TENEMOS LOS NUESTROS Q SON MEJORES)***/
 /* states and images */

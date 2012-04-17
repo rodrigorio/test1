@@ -104,14 +104,14 @@ $(document).ready(function(){
 
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
-        
-        var dialog = $("#dialog");
-        if ($("#dialog").length == 0){
-            dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body');
-        }else{
-            dialog.attr('title', "Agregar Persona");
-        }
 
+        var dialog = $("#dialog");
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
+        }
+        dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body');
+        
         dialog.load(
             "seguimientos/agregar-persona?popUp=1",
             {},
@@ -136,11 +136,11 @@ $(document).ready(function(){
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
 
         var dialog = $("#dialog");
-        if ($("#dialog").length == 0){ 
-            dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
-        }else{
-            $("#ui-dialog-title-dialog").html($(this).html());
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
         }
+        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
 
         dialog.load(
             "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
@@ -286,11 +286,11 @@ function eliminarSeguimiento(seguimientoId)
                 }
 
                 var dialog = $("#dialog");
-                if($("#dialog").length != 0){
-                    dialog.attr("title","Eliminar Seguimiento");
-                }else{
-                    dialog = $('<div id="dialog" title="Eliminar Seguimiento"></div>').appendTo('body');
+                if ($("#dialog").length != 0){
+                    dialog.hide("slow");
+                    dialog.remove();
                 }
+                dialog = $('<div id="dialog" title="Eliminar Seguimiento"></div>').appendTo('body');
                 dialog.html(data.html);
 
                 dialog.dialog({
