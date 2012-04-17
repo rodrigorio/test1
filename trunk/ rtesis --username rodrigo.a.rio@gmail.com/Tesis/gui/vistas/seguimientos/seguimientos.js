@@ -106,7 +106,11 @@ $(document).ready(function(){
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
         
         var dialog = $("#dialog");
-        if ($("#dialog").length == 0){ dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body'); }
+        if ($("#dialog").length == 0){
+            dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body');
+        }else{
+            dialog.attr('title', "Agregar Persona");
+        }
 
         dialog.load(
             "seguimientos/agregar-persona?popUp=1",

@@ -31,6 +31,42 @@
 </section>
 <!--EndHeaderBlock-->
 
+<!--BeginListadoDiscapacitadosBlock-->
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Nombre completo</th>
+                <th>Documento</th>
+                <th>Usuario asignado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginPersonasBlock-->
+            <tr class="{iPersonaId}" class="{odd}">
+                <td>
+                    <a href="{scrAvatarDiscapacitadoAmpliada}" rel="prettyPhoto">
+                        <img src="{scrAvatarDiscapacitado}" />
+                    </a>
+                </td>
+                <td>{sNombreDiscapacitado}</td>
+                <td>{sDocumento}</td>
+                <td>{sNombreUsuarioAsignado}</td>
+                <td class="teal_ce"><span rel="{iPersonaId}" class="i bs delete ihover borrarDiscapacitado"></span></td>
+            </tr>
+        <!--EndPersonasBlock-->
+        <!--BeginNoRecordsPersonasBlock-->
+            <tr>
+                <td colspan="5">{sNoRecords}</td>
+            </tr>
+        <!--EndNoRecordsPersonasBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoDiscapacitadosBlock-->
+
 <!--BeginListadoModeracionesBlock-->
 <section>
     <table>

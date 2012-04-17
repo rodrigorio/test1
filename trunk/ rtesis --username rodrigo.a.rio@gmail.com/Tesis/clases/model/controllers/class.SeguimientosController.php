@@ -107,14 +107,14 @@ class SeguimientosController
             if(null !== $oDiscapacitado->getId() && $this->existeModeracionPendiente($oDiscapacitado)){
                 return array(false, false);
             }
-
+            
             //si el usuario que guarda no es el que creo la persona
             if(null !== $oDiscapacitado->getUsuario() && $oUsuarioSesion->getId() != $oDiscapacitado->getUsuario()->getId()){
                 //guarda en la tabla temporal con el usuario que modifica
                 $oDiscapacitado->setUsuario($oUsuarioSesion);
                 $result = $oDiscapacitadoIntermediary->guardarModeracion($oDiscapacitado);
                 return array($result, true);
-            }else{                
+            }else{
                 //si el usuario que creo la persona ya no existe mas
                 if(null === $oDiscapacitado->getUsuario()){
                     //guardo el usuario actual con el privilegio de modificar sin moderacion
@@ -200,12 +200,31 @@ class SeguimientosController
      * Hay que comprobar que no tenga seguimiento de ningun usuario.
      * Si esta libre de seguimientos se borra desde el administrador.
      */
-    public function borrarDiscapacitado($oDiscapacitado){
+    public function borrarDiscapacitado($iDiscapacitadoId, $pathServidor){
         try{
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            if(!$oDiscapacitadoIntermediary->tieneSeguimientos($oDiscapacitado->getId())){
-                //FALTA BORRAR LOS ARCHIVOS SI TIENE FOTO PERFIL
-                return $oDiscapacitadoIntermediary->borrar($oDiscapacitado);
+            $result = false;                       
+            if(!$oDiscapacitadoIntermediary->tieneSeguimientos($iDiscapacitadoId)){
+
+                $filtro = array('d.id' => $iDiscapacitadoId);
+                $aDiscapacitado = $oDiscapacitadoIntermediary->obtener($filtro, $iRecordsTotal);
+                $oDiscapacitado = $aDiscapacitado[0];
+
+                $result = $oDiscapacitadoIntermediary->borrar($iDiscapacitadoId);
+                
+                if($result && null !== $oDiscapacitado->getFotoPerfil()){
+                    
+                    $aNombreArchivos = $oDiscapacitado->getFotoPerfil()->getArrayNombres();
+                    
+                    foreach($aNombreArchivos as $nombreServidorArchivo){
+                        $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
+                        }
+                    }
+                }
+
+                return $result;
             }else{
                 return false;
             }

@@ -524,7 +524,6 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'listarModeracionesPendientes'
                                 ));
         $router->addRoute('adminListarModeraciones', $route);
-
         $route = new RegexRoute('admin/personas-moderacion-procesar',
                                 array(
                                         'module' => 'admin',
@@ -532,5 +531,19 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'procesarModeracion'
                                 ));
         $router->addRoute('adminProcesarModeracion', $route);
+        $route = new RegexRoute('admin/personas',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'personas',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminPersonasListar', $route);
+        $route = new RegexRoute('admin/personas-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'personas',
+                                        'action'     => 'procesarPersona'
+                                ));
+        $router->addRoute('adminPersonasProcesar', $route);
     }
 }

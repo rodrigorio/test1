@@ -32,7 +32,125 @@ class PersonasControllerAdmin extends PageControllerAbstract
 
     public function listarPersonas()
     {
-        
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionPersonas");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "mainContent", "ListadoDiscapacitadosBlock");
+
+            $filtro = array();
+            $iRecordPerPage = 5;
+            $iPage = $this->getRequest()->getPost("iPage");
+            $iPage = strlen($iPage) ? $iPage : 1;
+            $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+            $iMinLimit = ($iPage-1) * $iItemsForPage;
+            $sOrderBy = null;
+            $sOrder = null;
+            $iRecordsTotal = 0;
+
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
+            //array con objetos discapacitados desde discapacitados_moderacion (datos sin aprobar).
+            $aDiscapacitados = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+
+            if(count($aDiscapacitados) > 0){
+            	$i=0;
+                foreach($aDiscapacitados as $oDiscapacitado){
+
+                    $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
+
+                    $srcAvatar = $this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar();
+                    if(null !== $oDiscapacitado->getFotoPerfil()){
+                        $srcAvatarAmpliar = $this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getFotoPerfil()->getNombreBigSize();
+                    }else{
+                        $srcAvatarAmpliar = $this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar(true);
+                    }
+                    $sNombreDiscapacitado = $oDiscapacitado->getNombre()." ".$oDiscapacitado->getApellido();
+                    $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+                    $sDocumento = $aTiposDocumentos[$oDiscapacitado->getTipoDocumento()]." ".$oDiscapacitado->getNumeroDocumento();
+
+                    $oUsuarioAsignado = $oDiscapacitado->getUsuario();
+                    $sNombreUsuarioAsignado = $oUsuarioAsignado->getNombre()." ".$oUsuarioAsignado->getApellido();
+
+                    $this->getTemplate()->set_var("scrAvatarDiscapacitado", $srcAvatar);
+                    $this->getTemplate()->set_var("scrAvatarDiscapacitadoAmpliada", $srcAvatarAmpliar);
+                    $this->getTemplate()->set_var("sNombreDiscapacitado", $sNombreDiscapacitado);
+                    $this->getTemplate()->set_var("sDocumento", $sDocumento);
+                    $this->getTemplate()->set_var("sNombreUsuarioAsignado", $sNombreUsuarioAsignado);
+                    $this->getTemplate()->set_var("iPersonaId", $oDiscapacitado->getId());
+
+                    $this->getTemplate()->parse("PersonasBlock", true);
+                    $i++;
+                }
+                $this->getTemplate()->set_var("NoRecordsPersonasBlock", "");
+            }else{
+                $this->getTemplate()->set_var("PersonasBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "noRecords", "NoRecordsDiscapacitadosBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay discapacitados cargados en el sistema");
+                $this->getTemplate()->parse("noRecords", false);
+            }
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    public function procesarPersona()
+    {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('eliminar')){
+            $this->eliminarPersona();
+            return;
+        }
+    }
+
+    private function eliminarPersona()
+    {
+        $iPersonaIdForm = $this->getRequest()->getParam('personaId');
+        if(empty($iPersonaIdForm)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $result = SeguimientosController::getInstance()->borrarDiscapacitado($iPersonaIdForm, $pathServidor);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "La persona fue eliminada del sistema";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se ha eliminado la persona del sistema. Por favor, asegurese de que la persona no tenga seguimientos asociados.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha eliminado la persona del sistema";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();               
     }
 
     public function listarModeracionesPendientes()
@@ -47,7 +165,6 @@ class PersonasControllerAdmin extends PageControllerAbstract
             $this->printMsgTop();
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "widgetsContent", "HeaderBlock");
-
             $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "mainContent", "ListadoModeracionesBlock");
 
             $filtro = array();
