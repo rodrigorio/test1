@@ -1,0 +1,61 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/instituciones.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Instituciones Comunidad</h2>
+</header>
+<section>
+    <h3>Listado de instituciones vigentes en el sistema</h3>
+</section>
+<!--EndHeaderBlock-->
+
+<!--BeginListadoInstitucionesBlock-->
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Ubicacion</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginInstitucionesBlock-->
+            <tr class="{iInstitucionId}" class="{odd}">
+                <td>{sNombre}</td>
+                <td>{sTipo}</td>
+                <td>{sUbicacion}</td>
+                <td class="teal_ce"><span rel="{iInstitucionId}" class="i bs delete ihover borrarInstitucion"></span></td>
+            </tr>
+        <!--EndInstitucionesBlock-->
+        <!--BeginNoRecordsInstitucionesBlock-->
+            <tr>
+                <td colspan="4">{sNoRecords}</td>
+            </tr>
+        <!--EndNoRecordsInstitucionesBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoInstitucionesBlock-->

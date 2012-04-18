@@ -85,6 +85,9 @@ class IndexControllerAdmin extends PageControllerAbstract
 
         //personas
         $template->set_var("sHrefDiscapacitadosListar", $request->getBaseTagUrl()."admin/personas");
+
+        //instituciones
+        $template->set_var("sHrefInstitucionesListar", $request->getBaseTagUrl()."admin/instituciones");
     }
 
     public function index(){
