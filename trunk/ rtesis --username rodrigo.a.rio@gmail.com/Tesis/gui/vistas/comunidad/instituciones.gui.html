@@ -18,31 +18,9 @@ $LAB
 </script>
 <!--EndJsContent-->
 
-<!--BeginPageRightInnerMainContBlock-->
-<div class="pato3">
-    <div class="mabo2">
-        <div class="iveal mabo2">
-            <h2 class="di_in"><a href="{hrefNuevaInstitucion}">Crear una institucion</a></h2> <span class="i32 bs user32Add male"></span>
-        </div>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
-            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
-            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
-            enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
-            sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
-        </p>
-    </div>
-</div>
-<!--EndPageRightInnerMainContBlock-->
-
 <!--BeginPageRightInnerContBlock-->
 <div class="mabo2">
     <ul class="menu02">
-        <li class="mabo2"><a href="{hrefInstitucion}">Inicio</a></li>
-        <li class="mabo2"><a href="{hrefMisInstituciones}">Mis instituciones</a></li>
         <li><a href="{hrefNuevaInstitucion}">Crear nueva institucion</a></li>
     </ul>
 </div>
@@ -228,91 +206,105 @@ $LAB
 <!--EndFormularioBlock-->
 
 <!--BeginListadoInstitucionesBlock-->
-<div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
-    <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
-    <div id="">
-    <form action="" method="post">
-    	<div>
-    		Nombre <input type="text" name="institucion_nombre" id="institucion_nombre"/>
-    	</div>
-    	<div>
-    		Pais
-           <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
-           		<option value="">Seleccione un pais</option>
-           		<!--BeginListaPaisesBlock-->
-           		<option value="{iPaisId}">{sPaisNombre}</option>
-           		<!--EndListaPaisesBlock-->
-           </select>
-    	</div>
-    	<div>
-    	Provincia
-           <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
-          		<option value="">Selecciones una provincia</option>
-           		<!--BeginListaProvinciasBlock-->
-           		<option value="{iProvinciaId}">{sProvinciaNombre}</option>
-           		<!--EndListaProvinciasBlock-->
-           </select>
-    	</div>
-    	<div>
-    	Ciudad
-           <select class="defVal requerido" name="ciudad" id="ciudad" >
-           		<option value="">Selecciones una ciudad</option>
-           		<!--BeginListaCiudadesBlock-->
-           		<option value="{iCiudadId}">{sCiudadNombre}</option>
-           		<!--EndListaCiudadesBlock-->
-           </select>
-    	</div>
-    	<div>
-    	Tipo de institucion
-           <select class="defVal requerido" name="tipoInstitucion" id="tipoInstitucion" >
-           		<option value="">Selecciones un tipo</option>
-           		<!--BeginListaTipoDeInstitucionesBlock-->
-           		<option value="{iInstitucionTiposId}">{sInstitucionTiposNombre}</option>
-           		<!--EndListaTipoDeInstitucionesBlock-->
-           </select>
-    	</div>
-    	<div>
-    	 	<label for="BuscarInstitucion" class="button buttonConfirm buttonLarge mari3">
+<div class="ficha01 grupo mabo2">
+    <div class="encabezado">
+        <div class="izq">
+            <div class="icono"><span class="i32 bs search32"></span></div>
+            <span class="titulo">Buscar Instituciones</span><br>
+            <span class="subtitulo">filtrar los resultados del listado</span>
+        </div>
+        <div class="der"></div>
+    </div>
+    <div class="contenido">
+        <form action="" method="post">
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Nombre</span>
+               <input type="text" name="institucion_nombre" id="institucion_nombre"/>               
+            </div>            
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Pais</span>
+               <select class="defVal requerido" name="pais" id="pais" onchange="listaProvinciasByPais(this);" >
+                    <option value="">Seleccione un pais</option>
+                    <!--BeginListaPaisesBlock-->
+                    <option value="{iPaisId}">{sPaisNombre}</option>
+                    <!--EndListaPaisesBlock-->
+               </select>
+            </div>
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Provincia</span>
+               <select class="defVal requerido" name="provincia" id="provincia" onchange="listaCiudadesByProvincia(this);">
+                    <option value="">Selecciones una provincia</option>
+                    <!--BeginListaProvinciasBlock-->
+                    <option value="{iProvinciaId}">{sProvinciaNombre}</option>
+                    <!--EndListaProvinciasBlock-->
+               </select>
+            </div>
+
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Ciudad</span>
+               <select class="defVal requerido" name="ciudad" id="ciudad" >
+                    <option value="">Selecciones una ciudad</option>
+                    <!--BeginListaCiudadesBlock-->
+                    <option value="{iCiudadId}">{sCiudadNombre}</option>
+                    <!--EndListaCiudadesBlock-->
+               </select>
+            </div>
+            
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Tipo de institucion</span>
+               <select class="defVal requerido" name="tipoInstitucion" id="tipoInstitucion" >
+                            <option value="">Selecciones un tipo</option>
+                            <!--BeginListaTipoDeInstitucionesBlock-->
+                            <option value="{iInstitucionTiposId}">{sInstitucionTiposNombre}</option>
+                            <!--EndListaTipoDeInstitucionesBlock-->
+               </select>
+            </div>
+            
+            <br clear="all" />
+
+            <label for="BuscarInstitucion" class="button buttonConfirm buttonLarge mari3">
                 <button id="buscarInstitucion" type="button" name="buscarInstitucion" class="btn01" onclick="searchInstitucion();">
                     Buscar Institucion
                 </button>
             </label>
-        </div>
-    </form>
+        </form>
     </div>
-    <div class="di_no" id="msg_conf"></div>
-    <!--BeginGrillaInstitucionBlock-->
-	<div id="listadoInstituciones">
-       <table class="table01" >
-           <tr class="encabezado">
-               <td>Id</td>
-               <td>Nombre</td>
-               <td>Tipo</td>
-               <td>Ciudad</td>
-               <td>Provincia</td>
-               <td>Pais</td>
-               <td>Ampliar</td>
-               <td>Modificar</td>
-           </tr>
-           <!--BeginListaDeInstitucionesBlock-->
-           <tr class="{odd}">
-               <td>{iInstitucionId}</td>
-               <td>{sInstitucionNombre}</td>
-               <td>{sInstitucionTipo}</td>
-               <td>{sInstitucionCiudad}</td>
-               <td>{sInstitucionProvincia}</td>
-               <td>{sInstitucionPais}</td>
-               <td><span class="i mi expand" onclick="ampliarInstitucion({iInstitucionId});"></span></td>
+</div>
+
+<div class="di_no" id="msg_conf"></div>
+
+<!--BeginGrillaInstitucionBlock-->
+<div id="listadoInstituciones" class="po_re">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <table class="table01 wi100p">
+       <tr class="encabezado">
+           <td>Nombre</td>
+           <td>Tipo</td>
+           <td>Ciudad</td>
+           <td>Provincia</td>
+           <td>Pais</td>
+           <td></td>
+       </tr>
+       <!--BeginListaDeInstitucionesBlock-->
+       <tr class="{odd}">
+           <td>{sInstitucionNombre}</td>
+           <td>{sInstitucionTipo}</td>
+           <td>{sInstitucionCiudad}</td>
+           <td>{sInstitucionProvincia}</td>
+           <td>{sInstitucionPais}</td>
+           <td class="teal_ce">
+               <span class="i mi expand ihover mari3" onclick="ampliarInstitucion({iInstitucionId});"></span>
                <!--BeginPermisoEditarInstitucionBlock-->
-               <td><span class="i bs edit" onclick="editarInstitucion({iInstitucionId});"></span></td>
+               <span class="i bs edit ihover" onclick="editarInstitucion({iInstitucionId});"></span>
                <!--EndPermisoEditarInstitucionBlock-->
-           </tr>
-           <!--EndListaDeInstitucionesBlock-->
-       </table>
-       {paginacion}
-       <!--EndGrillaInstitucionBlock-->
-	</div>
-</div> 
+           </td>
+       </tr>
+       <!--EndListaDeInstitucionesBlock-->
+    </table>
+    <br clear="all" />
+    {paginacion}
+    <!--EndGrillaInstitucionBlock-->
+</div>
 <!--EndListadoInstitucionesBlock-->
 
 <!--BeginFichaInstitucionBlock-->

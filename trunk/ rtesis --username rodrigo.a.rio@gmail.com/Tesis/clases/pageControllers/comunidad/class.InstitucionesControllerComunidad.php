@@ -32,8 +32,6 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
 
         $this->getTemplate()->set_var("hrefNuevaInstitucion", $this->getRequest()->getBaseTagUrl()."comunidad/nueva-institucion");
-        $this->getTemplate()->set_var("hrefInstituciones", $this->getRequest()->getBaseTagUrl()."comunidad/instituciones");
-        $this->getTemplate()->set_var("hrefMisInstituciones", $this->getRequest()->getBaseTagUrl()."comunidad/instituciones-listado");        
     }
 
     /**
@@ -42,24 +40,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
      */
     public function index()
     {
-        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
-        $this->setHeadTag();
-        $this->printMsgTop();
-
-        IndexControllerComunidad::setCabecera($this->getTemplate());
-        IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-        //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Instituciones");
-
-        //menu derecha
-        $this->setMenuDerecha();
-
-        //contenido ppal home Instituciones
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
-        $this->getTemplate()->set_var("hrefNuevaInstitucion", $this->getRequest()->getBaseTagUrl()."comunidad/nueva-institucion");
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        $this->listadoInstituciones();
     }
 
     /**
