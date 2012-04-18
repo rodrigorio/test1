@@ -2,8 +2,7 @@
 
 
 /**
- * Description of 
- *
+ * Description of Ficha abstract *
  * @author Andres
  */
 abstract class FichaAbstract
@@ -13,7 +12,15 @@ abstract class FichaAbstract
  	private $dFecha;
  	private $bActivo;
  	private $sDescripcion;
- 	
+ 	 	
+ 	/*
+    * array objetos Foto
+    */
+    protected $aFotos = null;
+   /*
+    * array objetos Archivo
+    */
+    protected $aArchivos = null;
  public function __construct(){}
  	
   public function setId($id){

@@ -11,7 +11,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return InstitucionMySQLIntermediary
+	 * @return SeguimientoMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
 		if (null === self::$instance){

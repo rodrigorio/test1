@@ -127,12 +127,7 @@ class FotoMySQLIntermediary extends FotoIntermediary
         }
     }
 
-
-    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-    
-    
-    }
-    
+   
     /**
      * Dependiendo el filtro el obtener puede devolver las fotos de publicaciones, seguimientos, etc.
      */
