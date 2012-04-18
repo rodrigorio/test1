@@ -143,10 +143,10 @@
             <div class="fl_le mari2 mabo2">
                 <span class="fowe_bo">Tipo de Seguimiento</span>
                <select class="defVal requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
-                            <option value="">Selecciones un tipo</option>
-                            <!--BeginListaTipoDeSeguimientosBlock-->
-                            <option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
-                            <!--EndListaTipoDeSeguimientosBlock-->
+                    <option value="">Selecciones un tipo</option>
+                    <!--BeginListaTipoDeSeguimientosBlock-->
+                    <option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
+                    <!--EndListaTipoDeSeguimientosBlock-->
                </select>
             </div>
 
@@ -179,7 +179,7 @@
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoPersonaDNI}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoTipo}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoFechaCreacion}</td>
-               <td class="" rel="{iSeguimientoId}">
+               <td>
                     <select name="estado" id="estado" onchange="cambiarEstadoSeguimiento(this,{iSeguimientoId});">
                         <!--BeginEstadoSeguimientoBlock-->
                         <option value="{sEstadoSeguimiento}" {sSelectedEstadoSeguimiento}>{sEstadoSeguimiento}</option>
