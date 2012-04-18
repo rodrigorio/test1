@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div id="msg_nombre" class="form_line msg_personaId">Persona
+        <div id="msg_nombre" class="form_line msg_personaId">Dni de la persona
             <div class="fwrap">
                 <div class="inner_fwrap">
                      <div id='persona_loading' class="i ajax_wait16 di_no"></div>
@@ -179,7 +179,7 @@
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoPersonaDNI}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoTipo}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoFechaCreacion}</td>
-               <td class="desplegable" rel="{iSeguimientoId}">
+               <td class="" rel="{iSeguimientoId}">
                     <select name="estado" id="estado" onchange="cambiarEstadoSeguimiento(this,{iSeguimientoId});">
                         <!--BeginEstadoSeguimientoBlock-->
                         <option value="{sEstadoSeguimiento}" {sSelectedEstadoSeguimiento}>{sEstadoSeguimiento}</option>
@@ -189,7 +189,7 @@
                <td class="teal_ce">
                    <span title="Ampliar Seguimiento" class="i mi expand ihover mari3" onclick="ampliarSeguimiento({iSeguimientoId});"></span>
                    <!--BeginPermisoEditarSeguimientoBlock-->
-                   <span title="Editar Seguimiento" class="i bs edit ihover mari3" onclick="editarSeguimiento({iSeguimientoId});"></span>
+                  <!-- <span title="Editar Seguimiento" class="i bs edit ihover mari3" onclick="editarSeguimiento({iSeguimientoId});"></span>-->
                    <!--EndPermisoEditarSeguimientoBlock-->
                    <span title="Eliminar Seguimiento" class="i bs delete ihover" onclick="eliminarSeguimiento({iSeguimientoId});"></span>
                </td>
