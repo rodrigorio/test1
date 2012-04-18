@@ -551,5 +551,19 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'procesarPersona'
                                 ));
         $router->addRoute('adminPersonasProcesar', $route);
+        $route = new RegexRoute('admin/instituciones',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'instituciones',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminInstitucionesListar', $route);
+        $route = new RegexRoute('admin/instituciones-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'instituciones',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminInstitucionesProcesar', $route);
     }
 }

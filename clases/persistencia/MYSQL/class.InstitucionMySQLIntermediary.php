@@ -338,20 +338,25 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         }
 	}
     
-	//borra muchas instituciones
-	//public function borrar($objects){}
     
-    //borra una Institucion
-    public function borrar($oInstitucion) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from instituciones where id=".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
+    /**
+     * Le pongo NULL a todos los usuarios que estan asignados a la institucion
+     */
+    public function borrar($iInstitucionId) {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
 
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+            $db->execSQL("update personas set instituciones_id = null where instituciones_id = '".$iInstitucionId."'");            
+            $db->execSQL("delete from instituciones where id = '".$iInstitucionId."'");
+
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
    
     public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
@@ -383,4 +388,3 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         }
     }
 }
-?>

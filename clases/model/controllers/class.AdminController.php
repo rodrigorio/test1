@@ -188,12 +188,13 @@ class AdminController
         }        
     }
 
-    public function eliminarInstitucion($oInstitucion){
+    public function eliminarInstitucion($iInstitucionId){
         try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->borrar($oInstitucion);
+            return $oInstitucionIntermediary->borrar($iInstitucionId);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
+            return false;
         }
     }
 }
