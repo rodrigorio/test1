@@ -172,4 +172,12 @@ class Factory
         $oDiscapacitado= new Discapacitado($obj);
         return $oDiscapacitado;
     }
+    /**
+     * @param stdClass $obj
+     * @return Practica|null
+     */
+    public static function &getTipoPracticaSeguimientoInstance(stdClass $obj){
+        $oPractica = new TipoPracticasSeguimiento($obj);
+        return $oPractica;
+    }
 }

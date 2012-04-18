@@ -95,11 +95,26 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             		$this->getTemplate()->parse("EstadoSeguimientoBlock",true);
 
 
+                        $this->getTemplate()->set_var("sFrecuenciaEncuentros",$seguimiento->getFrecuenciaEncuentros());
+                        $this->getTemplate()->set_var("sDiaHorarioEncuentros",$seguimiento->getDiaHorario());
+                        $this->getTemplate()->set_var("sTipoPractica",$seguimiento->getPractica()->getNombre());
+
+                        $vFotos     = SeguimientosController::getInstance()->obtenerFotosSeguimiento($seguimiento->getId());
+                        $vArchivos  = SeguimientosController::getInstance()->obtenerArchivosSeguimiento($seguimiento->getId());
+                        $cantiArchivos = $cantiFotos = 0;
+                        if($vFotos){
+                            $cantiFotos = count($vFotos);
+                        }
+                        if($vArchivos){
+                            $cantiArchivos = count($vArchivos);
+                        }
+                        $cantidadAdjuntos = $cantiArchivos + $cantiFotos;
+                        $this->getTemplate()->set_var("sElementosMultimedia",$cantidadAdjuntos);
                         $this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
            		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
             }else{
-            	$this->getTemplate()->set_var("ListaDeSeguimientosBlock","");
+                    $this->getTemplate()->set_var("ListaDeSeguimientosBlock","");
            		$this->getTemplate()->set_var("sNoRecords","No se encontraron seguimientos.");
            		$this->getTemplate()->parse("NoRecordsListaDeSeguimientosBlock",false);
             }
@@ -169,6 +184,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         }
             		$this->getTemplate()->parse("EstadoSeguimientoBlock",true);
 
+                          $this->getTemplate()->set_var("sFrecuenciaEncuentros",$seguimiento->getFrecuenciaEncuentros());
+                        $this->getTemplate()->set_var("sDiaHorarioEncuentros",$seguimiento->getDiaHorario());
+                        $this->getTemplate()->set_var("sTipoPractica",$seguimiento->getPractica()->getNombre());
+                        
+                        $vFotos     = SeguimientosController::getInstance()->obtenerFotosSeguimiento($seguimiento->getId());
+                        $vArchivos  = SeguimientosController::getInstance()->obtenerArchivosSeguimiento($seguimiento->getId());
+                        $cantiArchivos = $cantiFotos = 0;
+                        if($vFotos){
+                            $cantiFotos = count($vFotos);
+                        }
+                        if($vArchivos){
+                            $cantiArchivos = count($vArchivos);
+                        }
+                        $cantidadAdjuntos = $cantiArchivos + $cantiFotos;
+                        $this->getTemplate()->set_var("sElementosMultimedia",$cantidadAdjuntos);
+                        
             		$this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
             	}
            		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
@@ -198,8 +229,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
             $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
 
-            //contenido ppal home comunidad
+            //contenido ppal home seguimientos
+            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
+            $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
+
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
             $listaTiposSeguimiento = array();
             $obj = new stdClass();
             $oTipoSeg = Factory::getTipoSeguimientoInstance($obj);

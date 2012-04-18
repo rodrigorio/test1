@@ -259,7 +259,7 @@ class SeguimientosController
 
     public function getPracticaById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
-            $filtro = array('c.id' => $iId);
+            $filtro = array('p.id' => $iId);
             $oPracticaIntermediary = PersistenceFactory::getPracticaIntermediary($this->db);
             $aPractica = $oPracticaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
             if(null !== $aPractica){
