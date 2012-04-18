@@ -327,13 +327,9 @@ class SeguimientosController
                 }
                 if(null != $aArchivos){
                     foreach($aArchivos as $oArchivo){
-                        $aNombreArchivos = $oArchivo->getArrayNombres();
-
-                        foreach($aNombreArchivos as $nombreServidorArchivo){
-                            $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
-                            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
-                                unlink($pathServidorArchivo);
-                            }
+                        $pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
                         }
                     }                    
                 }
