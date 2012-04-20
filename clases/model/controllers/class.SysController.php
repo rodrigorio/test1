@@ -58,8 +58,8 @@ class SysController
      */
     public function cargarPermisosPerfil($idPerfil)
     {
-    	$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-    	$array = $oUsuarioIntermediary->permisosPorPerfil($idPerfil);
+    	$oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
+    	$array = $oPermisosIntermediary->permisosPorPerfil($idPerfil);
         
         if($array == null){
             echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!";

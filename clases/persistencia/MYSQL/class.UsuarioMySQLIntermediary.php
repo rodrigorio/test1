@@ -698,41 +698,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-
-    /**
-     *  El array se arma con las tablas 'controladores_pagina', 'acciones', 'acciones_x_perfil' y 'perfiles'
-     *
-     *  En la tabla controladores aparecen los diferentes page controllers del sistema. La cadena tiene el formato "modulo_controlador"
-     *
-     *  En la tabla acciones se relacionan los controladores x accion y a cada accion se le asigna un grupo.
-     *
-     *  Los id de grupos posibles para las acciones son:
-     *      1)ADMIN 2)MODERADOR 3)INTEGANTE ACTIVO 4)INTEGANTE INACTIVO 5)VISITANTES
-     * 
-     */
-    public function permisosPorPerfil($iIdPerfil){
-        try{
-            $db = $this->conn;
-
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-						CONCAT_WS('_',cp.`controlador`,a.`accion`),
-						a.`activo`
-						from `perfiles` p
-						join `acciones_x_perfil` ap ON ap.`perfiles_id` = p.`id`
-						join `acciones` a on a.`grupo` =  ap.`grupo`
-						join `controladores_pagina` cp on cp.`id` = a.`controladores_pagina_id`
-						WHERE p.`id` = $iIdPerfil";
-                        
-            $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($foundRows)){ return null; }
-
-            return $db->getDBArrayQuery($sSQL);
-	  	}catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        }
-	}
 	
 	public function validarUrlTmp($token){
 		 try{

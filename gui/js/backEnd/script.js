@@ -1,3 +1,86 @@
+/* para revelar elementos dentro de una ficha o contenedor que tengan display none */
+function revelarElementos(object){
+    object.children(".di_no").addClass("di_bl").removeClass("di_no");
+}
+function ocultarElementos(object){
+    object.children(".di_bl").addClass("di_no").removeClass("di_bl");
+}
+
+/* lo mismo que pero solo con this */
+function revelarElemento(object){
+    object.addClass("di_bl").removeClass("di_no");
+}
+function ocultarElemento(object){
+    object.addClass("di_no").removeClass("di_bl");
+}
+
+/**
+ * Para setear un contenedor en estado de espera a un request ajax
+ * Se pasa el id del contenedor y el estado: true->en espera, false->se finalizo el envio/devolucion
+ *
+ * @param contenedorId string
+ * @param show boolean
+ */
+function setWaitingStatus(contenedorId, show)
+{
+    var contenedor = $("#" + contenedorId);
+    var ajaxLoading = $("#" + contenedorId + " #ajax_loading");
+
+    if(show){
+        contenedor.addClass("ajaxdelay");
+        //si es que existe, tambien muestro el gif de waiting
+        if(ajaxLoading.length){
+            revelarElemento(ajaxLoading);
+        }
+    }else{
+        contenedor.removeClass("ajaxdelay");
+        if(ajaxLoading.length){
+            ocultarElemento(ajaxLoading)
+        }
+    }
+}
+
+/* mensajes globales disponibles para utilizar en funciones ajax, etc */
+if(!lang)
+var lang = Array();
+lang['error procesar'] = 'Error al intentar procesar lo solicitado';
+lang['error permiso'] = 'La accion se encuentra desactivada o no tienes permiso para realizarla';
+lang['exito procesar'] = 'Los datos se han procesado con éxito';
+lang['exito procesar archivo'] = 'El archivo se logro subir con exito';
+lang['error procesar archivo'] = 'Hubo un error al tratar de procesar el archivo';
+
+/**
+ * Textos genericos para mensajes de validacion de campos en formularios.
+ * Actuan en conjunto con el plugin validator de jQuery
+ */
+function mensajeValidacion(template, value)
+{
+    var mensajes = new Array();
+    mensajes['requerido'] = "Este campo es obligatorio";
+    mensajes['requerido2'] = "Debe especificar un {0}";
+    mensajes['email'] = "Dirección de correo inválida";
+    mensajes['email2'] = "La cuenta ya se encuentra registrada en el sistema";
+    mensajes['url'] = "La URL es inválida o innaccesible";
+    mensajes['fecha'] = "La fecha no es válida";
+    mensajes['fechaISO'] = "La fecha no es (ISO) válida";
+    mensajes['numerico'] = "Se requiere número entero válido";
+    mensajes['positivo'] = "Solo números positivos";
+    mensajes['digitos'] = "Unicamente digitos";
+    mensajes['iguales'] = "Escribe el mismo valor de nuevo";
+    mensajes['extension'] = "No es una extensión aceptada";
+    mensajes['simple'] = "La contraseña es muy simple";
+    mensajes['maxlength'] = "No más de {0} caracteres";
+    mensajes['minlength'] = "No menos de {0} caracteres";
+    mensajes['max'] = "Requiere valor menor o igual a {0}";
+    mensajes['min'] = "Requiere valor mayor o igual a {0}";
+
+    if (value == null) {
+        return mensajes[template];
+    } else {
+        return jQuery.validator.format(mensajes[template], value);
+    }
+}
+
 $(function () {
 
 	// Notification Close Button

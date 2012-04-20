@@ -180,4 +180,12 @@ class Factory
         $oPractica = new TipoPracticasSeguimiento($obj);
         return $oPractica;
     }
+    /**
+     * @param stdClass $obj
+     * @return Accion|null
+     */
+    public static function &getAccionInstance(stdClass $obj){
+        $oAccion = new Accion($obj);
+        return $oAccion;
+    }
 }
