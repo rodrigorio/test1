@@ -753,12 +753,12 @@ a.button {
 	right:-2px;
 }
 .close-notification:hover { color:#333; }
-.notification.error {
+.notification.error2 {
 	background-color:#f2d4ce;
 	background-image:url(../../images/backEnd/icons/icon_notification_error.png);
 	border-color:#ae432e;
 }
-.notification.error strong { color:#ae432e; }
+.notification.error2 strong { color:#ae432e; }
 .notification.success {
 	background-color:#d9e6c3;
 	background-image:url(../../images/backEnd/icons/icon_notification_success.png);
@@ -981,6 +981,7 @@ input[type="checkbox"], input[type="radio"] {
 	background:none;
 	border:none;
 }
+input.readonly{border:1px dashed #999 !important; box-shadow:none !important; cursor:default !important}
 .ie7 input[type="checkbox"] { vertical-align:baseline; }
 .ie6 input { vertical-align:text-bottom; }
 label, input[type="button"], input[type="submit"], input[type="image"], button { cursor:pointer; }
@@ -1060,12 +1061,19 @@ table input[type="checkbox"] {
 .destacado{color:#AE432E !important}
 .destacado img{border:1px solid #AE432E}
 
+.ajaxdelay *{opacity:0.7; filter:alpha(opacity = 60)}
+.disabled{opacity:0.5; filter:alpha(opacity = 40); color:#AAA !important; cursor:default !important;}
+#ajax_loading{position:absolute; top:10px; right:10px; background-repeat:no-repeat; background-position:center 25%; z-index:101; opacity:1 !important; filter:alpha(opacity = 100) !important}
+.ajax_wait30{height:27px; width:28px; background-image:url("../../images/backEnd/icons/ajax_loading_red.gif")}
+
+.subHeader01{padding:20px 10px; background-color:#F2F2F2; border-top:1px dashed #AAA; border-bottom:1px dashed #AAA}
+
 /**********************************************************************/
 /*********** ICONOS, (SON LOS MISMOS PARA TODO EL SISTEMA *************/
 /**********************************************************************/
 
 /*** ICONOS ***/
-.valoracion, .puntaje{background-image:url("../images/iconos/puntajes_bn.png"); background-repeat:no-repeat}
+.valoracion, .puntaje{background-image:url("../../images/iconos/puntajes_bn.png"); background-repeat:no-repeat}
 .puntaje{cursor:pointer}
 /* val = valoraciones, pun = form puntuar */
 .val0{background-position:-89px -142px}

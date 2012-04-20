@@ -565,5 +565,28 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'procesar'
                                 ));
         $router->addRoute('adminInstitucionesProcesar', $route);
+        
+        
+        $route = new RegexRoute('admin/acciones-perfil',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'accionesPerfil',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminAccionesPerfilIndex', $route);
+        $route = new RegexRoute('admin/acciones-perfil-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'accionesPerfil',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminAccionesPerfilProcesar', $route);
+        $route = new RegexRoute('admin/acciones-perfil-form',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'accionesPerfil',
+                                    'action'     => 'form'
+                                ));
+        $router->addRoute('adminAccionesPerfilForm', $route);
     }
 }

@@ -197,4 +197,57 @@ class AdminController
             return false;
         }
     }
+
+    public function obtenerAccionesSistema($filtro = null, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
+            return $oPermisosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    public function getAccionById($iAccionId)
+    {
+        try{
+            $filtro = array('a.id' => $iAccionId);
+            $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
+            $aAcciones = $oPermisosIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aAcciones){
+                return $aAcciones[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+    public function guardarAccion($oAccion)
+    {
+        try{
+            $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
+            return $oPermisosIntermediary->guardar($oAccion);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+    public function borrarAccion($oAccion)
+    {
+        try{
+            $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
+            return $oPermisosIntermediary->borrar($oAccion);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    public function existeAccion($oAccion)
+    {
+        try{
+            $filtro = array("cp.controlador" => $oAccion->getModulo()."_".$oAccion->getControlador(), "a.accion" => $oAccion->getNombre());
+            $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
+            return $oPermisosIntermediary->existe($filtro);
+        }catch(Exception $e){
+           throw new Exception($e->getMessage());
+        }        
+    }
 }
