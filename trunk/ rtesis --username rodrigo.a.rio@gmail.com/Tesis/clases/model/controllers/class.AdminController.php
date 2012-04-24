@@ -250,4 +250,14 @@ class AdminController
            throw new Exception($e->getMessage());
         }        
     }
+
+    public function obtenerUsuariosSistema($filtro = null, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);            
+            return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
 }
