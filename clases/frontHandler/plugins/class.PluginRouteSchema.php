@@ -588,5 +588,71 @@ class PluginRouteSchema extends PluginAbstract
                                     'action'     => 'form'
                                 ));
         $router->addRoute('adminAccionesPerfilForm', $route);
+
+
+
+        $route = new RegexRoute('admin/usuarios',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminUsuariosIndex', $route);
+        $route = new RegexRoute('admin/usuarios-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminUsuariosProcesar', $route);
+        $route = new RegexRoute('admin/usuarios-form',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'usuarios',
+                                    'action'     => 'form'
+                                ));
+        $router->addRoute('adminUsuariosForm', $route);
+        $route = new RegexRoute('admin/usuarios-cambiar-perfil',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'cambiarPerfil'
+                                ));
+        $router->addRoute('adminUsuariosCambiarPerfil', $route);
+        $route = new RegexRoute('admin/usuarios-cerrar-cuenta',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'cerrarCuenta'
+                                ));
+        $router->addRoute('adminUsuariosCerrarCuenta', $route);
+        $route = new RegexRoute('admin/usuarios-crear',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'crear'
+                                ));
+        $router->addRoute('adminUsuariosCrear', $route);
+        $route = new RegexRoute('admin/usuarios-vista-impresion',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'vistaImpresion'
+                                ));
+        $router->addRoute('adminUsuariosVistaImpresion', $route);
+        $route = new RegexRoute('admin/usuarios-imprimir',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'imprimir'
+                                ));
+        $router->addRoute('adminUsuariosImprimir', $route);
+        $route = new RegexRoute('admin/usuarios-exportar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'usuarios',
+                                        'action'     => 'exportar'
+                                ));
+        $router->addRoute('adminUsuariosExportar', $route);
     }
 }

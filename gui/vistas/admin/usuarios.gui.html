@@ -1,0 +1,344 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/usuarios.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Usuarios</h2>
+</header>
+<section>
+    <h3>Administrador de usuarios y perfiles de la comunidad SGPAPD</h3>
+</section>
+<!--EndHeaderBlock-->
+
+<!--BeginListadoUsuariosBlock-->
+<!--BeginPanelAdminBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="admin/usuarios-form" rel="tooltip" original-title="Agregar un nuevo integrante al sistema">Crear Usuario</a>
+    <a class="button-link green" href="admin/usuarios-vista-impresion" rel="tooltip" original-title="Generar una vista para imprimir el filtro actual">Vista Impresi&oacute;n</a>
+    <a class="button-link green" href="admin/usuarios-exportar" rel="tooltip" original-title="Exportar el filtro actual en formato .xml">Exportar</a>
+</div>
+<!--EndPanelAdminBlock-->
+<form>
+    <fieldset>
+        <legend>Filtrar B&uacute;squeda</legend>
+        <label for="nombre">Nombre</label> <input type="text" id="nombre" name="nombre" class="small">
+    </fieldset>
+</form>
+<section>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Nombre completo</th>
+                <th>Perfil</th>
+                <th>E-mail</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginUsuariosBlock-->
+            <tr class="{iUsuarioId}" class="{odd}">
+                <td>
+                    <a href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
+                        <img src="{scrAvatarUsuario}" />
+                    </a>
+                </td>
+                <td>{sNombreUsuario}</td>
+                <td>{sPerfil}</td>
+                <td><a href="mailto:{sEmail}">{sEmail}</a></td>
+                <td class="teal_ce">
+                    <a rel="tooltip" original-title="Editar Usuario" href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}"><span class="i bs edit ihover"></span></a>
+                    <!--BeginDeleteButton-->
+                    <span rel="{iUsuarioId}" class="i bs delete ihover cerrarCuentaUsuario"></span>
+                    <!--EndDeleteButton-->
+                </td>
+            </tr>
+        <!--EndUsuariosBlock-->
+        <!--BeginNoRecordsUsuariosBlock-->
+            <tr>
+                <td colspan="5">{sNoRecords}</td>
+            </tr>
+        <!--EndNoRecordsUsuariosBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoUsuariosBlock-->
+
+<!--BeginFichaUsuarioBlock-->
+ <article class="full-block clearfix">
+    <header>
+        <h2>Ficha Usuario ID: {iUsuarioId}</h2>
+    </header>
+    <section>
+        <div class="sidetabs">
+            <nav class="sidetab-switch">
+                <ul>
+                    <li><a class="default-sidetab" href="#sidetab1">B&aacute;sica</a></li>
+                    <li><a href="#sidetab2">Contacto</a></li>
+                    <li><a href="#sidetab3">Profesional</a></li>
+                </ul>
+                <p>
+                    <a href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}">Editar usuario</a>
+                </p>
+            </nav>
+
+            <div class="sidetab default-sidetab" id="sidetab1">
+                <h3>Informaci&oacute;n b&aacute;sica del usuario</h3>
+
+                <section class="teal_le">
+                    <p>
+                        <span class="fowe_bo teta_up">documento:</span> {sDocumento}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">nombre:</span> {sNombre}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">e-mail:</span> {sEmail}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">sexo:</span> {sSexo}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}
+                    </p>
+                </section>
+                <section class="teal_le">
+                    <span class="fowe_bo teta_up">Foto de Perfil</span><br>
+                    <div class="image-frame right">
+                        <img src="{scrFotoPerfilActual}" />
+                        <ul class="image-actions">
+                            <li class="delete"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
+                            <li class="delete"><a href="#">Borrar</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="sidetab" id="sidetab2">
+                <h3>Informaci&oacute;n de contacto</h3>
+                <section class="teal_le">
+                    <p>
+                        <span class="fowe_bo teta_up">ubicacion:</span> {sUbicacion}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">ciudad de origen:</span> {sCiudadOrigen}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">codigo postal:</span> {sCodigoPostal}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">direccion:</span> {sDireccion}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">telefono:</span> {sTelefono}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">celular:</span> {sCelular}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">fax:</span> {sFax}
+                    </p>
+                </section>
+            </div>            
+            
+            <div class="sidetab" id="sidetab3">
+                <h3>Informaci&oacute;n de formaci&oacute;n profesional</h3>
+                <section class="teal_le">
+                    <p>
+                        <span class="fowe_bo teta_up">institucion:</span>
+                        <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">cargo institucion:</span> {sInstitucionCargo}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">biografia</span><br>
+                        {sBiografia}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">empresa:</span> {sEmpresa}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">secundaria:</span> {sSecundaria}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">universidad:</span> {sUniversidad}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">carrera:</span> {sCarrera}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">finalizada?:</span> {sFinalizada}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">sitio web:</span> {sSitioWeb}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">especialidad:</span> {sEspecialidad}
+                    </p>
+                    <p>
+                        <span class="fowe_bo teta_up">curriculum vitae:</span> <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                    </p>
+                </section>
+            </div>
+        </div>
+    </section>
+</article>
+<!--EndFichaUsuarioBlock-->
+
+<!--BeginFormularioCrearBlock-->
+<div class="notification note">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p>Al crear un usuario se requieren los datos minimos. Una vez creado el usuario se podr&aacute;n editar por completo.</p>
+</div>
+
+<h3>Crear un nuevo usuario</h3>
+
+<div style="display:none"  id='msg_form_usuario' class="notification">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p class="msg"></p>
+</div>
+<form id="formUsuario" name="formUsuario" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <dl>
+        tipo documento
+        numero documento
+        nombre
+        apellido
+        email
+        nombre usuario
+        contrasenia
+        sexo
+        fecha nacimiento
+        
+        <dt>
+            <label>Modulo</label>
+        </dt>
+        <dd>
+            <select name="modulo" id="modulo">
+                <option value="">Elegir modulo</option>
+                <option value="index" {sSelectedModuloIndex}>Index</option>
+                <option value="comunidad" {sSelectedModuloComunidad}>Comunidad</option>
+                <option value="seguimientos" {sSelectedModuloSeguimientos}>Seguimientos</option>
+                <option value="admin" {sSelectedModuloAdmin}>Admin</option>
+            </select>
+        </dd>
+        <dt>
+            <label>Controlador</label>
+        </dt>
+        <dd>
+            <input name="controlador" id="controlador" type="text" class="small" value="{sControlador}">
+            <p>
+                Cuidado, el nombre del controlador debe coincidir con el nombre de la clase<br>
+                Ejemplo: si "class.InstitucionesControllerComunidad.php" entonces deberia ingresar 'comunidad' en el campo.<br>
+                Si el controlador no existe en DB sera creado.<br>
+                El controlador se elimina cuando se elimine la ultima accion asociada.
+            </p>
+        </dd>
+        <!--EndCamposCrearAccionBlock-->
+
+        <!--BeginCamposModificarAccionBlock-->
+        <dt>
+            <label>Modulo</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="modulo" id="modulo" type="text" class="small readonly" value="{sModulo}">
+        </dd>
+        <dt>
+            <label>Controlador</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="controlador" id="controlador" type="text" class="small readonly" value="{sControlador}">
+        </dd>
+        <!--EndCamposModificarAccionBlock-->
+
+        <dt>
+            <label>Accion</label>
+        </dt>
+        <dd>
+            <input name="accion" id="accion" type="text" class="small" value="{sAccion}">
+            <p>
+                El nombre de la accion debe corresponder con el nombre de un metodo para la clase del controller.<br>
+                Se deben respetar mayusculas y minusculas.
+            </p>
+        </dd>
+        <dt>
+            <label>Perfil</label>
+        </dt>
+        <dd>
+            <select name="perfil" id="perfil">
+                <option value="">Elegir Perfil</option>
+                <option value="1" {sSelectedPerfilAdministrador}>Administrador</option>
+                <option value="2" {sSelectedPerfilModerador}>Moderador</option>
+                <option value="3" {sSelectedPerfilIntegranteActivo}>Integrante Activo</option>
+                <option value="4" {sSelectedPerfilIntegranteInactivo}>Integrante Inactivo</option>
+                <option value="5" {sSelectedPerfilVisitante}>Visitante</option>
+            </select>
+            <p>
+                Los permisos se manejan por jerarquia:<br>
+                Si elige <strong>'moderador'</strong> la accion podra ejecutarla tanto <strong>administradores</strong> como <strong>moderadores</strong><br>
+                Si elige 'integrante activo' la accion sera permitida para administradores, moderadores e integrantes activos<br>
+                Asi sucesivamente, la misma regla aplica para integrante activo y visitante.
+            </p>
+        </dd>
+        <dt>
+            <label>Acci&oacute;n Activa?</label>
+        </dt>
+        <dd>
+            <select name="activo" id="activo">
+                <option value="0" {sSelectedAccionDesactivada}>Desactivada</option>
+                <option value="1" {sSelectedAccionActivada}>Activada</option>
+            </select>
+        </dd>
+
+        <!--BeginSubmitCrearAccionBlock-->
+        <button id="crearAccion" name="crearAccion" type="submit">Crear Accion</button>
+        <!--EndSubmitCrearAccionBlock-->
+
+        <!--BeginSubmitModificarAccionBlock-->
+        <button id="modificarAccion" name="modificarAccion" type="submit">Modificar Accion</button>
+        <input type="hidden" value="{iAccionId}" name="iAccionId" id="iAccionId" />
+        <!--EndSubmitModificarAccionBlock-->
+</form>
+<!--EndFormularioCrearBlock-->
+
+<!--BeginFormularioModificarBlock-->
+<div class="notification note">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p>Los campos <span class="fost_it">controlador</span> y <span class="fost_it">accion</span> deben ser ingresados en <strong>Camel Case con el primer caracter en minuscula</strong></p>
+</div>
+
+<h3>Modificar Usuario</h3>
+
+<div style="display:none"  id='msg_form_usuario' class="notification">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p class="msg"></p>
+</div>
+<form id="formAccion" name="formAccion" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <button id="modificarAccion" name="modificarAccion" type="submit">Modificar Accion</button>
+    <input type="hidden" value="{iAccionId}" name="iAccionId" id="iAccionId" />
+</form>
+<!--EndFormularioModificarBlock-->
