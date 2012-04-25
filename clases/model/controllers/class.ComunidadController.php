@@ -43,14 +43,6 @@ class ComunidadController
         $this->db = $db;
     }
 	
-    /**
-     * Retorna excepcion si no encuentra la publicacion
-     *
-     */
-    public function obtenerPublicacion($publicacionId)
-    {
-
-    }
 
     public function obtenerUltimaPublicacion()
     {
