@@ -164,7 +164,7 @@ class ComunidadController
         }
     }
     
-    //ver lo del filtro Andres
+    
     public function obtenerInstitucion($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
@@ -513,6 +513,33 @@ class ComunidadController
             }else{
                 return false;
             }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    public function existePublicacion($filtro){
+        try{
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->existe($filtro);
+        }catch(Exception $e){
+           throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     * @param stdClass $obj
+     */
+    public function guardarPublicacion($oPublicacion){
+    	try{
+    		$oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->guardar($oPublicacion);
+          }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+	public function obtenerPublicacion($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    	try{
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

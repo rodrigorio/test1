@@ -9,7 +9,7 @@ class Publicacion extends FichaAbstract
 {
     private $iUsuarioId;
     private $bModerado;
-    private $iPublico;
+    private $bPublico;
     private $bActivoComentario;
     private $sDescripcionBreve;
     private $sKeywords;
@@ -38,6 +38,14 @@ public function isModerado($flag = null){
             $this->bModerado = $flag ? true : false;
         }else{
             return $this->bModerado;
+        }
+ }
+ 
+public function isPublico($flag = null){
+        if(null !== $flag){
+            $this->bPublico = $flag ? true : false;
+        }else{
+            return $this->bPublico;
         }
  }
 public function isActivoComentario($flag = null){

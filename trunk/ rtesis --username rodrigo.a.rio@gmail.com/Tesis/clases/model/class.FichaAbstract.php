@@ -21,6 +21,11 @@ abstract class FichaAbstract
     * array objetos Archivo
     */
     protected $aArchivos = null;
+    /*
+    * array objetos Archivo
+    */
+    protected $aEmbedVideos = null;
+    
  public function __construct(){}
  	
   public function setId($id){
