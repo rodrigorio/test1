@@ -1,0 +1,58 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")   
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/antecedentes.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginPageRightInnerContBlock-->
+<ul class="m_vert">
+    <li>
+        <a id="crearSeguimiento" href="{hrefCrearSeguimientos}">
+            <span class="i mi relationshipPeople"></span>
+            Crear nuevo seguimiento
+        </a>
+    </li>
+    <li>
+        <a id="agregarPersona" href="{hrefAgregarPersona}">
+            <span class="i bs userAdd"></span>
+            Agregar persona
+        </a>
+    </li>
+</ul>
+<!--EndPageRightInnerContBlock-->
+
+<!--BeginFormularioBlock-->
+<div class="ficha01 grupo mabo2">
+    <div class="encabezado">
+        <div class="izq">
+            <div class="icono"><span class="i32 bs edit32"></span></div>
+            <span class="titulo">Editar antecedentes</span><br>
+            <span class="subtitulo">pepepepp</span>
+        </div>
+        <div class="der"></div>
+    </div>
+    <div class="contenido">
+        <form action="" method="post">
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Estado</span>
+                <select name="seguimiento_estado" id="seguimiento_estado">
+                      <option value="">Todos</option>
+                      <option value="activo">Activo</option>
+                      <option value="detenido">Detenido</option>
+                 </select>
+            </div>
+            </form>
+        </div>
+  </div>
+<!--EndFormularioBlock-->

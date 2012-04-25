@@ -310,3 +310,8 @@ function eliminarSeguimiento(seguimientoId)
         });
     }
 }
+
+function editarAntecedentes(){
+	window.location.href = "seguimientos/editar-antecedentes";
+	
+}

@@ -50,6 +50,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             //contenido ppal home seguimientos
             $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
             $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
+            $this->getTemplate()->set_var("hrefListadoSeguimientos", "seguimientos/home");
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "ListadoSeguimientosBlock");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
@@ -226,6 +227,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->printMsgTop();
 
             //titulo seccion
+             $this->getTemplate()->set_var("hrefListadoSeguimientos", "seguimientos/home");
             $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
             $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
 
@@ -358,7 +360,33 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
-    
-    
-         }
+
+ 	public function editarAntecedentes(){
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            //titulo seccion
+            $this->getTemplate()->set_var("hrefListadoSeguimientos", "seguimientos/home");
+            $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
+            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
+
+            //contenido ppal home seguimientos
+            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
+            $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
+
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
+          
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
+        }
+    }
+}
 	  
