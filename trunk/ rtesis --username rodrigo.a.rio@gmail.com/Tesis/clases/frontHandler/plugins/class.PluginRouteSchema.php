@@ -345,6 +345,14 @@ class PluginRouteSchema extends PluginAbstract
                                 ));
         $router->addRoute('seguimientosSeguimientosCambiarEstadoSeguimiento', $route);
 
+        $route = new RegexRoute('seguimientos/editar-antecedentes',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'editarAntecedentes'
+                                ));
+        $router->addRoute('seguimientosSeguimientosEditarSeguimientos', $route);
+
 
 
         //PERSONAS

@@ -18,6 +18,12 @@
 <!--BeginPageRightInnerContBlock-->
 <ul class="m_vert">
     <li>
+        <a id="listadoSeguimientos" href="{hrefListadoSeguimientos}">
+            <span class="i mi relationshipPeople"></span>
+            Listado de seguimientos
+        </a>
+    </li>
+    <li>
         <a id="crearSeguimiento" href="{hrefCrearSeguimientos}">
             <span class="i mi relationshipPeople"></span>
             Crear nuevo seguimiento
@@ -191,7 +197,9 @@
                    <!--BeginPermisoEditarSeguimientoBlock-->
                   <!-- <span title="Editar Seguimiento" class="i bs edit ihover mari3" onclick="editarSeguimiento({iSeguimientoId});"></span>-->
                    <!--EndPermisoEditarSeguimientoBlock-->
-                   <span title="Eliminar Seguimiento" class="i bs delete ihover" onclick="eliminarSeguimiento({iSeguimientoId});"></span>
+                   <span title="Eliminar Seguimiento" class="i bs delete ihover mari3" onclick="eliminarSeguimiento({iSeguimientoId});"></span>
+                   
+                   <span title="Editar antecedentes" class="i bs edit ihover" onclick="editarAntecedentes({iSeguimientoId});"></span>
                </td>
            </tr>
            <tr class="{iSeguimientoId} ba_no">
