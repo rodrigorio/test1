@@ -58,4 +58,3 @@ class Especialidad {
 		return $this->sDescripcion;
 	}
 }
-?>

@@ -260,4 +260,56 @@ class AdminController
             throw new Exception($e->getMessage());
         }        
     }
+
+    /**
+     * Ojo con este metodo capaz que hay que ir actualizandolo a medida que crezca el sistema.
+     */
+    public function cerrarCuentaIntegrante($oUsuario, $pathServidor)
+    {
+        try{            
+            $oFotoPerfil = $oUsuario->getFotoPerfil();
+            $oCurriculumVitae = $oUsuario->getCurriculumVitae();
+
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $result = $oUsuarioIntermediary->borrar($oUsuario);
+            
+            if($result){
+                //borro archivos de fotos y adjuntos en el servidor, los registros en db volaron en cascada
+                if(null != $oFotoPerfil){
+                    $aNombreArchivos = $oFotoPerfil->getArrayNombres();
+                    foreach($aNombreArchivos as $nombreServidorArchivo){
+                        $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
+                        }
+                    }
+                }
+                if(null != $oCurriculumVitae){                    
+                    $pathServidorArchivo = $pathServidor.$oCurriculumVitae->getNombreServidor();
+                    if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                        unlink($pathServidorArchivo);
+                    }
+                }
+            }
+
+            return $result;
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }    
+    }
+    
+    /**
+     * Devuelve el campo 'descripcion' del perfil para un usuario
+     */
+    public function obtenerDescripcionPerfilUsuario($oUsuario)
+    {
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
+            return $oPerfil->getDescripcion();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }                
+    }
 }

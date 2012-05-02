@@ -22,12 +22,13 @@
 
 <!--BeginHeaderBlock-->
 <article class="full-block clearfix">
-<header>
-    <h2>Administracion Avanzada</h2>
-</header>
-<section>
-    <h3>Acciones del sistema vigentes segun tipo de perfil</h3>
-</section>
+    <header>
+        <h2>Administracion Avanzada</h2>
+    </header>
+    <section>
+        <h3>Acciones del sistema vigentes segun tipo de perfil</h3>
+    </section>
+</article>
 <!--EndHeaderBlock-->
 
 <!--BeginListadoAccionesBlock-->
@@ -81,15 +82,13 @@
     <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
     <p>Los campos <span class="fost_it">controlador</span> y <span class="fost_it">accion</span> deben ser ingresados en <strong>Camel Case con el primer caracter en minuscula</strong></p>
 </div>
-<h3>{sTituloFormAccion} Acci&oacute;n</h3>
+<h3 class="teta_up">{sTituloFormAccion} Acci&oacute;n</h3>
 <div style="display:none"  id='msg_form_accion' class="notification">
     <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
     <p class="msg"></p>
 </div>
 <form id="formAccion" name="formAccion" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <dl>
-
         <!--BeginCamposCrearAccionBlock-->
         <dt>
             <label for="modulo">Modulo</label>

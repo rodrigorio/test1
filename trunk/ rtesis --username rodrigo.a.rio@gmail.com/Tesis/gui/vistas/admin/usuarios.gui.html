@@ -17,18 +17,20 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/usuarios.js");
 </script>
 <!--EndJsContent-->
 
 <!--BeginHeaderBlock-->
 <article class="full-block clearfix">
-<header>
-    <h2>Administrar Usuarios</h2>
-</header>
-<section>
-    <h3>Administrador de usuarios y perfiles de la comunidad SGPAPD</h3>
-</section>
+    <header>
+        <h2>Administrar Usuarios</h2>
+    </header>
+    <section>
+        <h3>Administrador de usuarios y perfiles de la comunidad SGPAPD</h3>
+    </section>
+</article>
 <!--EndHeaderBlock-->
 
 <!--BeginListadoUsuariosBlock-->
@@ -39,13 +41,48 @@
     <a class="button-link green" href="admin/usuarios-exportar" rel="tooltip" original-title="Exportar el filtro actual en formato .xml">Exportar</a>
 </div>
 <!--EndPanelAdminBlock-->
-<form>
+<div class="notification note">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p>En los filtros de texto se buscan coincidencias de t&eacute;rmino completo o partes contenidas en los mismos</p>
+</div>
+<form id="formFiltrarUsuarios" name="formFiltrarUsuarios" action="" method="post">
     <fieldset>
-        <legend>Filtrar B&uacute;squeda</legend>
-        <label for="nombre">Nombre</label> <input type="text" id="nombre" name="nombre" class="small">
+        <legend>Filtrar B&uacute;squeda</legend>        
+        <div class="mabo2 clearfix">
+            <label for="filtroApellido">Apellido</label> <input type="text" id="filtroApellido" name="filtroApellido" class="mari2">
+            <label for="filtroNumeroDocumento">N&uacute;mero Documento</label> <input type="text" id="filtroNumeroDocumento" name="filtroNumeroDocumento" class="mari2">
+            <label for="filtroInstitucion">Instituci&oacute;n</label> <input type="text" id="filtroInstitucion" name="filtroInstitucion">
+        </div>
+        <div class="mabo3 clearfix">
+            <label for="filtroCiudad">Ciudad</label> <input type="text" id="filtroCiudad" name="filtroCiudad" class="mari2">
+            <label for="filtroEspecialidad">Especialidad</label>
+                <select name="filtroEspecialidad" id="filtroEspecialidad" class="mari2">
+                    <option value="">Elegir especialidad</option>
+                    <!--BeginOptionFiltroEspecialidadBlock-->
+                    <option value="{iEspecialidadId}" {sFiltroEspecialidadSelected}>{sFiltroEspecialidad}</option>
+                    <!--EndOptionFiltroEspecialidadBlock-->
+                </select>
+            <label for="filtroPerfil">Perfil</label>
+                <select name="filtroPerfil" id="filtroPerfil" class="mari2">
+                    <option value="">Elegir un perfil</option>
+                    <!--BeginOptionFiltroPerfilBlock-->
+                    <option value="{iPerfilId}" {sFiltroPerfilSelected}>{sFiltroPerfil}</option>
+                    <!--EndOptionFiltroPerfilBlock-->
+                </select>
+            <label for="filtroSuspendido">Suspendido?</label>
+                <select name="filtroSuspendido" id="filtroSuspendido">
+                    <option value="">Seleccionar</option>
+                    <option value="1" {sFiltroSuspendidoSiSelected}>S&iacute;</option>
+                    <option value="0" {sFiltroSuspendidoNoSelected}>No</option>
+                </select>
+        </div>
+        <div class="mabo3">
+            <button id="filtrarUsuarios" name="filtrarUsuarios" type="submit">Aplicar Filtro</button>
+        </div>
     </fieldset>
 </form>
-<section>
+<section id="listadoUsuarios">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <table>
         <thead>
             <tr>
@@ -53,6 +90,7 @@
                 <th>Nombre completo</th>
                 <th>Perfil</th>
                 <th>E-mail</th>
+                <th>Suspendido?</th>
                 <th></th>
             </tr>
         </thead>
@@ -60,24 +98,32 @@
         <!--BeginUsuariosBlock-->
             <tr class="{iUsuarioId}" class="{odd}">
                 <td>
-                    <a href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
+                    <a id="fotoPerfilActual_{iUsuarioId}" href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
                         <img src="{scrAvatarUsuario}" />
                     </a>
                 </td>
-                <td>{sNombreUsuario}</td>
+                <td>
+                    <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sNombreUsuario}</a>
+                </td>
                 <td>{sPerfil}</td>
                 <td><a href="mailto:{sEmail}">{sEmail}</a></td>
+                <td>
+                    <select class="cambiarEstadoUsuario" name="estadoUsuario_{iUsuarioId}" id="estadoUsuario_{iUsuarioId}" rel="{iUsuarioId}">
+                        <option value="1" {sSelectedUsuarioActivo}>Activo</option>
+                        <option value="0" {sSelectedUsuarioSuspendido}>Suspendido</option>                        
+                    </select>
+                </td>
                 <td class="teal_ce">
                     <a rel="tooltip" original-title="Editar Usuario" href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}"><span class="i bs edit ihover"></span></a>
                     <!--BeginDeleteButton-->
-                    <span rel="{iUsuarioId}" class="i bs delete ihover cerrarCuentaUsuario"></span>
+                    <span title="cerrar cuenta usuario" rel="{iUsuarioId}" class="i bs delete ihover cerrarCuentaUsuario"></span>
                     <!--EndDeleteButton-->
                 </td>
             </tr>
         <!--EndUsuariosBlock-->
         <!--BeginNoRecordsUsuariosBlock-->
             <tr>
-                <td colspan="5">{sNoRecords}</td>
+                <td colspan="6">{sNoRecords}</td>
             </tr>
         <!--EndNoRecordsUsuariosBlock-->
         </tbody>
@@ -86,123 +132,124 @@
 <!--EndListadoUsuariosBlock-->
 
 <!--BeginFichaUsuarioBlock-->
- <article class="full-block clearfix">
+<article class="full-block pa2 clearfix mabo0">
     <header>
         <h2>Ficha Usuario ID: {iUsuarioId}</h2>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Informaci&oacute;n B&aacute;sica del Integrante" class="default-tab" href="#tab1">B&aacute;sica</a></li>
+                <li><a rel="tooltip" title="Informaci&oacute;n de Conctacto" href="#tab2">Contacto</a></li>
+                <li><a rel="tooltip" title="Informaci&oacute;n de formaci&oacute;n profesional" href="#tab3">Profesional</a></li>
+            </ul>
+        </nav>
     </header>
-    <section>
-        <div class="sidetabs">
-            <nav class="sidetab-switch">
-                <ul>
-                    <li><a class="default-sidetab" href="#sidetab1">B&aacute;sica</a></li>
-                    <li><a href="#sidetab2">Contacto</a></li>
-                    <li><a href="#sidetab3">Profesional</a></li>
-                </ul>
+    
+    <section>        
+        <div class="tab default-tab" id="tab1">
+            <h3>Informaci&oacute;n b&aacute;sica del usuario</h3>
+
+            <div class="teal_le mabo2">
                 <p>
-                    <a href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}">Editar usuario</a>
+                    <span class="fowe_bo teta_up">documento:</span> {sDocumento}
                 </p>
-            </nav>
-
-            <div class="sidetab default-sidetab" id="sidetab1">
-                <h3>Informaci&oacute;n b&aacute;sica del usuario</h3>
-
-                <section class="teal_le">
-                    <p>
-                        <span class="fowe_bo teta_up">documento:</span> {sDocumento}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">nombre:</span> {sNombre}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">e-mail:</span> {sEmail}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">sexo:</span> {sSexo}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}
-                    </p>
-                </section>
-                <section class="teal_le">
-                    <span class="fowe_bo teta_up">Foto de Perfil</span><br>
-                    <div class="image-frame right">
-                        <img src="{scrFotoPerfilActual}" />
-                        <ul class="image-actions">
-                            <li class="delete"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
-                            <li class="delete"><a href="#">Borrar</a></li>
-                        </ul>
-                    </div>
-                </section>
+                <p>
+                    <span class="fowe_bo teta_up">nombre:</span> {sNombre}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">e-mail:</span> {sEmail}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">sexo:</span> {sSexo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}
+                </p>
             </div>
-            
-            <div class="sidetab" id="sidetab2">
-                <h3>Informaci&oacute;n de contacto</h3>
-                <section class="teal_le">
-                    <p>
-                        <span class="fowe_bo teta_up">ubicacion:</span> {sUbicacion}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">ciudad de origen:</span> {sCiudadOrigen}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">codigo postal:</span> {sCodigoPostal}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">direccion:</span> {sDireccion}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">telefono:</span> {sTelefono}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">celular:</span> {sCelular}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">fax:</span> {sFax}
-                    </p>
-                </section>
-            </div>            
-            
-            <div class="sidetab" id="sidetab3">
-                <h3>Informaci&oacute;n de formaci&oacute;n profesional</h3>
-                <section class="teal_le">
-                    <p>
-                        <span class="fowe_bo teta_up">institucion:</span>
-                        <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">cargo institucion:</span> {sInstitucionCargo}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">biografia</span><br>
-                        {sBiografia}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">empresa:</span> {sEmpresa}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">secundaria:</span> {sSecundaria}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">universidad:</span> {sUniversidad}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">carrera:</span> {sCarrera}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">finalizada?:</span> {sFinalizada}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">sitio web:</span> {sSitioWeb}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">especialidad:</span> {sEspecialidad}
-                    </p>
-                    <p>
-                        <span class="fowe_bo teta_up">curriculum vitae:</span> <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
-                    </p>
-                </section>
+            <!--BeginFotoPerfilActualBlock-->
+            <div id="fotoPerfilActualCont" class="teal_le">
+                <p>
+                    <span class="fowe_bo teta_up">Foto de Perfil</span>
+                </p>
+                <div class="image-frame left">
+                    <img src="{scrFotoPerfilActual}" />
+                    <ul class="image-actions">
+                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
+                        <li class="delete"><a id="fotoPerfilBorrar" href="#" rel="{iUsuarioId}">Borrar</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--EndFotoPerfilActualBlock-->
+        </div>
+                  
+        <div class="tab" id="tab2">
+            <h3>Informaci&oacute;n de contacto</h3>
+            <div class="teal_le">
+                <p>
+                    <span class="fowe_bo teta_up">ubicacion:</span> {sUbicacion}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">ciudad de origen:</span> {sCiudadOrigen}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">codigo postal:</span> {sCodigoPostal}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">direccion:</span> {sDireccion}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">telefono:</span> {sTelefono}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">celular:</span> {sCelular}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fax:</span> {sFax}
+                </p>
             </div>
         </div>
+        
+        <div class="tab" id="tab3">
+            <h3>Informaci&oacute;n de formaci&oacute;n profesional</h3>
+            <div class="teal_le">
+                <p>
+                    <span class="fowe_bo teta_up">institucion:</span>
+                    <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">cargo institucion:</span> {sInstitucionCargo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">biografia</span>
+                </p>
+                <p>
+                    {sBiografia}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">empresa:</span> {sEmpresa}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">secundaria:</span> {sSecundaria}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">universidad:</span> {sUniversidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">carrera:</span> {sCarrera}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">finalizada?:</span> {sFinalizada}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">sitio web:</span> {sSitioWeb}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">especialidad:</span> {sEspecialidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">curriculum vitae:</span> <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                </p>
+            </div>
+        </div>            
     </section>
 </article>
 <!--EndFichaUsuarioBlock-->
@@ -210,135 +257,535 @@
 <!--BeginFormularioCrearBlock-->
 <div class="notification note">
     <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p>Al crear un usuario se requieren los datos minimos. Una vez creado el usuario se podr&aacute;n editar por completo.</p>
+    <p>Al crear un usuario se requieren los datos m&iacute;nimos. Una vez creado el usuario se podr&aacute;n editar por completo.</p>
 </div>
-
-<h3>Crear un nuevo usuario</h3>
-
-<div style="display:none"  id='msg_form_usuario' class="notification">
+<h1 class="teta_up">Crear un nuevo usuario</h1>
+<div style="display:none"  id='msg_form_crearUsuario' class="notification">
     <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
     <p class="msg"></p>
 </div>
-<form id="formUsuario" name="formUsuario" action="" method="post">
+<form id="formCrearUsuario" name="formCrearUsuario" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <dl>
-        tipo documento
-        numero documento
-        nombre
-        apellido
-        email
-        nombre usuario
-        contrasenia
-        sexo
-        fecha nacimiento
+    <fieldset>
+        <legend>Documento</legend>
+        <dl>
+            <dt>
+                <label for="tipoDocumento">Tipo Documento</label>
+            </dt>
+            <dd>
+                <select name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento" class="small">
+                    <option value="">Tipo:</option>
+                    <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
+                </select>
+            </dd>
+            <dt>
+                <label for="numeroDocumento">N&uacute;mero Documento</label>
+            </dt>
+            <dd>
+                <input name="numeroDocumento" id="numeroDocumento" type="text" class="small" value="">
+            </dd>
+        </dl>
+    </fieldset>
+    <dt>
+        <label for="nombre">Nombre</label>
+    </dt>
+    <dd>
+        <input name="nombre" id="nombre" type="text" class="small" value="">
+    </dd>
+    <dt>
+        <label for="apellido">Apellido</label>
+    </dt>
+    <dd>
+        <input name="apellido" id="apellido" type="text" class="small" value="">
+    </dd>
+    <dt>
+        <label for="email">E-mail</label>
+    </dt>
+    <dd>
+        <input name="email" id="email" type="text" class="small" value="">
+    </dd>
+    <dt>
+        <label for="nombreUsuario">Nombre Usuario</label>
+    </dt>
+    <dd>
+        <input name="nombreUsuario" id="nombreUsuario" type="text" class="small" value="">
+    </dd>
+
+    <fieldset>
+        <legend>Contrase&ntilde;a</legend>
+        <dl>
+            <dt>
+                <label for="contrasenia">Contrase&ntilde;a</label>
+            </dt>
+            <dd>
+                <input name="contrasenia" id="contrasenia" type="text" class="small" value="">
+                <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
+            </dd>
+            <dt>
+                <label for="reContrasenia">Vuelva a Ingresarla</label>
+            </dt>
+            <dd>
+                <input name="reContrasenia" id="reContrasenia" type="text" class="small" value="">
+            </dd>
+        </dl>
+    </fieldset>
+
+    <dt>
+        <label for="sexo">Sexo</label>
+    </dt>
+    <dd>
+        <select name="sexo" id="sexo" title="Sexo" class="small">
+            <option value="">Elija Sexo:</option>
+            <option value="m">Masculino</option>
+            <option value="f">Femenino</option>
+        </select>
+    </dd>
+
+    <fieldset>
+        <legend>Fecha Nacimiento</legend>
+        <dl>
+            <dt>
+                <label for="fechaNacimientoDia">D&iacute;a</label>
+            </dt>
+            <dd>
+                <select class="small" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
+                    <option value="">D&iacute;a:</option>
+                    <!--BeginOptionSelectDia--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDia-->
+                </select>
+            </dd>
+
+            <dt>
+                <label for="fechaNacimientoMes">Mes</label>
+            </dt>
+            <dd>
+                <select class="small" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
+                    <option value="">Mes:</option>
+                    <!--BeginOptionSelectMes--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectMes-->
+                </select>
+            </dd>
+
+            <dt>
+                <label for="fechaNacimientoAnio">A&ntilde;o</label>
+            </dt>
+            <dd>
+                <select class="small" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
+                    <option value="">A&ntilde;o:</option>
+                    <!--BeginOptionSelectAnio--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectAnio-->
+                </select>
+            </dd>
+        </dl>
+    </fieldset>
         
-        <dt>
-            <label>Modulo</label>
-        </dt>
-        <dd>
-            <select name="modulo" id="modulo">
-                <option value="">Elegir modulo</option>
-                <option value="index" {sSelectedModuloIndex}>Index</option>
-                <option value="comunidad" {sSelectedModuloComunidad}>Comunidad</option>
-                <option value="seguimientos" {sSelectedModuloSeguimientos}>Seguimientos</option>
-                <option value="admin" {sSelectedModuloAdmin}>Admin</option>
-            </select>
-        </dd>
-        <dt>
-            <label>Controlador</label>
-        </dt>
-        <dd>
-            <input name="controlador" id="controlador" type="text" class="small" value="{sControlador}">
-            <p>
-                Cuidado, el nombre del controlador debe coincidir con el nombre de la clase<br>
-                Ejemplo: si "class.InstitucionesControllerComunidad.php" entonces deberia ingresar 'comunidad' en el campo.<br>
-                Si el controlador no existe en DB sera creado.<br>
-                El controlador se elimina cuando se elimine la ultima accion asociada.
-            </p>
-        </dd>
-        <!--EndCamposCrearAccionBlock-->
-
-        <!--BeginCamposModificarAccionBlock-->
-        <dt>
-            <label>Modulo</label>
-        </dt>
-        <dd>
-            <input readonly="readonly" name="modulo" id="modulo" type="text" class="small readonly" value="{sModulo}">
-        </dd>
-        <dt>
-            <label>Controlador</label>
-        </dt>
-        <dd>
-            <input readonly="readonly" name="controlador" id="controlador" type="text" class="small readonly" value="{sControlador}">
-        </dd>
-        <!--EndCamposModificarAccionBlock-->
-
-        <dt>
-            <label>Accion</label>
-        </dt>
-        <dd>
-            <input name="accion" id="accion" type="text" class="small" value="{sAccion}">
-            <p>
-                El nombre de la accion debe corresponder con el nombre de un metodo para la clase del controller.<br>
-                Se deben respetar mayusculas y minusculas.
-            </p>
-        </dd>
-        <dt>
-            <label>Perfil</label>
-        </dt>
-        <dd>
-            <select name="perfil" id="perfil">
-                <option value="">Elegir Perfil</option>
-                <option value="1" {sSelectedPerfilAdministrador}>Administrador</option>
-                <option value="2" {sSelectedPerfilModerador}>Moderador</option>
-                <option value="3" {sSelectedPerfilIntegranteActivo}>Integrante Activo</option>
-                <option value="4" {sSelectedPerfilIntegranteInactivo}>Integrante Inactivo</option>
-                <option value="5" {sSelectedPerfilVisitante}>Visitante</option>
-            </select>
-            <p>
-                Los permisos se manejan por jerarquia:<br>
-                Si elige <strong>'moderador'</strong> la accion podra ejecutarla tanto <strong>administradores</strong> como <strong>moderadores</strong><br>
-                Si elige 'integrante activo' la accion sera permitida para administradores, moderadores e integrantes activos<br>
-                Asi sucesivamente, la misma regla aplica para integrante activo y visitante.
-            </p>
-        </dd>
-        <dt>
-            <label>Acci&oacute;n Activa?</label>
-        </dt>
-        <dd>
-            <select name="activo" id="activo">
-                <option value="0" {sSelectedAccionDesactivada}>Desactivada</option>
-                <option value="1" {sSelectedAccionActivada}>Activada</option>
-            </select>
-        </dd>
-
-        <!--BeginSubmitCrearAccionBlock-->
-        <button id="crearAccion" name="crearAccion" type="submit">Crear Accion</button>
-        <!--EndSubmitCrearAccionBlock-->
-
-        <!--BeginSubmitModificarAccionBlock-->
-        <button id="modificarAccion" name="modificarAccion" type="submit">Modificar Accion</button>
-        <input type="hidden" value="{iAccionId}" name="iAccionId" id="iAccionId" />
-        <!--EndSubmitModificarAccionBlock-->
+    <button id="crearUsuario" name="crearUsuario" type="submit">Crear Usuario</button>
 </form>
 <!--EndFormularioCrearBlock-->
 
 <!--BeginFormularioModificarBlock-->
-<div class="notification note">
-    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p>Los campos <span class="fost_it">controlador</span> y <span class="fost_it">accion</span> deben ser ingresados en <strong>Camel Case con el primer caracter en minuscula</strong></p>
-</div>
+<article class="full-block clearfix">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>        
+    <header>
+        <h2>Modificar Usuario</h2>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Informaci&oacute;n B&aacute;sica del Integrante" class="default-tab" href="#tab1">B&aacute;sica</a></li>
+                <li><a rel="tooltip" title="Informaci&oacute;n de Conctacto" href="#tab2">Contacto</a></li>
+                <li><a rel="tooltip" title="Informaci&oacute;n de formaci&oacute;n profesional" href="#tab3">Profesional</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<h3>Modificar Usuario</h3>
+    <div style="display:none"  id='msg_form_usuario' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
 
-<div style="display:none"  id='msg_form_usuario' class="notification">
-    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p class="msg"></p>
-</div>
-<form id="formAccion" name="formAccion" action="" method="post">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <section>
+        <div class="tab default-tab" id="tab1">
+            <h3>Informaci&oacute;n b&aacute;sica del usuario</h3>
+            <form id="formInfoBasica" name="formInfoBasica" action="" method="post">
+                <fieldset>
+                    <legend>Documento</legend>
+                    <dl>
+                        <dt>
+                            <label for="tipoDocumento">Tipo Documento</label>
+                        </dt>
+                        <dd>
+                            <select class="small" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
+                                <option value="">Tipo:</option>
+                                <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
+                            </select>
+                        </dd>
+                        <dt>
+                            <label for="nroDocumento">N&uacute;mero</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="12" value="{sNumeroDocumento}" />
+                        </dd>
+                    </dl>
+                </fieldset>
+                <dt>
+                    <label for="nombre">Nombre</label>
+                </dt>
+                <dd>
+                    <input class="small" type="text" name="nombre" id="nombre" title="Nombre" maxlength="30" value="{sNombre}" />
+                </dd>
+                <dt>
+                    <label for="apellido">Apellido</label>
+                </dt>
+                <dd>
+                    <input class="small" type="text" name="apellido" id="apellido" title="Apellido" maxlength="40" value="{sApellido}" />
+                </dd>
+                <dt>
+                    <label for="email">E-mail</label>
+                </dt>
+                <dd>
+                    <input class="small" type="text" name="email" id="email" title="E-mail" maxlength="70" value="{sEmail}" />
+                </dd>
+                <fieldset>
+                    <legend>Editar contrase&ntilde;a</legend>
+                    <dl>
+                        <dt>
+                            <label for="contraseniaActual">Actual</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="password" name="contraseniaActual" id="contraseniaActual" title="Contrase&ntilde;a Actual" maxlength="30" />
+                            <input type="hidden" name="contraseniaActualMD5" id="contraseniaActualMD5" value="" />
+                        </dd>
+                        <dt>
+                            <label for="contraseniaNueva">Nueva</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="password" name="contraseniaNueva" id="contraseniaNueva" title="Nueva Contrase&ntilde;a" maxlength="30" />
+                            <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />
+                            <p>La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</p>
+                        </dd>
+                        <dt>
+                            <label for="contraseniaConfirmar">Vuelva a ingresar nueva</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="password" name="contraseniaConfirmar" id="contraseniaConfirmar" title="Confirmar Contrase&ntilde;a" maxlength="30" />
+                        </dd>
+                    </dl>
+                </fieldset>
+                <dt>
+                    <label for="sexo">Sexo</label>
+                </dt>
+                <dd>
+                    <select class="small" name="sexo" id="sexo" title="Sexo">
+                        <option value="">Elija Sexo:</option>
+                        <option {sSelectedMasculino} value="m">Masculino</option>
+                        <option {sSelectedFemenino} value="f">Femenino</option>
+                    </select>
+                </dd>
+                <fieldset>
+                    <legend>Fecha de Nacimiento</legend>
+                    <dl>
+                        <dt>&nbsp;</dt>
+                        <dd>
+                            <select class="small" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
+                                <option value="">D&iacute;a:</option>
+                                <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
+                            </select>
+                        </dd>
+                        <dt>&nbsp;</dt>
+                        <dd>
+                            <select class="small" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
+                                <option value="">Mes:</option>
+                                <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
+                            </select>
+                        </dd>
+                        <dt>&nbsp;</dt>
+                        <dd>
+                            <select class="small" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
+                                <option value="">A&ntilde;o:</option>
+                                <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
+                            </select>
+                        </dd>
+                    </dl>
+                </fieldset>
+                <button id="formInfoBasicaSubmit" name="formInfoBasicaSubmit" type="submit">Modificar Usuario</button>
+                <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
+                <input type="hidden" value="1" name="modificarUsuario" />
+            </form>
+        </div>
+        <div class="tab" id="tab2">
+            <h3>Informaci&oacute;n de contacto</h3>
 
-    <button id="modificarAccion" name="modificarAccion" type="submit">Modificar Accion</button>
-    <input type="hidden" value="{iAccionId}" name="iAccionId" id="iAccionId" />
-</form>
+            <div class="sidetabs">
+                <nav class="sidetab-switch">
+                    <ul>
+                        <li><a class="default-sidetab" href="#tabInfo">Editar informaci&oacute;n</a></li>
+                        <li><a href="#tabFoto">Editar foto de perfil</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidetab default-sidetab" id="tabInfo">
+                    <form id="formInfoContacto" name="formInfoContacto" action="" method="post">
+
+                        <fieldset>
+                            <legend>Ubicaci&oacute;n</legend>
+                            <dl>
+                                <dt>
+                                    <label for="pais">Pa&iacute;s</label>
+                                </dt>
+                                <dd>
+                                    <select class="small" name="pais" id="pais" title="Pais">
+                                        <option value="">Elija Pa&iacute;s:</option>
+                                        <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
+                                    </select>
+                                </dd>
+
+                                <dt>
+                                    <label for="provincia">Provincia</label>
+                                </dt>
+                                <dd>
+                                    <select class="small" name="provincia" id="provincia" title="Provincia">
+                                        <option value="">Elija Provincia:</option>
+                                        <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
+                                    </select>
+                                </dd>
+
+                                <dt>
+                                    <label for="ciudad">Ciudad</label>
+                                </dt>
+                                <dd>
+                                    <select class="small" name="ciudad" id="ciudad" title="Ciudad">
+                                        <option value="">Elija Ciudad:</option>
+                                        <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
+                                    </select>
+                                </dd>
+                            </dl>
+                        </fieldset>
+                        <dt>
+                            <label for="ciudadOrigen">Ciudad de Origen</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="ciudadOrigen" id="ciudadOrigen" title="Ciudad de Origen" maxlength="60" value="{sCiudadOrigen}" />
+                        </dd>
+                        <dt>
+                            <label for="codigoPostal">C&oacute;digo Postal</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="codigoPostal" id="codigoPostal" title="Codigo Postal" maxlength="20" value="{sCodigoPostal}" />
+                        </dd>
+                        <dt>
+                            <label for="direccion">Direcci&oacute;n <span style="font-style:italic">(Calle, Altura, Dpto.)</span></label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="direccion" id="direccion" title="Direccion" maxlength="60" value="{sDireccion}" />
+                        </dd>
+                        <dt>
+                            <label for="telefono">Tel&eacute;fono de Contacto</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="telefono" id="telefono" title="Telefono" maxlength="40" value="{sTelefono}" />
+                        </dd>
+                        <dt>
+                            <label for="celular">Celular</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
+                        </dd>
+                        <dt>
+                            <label for="fax">Fax</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="fax" id="fax" title="Fax" maxlength="40" value="{sFax}" />
+                        </dd>
+                        
+                        <button id="formInfoContactoSubmit" name="formInfoContactoSubmit" type="submit">Modificar Usuario</button>
+                        <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
+                        <input type="hidden" value="1" name="modificarUsuario" />
+                    </form>
+                </div>
+
+                <div class="sidetab" id="tabFoto">
+
+                    <div id="contFotoPerfilActual">
+                        <!--BeginFotoPerfilActualBlock-->
+                        <div id="fotoPerfilActual" class="mabo3">
+                            <h2 class="mabo3">Foto Actual</h2>
+                            <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">
+                                <img src="{scrFotoPerfilActual}" />
+                            </a>
+                        </div>
+                        <!--EndFotoPerfilActualBlock-->
+                    </div>
+
+                    <div class="mabo3">
+                        <h2 class="mabo3">Suba un archivo desde el equipo</h2>
+
+                        <button id="fotoUpload" name="fotoUpload" class="btn01">Click para seleccionar</button>
+                    </div>
+
+                    <ul>
+                        <li>
+                            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab" id="tab3">
+            <h3>Informaci&oacute;n formaci&oacute;n profesional</h3>
+
+            <div class="sidetabs">
+                <nav class="sidetab-switch">
+                    <ul>
+                        <li><a class="default-sidetab" href="#tabPerfil">Editar informaci&oacute;n</a></li>
+                        <li><a href="#tabCurriculum">Editar curriculum vitae</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidetab default-sidetab" id="tabPerfil">
+                    <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post">
+
+                        <fieldset>
+                            <legend>Instituci&oacute;n</legend>
+                            <dl>
+                                <dt>
+                                    <label for="institucion">Instituci&oacute;n en la que se desempe&ntilde;a</label>
+                                </dt>
+                                <dd>
+                                    <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
+                                    <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
+                                    <input class="small" type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
+                                    <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
+                                    <p>
+                                        <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
+                                    </p>
+                                </dd>
+                                <dt>
+                                    <label for="cargoInstitucion">Cargo que desempe&ntilde;a</label>
+                                </dt>
+                                <dd>
+                                    <input class="small" type="text" name="cargoInstitucion" id="cargoInstitucion" title="Cargo que desempe&ntilde;a" maxlength="40" value="{sCargoInstitucion}" />
+                                </dd>
+                            </dl>
+                        </fieldset>
+                        <dt>
+                            <label for="biografia">Breve Biograf&iacute;a</label>
+                        </dt>
+                        <dd>
+                            <textarea rel="tooltip" class="medium" rows="10" cols="0" id="biografia" name="biografia" original-title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                        </dd>
+                        <dt>
+                            <label for="empresa">Empresa</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="empresa" id="empresa" title="Empresa" maxlength="40" value="{sEmpresa}" />
+                        </dd>
+                        <dt>
+                            <label for="secundaria">Secundaria</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="secundaria" id="secundaria" title="Secundaria" maxlength="40" value="{sSecundaria}" />
+                        </dd>
+                        <fieldset>
+                            <legend>Universidad</legend>
+                            <dl>
+                                <dt>
+                                    <label for="universidad">Universidad</label>
+                                </dt>
+                                <dd>
+                                    <input class="small" type="text" name="universidad" id="universidad" title="Universidad" maxlength="40" value="{sUniversidad}" />
+                                </dd>
+                                <dt>
+                                    <label for="universidadCarrera">Carrera</label>
+                                </dt>
+                                <dd>
+                                    <input class="small" type="text" name="universidadCarrera" id="universidadCarrera" title="Carrera" maxlength="40" value="{sUniversidadCarrera}" />
+                                </dd>
+                                <dt>
+                                    <label for="carreraFinalizada">Finalizada?</label>
+                                </dt>
+                                <dd>
+                                    <select class="small" name="carreraFinalizada" id="carreraFinalizada" title="Finalizada?">
+                                        <option value="">Elija opci&oacute;n:</option>
+                                        <option {sSelectedFinalizadaSi} value="1">S&iacute;</option>
+                                        <option {sSelectedFinalizadaNo} value="0">No</option>
+                                    </select>
+                                </dd>
+                            </dl>
+                        </fieldset>
+
+                        <dt>
+                            <label for="sitioWeb">Sitio Web / Blog</label>
+                        </dt>
+                        <dd>
+                            <input class="small" type="text" name="sitioWeb" id="sitioWeb" title="Sitio Web / Blog" maxlength="40" value="{sSitioWeb}" />
+                        </dd>
+
+                        <dt>
+                            <label for="especialidad">Especialidad <span style="font-style:italic">(&Aacute;rea de desempe&ntilde;o profesional)</span></label>
+                        </dt>
+                        <dd>
+                            <select class="small" name="especialidad" id="especialidad" title="Especialidad - (&Aacute;rea de desempe&ntilde;o profesional)">
+                                <option value="">Elija especialidad:</option>
+                                <!--BeginListaEspecialidadesBlock--><option value="{iEspecialidadId}" {sDatosPersonalesEspecialidadSelect}>{sEspecialidadNombre}</option><!--EndListaEspecialidadesBlock-->
+                            </select>
+                        </dd>
+
+                        <button id="formInfoProfesionalSubmit" name="formInfoProfesionalSubmit" type="submit">Modificar Usuario</button>
+                        <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
+                        <input type="hidden" value="1" name="modificarUsuario" />                        
+                    </form>                    
+                </div>
+
+                <div class="sidetab" id="tabCurriculum">
+                    <div id="wrapCvActual">
+                    <!--BeginCurriculumActualBlock-->
+                    <div id="cvActual" class="mabo3">
+                        <h2 class="mabo3">Curriculum Actual</h2>
+                        <div id="contCvActual">
+                            <ul class="m_vert pa2 baco1">
+                                <li>
+                                    <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
+                                </li>
+                                <li>
+                                    <span class="fte2 txt_imp2">Extensi&oacute;n:</span> {sExtensionArchivo}
+                                </li>
+                                <li>
+                                    <span class="fte2 txt_imp2">Tama&ntilde;o:</span> {sTamanioArchivo} Kb.
+                                </li>
+                                <li>
+                                    <span class="fte2 txt_imp2">Fecha Alta:</span> {sFechaArchivo}
+                                </li>
+                                <li>
+                                    <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--EndCurriculumActualBlock-->
+                    </div>
+
+                    <div class="mabo3">
+                        <h2 class="mabo3">Suba un archivo desde su equipo</h2>
+
+                        <button id="cvUpload" name="cvUpload" class="btn01">Click para seleccionar</button>
+                    </div>
+
+                    <ul class="m_vert">
+                        <li>
+                            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosArchivo}
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+                        </li>
+                        <li>
+                            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; el curriculum actual si ya tiene uno.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>   
 <!--EndFormularioModificarBlock-->
