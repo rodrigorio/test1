@@ -9,7 +9,7 @@
 class IntegranteActivo extends PerfilAbstract
 {
     const PERFIL_INTEGRANTE_ACTIVO_ID = 2;
-    const PERFIL_INTEGRANTE_ACTIVO_DESCRIPCION = 'visitante';
+    const PERFIL_INTEGRANTE_ACTIVO_DESCRIPCION = 'integrante activo';
 
     public function __construct(stdClass $oParams = null){
         parent::__construct();

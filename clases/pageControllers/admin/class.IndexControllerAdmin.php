@@ -67,6 +67,9 @@ class IndexControllerAdmin extends PageControllerAbstract
         $request = FrontController::getInstance()->getRequest();
 
         $template->set_var($currentOption, "class='current'");
+
+        //usuarios
+        $template->set_var("sHrefUsuariosListar", $request->getBaseTagUrl()."admin/usuarios");
         
         //moderacion
         $template->set_var("sHrefPersonasModeracion", $request->getBaseTagUrl()."admin/personas-moderacion");

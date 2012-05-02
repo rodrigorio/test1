@@ -53,6 +53,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             case 'foto': $this->procesarFormFotoPerfil();  break;
             //ya esta el mail registrado?
             case 'check-mail-existe': $this->mailDb();  break;
+            //el nombre de usuario ya esta siendo utilizado?
+            case 'check-nombreUsuario-existe': $this->nombreUsuarioDb();  break;
             //es la contrasenia actual del usuario?
             case 'check-contrasenia-actual': $this->contraseniaActual(); break;
             //dialog si paso a ser integrante activo
@@ -313,6 +315,17 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $dataResult = '0';
 
         if(ComunidadController::getInstance()->existeMailDb($this->getRequest()->getPost('email'), $usuario->getId())){
+            $dataResult = '1';
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
+    }
+
+    private function nombreUsuarioDb()
+    {
+        $dataResult = '0';
+
+        if(ComunidadController::getInstance()->existeNombreUsuarioDb($this->getRequest()->getPost('nombreUsuario'))){
             $dataResult = '1';
         }
 

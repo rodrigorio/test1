@@ -41,6 +41,8 @@ class Usuario extends PersonaAbstract
     private $iInvitacionesDisponibles;
     
     private $sContraseniaNueva;
+
+    private $bActivo;
     
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -112,6 +114,14 @@ class Usuario extends PersonaAbstract
             $this->bCarreraFinalizada = $flag ? true : false;
         }else{
             return $this->bCarreraFinalizada;
+        }
+    }
+
+    public function isActivo($flag = null){
+        if(null !== $flag){
+            $this->bActivo = $flag ? true : false;
+        }else{
+            return $this->bActivo;
         }
     }
 

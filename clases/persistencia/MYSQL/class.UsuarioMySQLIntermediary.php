@@ -104,7 +104,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
 
-                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario,
+                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario, u.activo as bActivo,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
@@ -203,6 +203,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sBiografia           = $oObj->sBiografia;
                 $oUsuario->sUniveridadCarrera   = $oObj->sUniveridadCarrera;
                 $oUsuario->bCarreraFinalizada   = $oObj->bCarreraFinalizada ? true : false;
+                $oUsuario->bActivo = ($oObj->bActivo == '1')?true:false;
                 $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
 
                 //objeto especialidad si tiene
@@ -535,6 +536,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }
 
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
+
+            $activo = $oUsuario->isActivo()?"1":"0";
 			
             $db->begin_transaction();
             $sSQL = " update personas " .
@@ -567,6 +570,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                    " biografia = ".$this->escStr($oUsuario->getBiografia()).", ".
                    " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
                    " carreraFinalizada = ".$carreraFinalizada.", ".
+                   " activo = ".$activo.", ".
                    " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ".
                    " WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 
@@ -863,6 +867,33 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(!empty($userId)){
                 $sSQL .= " and u.id <> ".$userId;
             }
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }        
+    }
+
+    public function existeNombreUsuarioDb($nombreUsuario)
+    {
+    	try{
+            $db = $this->conn;
+
+            $nombreUsuario = $this->escStr($nombreUsuario);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        usuarios 
+                    WHERE nombre = ".$nombreUsuario;
 
             $db->query($sSQL);
 

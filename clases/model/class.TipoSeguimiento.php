@@ -68,4 +68,3 @@ class TipoSeguimiento {
             return $this->vLista[$id];
 	}
 }
-?>
