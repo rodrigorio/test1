@@ -547,11 +547,13 @@ class ComunidadController
         }
     }
 
-    /**
-     * Los parametros de 'ignorar' es para que busque si hay coincidencia pero sin tener en cuenta un valor particular.
-     */
-    public function existeDocumentoPersona($tipoDocumento, $numeroDocumento, $ignorarTipoDocumento = "", $ignorarNumeroDocumento = "")
+    public function existeDocumentoUsuario($numeroDocumento)
     {
-
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->existeDocumentoUsuario($numeroDocumento);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
     }
 }

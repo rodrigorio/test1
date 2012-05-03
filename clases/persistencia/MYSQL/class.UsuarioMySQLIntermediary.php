@@ -908,4 +908,32 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             return false;
         }        
     }
+    
+    public function existeDocumentoUsuario($numeroDocumento)
+    {
+    	try{
+            $db = $this->conn;
+
+            $nombreUsuario = $this->escInt($numeroDocumento);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        personas p
+                    JOIN usuarios u ON p.id = u.id 
+                    WHERE numeroDocumento = ".$numeroDocumento;
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }        
+    }
 }
