@@ -22,16 +22,22 @@
     <form id="formLogin" name="formLogin" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
         <div style="display:none;" id='msg_form_login' class="msg_form iveal"><span class="bs i"></span> <span class="msg"></span></div>
-        <div id="msg_documento" class="form_line">
-            <label for="documento">Documento</label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="documento" id="documento" title="Documento" maxlength="30" />
-                </div>
+
+        <div class="form_line msg_nroDocumento msg_tipoDocumento">
+            <label for="documento">                
+                Documento
+            </label>
+            <div class="cl_le"></div>
+            <div class="fl_le mari2">
+                <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
+                    <option value="">Tipo:</option>
+                    <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
+                </select>
             </div>
+            <input style="width:358px" class="defVal" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="30" value="Numero" />
         </div>
         
-        <div id="msg_contrasenia" class="form_line">
+        <div class="form_line msg_contrasenia">
             <label for="contrasenia">Contraseña</label>
             <div style='right:-220px' id="hintContrasenia" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La contraseña contempla mayúsculas y minúsculas.</span></div>
             <div class="fwrap">

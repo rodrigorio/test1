@@ -40,28 +40,41 @@ class LoginControllerIndex extends PageControllerAbstract
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            SysController::getInstance()->loginUsuario($this->getRequest()->getPost('documento'), $this->getRequest()->getPost('contraseniaMD5'));
-            if(!SessionAutentificacion::getInstance()->realizoLogin()){
-                //indica que la accion no se concreto con exito y agrega un mensaje de error
-                $this->getJsonHelper()->setSuccess(false)
-                                      ->setMessage('Datos Incorrectos');
-            }else{
-                
+            list($errorDatos, $errorSuspendido, $exito) = SysController::getInstance()->loginUsuario($this->getRequest()->getPost('tipoDocumento'), $this->getRequest()->getPost('nroDocumento'), $this->getRequest()->getPost('contraseniaMD5'));
+
+            if($exito){
                 $redirect = $this->getRequest()->getPost('next');
-                if(empty($redirect)){                    
+                if(empty($redirect)){
                     $redirect = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccionLoginDefecto(true);
                 }
-                
+
                 //agrega una url para que el js redireccione
                 $this->getJsonHelper()->setSuccess(true)
-                                      ->setRedirect($redirect);
+                                      ->setRedirect($redirect)
+                                      ->sendJsonAjaxResponse();
+                return;
             }
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
 
-        //setea headers y body en el response con los valores codificados
-        $this->getJsonHelper()->sendJsonAjaxResponse();
+            if($errorDatos){            
+                //indica que la accion no se concreto con exito y agrega un mensaje de error
+                $this->getJsonHelper()->setSuccess(false)
+                                      ->setMessage('Datos Incorrectos')
+                                      ->sendJsonAjaxResponse();
+                return;
+            }
+            
+            if($errorSuspendido){                            
+                $this->getJsonHelper()->setSuccess(false)
+                                      ->setMessage('La cuenta se encuentra suspendida, comuniquese con los administradores del sistema')
+                                      ->sendJsonAjaxResponse();
+                return;
+            }
+                
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false)
+                                  ->setMessage('Ocurrio un error al tratar de procesar la informacion')
+                                  ->sendJsonAjaxResponse();
+        }       
     }
 
     /**
@@ -115,6 +128,14 @@ class LoginControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
             $this->getTemplate()->set_var("sNextUrl", $nextFormUrl);
             $this->getTemplate()->set_var("sLinkRecuperarPass", $linkRecuperarPass);
+
+            //armo el select con los tipos de documentos cargados en db
+            $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+            foreach ($aTiposDocumentos as $value => $text){
+                $this->getTemplate()->set_var("iValue", $value);
+                $this->getTemplate()->set_var("sDescripcion", $text);
+                $this->getTemplate()->parse("OptionSelectDocumento", true);
+            }
         }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -157,6 +178,14 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sFormAction", $actionFormUrl);
         $this->getTemplate()->set_var("sNextUrl", $nextFormUrl);
         $this->getTemplate()->set_var("sLinkRecuperarPass", $linkRecuperarPass);
+
+        //armo el select con los tipos de documentos cargados en db
+        $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+        foreach ($aTiposDocumentos as $value => $text){
+            $this->getTemplate()->set_var("iValue", $value);
+            $this->getTemplate()->set_var("sDescripcion", $text);
+            $this->getTemplate()->parse("OptionSelectDocumento", true);
+        }
 
         //Si vino a Login por error de permiso muestro ficho con advertencia y link a inicio
         if($this->getRequest()->has('msgError') || $this->getRequest()->has('msgInfo')){
