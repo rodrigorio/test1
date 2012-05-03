@@ -1,4 +1,4 @@
-//Existe una persona con el numero de documento ingresado ? (solo se usa en el agregar persona)
+//Existe un discapacitado con el numero de documento ingresado? 
 jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
     var result = true;
     if($("#nroDocumento").val() != ""){
@@ -10,7 +10,14 @@ jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
                 checkNumeroDocumento:"1",
                 numeroDocumento:function(){return $("#nroDocumento").val();},
                 //porque si es modificar te tiene que dejar guardar el numero que ya estaba
-                personaId:function(){return $("#personaIdForm").val();}
+                personaId:function(){
+                    //porque sino devuelve undefined
+                    if($('#personaIdForm').length){
+                        return $("#personaIdForm").val();
+                    }else{
+                        return "";
+                    }
+                }
             },
             success:function(data){
                 //si el mail existe tira el cartel

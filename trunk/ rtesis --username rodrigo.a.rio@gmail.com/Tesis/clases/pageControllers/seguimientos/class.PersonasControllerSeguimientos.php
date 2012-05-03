@@ -629,18 +629,21 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
     private function checkNumeroDocumento()
     {
         $iPersonaId = $this->getRequest()->getPost('personaId');
+       
         $sNumeroDocumento = $this->getRequest()->getPost('numeroDocumento');
 
         $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaId);
 
         $dataResult = '0';
-        //porque el numero de documento que ya tiene no se contempla.
-        if($oDiscapacitado->getNumeroDocumento() != $sNumeroDocumento){
+        
+        //porque el numero de documento que ya tiene no se contempla en el modificar. es modificar si iPersonaId distinto de vacio
+        if( (!empty($iPersonaId) && $oDiscapacitado->getNumeroDocumento() != $sNumeroDocumento) || empty($iPersonaId)){
             $filtro = array("p.numeroDocumento" => $this->getRequest()->getPost('numeroDocumento'));
             if(SeguimientosController::getInstance()->existeDiscapacitado($filtro)){
                 $dataResult = '1';
             }
         }
+
         $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
     }
 
