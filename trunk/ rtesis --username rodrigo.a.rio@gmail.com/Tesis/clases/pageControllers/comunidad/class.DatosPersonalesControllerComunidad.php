@@ -57,6 +57,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             case 'check-nombreUsuario-existe': $this->nombreUsuarioDb();  break;
             //es la contrasenia actual del usuario?
             case 'check-contrasenia-actual': $this->contraseniaActual(); break;
+            //check numero documento ya existe
+            case 'check-numeroDocumento-existe': $this->numeroDocumentoDb(); break;
             //dialog si paso a ser integrante activo
             case 'dialogIntegranteActivo': $this->dialogIntegranteActivo(); break;
         }
@@ -327,6 +329,23 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         if(ComunidadController::getInstance()->existeNombreUsuarioDb($this->getRequest()->getPost('nombreUsuario'))){
             $dataResult = '1';
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
+    }
+    
+    private function numeroDocumentoDb()
+    {
+        $dataResult = '0';
+
+        $numeroDocumento = $this->getRequest()->getPost('numeroDocumento');
+        $numeroDocumentoActual = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getNumeroDocumento();
+
+        //porque la validacion no se hace con el numero de documento actual
+        if($numeroDocumento != $numeroDocumentoActual){
+            if(ComunidadController::getInstance()->existeDocumentoUsuario($numeroDocumento)){
+                $dataResult = '1';
+            }
         }
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        

@@ -1,5 +1,3 @@
-//file upload plugin: http://valums.com/ajax-upload/
-
 //funcion para el dialog si paso a ser integrante activo
 function showDialogIntegranteActivo(){
     var dialog = $("#dialog");
@@ -106,6 +104,27 @@ jQuery.validator.addMethod("contraseniaActual", function(value, element){
     return result;
 });
 
+//Existe un discapacitado con el numero de documento ingresado?
+jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
+    var result = true;
+    if($("#nroDocumento").val() != ""){
+        $.ajax({
+            url:"comunidad/datos-personales-procesar",
+            type:"post",
+            async:false,
+            data:{
+                seccion:"check-numeroDocumento-existe",
+                numeroDocumento:function(){return $("#nroDocumento").val();}
+            },
+            success:function(data){
+                //si el mail existe tira el cartel
+                if(data == '1'){result = false;}
+            }
+        });
+    }
+    return result;
+});
+
 var validateFormInfoBasica = {
     errorElement: "div",
     validClass: "correcto",
@@ -121,7 +140,7 @@ var validateFormInfoBasica = {
     unhighlight: function(element){},
     rules:{
         tipoDocumento:{required:true},
-        nroDocumento:{required:true, ignorarDefault:true, digits:true},
+        nroDocumento:{required:true, ignorarDefault:true, digits:true, existeNumeroDocumento:true},
         nombre:{required:true},
         apellido:{required:true},
         email:{required:true, email:true, mailDb:true},
@@ -144,7 +163,8 @@ var validateFormInfoBasica = {
         nroDocumento:{
                         required: "Debe ingresar su numero de documento",
                         ignorarDefault: "Debe ingresar su numero de documento",
-                        digits: mensajeValidacion("digitos")
+                        digits: mensajeValidacion("digitos"),
+                        existeNumeroDocumento: "El numero de documento ya existe para una persona cargada en el sistema."
                       },
         nombre: mensajeValidacion("requerido"),
         apellido: mensajeValidacion("requerido"),
