@@ -25,7 +25,7 @@ var validateFormLogin = {
 
     //ubico la etiqueta con el resultado y el mensaje en el contenedor de form_linea del campo
     errorPlacement:function(error, element){
-        error.appendTo("#msg_"+element.attr("id"));
+        error.appendTo(".msg_"+element.attr("id"));
     },
 
     //no quiero que el plugin agregue ni saque clases me gusta todo como esta
@@ -34,13 +34,19 @@ var validateFormLogin = {
 
     //reglas que tiene que verificar en los campos
     rules:{
-        documento:{required:true},
+        tipoDocumento:{required:true},
+        nroDocumento:{required:true, ignorarDefault:true, digits:true},
         contrasenia:{required:true}
     },
 
     //mensajes que devuelve si campo es invalido (ver la funcion en el archivo funciones-globales.js)
     messages:{
-        documento: mensajeValidacion("requerido"),
+        tipoDocumento: "Debe especificar tipo de documento",
+        nroDocumento:{
+                        required: "Debe ingresar su numero de documento",
+                        ignorarDefault: "Debe ingresar su numero de documento",
+                        digits: mensajeValidacion("digitos")
+                      },
         contrasenia: mensajeValidacion("requerido")
     }
 }
@@ -58,6 +64,7 @@ var optionsAjaxFormLogin = {
 
             //calculo MD5
             hashPassword("contrasenia", "contraseniaMD5");
+            $("#contrasenia").val("");
 
             //reseteo el contenedor del mensaje de resultado
             $('#msg_form_login').removeClass("correcto").removeClass("error");
@@ -69,11 +76,6 @@ var optionsAjaxFormLogin = {
             //cancelo el submit
             return false;
         }
-    },
-
-    beforeSubmit: function(arr, $form, options){
-        //borro la contraseania asi no se envia
-        arr[1]['value'] = "";
     },
 
     success:function(data){

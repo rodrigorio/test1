@@ -82,21 +82,34 @@ class SysController
 
     /**
      * Obtiene un usuario desde nombre y contraseña, retorna un objeto perfil con el usuario asignado dependiendo el perfil del usuario.
-     * @return PerfilAbstract|null
+     * @return array $errorDatos(boolean) $errorSuspendido(boolean) $exito(boolean)
      * @throws Exception si hubo error en la consulta
      */
-    public function loginUsuario($nroDocumento, $sContrasenia, $tipoDocumento = 1){
+    public function loginUsuario($tipoDocumento, $nroDocumento, $sContrasenia){
         try{
+            $errorDatos = false;
+            $errorSuspendido = false;
+            $exito = false;
+
             $filtro = array('p.documento_tipos_id' => $tipoDocumento, 'p.numeroDocumento' => $nroDocumento, 'u.contrasenia' => $sContrasenia);
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $iRecordsTotal = 0;
             $aUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
             if(null !== $aUsuario){
                 $oUsuario = $aUsuario[0];
+                if(!$oUsuario->isActivo()){
+                    $errorSuspendido = true;
+                    return array($errorDatos, $errorSuspendido, $exito);
+                }
                 $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
                 $oPerfil->iniciarPermisos();
                 SessionAutentificacion::getInstance()->cargarAutentificacion($oPerfil)
                                                      ->realizoLogin(true);
+                $exito = true;
+                return array($errorDatos, $errorSuspendido, $exito);
+            }else{
+                $errorDatos = true;
+                return array($errorDatos, $errorSuspendido, $exito);
             }
         }catch(Exception $e){
             throw $e;
