@@ -39,6 +39,8 @@ abstract class Intermediary
      * Por ejemplo si en un $_POST me llega un array dentro de $_POST['valores'] y yo se que son todos enteros puedo escapar todos los valores
      * al mismo tiempo: $_POST['valores'] = escapeIntegerArray($_POST['valores'])
      *
+     * OJO QUE SI RECIBEN UN NULL O CADENA VACIA DE PHP LO CONVIERTE A UN STRING 'NULL' PARA QUE SE PUEDA CONCATENAR EN LA CONSULTA
+     *
      * @param array
      * @return array El filtro procesado para que no rompa el string de la consulta
      * @throws Exception
