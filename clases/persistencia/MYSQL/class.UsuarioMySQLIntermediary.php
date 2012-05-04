@@ -639,6 +639,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
 
             $db->begin_transaction();
+            
             $sSQL = " insert into personas ".
             " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
             " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
@@ -679,11 +680,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).",".
                     " contrasenia = ".$db->escape(md5($oUsuario->getContrasenia()),true)." ";
 
-            $db->execSQL($sSQL);
+            $db->execSQL($sSQL);            
             $db->commit();
 
-            $oDiscapacitado->setId($iLastId);
-            
+            $oUsuario->setId($iLastId);
+                        
             return true;
 
         }catch(Exception $e){
@@ -698,6 +699,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
             $db->execSQL("delete from personas where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
             $db->commit();
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -854,7 +856,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
 
             $email = $this->escStr($email);
-            $userId = $this->escInt($userId);
+            
+            if(!empty($userId)){
+                //ojo con esta verga que si le llega un null lo convierte en 'NULL' (un string)
+                $userId = $this->escInt($userId);
+            }
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
@@ -875,6 +881,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(empty($foundRows)){
             	return false;
             }
+            
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

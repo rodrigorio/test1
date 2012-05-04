@@ -116,7 +116,7 @@ var validateFormPersona = {
                             return $("#provincia option:selected").val() != "";
                }, digits: true},
         tipoDocumento:{required:true},
-        nroDocumento:{required:true, ignorarDefault:true, digits:true, existeNumeroDocumento:true},
+        nroDocumento:{required:true, ignorarDefault:true, digits:true, maxlength:8, existeNumeroDocumento:true},
         telefono:{required:true}
     },
     messages:{
@@ -125,6 +125,7 @@ var validateFormPersona = {
                         required: "Debe ingresar numero de documento",
                         ignorarDefault: "Debe ingresar numero de documento",
                         digits: mensajeValidacion("digitos"),
+                        maxlength:mensajeValidacion("maxlength", '8'),
                         existeNumeroDocumento: "El numero de documento ya existe para una persona cargada en el sistema."
                       },
         sexo: mensajeValidacion("requerido"),

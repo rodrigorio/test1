@@ -213,7 +213,7 @@ class ComunidadController
      * Sirve para determinar si un mail ya existe asociado a alguna cuenta de la db, independientemente del estado, perfil de usuario, etc.
      * Se puede pasar el id de usuario (se usa para no tener en cuenta el mail de la cuenta activa)
      */
-    public function existeMailDb($email, $userId = '')
+    public function existeMailDb($email, $userId = "")
     {
         try{
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);

@@ -312,4 +312,24 @@ class AdminController
             throw new Exception($e->getMessage());
         }                
     }
+
+    public function setIntegranteActivoUsuario($oUsuario)
+    {
+        try{
+            $sPerfil = $this->obtenerDescripcionPerfilUsuario($oUsuario);
+            if($sPerfil == "integrante inactivo"){
+                $oPerfil = new stdClass();
+                $oPerfil->oUsuario = $usuario;
+                $oIntegranteActivo = Factory::getIntegranteActivoInstance($oPerfil);
+                
+                $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+                $oUsuarioIntermediary->guardarPerfil($oIntegranteActivo, false);
+                return true;
+            }else{
+                return false;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }

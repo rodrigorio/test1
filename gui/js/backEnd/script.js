@@ -86,6 +86,8 @@ function mensajeValidacion(template, value)
  */
 function bindEventsAdmin()
 {
+    $("textarea.maxlength").maxlength();
+    
     // Notification Close Button
     $(".close-notification").click(
             function () {

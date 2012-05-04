@@ -140,7 +140,7 @@ var validateFormInfoBasica = {
     unhighlight: function(element){},
     rules:{
         tipoDocumento:{required:true},
-        nroDocumento:{required:true, ignorarDefault:true, digits:true, existeNumeroDocumento:true},
+        nroDocumento:{required:true, ignorarDefault:true, digits:true, maxlength:8, existeNumeroDocumento:true},
         nombre:{required:true},
         apellido:{required:true},
         email:{required:true, email:true, mailDb:true},
@@ -164,6 +164,7 @@ var validateFormInfoBasica = {
                         required: "Debe ingresar su numero de documento",
                         ignorarDefault: "Debe ingresar su numero de documento",
                         digits: mensajeValidacion("digitos"),
+                        maxlength:mensajeValidacion("maxlength", '8'),
                         existeNumeroDocumento: "El numero de documento ya existe para una persona cargada en el sistema."
                       },
         nombre: mensajeValidacion("requerido"),
@@ -404,7 +405,6 @@ $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
 //////////////////////////////////
 
 //para el estado inicial del formulario
-
 $(document).ready(function(){
     if($("#institucionId").val() == ""){
         $('#contCargoInstitucion').addClass("disabled");
@@ -531,6 +531,7 @@ var validateFormInfoProfesional = {
         carreraFinalizada:{required:function(element){
                                 return $("#universidad").val() != "";
                           }},
+        sitioWeb:{url:true},
         especialidad:{required:true}
     },
     messages:{
@@ -538,6 +539,7 @@ var validateFormInfoProfesional = {
         secundaria:mensajeValidacion("requerido"),
         universidadCarrera:mensajeValidacion("requerido"),
         carreraFinalizada:mensajeValidacion("requerido"),
+        sitioWeb:mensajeValidacion("url"),
         especialidad:mensajeValidacion("requerido")
     }
 }

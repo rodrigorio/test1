@@ -8,6 +8,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
 
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
@@ -240,13 +241,19 @@
                     <span class="fowe_bo teta_up">finalizada?:</span> {sFinalizada}
                 </p>
                 <p>
-                    <span class="fowe_bo teta_up">sitio web:</span> {sSitioWeb}
+                    <span class="fowe_bo teta_up">sitio web:</span>
+                    <!--BeginSitioWebButton-->
+                    <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a>
+                    <!--EndSitioWebButton-->
                 </p>
                 <p>
                     <span class="fowe_bo teta_up">especialidad:</span> {sEspecialidad}
                 </p>
                 <p>
-                    <span class="fowe_bo teta_up">curriculum vitae:</span> <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                    <span class="fowe_bo teta_up">curriculum vitae:</span>
+                    <!--BeginDescargarButton-->
+                    <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                    <!--EndDescargarButton-->
                 </p>
             </div>
         </div>            
@@ -279,10 +286,10 @@
                 </select>
             </dd>
             <dt>
-                <label for="numeroDocumento">N&uacute;mero Documento</label>
+                <label for="nroDocumento">N&uacute;mero Documento</label>
             </dt>
             <dd>
-                <input name="numeroDocumento" id="numeroDocumento" type="text" class="small" value="">
+                <input maxlength="8" name="nroDocumento" id="nroDocumento" type="text" class="small" value="">
             </dd>
         </dl>
     </fieldset>
@@ -398,6 +405,7 @@
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
+    <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
 
     <section>
         <div class="tab default-tab" id="tab1">
@@ -445,19 +453,12 @@
                     <legend>Editar contrase&ntilde;a</legend>
                     <dl>
                         <dt>
-                            <label for="contraseniaActual">Actual</label>
-                        </dt>
-                        <dd>
-                            <input class="small" type="password" name="contraseniaActual" id="contraseniaActual" title="Contrase&ntilde;a Actual" maxlength="30" />
-                            <input type="hidden" name="contraseniaActualMD5" id="contraseniaActualMD5" value="" />
-                        </dd>
-                        <dt>
                             <label for="contraseniaNueva">Nueva</label>
                         </dt>
                         <dd>
                             <input class="small" type="password" name="contraseniaNueva" id="contraseniaNueva" title="Nueva Contrase&ntilde;a" maxlength="30" />
-                            <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />
                             <p>La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</p>
+                            <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />                            
                         </dd>
                         <dt>
                             <label for="contraseniaConfirmar">Vuelva a ingresar nueva</label>
@@ -503,9 +504,9 @@
                         </dd>
                     </dl>
                 </fieldset>
-                <button id="formInfoBasicaSubmit" name="formInfoBasicaSubmit" type="submit">Modificar Usuario</button>
-                <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
+                <button id="formInfoBasicaSubmit" name="formInfoBasicaSubmit" type="submit">Modificar Usuario</button>                
                 <input type="hidden" value="1" name="modificarUsuario" />
+                <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" />
             </form>
         </div>
         <div class="tab" id="tab2">
@@ -594,22 +595,22 @@
                         </dd>
                         
                         <button id="formInfoContactoSubmit" name="formInfoContactoSubmit" type="submit">Modificar Usuario</button>
-                        <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
                         <input type="hidden" value="1" name="modificarUsuario" />
+                        <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" />
                     </form>
                 </div>
 
                 <div class="sidetab" id="tabFoto">
 
                     <div id="contFotoPerfilActual">
-                        <!--BeginFotoPerfilActualBlock-->
+                        <!--BeginFotoPerfilActualFormBlock-->
                         <div id="fotoPerfilActual" class="mabo3">
                             <h2 class="mabo3">Foto Actual</h2>
                             <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">
                                 <img src="{scrFotoPerfilActual}" />
                             </a>
                         </div>
-                        <!--EndFotoPerfilActualBlock-->
+                        <!--EndFotoPerfilActualFormBlock-->
                     </div>
 
                     <div class="mabo3">
@@ -654,10 +655,14 @@
                                     <label for="institucion">Instituci&oacute;n en la que se desempe&ntilde;a</label>
                                 </dt>
                                 <dd>
-                                    <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
-                                    <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
-                                    <input class="small" type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
-                                    <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
+                                    <div class="autoComplete">
+                                        <div class="innerAutoComplete">
+                                            <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
+                                            <span rel="tooltip" original-title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
+                                            <input type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
+                                            <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
+                                        </div>
+                                    </div>
                                     <p>
                                         <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
                                     </p>
@@ -674,7 +679,7 @@
                             <label for="biografia">Breve Biograf&iacute;a</label>
                         </dt>
                         <dd>
-                            <textarea rel="tooltip" class="medium" rows="10" cols="0" id="biografia" name="biografia" original-title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                            <textarea rel="tooltip" class="medium maxlength" rows="10" cols="0" id="biografia" name="biografia" original-title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
                         </dd>
                         <dt>
                             <label for="empresa">Empresa</label>
@@ -734,8 +739,8 @@
                         </dd>
 
                         <button id="formInfoProfesionalSubmit" name="formInfoProfesionalSubmit" type="submit">Modificar Usuario</button>
-                        <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" id="iUsuarioId" />
-                        <input type="hidden" value="1" name="modificarUsuario" />                        
+                        <input type="hidden" value="1" name="modificarUsuario" />
+                        <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" />
                     </form>                    
                 </div>
 
