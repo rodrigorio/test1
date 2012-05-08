@@ -235,7 +235,16 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
     public function cambiarPerfil()
     {
+        $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
+        //el id del perfil nuevo que se le va a asignar al usuario
+        $perfil = $this->getRequest()->getParam('perfil');
+
+        if(empty($iUsuarioId) || !$this->getRequest()->has('perfil')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
         
+        $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        AdminController::getInstance()->cambiarPerfilUsuario($oUsuario, $perfil);
     }
 
     public function cerrarCuenta()
@@ -297,6 +306,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             IndexControllerAdmin::setCabecera($this->getTemplate());
             IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionUsuarios");
 
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $perfilDesc = $perfil->getDescripcion();
+
             $this->printMsgTop();
 
             $aMeses = array('01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril', '05' => 'Mayo',
@@ -356,8 +368,25 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 //EDITAR ///
                 ////////////
 
-                $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "mainContent", "FormularioModificarBlock");                
+                $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "mainContent", "FormularioModificarBlock");
+
                 $usuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+
+                if($perfilDesc != 'administrador'){
+                    $this->getTemplate()->set_var("PanelAdminFormModifBlock", "");
+                }else{
+                    $sPerfilUsuario = AdminController::getInstance()->obtenerDescripcionPerfilUsuario($usuario);
+                    $aPerfilesSistema = AdminController::getInstance()->obtenerArrayPerfiles();
+                    foreach ($aPerfilesSistema as $sDescripcion => $iPerfilId){
+                        $this->getTemplate()->set_var("iPerfilId", $iPerfilId);
+                        $this->getTemplate()->set_var("sPerfilDesc", $sDescripcion);
+                        if($sPerfilUsuario == $sDescripcion){
+                            $this->getTemplate()->set_var("sSelectedPerfil", "selected='selected'");
+                        }
+                        $this->getTemplate()->parse("OptionSelectPerfilModif", true);
+                        $this->getTemplate()->set_var("sSelectedPerfil", "");
+                    }
+                }
 
                 $this->getTemplate()->set_var("iUsuarioId", $iUsuarioId);
 
@@ -578,9 +607,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor());
 
-                    $this->getTemplate()->parse("CurriculumActualBlock");
+                    $this->getTemplate()->parse("CurriculumActualFormBlock");
                 }else{
-                    $this->getTemplate()->unset_blocks("CurriculumActualBlock");
+                    $this->getTemplate()->unset_blocks("CurriculumActualFormBlock");
                 }
 
                 //form para ingresar uno nuevo
@@ -791,11 +820,11 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
                 try{
-                    ComunidadController::getInstance()->guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
+                    ComunidadController::getInstance()->guardarCurriculumUsuario($usuario, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
                     $oArchivo = $usuario->getCurriculumVitae();
 
                     $this->restartTemplate();
-                    $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "curriculumActual", "CurriculumActualBlock");
+                    $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "curriculumActualForm", "CurriculumActualFormBlock");
 
                     $this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
                     $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
@@ -811,20 +840,14 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $respuesta = "1; ".$this->getTemplate()->pparse('curriculumActual', false);
 
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
-                }catch(Exception $e){
-
-                    $respuesta = "0; ".$e->getMessage();
-                    
-                    //$respuesta = "0; Error al guardar en base de datos";
+                }catch(Exception $e){                    
+                    $respuesta = "0; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                     return;
                 }
             }
-        }catch(Exception $e){
-
-            $respuesta = "0; ".$e->getMessage();
-            
-            //$respuesta = "0; Error al procesar el archivo";
+        }catch(Exception $e){            
+            $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }

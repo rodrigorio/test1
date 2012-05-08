@@ -229,7 +229,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                 $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
                 try{
-                    ComunidadController::getInstance()->guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
+                    ComunidadController::getInstance()->guardarCurriculumUsuario($usuario, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
                     $oArchivo = $usuario->getCurriculumVitae();
 
                     $this->restartTemplate();

@@ -162,9 +162,9 @@ abstract class Intermediary
      */
     protected final function crearFiltroTexto($campo, $valor, $bRigthLeft = null){
     	$return = "";
-	if($bRigthLeft===true){
+	if($bRigthLeft === true){
     		$return = " $campo like '".$valor."%' ";
-    	}elseif($bRigthLeft===false){
+    	}elseif($bRigthLeft === false){
     		$return = " $campo like '%".$valor."' ";
     	}else{
     		$return = " $campo like '%".$valor."%' ";
