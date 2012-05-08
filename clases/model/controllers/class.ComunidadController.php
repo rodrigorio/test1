@@ -273,19 +273,9 @@ class ComunidadController
         }
     }
 
-    /**
-     *
-     * El objeto archivo se levanta en el metodo de obtener usuario pero no se guarda
-     * cuando se guarda el usuario.
-     * Se guarda cuando se envia el formulario y este metodo actualiza el usuario en session.
-     *
-     */
-    public function guardarCurriculumUsuario($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor)
+    public function guardarCurriculumUsuario($usuario, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor)
     {
-    	try{
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $usuario = $perfil->getUsuario();
-            
+    	try{            
             //creo el objeto archivo y lo guardo.
             $oArchivo = new stdClass();
             $oArchivo->sNombre = $nombreArchivo;
@@ -306,7 +296,7 @@ class ComunidadController
                 $this->borrarCurriculumUsuario($usuario, $pathServidor);
             }
             
-            //asociarlo al usuario en sesion            
+            //asociarlo al usuario           
             $usuario->setCurriculumVitae($curriculumVitae);
 
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);

@@ -313,6 +313,9 @@ class AdminController
         }                
     }
 
+    /**
+     * Para cambiar automaticamente el perfil si estan los datos minimos en un usuario despues de que se modifica
+     */
     public function setIntegranteActivoUsuario($oUsuario)
     {
         try{
@@ -327,6 +330,57 @@ class AdminController
                 return true;
             }else{
                 return false;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Devuelve un array que contiene en sus claves el nombre del perfil y en la variable el id
+     * (corresponde a los valores de la tabla perfiles de la DB)
+     */
+    public function obtenerArrayPerfiles(){
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->obtenerPerfiles();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }            
+    }
+
+    /**
+     * Recibe un usuario y un id de perfil (que coincide con los registros de la tabla perfil)
+     */
+    public function cambiarPerfilUsuario($oUsuario, $iPerfilId)
+    {
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+
+            $oPerfil = new stdClass();
+            $oPerfil->oUsuario = $oUsuario;
+
+            $aPerfiles = $this->obtenerArrayPerfiles();
+            $aPerfilDesc = array_keys($aPerfiles, $iPerfilId); //ya se que devuelve 1 solo elemento
+            $sPerfilDesc = $aPerfilDesc[0];
+
+            switch($sPerfilDesc){
+                case 'administrador':
+                    $oAdministrador = Factory::getAdministradorInstance($oPerfil);
+                    $oUsuarioIntermediary->guardarPerfil($oAdministrador, false);
+                    break;
+                case 'moderador':
+                    $oModerador = Factory::getModeradorInstance($oPerfil);
+                    $oUsuarioIntermediary->guardarPerfil($oModerador, false);
+                    break;
+                case 'integrante activo':
+                    $oIntegranteActivo = Factory::getIntegranteActivoInstance($oPerfil);
+                    $oUsuarioIntermediary->guardarPerfil($oIntegranteActivo, false);
+                    break;
+                case 'integrante inactivo':
+                    $oIntegranteInactivo = Factory::getIntegranteInactivoInstance($oPerfil);
+                    $oUsuarioIntermediary->guardarPerfil($oIntegranteInactivo, false);
+                    break;
             }
         }catch(Exception $e){
             throw new Exception($e->getMessage());

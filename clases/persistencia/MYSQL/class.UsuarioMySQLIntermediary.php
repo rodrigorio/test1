@@ -33,6 +33,18 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     }
 
     /**
+     * Devuelve un array con los perfiles con el formato $[nombrePerfil] = idPerfil
+     * NOTA: no se hace un sql sino que se devuelven las constantes de la clase.
+     */
+    public function obtenerPerfiles()
+    {
+        return array('administrador' => self::PERFIL_ADMINISTRADOR,
+                     'moderador' => self::PERFIL_MODERADOR,
+                     'integrante activo' => self::PERFIL_INTEGRANTE_ACTIVO,
+                     'integrante inactivo' => self::PERFIL_INTEGRANTE_INACTIVO);
+    }
+
+    /**
      * Devuelve un objeto perfil con el usuario asociado.
      */
     public function obtenerPerfil($oUsuario){
@@ -170,6 +182,156 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $aUsuarios = array();
             while($oObj = $db->oNextRecord()){                                
+                $oUsuario                   = new stdClass();
+                $oUsuario->iId              = $oObj->iId;
+                $oUsuario->sNombre          = $oObj->sNombre;
+                $oUsuario->sApellido        = $oObj->sApellido;
+                $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
+                $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
+                $oUsuario->sSexo            = $oObj->sSexo;
+                $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
+                $oUsuario->sEmail           = $oObj->sEmail;
+                $oUsuario->sTelefono        = $oObj->sTelefono;
+                $oUsuario->sCelular         = $oObj->sCelular;
+                $oUsuario->sFax             = $oObj->sFax;
+                $oUsuario->sDomicilio       = $oObj->sDomicilio;
+                $oUsuario->iCiudadId        = $oObj->iCiudadId; //para sacar objeto ciudad por demanda
+                $oUsuario->iInstitucionId   = $oObj->iInstitucionId; //lo mismo xq es un obj pesado
+                $oUsuario->oCiudad          = null;
+                $oUsuario->oInstitucion     = null;
+                $oUsuario->oEspecialidad    = null;
+                $oUsuario->oFotoPerfil      = null;
+                $oUsuario->oCurriculumVitae = null;
+                $oUsuario->sCiudadOrigen    = $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal    = $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa         = $oObj->sEmpresa;
+                $oUsuario->sUniversidad     = $oObj->sUniversidad;
+                $oUsuario->sSecundaria      = $oObj->sSecundaria;
+                $oUsuario->sSitioWeb        = $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia     = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->sCargoInstitucion    = $oObj->sCargoInstitucion;
+                $oUsuario->sBiografia           = $oObj->sBiografia;
+                $oUsuario->sUniveridadCarrera   = $oObj->sUniveridadCarrera;
+                $oUsuario->bCarreraFinalizada   = $oObj->bCarreraFinalizada ? true : false;
+                $oUsuario->bActivo = ($oObj->bActivo == '1')?true:false;
+                $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
+
+                //objeto especialidad si tiene
+                if(null !== $oObj->iEspecialidadId){
+                    $oEspecialidad = new stdClass();
+                    $oEspecialidad->iId             = $oObj->iEspecialidadId;
+                    $oEspecialidad->sNombre         = $oObj->sEspecialidadNombre;
+                    $oEspecialidad->sDescripcion    = $oObj->sEspecialidadDescripcion;
+                    $oUsuario->oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
+                }
+
+                if(null !== $oObj->iCvId){
+                    $oCurriculumVitae = new stdClass();
+                    $oCurriculumVitae->iId = $oObj->iCvId;
+                    $oCurriculumVitae->sNombre = $oObj->sCvNombre;
+                    $oCurriculumVitae->sNombreServidor = $oObj->sCvNombreServidor;
+                    $oCurriculumVitae->sDescripcion = $oObj->sCvDescripcion;
+                    $oCurriculumVitae->sTipoMime = $oObj->sCvTipoMime;
+                    $oCurriculumVitae->iTamanio = $oObj->iCvTamanio;
+                    $oCurriculumVitae->sFechaAlta = $oObj->sCvFechaAlta;
+                    $oCurriculumVitae->iOrden = $oObj->iCvOrden;
+                    $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
+                    $oCurriculumVitae->sTipo = $oObj->sCvTipo;
+                    $oCurriculumVitae->bModerado = $oObj->bCvModerado;
+                    $oCurriculumVitae->bActivo = $oObj->bCvActivo;
+                    $oCurriculumVitae->bPublico = $oObj->bCvPublico;
+                    $oCurriculumVitae->bActivoComentarios = $oObj->bCvActivoComentarios;
+                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
+                }
+
+                if(null !== $oObj->iFotoId){
+                    $fotoPerfil = new stdClass();
+                    $fotoPerfil->iId = $oObj->iFotoId;
+                    $fotoPerfil->sNombreBigSize = $oObj->sFotoNombreBigSize;
+                    $fotoPerfil->sNombreMediumSize = $oObj->sFotoNombreMediumSize;
+                    $fotoPerfil->sNombreSmallSize = $oObj->sFotoNombreSmallSize;
+                    $fotoPerfil->iOrden = $oObj->iFotoOrden;
+                    $fotoPerfil->sTitulo = $oObj->sFotoTitulo;
+                    $fotoPerfil->sDescripcion = $oObj->sFotoDescripcion;
+                    $fotoPerfil->sTipo = $oObj->sFotoTipo;
+                    $oUsuario->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
+                }
+
+                $aUsuarios[] = Factory::getUsuarioInstance($oUsuario);
+           }
+
+           return $aUsuarios;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Este metodo es similar al obtener pero la consulta utiliza diversos join para lograr los filtros en los listados de usuarios.
+     * Si una persona filtra por el nombre de la ciudad en esta consulta se extrae la descripcion en el join con ciudad para generar la condicion en el where.
+     */
+    public function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
+                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
+                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
+                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
+                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+                        p.documento_tipos_id as iTipoDocumentoId,
+                        p.numeroDocumento as sNumeroDocumento,
+
+                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario, u.activo as bActivo,
+                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
+                        u.invitacionesDisponibles as iInvitacionesDisponibles,
+                        u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
+                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada
+                    FROM
+                        personas p JOIN usuarios u ON p.id = u.id
+                        LEFT JOIN ciudades c ON p.ciudades_id = c.id
+                        LEFT JOIN instituciones i ON p.instituciones_id = i.id";
+
+            $WHERE = array();
+
+            if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
+                $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+            }            
+            if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['i.nombre']) && $filtro['i.nombre'] != ""){
+                $WHERE[] = $this->crearFiltroTexto('i.nombre', $filtro['i.nombre']);
+            }
+            if(isset($filtro['p.email']) && $filtro['p.email']!=""){
+                $WHERE[] = $this->crearFiltroTexto('p.email', $filtro['p.email']);
+            }
+            if(isset($filtro['u.nombre']) && $filtro['u.nombre']!=""){
+                $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aUsuarios = array();
+            while($oObj = $db->oNextRecord()){
                 $oUsuario                   = new stdClass();
                 $oUsuario->iId              = $oObj->iId;
                 $oUsuario->sNombre          = $oObj->sNombre;

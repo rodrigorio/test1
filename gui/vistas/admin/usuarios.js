@@ -58,6 +58,24 @@ function cambiarEstadoUsuario(iUsuarioId, valor){
     });
 }
 
+//para cambiar el tipo de perfil de un usuario de la comunidad
+function cambiarPerfilUsuario(iUsuarioId, valor){    
+    $.ajax({
+        type: "POST",
+        url: "admin/usuarios-cambiar-perfil",
+        data:{
+            iUsuarioId:iUsuarioId,
+            perfil:valor
+        },
+        beforeSend: function(){
+            setWaitingStatus('panelAdminFormBlock', true);
+        },
+        success:function(data){
+            setWaitingStatus('panelAdminFormBlock', false);
+        }
+    });
+}
+
 function borrarFotoPerfil(iUsuarioId){
     if(confirm("Se borrara la foto de perfil del usuario, desea continuar?")){
         $.ajax({
@@ -797,8 +815,6 @@ function uploaderCurriculumVitae(iUsuarioId){
                 var dataInfo = response.split(';');
                 var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
                 var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
-
-                alert(html);
                 
                 //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
                 if(resultado != "0" && resultado != "1"){
@@ -833,6 +849,11 @@ $(document).ready(function(){
     $(".cambiarEstadoUsuario").live("change", function(){
         var iUsuarioId = $(this).attr("rel");
         cambiarEstadoUsuario(iUsuarioId, $("#estadoUsuario_"+iUsuarioId+" option:selected").val());
+    });
+
+    $("#modificarPerfil").live("change", function(){
+        var iUsuarioId = $(this).attr("rel");
+        cambiarPerfilUsuario(iUsuarioId, $("#modificarPerfil option:selected").val());
     });
 
     $("#fotoPerfilBorrar").live('click', function(){

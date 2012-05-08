@@ -401,6 +401,15 @@
         </nav>
     </header>
 
+    <!--BeginPanelAdminFormModifBlock-->
+    <div class="subHeader01 mabo3" id="panelAdminFormBlock">
+        <h3 class="mabo3">Modificar perfil del usuario</h3>
+        <select rel="{iUsuarioId}" name="modificarPerfil" id="modificarPerfil">
+            <!--BeginOptionSelectPerfilModif--><option value="{iPerfilId}" {sSelectedPerfil}>{sPerfilDesc}</option><!--EndOptionSelectPerfilModif-->
+        </select>
+    </div>
+    <!--EndPanelAdminFormModifBlock-->
+
     <div style="display:none"  id='msg_form_usuario' class="notification">
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
@@ -746,10 +755,10 @@
 
                 <div class="sidetab" id="tabCurriculum">
                     <div id="wrapCvActual">
-                    <!--BeginCurriculumActualBlock-->
-                    <div id="cvActual" class="mabo3">
+                    <!--BeginCurriculumActualFormBlock-->
+                    <div id="cvActualForm" class="mabo3">
                         <h2 class="mabo3">Curriculum Actual</h2>
-                        <div id="contCvActual">
+                        <div id="contCvActualForm">
                             <ul class="m_vert pa2 baco1">
                                 <li>
                                     <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
@@ -769,7 +778,7 @@
                             </ul>
                         </div>
                     </div>
-                    <!--EndCurriculumActualBlock-->
+                    <!--EndCurriculumActualFormBlock-->
                     </div>
 
                     <div class="mabo3">
