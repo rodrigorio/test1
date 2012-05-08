@@ -7,11 +7,11 @@
  */
 abstract class FichaAbstract
  {
- 	private $id;
- 	private $sTitulo;
- 	private $dFecha;
- 	private $bActivo;
- 	private $sDescripcion;
+ 	protected  $id;
+ 	protected $sTitulo;
+ 	protected  $dFecha;
+ 	protected  $bActivo;
+ 	protected  $sDescripcion;
  	 	
  	/*
     * array objetos Foto
@@ -51,7 +51,36 @@ abstract class FichaAbstract
  public function setDescripcion($sDescripcion){
     	$this->sDescripcion = $sDescripcion;
     }
+  public function setFotos($aFotos)
+    {
+        $this->aFotos = $aFotos;
+    }   
+	public function addFoto($oFoto){
+		$this->aFotos[] = $oFoto;		
+	}    
+    public function setArchivos($aArchivos)
+    {
+        $this->aArchivos = $aArchivos;
+    }
+ 
         ////gets
+     /**
+     * @return array|null Foto
+     */
+    public function getFotos()
+    {
+    	if($this->aFotos == null){
+            $this->aFotos = ComunidadController::getInstance()->obtenerFotosPublicacion($this->iId);
+    	}
+        return $this->aFotos;
+    }  
+ public function getArchivos()
+    {
+    	if($this->aArchivos == null){
+            $this->aArchivos = ComunidadController::getInstance()->obtenerArchivosPublicacion($this->iId);
+    	}
+        return $this->aArchivos;
+    }
  public function getId(){
         return $this->iId;
     }

@@ -33,6 +33,20 @@ class FotoMySQLIntermediary extends FotoIntermediary
             return $this->insertarAsociado($oPersona->getFotoPerfil(), $iId, get_class($oPersona));
         }        
     }
+    
+    public function guardarFotosFicha(FichaAbstract $oFicha)
+    {
+        if(null !== $oFicha->getFotos()){
+        	foreach($oFicha->getFotos() as $oFoto){
+        		if(null !== $oFoto->getId()){
+        	       	return $this->actualizar($oFoto);
+		        }else{
+		            $iId = $oFicha->getId();
+		            return $this->insertarAsociado($oFoto, $iId, get_class($oFicha));
+		        }        		        		
+        	}
+        }                    
+    }    
 
     public function borrar($aFotos)
     {

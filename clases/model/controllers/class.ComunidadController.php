@@ -536,6 +536,63 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+/**
+     * @return array|null
+     */
+    public function obtenerFotosPublicacion($iPublicacionId)
+    {
+        try{
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $filtro = array('f.publicacion_id' => $iPublicacionId);
+            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }        
+    }
+   /**
+     * @return array|null
+     */
+    public function obtenerArchivosPublicacion($iPublicacionId)
+    {
+        try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.publicacion_id' => $iPublicacionId);
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }          
+    }
+    
+    /**
+     *
+     * @param array $aNombreArchivos 3 celdas con los nombres de los archivos ['nombreFotoGrande'] ['nombreFotoMediana'] ['nombreFotoChica']
+     * @param string $pathServidor directorio donde estan guardadas las fotos
+     * @param FichaAbstract puede ser tanto un discapacitado, un usuario o cualquiera que herede de persona
+     */
+    public function guardarFotoFicha($oFicha, $pathServidor)
+    {
+    	try{            
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            return $oFotoIntermediary->guardarFotosFicha($oFicha);
+        }catch(Exception $e){
+            //si hubo error borro los archivos en disco
+        	foreach($oFicha->getFotos() as $oFoto()){
+        		$aNombreArchivos = $oFoto->getArrayNombres();
+            	foreach($aNombreArchivos as $nombreServidorArchivo){
+	                $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+	                if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+	                    unlink($pathServidorArchivo);
+	                }
+	             }
+            }                     
+            $oFicha->setFotos(null);
+            
+            throw new Exception($e->getMessage());
+        }        
+    }
+    
 
     public function existeDocumentoUsuario($numeroDocumento)
     {
