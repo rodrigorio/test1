@@ -2,7 +2,8 @@
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
     $LAB
-   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+  //.script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
@@ -11,7 +12,9 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")   
    .script("{pathUrlBase}"+"gui/js/vistas.js")
-   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientos.js");
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientos.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/antecedentes.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js");
 </script>
 <!--EndJsContent-->
 
@@ -169,6 +172,9 @@
 
     <!--BeginGrillaSeguimientoBlock-->
     <div id="listadoSeguimientos" class="po_re">
+    	<form action="seguimientos/editar-antecedentes" id="editAntecedentes" method="post">
+    		<input type="hidden" value="" name="idSeg" id="idSeg"/>
+    	</form>
        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
        <table class="table01 wi100p" >
            <tr class="encabezado">

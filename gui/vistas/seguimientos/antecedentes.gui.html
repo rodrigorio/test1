@@ -2,7 +2,8 @@
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
     $LAB
-   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   //.script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
@@ -42,17 +43,38 @@
         </div>
         <div class="der"></div>
     </div>
-    <div class="contenido">
+    <div class="contenido fl_le">
+     	<div id='ajax_loading' class="ajax_wait30 di_no"></div>
         <form action="" method="post">
+        	<div id="msg" class="error di_no"></div>
             <div class="fl_le mari2 mabo2">
-                <span class="fowe_bo">Estado</span>
-                <select name="seguimiento_estado" id="seguimiento_estado">
-                      <option value="">Todos</option>
-                      <option value="activo">Activo</option>
-                      <option value="detenido">Detenido</option>
-                 </select>
+                <span class="fowe_bo">Antecedentes:</span><br>
+                <textarea id="antecedentes" class="defVal co maxlength cl_bo" cols="50" rows="20">{sAntecedentes}</textarea>
             </div>
-            </form>
-        </div>
+             <div class="cl_bo mari2 mabo2">
+                <input type="file" name="fileAntecedentes" id="fileAntecedentes"/>
+            </div>
+            <div class="cl_bo">
+	            <label for="CrearSeguimiento" class="button buttonConfirm buttonLarge mari3">
+	                <button id="guardarAntecedentes" type="button" name="guardarAntecedentes" class="btn01">
+	                    Guardar Antecedentes
+	                </button>
+	            </label>
+        	</div>
+        <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{idSeguimiento}" >
+        </form>
+    </div>
+    <div id="antecedentesActuales" class="fl_le wi">
+    	<div>
+    		<span class="fowe_bo">Archivos actuales:</span><br>
+    		<div id="antecedentesArchivos"></div>
+    	</div>
+    	<div>
+    		<span class="fowe_bo">Antecedentes actuales:</span><br>
+    		<div id="antecedentesTextoAnt" class="wi300"></div>
+    		<div id="antecedentesTexto" class="wi300">{sAntecedentes}</div>
+    	</div>
+    
+    </div>
   </div>
 <!--EndFormularioBlock-->

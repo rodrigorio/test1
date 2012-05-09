@@ -26,6 +26,7 @@ abstract class SeguimientoAbstract
     * array objetos Archivo
     */
     protected $aArchivos = null;
+    protected $fArchivoAntecedente = null;
 
 public function __construct(){}
    
@@ -124,4 +125,18 @@ public function getEstado(){
     	}
         return $this->aArchivos;
     }
+    /**
+     * @return null|Archivo
+     */
+    public function getArchivoAntecedentes()
+    {
+    	if($this->fArchivoAntecedente == null){
+            $this->fArchivoAntecedente = SeguimientosController::getInstance()->obtenerArchivoAntecedente($this->iId);
+    	}
+        return $this->fArchivoAntecedente;
+    }
+    
+     public function setArchivoAntecedentes($fAntecedentes){
+     	$this->fArchivoAntecedente = $fAntecedentes;
+     }
 }

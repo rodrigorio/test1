@@ -382,10 +382,97 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
           
-
+            $iIdSeguimiento = $this->getRequest()->getPost('idSeg');
+            $iRecordsTotal	= 0;
+            $sOrderBy 		= null;
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $oSeguimiento 	= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+			if($oSeguimiento){
+				$this->getTemplate()->set_var("idSeguimiento", $iIdSeguimiento);
+				$this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
+			}
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);
+        }
+    }
+    
+    public function procesarAntecedentes(){
+    	 //si accedio a traves de la url muestra pagina 404
+   //     if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        print_r($_POST);
+        
+    	if($this->getRequest()->has('fileAntecedentesUpload')){
+            $this->fileAntecedentesUpload();
+            return;
+        }
+        
+    	if($this->getRequest()->has('textoAntecedentes')){
+            $this->procesarTextoAntecedentes();
+            return;
+        }
+        
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+    
+ 	public function fileAntecedentesUpload(){
+   		 try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
+            $perfil 			= SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $idItem 			= $perfil->getUsuario()->getId();
+            
+            $iIdSeguimiento 	= $this->getRequest()->getPost('seguimientoId');
+            $nombreInputFile 	= 'fileAntecedentes'; //el nombre del input file (se setea por javascript con el ajax uploader)
+			$oSeguimiento		= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+			
+			$this->getUploadHelper()->setTiposValidosDocumentos();
+            
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+            	$pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+            	list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, "antecedentes", $nombreInputFile);
+				$res = SeguimientosController::getInstance()->guardarAntecedentesFile($oSeguimiento,$nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
+				
+            }
+			if($res){
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $this->getJsonHelper()->setSuccess(false);
+            }
+        }catch(Exception $e){
+           $this->getJsonHelper()->setSuccess(false);
+        }
+    }
+    
+    public function procesarTextoAntecedentes(){
+   		 try{
+            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $perfil 		= SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iIdSeguimiento = $this->getRequest()->getPost('id');
+            $sAntecedentes 	= $this->getRequest()->getPost('antecedentes');
+            $iRecordsTotal	= 0;
+            $sOrderBy 		= null;
+            $sOrder 		= null;
+            $iIniLimit 		= null;
+            $iRecordCount 	= null;
+            $oSeguimiento 	= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+			if($oSeguimiento){
+				$oSeguimiento->setAntecedentes($sAntecedentes);
+				$res = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+			}
+			
+			if($res){
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $this->getJsonHelper()->setSuccess(false);
+            }
+        }catch(Exception $e){
+           $this->getJsonHelper()->setSuccess(false);
         }
     }
 }

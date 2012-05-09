@@ -30,6 +30,11 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             return $this->insertarAsociado($oUsuario->getCurriculumVitae(), $iIdUsuario, get_class($oUsuario));
         }
     }    
+    public function guardarAntecedentesFile($oSeguimiento)
+    {
+        $iIdSeguimiento = $oSeguimiento->getId();
+        return $this->insertarAsociado($oSeguimiento->getArchivoAntecedentes(), $iIdSeguimiento, get_class($oSeguimiento));
+    }    
 
     public function borrar($aArchivos)
     {
@@ -146,8 +151,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
         }        
     }
    
-    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
-    {
+    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null) {
         try{
             $db = clone($this->conn);
 
@@ -172,6 +176,10 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             $WHERE = array();
             if(isset($filtro['a.seguimientos_id']) && $filtro['a.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('a.seguimientos_id', $filtro['a.seguimientos_id'], MYSQL_TYPE_INT);
+                
+	            if(isset($filtro['a.tipo']) && $filtro['a.tipo']!=""){
+	                $WHERE[] = $this->crearFiltroSimple('a.tipo', $filtro['a.tipo']);
+	            }
             }
             if(isset($filtro['a.fichas_abstractas_id']) && $filtro['a.fichas_abstractas_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('a.fichas_abstractas_id', $filtro['a.fichas_abstractas_id'], MYSQL_TYPE_INT);
@@ -183,6 +191,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $WHERE[] = $this->crearFiltroSimple('a.categorias_id', $filtro['a.categorias_id'], MYSQL_TYPE_INT);
             }
 
+            $sSQL  = $this->agregarFiltrosConsulta($sSQL, $WHERE);
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }

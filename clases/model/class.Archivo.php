@@ -127,7 +127,6 @@ class Archivo
     {
         return $this->sTitulo;
     }
-
     /**
      * Estos son asi porque en la DB el campo tipo es un enum
      */
@@ -136,11 +135,19 @@ class Archivo
         $this->sTipo = "cv";
         return $this;
     }
+    
     public function setTipoAdjunto()
     {
         $this->sTipo = "adjunto";
         return $this;
     }
+    
+    public function setTipoAntecedentes()
+    {
+        $this->sTipo = "antecedentes";
+        return $this;
+    }
+    
     public function getTipo()
     {
         return $this->sTipo;

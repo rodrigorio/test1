@@ -214,6 +214,8 @@ $(document).ready(function(){
         ocultarElemento($(this));
     });
     
+  
+    
 });
 //para borrar la institucion seleccionada con el autocomplete
 $('#persona_clean').click(function(){
@@ -233,7 +235,6 @@ function buscarSeguimientos(){
 	$.ajax({
             url: "seguimientos/buscar-seguimientos",
             type: "POST",
-           
             data:{
                 limit	:12,
                 estado	: estadoSeg,
@@ -311,7 +312,8 @@ function eliminarSeguimiento(seguimientoId)
     }
 }
 
-function editarAntecedentes(){
-	window.location.href = "seguimientos/editar-antecedentes";
+function editarAntecedentes(id){
+	$("#idSeg").val(id);
+	$("#editAntecedentes").submit();
 	
 }
