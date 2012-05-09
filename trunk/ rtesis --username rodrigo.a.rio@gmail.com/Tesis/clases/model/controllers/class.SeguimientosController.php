@@ -302,6 +302,21 @@ class SeguimientosController
             return false;
         }          
     }
+    
+ /**
+     * @return array|null
+     */
+    public function obtenerArchivoAntecedente($iSeguimientoId)
+    {
+        try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.seguimientos_id' => $iSeguimientoId, 'a.tipo'=>"antecedentes");
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }          
+    }
 
     public function eliminarSeguimiento($iSeguimientoId, $pathServidor){
         try{            
@@ -340,5 +355,42 @@ class SeguimientosController
             throw new Exception($e);
             return false;
         }    
+    }
+    
+ 	public function guardarAntecedentesFile($seguimiento, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor) {
+    	try{            
+            //creo el objeto archivo y lo guardo.
+            $oArchivo 			= new stdClass();
+            $oArchivo->sNombre 	= $nombreArchivo;
+            $oArchivo->sNombreServidor = $nombreServidorArchivo;
+            $oArchivo->sTipoMime= $tipoMimeArchivo;
+            $oArchivo->iTamanio = $tamanioArchivo;
+            $antecedentes 		= Factory::getArchivoInstance($oArchivo);
+
+            $antecedentes->setTipoAntecedentes();
+            $antecedentes->isModerado(false);
+            $antecedentes->isActivo(true);
+            $antecedentes->isPublico(false);
+            $antecedentes->isActivoComentarios(false);
+            
+            //si ya tenia un archivo de antecedente el seguimiento borro el actual
+            if(null !== $seguimiento->getArchivoAntecedentes()){
+                $this->borrarAntecedentesFile($seguimiento, $pathServidor);
+            }
+            
+            $seguimiento->setArchivoAntecedentes($antecedentes);
+
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            return $oArchivoIntermediary->guardarAntecedentesFile($seguimiento);
+            
+        }catch(Exception $e){            
+            $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                unlink($pathServidorArchivo);
+            }
+            $usuario->setArchivoAntecedentes(null);
+            
+            throw new Exception($e->getMessage());
+        }
     }
 }

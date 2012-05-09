@@ -352,6 +352,13 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'editarAntecedentes'
                                 ));
         $router->addRoute('seguimientosSeguimientosEditarSeguimientos', $route);
+        $route = new RegexRoute('seguimientos/procesar-antecedentes',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'procesarAntecedentes'
+                                ));
+        $router->addRoute('seguimientosSeguimientosProcesarAntecedentes', $route);
 
 
 
