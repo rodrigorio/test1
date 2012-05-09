@@ -837,9 +837,57 @@ function uploaderCurriculumVitae(iUsuarioId){
     }
 }
 
+/**
+ * Para la paginacion de resultados de filtro con ajax en el listado principal.
+ */
+function buscarUsuarios(){    
+    var filtroApellido = $('#filtroApellido').val();
+    var filtroNumeroDocumento = $('#filtroNumeroDocumento').val();
+    var filtroInstitucion = $('#filtroInstitucion').val();
+    var filtroCiudad = $('#filtroCiudad').val();        
+    var filtroEspecialidad = $('#filtroEspecialidad option:selected').val();
+    var filtroPerfil = $('#filtroPerfil option:selected').val();
+    var filtroSuspendido = $('#filtroSuspendido option:selected').val();
+    
+    $.ajax({
+        type:"POST",
+        url:"admin/usuarios-procesar",
+        data:{
+            masUsuarios:"1",
+            filtroApellido: filtroApellido,
+            filtroNumeroDocumento: filtroNumeroDocumento,
+            filtroInstitucion: filtroInstitucion,
+            filtroCiudad: filtroCiudad,
+            filtroEspecialidad: filtroEspecialidad,
+            filtroPerfil: filtroPerfil,
+            filtroSuspendido: filtroSuspendido
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoUsuariosResult', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoUsuariosResult', false);
+            $("#listadoUsuariosResult").html(data);
+        }
+    });
+}
+
 $(document).ready(function(){
     
     $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("#filtrarUsuarios").live('click', function(){
+        buscarUsuarios();
+        return false;
+    });
+
+    //para limpiar el filtro del listado de usuarios.
+    $("#limpiarFiltro").live('click',function(){        
+        $('#formFiltrarUsuarios').each(function(){
+          this.reset();
+        });
+        return false;
+    });
 
     $(".cerrarCuentaUsuario").live('click', function(){
         var iUsuarioId = $(this).attr("rel");
