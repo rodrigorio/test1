@@ -292,28 +292,40 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
-                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada
+                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+
+                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
+                        LEFT JOIN fotos f ON f.personas_id = u.id
                         LEFT JOIN ciudades c ON p.ciudades_id = c.id
                         LEFT JOIN instituciones i ON p.instituciones_id = i.id";
 
             $WHERE = array();
 
             if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
             }            
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
-                $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
+                $WHERE[] = $this->crearFiltroTexto('p.numeroDocumento', $filtro['p.numeroDocumento']);
             }
             if(isset($filtro['i.nombre']) && $filtro['i.nombre'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('i.nombre', $filtro['i.nombre']);
             }
-            if(isset($filtro['p.email']) && $filtro['p.email']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.email', $filtro['p.email']);
+            if(isset($filtro['c.nombre']) && $filtro['c.nombre']!=""){
+                $WHERE[] = $this->crearFiltroTexto('c.nombre', $filtro['c.nombre']);
             }
-            if(isset($filtro['u.nombre']) && $filtro['u.nombre']!=""){
-                $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
+            if(isset($filtro['u.especialidades_id']) && $filtro['u.especialidades_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('u.especialidades_id', $filtro['u.especialidades_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['u.perfiles_id']) && $filtro['u.perfiles_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('u.perfiles_id', $filtro['u.perfiles_id'], MYSQL_TYPE_INT);
+            }            
+            if(isset($filtro['u.activo']) && $filtro['u.activo']!=""){
+                $WHERE[] = $this->crearFiltroSimple('u.activo', $filtro['u.activo']);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -324,6 +336,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -367,34 +380,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->bCarreraFinalizada   = $oObj->bCarreraFinalizada ? true : false;
                 $oUsuario->bActivo = ($oObj->bActivo == '1')?true:false;
                 $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
-
-                //objeto especialidad si tiene
-                if(null !== $oObj->iEspecialidadId){
-                    $oEspecialidad = new stdClass();
-                    $oEspecialidad->iId             = $oObj->iEspecialidadId;
-                    $oEspecialidad->sNombre         = $oObj->sEspecialidadNombre;
-                    $oEspecialidad->sDescripcion    = $oObj->sEspecialidadDescripcion;
-                    $oUsuario->oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
-                }
-
-                if(null !== $oObj->iCvId){
-                    $oCurriculumVitae = new stdClass();
-                    $oCurriculumVitae->iId = $oObj->iCvId;
-                    $oCurriculumVitae->sNombre = $oObj->sCvNombre;
-                    $oCurriculumVitae->sNombreServidor = $oObj->sCvNombreServidor;
-                    $oCurriculumVitae->sDescripcion = $oObj->sCvDescripcion;
-                    $oCurriculumVitae->sTipoMime = $oObj->sCvTipoMime;
-                    $oCurriculumVitae->iTamanio = $oObj->iCvTamanio;
-                    $oCurriculumVitae->sFechaAlta = $oObj->sCvFechaAlta;
-                    $oCurriculumVitae->iOrden = $oObj->iCvOrden;
-                    $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
-                    $oCurriculumVitae->sTipo = $oObj->sCvTipo;
-                    $oCurriculumVitae->bModerado = $oObj->bCvModerado;
-                    $oCurriculumVitae->bActivo = $oObj->bCvActivo;
-                    $oCurriculumVitae->bPublico = $oObj->bCvPublico;
-                    $oCurriculumVitae->bActivoComentarios = $oObj->bCvActivoComentarios;
-                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
-                }
 
                 if(null !== $oObj->iFotoId){
                     $fotoPerfil = new stdClass();

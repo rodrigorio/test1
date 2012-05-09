@@ -60,14 +60,14 @@
                 <select name="filtroEspecialidad" id="filtroEspecialidad" class="mari2">
                     <option value="">Elegir especialidad</option>
                     <!--BeginOptionFiltroEspecialidadBlock-->
-                    <option value="{iEspecialidadId}" {sFiltroEspecialidadSelected}>{sFiltroEspecialidad}</option>
+                    <option value="{iEspecialidadId}">{sFiltroEspecialidad}</option>
                     <!--EndOptionFiltroEspecialidadBlock-->
                 </select>
             <label for="filtroPerfil">Perfil</label>
                 <select name="filtroPerfil" id="filtroPerfil" class="mari2">
                     <option value="">Elegir un perfil</option>
                     <!--BeginOptionFiltroPerfilBlock-->
-                    <option value="{iPerfilId}" {sFiltroPerfilSelected}>{sFiltroPerfil}</option>
+                    <option value="{iPerfilId}">{sFiltroPerfil}</option>
                     <!--EndOptionFiltroPerfilBlock-->
                 </select>
             <label for="filtroSuspendido">Suspendido?</label>
@@ -79,6 +79,7 @@
         </div>
         <div class="mabo3">
             <button id="filtrarUsuarios" name="filtrarUsuarios" type="submit">Aplicar Filtro</button>
+            <button class="blue" id="limpiarFiltro">Limpiar</button>
         </div>
     </fieldset>
 </form>
@@ -95,7 +96,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="listadoUsuariosResult">
         <!--BeginUsuariosBlock-->
             <tr class="{iUsuarioId}" class="{odd}">
                 <td>

@@ -51,17 +51,29 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("PanelAdminBlock", "");
             }
 
-            $filtro = array();
-            $iRecordPerPage = 5;
-            $iPage = $this->getRequest()->getPost("iPage");
-            $iPage = strlen($iPage) ? $iPage : 1;
-            $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-            $iMinLimit = ($iPage-1) * $iItemsForPage;
-            $sOrderBy = null;
-            $sOrder = null;
-            $iRecordsTotal = 0;
-
-            $aUsuarios = AdminController::getInstance()->obtenerUsuariosSistema($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            ///////////// ARMO LOS SELECTS DEL FORMULARIO DEL FILTRO            
+            
+            //select especialidad
+            $aEspecialidades = AdminController::getInstance()->obtenerEspecialidad();
+            if(!empty($aEspecialidades)){
+                foreach ($aEspecialidades as $oEspecialidad){
+                    $value = $oEspecialidad->getId();
+                    $text = $oEspecialidad->getNombre();
+                    $this->getTemplate()->set_var("iEspecialidadId", $value);
+                    $this->getTemplate()->set_var("sFiltroEspecialidad", $text);
+                    $this->getTemplate()->parse("OptionFiltroEspecialidadBlock", true);
+                }
+            }
+            
+            //select perfil
+            $aPerfilesSistema = AdminController::getInstance()->obtenerArrayPerfiles();
+            foreach($aPerfilesSistema as $sDescripcion => $iPerfilId){
+                $this->getTemplate()->set_var("iPerfilId", $iPerfilId);
+                $this->getTemplate()->set_var("sFiltroPerfil", $sDescripcion);
+                $this->getTemplate()->parse("OptionFiltroPerfilBlock", true);
+            }
+            
+            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema();
             $hrefEditarUsuario = "admin/usuarios-form";
 
             if(count($aUsuarios) > 0){
@@ -162,6 +174,113 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->checkMail();
             return;
         }
+
+        if($this->getRequest()->has('masUsuarios')){
+            $this->masUsuarios();
+            return;
+        }
+    }
+
+    private function masUsuarios()
+    {
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $perfilDesc = $perfil->getDescripcion();
+
+        $filtro = array();
+
+        if($this->getRequest()->has('filtroApellido') && $this->getRequest()->getPost('filtroApellido')!= ""){
+            $filtro['p.apellido'] = $this->getRequest()->getPost('filtroApellido');
+        }
+        if($this->getRequest()->has('filtroNumeroDocumento') && $this->getRequest()->getPost('filtroNumeroDocumento')!= ""){
+            $filtro['p.numeroDocumento'] = $this->getRequest()->getPost('filtroNumeroDocumento');
+        }
+        if($this->getRequest()->has('filtroInstitucion') && $this->getRequest()->getPost('filtroInstitucion') != ""){
+            $filtro['i.nombre'] = $this->getRequest()->getPost('filtroInstitucion');
+        }
+        if($this->getRequest()->has('filtroCiudad') && $this->getRequest()->getPost('filtroCiudad') != ""){
+            $filtro['c.nombre'] = $this->getRequest()->getPost('filtroCiudad');
+        }
+        if($this->getRequest()->has('filtroEspecialidad') && $this->getRequest()->getPost('filtroEspecialidad') != ""){
+            $filtro['u.especialidades_id'] = $this->getRequest()->getPost('filtroEspecialidad');
+        }
+        if($this->getRequest()->has('filtroPerfil') && $this->getRequest()->getPost('filtroPerfil') != ""){
+            $filtro['u.perfiles_id'] = $this->getRequest()->getPost('filtroPerfil');
+        }
+        if($this->getRequest()->has('filtroSuspendido') && $this->getRequest()->getPost('filtroSuspendido') != ""){
+            $filtro['u.activo'] = $this->getRequest()->getPost('filtroSuspendido');
+        }
+
+        /*
+        $iRecordPerPage = 5;
+        $iPage = $this->getRequest()->getPost("iPage");
+        $iPage = strlen($iPage) ? $iPage : 1;
+        $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+        $iMinLimit = ($iPage-1) * $iItemsForPage;
+        $sOrderBy = null;
+        $sOrder = null;
+        $iRecordsTotal = 0;
+         */
+
+        $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtro);
+        
+        $hrefEditarUsuario = "admin/usuarios-form";
+
+        $respuesta = "";
+        if(count($aUsuarios) > 0){
+            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "listadoUsuariosResult", "UsuariosBlock");
+            $i=0;
+            foreach($aUsuarios as $oUsuario){
+
+                $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
+
+                $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                $this->getTemplate()->set_var("hrefEditarUsuario", $hrefEditarUsuario);
+
+                $srcAvatar = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                if(null !== $oUsuario->getFotoPerfil()){
+                    $srcAvatarAmpliar = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getFotoPerfil()->getNombreBigSize();
+                }else{
+                    $srcAvatarAmpliar = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar(true);
+                }
+
+                if($oUsuario->isActivo()){
+                    $this->getTemplate()->set_var("sSelectedUsuarioActivo", "selected='selected'");
+                }else{
+                    $this->getTemplate()->set_var("sSelectedUsuarioSuspendido", "selected='selected'");
+                }
+
+                $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+                $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
+                $sEmail = $oUsuario->getEmail();
+                $sPerfil = AdminController::getInstance()->obtenerDescripcionPerfilUsuario($oUsuario);
+
+                $this->getTemplate()->set_var("scrAvatarUsuarioAmpliada", $srcAvatarAmpliar);
+                $this->getTemplate()->set_var("scrAvatarUsuario", $srcAvatar);
+                $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                $this->getTemplate()->set_var("sPerfil", $sPerfil);
+                $this->getTemplate()->set_var("sEmail", $sEmail);
+
+                if($perfilDesc != 'administrador'){
+                    $this->getTemplate()->set_var("DeleteButton", "");
+                }else{
+                    $this->getTemplate()->parse("DeleteButton");
+                }
+
+                $this->getTemplate()->parse('UsuariosBlock', true);
+
+                $this->getTemplate()->set_var("sSelectedUsuarioActivo","");
+                $this->getTemplate()->set_var("sSelectedUsuarioSuspendido","");
+                $i++;
+            }
+            $respuesta = $this->getTemplate()->pparse('listadoUsuariosResult', false);
+        }else{
+            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "noRecords", "NoRecordsUsuariosBlock");            
+            $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
+            $respuesta = $this->getTemplate()->pparse('noRecords', false);
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
     }
 
     private function checkNumeroDocumento()
