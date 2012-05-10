@@ -249,6 +249,24 @@ class Templates extends HelperAbstract
         $this->DBlocks[$bloques] = "";
         return;
     }
+
+    /**
+     * Recibe un array o un bloque parseado y lo/s elimina
+     */
+    public function delete_parsed_blocks($bloques)
+    {
+        if(null === $bloques){ return; }
+
+        if(is_array($bloques)){
+            foreach ($bloques as $block){
+                unset($this->ParsedBlocks[$block]);
+            }
+            return;
+        }
+
+        unset($this->ParsedBlocks[$bloques]);
+        return;
+    }
 		
     /**
      * Print the value of a variable

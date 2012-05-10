@@ -73,8 +73,8 @@
             <label for="filtroSuspendido">Suspendido?</label>
                 <select name="filtroSuspendido" id="filtroSuspendido">
                     <option value="">Seleccionar</option>
-                    <option value="1" {sFiltroSuspendidoSiSelected}>S&iacute;</option>
-                    <option value="0" {sFiltroSuspendidoNoSelected}>No</option>
+                    <option value="0" {sFiltroSuspendidoSiSelected}>S&iacute;</option>
+                    <option value="1" {sFiltroSuspendidoNoSelected}>No</option>
                 </select>
         </div>
         <div class="mabo3">
@@ -82,54 +82,64 @@
             <button class="blue" id="limpiarFiltro">Limpiar</button>
         </div>
     </fieldset>
+    <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
+    <input type="hidden" value="" name="sOrder" id="sOrder" />
 </form>
 <section id="listadoUsuarios">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>Nombre completo</th>
-                <th>Perfil</th>
-                <th>E-mail</th>
-                <th>Suspendido?</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="listadoUsuariosResult">
-        <!--BeginUsuariosBlock-->
-            <tr class="{iUsuarioId}" class="{odd}">
-                <td>
-                    <a id="fotoPerfilActual_{iUsuarioId}" href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
-                        <img src="{scrAvatarUsuario}" />
-                    </a>
-                </td>
-                <td>
-                    <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sNombreUsuario}</a>
-                </td>
-                <td>{sPerfil}</td>
-                <td><a href="mailto:{sEmail}">{sEmail}</a></td>
-                <td>
-                    <select class="cambiarEstadoUsuario" name="estadoUsuario_{iUsuarioId}" id="estadoUsuario_{iUsuarioId}" rel="{iUsuarioId}">
-                        <option value="1" {sSelectedUsuarioActivo}>Activo</option>
-                        <option value="0" {sSelectedUsuarioSuspendido}>Suspendido</option>                        
-                    </select>
-                </td>
-                <td class="teal_ce">
-                    <a rel="tooltip" original-title="Editar Usuario" href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}"><span class="i bs edit ihover"></span></a>
-                    <!--BeginDeleteButton-->
-                    <span title="cerrar cuenta usuario" rel="{iUsuarioId}" class="i bs delete ihover cerrarCuentaUsuario"></span>
-                    <!--EndDeleteButton-->
-                </td>
-            </tr>
-        <!--EndUsuariosBlock-->
-        <!--BeginNoRecordsUsuariosBlock-->
-            <tr>
-                <td colspan="6">{sNoRecords}</td>
-            </tr>
-        <!--EndNoRecordsUsuariosBlock-->
-        </tbody>
-    </table>
+        <div id="listadoUsuariosResult">        
+            <!--BeginGrillaUsuariosBlock-->
+            <div class="mabo">
+                Cantidad usuarios filtro actual: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="iveal">Nombre completo {orderByNombre}</th>
+                        <th class="iveal">Perfil {orderByPerfil}</th>
+                        <th>E-mail</th>
+                        <th class="iveal">Suspendido? {orderByActivo}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginUsuarioBlock-->
+                    <tr class="{iUsuarioId}" class="{odd}">
+                        <td>
+                            <a id="fotoPerfilActual_{iUsuarioId}" href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
+                                <img src="{scrAvatarUsuario}" />
+                            </a>
+                        </td>
+                        <td>
+                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sNombreUsuario}</a>
+                        </td>
+                        <td>{sPerfil}</td>
+                        <td><a href="mailto:{sEmail}">{sEmail}</a></td>
+                        <td>
+                            <select class="cambiarEstadoUsuario" name="estadoUsuario_{iUsuarioId}" id="estadoUsuario_{iUsuarioId}" rel="{iUsuarioId}">
+                                <option value="1" {sSelectedUsuarioActivo}>Activo</option>
+                                <option value="0" {sSelectedUsuarioSuspendido}>Suspendido</option>
+                            </select>
+                        </td>
+                        <td class="teal_ce">
+                            <a rel="tooltip" original-title="Editar Usuario" href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}"><span class="i bs edit ihover"></span></a>
+                            <!--BeginDeleteButton-->
+                            <span title="cerrar cuenta usuario" rel="{iUsuarioId}" class="i bs delete ihover cerrarCuentaUsuario"></span>
+                            <!--EndDeleteButton-->
+                        </td>
+                    </tr>
+                <!--EndUsuarioBlock-->
+                <!--BeginNoRecordsUsuariosBlock-->
+                    <tr>
+                        <td colspan="6">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsUsuariosBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaUsuariosBlock-->
+        </div>
 </section>
 <!--EndListadoUsuariosBlock-->
 

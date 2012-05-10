@@ -40,6 +40,22 @@ function setWaitingStatus(contenedorId, show)
     }
 }
 
+function paginar(iPage ,toUrl, div, params){
+    $.ajax({
+        type: "POST",
+        url: toUrl,
+        data: "iPage="+iPage+"&"+params,
+        beforeSend:function(data){
+            setWaitingStatus(div, true);
+        },
+        success: function(data){
+            setWaitingStatus(div, false);
+            $("#"+div).html(data);
+            $("a[rel^='prettyPhoto']").prettyPhoto();
+        }
+    });
+ }
+
 /* mensajes globales disponibles para utilizar en funciones ajax, etc */
 if(!lang)
 var lang = Array();

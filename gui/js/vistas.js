@@ -199,19 +199,21 @@ function verificarValorDefecto(elementId)
     }
 }
 
-function paginar(iPage,toUrl,div,params){
-	$.ajax({
-		type: "POST",
-	   	url: toUrl,
-	   	data: "iPage="+iPage+"&"+params,
-	   	beforeSend:function(data){
-	   		$("#ajax_loading").show();
-	   	},
-	   	success: function(data){
-	   		$("#ajax_loading").hide();
-	   		$("#"+div).html(data);
-	   	}
-	});
+function paginar(iPage ,toUrl, div, params){
+    $.ajax({
+        type: "POST",
+        url: toUrl,
+        data: "iPage="+iPage+"&"+params,
+        beforeSend:function(data){
+            $("#ajax_loading").show();
+            setWaitingStatus(div, true);
+        },
+        success: function(data){
+            $("#ajax_loading").hide();
+            setWaitingStatus(div, false);
+            $("#"+div).html(data);
+        }
+    });
  }
 
  function autoCompleteInput(div,action){

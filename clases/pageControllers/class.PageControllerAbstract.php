@@ -261,4 +261,122 @@ class PageControllerAbstract implements PageControllerInterface
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
+
+    /**
+     * Setea las variables necesarias para paginar la consulta en el sql.
+     */
+    protected final function initPaginator($iRecordPerPage = null)
+    {
+        if(null === $iRecordPerPage){
+            $iRecordPerPage = 5;
+        }
+
+        $sOrderBy = $this->getRequest()->getPost("sOrderBy");
+        $sOrderBy = strlen($sOrderBy) ? $sOrderBy : null;
+
+        $sOrder = $this->getRequest()->getPost("sOrder");
+        $sOrder = strlen($sOrder) ? $sOrder : null;
+
+        $iPage = $this->getRequest()->getPost("iPage");
+        $iPage = strlen($iPage) ? $iPage : 1;
+
+        $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
+        $iMinLimit = ($iPage-1) * $iItemsForPage;
+
+        return array($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder);                     
+    }
+
+    /**
+     * Para generar los links de las paginas
+     */
+    protected final function calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, $url, $div, $params = null)
+    {
+        //Paginacion
+        $this->getTemplate()->load_file_section("gui/componentes/paginacion.gui.html", "paginacion", "Paginacion01Block");
+        $this->getTemplate()->set_var("iPageActual", $iPage);
+
+        if($this->getRequest()->has('sOrder') && $this->getRequest()->getPost('sOrder') != ""
+           && $this->getRequest()->has('sOrderBy') && $this->getRequest()->getPost('sOrderBy') != ""){
+            $params[] = "sOrder=".$this->getRequest()->getPost('sOrder');
+            $params[] = "sOrderBy=".$this->getRequest()->getPost('sOrderBy');
+        }
+        
+        if ($iRecordsTotal > $iItemsForPage) {
+            $TotalPages = ceil($iRecordsTotal / $iItemsForPage);
+            $iPageMin = $iPage - 2;
+            $iPageMax = $iPage + 2;
+
+            if ($iPageMin < 1) {
+                $iPageMin = 1;
+                $iPageMax = 5;
+            }
+
+            if ($iPageMax > $TotalPages) {
+                $iPageMax = $TotalPages;
+                if ($TotalPages - 4 >= 1) {
+                    $iPageMin = $TotalPages - 4;
+                }
+            }
+
+            if (count($params) > 0) {
+                $params = implode($params, "&");
+            } else {
+                $params = "";
+            }
+
+            for ($i = $iPageMin; $i <= $iPageMax; $i++) {
+                $this->getTemplate()->set_var("iPage", $i);
+                $this->getTemplate()->set_var("funcion", "paginar($i, '$url', '$div', '$params');");
+                $class = $i == $iPage ? "activo" : "";
+                $this->getTemplate()->set_var("ClassPag", $class);
+                $this->getTemplate()->parse("PaginaListBlock", true);
+            }
+
+            $this->getTemplate()->parse("paginacion", false);
+        } else {
+            $this->getTemplate()->set_var("paginacion", "");
+        }
+    }
+
+    /**
+     * Genera los botones de ordenar ascendente y descendente segun el array $aOrderBy
+     */
+    protected final function initOrderBy(&$sOrderBy, $sOrder, &$aOrderBy)
+    {        
+        /*
+         * porque si existen los parametros al menos uno cambio de estado
+         * entonces para ESA columna invierto el order.
+         */
+        if($sOrderBy !== null && $sOrder !== null){            
+            $sOrder = ($sOrder == "asc")?"desc":"asc";
+            $aOrderBy[$sOrderBy]['order'] = $sOrder;
+
+            //convierto el alias que esta en la pagina por el verdadero orderBy que va a parar en la consulta
+            $sOrderBy = $aOrderBy[$sOrderBy]['orderBy'];
+        }
+
+        //parseo los botones de orderBy
+        foreach($aOrderBy as $aliasOrderBy => $aOrderByData){
+            $block = ($aOrderByData['order'] == 'asc') ? "IconOrderByAscBlock" : "IconOrderByDescBlock";
+            $this->getTemplate()->load_file_section("gui/componentes/backEnd/grillas.gui.html", $aOrderByData['variableTemplate'], $block);
+            $this->getTemplate()->set_var("sAliasOrderBy", $aliasOrderBy);
+            $this->getTemplate()->parse($aOrderByData['variableTemplate'], false);
+            $this->getTemplate()->delete_parsed_blocks($block);
+        }
+    }
+
+    /**
+     * Extrae todos los post desde el form de filtro de listado segun $aFiltrosForm,
+     * genera los parametros para adjuntar a los links del paginador,
+     * ademas genera el filtro para enviar al metodo de sql segun el nombre de las columnas de las tablas
+     */
+    protected final function initFiltrosForm(&$filtroSql, &$paramsPaginador, $aFiltrosForm)
+    {
+        foreach($aFiltrosForm as $nombreFiltro => $columnaSql){
+            if($this->getRequest()->has($nombreFiltro) && $this->getRequest()->getPost($nombreFiltro)!= ""){
+                $filtroSql[$columnaSql] = $this->getRequest()->getPost($nombreFiltro);
+                $paramsPaginador[] = $nombreFiltro."=".$this->getRequest()->getPost($nombreFiltro);
+            }
+        }
+    }
 }

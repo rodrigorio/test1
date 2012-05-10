@@ -151,7 +151,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
             }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
-                $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
+                $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento']);
             }
             if(isset($filtro['p.documento_tipos_id']) && $filtro['p.documento_tipos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.documento_tipos_id', $filtro['p.documento_tipos_id'], MYSQL_TYPE_INT);
@@ -297,9 +297,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
                         f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
+
+                        pe.descripcion as sPerfilDescripcion
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
+                        JOIN perfiles pe ON u.perfiles_id = pe.id
                         LEFT JOIN fotos f ON f.personas_id = u.id
                         LEFT JOIN ciudades c ON p.ciudades_id = c.id
                         LEFT JOIN instituciones i ON p.instituciones_id = i.id";
@@ -329,11 +332,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-
+                       
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by p.apellido";
             }
-            if ($iIniLimit!==null && $iRecordCount!==null){
+            
+            if ($iIniLimit !== null && $iRecordCount !== null ){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
             
