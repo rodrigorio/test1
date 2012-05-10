@@ -72,11 +72,31 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sFiltroPerfil", $sDescripcion);
                 $this->getTemplate()->parse("OptionFiltroPerfilBlock", true);
             }
+
+            $aOrderBy = array(
+                'nombre' => array('variableTemplate' => 'orderByNombre',
+                                  'orderBy' => 'p.apellido',
+                                  'order' => 'desc'),
+                'perfil' => array('variableTemplate' => 'orderByPerfil',
+                                  'orderBy' => 'pe.descripcion',
+                                  'order' => 'desc'),
+                'suspendido' => array('variableTemplate' => 'orderByActivo',
+                                      'orderBy' => 'u.activo',
+                                      'order' => 'desc')
+            );
             
-            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema();
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+            $this->initOrderBy($sOrderBy, $sOrder, $aOrderBy);
+
+            $iRecordsTotal = 0;
+            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+            
             $hrefEditarUsuario = "admin/usuarios-form";
 
             if(count($aUsuarios) > 0){
+
             	$i=0;
                 foreach($aUsuarios as $oUsuario){
 
@@ -98,7 +118,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                         $this->getTemplate()->set_var("sSelectedUsuarioSuspendido", "selected='selected'");                        
                     }
                     
-                    $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                    $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
                     $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
                     $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
                     $sEmail = $oUsuario->getEmail();
@@ -116,7 +136,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                         $this->getTemplate()->parse("DeleteButton");
                     }
 
-                    $this->getTemplate()->parse("UsuariosBlock", true);
+                    $this->getTemplate()->parse("UsuarioBlock", true);
 
                     $this->getTemplate()->set_var("sSelectedUsuarioActivo","");
                     $this->getTemplate()->set_var("sSelectedUsuarioSuspendido","");
@@ -129,6 +149,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
                 $this->getTemplate()->parse("noRecords", false);
             }
+
+            $params[] = "masUsuarios=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/usuarios-procesar", "listadoUsuariosResult", $params);
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -186,48 +209,44 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $perfilDesc = $perfil->getDescripcion();
 
-        $filtro = array();
-
-        if($this->getRequest()->has('filtroApellido') && $this->getRequest()->getPost('filtroApellido')!= ""){
-            $filtro['p.apellido'] = $this->getRequest()->getPost('filtroApellido');
-        }
-        if($this->getRequest()->has('filtroNumeroDocumento') && $this->getRequest()->getPost('filtroNumeroDocumento')!= ""){
-            $filtro['p.numeroDocumento'] = $this->getRequest()->getPost('filtroNumeroDocumento');
-        }
-        if($this->getRequest()->has('filtroInstitucion') && $this->getRequest()->getPost('filtroInstitucion') != ""){
-            $filtro['i.nombre'] = $this->getRequest()->getPost('filtroInstitucion');
-        }
-        if($this->getRequest()->has('filtroCiudad') && $this->getRequest()->getPost('filtroCiudad') != ""){
-            $filtro['c.nombre'] = $this->getRequest()->getPost('filtroCiudad');
-        }
-        if($this->getRequest()->has('filtroEspecialidad') && $this->getRequest()->getPost('filtroEspecialidad') != ""){
-            $filtro['u.especialidades_id'] = $this->getRequest()->getPost('filtroEspecialidad');
-        }
-        if($this->getRequest()->has('filtroPerfil') && $this->getRequest()->getPost('filtroPerfil') != ""){
-            $filtro['u.perfiles_id'] = $this->getRequest()->getPost('filtroPerfil');
-        }
-        if($this->getRequest()->has('filtroSuspendido') && $this->getRequest()->getPost('filtroSuspendido') != ""){
-            $filtro['u.activo'] = $this->getRequest()->getPost('filtroSuspendido');
-        }
-
-        /*
-        $iRecordPerPage = 5;
-        $iPage = $this->getRequest()->getPost("iPage");
-        $iPage = strlen($iPage) ? $iPage : 1;
-        $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-        $iMinLimit = ($iPage-1) * $iItemsForPage;
-        $sOrderBy = null;
-        $sOrder = null;
-        $iRecordsTotal = 0;
-         */
-
-        $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtro);
+        $aOrderBy = array(
+            'nombre' => array('variableTemplate' => 'orderByNombre',
+                              'orderBy' => 'p.apellido',
+                              'order' => 'desc'),
+            'perfil' => array('variableTemplate' => 'orderByPerfil',
+                              'orderBy' => 'pe.descripcion',
+                              'order' => 'desc'),
+            'suspendido' => array('variableTemplate' => 'orderByActivo',
+                                  'orderBy' => 'u.activo',
+                                  'order' => 'desc')
+        );
         
-        $hrefEditarUsuario = "admin/usuarios-form";
+        $aFiltrosForm = array('filtroApellido' => 'p.apellido',
+                              'filtroNumeroDocumento' => 'p.numeroDocumento',
+                              'filtroInstitucion' => 'i.nombre',
+                              'filtroCiudad' => 'c.nombre',
+                              'filtroEspecialidad' => 'u.especialidades_id',
+                              'filtroPerfil' => 'u.perfiles_id',
+                              'filtroSuspendido' => 'u.activo');
 
+        $this->initFiltrosForm($filtroSql, $paramsPaginador, $aFiltrosForm);
+        
+        $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "ajaxGrillaUsuariosBlock", "GrillaUsuariosBlock");
+
+        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+        
+        $this->initOrderBy($sOrderBy, $sOrder, $aOrderBy);
+        
+        $iRecordsTotal = 0;        
+        $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+        $hrefEditarUsuario = "admin/usuarios-form";       
+        $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+        
         $respuesta = "";
         if(count($aUsuarios) > 0){
-            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "listadoUsuariosResult", "UsuariosBlock");
+
+            $this->getTemplate()->set_var("NoRecordsUsuariosBlock", "");            
             $i=0;
             foreach($aUsuarios as $oUsuario){
 
@@ -249,7 +268,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sSelectedUsuarioSuspendido", "selected='selected'");
                 }
 
-                $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
                 $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
                 $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
                 $sEmail = $oUsuario->getEmail();
@@ -267,20 +286,22 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->parse("DeleteButton");
                 }
 
-                $this->getTemplate()->parse('UsuariosBlock', true);
+                $this->getTemplate()->parse('UsuarioBlock', true);
 
                 $this->getTemplate()->set_var("sSelectedUsuarioActivo","");
                 $this->getTemplate()->set_var("sSelectedUsuarioSuspendido","");
                 $i++;
             }
-            $respuesta = $this->getTemplate()->pparse('listadoUsuariosResult', false);
-        }else{
-            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "noRecords", "NoRecordsUsuariosBlock");            
-            $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
-            $respuesta = $this->getTemplate()->pparse('noRecords', false);
-        }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            $paramsPaginador[] = "masUsuarios=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/usuarios-procesar", "listadoUsuariosResult", $paramsPaginador);
+                        
+        }else{
+            $this->getTemplate()->set_var("UsuarioBlock", "");
+            $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");            
+        }
+        
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaUsuariosBlock', false));
     }
 
     private function checkNumeroDocumento()
@@ -643,9 +664,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
 
-                    $this->getTemplate()->parse("FotoPerfilActualBlock");
+                    $this->getTemplate()->parse("FotoPerfilActualFormBlock");
                 }else{
-                    $this->getTemplate()->unset_blocks("FotoPerfilActualBlock");
+                    $this->getTemplate()->unset_blocks("FotoPerfilActualFormBlock");
                 }
 
                 $nombreInputFile = 'fotoPerfil';

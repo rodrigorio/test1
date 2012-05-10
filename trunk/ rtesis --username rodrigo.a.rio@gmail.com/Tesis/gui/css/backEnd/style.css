@@ -1107,6 +1107,8 @@ table input[type="checkbox"] {
 
 .subHeader01{padding:20px 10px; background-color:#F2F2F2; border-top:1px dashed #AAA; border-bottom:1px dashed #AAA}
 
+.paginacion .activo{text-decoration:underline !important}
+
 /**********************************************************************/
 /*********** ICONOS, (SON LOS MISMOS PARA TODO EL SISTEMA *************/
 /**********************************************************************/

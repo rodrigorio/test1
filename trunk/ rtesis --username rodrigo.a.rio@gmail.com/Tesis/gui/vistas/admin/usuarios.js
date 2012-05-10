@@ -847,8 +847,10 @@ function buscarUsuarios(){
     var filtroCiudad = $('#filtroCiudad').val();        
     var filtroEspecialidad = $('#filtroEspecialidad option:selected').val();
     var filtroPerfil = $('#filtroPerfil option:selected').val();
-    var filtroSuspendido = $('#filtroSuspendido option:selected').val();
-    
+    var filtroSuspendido = $('#filtroSuspendido option:selected').val();    
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
     $.ajax({
         type:"POST",
         url:"admin/usuarios-procesar",
@@ -860,7 +862,9 @@ function buscarUsuarios(){
             filtroCiudad: filtroCiudad,
             filtroEspecialidad: filtroEspecialidad,
             filtroPerfil: filtroPerfil,
-            filtroSuspendido: filtroSuspendido
+            filtroSuspendido: filtroSuspendido,
+            sOrderBy: sOrderBy,
+            sOrder: sOrder
         },
         beforeSend: function(){
             setWaitingStatus('listadoUsuariosResult', true);
@@ -868,6 +872,7 @@ function buscarUsuarios(){
         success:function(data){
             setWaitingStatus('listadoUsuariosResult', false);
             $("#listadoUsuariosResult").html(data);
+            $("a[rel^='prettyPhoto']").prettyPhoto();
         }
     });
 }
@@ -881,6 +886,12 @@ $(document).ready(function(){
         return false;
     });
 
+    $(".orderLink").live('click', function(){
+        $('#sOrderBy').val($(this).attr('orderBy'));
+        $('#sOrder').val($(this).attr('order'));
+        buscarUsuarios();        
+    });
+ 
     //para limpiar el filtro del listado de usuarios.
     $("#limpiarFiltro").live('click',function(){        
         $('#formFiltrarUsuarios').each(function(){
