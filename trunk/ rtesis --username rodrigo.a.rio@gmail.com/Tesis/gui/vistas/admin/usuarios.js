@@ -907,6 +907,7 @@ function exportarUsuarios(){
         },
         success:function(data){
             setWaitingStatus('subHeader', false);
+            window.open("admin/usuarios-exportar?descargar=1");
         }
     });
 }

@@ -11,6 +11,7 @@ abstract class FileManagerAbstract extends HelperAbstract
      * Referencia: http://www.htmlquick.com/es/reference/mime-types.html
      */
     protected $tiposMimeDocumentos = array(
+        "text/csv" => ".csv",
         "application/excel" => ".xls",
         "application/vnd.ms-excel" => ".xls",
         "application/x-excel" => ".xls",
@@ -127,6 +128,20 @@ abstract class FileManagerAbstract extends HelperAbstract
     {
         $this->tiposValidos = $this->tiposMimeDocumentosCompresiones;
         return $this;
+    }
+
+    //estos son protected para que se puedan usar dentro de los metodos de las clases que heredan.
+    protected function getTiposMimeDocumentos(){
+        return $this->tiposMimeDocumentos;
+    }
+    protected function getTiposMimeCompresiones(){
+        return $this->tiposMimeCompresiones;
+    }
+    protected function getTiposMimeFotos(){
+        return $this->tiposMimeFotos;
+    }
+    protected function getTiposMimeAudioVideo(){
+        return $this->tiposMimeAudioVideo;
     }
 
     /**

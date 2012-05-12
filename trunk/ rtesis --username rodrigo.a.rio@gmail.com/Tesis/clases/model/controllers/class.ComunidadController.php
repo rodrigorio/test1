@@ -578,17 +578,20 @@ class ComunidadController
             return $oFotoIntermediary->guardarFotosFicha($oFicha);
         }catch(Exception $e){
             //si hubo error borro los archivos en disco
-        	foreach($oFicha->getFotos() as $oFoto()){
-        		$aNombreArchivos = $oFoto->getArrayNombres();
-            	foreach($aNombreArchivos as $nombreServidorArchivo){
-	                $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
-	                if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
-	                    unlink($pathServidorArchivo);
-	                }
-	             }
-            }                     
-            $oFicha->setFotos(null);
-            
+            $aFotos = $oFicha->getFotos();
+            if(count($aFotos) > 0){
+                foreach($aFotos as $oFoto){
+                    $aNombreArchivos = $oFoto->getArrayNombres();
+                    foreach($aNombreArchivos as $nombreServidorArchivo)
+                    {
+                        $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
+                        }
+                    }
+                }
+                $oFicha->setFotos(null);
+            }                                             
             throw new Exception($e->getMessage());
         }        
     }
