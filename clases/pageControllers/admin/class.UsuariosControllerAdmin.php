@@ -2,6 +2,12 @@
 class UsuariosControllerAdmin extends PageControllerAbstract
 {
     /**
+     * Reservo un espacio en sesion para el controlador de usuarios.
+     * @var SessionNamespace
+     */
+    private $usuariosControllerSession;
+
+    /**
      * Corresponde con las columnas del listado que poseen orden ascendente o descendente.
      * Se utiliza en los metodos de pageControllerAbstract
      */
@@ -29,6 +35,11 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                                        'filtroPerfil' => 'u.perfiles_id',
                                        'filtroSuspendido' => 'u.activo');
 
+    public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array()) {
+        parent::__construct($request, $response, $invokeArgs);
+
+        $this->usuariosControllerSession = new SessionNamespace('usuariosControllerSession');
+    }
 
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
@@ -435,6 +446,18 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     public function exportar()
     {
         try{
+            /**
+             * El mismo metodo lo uso para generar el archivo y para descargarlo.
+             * Lo hago asi porque no tiene sentido guardar el archivo en la db.
+             */
+            if($this->getRequest()->has('descargar')){
+                $oPlanilla = $this->usuariosControllerSession->oPlanilla;
+                $this->getDownloadHelper()->utilizarDirectorioDownloads()
+                                          ->generarDescarga($oPlanilla);
+                return;
+            }
+            
+
             $aHeadColumns = array(
                 "Tipo Documento",
                 "Numero Documento",
@@ -510,9 +533,16 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $oArchivo->sTipoMime = $tipoMimeArchivo;
             $oPlanilla = Factory::getArchivoInstance($oArchivo);
 
-            $this->getDownloadHelper()->utilizarDirectorioDownloads()
-                                      ->generarDescarga($oPlanilla);
-            
+            /**
+             * guardo el archivo en sesion, para que luego se descargue.
+             * Esto se hace asi porque el metodo esportar es ajax,
+             * no puedo mandar los headers por aca y pretender un dialog de descarga por parte del navegador.
+             */
+            if(isset($this->usuariosControllerSession->oPlanilla)){
+                unset($this->usuariosControllerSession->oPlanilla);
+            }
+            $this->usuariosControllerSession->oPlanilla = $oPlanilla;
+                        
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

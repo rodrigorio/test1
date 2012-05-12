@@ -52,8 +52,15 @@ class ExportarPlanillaCalculoHelper extends FileManagerAbstract
     {
         try{
             $fileName = "usuarios-sistema";
-            $nombreArchivo = $this->generarNombreArchivo($fileName, $idItem, $extra);
-            $rutaDestino = $this->getDirectorioDownloads(true).$nombreArchivo;
+            $nombreServidor = $this->generarNombreArchivo($fileName, $idItem, $extra);
+
+            //le agrego la extension, (este caso no se da en los uploads).
+            $aExtensiones = $this->getTiposMimeDocumentos();
+            $sExtension = $aExtensiones[$this->sMimeType];
+            $fileName .= $sExtension;
+            $nombreServidor .= $sExtension;
+
+            $rutaDestino = $this->getDirectorioDownloads(true).$nombreServidor;
 
             $fp = fopen($rutaDestino, 'w');
             foreach($this->aFileLines as $line){
@@ -62,7 +69,7 @@ class ExportarPlanillaCalculoHelper extends FileManagerAbstract
             }
             fclose($fp);
             
-            return array($fileName, $this->sMimeType, $nombreArchivo);
+            return array($fileName, $this->sMimeType, $nombreServidor);
         }catch(Exception $e){
             //elimino el archivo temporal:
             if(is_file($rutaDestino) && file_exists($rutaDestino)){
