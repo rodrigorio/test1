@@ -433,7 +433,10 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
-    public function vistaImpresion(){}
+    public function vistaImpresion()
+    {
+        
+    }
 
     /**
      * Imprime el filtro actual de usuarios
@@ -457,7 +460,6 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 return;
             }
             
-
             $aHeadColumns = array(
                 "Tipo Documento",
                 "Numero Documento",
@@ -544,6 +546,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->usuariosControllerSession->oPlanilla = $oPlanilla;
                         
         }catch(Exception $e){
+            unset($this->usuariosControllerSession->oPlanilla);
             throw new Exception($e->getMessage());
         }
     }
