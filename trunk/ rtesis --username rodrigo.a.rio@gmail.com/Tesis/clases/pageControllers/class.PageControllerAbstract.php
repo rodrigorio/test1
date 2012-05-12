@@ -42,6 +42,10 @@ class PageControllerAbstract implements PageControllerInterface
      * Instancia de DownloadHelper
      */
     private $download = null;
+    /**
+     * Instancia de ExportarPlanillaCalculoHelper
+     */
+    private $exportarPlanilla = null;
 
     public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array())
     {
@@ -130,6 +134,15 @@ class PageControllerAbstract implements PageControllerInterface
             $this->download = new DownloadHelper();
         }
         return $this->download;
+    }
+
+    protected final function getExportarPlanillaHelper()
+    {
+        if(null === $this->exportarPlanilla)
+        {
+            $this->exportarPlanilla = new ExportarPlanillaCalculoHelper();
+        }
+        return $this->exportarPlanilla;
     }
 
     protected final function getRequest()
