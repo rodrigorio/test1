@@ -1,6 +1,35 @@
 <?php
 class UsuariosControllerAdmin extends PageControllerAbstract
 {
+    /**
+     * Corresponde con las columnas del listado que poseen orden ascendente o descendente.
+     * Se utiliza en los metodos de pageControllerAbstract
+     */
+    private $orderByConfig = array('nombre' => array('variableTemplate' => 'orderByNombre',
+                                                     'orderBy' => 'p.apellido',
+                                                     'order' => 'desc'),
+                                   'perfil' => array('variableTemplate' => 'orderByPerfil',
+                                                     'orderBy' => 'pe.descripcion',
+                                                     'order' => 'desc'),
+                                   'suspendido' => array('variableTemplate' => 'orderByActivo',
+                                                         'orderBy' => 'u.activo',
+                                                         'order' => 'desc'));
+
+    /**
+     * Corresponde con los filtros del formulario del listado.
+     * Se utiliza para generar los filtros en la persistencia y para generar
+     * los parametros que se tienen que arrastrar en los links del paginador
+     * Las funciones estan en el pageControllerAbstract
+     */
+    private $filtrosFormConfig = array('filtroApellido' => 'p.apellido',
+                                       'filtroNumeroDocumento' => 'p.numeroDocumento',
+                                       'filtroInstitucion' => 'i.nombre',
+                                       'filtroCiudad' => 'c.nombre',
+                                       'filtroEspecialidad' => 'u.especialidades_id',
+                                       'filtroPerfil' => 'u.perfiles_id',
+                                       'filtroSuspendido' => 'u.activo');
+
+
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
         return $this;
@@ -72,22 +101,10 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sFiltroPerfil", $sDescripcion);
                 $this->getTemplate()->parse("OptionFiltroPerfilBlock", true);
             }
-
-            $aOrderBy = array(
-                'nombre' => array('variableTemplate' => 'orderByNombre',
-                                  'orderBy' => 'p.apellido',
-                                  'order' => 'desc'),
-                'perfil' => array('variableTemplate' => 'orderByPerfil',
-                                  'orderBy' => 'pe.descripcion',
-                                  'order' => 'desc'),
-                'suspendido' => array('variableTemplate' => 'orderByActivo',
-                                      'orderBy' => 'u.activo',
-                                      'order' => 'desc')
-            );
             
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
-            $this->initOrderBy($sOrderBy, $sOrder, $aOrderBy);
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
             $iRecordsTotal = 0;
             $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
@@ -208,34 +225,14 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     {
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $perfilDesc = $perfil->getDescripcion();
-
-        $aOrderBy = array(
-            'nombre' => array('variableTemplate' => 'orderByNombre',
-                              'orderBy' => 'p.apellido',
-                              'order' => 'desc'),
-            'perfil' => array('variableTemplate' => 'orderByPerfil',
-                              'orderBy' => 'pe.descripcion',
-                              'order' => 'desc'),
-            'suspendido' => array('variableTemplate' => 'orderByActivo',
-                                  'orderBy' => 'u.activo',
-                                  'order' => 'desc')
-        );
         
-        $aFiltrosForm = array('filtroApellido' => 'p.apellido',
-                              'filtroNumeroDocumento' => 'p.numeroDocumento',
-                              'filtroInstitucion' => 'i.nombre',
-                              'filtroCiudad' => 'c.nombre',
-                              'filtroEspecialidad' => 'u.especialidades_id',
-                              'filtroPerfil' => 'u.perfiles_id',
-                              'filtroSuspendido' => 'u.activo');
-
-        $this->initFiltrosForm($filtroSql, $paramsPaginador, $aFiltrosForm);
+        $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
         
         $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "ajaxGrillaUsuariosBlock", "GrillaUsuariosBlock");
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
         
-        $this->initOrderBy($sOrderBy, $sOrder, $aOrderBy);
+        $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
         
         $iRecordsTotal = 0;        
         $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
@@ -435,7 +432,91 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     /**
      * Exporta el filtro actual de usuarios
      */
-    public function exportar(){}
+    public function exportar()
+    {
+        try{
+            $aHeadColumns = array(
+                "Tipo Documento",
+                "Numero Documento",
+                "Nombre",
+                "Apellido",
+                "E-Mail",
+                "Universidad",
+                "Especialidad",
+                "Institucion",
+            );
+
+            $this->getExportarPlanillaHelper()->addFileLine($aHeadColumns);
+
+            //ahora extraigo los datos que ya estan en el filtro del form del listado
+            $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
+            $this->initOrderBy($sOrderBy = null, $sOrder = null, $this->orderByConfig);
+            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal = 0, $sOrderBy, $sOrder, $iMinLimit = null, $iItemsForPage = null);
+
+            //agrego las filas con las que se va a crear el archivo.
+            if(count($aUsuarios) > 0){
+                foreach($aUsuarios as $oUsuario){
+
+                    $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+                    $tipoDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()];
+                    $numeroDocumento = $oUsuario->getNumeroDocumento();
+                    $nombre = $oUsuario->getNombre();
+                    $apellido = $oUsuario->getApellido();
+                    $email = $oUsuario->getEmail();
+
+                    if(null !== $oUsuario->getUniversidad()){
+                        $universidad = $oUsuario->getUniversidad();
+                    }else{
+                        $universidad = "-";
+                    }
+
+                    if(null !== $oUsuario->getEspecialidad()){
+                        $especialidad = $oUsuario->getEspecialidad()->getNombre();
+                    }else{
+                        $especialidad = "-";
+                    }
+
+                    if(null !== $oUsuario->getInstitucion()){
+                        $institucion = $oUsuario->getInstitucion()->getNombre();
+                    }else{
+                        $institucion = "-";
+                    }
+
+                    $aColumns = array(
+                        $tipoDocumento,
+                        $numeroDocumento,
+                        $nombre,
+                        $apellido,
+                        $email,
+                        $universidad,
+                        $especialidad,
+                        $institucion,
+                    );
+
+                    $this->getExportarPlanillaHelper()->addFileLine($aColumns);
+                }
+            }
+
+            $oPerfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $oUsuario = $oPerfil->getUsuario();
+            $iUsuarioId = $oUsuario->getId();
+
+            //genero el archivo y la descarga
+            list($nombreArchivo, $tipoMimeArchivo, $nombreServidorArchivo) = $this->getExportarPlanillaHelper()->generarArchivo($iUsuarioId);
+            
+            $oArchivo = new stdClass();
+            $oArchivo->sNombre = $nombreArchivo;
+            $oArchivo->sNombreServidor = $nombreServidorArchivo;
+            $oArchivo->sTipoMime = $tipoMimeArchivo;
+            $oPlanilla = Factory::getArchivoInstance($oArchivo);
+
+            $this->getDownloadHelper()->utilizarDirectorioDownloads()
+                                      ->generarDescarga($oPlanilla);
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function form()
     {

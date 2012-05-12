@@ -174,6 +174,9 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                         archivos a ";
 
             $WHERE = array();
+            if(isset($filtro['a.id']) && $filtro['a.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('a.id', $filtro['a.id'], MYSQL_TYPE_INT);
+            }
             if(isset($filtro['a.seguimientos_id']) && $filtro['a.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('a.seguimientos_id', $filtro['a.seguimientos_id'], MYSQL_TYPE_INT);
                 
@@ -190,8 +193,12 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             if(isset($filtro['a.categorias_id']) && $filtro['a.categorias_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('a.categorias_id', $filtro['a.categorias_id'], MYSQL_TYPE_INT);
             }
+            if(isset($filtro['a.nombreServidor']) && $filtro['a.nombreServidor']!=""){
+                $WHERE[] = $this->crearFiltroSimple('a.nombreServidor', $filtro['a.nombreServidor']);
+            }
 
-            $sSQL  = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }

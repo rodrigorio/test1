@@ -5,47 +5,29 @@
  *
  * @author Matias Velilla
  */
-class DownloadHelper extends HelperAbstract
+class DownloadHelper extends FileManagerAbstract
 {
-    private $directorioUploadArchivos;
-
+    /**
+     * hay un auxiliar porque se pueden descargar archivos exportados que se generan por el sistema
+     * y tambien se pueden descargar archivos previamente subidos por el usuario
+     *
+     * Por defecto se utiliza la carpeta de uploads, en el caso de que se quiera descargar un archivo
+     * generado por el sistema se utiliza la funcion 'utilizarDirectorioDownloads' 
+     */
+    private $directorioServidor;
+    
     public function __construct()
     {
-        $this->utilizarDirectorioUploadUsuarios();
+        parent::__construct();
+
+        $this->directorioServidor = $this->getDirectorioUploadArchivos(true);
+    }
+
+    public function utilizarDirectorioDownloads(){
+        $this->directorioServidor = $this->getDirectorioDownloads(true);
+        return $this;
     }
       
-    /**
-     * Genera e inicializa el helper para trabajar en los directorios
-     * de uploads destinado a los usuarios.
-     */
-    public function utilizarDirectorioUploadUsuarios()
-    {
-        $baseUrl = $this->getRequest()->getBaseUrl();
-        $directorioUpload = $baseUrl."/uploads/usuarios/";
-        $this->directorioUploadArchivos = $directorioUpload."archivos/";
-        return $this;
-    }
-
-    /**
-     * Genera e inicializa el helper para trabajar en los directorios de un modulo del sitio
-     * Si no se especifica el nombre del modulo lo obtendra del modulo actual que utiliza el page controller desde
-     * donde se crea el helper
-     */
-    public function utilizarDirectorioUploadSitio($modulo)
-    {
-        $request = $this->getRequest();
-        $baseUrl = $request->getBaseUrl();
-
-        if(empty($modulo)){
-            $modulo = $request->getModuleName();
-        }
-
-        $directorioUpload = $baseUrl."/uploads/sitio/".$modulo."/";
-        $this->directorioUploadArchivos = $directorioUpload."archivos/";
-        
-        return $this;
-    }
-
     public function generarDescarga($oArchivo)
     {
         $nombreDestino = $oArchivo->getNombre();
@@ -53,10 +35,7 @@ class DownloadHelper extends HelperAbstract
             $nombreDestino = $oArchivo->getNombreServidor();
         }
 
-        $root = $_SERVER['DOCUMENT_ROOT'];
-        $root = substr($root,0,-1);
-
-        $archivoPathServidor = $root.$this->directorioUploadArchivos.$oArchivo->getNombreServidor();
+        $archivoPathServidor = $this->directorioServidor.$oArchivo->getNombreServidor();
 
         $this->getResponse()->setRawHeader("Content-type: ".$oArchivo->getTipoMime())
                             ->setRawHeader("Content-Disposition: attachment; filename=\"$nombreDestino\"\n")

@@ -202,35 +202,35 @@ class IMYSQL implements DB
      * @param bool $bQuote
      * @return string
      */
-    public function escape($str=null, $bQuote = false, $iType = MYSQL_TYPE_STRING){
-            if (is_null($str) || strlen($str) == 0){
-                    return "NULL";
-            }
+    public function escape($str = null, $bQuote = false, $iType = MYSQL_TYPE_STRING)
+    {
+        if(is_null($str) || strlen($str) == 0){
+            return "NULL";
+        }
 
-            switch ($iType) {
-                    case MYSQL_TYPE_STRING:
-                            $sValue =mysqli_real_escape_string($this->LINK_ID,$str);
-                    break;
-                    case MYSQL_TYPE_INT:
-                            $sValue = (int) $str;
-                            break;
-                    case MYSQL_TYPE_FLOAT:
-                            $sValue = str_replace(",",".",$str);
-                            break;
-                    case MYSQL_TYPE_DATE:
-                            $sValue = $this->formatDate($str,true);
-                            break;
-                    default:
-                            $sValue =mysqli_real_escape_string($this->LINK_ID,$str);
-                    break;
-            }
+        switch ($iType){
+            case MYSQL_TYPE_STRING:
+                $sValue = mysqli_real_escape_string($this->LINK_ID, $str);
+                break;
+            case MYSQL_TYPE_INT:
+                $sValue = (int) $str;
+                break;
+            case MYSQL_TYPE_FLOAT:
+                $sValue = str_replace(",",".",$str);
+                break;
+            case MYSQL_TYPE_DATE:
+                $sValue = $this->formatDate($str,true);
+                break;
+            default:
+                $sValue =mysqli_real_escape_string($this->LINK_ID,$str);
+                break;
+        }
 
-            if($bQuote){
-                    return "'" . $sValue . "'" ;
-            }else{
-                    return $sValue;
-            }
-
+        if($bQuote){
+            return "'".$sValue."'";
+        }else{
+            return $sValue;
+        }
     }
 
     /**

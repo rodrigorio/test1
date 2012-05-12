@@ -877,9 +877,47 @@ function buscarUsuarios(){
     });
 }
 
+function exportarUsuarios(){
+    var filtroApellido = $('#filtroApellido').val();
+    var filtroNumeroDocumento = $('#filtroNumeroDocumento').val();
+    var filtroInstitucion = $('#filtroInstitucion').val();
+    var filtroCiudad = $('#filtroCiudad').val();
+    var filtroEspecialidad = $('#filtroEspecialidad option:selected').val();
+    var filtroPerfil = $('#filtroPerfil option:selected').val();
+    var filtroSuspendido = $('#filtroSuspendido option:selected').val();
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
+    $.ajax({
+        type:"POST",
+        url:"admin/usuarios-exportar",
+        data:{
+            filtroApellido: filtroApellido,
+            filtroNumeroDocumento: filtroNumeroDocumento,
+            filtroInstitucion: filtroInstitucion,
+            filtroCiudad: filtroCiudad,
+            filtroEspecialidad: filtroEspecialidad,
+            filtroPerfil: filtroPerfil,
+            filtroSuspendido: filtroSuspendido,
+            sOrderBy: sOrderBy,
+            sOrder: sOrder
+        },
+        beforeSend: function(){
+            setWaitingStatus('subHeader', true);
+        },
+        success:function(data){
+            setWaitingStatus('subHeader', false);
+        }
+    });
+}
+
 $(document).ready(function(){
     
     $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("#exportarFiltroActual").live('click', function(){
+        exportarUsuarios();
+    });
 
     $("#filtrarUsuarios").live('click', function(){
         buscarUsuarios();

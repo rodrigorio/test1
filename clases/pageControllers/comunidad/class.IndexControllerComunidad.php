@@ -110,7 +110,6 @@ class IndexControllerComunidad extends PageControllerAbstract
             $nombreServidor = $this->getRequest()->get('nombreServidor');
 
             $filtro = array();
-
             if(!empty($idArchivo)){ $filtro['id'] = $idArchivo; }
             if(!empty($nombreServidor)){ $filtro['nombreServidor'] = $nombreServidor; }
 
