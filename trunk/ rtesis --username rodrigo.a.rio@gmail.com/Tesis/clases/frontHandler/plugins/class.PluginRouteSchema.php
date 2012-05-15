@@ -655,13 +655,6 @@ class PluginRouteSchema extends PluginAbstract
                                         'action'     => 'vistaImpresion'
                                 ));
         $router->addRoute('adminUsuariosVistaImpresion', $route);
-        $route = new RegexRoute('admin/usuarios-imprimir',
-                                array(
-                                        'module' => 'admin',
-                                        'controller' => 'usuarios',
-                                        'action'     => 'imprimir'
-                                ));
-        $router->addRoute('adminUsuariosImprimir', $route);
         $route = new RegexRoute('admin/usuarios-exportar',
                                 array(
                                         'module' => 'admin',
