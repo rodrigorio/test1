@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
+
+    <title>{sTituloVista}</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-language" content="es" />
+
+    <link href="gui/css/vistas.css" rel="stylesheet" type="text/css" media="screen, print" />
+
+    <script type="text/javascript"> var pathUrlBase = "{pathUrlBase}"; </script>
+</head>
+
+<body id="framePrint">
+    <div id="header">
+        <div id="imprimirBlock" class="mabo3 pa2">
+            <a class="button" href="javascript:;" onClick="window.print()">
+                <span class="i bs print"></span>
+                <span class="buttonText">Imprimir</span>
+            </a>
+        </div>
+        <h1>{sTitulo}</h1>
+        <h2>{sSubtitulo}</h2>
+    </div>
+
+    <div id="page">
+        {bodyContent}
+    </div>
+
+    <div id="footer">
+        &copy;&nbsp;2011
+        Andres Delfino (profedelfino@gmail.com) |
+        Rodrigo Rio (rodrigo.a.rio@gmail.com) |
+        Matias Velilla (matiasvelillamdq@gmail.com).
+        <br>
+        Proyecto de tesis Universidad FASTA Argentina - http://www.ufasta.edu.ar/
+    </div>
+    
+</body>
+
+</html>

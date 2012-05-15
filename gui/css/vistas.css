@@ -230,6 +230,10 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
 .popUpScroll{max-height:450px; overflow:auto;}
 
+/* la mayoria de los estilos estan en el apartado para el media print */
+#framePrint #header{margin-bottom:20px;}
+#framePrint #page{margin-bottom:20px;}
+
 .columnas2 .col1, .columnas2 .col2{float:left; text-align:left}
 .columnas2 .col1{width: 650px; min-height:200px;}
 .columnas2 .col2{display: block; margin:30px 0 0 20px; position: relative; width: 270px}
@@ -466,7 +470,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .table01{background-color:#FFF;}
 .table01 tr:hover{background-color:#EEEFFF}
 .table01 td{border-bottom:1px solid #E5E5E5; padding:10px 4px 10px 4px}
-.table01 .encabezado td{color:#555571; text-transform:uppercase; font-weight:bold}
+.table01 .encabezado td, .table01 .encabezado th{color:#555571; text-transform:uppercase; font-weight:bold}
 .table01 .encabezado:hover{background-color:#FFF !important}
 
 /*** VARIOS ***/
@@ -721,3 +725,19 @@ a .i{margin-right:4px; float:left}
 /*** OVERLAYS ***/
 .ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity: .3;filter:Alpha(Opacity=30)}
 .ui-widget-shadow{margin:-8px 0 0 -8px; padding:8px; background:#aaaaaa url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity:.3;filter:Alpha(Opacity=30); -moz-border-radius:8px; -webkit-border-radius:8px; border-radius: 8px}
+
+
+/******************************/
+/*** ESTILOS PARA IMPRESION ***/
+/******************************/
+
+@media print{
+    /* quito el panel con el boton de imprimir */
+    #imprimirBlock{display:none;}
+
+    /* redusco los sizes de las fuentes */
+    body{font-size:10pt}
+    
+    /* agrego margenes en cm para los contenedores principales */
+    @page{margin: 3cm;}
+}

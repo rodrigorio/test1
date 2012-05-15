@@ -9,6 +9,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.query.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
 
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
@@ -38,7 +39,7 @@
 <!--BeginPanelAdminBlock-->
 <div id="subHeader" class="subHeader01 mabo3">
     <a class="button-link blue" href="admin/usuarios-form" rel="tooltip" original-title="Agregar un nuevo integrante al sistema">Crear Usuario</a>
-    <a class="button-link green" href="admin/usuarios-vista-impresion" rel="tooltip" original-title="Generar una vista para imprimir el filtro actual">Vista Impresi&oacute;n</a>
+    <span id="vistaImpresion" class="button-link green" rel="tooltip" original-title="Generar una vista para imprimir el filtro actual">Vista Impresi&oacute;n</span>
     <span id="exportarFiltroActual" class="button-link green" rel="tooltip" original-title="Exportar el filtro actual a planilla de calculo">Exportar</span>
 </div>
 <!--EndPanelAdminBlock-->
@@ -142,6 +143,45 @@
         </div>
 </section>
 <!--EndListadoUsuariosBlock-->
+
+<!--BeginListadoUsuariosPrintBlock-->
+<div class="mabo3">
+    Cantidad usuarios filtro actual: <strong>{iRecordsTotal}</strong>
+</div>
+<table class="table01">
+    <thead>
+        <tr class="encabezado">
+            <th>Documento</th>
+            <th>Nombre</th>
+            <th>E-mail</th>
+            <th>Ciudad</th>
+            <th>Universidad</th>
+            <th>Especialidad</th>
+            <th>Institucion</th>
+            <th>Cargo</th>
+        </tr>
+    </thead>
+    <tbody>
+    <!--BeginUsuarioPrintBlock-->
+        <tr>
+            <td>{sDocumento}</td>
+            <td>{sNombre}</td>
+            <td>{sEmail}</td>
+            <td>{sCiudad}</td>
+            <td>{sUniversidad}</td>
+            <td>{sEspecialidad}</td>
+            <td>{sInstitucion}</td>
+            <td>{sCargo}</td>
+        </tr>
+    <!--EndUsuarioPrintBlock-->
+    <!--BeginNoRecordsUsuariosPrintBlock-->
+        <tr>
+            <td colspan="8">{sNoRecords}</td>
+        </tr>
+    <!--EndNoRecordsUsuariosPrintBlock-->
+    </tbody>
+</table>
+<!--EndListadoUsuariosPrintBlock-->
 
 <!--BeginFichaUsuarioBlock-->
 <article class="full-block pa2 clearfix mabo0">

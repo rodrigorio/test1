@@ -435,7 +435,77 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
     public function vistaImpresion()
     {
-        
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePrint01-01.gui.html", "frame");
+            $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+            $this->getTemplate()->set_var("sTituloVista", "Usuarios SGPAPD - Imprimir");
+            $this->getTemplate()->set_var("sTitulo", "Sistema SGPAPD");
+            $today = date('m/d/Y');
+            $this->getTemplate()->set_var("sSubtitulo", "Usuarios Integrantes Comunidad ".$today);
+            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "bodyContent", "ListadoUsuariosPrintBlock");
+
+            //ahora extraigo los datos que ya estan en el filtro del form del listado
+            $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
+            $this->initOrderBy($sOrderBy = null, $sOrder = null, $this->orderByConfig);
+            $iRecordsTotal = 0;
+            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit = null, $iItemsForPage = null);
+            
+            if(count($aUsuarios) > 0){
+
+                $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+                $this->getTemplate()->set_var("NoRecordsUsuariosPrintBlock", "");
+                $i=0;
+                foreach($aUsuarios as $oUsuario){
+
+                    $sNombre = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+                    $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+                    $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
+                    $sEmail = $oUsuario->getEmail();
+
+                    //estos porque no son obligatorios para emprolijar la grilla
+                    $sCiudad = "-";
+                    if(null !== $oUsuario->getCiudad()){
+                        $sCiudad = $oUsuario->getCiudad()->getNombre();
+                    }
+                    $sUniversidad = "-";
+                    if(null !== $oUsuario->getUniversidadCarrera()){
+                        $sUniversidad = $oUsuario->getUniversidadCarrera();
+                    }
+                    $sEspecialidad = "-";
+                    if(null !== $oUsuario->getEspecialidad()){
+                        $sEspecialidad = $oUsuario->getEspecialidad()->getNombre();
+                    }
+                    $sInstitucion = "-";
+                    if(null !== $oUsuario->getInstitucion()){
+                        $sInstitucion = $oUsuario->getInstitucion()->getNombre();
+                    }
+                    $sCargo = "-";
+                    if(null !== $oUsuario->getCargoInstitucion()){
+                        $sCargo = $oUsuario->getCargoInstitucion();
+                    }
+                                       
+                    $this->getTemplate()->set_var("sDocumento", $sDocumento);
+                    $this->getTemplate()->set_var("sNombre", $sNombre);
+                    $this->getTemplate()->set_var("sEmail", $sEmail);
+                    $this->getTemplate()->set_var("sCiudad", $sCiudad);
+                    $this->getTemplate()->set_var("sUniversidad", $sUniversidad);
+                    $this->getTemplate()->set_var("sEspecialidad", $sEspecialidad);
+                    $this->getTemplate()->set_var("sInstitucion", $sInstitucion);
+                    $this->getTemplate()->set_var("sCargo", $sCargo);
+
+                    $this->getTemplate()->parse('UsuarioPrintBlock', true);
+                }
+               
+            }else{
+                $this->getTemplate()->set_var("UsuarioPrintBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            
+        }catch(Exception $e){
+            print_r($e);
+        }
     }
 
     /**

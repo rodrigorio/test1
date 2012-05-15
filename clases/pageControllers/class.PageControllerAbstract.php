@@ -380,15 +380,15 @@ class PageControllerAbstract implements PageControllerInterface
 
     /**
      * Extrae todos los post desde el form de filtro de listado segun $aFiltrosForm,
-     * genera los parametros para adjuntar a los links del paginador,
+     * genera los parametros para adjuntar a los links del paginador por ejemplo,
      * ademas genera el filtro para enviar al metodo de sql segun el nombre de las columnas de las tablas
      */
-    protected final function initFiltrosForm(&$filtroSql, &$paramsPaginador, $aFiltrosForm)
+    protected final function initFiltrosForm(&$filtroSql, &$paramsGet, $aFiltrosForm)
     {
         foreach($aFiltrosForm as $nombreFiltro => $columnaSql){
-            if($this->getRequest()->has($nombreFiltro) && $this->getRequest()->getPost($nombreFiltro)!= ""){
-                $filtroSql[$columnaSql] = $this->getRequest()->getPost($nombreFiltro);
-                $paramsPaginador[] = $nombreFiltro."=".$this->getRequest()->getPost($nombreFiltro);
+            if($this->getRequest()->has($nombreFiltro) && $this->getRequest()->getParam($nombreFiltro)!= ""){
+                $filtroSql[$columnaSql] = $this->getRequest()->getParam($nombreFiltro);
+                $paramsPaginador[] = $nombreFiltro."=".$this->getRequest()->getParam($nombreFiltro);
             }
         }
     }

@@ -912,12 +912,43 @@ function exportarUsuarios(){
     });
 }
 
+function vistaImpresion(){
+    var filtroApellido = $('#filtroApellido').val();
+    var filtroNumeroDocumento = $('#filtroNumeroDocumento').val();
+    var filtroInstitucion = $('#filtroInstitucion').val();
+    var filtroCiudad = $('#filtroCiudad').val();
+    var filtroEspecialidad = $('#filtroEspecialidad option:selected').val();
+    var filtroPerfil = $('#filtroPerfil option:selected').val();
+    var filtroSuspendido = $('#filtroSuspendido option:selected').val();
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
+    //me ayudo con el plugin jquery.query para armar los get con lo que esta en el form
+    $.query.empty();
+    var query = $.query.set("filtroApellido", filtroApellido)
+                       .set("filtroNumeroDocumento", filtroNumeroDocumento)
+                       .set("filtroInstitucion", filtroInstitucion)
+                       .set("filtroCiudad", filtroCiudad)
+                       .set("filtroEspecialidad", filtroEspecialidad)                       
+                       .set("filtroPerfil", filtroPerfil)
+                       .set("filtroSuspendido", filtroSuspendido)
+                       .set("sOrderBy", sOrderBy)
+                       .set("sOrder", sOrder)
+                       .toString();
+
+    window.open("admin/usuarios-vista-impresion"+query);
+}
+
 $(document).ready(function(){
     
     $("a[rel^='prettyPhoto']").prettyPhoto();
 
     $("#exportarFiltroActual").live('click', function(){
         exportarUsuarios();
+    });
+
+    $("#vistaImpresion").live('click', function(){
+        vistaImpresion();
     });
 
     $("#filtrarUsuarios").live('click', function(){
