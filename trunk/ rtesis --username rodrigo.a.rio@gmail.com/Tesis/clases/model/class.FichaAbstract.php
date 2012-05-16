@@ -8,7 +8,7 @@
 abstract class FichaAbstract
  {
  	protected  $id;
- 	protected $sTitulo;
+ 	protected  $sTitulo;
  	protected  $dFecha;
  	protected  $bActivo;
  	protected  $sDescripcion;

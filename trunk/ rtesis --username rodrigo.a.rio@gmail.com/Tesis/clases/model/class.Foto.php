@@ -2,7 +2,7 @@
 /**
  * @author Matias Velilla
  */
-class Foto
+class Foto 
 {
     private $iId;
     private $iSeguimientosId;
@@ -18,7 +18,7 @@ class Foto
     private $sTipo;
 
     /**
-     *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Provincia
+     *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase 
      * @param stdClass $oParams
      */
     public function __construct(stdClass $oParams = null){
@@ -44,7 +44,6 @@ class Foto
     {
         return $this->iId;
     }
-
     public function setNombreBigSize($sNombreBigSize)
     {
         $this->sNombreBigSize = $sNombreBigSize;
