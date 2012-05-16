@@ -553,6 +553,21 @@ class ComunidadController
    /**
      * @return array|null
      */
+    
+    public function obtenerVideosPublicacion($iPublicacionId)
+    {
+        try{
+            $oVideoIntermediary = PersistenceFactory::getVideoIntermediary($this->db);
+            $filtro = array('f.publicacion_id' => $iPublicacionId);
+            return $oVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }        
+    }
+   /**
+     * @return array|null
+     */
     public function obtenerArchivosPublicacion($iPublicacionId)
     {
         try{
