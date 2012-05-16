@@ -187,7 +187,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
    {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from fichas_abstractas where id = '".$iFichaAbstractaIdId."'");
+            $db->execSQL("delete from fichas_abstractas where id = '".$iFichaAbstractaId."'");
             $db->commit();
             return true;
         }catch(Exception $e){
