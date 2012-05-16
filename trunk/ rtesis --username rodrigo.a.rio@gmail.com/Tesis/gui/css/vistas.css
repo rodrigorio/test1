@@ -736,8 +736,8 @@ a .i{margin-right:4px; float:left}
     #imprimirBlock{display:none;}
 
     /* redusco los sizes de las fuentes */
-    body{font-size:10pt}
+    body{font-size:8pt}
     
     /* agrego margenes en cm para los contenedores principales */
-    @page{margin: 3cm;}
+    @page{margin:4cm 2cm 2cm 2cm;}
 }

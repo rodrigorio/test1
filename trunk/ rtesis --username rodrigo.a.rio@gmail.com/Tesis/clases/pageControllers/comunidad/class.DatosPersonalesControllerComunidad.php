@@ -699,4 +699,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $usuario = $perfil->getUsuario();
         $usuario->guardarPrivacidadCampo($this->getRequest()->getPost('nombreCampo'), $this->getRequest()->getPost('valorPrivacidad'));
     }
+
+    public function cerrarCuenta()
+    {
+        
+    }
 }

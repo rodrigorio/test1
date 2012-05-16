@@ -155,5 +155,12 @@ class RutasModuloComunidad
                                         'action'     => "buscarInstituciones"
                                 ));
         $router->addRoute('comunidadInstitucionesBuscarInstituciones', $route);
+        $route = new RegexRoute('comunidad/cerrar-cuenta',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "datosPersonales",
+                                    'action'     => "cerrarCuenta"
+                                ));
+        $router->addRoute('comunidadDatosPersonalesCerrarCuenta', $route);
     }
 }

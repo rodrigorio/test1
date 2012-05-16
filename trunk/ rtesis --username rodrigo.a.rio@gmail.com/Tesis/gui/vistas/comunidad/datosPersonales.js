@@ -690,6 +690,46 @@ $(document).ready(function(){
     }
 });
 
+function cerrarCuenta(){
+    alert("asldkjaskldjaslkd");
+}
+function showDialogConfirmCerrarCuenta(){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $("<div id='dialog' title='Cerrar Cuenta'></div>").appendTo('body');
+    
+    dialog.load(
+        "comunidad/cerrar-cuenta",
+        {step:"confirmar"},
+        function(data){
+            dialog.dialog({
+                position:['center',5],
+                width:400,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true,
+                buttons:{
+                    "Confirmar": function() {
+                        cerrarCuenta();
+                    },
+                    "Cancelar": function() {
+                        $(this).dialog( "close" );
+                    }
+                }
+            });
+        }
+    );
+}
+
 $(document).ready(function(){
     $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("#cerrarCuenta").click(function(){
+        showDialogCerrarCuenta("1");
+    });
 });
