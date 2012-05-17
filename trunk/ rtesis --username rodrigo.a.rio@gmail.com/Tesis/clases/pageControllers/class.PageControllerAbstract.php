@@ -181,11 +181,14 @@ class PageControllerAbstract implements PageControllerInterface
     /**
      * Este metodo es para obtener la url desde una de las RegexRoute cargadas en el router
      */
-    protected final function getUrlFromRoute($routeName, $absoluteUrl = true)
+    protected final function getUrlFromRoute($routeName, $baseUrl = false)
     {
         $router = FrontController::getInstance()->getRouter();
-        $url = $router->getRoute($routeName);
-        
+        $url = "/".$router->getRoute($routeName)->getRegex();
+        if($baseUrl){
+            return $this->request->getBaseUrl().$url;
+        }
+        return $url;
     }
 
     /**

@@ -151,6 +151,16 @@ class RegexRoute
     }
 
     /**
+     * Ojo no usar esto para obtener la url en la que se matchea la ruta si contiene expresion regular
+     */
+    public function getRegex()
+    {
+        if(isset($this->regex)){
+            return $this->regex;
+        }
+    }
+
+    /**
      * Return an array of defaults
      *
      * @return array Route defaults

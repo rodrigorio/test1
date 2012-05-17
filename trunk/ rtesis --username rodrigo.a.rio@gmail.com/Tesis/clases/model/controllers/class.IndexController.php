@@ -48,11 +48,11 @@ class IndexController
      */
     public function registrar($obj,$iUsuarioId){
     	try{
-			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->registrar(Factory::getUsuarioInstance($obj),$iUsuarioId);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
     }
     /**
      * @param string $token

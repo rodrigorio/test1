@@ -211,6 +211,11 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             return;
         }
 
+        if($this->getRequest()->has('borrarCurriculumVitae')){
+            $this->borrarCurriculumVitae();
+            return;
+        }
+
         if($this->getRequest()->has('cambiarEstado')){
             $this->cambiarEstadoCuentaIntegrante();
             return;
@@ -360,6 +365,27 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         ComunidadController::getInstance()->guardarUsuario($oUsuario);
     }
 
+    private function borrarCurriculumVitae()
+    {
+        $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
+
+        if(empty($iUsuarioId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);            
+            $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+            ComunidadController::getInstance()->borrarCurriculumUsuario($oUsuario, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                
+    }
+
     private function borrarFotoPerfil()
     {
         $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
@@ -507,11 +533,6 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
-
-    /**
-     * Imprime el filtro actual de usuarios
-     */
-    public function imprimir(){}
 
     /**
      * Exporta el filtro actual de usuarios
@@ -1150,6 +1171,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->restartTemplate();
                     $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "curriculumActualForm", "CurriculumActualFormBlock");
 
+                    $this->getTemplate()->set_var("iUsuarioId", $idItem);
                     $this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
                     $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
                     $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
@@ -1161,7 +1183,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                         AdminController::getInstance()->setIntegranteActivoUsuario($usuario);
                     }
 
-                    $respuesta = "1; ".$this->getTemplate()->pparse('curriculumActual', false);
+                    $respuesta = "1; ".$this->getTemplate()->pparse('curriculumActualForm', false);
 
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){                    
@@ -1229,7 +1251,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     public function crear()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
+                
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
@@ -1253,7 +1275,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $oUsuario->dFechaNacimiento = $fechaNacimiento;
                       
             $oUsuario = Factory::getUsuarioInstance($oUsuario);
-
+            
             ComunidadController::getInstance()->guardarUsuario($oUsuario);
 
             $this->getJsonHelper()->setSuccess(true);

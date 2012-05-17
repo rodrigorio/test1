@@ -376,18 +376,19 @@
                 <label for="contrasenia">Contrase&ntilde;a</label>
             </dt>
             <dd>
-                <input name="contrasenia" id="contrasenia" type="text" class="small" value="">
+                <input class="small" type="password" name="contrasenia" id="contrasenia" title="Contrasenia" maxlength="30" />
+                <p>La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</p>
                 <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
             </dd>
             <dt>
-                <label for="reContrasenia">Vuelva a Ingresarla</label>
+                <label for="contraseniaConfirmar">Vuelva a Ingresarla</label>
             </dt>
             <dd>
-                <input name="reContrasenia" id="reContrasenia" type="text" class="small" value="">
+                <input class="small" type="password" name="reContrasenia" id="reContrasenia" title="Confirmar Contrase&ntilde;a" maxlength="30" />
             </dd>
         </dl>
     </fieldset>
-
+    
     <dt>
         <label for="sexo">Sexo</label>
     </dt>
@@ -825,6 +826,7 @@
                                 </li>
                                 <li>
                                     <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
+                                    | <a rel="{iUsuarioId}" id="eliminarCvActual" href="">Eliminar</a>
                                 </li>
                             </ul>
                         </div>

@@ -724,16 +724,14 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
             $oPerfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $oUsuario = $oPerfil->getUsuario();           
-            //$result = AdminController::getInstance()->cerrarCuentaIntegrante($oUsuario, $pathServidor);
-
-            $result = true;
+            $result = AdminController::getInstance()->cerrarCuentaIntegrante($oUsuario, $pathServidor);
 
             if($result){
                 $msg = "Su cuenta fue eliminada con exito del sistema";
                 $bloque = 'MsgCorrectoBlockI32';
                 $this->getJsonHelper()->setSuccess(true);
-                $logOutRoute = getRoute
-                $this->getJsonHelper()->setRedirect("");
+                $logOutRoute = $this->getUrlFromRoute("indexLoginLogout");
+                $this->getJsonHelper()->setRedirect($logOutRoute);
             }else{
                 $msg = "Ocurrio un error, no se ha podido eliminar su cuenta del sistema";
                 $bloque = 'MsgErrorBlockI32';

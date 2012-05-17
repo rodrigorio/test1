@@ -237,7 +237,7 @@ class ComunidadController
      * @param stdClass $obj
      */
     public function guardarUsuario($oUsuario){
-    	try{
+    	try{            
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $oUsuarioIntermediary->guardar($oUsuario);
         }catch(Exception $e){
