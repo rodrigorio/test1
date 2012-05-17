@@ -179,6 +179,16 @@ class PageControllerAbstract implements PageControllerInterface
     }
 
     /**
+     * Este metodo es para obtener la url desde una de las RegexRoute cargadas en el router
+     */
+    protected final function getUrlFromRoute($routeName, $absoluteUrl = true)
+    {
+        $router = FrontController::getInstance()->getRouter();
+        $url = $router->getRoute($routeName);
+        
+    }
+
+    /**
      * Si dentro de los parametros del request existe msgInfo, msgError o msgCorrecto
      * entonces agrega el componente MsgTop segun corresponda en el template.
      * NOTA: el mensaje desaparece automaticamente a traves de javascript (vistas.js)

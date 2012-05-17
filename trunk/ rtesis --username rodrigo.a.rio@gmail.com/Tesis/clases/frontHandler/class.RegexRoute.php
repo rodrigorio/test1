@@ -179,4 +179,3 @@ class RegexRoute
         return $variables;
     }		
 }
-?>

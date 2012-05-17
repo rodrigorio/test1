@@ -690,9 +690,6 @@ $(document).ready(function(){
     }
 });
 
-function cerrarCuenta(){
-    alert("asldkjaskldjaslkd");
-}
 function showDialogConfirmCerrarCuenta(){
 
     var dialog = $("#dialog");
@@ -704,18 +701,45 @@ function showDialogConfirmCerrarCuenta(){
     
     dialog.load(
         "comunidad/cerrar-cuenta",
-        {step:"confirmar"},
-        function(data){
+        {confirmar:"1"},
+        function(){
             dialog.dialog({
-                position:['center',5],
-                width:400,
+                position:['center', 'center'],
+                width:500,
                 resizable:false,
                 draggable:false,
                 modal:false,
                 closeOnEscape:true,
                 buttons:{
-                    "Confirmar": function() {
-                        cerrarCuenta();
+                    "Confirmar": function(){
+                        dialog.hide("slow");
+                        dialog.remove();
+                        dialog = $("<div id='dialog' title='Cerrar Cuenta'></div>").appendTo('body');
+                        $.ajax({
+                            type:"post",
+                            dataType:'jsonp',
+                            url:"comunidad/cerrar-cuenta",
+                            success:function(data){
+                                dialog.html(data.html);
+                                dialog.dialog({
+                                    position:['center', 'center'],
+                                    width:500,
+                                    resizable:false,
+                                    draggable:false,
+                                    modal:false,
+                                    closeOnEscape:true,
+                                    buttons:{
+                                        "Aceptar": function() {
+                                            $(this).dialog("close");
+                                            if(data.success != undefined && data.success == 1){
+                                                //tendria que ser la url de logout para eliminar el usuario en sesion
+                                                location = data.redirect;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     },
                     "Cancelar": function() {
                         $(this).dialog( "close" );
@@ -730,6 +754,7 @@ $(document).ready(function(){
     $("a[rel^='prettyPhoto']").prettyPhoto();
 
     $("#cerrarCuenta").click(function(){
-        showDialogCerrarCuenta("1");
+        showDialogConfirmCerrarCuenta();
+        return false;
     });
 });
