@@ -50,6 +50,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 return true;
             }else{
                 $db->execSQL("DELETE FROM archivos WHERE id = ".$this->escInt($aArchivos->getId()));
+                $db->commit();
                 return true;
             }
             

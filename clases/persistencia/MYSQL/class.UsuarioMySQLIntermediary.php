@@ -472,7 +472,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 " set id=  ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ".
                 " perfiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ".
                 " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ".
-                " contrasenia=".$db->escape($oUsuario->getContrasenia(),true)." ";
+                " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
 
                  $db->execSQL($sSQL);
                  $sSQL =" update usuario_x_invitado ".
@@ -831,7 +831,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
                     " carreraFinalizada = ".$carreraFinalizada.", ".
                     " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).",".
-                    " contrasenia = ".$db->escape(md5($oUsuario->getContrasenia()),true)." ";
+                    " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
 
             $db->execSQL($sSQL);   
 

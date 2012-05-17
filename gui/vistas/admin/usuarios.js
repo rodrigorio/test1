@@ -96,6 +96,25 @@ function borrarFotoPerfil(iUsuarioId){
     }
 }
 
+function borrarCurriculumVitae(iUsuarioId){
+    if(confirm("Se borrara el CV del usuario, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"admin/usuarios-procesar",
+            data:{
+                iUsuarioId:iUsuarioId,
+                borrarCurriculumVitae:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#wrapCvActual").html("");
+                }
+            }
+        });
+    }
+}
+
 /////////////////////////
 // METODOS PARA LAS VALIDACIONES DE FORMULARIOS
 /////////////////////////
@@ -209,7 +228,7 @@ var validateFormCrearUsuario = {
         contrasenia:{required:true, minlength:5},
         reContrasenia:{required:function(element){
                             return $("#contrasenia").val() != "";
-                       }, equalTo:'#contrasenia'},
+                       }, equalTo:'#reContrasenia'},
         sexo:{required:true},
         fechaNacimientoDia:{required:true, digits: true},
         fechaNacimientoMes:{required:true, digits: true},
@@ -262,7 +281,7 @@ var optionsAjaxFormCrearUsuario = {
     dataType: 'jsonp',
     resetForm: true,
     url: 'admin/usuarios-crear',
-
+    
     beforeSerialize: function($form, options){
         if($("#formCrearUsuario").valid() == true){
 
@@ -280,6 +299,7 @@ var optionsAjaxFormCrearUsuario = {
 
     success:function(data){
         setWaitingStatus('formCrearUsuario', false);
+        $("#contraseniaMD5").val("");
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
@@ -400,6 +420,8 @@ var optionsAjaxFormInfoBasica = {
     },
     success:function(data){
         setWaitingStatus('formInfoBasica', false);
+        $("#contraseniaNuevaMD5").val("");
+        
         if(data.success == undefined || data.success == 0){
             $('#msg_form_usuario .msg').html(lang['error procesar']);
             $('#msg_form_usuario').addClass("error2").fadeIn('slow');
@@ -990,7 +1012,13 @@ $(document).ready(function(){
         borrarFotoPerfil(iUsuarioId);
         return false; //porq es un <a>
     });
-
+    
+    $("#eliminarCvActual").live('click', function(){
+        var iUsuarioId = $(this).attr("rel");
+        borrarCurriculumVitae(iUsuarioId);
+        return false;
+    });
+    
     $(".verFichaUsuario").live('click',function(){
         
         var dialog = $("#dialog");

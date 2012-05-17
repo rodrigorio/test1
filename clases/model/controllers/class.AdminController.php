@@ -322,7 +322,7 @@ class AdminController
             $sPerfil = $this->obtenerDescripcionPerfilUsuario($oUsuario);
             if($sPerfil == "integrante inactivo"){
                 $oPerfil = new stdClass();
-                $oPerfil->oUsuario = $usuario;
+                $oPerfil->oUsuario = $oUsuario;
                 $oIntegranteActivo = Factory::getIntegranteActivoInstance($oPerfil);
                 
                 $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
