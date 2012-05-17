@@ -833,7 +833,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).",".
                     " contrasenia = ".$db->escape(md5($oUsuario->getContrasenia()),true)." ";
 
-            $db->execSQL($sSQL);            
+            $db->execSQL($sSQL);   
+
+            $db->execSQL("insert into privacidad set usuarios_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT));
+            
             $db->commit();
 
             $oUsuario->setId($iLastId);
