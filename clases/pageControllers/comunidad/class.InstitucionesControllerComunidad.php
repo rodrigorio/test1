@@ -158,7 +158,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             IndexControllerComunidad::setCabecera($this->getTemplate());
             IndexControllerComunidad::setCenterHeader($this->getTemplate());
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Mis instituciones");
+            $this->getTemplate()->set_var("tituloSeccion", "Instituciones");
             //menu derecha
             $this->setMenuDerecha();
             //contenido ppal

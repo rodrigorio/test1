@@ -162,5 +162,120 @@ class RutasModuloComunidad
                                     'action'     => "cerrarCuenta"
                                 ));
         $router->addRoute('comunidadDatosPersonalesCerrarCuenta', $route);
+
+        /////////PUBLICACIONES
+        $route = new RegexRoute('comunidad/publicaciones',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "index"
+                                ));
+        $router->addRoute('comunidadPublicacionesIndex', $route);
+        $route = new RegexRoute('comunidad/publicaciones/mis-publicaciones',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "misPublicaciones"
+                                ));
+        $router->addRoute('comunidadPublicacionesMisPublicaciones', $route);
+        $route = new RegexRoute('comunidad/publicaciones/form-publicacion',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "formPublicacion"
+                                ));
+        $router->addRoute('comunidadPublicacionesFormPublicacion', $route);
+        $route = new RegexRoute('comunidad/publicaciones/form-review',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "formReview"
+                                ));
+        $router->addRoute('comunidadPublicacionesFormReview', $route);
+        $route = new RegexRoute('comunidad/publicaciones/guardar-publicacion',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "guardarPublicacion"
+                                ));
+        $router->addRoute('comunidadPublicacionesGuardarPublicacion', $route);
+        $route = new RegexRoute('comunidad/publicaciones/guardar-review',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "guardarReview"
+                                ));
+        $router->addRoute('comunidadPublicacionesGuardarReview', $route);
+        $route = new RegexRoute('comunidad/publicaciones/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "procesar"
+                                ));
+        $router->addRoute('comunidadPublicacionesProcesar', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-fotos',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "galeriaFotos"
+                                ));
+        $router->addRoute('comunidadPublicacionesGaleriaFotos', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-fotos/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "fotosProcesar"
+                                ));
+        $router->addRoute('comunidadPublicacionesFotosProcesar', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-fotos/form',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "formFoto"
+                                ));
+        $router->addRoute('comunidadPublicacionesFormFoto', $route);        
+        $route = new RegexRoute('comunidad/publicaciones/galeria-archivos',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "galeriaArchivos"
+                                ));
+        $router->addRoute('comunidadPublicacionesGaleriaArchivos', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-archivos/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "archivosProcesar"
+                                ));
+        $router->addRoute('comunidadPublicacionesArchivosProcesar', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-archivos/form',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "formArchivo"
+                                ));
+        $router->addRoute('comunidadPublicacionesFormArchivo', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-videos',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "galeriaVideos"
+                                ));
+        $router->addRoute('comunidadPublicacionesGaleriaVideos', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-videos/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "videosProcesar"
+                                ));
+        $router->addRoute('comunidadPublicacionesVideosProcesar', $route);
+        $route = new RegexRoute('comunidad/publicaciones/galeria-videos/form',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "formVideo"
+                                ));
+        $router->addRoute('comunidadPublicacionesFormVideo', $route);
+        //FALTA EL VER PUBLICACION AMPLIADA QUE ES URL AMIGABLE. HAY QUE ARMAR EL REGEX
     }
 }
