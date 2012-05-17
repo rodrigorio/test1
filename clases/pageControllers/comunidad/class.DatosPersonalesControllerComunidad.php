@@ -702,6 +702,54 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
     public function cerrarCuenta()
     {
-        
+        //si accedio a traves de la url muestra pagina 404 porq es ajax
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        //devuelvo el dialog para confirmar el cierre de cuenta.
+        if($this->getRequest()->has('confirmar')){
+           
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaInfoBlock");
+            $this->getTemplate()->set_var("sTituloMsgFicha", "Cuenta integrante Sistema SGPAPD");
+            $this->getTemplate()->set_var("sMsgFicha", "Cuidado, se eliminaran todos los seguimientos, publicaciones y otras entidades asociadas a la cuenta de manera permanente.
+                                                       <br>Una vez eliminada la cuenta la información no podra volver a recuperarse.");
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));
+            return;
+        }
+
+        //elimino la cuenta del usuario en sesion
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+
+            $oPerfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $oUsuario = $oPerfil->getUsuario();           
+            //$result = AdminController::getInstance()->cerrarCuentaIntegrante($oUsuario, $pathServidor);
+
+            $result = true;
+
+            if($result){
+                $msg = "Su cuenta fue eliminada con exito del sistema";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+                $logOutRoute = getRoute
+                $this->getJsonHelper()->setRedirect("");
+            }else{
+                $msg = "Ocurrio un error, no se ha podido eliminar su cuenta del sistema";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha eliminado el usuario del sistema";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }
