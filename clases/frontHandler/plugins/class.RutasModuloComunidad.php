@@ -178,20 +178,34 @@ class RutasModuloComunidad
                                     'action'     => "misPublicaciones"
                                 ));
         $router->addRoute('comunidadPublicacionesMisPublicaciones', $route);
-        $route = new RegexRoute('comunidad/publicaciones/form-publicacion',
+        $route = new RegexRoute('comunidad/publicaciones/form-nueva-publicacion',
                                 array(
                                     'module' => "comunidad",
                                     'controller' => "publicaciones",
-                                    'action'     => "formPublicacion"
+                                    'action'     => "crearPublicacionForm"
                                 ));
-        $router->addRoute('comunidadPublicacionesFormPublicacion', $route);
-        $route = new RegexRoute('comunidad/publicaciones/form-review',
+        $router->addRoute('comunidadPublicacionesCrearPublicacionForm', $route);
+        $route = new RegexRoute('comunidad/publicaciones/form-modificar-publicacion',
                                 array(
                                     'module' => "comunidad",
                                     'controller' => "publicaciones",
-                                    'action'     => "formReview"
+                                    'action'     => "modificarPublicacionForm"
                                 ));
-        $router->addRoute('comunidadPublicacionesFormReview', $route);
+        $router->addRoute('comunidadPublicacionesModificarPublicacionForm', $route);
+        $route = new RegexRoute('comunidad/publicaciones/form-crear-review',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "crearReviewForm"
+                                ));
+        $router->addRoute('comunidadPublicacionesCrearReviewForm', $route);
+        $route = new RegexRoute('comunidad/publicaciones/form-modificar-review',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "publicaciones",
+                                    'action'     => "modificarReviewForm"
+                                ));
+        $router->addRoute('comunidadPublicacionesModificarReviewForm', $route);
         $route = new RegexRoute('comunidad/publicaciones/guardar-publicacion',
                                 array(
                                     'module' => "comunidad",

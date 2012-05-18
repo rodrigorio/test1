@@ -1,16 +1,12 @@
 <?php
 
-/**
- *
- *
- *
- */
 class Publicacion extends FichaAbstract
 {
     private $iUsuarioId;
-    private $bModerado;
-    private $bPublico;
-    private $bActivoComentario;
+    private $oUsuario;
+    private $bActivoComentarios = true;
+    private $bModerado = false;
+    private $bPublico = false;
     private $sDescripcionBreve;
     private $sKeywords;
 
@@ -29,13 +25,23 @@ class Publicacion extends FichaAbstract
         }
     }
     
-public function setUsuarioId($iUsuarioId){
+    public function setUsuarioId($iUsuarioId){
         $this->iUsuarioId = $iUsuarioId;
+        if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        }
+    }
+
+    public function setUsuario($oUsuario)
+    {
+        $this->oUsuario = $oUsuario;
+        return $this;
     }
     
 public function isModerado($flag = null){
         if(null !== $flag){
             $this->bModerado = $flag ? true : false;
+            return $this;
         }else{
             return $this->bModerado;
         }
@@ -44,39 +50,40 @@ public function isModerado($flag = null){
 public function isPublico($flag = null){
         if(null !== $flag){
             $this->bPublico = $flag ? true : false;
+            return $this;
         }else{
             return $this->bPublico;
         }
  }
-public function isActivoComentario($flag = null){
+public function isActivoComentarios($flag = null){
         if(null !== $flag){
-            $this->bActivoComentario = $flag ? true : false;
+            $this->bActivoComentarios = $flag ? true : false;
+            return $this;
         }else{
-            return $this->bActivoComentario;
+            return $this->bActivoComentarios;
         }
  }
 public function setDescripcionBreve($sDescripcionBreve){
     	$this->sDescripcionBreve = $sDescripcionBreve;
+        return $this;
     }
 public function setKeywords($sKeywords){
     	$this->sKeywords = $sKeywords;
+        return $this;
     }
     
-    //gets
-public function getUsuarioId(){
-        return $this->iUsuarioId;
+    public function getUsuario(){
+    	if($this->oUsuario == null && !empty($this->iUsuarioId)){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($this->iUsuarioId);
+    	}
+        return $this->oUsuario;
     }
     
-public function getDescripcionBreve(){
+    public function getDescripcionBreve(){
         return $this->sDescripcionBreve;
     }
     
-public function getKeywords(){
+    public function getKeywords(){
         return $this->sKeywords;
-    }
-  
-    
-    
-    
+    }   
 }
-?>

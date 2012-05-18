@@ -509,6 +509,7 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+
     public function existePublicacion($filtro){
         try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
@@ -517,18 +518,20 @@ class ComunidadController
            throw new Exception($e->getMessage());
         }
     }
+
      /**
      * @param stdClass $obj
      */
     public function guardarPublicacion($oPublicacion){
     	try{
-    		$oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->guardar($oPublicacion);
           }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
-	public function obtenerPublicacion($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+
+    public function obtenerPublicacion($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
@@ -536,7 +539,25 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
-/**
+
+    public function getPublicacionById($iPublicacionId)
+    {
+    	try{
+            $filtro = array('f.id' => $iPublicacionId);
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aPublicaciones = $oPublicacionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aPublicaciones){
+                return $aPublicaciones[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    /**
      * @return array|null
      */
     public function obtenerFotosPublicacion($iPublicacionId)

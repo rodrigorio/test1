@@ -1,0 +1,372 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/comunidad/publicaciones.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginPageRightInnerContBlock-->
+<ul class="m_vert menu02">
+    <li>
+        <a id="publicacionesComunidad" href="{hrefListadoPublicaciones}">
+            Publicaciones Comunidad
+        </a>
+    </li>
+    <li>
+        <a id="misPublicaciones" href="{hrefMisPublicaciones}">
+            Mis Publicaciones
+        </a>
+    </li>
+    <li>
+        <a id="crearPublicacion" href="{hrefCrearPublicacion}">
+            Crear Publicacion
+        </a>
+    </li>
+    <li>
+        <a id="crearReview" href="{hrefCrearReview}">
+            Crear Review
+        </a>
+    </li>
+</ul>
+<!--EndPageRightInnerContBlock-->
+
+<!--BeginListadoPublicacionesBlock-->
+<div class="ficha01 grupo mabo2">
+    <div class="encabezado">
+        <div class="izq">
+            <div class="icono"><span class="i32 bs search32"></span></div>
+            <span class="titulo">Buscar Publicaciones</span><br>
+            <span class="subtitulo">filtrar los resultados del listado</span>
+        </div>
+        <div class="der"></div>
+    </div>
+    <div class="contenido">
+        <form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">T&iacute;tulo</span>
+               <input type="text" name="filtroTitulo" id="filtroTitulo"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Apellido Autor</span>
+               <input type="text" name="filtroApellidoAutor" id="filtroApellidoAutor"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Fecha desde</span>
+               <input readonly="readonly" type="text" name="filtroFechaDesde" id="filtroFechaDesde"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Fecha hasta</span>
+               <input readonly="readonly" type="text" name="filtroFechaHasta" id="filtroFechaHasta"/>
+            </div>
+
+            <br clear="all" />
+
+            <label for="BuscarPublicaciones" class="button buttonConfirm mari">
+                <button id="BuscarPublicaciones" type="button" name="buscarSeguimiento" class="btn01">
+                    Buscar Publicaciones
+                </button>
+            </label>
+            <label for="limpiarFiltro" class="button mari3">
+                <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
+                    Limpiar Filtro
+                </button>
+            </label>
+        </form>
+    </div>
+</div>
+<div id="listadoPublicaciones" class="grupo">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <div id="listadoPublicacionesResult">
+        <!--BeginFichasPublicacionesBlock-->
+        
+            <!--BeginPublicacionBlock-->
+            
+            <!--EndPublicacionBlock-->
+
+            <!--BeginNoRecordsPublicacionesBlock-->
+            {sNoRecords}
+            <!--EndNoRecordsPublicacionesBlock-->
+            
+            {paginacion}
+        <!--EndFichasPublicacionesBlock-->
+    </div>
+</div>
+<!--EndListadoPublicacionesBlock-->
+
+<!--BeginFormularioPublicacionBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
+    <form id="formPublicacion" name="formPublicacion" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+       
+        <div class="form_line msg_titulo">
+            <label for="titulo">
+                <span class="marca_obligatorio">&#8226;</span>
+                T&iacute;tulo
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                </div>
+            </div>
+            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+        </div>
+        <div class="form_line msg_descripcionBreve">
+            <label for="descripcionBreve">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripcion Breve
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
+                </div>
+            </div>
+            <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+        </div>    
+        <div class="form_line msg_activo">
+            <label for="activo">
+                Visible?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+                <option value="">Seleccionar</option>                
+                <option {sSelectedActivo} value="1">S&iacute;</option>
+                <option {sSelectedDesactivado} value="0">No</option>
+            </select>
+            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+        </div>
+        <div class="form_line msg_publico">
+            <label for="publico">
+                Alcance Privacidad?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedPublico} value="1">El mundo</option>
+                <option {sSelectedComunidad} value="0">Solo comunidad</option>
+            </select>
+            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+        </div>
+        <div class="form_line msg_activoComentarios">
+            <label for="activoComentarios">
+                Activar Comentarios?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+                <option value="">Seleccionar</option>                
+                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+                <option {sSelectedDesactivadoComentarios} value="0">No</option>
+            </select>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Contenido Publicaci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>        
+        <div class="form_line msg_keywords">
+            <label for="keywords">
+                <span class="marca_obligatorio">&#8226;</span>
+                Palabras Clave
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+                </div>
+            </div>
+            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+        </div>
+        
+        <!--BeginSubmitCrearPublicacionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearPublicacion" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearPublicacion" type="submit" name="crearPublicacion" class="btn01">
+                    Crear Publicaci&oacute;n
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearPublicacionBlock-->
+
+        <!--BeginSubmitModificarPublicacionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarPublicacion" class="button buttonConfirm buttonLarge mari3">
+                <button id="modificarPublicacion" type="submit" name="modificarPublicacion" class="btn01">
+                    Modificar Publicacion
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
+        <!--EndSubmitModificarPublicacionBlock-->
+
+        <div style="display:none;" id='msg_form_publicacion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+        
+    </form>
+</div>
+<!--EndFormularioPublicacionBlock-->
+
+<!--BeginFormularioReviewBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
+    <form id="formReview" name="formReview" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+
+        <div class="form_line msg_itemType">
+            <label for="itemType">
+                Acerca de?
+            </label>
+            <div class="cl_le"></div>
+            <select class="medium" name="itemType" id="itemType" title="Review acerca de?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedProduct} value="product">Un Producto</option>
+                <option {sSelectedBusiness} value="business">Un Negocio o Empresa</option>
+                <option {sSelectedEvent} value="event">Un Evento</option>
+                <option {sSelectedPerson} value="person">Una Persona</option>
+                <option {sSelectedPlace} value="place">Un Lugar</option>
+                <option {sSelectedWebsite} value="website">Un Sitio Web</option>
+                <option {sSelectedUrl} value="url">Un Link &oacute; Enlace</option>
+            </select>
+            <p>Este campo opcional provee informaci&oacute;n acerca del item sobre el que se hace el review.</p>
+        </div>
+
+        <div class="form_line msg_item">
+            <label for="item">
+                <span class="marca_obligatorio">&#8226;</span>
+                Nombre Item
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="item" id="item" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sItemName}" />
+                </div>
+            </div>
+            <p>
+                El review debe tener al menos el nombre del item al que se refiere el art&iacute;culo / revisi&oacute;n.<br>
+                Por ejemplo, si el review es acerca de un lugar debe ingresar el nombre del sitio.<br>
+                Si fuera un art&iacute;culo acerca de una persona debe ingresar aqui el nombre de la misma, etc.
+            </p>
+        </div>
+
+        <div class="form_line msg_titulo">
+            <label for="titulo">
+                <span class="marca_obligatorio">&#8226;</span>
+                T&iacute;tulo
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                </div>
+            </div>
+            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+        </div>
+        <div class="form_line msg_descripcionBreve">
+            <label for="descripcionBreve">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripcion Breve
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
+                </div>
+            </div>
+            <p>Resumen del contenido de la publicaci&oacute;n en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+        </div>
+        <div class="form_line msg_activo">
+            <label for="activo">
+                Visible?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedActivo} value="1">S&iacute;</option>
+                <option {sSelectedDesactivado} value="0">No</option>
+            </select>
+            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+        </div>
+        <div class="form_line msg_publico">
+            <label for="publico">
+                Alcance Privacidad?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedPublico} value="1">El mundo</option>
+                <option {sSelectedComunidad} value="0">Solo comunidad</option>
+            </select>
+            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+        </div>
+        <div class="form_line msg_activoComentarios">
+            <label for="activoComentarios">
+                Activar Comentarios?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+                <option {sSelectedDesactivadoComentarios} value="0">No</option>
+            </select>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Contenido Publicaci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form_line msg_keywords">
+            <label for="keywords">
+                <span class="marca_obligatorio">&#8226;</span>
+                Palabras Clave
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+                </div>
+            </div>
+            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+        </div>
+
+        <!--BeginSubmitCrearReviewBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearReview" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearReview" type="submit" name="crearReview" class="btn01">
+                    Crear Review
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearReviewBlock-->
+
+        <!--BeginSubmitModificarReviewBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarReview" class="button buttonConfirm buttonLarge mari3">
+                <button id="modificarReview" type="submit" name="modificarReview" class="btn01">
+                    Modificar Review
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
+        <!--EndSubmitModificarReviewBlock-->
+
+        <div style="display:none;" id='msg_form_review' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioReviewBlock-->

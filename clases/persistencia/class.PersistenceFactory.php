@@ -123,4 +123,10 @@ class PersistenceFactory {
             return(PermisosMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getPublicacionIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(PublicacionMySQLIntermediary::getInstance($conn));
+        }
+    }
 }

@@ -74,6 +74,8 @@ textarea{outline:0px; vertical-align:bottom}
 .textAreaExpanded{height:300px !important}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
+input.small, select.small, textarea.small{width:150px;}
+input.medium, select.medium, textarea.medium{width:300px;}
 
 /* Para simular el width fluido en <textarea>, <input> y <select>
  * Nota: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
@@ -87,6 +89,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 /* El contenedor superior es el que tiene margin-bottom. Puede tenerlo el fwrap o el form_line. */
 .form_line{position:relative; text-align:left; margin-bottom:10px}
 .form_line .fwrap{margin-bottom:0 !important}
+.form_line p{font-size:0.8em; color:#666; margin-bottom:0 !important}
 /* Tamanio line-height para form elements (mas chicos, entran en un renglon) */
 .inputTextLihe{padding:3px 4px !important}
 .inputSelectLihe {padding:2px 2px 2px 1px}

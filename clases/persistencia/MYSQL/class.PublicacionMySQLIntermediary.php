@@ -1,4 +1,5 @@
 <?php
+
 class PublicacionMySQLIntermediary extends PublicacionIntermediary
 {
  private static $instance = null;
@@ -43,83 +44,99 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
 		}	
 	}
 	
-	public function guardar($oPublicacion)
-    {
-        try{
-			if($oPublicacion->getId() != null){
-            	return $this->actualizar($oPublicacion);
-            }else{
-				return $this->insertar($oPublicacion);
+    public function guardar($oPublicacion) {
+        try {
+            if($oPublicacion->getId() !== null) {
+                return $this->actualizar($oPublicacion);
+            } else {
+                return $this->insertar($oPublicacion);
             }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
- 	public  function insertar($oPublicacion)
+        
+    public function insertar($oPublicacion)
     {
         try{
-                
-        	$db = $this->conn;
-							               
-                $sSQL =	" insert into fichas_abstractas ".
-                    " set titulo =".$db->escape($oPublicacion->getTitulo(),true).", ".
-                    " fecha = '".$oPublicacion->getFecha()."',".
-                    " activo =".$db->escape($oPublicacion->isActivo(),false,MYSQL_TYPE_INT).", ".
-                    " descripcion =".$db->escape($oPublicacion->getDescripcion(),true).", ";
+            $db = $this->conn;
+            
+            $db->begin_transaction();
+
+            $activo = $oPublicacion->isActivo()?"1":"0";
+
+            $sSQL = " insert into fichas_abstractas set ".
+                    " titulo = ".$db->escape($oPublicacion->getTitulo(), true).", ".
+                    " activo = ".$activo.", ".
+                    " descripcion = ".$db->escape($oPublicacion->getDescripcion(),true);
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
-            
-        	if($oPublicacion->getUsuarioId()!= null){
-				$usuarioId = $oPublicacion->getUsuario()->getId();
-							}else {
-				$usuarioId = null;
-			}
-             $sSQL = " insert into publicaciones set ".
-                    " id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT).", " .  
-             		" usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " moderado =".$db->escape($oPublicacion->isModerado(),false,MYSQL_TYPE_INT).", ".
-                    " publico =".$db->escape($oPublicacion->isPublico(),false,MYSQL_TYPE_INT).", ".  
-            		" activoComentarios =".$db->escape($oPublicacion->isActivoComentario(),false,MYSQL_TYPE_INT).", ".
-                    " descripcionBreve =".$db->escape($oPublicacion->getDescripcionBreve(),true).", ".
-            		" keywords =".$db->escape($oPublicacion->getKeywords(),true);			
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
-		}catch(Exception $e){
-			return false;
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-   public function actualizar($oPublicacion)
-   	{
-		try{
-			$db = $this->conn;
-		        
-			$sSQL =	" update fichas_abstractas ".
-			        " set titulo =".$db->escape($oPublicacion->getTitulo(),true).", ".
-                    " fecha = '".$oPublicacion->getFecha()."',".
-                    " activo =".$db->escape($oPublicacion->isActivo(),false,MYSQL_TYPE_INT).", ".
-                    " descripcion =".$db->escape($oPublicacion->getDescripcion(),true).", ";
+            $iUsuarioId = $oPublicacion->getUsuario()->getId();
+
+            $publico = $oPublicacion->isPublico()?"1":"0";
+            $activoComentarios = $oPublicacion->isActivoComentarios()?"1":"0";
+
+            $sSQL = " insert into publicaciones set ".
+                    " id = ".$db->escape($iLastId, false, MYSQL_TYPE_INT).", " .
+                    " usuarios_id = ".$db->escape($iUsuarioId, false, MYSQL_TYPE_INT).", ".
+                    " publico = ".$publico.", ".
+                    " activoComentarios = ".$activoComentarios.", ".
+                    " descripcionBreve = ".$db->escape($oPublicacion->getDescripcionBreve(), true).", ".
+                    " keywords = ".$db->escape($oPublicacion->getKeywords(), true);
 
             $db->execSQL($sSQL);
+
+            $db->commit();
+            
+            $oPublicacion->setId($iLastId);
+
+            return true;            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public function actualizar($oPublicacion)
+    {
+        try{
+            $db = $this->conn;
+
+            $db->begin_transaction();
+
+            $iPublicacionId = $oPublicacion->getId();
+            $activo = $oPublicacion->isActivo()?"1":"0";
+		        
+            $sSQL = " update fichas_abstractas set ".
+                    " titulo = ".$db->escape($oPublicacion->getTitulo(), true).", ".
+                    " activo = ".$activo.", ".
+                    " descripcion = ".$db->escape($oPublicacion->getDescripcion(), true)." ".
+                    " where id = ".$iPublicacionId;
+
+            $db->execSQL($sSQL);
+
+            $moderado = $oPublicacion->isModerado()?"1":"0";
+            $publico = $oPublicacion->isPublico()?"1":"0";
+            $activoComentarios = $oPublicacion->isActivoComentarios()?"1":"0";
              
-        	$sSQL = " update publicaciones set ".
-                    " id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT).", " .  
-             		" usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " moderado =".$db->escape($oPublicacion->isModerado(),false,MYSQL_TYPE_INT).", ".
-                    " publico =".$db->escape($oPublicacion->isPublico(),false,MYSQL_TYPE_INT).", ".  
-            		" activoComentarios =".$db->escape($oPublicacion->isActivoComentario(),false,MYSQL_TYPE_INT).", ".
-                    " descripcionBreve =".$db->escape($oPublicacion->getDescripcionBreve(),true).", ".
-            		" keywords =".$db->escape($oPublicacion->getKeywords(),true);	
+            $sSQL = " update publicaciones set ".
+                    " moderado = ".$moderado.", ".
+                    " publico = ".$publico.", ".
+                    " activoComentarios = ".$activoComentarios.", ".
+                    " descripcionBreve = ".$db->escape($oPublicacion->getDescripcionBreve(), true).", ".
+                    " keywords = ".$db->escape($oPublicacion->getKeywords(), true)." ".
+                    " where id = ".$iPublicacionId;
 						 
-			 $db->execSQL($sSQL);
-			 $db->commit();
+             $db->execSQL($sSQL);
+             $db->commit();
+
+             return true;
              
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+        
 	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = $this->conn;
@@ -129,12 +146,13 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           f.id as iId, 
                           f.titulo as sTitulo,
                           f.fecha as dFecha,
-                          f.`activo` as bActivo,
-                          f.`descripcion` as sDescripcion,
-                          p.usuario_id as iUsuarioId,
+                          f.activo as bActivo,
+                          f.descripcion as sDescripcion,
+                          
+                          p.usuarios_id as iUsuarioId,
                           p.moderado as bModerado,
                           p.publico as bPublico,
-                          p.activoComentarios as bActivoComentario,
+                          p.activoComentarios as bActivoComentarios,
                           p.descripcionBreve as sDescripcionBreve,
                           p.keywords as sKeywords
                     FROM
@@ -143,34 +161,34 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                         publicaciones p ON p.id = f.id";
                     
             if(!empty($filtro)){
-                $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
             }
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }
-            if ($iIniLimit!==null && $iRecordCount!==null){
-                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            if ($iIniLimit !== null && $iRecordCount !== null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
             }
 
             $db->query($sSQL);
-            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
             $aPublicaciones = array();
             while($oObj = $db->oNextRecord()){
-            	$oPublicacion 			= new stdClass();
-            	$oPublicacion->iId 		= $oObj->iId;
+            	$oPublicacion = new stdClass();
+            	$oPublicacion->iId = $oObj->iId;
             	$oPublicacion->sTitulo  = $oObj->sTitulo;
-            	$oPublicacion->dFecha	= $oObj->dFecha;
-            	$oPublicacion->bActivo= $oObj->bActivo;
-            	$oPublicacion->sDescripcion	= $oObj->sDescripcion;
-            	$oPublicacion->iUsuarioId= $oObj->iUsuarioId;
-            	$oPublicacion->bModerado= $oObj->bModerado;
-            	$oPublicacion->bPublico 	= $oObj->bPublico;
-            	$oPublicacion->bActivoComentario 	= $oObj->bActivoComentario;
-            	$oPublicacion->sDescripcionBreve 	= $oObj->sDescripcionBreve;
-            	$oPublicacion->sKeywords= $oObj->sKeywords;
+            	$oPublicacion->dFecha = $oObj->dFecha;
+            	$oPublicacion->bActivo = ($oObj->bActivo == "1") ? true : false;
+            	$oPublicacion->sDescripcion = $oObj->sDescripcion;
+            	$oPublicacion->iUsuarioId = $oObj->iUsuarioId;
+            	$oPublicacion->bModerado = ($oObj->bModerado == "1") ? true:false;
+            	$oPublicacion->bPublico = ($oObj->bPublico == "1") ? true:false;
+            	$oPublicacion->bActivoComentarios = ($oObj->bActivoComentarios == "1")?true:false;
+            	$oPublicacion->sDescripcionBreve = $oObj->sDescripcionBreve;
+            	$oPublicacion->sKeywords = $oObj->sKeywords;
   
             	$aPublicaciones[] = Factory::getPublicacionInstance($oPublicacion);
             }
