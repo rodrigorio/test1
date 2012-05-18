@@ -30,7 +30,6 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
     private function setMenuDerecha()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-
         $this->getTemplate()->set_var("hrefNuevaInstitucion", $this->getRequest()->getBaseTagUrl()."comunidad/nueva-institucion");
     }
 

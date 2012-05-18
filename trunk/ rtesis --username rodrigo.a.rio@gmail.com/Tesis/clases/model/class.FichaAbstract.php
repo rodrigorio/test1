@@ -7,13 +7,13 @@
  */
 abstract class FichaAbstract
  {
- 	protected  $id;
- 	protected  $sTitulo;
- 	protected  $dFecha;
- 	protected  $bActivo;
- 	protected  $sDescripcion;
+    protected  $iId;
+    protected  $sTitulo;
+    protected  $dFecha;
+    protected  $bActivo = true;
+    protected  $sDescripcion;
  	 	
- 	/*
+    /*
     * array objetos Foto
     */
     protected $aFotos = null;
@@ -22,27 +22,31 @@ abstract class FichaAbstract
     */
     protected $aArchivos = null;
     /*
-    * array objetos Archivo
+    * array objetos EmbedVideo
     */
     protected $aEmbedVideos = null;
     
  public function __construct(){}
  	
-  public function setId($id){
-        $this->iId = $id;
+  public function setId($iId){
+        $this->iId = $iId;
+        return $this;
     }
     
  public function setTitulo($sTitulo){
     	$this->sTitulo = $sTitulo;
+        return $this;
     }
     
  public function setFecha($dFecha){
         $this->dFecha = $dFecha;
+        return $this;
     }
     
  public function isActivo($flag = null){
         if(null !== $flag){
             $this->bActivo = $flag ? true : false;
+            return $this;
         }else{
             return $this->bActivo;
         }
@@ -50,33 +54,41 @@ abstract class FichaAbstract
   
  public function setDescripcion($sDescripcion){
     	$this->sDescripcion = $sDescripcion;
+        return $this;
     }
   public function setFotos($aFotos)
     {
         $this->aFotos = $aFotos;
+        return $this;
     }   
-	public function addFoto($oFoto){
-		$this->aFotos[] = $oFoto;		
-	}    
+    public function addFoto($oFoto){
+        $this->aFotos[] = $oFoto;
+        return $this;
+    }
     public function setArchivos($aArchivos)
     {
         $this->aArchivos = $aArchivos;
+        return $this;
+    }
+    public function addArchivo($oArchivo)
+    {
+        $this->aArchivos[] = $oArchivo;
+        return $this;
     }
  
-        ////gets
      /**
      * @return array|null Foto
      */
     public function getFotos()
     {
-    	if($this->aFotos == null){
+    	if($this->aFotos === null){
             $this->aFotos = ComunidadController::getInstance()->obtenerFotosPublicacion($this->iId);
     	}
         return $this->aFotos;
     }  
  public function getArchivos()
     {
-    	if($this->aArchivos == null){
+    	if($this->aArchivos === null){
             $this->aArchivos = ComunidadController::getInstance()->obtenerArchivosPublicacion($this->iId);
     	}
         return $this->aArchivos;

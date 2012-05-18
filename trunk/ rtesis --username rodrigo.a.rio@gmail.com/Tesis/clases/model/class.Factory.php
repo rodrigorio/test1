@@ -188,4 +188,12 @@ class Factory
         $oAccion = new Accion($obj);
         return $oAccion;
     }
+    /**
+     * @param stdClass $obj
+     * @return Publicacion|null
+     */
+    public static function &getPublicacionInstance(stdClass $obj){
+        $oPublicacion = new Publicacion($obj);
+        return $oPublicacion;
+    }
 }

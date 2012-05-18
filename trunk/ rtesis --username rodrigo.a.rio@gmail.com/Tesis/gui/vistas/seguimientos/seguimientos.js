@@ -313,7 +313,6 @@ function eliminarSeguimiento(seguimientoId)
 }
 
 function editarAntecedentes(id){
-	$("#idSeg").val(id);
-	$("#editAntecedentes").submit();
-	
+    $("#idSeg").val(id);
+    $("#editAntecedentes").submit();
 }

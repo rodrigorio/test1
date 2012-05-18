@@ -92,7 +92,10 @@ class IndexControllerComunidad extends PageControllerAbstract
             //contenido ppal home comunidad
             $this->getTemplate()->load_file_section("gui/vistas/comunidad/home.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
 
-
+            $this->getTemplate()->set_var("hrefPublicacionesComunidad", $this->getUrlFromRoute("comunidadPublicacionesIndex", true));
+            $this->getTemplate()->set_var("hrefInstitucionesComunidad", $this->getUrlFromRoute("comunidadInstitucionesIndex", true));
+            $this->getTemplate()->set_var("hrefCatalogoDescargasComunidad", "");
+            
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));            
          }catch(Exception $e){
             print_r($e);
