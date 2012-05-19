@@ -92,22 +92,32 @@ var validateFormReview = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
+        itemEventSummary:{required:function(element){
+                            return $("#itemType option:selected").val() == "event";
+                         }},
+        item:{required:true},
         titulo:{required:true},
         descripcionBreve:{required:true},
         descripcion:{required:true},
         keywords:{required:true},
         activo:{required:true},
         publico:{required:true},
-        activoComentarios:{required:true}
+        activoComentarios:{required:true},
+        itemUrl:{url:true},
+        fuenteOriginal:{url:true}
     },
     messages:{
+        itemEventSummary: mensajeValidacion("requerido"),
+        item: mensajeValidacion("requerido"),
         titulo: mensajeValidacion("requerido"),
         descripcionBreve: mensajeValidacion("requerido"),
         descripcion: mensajeValidacion("requerido"),
         keywords: mensajeValidacion("requerido"),
         activo: mensajeValidacion("requerido"),
         publico: mensajeValidacion("requerido"),
-        activoComentarios: mensajeValidacion("requerido")
+        activoComentarios: mensajeValidacion("requerido"),
+        itemUrl: mensajeValidacion("url"),
+        fuenteOriginal: mensajeValidacion("url")
     }
 };
 
@@ -115,8 +125,7 @@ var optionsAjaxFormReview = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'comunidad/publicaciones/guardar-review',
-    beforeSerialize:function(){
-
+    beforeSerialize:function(){        
         if($("#formReview").valid() == true){
 
             $('#msg_form_review').hide();
@@ -165,6 +174,16 @@ function bindEventsPublicacionForm(){
 function bindEventsReviewForm(){
     $("#formReview").validate(validateFormReview);
     $("#formReview").ajaxForm(optionsAjaxFormReview);
+
+    //el item event summary es visible solo si elige evento en el select de itemType
+    $("#itemType").change(function(){
+        if( $("#itemType option:selected").val() == "event" ){
+            $("#itemEventSummaryFormLine").show();
+        }else{
+            $("#itemEventSummaryFormLine").hide();
+            $("#itemEventSummaryFormLine").val("");
+        }
+    });
 }
 
 $(document).ready(function(){

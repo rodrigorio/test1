@@ -196,4 +196,12 @@ class Factory
         $oPublicacion = new Publicacion($obj);
         return $oPublicacion;
     }
+    /**
+     * @param stdClass $obj
+     * @return Review|null
+     */
+    public static function &getReviewInstance(stdClass $obj){
+        $oReview = new Review($obj);
+        return $oReview;
+    }
 }

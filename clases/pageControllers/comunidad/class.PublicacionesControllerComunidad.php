@@ -272,8 +272,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $sTituloForm = "Agregar un nuevo Review";
 
             //valores por defecto en el agregar
-            $oPublicacion = null;
-            $iPublicacionIdForm = "";
+            $oReview = null;
+            $iReviewIdForm = "";
             $sTitulo = "";
             $sDescripcionBreve = "";
             $bActivoComentarios = true;
@@ -281,6 +281,12 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $bPublico = false;
             $sDescripcion = "";
             $sKeywords = "";
+            $sItemType = "";
+            $sItemName = "";
+            $sItemEventSummary = "";
+            $sItemUrl = "";
+            $fRating = "";
+            $sFuenteOriginal = "";
 
         //MODIFICAR REVIEW
         }else{
@@ -304,6 +310,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $bPublico = $oReview->isPublico();
             $sDescripcion = $oReview->getDescripcion();
             $sKeywords = $oReview->getKeywords();
+
+            $sItemType = $oReview->getItemType();
+            $sItemName = $oReview->getItemName();
+            $sItemEventSummary = $oReview->getItemEventSummary();
+            $sItemUrl = $oReview->getItemUrl();
+            $fRating = $oReview->getRating();
+            $sFuenteOriginal = $oReview->getFuenteOriginal();
         }
 
         if($bActivo){
@@ -329,7 +342,72 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sDescripcionBreve", $sDescripcionBreve);
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
         $this->getTemplate()->set_var("sKeywords", $sKeywords);
+        
+        switch($sItemType){
+            case "product": 
+                $this->getTemplate()->set_var("sSelectedProduct", "selected='selected'");
+                break;
+            case "business":
+                $this->getTemplate()->set_var("sSelectedBusiness", "selected='selected'");
+                break;
+            case "event":
+                $this->getTemplate()->set_var("sSelectedEvent", "selected='selected'");
+                break;
+            case "person":
+                $this->getTemplate()->set_var("sSelectedPerson", "selected='selected'");
+                break;
+            case "place":
+                $this->getTemplate()->set_var("sSelectedPlace", "selected='selected'");
+                break;
+            case "website":
+                $this->getTemplate()->set_var("sSelectedWebsite", "selected='selected'");
+                break;
+            case "url":
+                $this->getTemplate()->set_var("sSelectedUrl", "selected='selected'");
+                break;            
+        }
 
+        switch($fRating){
+            case ($fRating >= 0 && $fRating < 0.5): 
+                $this->getTemplate()->set_var("sSelected_0", "selected='selected'");
+                break;
+            case ($fRating >= 0.5 && $fRating < 1):
+                $this->getTemplate()->set_var("sSelected_0.5", "selected='selected'");
+                break;
+            case ($fRating >= 1 && $fRating < 1.5):
+                $this->getTemplate()->set_var("sSelected_1", "selected='selected'");
+                break;
+            case ($fRating >= 1.5 && $fRating < 2):
+                $this->getTemplate()->set_var("sSelected_1.5", "selected='selected'");
+                break;
+            case ($fRating >= 2 && $fRating < 2.5):
+                $this->getTemplate()->set_var("sSelected_2", "selected='selected'");
+                break;
+            case ($fRating >= 2.5 && $fRating < 3):
+                $this->getTemplate()->set_var("sSelected_2.5", "selected='selected'");
+                break;
+            case ($fRating >= 3 && $fRating < 3.5):
+                $this->getTemplate()->set_var("sSelected_3", "selected='selected'");
+                break;
+            case ($fRating >= 3.5 && $fRating < 4):
+                $this->getTemplate()->set_var("sSelected_3.5", "selected='selected'");
+                break;
+            case ($fRating >= 4 && $fRating < 4.5):
+                $this->getTemplate()->set_var("sSelected_4", "selected='selected'");
+                break;
+            case ($fRating >= 4.5 && $fRating < 5):
+                $this->getTemplate()->set_var("sSelected_4.5", "selected='selected'");
+                break;
+            case ($fRating >= 5):
+                $this->getTemplate()->set_var("sSelected_5", "selected='selected'");
+                break;
+        }
+
+        $this->getTemplate()->set_var("sItemEventSummary", $sItemEventSummary);
+        $this->getTemplate()->set_var("sItemName", $sItemName);
+        $this->getTemplate()->set_var("sItemUrl", $sItemUrl);
+        $this->getTemplate()->set_var("sFuenteOriginal", $sFuenteOriginal);
+              
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
 
@@ -348,5 +426,90 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->modificarReview();
             return;
         }        
+    }
+
+    private function crearReview()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $oReview = new stdClass();
+
+            $oReview->sTitulo = $this->getRequest()->getPost("titulo");
+            $oReview->sDescripcionBreve = $this->getRequest()->getPost("descripcionBreve");
+            $oReview->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
+            $oReview->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
+            $oReview->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
+            $oReview->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oReview->sKeywords = $this->getRequest()->getPost("keywords");
+            $oReview->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+
+            //porque 0 en realidad es un valor real (valoracion 0 para el review)
+            //por eso hay que tener cuidado de que si no se utilizo el campo en el form asignarle null al atributo de la clase.
+            $fRating = $this->getRequest()->getPost("rating");
+            if(empty($fRating)){ $fRating = null; }
+
+            $oReview->sItemType = $this->getRequest()->getPost("itemType");
+            $oReview->sItemName = $this->getRequest()->getPost("item");
+            $oReview->sItemEventSummary = $this->getRequest()->getPost("itemEventSummary");
+            $oReview->sItemUrl = $this->getRequest()->getPost("itemUrl");
+            $oReview->fRating = $fRating;
+            $oReview->sFuenteOriginal = $this->getRequest()->getPost("fuenteOriginal");
+                    
+            $oReview = Factory::getReviewInstance($oReview);
+
+            ComunidadController::getInstance()->guardarReview($oReview);
+
+            $this->getJsonHelper()->setValor("agregarReview", "1");
+            $this->getJsonHelper()->setMessage("El Review se ha creado con éxito. Puede agregar fotos, archivos y videos desde 'Mis Publicaciones'");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarReview()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iReviewIdForm = $this->getRequest()->getPost('reviewIdForm');
+            $oReview = ComunidadController::getInstance()->getReviewById($iReviewIdForm);
+
+            $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
+            $bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
+            $bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
+
+            $oReview->setTitulo($this->getRequest()->getPost("titulo"));
+            $oReview->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
+            $oReview->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oReview->setKeywords($this->getRequest()->getPost("keywords"));
+            $oReview->isActivo($bActivo);
+            $oReview->isPublico($bPublico);
+            $oReview->isActivoComentarios($bActivoComentarios);
+
+            $fRating = $this->getRequest()->getPost("rating");
+            if(empty($fRating)){ $fRating = null; }
+
+            $oReview->setItemType($this->getRequest()->getPost("itemType"));
+            $oReview->setItemName($this->getRequest()->getPost("item"));
+            $oReview->setItemEventSummary($this->getRequest()->getPost("itemEventSummary"));
+            $oReview->setItemUrl($this->getRequest()->getPost("itemUrl"));
+            $oReview->setRating($fRating);
+            $oReview->setFuenteOriginal($this->getRequest()->getPost("fuenteOriginal"));
+
+            ComunidadController::getInstance()->guardarReview($oReview);
+            $this->getJsonHelper()->setMessage("El review se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarReview", "1");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }

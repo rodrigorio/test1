@@ -28,8 +28,7 @@
         <form id="formPersona" name="formPersona" action="" method="post">
 
             <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-            <div style="display:none;" id='msg_form_persona' class="msg_form iveal"><span class="bs i"></span> <span class="msg"></span></div>
-
+            
             <div class="form_line msg_nroDocumento msg_tipoDocumento">
                 <label for="nroDocumento">
                     <span class="marca_obligatorio">&#8226;</span>
@@ -283,7 +282,7 @@
             </div>
 
             <!--BeginSubmitCrearPersonaBlock-->
-            <div class="fl_le iveal">
+            <div class="fl_le iveal mabo2">
                 <label for="crearPersona" class="button buttonConfirm buttonLarge mari3">
                     <button id="crearPersona" type="submit" name="crearPersona" class="btn01">
                         Crear Persona
@@ -293,7 +292,7 @@
             <!--EndSubmitCrearPersonaBlock-->
 
             <!--BeginSubmitModificarPersonaBlock-->
-            <div class="fl_le iveal">
+            <div class="fl_le iveal mabo2">
                 <label for="modificarPersona" class="button buttonConfirm buttonLarge mari3">
                     <button id="modificarPersona" type="submit" name="modificarPersona" class="btn01">
                         Modificar Persona
@@ -302,6 +301,8 @@
             </div>
             <input type="hidden" value="{iPersonaIdForm}" name="personaIdForm" id="personaIdForm" />
             <!--EndSubmitModificarPersonaBlock-->
+
+            <div style="display:none;" id='msg_form_persona' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
 
         </form>
     </div>
