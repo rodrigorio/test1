@@ -168,6 +168,7 @@
                 <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
                 <option {sSelectedDesactivadoComentarios} value="0">No</option>
             </select>
+            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
         </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
@@ -224,8 +225,11 @@
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
     <form id="formReview" name="formReview" action="" method="post">
-        <h2 class="mabo3">{sTituloForm}</h2>
-
+        <div class="mabo3">
+            <h2 class="mabo">{sTituloForm}</h2>
+            <span class="fost_it">Los reviews tienen como objetivo lograr aportes a la comunidad en forma de cr&iacute;ticas constructivas</span>
+        </div>
+        
         <div class="form_line msg_itemType">
             <label for="itemType">
                 Acerca de?
@@ -244,6 +248,19 @@
             <p>Este campo opcional provee informaci&oacute;n acerca del item sobre el que se hace el review.</p>
         </div>
 
+        <div id="itemEventSummaryFormLine" class="form_line msg_itemEventSummary" style="display:none;">
+            <label for="itemEventSummary">
+                <span class="marca_obligatorio">&#8226;</span>
+                Resumen Evento
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
+                </div>
+            </div>            
+            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>
+        </div>
+
         <div class="form_line msg_item">
             <label for="item">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -251,7 +268,7 @@
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="item" id="item" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sItemName}" />
+                    <input type="text" name="item" id="item" title="Nombre del Item al que hace referencia el review" maxlength="255" value="{sItemName}" />
                 </div>
             </div>
             <p>
@@ -273,6 +290,7 @@
             </div>
             <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
         </div>
+
         <div class="form_line msg_descripcionBreve">
             <label for="descripcionBreve">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -319,6 +337,7 @@
                 <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
                 <option {sSelectedDesactivadoComentarios} value="0">No</option>
             </select>
+            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
         </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
@@ -330,6 +349,55 @@
                     <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
                 </div>
             </div>
+        </div>
+        <div class="form_line msg_rating">
+            <label for="rating">
+                Valuaci&oacute;n
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="rating" id="rating" title="Valuaci&oacute;n del Item al cual se le hace el Review">
+                <option value="">Seleccionar</option>
+                <option {sSelected_0} value="0">0</option>
+                <option {sSelected_0.5} value="0.5">0.5</option>
+                <option {sSelected_1} value="1">1</option>
+                <option {sSelected_1.5} value="1.5">1.5</option>
+                <option {sSelected_2} value="2">2</option>
+                <option {sSelected_2.5} value="2.5">2.5</option>
+                <option {sSelected_3} value="3">3</option>
+                <option {sSelected_3.5} value="3.5">3.5</option>
+                <option {sSelected_4} value="4">4</option>
+                <option {sSelected_4.5} value="4.5">4.5</option>
+                <option {sSelected_5} value="5">5</option>
+            </select>
+            <p>
+                Puede valorar el Item del Review.<br>
+                Si por ejemplo el review es acerca de un nuevo portal web puede valorarlo con este campo.
+            </p>
+        </div>
+        <div class="form_line msg_itemUrl">
+            <label for="itemUrl">
+                Link 
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
+                </div>
+            </div>
+            <p>
+                En lo posible adjuntar al review una Url http://www.ejemplo.com asociada al item del art&iacute;culo.<br>
+                Por ejemplo, se podr&iacute;a brindar el link a la cuenta de twitter si es un review acerca de un profesional.
+            </p>
+        </div>
+        <div class="form_line msg_fuenteOriginal">
+            <label for="fuenteOriginal">
+                Fuente Original
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="fuenteOriginal" id="fuenteOriginal" title="Referencia autor original o fuente" maxlength="500" value="{sFuenteOriginal}" />
+                </div>
+            </div>
+            <p>Si Ud. no es el Autor del art&iacute;culo, utilice este campo para referenciar la fuente original de donde se extrajo.</p>
         </div>
         <div class="form_line msg_keywords">
             <label for="keywords">

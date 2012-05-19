@@ -530,6 +530,14 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+    public function guardarReview($oReview){
+    	try{
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->guardarReview($oReview);
+          }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function obtenerPublicacion($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
@@ -549,6 +557,23 @@ class ComunidadController
             $aPublicaciones = $oPublicacionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
             if(null !== $aPublicaciones){
                 return $aPublicaciones[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+    
+    public function getReviewById($iReviewId)
+    {
+    	try{
+            $filtro = array('f.id' => $iReviewId);
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aReviews = $oPublicacionIntermediary->obtenerReview($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aReviews){
+                return $aReviews[0];
             }else{
                 return null;
             }

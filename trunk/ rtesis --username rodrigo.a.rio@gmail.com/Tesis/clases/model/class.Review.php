@@ -1,6 +1,6 @@
 <?php
 
-class Publicacion extends FichaAbstract
+class Review extends FichaAbstract
 {
     private $iUsuarioId;
     private $oUsuario;
@@ -44,14 +44,7 @@ class Publicacion extends FichaAbstract
      *
      * The rating is a fixed point integer (one decimal point of precision) from 1.0 to 5.0
      */
-    private $fRating;
-
-    /**
-     * varchar 500
-     *
-     * OPCIONAL. Se guardan valores tipo "comida:4/10, ambiente:8/10" y luego se generan los tags para el review. Si no se llena se utilizan los keywords para generar los tags.
-     */
-    private $sTags;
+    private $fRating = null;
 
     /**
      * varchar 500
@@ -170,12 +163,6 @@ class Publicacion extends FichaAbstract
         return $this;
     }
 
-    public function setTags($sTags)
-    {
-        $this->sTags = $sTags;
-        return $this;
-    }
-
     public function setFuenteOriginal($sFuenteOriginal)
     {
         $this->sFuenteOriginal = $sFuenteOriginal;
@@ -205,11 +192,6 @@ class Publicacion extends FichaAbstract
     public function getRating()
     {
         return $this->fRating;
-    }
-
-    public function getTags()
-    {
-        return $this->sTags;
     }
 
     public function getFuenteOriginal()

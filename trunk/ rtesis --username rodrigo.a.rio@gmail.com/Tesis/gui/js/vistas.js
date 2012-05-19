@@ -45,7 +45,7 @@ function mensajeValidacion(template, value)
     mensajes['requerido2'] = "Debe especificar un {0}";
     mensajes['email'] = "Dirección de correo inválida";
     mensajes['email2'] = "La cuenta ya se encuentra registrada en el sistema";
-    mensajes['url'] = "La URL es inválida o innaccesible";
+    mensajes['url'] = "La URL es inválida o innaccesible.<br>Recuerde ingresar la url completa de la forma 'http://www.ejemplo.com'";
     mensajes['fecha'] = "La fecha no es válida";
     mensajes['fechaISO'] = "La fecha no es (ISO) válida";
     mensajes['numerico'] = "Se requiere número entero válido";
