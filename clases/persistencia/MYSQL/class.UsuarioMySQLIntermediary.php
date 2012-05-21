@@ -977,14 +977,16 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $db->query($sSQL);
             $record = $db->oNextRecord();
-
-            $privacidad = array('email' => $record->email,
-                                'telefono' => $record->telefono,
-                                'celular' => $record->celular,
-                                'fax' => $record->fax,
-                                'curriculum' => $record->curriculum);
-
-            return $privacidad;
+            
+            if(null !== $record){
+                return  array('email' => $record->email,
+                              'telefono' => $record->telefono,
+                              'celular' => $record->celular,
+                              'fax' => $record->fax,
+                              'curriculum' => $record->curriculum);
+            }else{
+                return null;
+            }
             
     	}catch(Exception $e){
             return "";
