@@ -362,9 +362,15 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha02 .puntuar .desc{font-weight:bold;}
 .ficha02 .puntuar #txt_puntaje{font-size:1.7em}
 
-.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px;}
-.ficha03 .header{background-color:#FF9; padding:10px;}
-.ficha03 p{text-align:right}
+.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px; border:1px solid #CCC; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
+.ficha03 .encabezado, .ficha03 .contenido{padding:10px; overflow:auto}
+.ficha03 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
+.ficha03 .encabezado .izq{position:relative}
+.ficha03 .encabezado .izq .icono{float:left; margin-right:10px}
+.ficha03 .encabezado .izq .titulo{font-size:1.7em}
+.ficha03 .encabezado .izq .subtitulo{font-size:0.8em}
+.ficha03 .encabezado .der{float:right; position:relative; margin-left:20px;}
+.ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
 .ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
@@ -708,6 +714,8 @@ a .i{margin-right:4px; float:left}
 .ui-autocomplete{max-height:100px; max-width:300px; overflow-x:hidden; overflow-y:auto; padding-right:20px; background:#FFF; border: 1px solid #CCC}
 .ui-autocomplete a{color:#333; text-decoration:none}
 .ui-autocomplete .ui-state-hover{background-color:#EEEFFF}
+/* datepicker */
+.ui-datepicker{background-color:#FFF; border:1px solid #CCC}
 
 /* botones de la parte inferior en los popups */
 .ui-button{color: #333 !important; background-color:#EEE !important; background-image:-moz-linear-gradient(top, #FFF, #CCC) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)) !important; background-image:linear-gradient(top, #FFF, #CCC) !important; border-color:#CCC #666 #666 #CCC !important; border-style: solid !important; border-width: 1px !important;

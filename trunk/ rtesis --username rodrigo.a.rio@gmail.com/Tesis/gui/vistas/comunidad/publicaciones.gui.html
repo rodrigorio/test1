@@ -73,7 +73,7 @@
             <br clear="all" />
 
             <label for="BuscarPublicaciones" class="button buttonConfirm mari">
-                <button id="BuscarPublicaciones" type="button" name="buscarSeguimiento" class="btn01">
+                <button id="BuscarPublicaciones" type="button" name="BuscarPublicaciones" class="btn01">
                     Buscar Publicaciones
                 </button>
             </label>
@@ -91,7 +91,26 @@
         <!--BeginFichasPublicacionesBlock-->
         
             <!--BeginPublicacionBlock-->
-            
+            <div class="ficha03 grupo mabo2">
+                <div class="encabezado">
+                    <div class="der">
+                        <span class="fost_it">{sTipoPublicacion}</span> |
+                        <a href="{hrefAmpliarPublicacion}">Ampliar</a>
+                    </div>
+                    <div class="izq">
+                        <div class="icono">
+                            <div class="th_fto_s">
+                                <i style="background-image:url('{scrAvatarAutor}')"></i>
+                            </div>
+                        </div>
+                        <div class="titulo">{sTitulo}</div>
+                        <div class="subtitulo">{sAutor} - {sFecha}</div>
+                    </div>
+                </div>
+                <div class="contenido">
+                    {sDescripcionBreve}
+                </div>
+            </div>
             <!--EndPublicacionBlock-->
 
             <!--BeginNoRecordsPublicacionesBlock-->
@@ -438,3 +457,34 @@
     </form>
 </div>
 <!--EndFormularioReviewBlock-->
+
+<!--BeginListadoMisPublicacionesBlock-->
+<div id="listadoMisPublicaciones" class="grupo">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <div id="listadoMisPublicacionesResult">
+        <!--BeginGrillaMisPublicacionesBlock-->
+        <div class="mabo">
+            Cantidad publicaciones filtro actual: <strong>{iRecordsTotal}</strong>
+        </div>
+        <table class="table01 wi100p">
+           <tr class="encabezado">
+               <td>Persona</td>
+               <td>Dni</td>
+               <td>Tipo</td>
+               <td>FechaCreacion</td>
+               <td>Estado</td>
+               <td></td>
+           </tr>
+
+            <!--BeginMiPublicacionBlock-->
+            <!--EndMiPublicacionBlock-->
+
+            <!--BeginNoRecordsMisPublicacionesBlock-->
+            {sNoRecords}
+            <!--EndNoRecordsMisPublicacionesBlock-->
+
+            {paginacion}
+        <!--EndGrillaMisPublicacionesBlock-->
+    </div>
+</div>
+<!--EndListadoMisPublicacionesBlock-->

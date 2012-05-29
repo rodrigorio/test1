@@ -187,6 +187,9 @@ function bindEventsReviewForm(){
 }
 
 $(document).ready(function(){
+
+    $("#filtroFechaDesde").datepicker();
+    $("#filtroFechaHasta").datepicker();
     
     $("#crearPublicacion").click(function(){
         var dialog = $("#dialog");

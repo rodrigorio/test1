@@ -657,7 +657,6 @@ class ComunidadController
         }        
     }
     
-
     public function existeDocumentoUsuario($numeroDocumento)
     {
         try{
@@ -666,5 +665,17 @@ class ComunidadController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    /**
+     * Se diferencia de buscar publicaciones visitantes porque no arregla los filtros de moderacion y de publico
+     */
+    public function buscarPublicacionesComunidad($filtro, $iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, null, null, null, null);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 }
