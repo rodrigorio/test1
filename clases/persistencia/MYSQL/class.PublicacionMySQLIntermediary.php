@@ -399,6 +399,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
         try{
             $db = clone($this->conn);
 
+            //La subconsulta devuelve una tabla que tiene para cada id de publicacion el apellido del autor
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                           f.id as iId,
                           f.titulo as sTitulo,
@@ -406,63 +407,116 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           f.activo as bActivo,
                           f.descripcion as sDescripcion,
 
-                          r.usuarios_id as iUsuarioId,
-                          r.moderado as bModerado,
-                          r.publico as bPublico,
-                          r.activoComentarios as bActivoComentarios,
-                          r.descripcionBreve as sDescripcionBreve,
-                          r.keywords as sKeywords,
-                          r.itemType as sItemType,
-                          r.itemName as sItemName,
-                          r.itemEventSummary as sItemEventSummary,
-                          r.itemUrl as sItemUrl,
-                          r.rating as fRating,
-                          r.fuenteOriginal as sFuenteOriginal
+                          p.usuarios_id as iUsuarioIdP,
+                          p.moderado as bModeradoP,
+                          p.publico as bPublicoP,
+                          p.activoComentarios as bActivoComentariosP,
+                          p.descripcionBreve as sDescripcionBreveP,
+                          p.keywords as sKeywordsP,
+
+                          r.usuarios_id as iUsuarioIdR,
+                          r.moderado as bModeradoR,
+                          r.publico as bPublicoR,
+                          r.activoComentarios as bActivoComentariosR,
+                          r.descripcionBreve as sDescripcionBreveR,
+                          r.keywords as sKeywordsR,
+                          r.itemType as sItemTypeR,
+                          r.itemName as sItemNameR,
+                          r.itemEventSummary as sItemEventSummaryR,
+                          r.itemUrl as sItemUrlR,
+                          r.rating as fRatingR,
+                          r.fuenteOriginal as sFuenteOriginalR,
+
+                          IF(r.id IS NULL, 'PUBLICACION', 'REVIEW') as sObjType
                     FROM
                         fichas_abstractas f
+                    LEFT JOIN
+                        reviews r ON r.id = f.id
+                    LEFT JOIN
+                        publicaciones p ON f.id = p.id
                     JOIN
-                        reviews r ON r.id = f.id";
+                        (SELECT rAux.id, peAux.apellido
+                         FROM personas peAux
+                         JOIN reviews rAux ON peAux.id = rAux.usuarios_id
+                         UNION
+                         SELECT pAux.id, peAux.apellido
+                         FROM personas peAux
+                         JOIN publicaciones pAux ON peAux.id = pAux.usuarios_id) AS ap ON ap.id = f.id ";
 
-            if(!empty($filtro)){
-                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+            
+            if(isset($filtro['f.titulo']) && $filtro['f.titulo'] != ""){
+                $WHERE[] = $this->crearFiltroTexto('f.titulo', $filtro['f.titulo']);
             }
-            if (isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by $sOrderBy $sOrder ";
+            if(isset($filtro['ap.apellido']) && $filtro['ap.apellido'] != ""){
+                $WHERE[] = $this->crearFiltroTexto('ap.apellido', $filtro['ap.apellido'], MYSQL_TYPE_INT);
             }
-            if ($iIniLimit !== null && $iRecordCount !== null){
-                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
+            //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
+            if(isset($filtro['fecha']) && null !== $filtro['fecha']){
+                if(is_array($filtro['fecha'])){
+                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('f.fecha', $filtro['fecha']);
+                }
             }
 
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            //siempre se ordena por fecha 
+            $sSQL .= " order by f.fecha desc ";
+
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
             $db->query($sSQL);
-            $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
-            $aReviews = array();
+            $aPublicacionesReviews = array();            
             while($oObj = $db->oNextRecord()){
-            	$oReview = new stdClass();
-            	$oReview->iId = $oObj->iId;
-            	$oReview->sTitulo  = $oObj->sTitulo;
-            	$oReview->dFecha = $oObj->dFecha;
-            	$oReview->bActivo = ($oObj->bActivo == "1") ? true : false;
-            	$oReview->sDescripcion = $oObj->sDescripcion;
-            	$oReview->iUsuarioId = $oObj->iUsuarioId;
-            	$oReview->bModerado = ($oObj->bModerado == "1") ? true:false;
-            	$oReview->bPublico = ($oObj->bPublico == "1") ? true:false;
-            	$oReview->bActivoComentarios = ($oObj->bActivoComentarios == "1")?true:false;
-            	$oReview->sDescripcionBreve = $oObj->sDescripcionBreve;
-            	$oReview->sKeywords = $oObj->sKeywords;
-                $oReview->sItemType = $oObj->sItemType;
-                $oReview->sItemName = $oObj->sItemName;
-                $oReview->sItemEventSummary = $oObj->sItemEventSummary;
-                $oReview->sItemUrl = $oObj->sItemUrl;
-                $oReview->fRating = $oObj->fRating;
-                $oReview->sFuenteOriginal = $oObj->sFuenteOriginal;
 
-            	$aReviews[] = Factory::getReviewInstance($oReview);
+                if($oObj->sObjType == 'PUBLICACION'){
+                    $oPublicacion = new stdClass();
+                    $oPublicacion->iId = $oObj->iId;
+                    $oPublicacion->sTitulo  = $oObj->sTitulo;
+                    $oPublicacion->dFecha = $oObj->dFecha;
+                    $oPublicacion->bActivo = ($oObj->bActivo == "1") ? true : false;
+                    $oPublicacion->sDescripcion = $oObj->sDescripcion;
+                    $oPublicacion->iUsuarioId = $oObj->iUsuarioIdP;
+                    $oPublicacion->bModerado = ($oObj->bModeradoP == "1") ? true:false;
+                    $oPublicacion->bPublico = ($oObj->bPublicoP == "1") ? true:false;
+                    $oPublicacion->bActivoComentarios = ($oObj->bActivoComentariosP == "1")?true:false;
+                    $oPublicacion->sDescripcionBreve = $oObj->sDescripcionBreveP;
+                    $oPublicacion->sKeywords = $oObj->sKeywordsP;
+
+                    $aPublicacionesReviews[] = Factory::getPublicacionInstance($oPublicacion);
+                }
+
+                if($oObj->sObjType == 'REVIEW'){
+                    $oReview = new stdClass();
+                    $oReview->iId = $oObj->iId;
+                    $oReview->sTitulo  = $oObj->sTitulo;
+                    $oReview->dFecha = $oObj->dFecha;
+                    $oReview->bActivo = ($oObj->bActivo == "1") ? true : false;
+                    $oReview->sDescripcion = $oObj->sDescripcion;
+                    $oReview->iUsuarioId = $oObj->iUsuarioIdR;
+                    $oReview->bModerado = ($oObj->bModeradoR == "1") ? true:false;
+                    $oReview->bPublico = ($oObj->bPublicoR == "1") ? true:false;
+                    $oReview->bActivoComentarios = ($oObj->bActivoComentariosR == "1")?true:false;
+                    $oReview->sDescripcionBreve = $oObj->sDescripcionBreveR;
+                    $oReview->sKeywords = $oObj->sKeywordsR;
+                    $oReview->sItemType = $oObj->sItemTypeR;
+                    $oReview->sItemName = $oObj->sItemNameR;
+                    $oReview->sItemEventSummary = $oObj->sItemEventSummaryR;
+                    $oReview->sItemUrl = $oObj->sItemUrlR;
+                    $oReview->fRating = $oObj->fRatingR;
+                    $oReview->sFuenteOriginal = $oObj->sFuenteOriginalR;
+
+                    $aPublicacionesReviews[] = Factory::getReviewInstance($oReview);
+                }
             }
 
-            return $aReviews;
+            return $aPublicacionesReviews;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

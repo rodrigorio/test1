@@ -399,9 +399,19 @@ class PageControllerAbstract implements PageControllerInterface
     protected final function initFiltrosForm(&$filtroSql, &$paramsGet, $aFiltrosForm)
     {
         foreach($aFiltrosForm as $nombreFiltro => $columnaSql){
-            if($this->getRequest()->has($nombreFiltro) && $this->getRequest()->getParam($nombreFiltro)!= ""){
-                $filtroSql[$columnaSql] = $this->getRequest()->getParam($nombreFiltro);
+            if($this->getRequest()->has($nombreFiltro) && $this->getRequest()->getParam($nombreFiltro) != ""){
+
                 $paramsPaginador[] = $nombreFiltro."=".$this->getRequest()->getParam($nombreFiltro);
+
+                if($columnaSql != "fechaDesde" && $columnaSql != "fechaHasta"){
+                    $filtroSql[$columnaSql] = $this->getRequest()->getParam($nombreFiltro);                                    
+                }
+                if($columnaSql == "fechaDesde"){
+                    $filtroSql['fecha'][$columnaSql] =  $this->getRequest()->getParam($nombreFiltro);
+                }
+                if($columnaSql == "fechaHasta"){
+                    $filtroSql['fecha'][$columnaSql] = $this->getRequest()->getParam($nombreFiltro);
+                }
             }
         }
     }

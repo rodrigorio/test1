@@ -175,26 +175,49 @@ abstract class Intermediary
     /**
      * Devuelve un string para agregar en el WHERE de una consulta
      * si son pasados los 2 valores hace un between entre las 2,
-     * si es pasado valor1, hace campo <= valor1
-     * si es pasado valor2, hace campo >= valor2
+     * si es pasado valor1, hace campo >= fechaDesde
+     * si es pasado valor2, hace campo <= fechaHasta
      *
-     * GRACIAS!!! :D
      * El valor debe ser una fecha Sql.
      * El campo ya debe poseer alias de la tabla. * DE
      * @param string $campo
-     * @param date $valor1
-     * @param date $valor2
+     * @param date $fechaDesde
+     * @param date $fechaHasta
      */
-    protected final function crearFiltroFecha($campo, $valor1=null, $valor2=null){
-    	$return = "";
-    	if($valor1 != null && $valor2 != null){
-	    	$return = " date($campo) BETWEEN ".$this->escDate($valor1)." AND ".$this->escDate($vadlor1)." " ;
-    	}elseif($valor1 != null){
-	    	$return = " date($campo) <= ".$this->escDate($valor1)." ";
-    	}elseif($valor2 != null){
-	    	$return = " date($campo) >= ".$this->escDate($valor2)." ";
+    protected final function crearFiltroFecha($campo, $fechaDesde = null, $fechaHasta = null){
+    	$filtro = "";
+    	if($fechaDesde != null && $fechaHasta != null){
+            $filtro = " date($campo) BETWEEN ".$this->escDate($fechaDesde)." AND ".$this->escDate($fechaHasta)." " ;
+    	}elseif($fechaDesde != null){
+            $filtro = " date($campo) >= ".$this->escDate($fechaDesde)." ";
+    	}elseif($fechaHasta != null){
+            $filtro = " date($campo) <= ".$this->escDate($fechaHasta)." ";
     	}
-        return $return;
+        return $filtro;
+    }
+
+    /**
+     * Recibe un array que puede tener los valores fecha desde y fecha hasta.
+     * utiliza la funcion crearFiltroFecha de esta clase para crear el filtro.
+     */
+    protected final function crearFiltroFechaDesdeHasta($campo, $aFechas)
+    {
+        if(
+            array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde'] &&
+            array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta'])
+        {
+            return $this->crearFiltroFecha($campo, $aFechas['fechaDesde'], $aFechas['fechaHasta']);
+        }
+        
+        if(array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde'])
+        {
+            return $this->crearFiltroFecha($campo, $aFechas['fechaDesde']);            
+        }
+
+        if(array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta'])
+        {
+            return $this->crearFiltroFecha($campo, null, $aFechas['fechaHasta']);
+        }
     }
 
     /**

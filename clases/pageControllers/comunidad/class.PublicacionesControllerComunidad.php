@@ -5,6 +5,14 @@
  */
 class PublicacionesControllerComunidad extends PageControllerAbstract
 {
+    //el de fecha se hace automatico en la funcion initFiltrosForm
+    private $filtrosFormConfig = array('filtroTitulo' => 'f.titulo',
+                                       'filtroApellidoAutor' => 'ap.apellido',
+                                       'filtroFechaDesde' => 'fechaDesde',
+                                       'filtroFechaHasta' => 'fechaHasta');
+
+    private $orderByConfig = array();
+    
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         return $this;
@@ -48,8 +56,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->listar();
     }
     
-    public function misPublicaciones(){}       
-    public function procesar(){}
     public function galeriaFotos(){}
     public function fotosProcesar(){}
     public function formFoto(){}
@@ -63,6 +69,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     /**
      * Lista todas las publicaciones de integrantes para la comunidad.
      * Son fichas miniatura una abajo de la otra paginadas y con posibilidad de filtros.
+     *
+     * @todo
+     *      - que si es moderador o administrador aparezca.
+     *      - que si ponen el mouse arriba del autor aparezca algunos datos basicos y mail
+     *      - la foto destacada o la primer foto de la galeria de fotos en el contenido
+     *      - los ultimos 3 comentarios si la publicacion tiene
+     *      - la url a la vista completa de la publicacion ampliada.
      */
     private function listar()
     {
@@ -79,8 +92,152 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
 
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoPublicacionesBlock");
-               
+
+        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+        $iRecordsTotal = 0;
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+        if(count($aFichas) > 0){
+
+            foreach($aFichas as $oFicha){
+
+                $oUsuario = $oFicha->getUsuario();
+                $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+                $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"Publicación":"Review";
+
+                $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
+                $this->getTemplate()->set_var("hrefAmpliarPublicacion", "");
+                $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
+
+                $this->getTemplate()->parse("PublicacionBlock", true);
+            }
+            
+            $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
+        }else{
+            $this->getTemplate()->set_var("PublicacionBlock", "");
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "noRecords", "NoRecordsPublicacionesBlock");
+            $this->getTemplate()->set_var("sNoRecords", "No hay publicaciones cargados en la comunidad");
+            $this->getTemplate()->parse("noRecords", false);
+        }
+
+        $params[] = "masPublicaciones=1";
+        $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $params);
+
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    public function misPublicaciones()
+    {
+        $this->setFrameTemplate()
+             ->setHeadTag()
+             ->setMenuDerecha();
+
+        IndexControllerComunidad::setCabecera($this->getTemplate());
+        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+        $this->printMsgTop();
+
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoMisPublicacionesBlock");
+
+        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+        $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
+
+        $iRecordsTotal = 0;
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+
+        if(count($aFichas) > 0){
+
+            foreach($aFichas as $oFicha){
+                
+                $hrefEditarPublicacion = "admin/usuarios-form";
+                $hrefEditarFotos = "";
+                $hrefEditarVideos = "";
+                $hrefEditarArchivos = "";
+                $hrefBorrarPublicacion = "";             
+                               
+                $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                $this->getTemplate()->set_var("hrefEditarUsuario", $hrefEditarUsuario);
+
+                $srcAvatar = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                if(null !== $oUsuario->getFotoPerfil()){
+                    $srcAvatarAmpliar = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getFotoPerfil()->getNombreBigSize();
+                }else{
+                    $srcAvatarAmpliar = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar(true);
+                }
+
+                if($oUsuario->isActivo()){
+                    $this->getTemplate()->set_var("sSelectedUsuarioActivo", "selected='selected'");
+                }else{
+                    $this->getTemplate()->set_var("sSelectedUsuarioSuspendido", "selected='selected'");                        
+                }
+
+                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+                $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+                $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
+                $sEmail = $oUsuario->getEmail();
+                $sPerfil = AdminController::getInstance()->obtenerDescripcionPerfilUsuario($oUsuario);
+
+                $this->getTemplate()->set_var("scrAvatarUsuarioAmpliada", $srcAvatarAmpliar);
+                $this->getTemplate()->set_var("scrAvatarUsuario", $srcAvatar);
+                $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                $this->getTemplate()->set_var("sPerfil", $sPerfil);
+                $this->getTemplate()->set_var("sEmail", $sEmail);
+
+                if($perfilDesc != 'administrador'){
+                    $this->getTemplate()->set_var("DeleteButton", "");
+                }else{
+                    $this->getTemplate()->parse("DeleteButton");
+                }
+
+                $this->getTemplate()->parse("UsuarioBlock", true);
+
+                $this->getTemplate()->set_var("sSelectedUsuarioActivo","");
+                $this->getTemplate()->set_var("sSelectedUsuarioSuspendido","");
+                $i++;
+            }
+
+            $this->getTemplate()->set_var("NoRecordsUsuariosBlock", "");
+
+        }else{
+            $this->getTemplate()->set_var("UsuariosBlock", "");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "noRecords", "NoRecordsUsuariosBlock");
+            $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
+            $this->getTemplate()->parse("noRecords", false);
+        }
+
+        $params[] = "masUsuarios=1";
+        $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/usuarios-procesar", "listadoUsuariosResult", $params);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    public function procesar()
+    {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('masPublicaciones')){
+            $this->masPublicaciones();
+            return;
+        }
+    }
+
+    private function masPublicaciones()
+    {
+        
     }
 
     public function crearPublicacionForm()
