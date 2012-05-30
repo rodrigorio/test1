@@ -326,7 +326,7 @@ class PageControllerAbstract implements PageControllerInterface
             $params[] = "sOrder=".$this->getRequest()->getPost('sOrder');
             $params[] = "sOrderBy=".$this->getRequest()->getPost('sOrderBy');
         }
-        
+
         if ($iRecordsTotal > $iItemsForPage) {
             $TotalPages = ceil($iRecordsTotal / $iItemsForPage);
             $iPageMin = $iPage - 2;
@@ -359,7 +359,7 @@ class PageControllerAbstract implements PageControllerInterface
             }
 
             $this->getTemplate()->parse("paginacion", false);
-        } else {
+        }else{
             $this->getTemplate()->set_var("paginacion", "");
         }
     }

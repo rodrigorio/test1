@@ -165,7 +165,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
         $iRecordsTotal = 0;
         $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-
+        
         if(count($aFichas) > 0){
 
             $this->getTemplate()->set_var("NoRecordsMisPublicacionesBlock", "");
@@ -178,8 +178,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $hrefEditarArchivos = "";
 
                 $bPublico = $oFicha->isPublico();
-                $sPublico = ($bPublico)?"Sí":"No";
+                $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
                 $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
+                $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
 
                 $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
                 $this->getTemplate()->set_var("hrefAmpliarPublicacion", $hrefAmpliarPublicacion);
@@ -206,7 +207,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->parse("sMensajePublicacion", false);
                 }
                 
-                $this->getTemplate()->set_var("sActivoComentarios", $sPublico);
+                $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
                 
                 //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
                 list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
@@ -218,6 +219,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
                 $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
                 $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
+                $this->getTemplate()->set_var("sMensajePublicacion","");
             }           
         }else{
             $this->getTemplate()->set_var("MiPublicacionBlock", "");
@@ -250,12 +252,109 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         if($this->getRequest()->has('cambiarEstado')){
             $this->cambiarEstadoPublicacion();
             return;
-        }       
+        }
+
+        if($this->getRequest()->has('borrarPublicacion')){
+            $this->borrarPublicacion();
+            return;
+        }
+    }
+    
+    private function borrarPublicacion()
+    {        
+        $iPublicacionId = $this->getRequest()->getPost('iPublicacionId');
+        $objType = $this->getRequest()->getPost('objType');
+        
+        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            //polimorfico
+            $result = ComunidadController::getInstance()->borrarPublicacion($oFicha, $pathServidorFotos, $pathServidorArchivos);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "La publicación fue eliminada del sistema";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se ha eliminado la publicación del sistema";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha eliminado la publicación del sistema";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
     private function masPublicaciones()
     {
-        
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "ajaxFichasPublicacionesBlock", "FichasPublicacionesBlock");
+
+        $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
+
+        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+        $iRecordsTotal = 0;
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+        if(count($aFichas) > 0){
+
+            $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
+
+            foreach($aFichas as $oFicha){
+
+                $oUsuario = $oFicha->getUsuario();
+                $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+                $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"Publicación":"Review";
+
+                $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
+                $this->getTemplate()->set_var("hrefAmpliarPublicacion", "");
+                $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
+
+                $this->getTemplate()->parse("PublicacionBlock", true);
+            }
+
+            $paramsPaginador[] = "masPublicaciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $paramsPaginador);
+        }else{
+            $this->getTemplate()->set_var("PublicacionBlock", "");
+            $this->getTemplate()->set_var("sNoRecords", "No se encontraron resultados");
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxFichasPublicacionesBlock', false));
     }
 
     private function masMisPublicaciones()
@@ -279,7 +378,10 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $hrefEditarVideos = "";
                 $hrefEditarArchivos = "";
 
+                $bPublico = $oFicha->isPublico();
+                $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
                 $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
+                $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
 
                 $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
                 $this->getTemplate()->set_var("hrefAmpliarPublicacion", $hrefAmpliarPublicacion);
@@ -296,11 +398,30 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
                 $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
+                $this->getTemplate()->set_var("sPublico", $sPublico);
 
-                $this->getTemplate()->parse('MiPublicacionBlock', true);
+                //si esta marcada como publica y no esta moderada muestro un cartel
+                if($bPublico && !$oFicha->isModerado()){
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", "MsgFichaInfoBlock");
+                    $this->getTemplate()->set_var("sTituloMsgFicha", "Moderación Pendiente");
+                    $this->getTemplate()->set_var("sMsgFicha", "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.");
+                    $this->getTemplate()->parse("sMensajePublicacion", false);
+                }
 
+                $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
+
+                //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
+                list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
+                $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
+                $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
+                $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                $this->getTemplate()->parse("MiPublicacionBlock", true);
+
+                //limpio para la publicacion que sigue
                 $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
                 $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
+                $this->getTemplate()->set_var("sMensajePublicacion","");
             }
 
             $paramsPaginador[] = "masMisPublicaciones=1";
