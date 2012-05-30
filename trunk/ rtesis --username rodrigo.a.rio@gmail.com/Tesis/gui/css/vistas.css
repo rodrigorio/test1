@@ -711,7 +711,7 @@ a .i{margin-right:4px; float:left}
 .ui-tabs .ui-tabs-nav{margin:0; padding:0}
 .ui-tabs .ui-tabs-panel{display:block; padding:10px; border-top:0px}
 /* autocomplete */
-.ui-autocomplete{max-height:100px; max-width:300px; overflow-x:hidden; overflow-y:auto; padding-right:20px; background:#FFF; border: 1px solid #CCC}
+.ui-autocomplete{max-height:200px; max-width:300px; overflow-x:hidden; overflow-y:auto; padding-right:20px; background:#FFF; border: 1px solid #CCC}
 .ui-autocomplete a{color:#333; text-decoration:none}
 .ui-autocomplete .ui-state-hover{background-color:#EEEFFF}
 /* datepicker */

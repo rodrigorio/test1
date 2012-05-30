@@ -126,7 +126,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
 
             //orden y fecha quedan con valores por defecto en la insercion.
             
-            $sSQL .= " nombre = ".$this->escStr($oArchivo->getNombre()).", " .
+           $sSQL .= " nombre = ".$this->escStr($oArchivo->getNombre()).", " .
             " nombreServidor = ".$this->escStr($oArchivo->getNombreServidor()).", " .
             " descripcion = ".$this->escStr($oArchivo->getDescripcion()).", ".
             " tipoMime = ".$this->escStr($oArchivo->getTipoMime()).", " .
@@ -206,7 +206,6 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -233,7 +232,6 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
 
                 $aArchivos[] = Factory::getArchivoInstance($oArchivo);
             }
-
             return $aArchivos;
 
         }catch(Exception $e){

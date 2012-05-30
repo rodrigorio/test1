@@ -358,7 +358,7 @@ class SeguimientosController
     }
     
  	public function guardarAntecedentesFile($seguimiento, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor) {
-    	try{            
+    	try{           
             //creo el objeto archivo y lo guardo.
             $oArchivo 			= new stdClass();
             $oArchivo->sNombre 	= $nombreArchivo;
@@ -390,6 +390,29 @@ class SeguimientosController
             }
             $usuario->setArchivoAntecedentes(null);
             
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+    public function borrarAntecedentesFile($seguimiento, $pathServidor){
+    	try{
+    		if(null === $seguimiento->getArchivoAntecedentes()){
+    			throw new Exception("El usuario no posee foto de perfil");
+    		}
+    		foreach($seguimiento->getArchivoAntecedentes() as $arch){
+    			$oArchivo = $arch;
+    		}
+    		$pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
+
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $oArchivoIntermediary->borrar($oArchivo);
+
+            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                unlink($pathServidorArchivo);
+            }
+
+            $seguimiento->setArchivoAntecedentes(null);
+        }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
