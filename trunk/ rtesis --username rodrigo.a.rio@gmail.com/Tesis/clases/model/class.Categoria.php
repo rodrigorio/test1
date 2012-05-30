@@ -4,6 +4,13 @@ class Categoria {
 	private $sNombre;
 	private $sDescripcion;
 	
+	
+    /*
+     * array objetos Archivo
+    */
+    private $aArchivos = null;
+	
+	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Categoria
 	 * @param stdClass $oParams
@@ -39,6 +46,11 @@ class Categoria {
 	public function setDescripcion($sDescripcion){
 		$this->sDescripcion = $sDescripcion;
 	}
+	
+     public function setArchivos($aArchivos)
+    {
+        $this->aArchivos = $aArchivos;
+    }
 	/**
 	 *  @return int $iId
 	 */
@@ -57,5 +69,15 @@ class Categoria {
 	public function getDescripcion(){
 		return $this->sDescripcion;
 	}
+ /**
+     * @return array|null Archivo
+     */
+    public function getArchivos()
+    {
+    	if($this->aArchivos == null){
+            $this->aArchivos = ComunidadController::getInstance()->obtenerArchivosCategoria($this->iId);
+    	}
+        return $this->aArchivos;
+    }
 }
 ?>
