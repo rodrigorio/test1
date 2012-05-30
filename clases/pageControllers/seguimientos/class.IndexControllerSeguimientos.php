@@ -68,14 +68,16 @@ class IndexControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
             $iRecordsTotal = 0;
             $sOrderBy	= $sOrder=$iIniLimit=$iRecordCount=null;
-            $filtro 	= array("p.numeroDocumento"=>$this->getRequest()->get('str'));
+            $filtro 	= array("p.nombre"=>$this->getRequest()->get('str'));
             $aDiscapacitados = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
             $vResult = array();
             if(count($aDiscapacitados)>0){
                 foreach($aDiscapacitados as $oDiscapacitado){
                     $obj        = new stdClass();
                     $obj->iId   = $oDiscapacitado->getId();
-                    $obj->sNombre   = $oDiscapacitado->getNombre() . " " . $oDiscapacitado->getApellido();
+                    $obj->sNombre = $oDiscapacitado->getNombre() . " " . $oDiscapacitado->getApellido();
+                    $obj->iNumeroDocumento = $oDiscapacitado->getNumeroDocumento();
+                    $obj->sRutaFoto   = $this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar();
                     $vResult[] = $obj;
                 }
             }

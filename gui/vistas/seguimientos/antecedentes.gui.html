@@ -12,7 +12,8 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")   
    .script("{pathUrlBase}"+"gui/js/vistas.js")
-   .script("{pathUrlBase}"+"gui/vistas/seguimientos/antecedentes.js");
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/antecedentes.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js");
 </script>
 <!--EndJsContent-->
 
@@ -67,7 +68,7 @@
     <div id="antecedentesActuales" class="fl_le wi">
     	<div>
     		<span class="fowe_bo">Archivos actuales:</span><br>
-    		<div id="antecedentesArchivos"></div>
+    		<div id="antecedentesArchivos">{sFileAntecedentes}</div>
     	</div>
     	<div>
     		<span class="fowe_bo">Antecedentes actuales:</span><br>

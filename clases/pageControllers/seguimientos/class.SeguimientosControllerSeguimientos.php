@@ -25,8 +25,16 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
+        return $this;
+    }
+    
+    private function setJSSeguimientos(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "jsContent", "JsContent");
-
+        return $this;
+    	
+    }
+    private function setJSAntecedentes(){
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "jsContent", "JsContent");
         return $this;
     }
     
@@ -38,6 +46,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     {
         try{
             $this->setFrameTemplate()
+                 ->setJSSeguimientos()
                  ->setHeadTag();
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
@@ -220,6 +229,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     public function nuevoSeguimiento(){
         try{
             $this->setFrameTemplate()
+            	->setJSSeguimientos()
                  ->setHeadTag();
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
@@ -364,7 +374,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
  	public function editarAntecedentes(){
         try{
             $this->setFrameTemplate()
-                 ->setHeadTag();
+            	 ->setJSAntecedentes()                  
+            	 ->setHeadTag();
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
@@ -392,6 +403,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			if($oSeguimiento){
 				$this->getTemplate()->set_var("idSeguimiento", $iIdSeguimiento);
 				$this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
+				foreach($oSeguimiento->getArchivoAntecedentes() as $archivo){
+					$sNombreArchivo = $archivo->getNombreServidor();
+					$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
+					$this->getTemplate()->set_var("sFileAntecedentes", "<a href='".$link."'>".$sNombreArchivo."</a>");
+				}
 			}
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
@@ -402,7 +418,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     public function procesarAntecedentes(){
     	 //si accedio a traves de la url muestra pagina 404
    //     if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        print_r($_POST);
         
     	if($this->getRequest()->has('fileAntecedentesUpload')){
             $this->fileAntecedentesUpload();
@@ -436,10 +451,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             	$pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
             	list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, "antecedentes", $nombreInputFile);
 				$res = SeguimientosController::getInstance()->guardarAntecedentesFile($oSeguimiento,$nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
-				
+				print_r($oSeguimiento );
+				$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
             }
 			if($res){
-                $this->getJsonHelper()->setSuccess(true);
+                $this->getJsonHelper()->setSuccess(true)->setMessage();
             }else{
                 $this->getJsonHelper()->setSuccess(false);
             }

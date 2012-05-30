@@ -161,7 +161,8 @@ $(document).ready(function(){
         return false;
     });
     
-    $("#persona").autocomplete({
+    
+   $("#persona").autocomplete({
         source:function(request, response){
             $.ajax({
                 url: "seguimientos/buscar-discapacitados",
@@ -182,13 +183,15 @@ $(document).ready(function(){
                             //lo que aparece en la lista generada para elegir
                             label:discapacitados.sNombre,
                             //valor extra que se devuelve para completar el hidden
-                            id:discapacitados.iId
+                            id:discapacitados.iId,
+                            sRutaFoto:discapacitados.sRutaFoto,
+                            dni:discapacitados.iNumeroDocumento
                         }
                     }));
                 }
             });
         },
-        minLength: 8,
+        minLength: 1,
         select: function(event, ui){
             if(ui.item){
                 $("#personaId").val(ui.item.id);
@@ -203,7 +206,15 @@ $(document).ready(function(){
                 revelarElemento($('#persona_clean'));
             }
         }
-    });
+    })
+    .data( "autocomplete" )._renderItem = function( ul, item ) {
+		return $( "<li></li>" )
+		.data( "item.autocomplete", item )
+		.append("<a class='bobo1'><div class='fl_le'><img src='"+ item.sRutaFoto +"' alt='foto' ></div>" +
+				"<div class='fl_le pa3'>" + item.label + "</div>" +
+				"<div class='cl_bo'>Numero de documento: " + item.dni + "</div></a>" )
+		.appendTo( ul );
+   };
 
     //para borrar la institucion seleccionada con el autocomplete
     $('#persona_clean').click(function(){
@@ -213,6 +224,7 @@ $(document).ready(function(){
         $("#personaId").val("");
         ocultarElemento($(this));
     });
+    
     
   
     

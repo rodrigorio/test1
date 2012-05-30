@@ -50,7 +50,6 @@ $(document).ready(function(){
 	        },
 	        name: 'fileAntecedentes',
 	        onSubmit:function(file , ext){
-	        	alert(1)
 	            this.disable(); //solo un archivo a la vez
 	        },
 	        onProgress: function(id, fileName, loaded, total){
