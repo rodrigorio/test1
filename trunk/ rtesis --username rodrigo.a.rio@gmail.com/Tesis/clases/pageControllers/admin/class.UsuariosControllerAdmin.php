@@ -256,7 +256,6 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         $hrefEditarUsuario = "admin/usuarios-form";       
         $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
         
-        $respuesta = "";
         if(count($aUsuarios) > 0){
 
             $this->getTemplate()->set_var("NoRecordsUsuariosBlock", "");            

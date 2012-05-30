@@ -373,7 +373,8 @@ class PageControllerAbstract implements PageControllerInterface
          * porque si existen los parametros al menos uno cambio de estado
          * entonces para ESA columna invierto el order.
          */
-        if($sOrderBy !== null && $sOrder !== null){            
+        if($sOrderBy !== null && $sOrder !== null){
+            
             $sOrder = ($sOrder == "asc")?"desc":"asc";
             $aOrderBy[$sOrderBy]['order'] = $sOrder;
 

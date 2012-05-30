@@ -219,28 +219,40 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
 
             $db->begin_transaction();
 
-            $iPublicacionId = $oPublicacion->getId();
-            $activo = $oPublicacion->isActivo()?"1":"0";
+            $iReviewId = $oReview->getId();
+            $activo = $oReview->isActivo()?"1":"0";
 
             $sSQL = " update fichas_abstractas set ".
-                    " titulo = ".$db->escape($oPublicacion->getTitulo(), true).", ".
+                    " titulo = ".$db->escape($oReview->getTitulo(), true).", ".
                     " activo = ".$activo.", ".
-                    " descripcion = ".$db->escape($oPublicacion->getDescripcion(), true)." ".
-                    " where id = ".$iPublicacionId;
+                    " descripcion = ".$db->escape($oReview->getDescripcion(), true)." ".
+                    " where id = ".$iReviewId;
 
             $db->execSQL($sSQL);
 
-            $moderado = $oPublicacion->isModerado()?"1":"0";
-            $publico = $oPublicacion->isPublico()?"1":"0";
-            $activoComentarios = $oPublicacion->isActivoComentarios()?"1":"0";
+            $moderado = $oReview->isModerado()?"1":"0";
+            $publico = $oReview->isPublico()?"1":"0";
+            $activoComentarios = $oReview->isActivoComentarios()?"1":"0";
 
-            $sSQL = " update publicaciones set ".
+            //lo hago a mano porque sino el scape int te transforma el 0 en null tmb
+            $fRating = $oReview->getRating();
+            if($fRating === null){
+                $fRating = "null";
+            }
+
+            $sSQL = " update reviews set ".
                     " moderado = ".$moderado.", ".
                     " publico = ".$publico.", ".
                     " activoComentarios = ".$activoComentarios.", ".
-                    " descripcionBreve = ".$db->escape($oPublicacion->getDescripcionBreve(), true).", ".
-                    " keywords = ".$db->escape($oPublicacion->getKeywords(), true)." ".
-                    " where id = ".$iPublicacionId;
+                    " descripcionBreve = ".$db->escape($oReview->getDescripcionBreve(), true).", ".
+                    " keywords = ".$db->escape($oReview->getKeywords(), true).", ".
+                    " itemType = ".$db->escape($oReview->getItemType(), true).", ".
+                    " itemName = ".$db->escape($oReview->getItemName(), true).", ".
+                    " itemEventSummary = ".$db->escape($oReview->getItemEventSummary(), true).", ".
+                    " itemUrl = ".$db->escape($oReview->getItemUrl(), true).", ".
+                    " rating = ".$fRating.", ".
+                    " fuenteOriginal = ".$db->escape($oReview->getFuenteOriginal(), true)." ".
+                    " where id = ".$iReviewId;
 
              $db->execSQL($sSQL);
              $db->commit();
@@ -396,7 +408,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
      */
     public function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
-        try{
+        try{            
             $db = clone($this->conn);
 
             //La subconsulta devuelve una tabla que tiene para cada id de publicacion el apellido del autor
@@ -460,12 +472,16 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
-            //siempre se ordena por fecha 
-            $sSQL .= " order by f.fecha desc ";
-
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by f.fecha desc ";
+            }
+            
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");

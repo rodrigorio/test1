@@ -174,8 +174,15 @@ function bindEventsPublicacionForm(){
 function bindEventsReviewForm(){
     $("#formReview").validate(validateFormReview);
     $("#formReview").ajaxForm(optionsAjaxFormReview);
+    selectItemTypeReviewEvent();
+}
 
+function selectItemTypeReviewEvent(){
     //el item event summary es visible solo si elige evento en el select de itemType
+    if( $("#itemType option:selected").val() == "event" ){
+        $("#itemEventSummaryFormLine").show();
+    }
+
     $("#itemType").change(function(){
         if( $("#itemType option:selected").val() == "event" ){
             $("#itemEventSummaryFormLine").show();
@@ -186,10 +193,119 @@ function bindEventsReviewForm(){
     });
 }
 
+function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
+    $.ajax({
+        type: "POST",
+        url: "comunidad/publicaciones/procesar",
+        data:{
+            iPublicacionId:iPublicacionId,
+            estadoPublicacion:valor,
+            cambiarEstado:"1",
+            objType:tipo
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoMisPublicaciones', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoMisPublicaciones', false);
+        }
+    });
+}
+
+/**
+ * Tipo es Publicacion/Review
+ */
+function editarPublicacion(iPublicacionId, tipo){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Modificar '+tipo+'"></div>').appendTo('body');
+
+    var url = "";
+    switch(tipo){
+        case "publicacion": url = "comunidad/publicaciones/form-modificar-publicacion"; break;
+        case "review": url = "comunidad/publicaciones/form-modificar-review"; break;
+    }
+
+    dialog.load(
+        url+"?publicacionId="+iPublicacionId,
+        {},
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:550,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            if(tipo == "publicacion"){
+                bindEventsPublicacionForm();
+            }else{
+                bindEventsReviewForm();
+            }
+        }
+    );
+}
+
+function masUsuariosMisPublicaciones(){
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
+    $.ajax({
+        type:"POST",
+        url:"comunidad/publicaciones/procesar",
+        data:{
+            masMisPublicaciones:"1",
+            sOrderBy: sOrderBy,
+            sOrder: sOrder
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoMisPublicaciones', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoMisPublicaciones', false);
+            $("#listadoMisPublicacionesResult").html(data);
+        }
+    });
+}
+
 $(document).ready(function(){
 
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
+
+    //Mis publicaciones
+    $(".close.ihover").live("click", function(){
+        var id = $(this).attr("rel");
+        $("#desplegable_" + id).hide();
+    });
+
+    $(".editarPublicacion").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];
+        editarPublicacion(iPublicacionId, tipo);
+        return false;
+    });
+
+    $(".orderLink").live('click', function(){
+        $('#sOrderBy').val($(this).attr('orderBy'));
+        $('#sOrder').val($(this).attr('order'));
+        masUsuariosMisPublicaciones();
+    });
+
+    $(".cambiarEstadoPublicacion").live("change", function(){
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];
+        cambiarEstadoPublicacion(iPublicacionId, $("#estadoPublicacion_"+iPublicacionId+" option:selected").val(), tipo);
+    });
+    ////////////////
     
     $("#crearPublicacion").click(function(){
         var dialog = $("#dialog");
@@ -244,5 +360,5 @@ $(document).ready(function(){
         );
         return false;
     });
-
+     
 });
