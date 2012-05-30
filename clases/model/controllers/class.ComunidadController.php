@@ -683,12 +683,69 @@ class ComunidadController
     /**
      * Se diferencia de buscar publicaciones visitantes porque no arregla los filtros de moderacion y de publico
      */
-    public function buscarPublicacionesComunidad($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function buscarPublicacionesComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * @return array($cantFotos, $cantVideos, $cantArchivos)
+     */
+    public function obtenerCantidadMultimediaFicha($iFichaId)
+    {
+        try{
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->obtenerCantidadElementosAdjuntos($iFichaId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     *  no hace falta distinguir tipo review/publicacion
+     *  porque se borra desde ficha abstracta en cascada
+     */
+    public function borrarPublicacion($oFicha, $pathServidorFotos, $pathServidorArchivos)
+    {
+        try{
+            $aFotos = $oFicha->getFotos();
+            $aArchivos = $oFicha->getArchivos();
+            //los videos no van porque estamos usando los embed que no se guardan en el servidor
+
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            $result = $oPublicacionIntermediary->borrar($oFicha->getId());
+            if($result){
+                //borro archivos de fotos y adjuntos en el servidor, los registros en db volaron en cascada
+                if(null != $aFotos){
+                    foreach($aFotos as $oFoto){
+                        $aNombreArchivos = $oFoto->getArrayNombres();
+
+                        foreach($aNombreArchivos as $nombreServidorArchivo){
+                            $pathServidorArchivo = $pathServidorFotos.$nombreServidorArchivo;
+                            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                                unlink($pathServidorArchivo);
+                            }
+                        }
+                    }
+                }
+                if(null != $aArchivos){
+                    foreach($aArchivos as $oArchivo){
+                        $pathServidorArchivo = $pathServidorArchivos.$oArchivo->getNombreServidor();
+                        if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                            unlink($pathServidorArchivo);
+                        }
+                    }
+                }
+            }
+
+            return $result;
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }            
     }
 }

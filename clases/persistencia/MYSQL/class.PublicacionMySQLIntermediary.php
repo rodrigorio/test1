@@ -552,6 +552,41 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    /**
+     * La relacion con videos archivos y fotos es de la clase abstracta
+     * asi que me alcanza con utilizar la tabla fichas_abstractas
+     */
+    public function obtenerCantidadElementosAdjuntos($iFichaId)
+    {
+        try{
+            $cantFotos = $cantVideos = $cantArchivos = 0;
+
+            $db = $this->conn;
+
+            $db->query("SELECT
+                            COUNT(*) as cantidad
+                        FROM
+                            archivos where fichas_abstractas_id = '".$iFichaId."'");
+            $cantArchivos = $db->oNextRecord()->cantidad;
+
+            $db->query("SELECT
+                            COUNT(*) as cantidad
+                        FROM
+                            fotos where fichas_abstractas_id = '".$iFichaId."'");
+            $cantFotos = $db->oNextRecord()->cantidad;
+
+            $db->query("SELECT
+                            COUNT(*) as cantidad
+                        FROM
+                            embed_videos where fichas_abstractas_id = '".$iFichaId."'");
+            $cantVideos = $db->oNextRecord()->cantidad;
+
+            return array($cantFotos, $cantVideos, $cantArchivos);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
    	 
     public function actualizarCampoArray($objects, $cambios){}  
 }

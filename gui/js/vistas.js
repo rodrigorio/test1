@@ -224,13 +224,12 @@ function paginar(iPage ,toUrl, div, params){
         url: toUrl,
         data: "iPage="+iPage+"&"+params,
         beforeSend:function(data){
-            $("#ajax_loading").show();
             setWaitingStatus(div, true);
         },
         success: function(data){
-            $("#ajax_loading").hide();
             setWaitingStatus(div, false);
             $("#"+div).html(data);
+            $("a[rel^='prettyPhoto']").prettyPhoto();
         }
     });
  }

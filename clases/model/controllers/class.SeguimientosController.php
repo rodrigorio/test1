@@ -318,7 +318,7 @@ class SeguimientosController
         }          
     }
 
-    public function eliminarSeguimiento($iSeguimientoId, $pathServidor){
+    public function eliminarSeguimiento($iSeguimientoId, $pathServidorFotos, $pathServidorArchivos){
         try{            
             $oSeguimiento = $this->getSeguimientoById($iSeguimientoId);
             $aFotos = $oSeguimiento->getFotos();
@@ -333,7 +333,7 @@ class SeguimientosController
                         $aNombreArchivos = $oFoto->getArrayNombres();
 
                         foreach($aNombreArchivos as $nombreServidorArchivo){
-                            $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                            $pathServidorArchivo = $pathServidorFotos.$nombreServidorArchivo;
                             if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                                 unlink($pathServidorArchivo);
                             }
@@ -342,7 +342,7 @@ class SeguimientosController
                 }
                 if(null != $aArchivos){
                     foreach($aArchivos as $oArchivo){
-                        $pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
+                        $pathServidorArchivo = $pathServidorArchivos.$oArchivo->getNombreServidor();
                         if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                             unlink($pathServidorArchivo);
                         }

@@ -252,7 +252,7 @@ function editarPublicacion(iPublicacionId, tipo){
     );
 }
 
-function masUsuariosMisPublicaciones(){
+function masMisPublicaciones(){
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
 
@@ -274,10 +274,94 @@ function masUsuariosMisPublicaciones(){
     });
 }
 
+function masPublicaciones(){
+    
+    var filtroTitulo = $('#filtroTitulo').val();
+    var filtroApellidoAutor = $('#filtroApellidoAutor').val();
+    var filtroFechaDesde = $('#filtroFechaDesde').val();
+    var filtroFechaHasta = $('#filtroFechaHasta').val();
+
+    $.ajax({
+        type:"POST",
+        url:"comunidad/publicaciones/procesar",
+        data:{
+            masPublicaciones:"1",
+            filtroTitulo: filtroTitulo,
+            filtroApellidoAutor: filtroApellidoAutor,
+            filtroFechaDesde: filtroFechaDesde,
+            filtroFechaHasta: filtroFechaHasta
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoPublicaciones', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoPublicaciones', false);
+            $("#listadoPublicacionesResult").html(data);
+        }
+    });
+}
+
+function borrarPublicacion(iPublicacionId, tipo){
+    if(confirm("Se borrara la publicacion del sistema de manera permanente, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"comunidad/publicaciones/procesar",
+            data:{
+                iPublicacionId:iPublicacionId,
+                objType:tipo,
+                borrarPublicacion:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    //remuevo la fila y la ficha
+                    $("."+iPublicacionId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length){
+                    dialog.attr("title","Borrar Publicación");
+                }else{
+                    dialog = $('<div id="dialog" title="Borrar Publicación"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
 
+    //Publicaciones Comunidad
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
+
+    $("#BuscarPublicaciones").live('click', function(){
+        masPublicaciones();
+        return false;
+    });
+
+    $("#limpiarFiltro").live('click',function(){
+        $('#formFiltrarPublicaciones').each(function(){
+          this.reset();
+        });
+        return false;
+    });
+    ////////////////
 
     //Mis publicaciones
     $(".close.ihover").live("click", function(){
@@ -296,7 +380,7 @@ $(document).ready(function(){
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
-        masUsuariosMisPublicaciones();
+        masMisPublicaciones();
     });
 
     $(".cambiarEstadoPublicacion").live("change", function(){
@@ -305,6 +389,13 @@ $(document).ready(function(){
         var iPublicacionId = rel[1];
         cambiarEstadoPublicacion(iPublicacionId, $("#estadoPublicacion_"+iPublicacionId+" option:selected").val(), tipo);
     });
+
+    $(".borrarPublicacion").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];
+        borrarPublicacion(iPublicacionId, tipo);
+    })
     ////////////////
     
     $("#crearPublicacion").click(function(){
@@ -359,6 +450,5 @@ $(document).ready(function(){
             }
         );
         return false;
-    });
-     
+    });     
 });
