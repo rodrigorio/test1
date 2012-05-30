@@ -625,7 +625,20 @@ class ComunidadController
             return false;
         }          
     }
-    
+/**
+     * @return array|null
+     */
+    public function obtenerArchivosCategoria($iCategoriaId)
+    {
+        try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.categoria_id' => $iCategoriaId);
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }          
+    }
     /**
      *
      * @param array $aNombreArchivos 3 celdas con los nombres de los archivos ['nombreFotoGrande'] ['nombreFotoMediana'] ['nombreFotoChica']
