@@ -491,5 +491,43 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
            $this->getJsonHelper()->setSuccess(false);
         }
     }
+    
+    public function eliminar()
+    {
+    	$iSeguimientoId = $this->getRequest()->getParam('seguimientoId');
+    	if(empty($iSeguimientoId)){
+    		throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+    	}
+    
+    	$this->getJsonHelper()->initJsonAjaxResponse();
+    	try{
+    		$this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+    		$pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+    		$result = SeguimientosController::getInstance()->eliminarSeguimiento($iSeguimientoId, $pathServidor);
+    
+    		$this->restartTemplate();
+    
+    		if($result){
+    			$msg = "El seguimiento fue eliminado con exito";
+    			$bloque = 'MsgCorrectoBlockI32';
+    			$this->getJsonHelper()->setSuccess(true);
+    		}else{
+    			$msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
+    			$bloque = 'MsgErrorBlockI32';
+    			$this->getJsonHelper()->setSuccess(false);
+    		}
+    
+    	}catch(Exception $e){
+    		$msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
+    		$bloque = 'MsgErrorBlockI32';
+    		$this->getJsonHelper()->setSuccess(false);
+    	}
+    
+    	$this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+    	$this->getTemplate()->set_var("sMensaje", $msg);
+    	$this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+    
+    	$this->getJsonHelper()->sendJsonAjaxResponse();
+    }
 }
 	  
