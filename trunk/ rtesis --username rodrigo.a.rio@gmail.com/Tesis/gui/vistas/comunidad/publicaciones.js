@@ -344,7 +344,64 @@ function borrarPublicacion(iPublicacionId, tipo){
     }
 }
 
+function uploaderFotoGaleria(iPublicacionId, sTipoItemForm){
+    //galeria de fotos
+    if($('#fotoUploadGaleria').length){
+        new Ajax_upload('#fotoUploadGaleria', {
+            action:'comunidad/publicaciones/galeria-fotos/procesar',
+            data:{
+                agregarFoto:"1",
+                iPublicacionId:iPublicacionId,
+                objType: sTipoItemForm
+            },
+            name:'fotoGaleria',
+            onSubmit:function(file , ext){
+                $('#msg_form_fotoGaleria').hide();
+                $('#msg_form_fotoGaleria').removeClass("correcto").removeClass("error");
+                $('#msg_form_fotoGaleria .msg').html("");
+                setWaitingStatus('formFotoGaleria', true);
+                this.disable(); //solo un archivo a la vez
+            },
+            onComplete:function(file, response){
+                setWaitingStatus('formFotoGaleria', false);
+                this.enable();
+
+                if(response == undefined){
+                    $('#msg_form_fotoGaleria .msg').html(lang['error procesar']);
+                    $('#msg_form_fotoGaleria').addClass("error").fadeIn('slow');
+                    return;
+                }
+
+                var dataInfo = response.split(';');
+                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
+                var html = dataInfo[1]; //si se proceso bien aca queda el bloque del html con el nuevo thumbnail
+
+                if(resultado != "0" && resultado != "1"){
+                    $('#msg_form_fotoGaleria .msg').html(lang['error permiso']);
+                    $('#msg_form_fotoGaleria').addClass("info").fadeIn('slow');
+                    return;
+                }
+
+                if(resultado == '0'){
+                    $('#msg_form_fotoGaleria .msg').html(html);
+                    $('#msg_form_fotoGaleria').addClass("error").fadeIn('slow');
+                }else{
+                    $('#msg_form_fotoGaleria .msg').html(lang['exito procesar archivo']);
+                    $('#msg_form_fotoGaleria').addClass("correcto").fadeIn('slow');
+
+                    //aca hacer un metodo aparte porq tienen q estar los eventos del thumbnail tmb
+                    $('#Thumbnails').append(html);
+                    $("a[rel^='prettyPhoto']").prettyPhoto();
+                }
+                return;
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
+
+    $("a[rel^='prettyPhoto']").prettyPhoto();
 
     //Publicaciones Comunidad
     $("#filtroFechaDesde").datepicker();
@@ -450,5 +507,13 @@ $(document).ready(function(){
             }
         );
         return false;
-    });     
+    });
+
+    //para el upload de foto galeria
+    var iPublicacionId = $("#iItemIdForm").val();
+    var sTipoItemForm = $("#sTipoItemForm").val();
+    if(iPublicacionId != undefined && iPublicacionId != "" &&
+       sTipoItemForm != undefined && sTipoItemForm != ""){
+        uploaderFotoGaleria(iPublicacionId, sTipoItemForm);
+    }    
 });

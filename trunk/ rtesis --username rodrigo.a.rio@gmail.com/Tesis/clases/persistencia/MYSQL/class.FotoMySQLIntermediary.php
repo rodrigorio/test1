@@ -41,14 +41,14 @@ class FotoMySQLIntermediary extends FotoIntermediary
     public function guardarFotosFicha(FichaAbstract $oFicha)
     {
         if(null !== $oFicha->getFotos()){
-        	foreach($oFicha->getFotos() as $oFoto){
-        		if(null !== $oFoto->getId()){
-        	       	return $this->actualizar($oFoto);
-		        }else{
-		            $iId = $oFicha->getId();
-		            return $this->insertarAsociado($oFoto, $iId, get_class($oFicha));
-		        }        		        		
-        	}
+            foreach($oFicha->getFotos() as $oFoto){
+                if(null !== $oFoto->getId()){
+                    return $this->actualizar($oFoto);
+                }else{
+                    $iId = $oFicha->getId();
+                    return $this->insertarAsociado($oFoto, $iId, get_class($oFicha));
+                }
+            }
         }                    
     }    
 

@@ -644,7 +644,7 @@ class ComunidadController
      *
      * @param array $aNombreArchivos 3 celdas con los nombres de los archivos ['nombreFotoGrande'] ['nombreFotoMediana'] ['nombreFotoChica']
      * @param string $pathServidor directorio donde estan guardadas las fotos
-     * @param FichaAbstract puede ser tanto un discapacitado, un usuario o cualquiera que herede de persona
+     * @param FichaAbstract puede ser tanto una publicacion o un review
      */
     public function guardarFotoFicha($oFicha, $pathServidor)
     {

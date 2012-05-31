@@ -352,4 +352,12 @@ $(document).ready(function(){
         }
     });
     // FIN PUNTUAR PUBLICACIONES, ETC //
+
+    //editar foto thumbail galerias
+    $(".thumbEdit").live("mouseenter", function(){
+        $(this).children(".thumbEditMenu").show();
+    });
+    $(".thumbEdit").live("mouseleave", function(){
+        $(this).children(".thumbEditMenu").hide();
+    });
 });
