@@ -167,6 +167,10 @@ class FotoMySQLIntermediary extends FotoIntermediary
                         fotos f ";
 
             $WHERE = array();
+            
+            if(isset($filtro['f.id']) && $filtro['f.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('f.id', $filtro['f.id'], MYSQL_TYPE_INT);
+            }            
             if(isset($filtro['f.seguimientos_id']) && $filtro['f.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('f.seguimientos_id', $filtro['f.seguimientos_id'], MYSQL_TYPE_INT);
             }
@@ -215,8 +219,37 @@ class FotoMySQLIntermediary extends FotoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
 
+    public function isFotoPublicacionUsuario($iFotoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        fotos f
+                        JOIN fichas_abstractas fa ON f.fichas_abstractas_id = fa.id
+                        LEFT JOIN publicaciones p ON fa.id = p.id
+                        LEFT JOIN reviews r ON fa.id = r.id
+                      WHERE
+                        f.id = ".escInt($iFotoId)." AND 
+                        (p.usuarios_id = ".escInt($iUsuarioId)." OR r.usuarios_id = ".escInt($iUsuarioId).")";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }        
+    }
+    
     public function existe($filtro){}
     public function actualizarCampoArray($objects, $cambios){}
     public function insertar($objects){}

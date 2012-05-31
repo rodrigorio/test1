@@ -986,7 +986,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         }
         
         if($this->getRequest()->has('eliminarFoto')){
-            $this->formFoto();
+            $this->eliminarFoto();
             return;
         }
     }
@@ -1077,5 +1077,71 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     public function formFoto()
     {
         
+    }
+
+    private function eliminarFoto()
+    {
+        $iFotoId = $this->getRequest()->getParam('iFotoId');
+
+        if(empty($iFotoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //devuelve si la foto es de una publicacion creada por el usuario que esta logueado
+            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoId);
+            if(!$bFotoUsuario){
+                throw new Exception("No tiene permiso para borrar esta foto", 401);
+            }
+
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);                        
+            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+            
+            ComunidadController::getInstance()->borrarFoto($oFoto, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+
+    private function guardarFoto()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iFotoIdForm = $this->getRequest()->getPost('iFotoIdForm');
+
+            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoIdForm);
+            if(!$bFotoUsuario){
+                throw new Exception("No tiene permiso para editar esta foto", 401);
+            }
+            
+            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+
+            /*
+             esto es de referencia, fijarse que onda el metodo apra guardar foto
+             en el controlador de comunidad y tambien el tipo de foto(adjunto, perfil) si se pisa o que.
+
+            $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
+            $oReview->setKeywords($this->getRequest()->getPost("keywords"));
+            $oReview->isActivo($bActivo);
+             */
+
+            ComunidadController::getInstance()->guardarFoto($oFoto);
+
+            $this->getJsonHelper()->setMessage("La foto se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 }

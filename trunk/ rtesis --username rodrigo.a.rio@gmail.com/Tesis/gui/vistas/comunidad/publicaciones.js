@@ -388,12 +388,30 @@ function uploaderFotoGaleria(iPublicacionId, sTipoItemForm){
                 }else{
                     $('#msg_form_fotoGaleria .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_fotoGaleria').addClass("correcto").fadeIn('slow');
-
-                    //aca hacer un metodo aparte porq tienen q estar los eventos del thumbnail tmb
+                    
                     $('#Thumbnails').append(html);
                     $("a[rel^='prettyPhoto']").prettyPhoto();
                 }
                 return;
+            }
+        });
+    }
+}
+
+function borrarFoto(iFotoId){
+    if(confirm("Se borrara la foto de la publicación, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"comunidad/publicaciones/galeria-fotos/procesar",
+            data:{
+                iFotoId:iFotoId,
+                eliminarFoto:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#foto_"+iFotoId).remove();
+                }
             }
         });
     }
@@ -509,11 +527,16 @@ $(document).ready(function(){
         return false;
     });
 
-    //para el upload de foto galeria
+    //Galeria de fotos
     var iPublicacionId = $("#iItemIdForm").val();
     var sTipoItemForm = $("#sTipoItemForm").val();
     if(iPublicacionId != undefined && iPublicacionId != "" &&
        sTipoItemForm != undefined && sTipoItemForm != ""){
         uploaderFotoGaleria(iPublicacionId, sTipoItemForm);
-    }    
+    }
+
+    $(".borrarFoto").live('click', function(){
+        var iFotoId = $(this).attr("rel");
+        borrarFoto(iFotoId);
+    })
 });
