@@ -82,7 +82,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 		if($oCiudad->getProvincia()!= null){
 			$provinciaId = ($oCiudad->getProvincia()->getId());
 			}else {
-				$provinciaIdId = null;
+				$provinciaId = null;
 			}
         
 			$sSQL =	" update ciudades ".
