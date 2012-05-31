@@ -604,7 +604,7 @@ class ComunidadController
     {
         try{
             $oVideoIntermediary = PersistenceFactory::getVideoIntermediary($this->db);
-            $filtro = array('f.publicacion_id' => $iPublicacionId);
+            $filtro = array('v.publicacion_id' => $iPublicacionId);
             return $oVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
