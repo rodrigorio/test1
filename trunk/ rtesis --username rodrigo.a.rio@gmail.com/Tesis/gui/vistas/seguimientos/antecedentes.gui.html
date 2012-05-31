@@ -40,42 +40,94 @@
         <div class="izq">
             <div class="icono"><span class="i32 bs edit32"></span></div>
             <span class="titulo">Editar antecedentes</span><br>
-            <span class="subtitulo">pepepepp</span>
+            <span class="subtitulo">--------</span>
         </div>
         <div class="der"></div>
     </div>
-    <div class="contenido fl_le">
-     	<div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <form action="" method="post">
-        	<div id="msg" class="error di_no"></div>
-            <div class="fl_le mari2 mabo2">
-                <span class="fowe_bo">Antecedentes:</span><br>
-                <textarea id="antecedentes" class="defVal co maxlength cl_bo" cols="50" rows="20">{sAntecedentes}</textarea>
-            </div>
-             <div class="cl_bo mari2 mabo2">
-                <input type="file" name="fileAntecedentes" id="fileAntecedentes"/>
-            </div>
-            <div class="cl_bo">
-	            <label for="CrearSeguimiento" class="button buttonConfirm buttonLarge mari3">
-	                <button id="guardarAntecedentes" type="button" name="guardarAntecedentes" class="btn01">
-	                    Guardar Antecedentes
-	                </button>
-	            </label>
-        	</div>
-        <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{idSeguimiento}" >
-        </form>
-    </div>
-    <div id="antecedentesActuales" class="fl_le wi">
-    	<div>
-    		<span class="fowe_bo">Archivos actuales:</span><br>
-    		<div id="antecedentesArchivos">{sFileAntecedentes}</div>
-    	</div>
-    	<div>
-    		<span class="fowe_bo">Antecedentes actuales:</span><br>
-    		<div id="antecedentesTextoAnt" class="wi300"></div>
-    		<div id="antecedentesTexto" class="wi300">{sAntecedentes}</div>
-    	</div>
+   
+	    <div class=" fl_le ">
+	     	<div id='ajax_loading' class="ajax_wait30 di_no"></div>
+	        <form action="" method="post">
+	        	<div id='msg_form_Antecedentes' class="msg_form iveal cl_le mato3 " style='display:none;'><span class="msg"></span></div>
+	            <div class="fl_le mari2 mabo2">
+	                <span class="fowe_bo">Antecedentes:</span><br>
+	                <textarea id="antecedentes" class="defVal co maxlength cl_bo" cols="50" rows="20">{sAntecedentes}</textarea>
+	            </div>
+	            <div class="cl_bo">
+		            <label for="CrearSeguimiento" class="button buttonConfirm buttonLarge mari3">
+		                <button id="guardarAntecedentes" type="button" name="guardarAntecedentes" class="btn01">
+		                    Guardar Antecedentes
+		                </button>
+		            </label>
+	        	</div>
+	        <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{idSeguimiento}" >
+	        </form>
+	    </div>
+   		<div id="antecedentesActuales" class="fl_le wi">
+	    	<div>
+	    		<div id="formAntecedentes" class='ficha04 bora'>
+		            <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
+		                <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+		                <div id="wrapAntActual">
+		                <!--BeginAntecedentesActualBlock-->
+		                <div id="antActual" class="mabo3">
+		                    <h2 class="mabo3">Antecedentes Actual</h2>
+		                    <div id="contAntActual">
+		                        <ul class="m_vert pa2 baco1">
+		                            <li>
+		                                <span class="fte2 txt_imp2">Nombre:</span> {sNombreArchivo}
+		                            </li>
+		                            <li>
+		                                <span class="fte2 txt_imp2">Extensi&oacute;n:</span> {sExtensionArchivo}
+		                            </li>
+		                            <li>
+		                                <span class="fte2 txt_imp2">Tama&ntilde;o:</span> {sTamanioArchivo} Kb.
+		                            </li>
+		                            <li>
+		                                <span class="fte2 txt_imp2">Fecha Alta:</span> {sFechaArchivo}
+		                            </li>
+		                            <li>
+		                                <a href="{hrefDescargarAntActual}"><span class="i mi download"></span> Descargar</a>
+		                            </li>
+		                        </ul>
+		                    </div>
+		                </div>
+		                <!--EndAntecedentesActualBlock-->
+		                </div>
+		
+		                <h2 class="mabo3">Suba un archivo desde su equipo</h2>
+		                
+		                <label for="antUpload" class="button buttonConfirm buttonLarge mari3 mabo2">
+		                    <button id="antUpload" name="antUpload" class="btn01">
+		                        Click para seleccionar
+		                    </button>
+		                </label>
+		
+		                <div class='ficha05 bora'>
+		                    <span class="i bs infoo"></span>
+		                    <ul class="m_vert">
+		                        <li>
+		                            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosArchivo}
+		                        </li>
+		                        <li>
+		                            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+		                        </li>
+		                        <li>
+		                            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; el Antecedentes actual si ya tiene uno.
+		                        </li>
+		                    </ul>                    
+		                </div>
+		                
+		                <div style="display:none;" id='msg_form_Antecedentes' class="msg_form iveal cl_le mato3"><span class="msg"></span></div>
+		        </div>
+	    		<div id="antecedentesArchivos">{sFileAntecedentes}</div>
+	    	</div>
+<!--     	<div> -->
+<!--     		<span class="fowe_bo">Antecedentes actuales:</span><br> -->
+<!--     		<div id="antecedentesTextoAnt" class="wi300"></div> -->
+<!--     		<div id="antecedentesTexto" class="wi300">{sAntecedentes}</div> -->
+<!--     	</div> -->
     
-    </div>
+    	</div>
   </div>
 <!--EndFormularioBlock-->
