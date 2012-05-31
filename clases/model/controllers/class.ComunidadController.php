@@ -432,10 +432,22 @@ class ComunidadController
                 throw new Exception("El usuario no posee foto de perfil");
             }
 
-            $aNombreArchivos = $oPersona->getFotoPerfil()->getArrayNombres();
+            $this->borrarFoto($oPersona->getFotoPerfil(), $pathServidor);
+
+            $oPersona->setFotoPerfil(null);
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    public function borrarFoto($oFoto, $pathServidor)
+    {
+    	try{
+            $aNombreArchivos = $oFoto->getArrayNombres();
 
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
-            $oFotoIntermediary->borrar($oPersona->getFotoPerfil());
+            $oFotoIntermediary->borrar($oFoto);
 
             foreach($aNombreArchivos as $nombreServidorArchivo){
                 $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
@@ -444,11 +456,9 @@ class ComunidadController
                 }
             }
 
-            $oPersona->setFotoPerfil(null);
-            
         }catch(Exception $e){
             throw new Exception($e->getMessage());
-        }        
+        }
     }
 
     /**
@@ -596,7 +606,53 @@ class ComunidadController
             return false;
         }        
     }
+
+    /**
+     * Devuelve una foto suelta sin asociarse a ningun objeto.
+     * Esto se necesita para el formulario en el que se modifica orden, titulo, etc.
+     * Tambien para obtener el objeto cuando se tiene que borrar. 
+     */
+    public function getFotoById($iFotoId)
+    {
+        try{
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $filtro = array('f.id' => $iFotoId);
+            $iRecordsTotal = 0;
+            $aFotos = $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aFotos){
+                return $aFotos[0];
+            }else{
+                return null;
+            }  
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }        
     
+    /**
+     * Devuelve true si la foto es de una publicacion creada por el usuario que esta logueado.
+     * Cree el metodo porque levantar la publicacion, para despues levantar todas las fotos,
+     * para despues fijarse si existe la foto en el array es muy costoso.
+     *
+     * Este metodo ademas es util porque yo no quiero que se modifique una foto o se elimine si
+     * el usuario que esta logueado en el sistema no fue el que la creo.
+     * Con esto me aseguro que nadie pueda hacer cosas raras con el javascript.
+     *
+     * @return boolean true si la foto pertenece al integrante logueado.
+     */
+    public function isFotoPublicacionUsuario($iFotoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            return $oFotoIntermediary->isFotoPublicacionUsuario($iFotoId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }  
+    }
+   
    /**
      * @return array|null
      */
@@ -670,7 +726,7 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }        
     }
-    
+
     public function existeDocumentoUsuario($numeroDocumento)
     {
         try{
