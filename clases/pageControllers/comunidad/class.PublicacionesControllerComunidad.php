@@ -923,16 +923,30 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sTipoItem", $objType);
         $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
         
+        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
+        $this->getTemplate()->set_var("sTipoItemForm", $objType);
+        
         $iRecordsTotal = 0;
         $aFotos = $oFicha->getFotos();
         
         if(count($aFotos) > 0){
 
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
             foreach($aFotos as $oFoto){
+                
+                $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
+                
+                $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
             }
 
             $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
-        }else{            
+        }else{         
+            $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
             $this->getTemplate()->set_var("sNoRecords", "No hay fotos cargadas para la publicación");
         }
 
@@ -940,15 +954,124 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         if(count($aFotos) >= 12){
             $this->getTemplate()->set_var("FormularioFotoPerfilBlock", "");
         }else{
-            $this->getTemplate()->set_var("MensajeLimiteFotosBlock", "");            
+            $this->getTemplate()->set_var("MensajeLimiteFotosBlock", "");
+            
+            $this->getUploadHelper()->setTiposValidosFotos();
+            $this->getTemplate()->set_var("sTiposPermitidosFoto", $this->getUploadHelper()->getStringTiposValidos());
+            $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+            $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
         }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
+    /**
+     * Tiene que validar que la publicacion sea efectivamente una que haya creado el usuario que esta en sesion.
+     */
     public function fotosProcesar()
     {
+        if($this->getRequest()->has('agregarFoto')){
+            $this->agregarFotoPublicacion();
+            return;
+        }    
+        
+        //este if va abajo porque los form de upload de archivo son con iframe oculto no con ajax
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
 
+        if($this->getRequest()->has('guardarFoto')){
+            $this->guardarFoto();
+            return;
+        }
+        
+        if($this->getRequest()->has('eliminarFoto')){
+            $this->formFoto();
+            return;
+        }
+    }
+
+    private function agregarFotoPublicacion()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $objType = $this->getRequest()->getParam('objType');
+
+            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+            
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar fotos a esta publicación", 401);
+            }
+                        
+            $nombreInputFile = 'fotoGaleria';
+
+            $this->getUploadHelper()->setTiposValidosFotos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+
+                $idItem = $oFicha->getId();
+
+                //un array con los datos de las fotos
+                $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($idItem, $nombreInputFile);
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+
+                try{
+                    $oFoto = new stdClass();
+                    $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
+                    $oFoto->sNombreMediumSize = $aNombreArchivos['nombreFotoMediana'];
+                    $oFoto->sNombreSmallSize = $aNombreArchivos['nombreFotoChica'];
+
+                    $oFoto = Factory::getFotoInstance($oFoto);
+
+                    $oFoto->setOrden(0);
+                    $oFoto->setTitulo('');
+                    $oFoto->setDescripcion('');
+                    $oFoto->setTipoAdjunto();
+                    
+                    $oFicha->addFoto($oFoto);
+                    
+                    ComunidadController::getInstance()->guardarFotoFicha($oFicha, $pathServidor);
+
+                    $this->restartTemplate();
+
+                    //creo el thumbnail para agregar a la galeria
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxThumbnailFoto", "ThumbnailFotoEditBlock");
+
+                    $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
+
+                    //OJO QUE SI TIENE UN ';' EL HTML Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
+                    $respuesta = "1; ".$this->getTemplate()->pparse('ajaxThumbnailFoto', false);
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+                    $respuesta = "0; Error al guardar en base de datos";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;
+                }
+            }
+        }catch(Exception $e){
+            $respuesta = "0; Error al procesar el archivo";
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
+        }
     }
 
     public function formFoto()

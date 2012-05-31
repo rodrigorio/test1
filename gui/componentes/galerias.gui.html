@@ -2,7 +2,22 @@
 <div class="fte3 mabo2">Galer&iacute;a de Fotos</div>
 <div class="mabo3"><span class="teta_ca fowe_bo">{sTipoItem}:</span> {sTituloItem}</div>
 
-    {thumbnails}
+<input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
+<input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
+
+    <div id="Thumbnails" class="grupo mabo2">
+        <!--BeginThumbnailFotoEditBlock-->
+        <div class="thumbEdit fl_le mari2">
+            <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
+                <i style="background-image:url('{urlFoto}')"></i>
+            </a>
+            <div style="display:none" class="thumbEditMenu teal_ri">
+                <span title="Editar" rel="{iFotoId}" class="i bs edit ihover editarFoto"></span>
+                <span title="Eliminar" rel="{iFotoId}" class="i bs delete ihover borrarFoto"></span>
+            </div>
+        </div>
+        <!--EndThumbnailFotoEditBlock-->
+    </div>
 
     <!--BeginNoRecordsFotosBlock-->
     <div class="teal_ce fowe_bo">{sNoRecords}</div>
@@ -16,15 +31,16 @@
     <!--EndMensajeLimiteFotosBlock-->
 
     <!--BeginFormularioFotoPerfilBlock-->
-    <div id="formFotoGaleria" class='ficha04 bora grupo'>
+    <br clear="all" />
+    <div id="formFotoGaleria" class='ficha04 bora grupo'>        
         <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
 
             <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
             <h2 class="mabo3">Suba una foto desde su equipo</h2>
 
-            <label for="fotoUpload" class="button buttonConfirm buttonLarge mari3 mabo2">
-                <button id="fotoUpload" name="fotoUpload" class="btn01">
+            <label for="fotoUploadGaleria" class="button buttonConfirm buttonLarge mari3 mabo2">
+                <button id="fotoUploadGaleria" name="fotoUploadGaleria" class="btn01">
                     Click para seleccionar
                 </button>
             </label>

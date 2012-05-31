@@ -125,6 +125,11 @@ class Review extends FichaAbstract
         return $this->oUsuario;
     }
 
+    public function getUsuarioId()
+    {
+        return $this->iUsuarioId;
+    }
+
     public function getDescripcionBreve(){
         return $this->sDescripcionBreve;
     }
