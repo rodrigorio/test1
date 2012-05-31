@@ -32,9 +32,8 @@ $(document).ready(function(){
 		            },
 		            success: function(data){
 		            	if(data.success != undefined || data.success == 1){
-		            		$("#msg").html("Los datos se guardaron exitosamente.");
-		       			 	$("#msg").removeClass("di_no").addClass("di_bl");  
-		       			 	$("#msg").removeClass("error").addClass("correcto");  
+		            		$("#msg_form_Antecedentes .msg").html("Los datos se guardaron exitosamente.");
+		       			 	$('#msg_form_Antecedentes').removeClass("error").addClass("correcto").fadeIn('slow');
 		            	}
 		                setWaitingStatus('listadoSeguimientos', false);
 		            }
@@ -42,55 +41,57 @@ $(document).ready(function(){
 		 }
 	 });
 	 
-	  new Ajax_upload('#fileAntecedentes', {
+	  new Ajax_upload('#antUpload', {
 	        action: 'seguimientos/procesar-antecedentes',
 	        data:{
 	        	fileAntecedentesUpload: "1",
 	            seguimientoId: $("#idSeguimiento").val(),
 	        },
 	        name: 'fileAntecedentes',
+	        onChange:function(file , ext){
+	        	if(confirm("Se eliminara el archivo anterior, desea realizar esta operacion?")){
+	        		return true;
+	        	}else{
+	        		return false;
+	        	}
+	        },
 	        onSubmit:function(file , ext){
 	            this.disable(); //solo un archivo a la vez
+	            setWaitingStatus('formAntecedentes', true);
 	        },
 	        onProgress: function(id, fileName, loaded, total){
-	        	alert(2)
+	            
 	        },
 	        onComplete:function(file, response){
-	        	alert(3)
-	            setWaitingStatus('tabsFormPersona', false);
-	            this.enable();
+	            setWaitingStatus('formAntecedentes', false);
+                this.enable();
 
-	            if(response == undefined){
-	                $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
-	                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-	                return;
-	            }
+                if(response == undefined){
+                    $('#msg_form_Antecedentes .msg').html(lang['error procesar']);
+                    $('#msg_form_Antecedentes').addClass("error").fadeIn('slow');
+                    return;
+                }
 
-	            var dataInfo = response.split(';');
-	            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, pendiente de moderacion
-	            var html = dataInfo[1]; //aca queda el bloque del html que acompaña el resultado
+                var dataInfo = response.split(';');
+                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+                var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
 
-	            if(resultado != "0" && resultado != "1" && resultado != "2"){
-	                $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
-	                $('#msg_form_fotoPerfil').addClass("info").fadeIn('slow');
-	                return;
-	            }
+                //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
+                if(resultado != "0" && resultado != "1" && resultado != "2"){
+                    $('#msg_form_Antecedentes .msg').html(lang['error permiso']);
+                    $('#msg_form_Antecedentes').addClass("info").fadeIn('slow');
+                    return;
+                }
 
-	            if(resultado == '0'){
-	                $('#msg_form_fotoPerfil .msg').html(html);
-	                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-	            }else{
-	                if(resultado == '1'){
-	                    $('#msg_form_fotoPerfil .msg').html(lang['exito procesar archivo']);
-	                    $('#contFotoPerfilActual').html(html);
-	                    $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
-	                    $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
-	                }else{
-	                    $('#msg_form_fotoPerfil .msg').html(html);
-	                    $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
-	                }
-	            }
-	            return;
+                if(resultado == '0'){
+                    $('#msg_form_Antecedentes .msg').html(html);
+                    $('#msg_form_Antecedentes').addClass("error").fadeIn('slow');
+                }else{
+                    $('#msg_form_Antecedentes .msg').html(lang['exito procesar archivo']);
+                    $('#msg_form_Antecedentes').addClass("correcto").fadeIn('slow');
+                    $('#wrapAntActual').html(html);
+                }
+                return;
 	        }
 	    });
 	

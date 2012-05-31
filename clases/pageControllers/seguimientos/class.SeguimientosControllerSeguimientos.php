@@ -393,6 +393,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
           
+            //form para ingresar uno nuevo
+	        $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
+	        $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+	        $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+            
             $iIdSeguimiento = $this->getRequest()->getPost('idSeg');
             $iRecordsTotal	= 0;
             $sOrderBy 		= null;
@@ -406,7 +411,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 				foreach($oSeguimiento->getArchivoAntecedentes() as $archivo){
 					$sNombreArchivo = $archivo->getNombreServidor();
 					$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
-					$this->getTemplate()->set_var("sFileAntecedentes", "<a href='".$link."'>".$sNombreArchivo."</a>");
+					//$this->getTemplate()->set_var("sFileAntecedentes", "<a href='".$link."'>".$sNombreArchivo."</a>");
+					
+					$this->getTemplate()->set_var("sNombreArchivo", $archivo->getNombre());
+					$this->getTemplate()->set_var("sExtensionArchivo", $archivo->getTipoMime());
+					$this->getTemplate()->set_var("sTamanioArchivo", $archivo->getTamanio());
+					$this->getTemplate()->set_var("sFechaArchivo", $archivo->getFechaAlta());
+					$this->getTemplate()->set_var("hrefDescargarAntActual", $link);
 				}
 			}
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -428,9 +439,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->procesarTextoAntecedentes();
             return;
         }
-        
-        //setea headers y body en el response con los valores codificados
-        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
  	public function fileAntecedentesUpload(){
@@ -451,16 +459,24 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             	$pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
             	list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, "antecedentes", $nombreInputFile);
 				$res = SeguimientosController::getInstance()->guardarAntecedentesFile($oSeguimiento,$nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
-				print_r($oSeguimiento );
-				$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
+				$oArchivo = $oSeguimiento->getArchivoAntecedentes();
+				
+				$this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "antecedentesActual", "AntecedentesActualBlock");
+				$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$oArchivo->getNombreServidor();
+				$this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
+				$this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+				$this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+				$this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
+				$this->getTemplate()->set_var("hrefDescargarAntActual", $link);
+				$respuesta = "1; ";
             }
-			if($res){
-                $this->getJsonHelper()->setSuccess(true)->setMessage();
-            }else{
-                $this->getJsonHelper()->setSuccess(false);
-            }
+			$respuesta .= $this->getTemplate()->pparse('antecedentesActual', false);
+			$this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+			
         }catch(Exception $e){
-           $this->getJsonHelper()->setSuccess(false);
+            $respuesta = "0; Error al guardar en base de datos";
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
         }
     }
     
@@ -490,6 +506,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
            $this->getJsonHelper()->setSuccess(false);
         }
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
     public function eliminar()

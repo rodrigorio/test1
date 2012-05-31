@@ -221,7 +221,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ".
                     " estado= ".$db->escape($oSeguimientoPersonalizado->getEstado(), true) ." ".
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
-
 			 $db->execSQL($sSQL);
 
 			 // ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -232,8 +231,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 					" WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
 			 $db->commit();
-
-
+			 return true;
+	
 		}catch(Exception $e){
 			echo $e->getMessage();
             $db->rollback_transaction();
@@ -309,6 +308,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                  }
             }
 		}catch(Exception $e){
+			echo $e->getMessage();
 			throw new Exception($e->getMessage(), 0);
 		}
     }
