@@ -6,7 +6,7 @@
  * @author Andres
  */
 abstract class FichaAbstract
- {
+{
     protected  $iId;
     protected  $sTitulo;
     protected  $dFecha;
@@ -26,15 +26,15 @@ abstract class FichaAbstract
     */
     protected $aEmbedVideos = null;
     
- public function __construct(){}
+    public function __construct(){}
  	
-  public function setId($iId){
+    public function setId($iId){
         $this->iId = $iId;
         return $this;
     }
     
- public function setTitulo($sTitulo){
-    	$this->sTitulo = $sTitulo;
+    public function setTitulo($sTitulo){
+        $this->sTitulo = $sTitulo;
         return $this;
     }
     
@@ -56,7 +56,7 @@ abstract class FichaAbstract
     	$this->sDescripcion = $sDescripcion;
         return $this;
     }
-  public function setFotos($aFotos)
+    public function setFotos($aFotos)
     {
         $this->aFotos = $aFotos;
         return $this;
@@ -75,6 +75,15 @@ abstract class FichaAbstract
         $this->aArchivos[] = $oArchivo;
         return $this;
     }
+    public function setEmbedVideos($aEmbedVideos){
+        $this->aEmbedVideos = $aEmbedVideos;
+        return $this;
+    }
+    public function addEmbedVideo($oEmbedVideo)
+    {
+        $this->aEmbedVideos[] = $oEmbedVideo;
+        return $this;
+    }
  
      /**
      * @return array|null Foto
@@ -82,27 +91,31 @@ abstract class FichaAbstract
     public function getFotos()
     {
     	if($this->aFotos === null){
-            $this->aFotos = ComunidadController::getInstance()->obtenerFotosPublicacion($this->iId);
+            $this->aFotos = ComunidadController::getInstance()->obtenerFotosFicha($this->iId);
     	}
         return $this->aFotos;
     }  
- public function getArchivos()
+    public function getArchivos()
     {
-    	if($this->aArchivos === null){
+        if($this->aArchivos === null){
             $this->aArchivos = ComunidadController::getInstance()->obtenerArchivosPublicacion($this->iId);
-    	}
+        }
         return $this->aArchivos;
     }
- public function getId(){
+    public function getEmbedVideos(){
+        return $this->aEmbedVideos;
+    }
+
+    public function getId(){
         return $this->iId;
     }
- public function getTitulo(){
+    public function getTitulo(){
         return $this->sTitulo;
     }
- public function getFecha(){
+    public function getFecha(){
         return $this->dFecha;
     }
- public function getDescripcion(){
+    public function getDescripcion(){
         return $this->sDescripcion;
     }
- } 
+ }

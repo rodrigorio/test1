@@ -1,5 +1,5 @@
 <?php
-class Video
+class EmbedVideo
 {
     private $iId;
     private $iSeguimientosId;

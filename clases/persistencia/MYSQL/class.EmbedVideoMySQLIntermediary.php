@@ -1,5 +1,5 @@
 <?php
-class VideoMySQLIntermediary extends VideoIntermediary
+class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
 {
     private static $instance = null;
 
@@ -19,22 +19,8 @@ class VideoMySQLIntermediary extends VideoIntermediary
         }
         return self::$instance;
     }
-    
-    public function guardarVideosFicha(FichaAbstract $oFicha)
-    {
-        if(null !== $oVideo->getVideos()){
-        	foreach($oFicha->getVideos() as $oVideo){
-        		if(null !== $oVideo->getId()){
-        	       	return $this->actualizar($oVideo);
-		        }else{
-		            $iId = $oFicha->getId();
-		            return $this->insertarAsociado($oVideo, $iId, get_class($oFicha));
-		        }        		        		
-        	}
-        }                    
-    }  
-    
-	public function borrar($aVideos)
+       
+    public function borrar($aVideos)
     {
         try{
             $db = $this->conn;
@@ -84,7 +70,7 @@ class VideoMySQLIntermediary extends VideoIntermediary
     	
     }  
     
- public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
             $db = clone($this->conn);
@@ -135,6 +121,7 @@ class VideoMySQLIntermediary extends VideoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+    
     public function existe($filtro){}
     public function actualizarCampoArray($objects, $cambios){}
     public function insertar($objects){}

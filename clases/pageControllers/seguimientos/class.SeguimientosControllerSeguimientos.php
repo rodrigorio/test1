@@ -514,14 +514,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     {
     	$iSeguimientoId = $this->getRequest()->getParam('seguimientoId');
     	if(empty($iSeguimientoId)){
-    		throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+    		throw new Exception("La url esta incompleta, no puede ejecutar la acciï¿½n", 401);
     	}
     
     	$this->getJsonHelper()->initJsonAjaxResponse();
     	try{
     		$this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
-    		$pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-    		$result = SeguimientosController::getInstance()->eliminarSeguimiento($iSeguimientoId, $pathServidor);
+
+                $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+                $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+
+    		$result = SeguimientosController::getInstance()->eliminarSeguimiento($iSeguimientoId, $pathServidorFotos, $pathServidorArchivos);
     
     		$this->restartTemplate();
     

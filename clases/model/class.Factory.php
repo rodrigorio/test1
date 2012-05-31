@@ -204,4 +204,12 @@ class Factory
         $oReview = new Review($obj);
         return $oReview;
     }
+    /**
+     * @param stdClass $obj
+     * @return EmbedVideo|null
+     */
+    public static function &getEmbedVideoInstance(stdClass $obj){
+        $oEmbedVideo = new EmbedVideo($obj);
+        return $oEmbedVideo;
+    }
 }

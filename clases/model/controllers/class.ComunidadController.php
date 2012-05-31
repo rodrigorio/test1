@@ -585,27 +585,28 @@ class ComunidadController
     /**
      * @return array|null
      */
-    public function obtenerFotosPublicacion($iPublicacionId)
+    public function obtenerFotosFicha($iFichaId)
     {
         try{
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
-            $filtro = array('f.publicacion_id' => $iPublicacionId);
+            $filtro = array('f.fichas_abstractas_id' => $iFichaId);
             return $oFotoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
         }        
     }
+    
    /**
      * @return array|null
      */
     
-    public function obtenerVideosPublicacion($iPublicacionId)
+    public function obtenerEmbedVideosPublicacion($iPublicacionId)
     {
         try{
-            $oVideoIntermediary = PersistenceFactory::getVideoIntermediary($this->db);
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             $filtro = array('v.publicacion_id' => $iPublicacionId);
-            return $oVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;

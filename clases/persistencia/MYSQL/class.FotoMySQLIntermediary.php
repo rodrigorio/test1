@@ -33,7 +33,11 @@ class FotoMySQLIntermediary extends FotoIntermediary
             return $this->insertarAsociado($oPersona->getFotoPerfil(), $iId, get_class($oPersona));
         }        
     }
-    
+
+    /**
+     * En el peor de los casos se guarda 1 foto sola, esto es por si se usa alguna libreria javascript
+     * en la que se pueden subir muchas fotos al mismo tiempo
+     */
     public function guardarFotosFicha(FichaAbstract $oFicha)
     {
         if(null !== $oFicha->getFotos()){
@@ -151,10 +155,14 @@ class FotoMySQLIntermediary extends FotoIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
-                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
-                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
+                        f.id as iFotoId,
+                        f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize,
+                        f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden,
+                        f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion,
+                        f.tipo as sFotoTipo
                     FROM
                         fotos f ";
 
