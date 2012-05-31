@@ -66,10 +66,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     public function index(){
         $this->listar();
     }
-    
-    public function galeriaFotos(){}
-    public function fotosProcesar(){}
-    public function formFoto(){}
+  
     public function galeriaArchivos(){}
     public function archivosProcesar(){}
     public function formArchivo(){}
@@ -173,9 +170,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             foreach($aFichas as $oFicha){
 
                 $hrefAmpliarPublicacion = "";
-                $hrefEditarFotos = "";
-                $hrefEditarVideos = "";
-                $hrefEditarArchivos = "";
+                $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
+                $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
+                $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
 
                 $bPublico = $oFicha->isPublico();
                 $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
@@ -374,9 +371,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             foreach($aFichas as $oFicha){
 
                 $hrefAmpliarPublicacion = "";
-                $hrefEditarFotos = "";
-                $hrefEditarVideos = "";
-                $hrefEditarArchivos = "";
+                $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
+                $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
+                $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
 
                 $bPublico = $oFicha->isPublico();
                 $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
@@ -888,5 +885,74 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    public function galeriaFotos()
+    {
+        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+        $objType = $this->getRequest()->getParam('objType');
+
+        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->setFrameTemplate()
+             ->setHeadTag()
+             ->setMenuDerecha();
+
+        IndexControllerComunidad::setCabecera($this->getTemplate());
+        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+        $this->printMsgTop();
+
+        switch($objType)
+        {
+            case "publicacion":
+                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                break;
+            case "review":
+                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                break;
+        }
+       
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaFotosBlock");
+
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->set_var("sTipoItem", $objType);
+        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
+        
+        $iRecordsTotal = 0;
+        $aFotos = $oFicha->getFotos();
+        
+        if(count($aFotos) > 0){
+
+            foreach($aFotos as $oFoto){
+            }
+
+            $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
+        }else{            
+            $this->getTemplate()->set_var("sNoRecords", "No hay fotos cargadas para la publicación");
+        }
+
+        //aca despues hay que usar el parametros max fotos publicacion
+        if(count($aFotos) >= 12){
+            $this->getTemplate()->set_var("FormularioFotoPerfilBlock", "");
+        }else{
+            $this->getTemplate()->set_var("MensajeLimiteFotosBlock", "");            
+        }
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    public function fotosProcesar()
+    {
+
+    }
+
+    public function formFoto()
+    {
+        
     }
 }

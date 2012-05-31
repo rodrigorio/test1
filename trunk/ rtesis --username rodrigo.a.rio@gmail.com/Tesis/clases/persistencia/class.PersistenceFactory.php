@@ -129,4 +129,10 @@ class PersistenceFactory {
             return(PublicacionMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getEmbedVideoIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(EmbedVideoMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
