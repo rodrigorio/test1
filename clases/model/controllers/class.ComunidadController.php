@@ -644,7 +644,7 @@ class ComunidadController
     public function isFotoPublicacionUsuario($iFotoId)
     {
         try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             return $oFotoIntermediary->isFotoPublicacionUsuario($iFotoId, $iUsuarioId);
         }catch(Exception $e){
@@ -723,6 +723,25 @@ class ComunidadController
                 }
                 $oFicha->setFotos(null);
             }                                             
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    /**
+     * Este metodo se debe usar solo para guardar la informacion del formulario de edicion de foto.
+     * Titulo, descripcion, etc.
+     *
+     * No sirve para asociar la foto a ninguna entidad
+     */
+    public function guardarFoto($oFoto)
+    {
+    	try{
+            if(null === $oFoto->getId()){
+                throw new Exception("La foto no posee Id");
+            }
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            return $oFotoIntermediary->actualizar($oFoto);
+        }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
     }

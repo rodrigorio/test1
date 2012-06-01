@@ -12,7 +12,7 @@ class Foto
     private $sNombreBigSize;
     private $sNombreMediumSize;
     private $sNombreSmallSize;
-    private $iOrden;
+    private $iOrden = "";
     private $sTitulo;
     private $sDescripcion;
     private $sTipo;
