@@ -80,17 +80,20 @@ class FotoMySQLIntermediary extends FotoIntermediary
         try{
             $db = $this->conn;
             
+            $iOrden = ($oFoto->getOrden() == "" || $oFoto->getOrden() == '0') ? "null" : $oFoto->getOrden();
+            
             $sSQL = " UPDATE fotos SET" .
                     " nombreBigSize = ".$this->escStr($oFoto->getNombreBigSize()).", " .
                     " nombreMediumSize = ".$this->escStr($oFoto->getNombreMediumSize()).", " .
                     " nombreSmallSize = ".$this->escStr($oFoto->getNombreSmallSize()).", ".
-                    " orden = ".$this->escInt($oFoto->getOrden()).", " .
+                    " orden = ".$iOrden.", " .
                     " titulo = ".$this->escStr($oFoto->getTitulo()).", " .
                     " descripcion = ".$this->escStr($oFoto->getDescripcion()).", " .
-                    " tipo = ".$this->escStr($oFoto->getTipo()).", " .
+                    " tipo = ".$this->escStr($oFoto->getTipo())." " .
                     " WHERE id = ".$this->escInt($oFoto->getId());
 
             $db->execSQL($sSQL);
+            $db->commit();
 
             return true;
 
@@ -126,11 +129,11 @@ class FotoMySQLIntermediary extends FotoIntermediary
             }
 
             $sSQL .= " nombreBigSize = ".$this->escStr($oFoto->getNombreBigSize()).", " .
-                    " nombreMediumSize = ".$this->escStr($oFoto->getNombreMediumSize()).", " .
-                    " nombreSmallSize = ".$this->escStr($oFoto->getNombreSmallSize()).", ".
-                    " titulo = ".$this->escStr($oFoto->getTitulo()).", " .
-                    " descripcion = ".$this->escStr($oFoto->getDescripcion()).", " .
-                    " tipo = ".$this->escStr($oFoto->getTipo())." ";
+                     " nombreMediumSize = ".$this->escStr($oFoto->getNombreMediumSize()).", " .
+                     " nombreSmallSize = ".$this->escStr($oFoto->getNombreSmallSize()).", ".
+                     " titulo = ".$this->escStr($oFoto->getTitulo()).", " .
+                     " descripcion = ".$this->escStr($oFoto->getDescripcion()).", " .
+                     " tipo = ".$this->escStr($oFoto->getTipo())." ";
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();            
@@ -221,7 +224,7 @@ class FotoMySQLIntermediary extends FotoIntermediary
     }
 
     public function isFotoPublicacionUsuario($iFotoId, $iUsuarioId)
-    {
+    {        
     	try{
             $db = $this->conn;
 
@@ -233,8 +236,8 @@ class FotoMySQLIntermediary extends FotoIntermediary
                         LEFT JOIN publicaciones p ON fa.id = p.id
                         LEFT JOIN reviews r ON fa.id = r.id
                       WHERE
-                        f.id = ".escInt($iFotoId)." AND 
-                        (p.usuarios_id = ".escInt($iUsuarioId)." OR r.usuarios_id = ".escInt($iUsuarioId).")";
+                        f.id = ".$this->escInt($iFotoId)." AND
+                        (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId).")";
 
             $db->query($sSQL);
 

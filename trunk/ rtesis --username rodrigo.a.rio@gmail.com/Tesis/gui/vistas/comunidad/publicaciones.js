@@ -78,7 +78,7 @@ var optionsAjaxFormPublicacion = {
 };
 
 //validacion y submit
-var validateFormReview = {
+var validateFormFoto = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -92,46 +92,96 @@ var validateFormReview = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        itemEventSummary:{required:function(element){
-                            return $("#itemType option:selected").val() == "event";
-                         }},
-        item:{required:true},
+        orden:{digits:true, range:[1, 9999]}
+    },
+    messages:{
+        orden:{
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
+    }
+};
+
+var optionsAjaxFormFoto = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'comunidad/publicaciones/galeria-fotos/procesar?guardarFoto=1',
+    beforeSerialize:function(){        
+        if($("#formFoto").valid() == true){
+            $('#msg_form_foto').hide();
+            $('#msg_form_foto').removeClass("correcto").removeClass("error");
+            $('#msg_form_foto .msg').html("");
+            setWaitingStatus('formFoto', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formFoto', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_foto .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_foto .msg').html(data.mensaje);
+            }
+            $('#msg_form_foto').addClass("error").fadeIn('slow');
+        }else{
+            //si guardo bien directamente cierro el dialog
+            if($("#dialog").length != 0){
+                $("#dialog").hide("slow").remove();
+            }            
+        }
+    }
+};
+
+//validacion y submit
+var validateFormPublicacion = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
         titulo:{required:true},
         descripcionBreve:{required:true},
         descripcion:{required:true},
         keywords:{required:true},
         activo:{required:true},
         publico:{required:true},
-        activoComentarios:{required:true},
-        itemUrl:{url:true},
-        fuenteOriginal:{url:true}
+        activoComentarios:{required:true}
     },
     messages:{
-        itemEventSummary: mensajeValidacion("requerido"),
-        item: mensajeValidacion("requerido"),
         titulo: mensajeValidacion("requerido"),
         descripcionBreve: mensajeValidacion("requerido"),
         descripcion: mensajeValidacion("requerido"),
         keywords: mensajeValidacion("requerido"),
         activo: mensajeValidacion("requerido"),
         publico: mensajeValidacion("requerido"),
-        activoComentarios: mensajeValidacion("requerido"),
-        itemUrl: mensajeValidacion("url"),
-        fuenteOriginal: mensajeValidacion("url")
+        activoComentarios: mensajeValidacion("requerido")
     }
 };
 
-var optionsAjaxFormReview = {
+var optionsAjaxFormPublicacion = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/guardar-review',
-    beforeSerialize:function(){        
-        if($("#formReview").valid() == true){
+    url: 'comunidad/publicaciones/guardar-publicacion',
+    beforeSerialize:function(){
 
-            $('#msg_form_review').hide();
-            $('#msg_form_review').removeClass("correcto").removeClass("error");
-            $('#msg_form_review .msg').html("");
-            setWaitingStatus('formReview', true);
+        if($("#formPublicacion").valid() == true){
+
+            $('#msg_form_publicacion').hide();
+            $('#msg_form_publicacion').removeClass("correcto").removeClass("error");
+            $('#msg_form_publicacion .msg').html("");
+            setWaitingStatus('formPublicacion', true);
 
         }else{
             return false;
@@ -139,32 +189,31 @@ var optionsAjaxFormReview = {
     },
 
     success:function(data){
-        setWaitingStatus('formReview', false);
+        setWaitingStatus('formPublicacion', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_review .msg').html(lang['error procesar']);
+                $('#msg_form_publicacion .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_review .msg').html(data.mensaje);
+                $('#msg_form_publicacion .msg').html(data.mensaje);
             }
-            $('#msg_form_review').addClass("error").fadeIn('slow');
+            $('#msg_form_publicacion').addClass("error").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_review .msg').html(lang['exito procesar']);
+                $('#msg_form_publicacion .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_review .msg').html(data.mensaje);
+                $('#msg_form_publicacion .msg').html(data.mensaje);
             }
-            if(data.agregarReview != undefined){
+            if(data.agregarPublicacion != undefined){
                 //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formReview').each(function(){
+                $('#formPublicacion').each(function(){
                   this.reset();
                 });
             }
-            $('#msg_form_review').addClass("correcto").fadeIn('slow');
+            $('#msg_form_publicacion').addClass("correcto").fadeIn('slow');
         }
     }
 };
-
 
 function bindEventsPublicacionForm(){
     $("#formPublicacion").validate(validateFormPublicacion);
@@ -175,6 +224,11 @@ function bindEventsReviewForm(){
     $("#formReview").validate(validateFormReview);
     $("#formReview").ajaxForm(optionsAjaxFormReview);
     selectItemTypeReviewEvent();
+}
+
+function bindEventsFotoForm(){
+    $("#formFoto").validate(validateFormFoto);
+    $("#formFoto").ajaxForm(optionsAjaxFormFoto);
 }
 
 function selectItemTypeReviewEvent(){
@@ -248,6 +302,36 @@ function editarPublicacion(iPublicacionId, tipo){
             }else{
                 bindEventsReviewForm();
             }
+        }
+    );
+}
+
+/**
+ * Tipo es Publicacion/Review
+ */
+function editarFoto(iFotoId){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Editar Foto"></div>').appendTo('body');
+
+    dialog.load(
+        "comunidad/publicaciones/galeria-fotos/form?iFotoId="+iFotoId,
+        {},
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:550,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsFotoForm();
         }
     );
 }
@@ -539,4 +623,9 @@ $(document).ready(function(){
         var iFotoId = $(this).attr("rel");
         borrarFoto(iFotoId);
     })
+
+    $(".editarFoto").live('click', function(){
+        var iFotoId = $(this).attr("rel");
+        editarFoto(iFotoId);
+    });
 });

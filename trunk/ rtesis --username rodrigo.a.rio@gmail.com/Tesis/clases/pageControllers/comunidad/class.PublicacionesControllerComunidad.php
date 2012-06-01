@@ -67,13 +67,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->listar();
     }
   
-    public function galeriaArchivos(){}
-    public function archivosProcesar(){}
-    public function formArchivo(){}
-    public function galeriaVideos(){}
-    public function videosProcesar(){}
-    public function formVideo(){}
-
     /**
      * Lista todas las publicaciones de integrantes para la comunidad.
      * Son fichas miniatura una abajo de la otra paginadas y con posibilidad de filtros.
@@ -1037,7 +1030,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
                     $oFoto = Factory::getFotoInstance($oFoto);
 
-                    $oFoto->setOrden(0);
                     $oFoto->setTitulo('');
                     $oFoto->setDescripcion('');
                     $oFoto->setTipoAdjunto();
@@ -1076,7 +1068,27 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
     public function formFoto()
     {
-        
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
+
+        $iFotoId = $this->getRequest()->getParam('iFotoId');
+        if(empty($iFotoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+
+        $this->getTemplate()->set_var("iFotoId", $iFotoId);
+
+        $sTitulo = $oFoto->getTitulo();
+        $sDescripcion = $oFoto->getDescripcion();
+        $iOrden = $oFoto->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     private function eliminarFoto()
@@ -1115,23 +1127,22 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $iFotoIdForm = $this->getRequest()->getPost('iFotoIdForm');
+            $iFotoId = $this->getRequest()->getPost('iFotoIdForm');
 
-            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoIdForm);
+            if(empty($iFotoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoId);
             if(!$bFotoUsuario){
                 throw new Exception("No tiene permiso para editar esta foto", 401);
             }
             
             $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
-
-            /*
-             esto es de referencia, fijarse que onda el metodo apra guardar foto
-             en el controlador de comunidad y tambien el tipo de foto(adjunto, perfil) si se pisa o que.
-
-            $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
-            $oReview->setKeywords($this->getRequest()->getPost("keywords"));
-            $oReview->isActivo($bActivo);
-             */
+            
+            $oFoto->setOrden($this->getRequest()->getPost("orden"));
+            $oFoto->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oFoto->setTitulo($this->getRequest()->getPost("titulo"));
 
             ComunidadController::getInstance()->guardarFoto($oFoto);
 
@@ -1144,4 +1155,11 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
+
+    public function galeriaArchivos(){}
+    public function archivosProcesar(){}
+    public function formArchivo(){}
+    public function galeriaVideos(){}
+    public function videosProcesar(){}
+    public function formVideo(){}
 }
