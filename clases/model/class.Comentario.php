@@ -10,6 +10,7 @@ class Comentario
     private $sDescripcion;
     private $fValoracion;
     private $iUsuarioId;
+    private $oUsuario;
     private $sNombreApellido;
     
 
@@ -56,6 +57,12 @@ class Comentario
         $this->sDescripcion = $sDescripcion;
         return $this;
     }
+    
+    public function setUsuario($oUsuario)
+    {
+        $this->oUsuario = $oUsuario;
+        return $this;
+    }
     public function setUsuarioId($iUsuarioId)
     {
         $this->iUsuarioId = $iUsuarioId;
@@ -97,6 +104,12 @@ class Comentario
     public function getValoracion()
     {
         return $this->fValoracion;
+    }
+    public function getUsuario(){
+    	if($this->oUsuario == null && !empty($this->iUsuarioId)){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($this->iUsuarioId);
+    	}
+        return $this->oUsuario;
     }
     public function getUsuarioId()
     {
