@@ -30,13 +30,15 @@ public  function insertar($oComentario)
    {
 		try{
 			$db = $this->conn;
-			$sSQL =	" insert into comentarios ".
-                    " set fecha = '".$oComentario->getFecha()."', ".
-                    " descripcion =".$db->escape($oComentario->getDescripcion(),true).", " .
+			$sSQL =	" insert into comentarios ".               
+			        " set reviews_id =".$db->escape($oComentario->getReviewId(),false,MYSQL_TYPE_INT)." ,".
+			        " publicaciones_id =".$db->escape($oComentario->getUsuarioId(),false,MYSQL_TYPE_INT)." ,".
+			        " archivos_id =".$db->escape($oComentario->getArchivoId(),false,MYSQL_TYPE_INT)." ,".
+                    " fecha = '".$oComentario->getFecha()."', ".
+			        " descripcion =".$db->escape($oComentario->getDescripcion(),true).", " .
 			        " valoracion =".$db->escape($oComentario->getValoracion(),false,MYSQL_TYPE_FLOAT).", " .
-                    " usuario_id =".$db->escape($oComentario->getUsuarioId,false,MYSQL_TYPE_INT).", ".
-                    " where id =".$db->escape($oComentario->getId(),false,MYSQL_TYPE_INT)." " ;	
-			 
+                    " usuario_id =".$db->escape($oComentario->getUsuarioId(),false,MYSQL_TYPE_INT)." ";
+                    			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
@@ -55,7 +57,6 @@ public  function insertar($oComentario)
                     " set fecha = '".$oComentario->getFecha()."', ".
                     " descripcion =".$db->escape($oComentario->getDescripcion(),true).", " .
 			        " valoracion =".$db->escape($oComentario->getValoracion(),false,MYSQL_TYPE_FLOAT).", " .
-                    " usuario_id =".$db->escape($oComentario->getUsuarioId,false,MYSQL_TYPE_INT).", ".
                     " where id =".$db->escape($oComentario->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
