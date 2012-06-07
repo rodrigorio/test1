@@ -212,4 +212,12 @@ class Factory
         $oEmbedVideo = new EmbedVideo($obj);
         return $oEmbedVideo;
     }
+    /**
+     * @param stdClass $obj
+     * @return Comentario|null
+     */
+    public static function &getComentarioInstance(stdClass $obj){
+        $oComentario = new Comentario($obj);
+        return $oComentario;
+    }
 }
