@@ -77,7 +77,6 @@ var optionsAjaxFormPublicacion = {
     }
 };
 
-//validacion y submit
 var validateFormFoto = {
     errorElement: "div",
     validClass: "correcto",
@@ -136,8 +135,7 @@ var optionsAjaxFormFoto = {
     }
 };
 
-//validacion y submit
-var validateFormPublicacion = {
+var validateFormAgregarVideo = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -151,37 +149,168 @@ var validateFormPublicacion = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
+        codigo:{required:true, url:true}
+    },
+    messages:{
+        codigo:{
+            required: mensajeValidacion("requerido"),
+            url: mensajeValidacion("url")
+        }
+    }
+};
+
+var optionsAjaxFormAgregarVideo = {
+    dataType: 'jsonp',
+    resetForm: true,
+    url: 'comunidad/publicaciones/galeria-videos/procesar?agregarVideo=1',
+    data:{
+        iPublicacionId: function(){return $("#iItemIdForm").val()},
+        objType: function(){return $("#sTipoItemForm").val()}
+    },
+    beforeSerialize:function(){
+        if($("#formAgregarVideo").valid() == true){
+            $('#msg_form_agregar_video').hide();
+            $('#msg_form_agregar_video').removeClass("correcto").removeClass("error");
+            $('#msg_form_agregar_video .msg').html("");
+            setWaitingStatus('formAgregarVideo', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formAgregarVideo', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_agregar_video .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_agregar_video .msg').html(data.mensaje);
+            }
+            $('#msg_form_agregar_video').addClass("error").fadeIn('slow');
+        }else{
+            $('#msg_form_agregar_video .msg').html("Se agrego el video con exito");
+            $('#msg_form_agregar_video').addClass("correcto").fadeIn('slow');
+
+            $('#Thumbnails').append(data.html);
+            $("a[rel^='prettyPhoto']").prettyPhoto();            
+        }
+    }
+};
+
+var validateFormEditarVideo = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        orden:{digits:true, range:[1, 9999]}
+    },
+    messages:{
+        orden:{
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
+    }
+};
+
+var optionsAjaxFormEditarVideo = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'comunidad/publicaciones/galeria-videos/procesar?guardarVideo=1',
+    beforeSerialize:function(){
+        if($("#formEditarVideo").valid() == true){
+            $('#msg_form_editar_video').hide();
+            $('#msg_form_editar_video').removeClass("correcto").removeClass("error");
+            $('#msg_form_editar_video .msg').html("");
+            setWaitingStatus('formEditarVideo', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formEditarVideo', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_editar_video .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_editar_video .msg').html(data.mensaje);
+            }
+            $('#msg_form_editar_video').addClass("error").fadeIn('slow');
+        }else{
+            //si guardo bien directamente cierro el dialog
+            if($("#dialog").length != 0){
+                $("#dialog").hide("slow").remove();
+            }
+        }
+    }
+};
+
+//validacion y submit
+var validateFormReview = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        itemEventSummary:{required:function(element){
+                            return $("#itemType option:selected").val() == "event";
+                         }},
+        item:{required:true},
         titulo:{required:true},
         descripcionBreve:{required:true},
         descripcion:{required:true},
         keywords:{required:true},
         activo:{required:true},
         publico:{required:true},
-        activoComentarios:{required:true}
+        activoComentarios:{required:true},
+        itemUrl:{url:true},
+        fuenteOriginal:{url:true}
     },
     messages:{
+        itemEventSummary: mensajeValidacion("requerido"),
+        item: mensajeValidacion("requerido"),
         titulo: mensajeValidacion("requerido"),
         descripcionBreve: mensajeValidacion("requerido"),
         descripcion: mensajeValidacion("requerido"),
         keywords: mensajeValidacion("requerido"),
         activo: mensajeValidacion("requerido"),
         publico: mensajeValidacion("requerido"),
-        activoComentarios: mensajeValidacion("requerido")
+        activoComentarios: mensajeValidacion("requerido"),
+        itemUrl: mensajeValidacion("url"),
+        fuenteOriginal: mensajeValidacion("url")
     }
 };
 
-var optionsAjaxFormPublicacion = {
+var optionsAjaxFormReview = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/guardar-publicacion',
+    url: 'comunidad/publicaciones/guardar-review',
     beforeSerialize:function(){
+        if($("#formReview").valid() == true){
 
-        if($("#formPublicacion").valid() == true){
-
-            $('#msg_form_publicacion').hide();
-            $('#msg_form_publicacion').removeClass("correcto").removeClass("error");
-            $('#msg_form_publicacion .msg').html("");
-            setWaitingStatus('formPublicacion', true);
+            $('#msg_form_review').hide();
+            $('#msg_form_review').removeClass("correcto").removeClass("error");
+            $('#msg_form_review .msg').html("");
+            setWaitingStatus('formReview', true);
 
         }else{
             return false;
@@ -189,28 +318,28 @@ var optionsAjaxFormPublicacion = {
     },
 
     success:function(data){
-        setWaitingStatus('formPublicacion', false);
+        setWaitingStatus('formReview', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_publicacion .msg').html(lang['error procesar']);
+                $('#msg_form_review .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_publicacion .msg').html(data.mensaje);
+                $('#msg_form_review .msg').html(data.mensaje);
             }
-            $('#msg_form_publicacion').addClass("error").fadeIn('slow');
+            $('#msg_form_review').addClass("error").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_publicacion .msg').html(lang['exito procesar']);
+                $('#msg_form_review .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_publicacion .msg').html(data.mensaje);
+                $('#msg_form_review .msg').html(data.mensaje);
             }
-            if(data.agregarPublicacion != undefined){
+            if(data.agregarReview != undefined){
                 //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formPublicacion').each(function(){
+                $('#formReview').each(function(){
                   this.reset();
                 });
             }
-            $('#msg_form_publicacion').addClass("correcto").fadeIn('slow');
+            $('#msg_form_review').addClass("correcto").fadeIn('slow');
         }
     }
 };
@@ -229,6 +358,16 @@ function bindEventsReviewForm(){
 function bindEventsFotoForm(){
     $("#formFoto").validate(validateFormFoto);
     $("#formFoto").ajaxForm(optionsAjaxFormFoto);
+}
+
+function bindEventsAgregarVideoForm(){            
+    $("#formAgregarVideo").validate(validateFormAgregarVideo);
+    $("#formAgregarVideo").ajaxForm(optionsAjaxFormAgregarVideo);
+}
+
+function bindEventsEditarVideoForm(){
+    $("#formEditarVideo").validate(validateFormEditarVideo);
+    $("#formEditarVideo").ajaxForm(optionsAjaxFormEditarVideo);
 }
 
 function selectItemTypeReviewEvent(){
@@ -306,9 +445,6 @@ function editarPublicacion(iPublicacionId, tipo){
     );
 }
 
-/**
- * Tipo es Publicacion/Review
- */
 function editarFoto(iFotoId){
 
     var dialog = $("#dialog");
@@ -332,6 +468,33 @@ function editarFoto(iFotoId){
             });
 
             bindEventsFotoForm();
+        }
+    );
+}
+
+function editarVideo(iEmbedVideoId){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Editar Video"></div>').appendTo('body');
+
+    dialog.load(
+        "comunidad/publicaciones/galeria-videos/form?iEmbedVideoId="+iEmbedVideoId,
+        {},
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:550,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsEditarVideoForm();
         }
     );
 }
@@ -501,6 +664,25 @@ function borrarFoto(iFotoId){
     }
 }
 
+function borrarVideo(iEmbedVideoId){
+    if(confirm("Se borrara el video de la publicación, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"comunidad/publicaciones/galeria-videos/procesar",
+            data:{
+                iEmbedVideoId:iEmbedVideoId,
+                eliminarVideo:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#video_"+iEmbedVideoId).remove();
+                }
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
@@ -628,4 +810,20 @@ $(document).ready(function(){
         var iFotoId = $(this).attr("rel");
         editarFoto(iFotoId);
     });
+
+    //Galeria de videos
+    if($('#formAgregarVideo').length){
+        bindEventsAgregarVideoForm();
+    } 
+    
+    $(".editarVideo").live('click', function(){
+        var iEmbedVideoId = $(this).attr("rel");
+        editarVideo(iEmbedVideoId);
+    });
+
+    $(".borrarVideo").live('click', function(){
+        var iEmbedVideoId = $(this).attr("rel");
+        borrarVideo(iEmbedVideoId);
+    })
+    
 });

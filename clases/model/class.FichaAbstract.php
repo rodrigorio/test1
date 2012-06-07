@@ -98,11 +98,14 @@ abstract class FichaAbstract
     public function getArchivos()
     {
         if($this->aArchivos === null){
-            $this->aArchivos = ComunidadController::getInstance()->obtenerArchivosPublicacion($this->iId);
+            $this->aArchivos = ComunidadController::getInstance()->obtenerArchivosFicha($this->iId);
         }
         return $this->aArchivos;
     }
     public function getEmbedVideos(){
+        if($this->aEmbedVideos === null){
+            $this->aEmbedVideos = ComunidadController::getInstance()->obtenerEmbedVideosFicha($this->iId);
+        }
         return $this->aEmbedVideos;
     }
 

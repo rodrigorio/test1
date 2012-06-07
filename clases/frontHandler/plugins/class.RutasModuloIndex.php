@@ -81,5 +81,12 @@ class RutasModuloIndex
                                         'action'     => 'logout'
                                 ));
         $router->addRoute('indexLoginLogout', $route);
+        $route = new RegexRoute('video-ampliar',
+                                array(
+                                        'module' => 'index',
+                                        'controller' => 'index',
+                                        'action'     => 'ampliarVideo'
+                                ));
+        $router->addRoute('indexIndexVideoAmpliar', $route);
     }   
 }

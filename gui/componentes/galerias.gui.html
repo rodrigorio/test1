@@ -119,6 +119,144 @@
 </div>
 <!--EndFormularioFotoBlock-->
 
+<!--BeginGaleriaVideosBlock-->
+<div class="fte3 mabo2">Galer&iacute;a de Videos</div>
+<div class="mabo3"><span class="teta_ca fowe_bo">{sTipoItem}:</span> {sTituloItem}</div>
+
+<input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
+<input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
+
+    <div id="Thumbnails" class="grupo mabo2">
+        <!--BeginThumbnailVideoEditBlock-->
+        <div id="video_{iEmbedVideoId}" class="thumbEdit fl_le mari2">
+            <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
+                <i style="background-image:url('{urlFoto}')"></i>
+                <span>Video</span>
+            </a>
+            <div style="display:none" class="thumbEditMenu teal_ri">
+                <span title="Editar" rel="{iEmbedVideoId}" class="i bs edit ihover editarVideo"></span>
+                <span title="Eliminar" rel="{iEmbedVideoId}" class="i bs delete ihover borrarVideo"></span>
+            </div>
+        </div>
+        <!--EndThumbnailVideoEditBlock-->
+    </div>
+
+    <!--BeginNoRecordsVideosBlock-->
+    <div class="teal_ce fowe_bo">{sNoRecords}</div>
+    <!--EndNoRecordsVideosBlock-->
+
+    <!--BeginMensajeLimiteEmbedVideosBlock-->
+    <div class='ficha05 bora iveal'>
+        <div class="titulo"><span class="i bs warning"></span> Cantidad m&aacute;xima de videos alcanzada</div>
+        <p>Se alcanzo el m&aacute;ximo de videos permitido. Debe eliminar alguno de los videos existentes para cargar uno nuevo.</p>
+    </div>
+    <!--EndMensajeLimiteEmbedVideosBlock-->
+
+    <!--BeginFormularioCrearEmbedVideoBlock-->
+    <br clear="all" />
+    <div class='ficha04 bora grupo'>
+        <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
+
+        <form id="formAgregarVideo" name="formAgregarVideo" action="" method="post">
+            <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+            
+            <h2 class="mabo3">Agregue un nuevo video</h2>
+
+            <div class="form_line msg_codigo">
+                <label for="codigo">
+                    Link Video
+                </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="text" name="codigo" id="codigo" title="URL del video" maxlength="500" value="" />
+                    </div>
+                </div>
+                <p>
+                    Ingrese el link (URL) de un video, este sera asociado a la galer&iacute;a.<br>
+                    Por ejemplo: <span class="fost_it">http://www.youtube.com/watch?v=ikTxfIDYx6Q</span>
+                </p>
+            </div>
+
+            <div class="fl_le iveal mabo2">
+                <label for="crearVideo" class="button buttonConfirm buttonLarge mari3">
+                    <button id="crearVideo" type="submit" name="crearVideo" class="btn01">
+                        Agregar Video
+                    </button>
+                </label>
+            </div>
+                                  
+            <div class='ficha05 bora cl_bo mabo2'>
+                <span class="i bs infoo"></span>
+                <ul class="m_vert">
+                    <li>
+                        <span class="fte2 txt_imp2">Servidores permitidos:</span> {sServidoresPermitidos}
+                    </li>
+                    <li>
+                        <span class="fte2 txt_imp2">Nota:</span> Podr&aacute; editar el t&iacute;tulo y agregar una descripci&oacute;n una vez agregado el video.
+                    </li>
+                </ul>
+            </div>
+            
+            <div style="display:none;" id='msg_form_agregar_video' class="msg_form iveal "><span class="bs i"></span> <span class="msg"></span></div>
+        </form>
+    </div>
+    <!--EndFormularioCrearEmbedVideoBlock-->
+<!--EndGaleriaVideosBlock-->
+
+<!--BeginFormularioVideoBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 bs movie32"></span></div>
+    <form id="formEditarVideo" name="formEditarVideo" action="" method="post">
+        <h2 class="mabo">Editar Video</h2>
+        <div class="mabo3 fost_it">El t&iacute;tulo y la descripci&oacute;n se ver&aacute;n en la vista ampliada.</div>
+
+        <div class="form_line msg_titulo">
+            <label for="titulo">
+                T&iacute;tulo
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Foto" maxlength="255" value="{sTitulo}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_orden">
+            <label for="orden">
+                Orden
+            </label><br>
+            <input class="small" type="text" name="orden" id="orden" title="N&uacute;mero de Orden" maxlength="4" value="{iOrden}" />
+            <p>
+               El numero de orden es una cifra mayor o igual a 1.<br>
+               Puede utilizar este campo para modificar el orden en el que aparecer&aacute;n las fotograf&iacute;as.
+            </p>
+        </div>
+
+        <div class="fl_le iveal mabo2">
+            <label for="modificarVideo" class="button buttonConfirm buttonLarge mari3">
+                <button id="modificarVideo" type="submit" name="modificarVideo" class="btn01">
+                    Modificar Video
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iEmbedVideoId}" name="iEmbedVideoId" id="iEmbedVideoId" />
+
+        <div style="display:none;" id='msg_form_editar_video' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndFormularioVideoBlock-->
+
 <!--BeginThumbnailFotoCelda4-->
 <div class="celda4">
     <a href="{hrefFoto}" class="th_fto_m thumb01">

@@ -461,6 +461,16 @@ class ComunidadController
         }
     }
 
+    public function borrarEmbedVideo($oEmbedVideo)
+    {
+    	try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            return $oEmbedVideoIntermediary->borrar($oEmbedVideo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
     /**
      * Devuelve verdadero si el usuario tiene los datos minimos
      * requeridos para el perfil Integrante Activo
@@ -653,36 +663,103 @@ class ComunidadController
         }  
     }
    
-   /**
+    /**
      * @return array|null
-     */
-    
-    public function obtenerEmbedVideosPublicacion($iPublicacionId)
+     */    
+    public function obtenerEmbedVideosFicha($iFichaId)
     {
         try{
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
-            $filtro = array('v.publicacion_id' => $iPublicacionId);
+            $filtro = array('v.fichas_abstractas_id' => $iFichaId);
             return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
         }        
     }
+
+    public function getEmbedVideoById($iEmbedVideoId)
+    {
+        try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            $filtro = array('v.id' => $iEmbedVideoId);
+            $iRecordsTotal = 0;
+            $aEmbedVideos = $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aEmbedVideos){
+                return $aEmbedVideos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }        
+    }
+
+    /**
+     * similar a $this->isFotoPublicacionUsuario
+     */
+    public function isEmbedVideoPublicacionUsuario($iEmbedVideoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            return $oEmbedVideoIntermediary->isEmbedVideoPublicacionUsuario($iEmbedVideoId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }          
+    }
+    
    /**
      * @return array|null
      */
-    public function obtenerArchivosPublicacion($iPublicacionId)
+    public function obtenerArchivosFicha($iFichaId)
     {
         try{
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
-            $filtro = array('a.publicacion_id' => $iPublicacionId);
+            $filtro = array('a.fichas_abstractas_id' => $iFichaId);
             return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
         }          
     }
-/**
+
+    public function getArchivoById($iArchivoId)
+    {
+        try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.id' => $iArchivoId);
+            $iRecordsTotal = 0;
+            $aArchivos = $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aArchivos){
+                return $aArchivos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
+    /**
+     * similar a $this->isFotoPublicacionUsuario
+     */
+    public function isArchivoPublicacionUsuario($iArchivoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            return $oArchivoIntermediary->isArchivoPublicacionUsuario($iArchivoId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+      
+    /**
      * @return array|null
      */
     public function obtenerArchivosCategoria($iCategoriaId)
@@ -696,11 +773,12 @@ class ComunidadController
             return false;
         }          
     }
+    
     /**
-     *
-     * @param array $aNombreArchivos 3 celdas con los nombres de los archivos ['nombreFotoGrande'] ['nombreFotoMediana'] ['nombreFotoChica']
+     * Guarda todas las fotos vinculadas a una ficha en tiempo de ejecucion.
+     * 
+     * @param FichaAbstract $oFicha puede ser tanto una publicacion o un review
      * @param string $pathServidor directorio donde estan guardadas las fotos
-     * @param FichaAbstract puede ser tanto una publicacion o un review
      */
     public function guardarFotoFicha($oFicha, $pathServidor)
     {
@@ -744,6 +822,42 @@ class ComunidadController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    /**
+     * Sirve para guardar todos los embedVideos asociados en tiempo de ejecucion a un objeto
+     * que herede de FichaAbstract.
+     *     
+     * @param FichaAbstract $oFicha puede ser tanto una publicacion o un review
+     */
+    public function guardarEmbedVideosFicha($oFicha)
+    {
+    	try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            return $oEmbedVideoIntermediary->guardarEmbedVideosFicha($oFicha);
+        }catch(Exception $e){
+            $oFicha->setEmbedVideos(null);
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Este metodo se debe usar solo para guardar la informacion del formulario de edicion de foto.
+     * Titulo, descripcion, etc.
+     *
+     * No sirve para asociar la foto a ninguna entidad
+     */
+    public function guardarEmbedVideo($oEmbedVideo)
+    {
+    	try{
+            if(null === $oEmbedVideo->getId()){
+                throw new Exception("El video no posee Id");
+            }
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            return $oEmbedVideoIntermediary->actualizar($oEmbedVideo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     public function existeDocumentoUsuario($numeroDocumento)
