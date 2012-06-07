@@ -945,7 +945,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
         //aca despues hay que usar el parametros max fotos publicacion
         if(count($aFotos) >= 12){
-            $this->getTemplate()->set_var("FormularioFotoPerfilBlock", "");
+            $this->getTemplate()->set_var("FormularioCrearFotoBlock", "");
         }else{
             $this->getTemplate()->set_var("MensajeLimiteFotosBlock", "");
             
@@ -1156,10 +1156,86 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
+    public function galeriaVideos()
+    {
+        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+        $objType = $this->getRequest()->getParam('objType');
+
+        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->setFrameTemplate()
+             ->setHeadTag()
+             ->setMenuDerecha();
+
+        IndexControllerComunidad::setCabecera($this->getTemplate());
+        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+        $this->printMsgTop();
+
+        switch($objType)
+        {
+            case "publicacion":
+                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                break;
+            case "review":
+                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                break;
+        }
+
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaVideosBlock");
+
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->set_var("sTipoItem", $objType);
+        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
+
+        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
+        $this->getTemplate()->set_var("sTipoItemForm", $objType);
+
+        $iRecordsTotal = 0;
+        $aEmbedVideos = $oFicha->getEmbedVideos();
+
+        if(count($aEmbedVideos) > 0){
+
+            foreach($aEmbedVideos as $oEmbedVideo){
+
+                $this->getTemplate()->set_var("urlFoto", "");
+                $this->getTemplate()->set_var("hrefVideo", "");
+                $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
+
+                $this->getTemplate()->parse("ThumbnailVideoEditBlock", true);
+            }
+
+            $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
+        }else{
+            $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
+            $this->getTemplate()->set_var("sNoRecords", "No hay videos cargados para la publicación");
+        }
+
+        //aca despues hay que usar el parametros max videos publicacion
+        if(count($aEmbedVideos) >= 12){
+            $this->getTemplate()->set_var("FormularioCrearEmbedVideoBlock", "");
+        }else{
+            $this->getTemplate()->set_var("MensajeLimiteEmbedVideosBlock", "");
+        }
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+    }
+
+    public function videosProcesar()
+    {
+
+    }
+
+    public function formVideo()
+    {
+
+    }
+ 
     public function galeriaArchivos(){}
     public function archivosProcesar(){}
     public function formArchivo(){}
-    public function galeriaVideos(){}
-    public function videosProcesar(){}
-    public function formVideo(){}
 }
