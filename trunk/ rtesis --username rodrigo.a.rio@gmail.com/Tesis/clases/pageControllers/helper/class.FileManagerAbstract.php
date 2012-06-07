@@ -7,6 +7,13 @@
  */
 abstract class FileManagerAbstract extends HelperAbstract
 {
+    private $nombreCarpetaImagenesSitio = "gui/images";
+    private $nombreCarpetaDownloads = "downloads";
+    private $nombreCarpetaUploadsUsuario = "uploads/usuarios";
+    private $nombreCarpetaUploadsSitio = "uploads/sitio";
+    private $nombreCarpetaFotos = "fotos";
+    private $nombreCarpetaArchivos = "archivos";
+
     /**
      * Referencia: http://www.htmlquick.com/es/reference/mime-types.html
      */
@@ -88,16 +95,20 @@ abstract class FileManagerAbstract extends HelperAbstract
      */
     private $directorioUploadArchivos;
     private $directorioUploadFotos;
+
     private $directorioDownloads;
+    private $directorioImagenesSitio;
        
     public function __construct(){
-        $this->utilizarDirectorioUploadUsuarios();
-
+        
         $this->tiposMimeDocumentosCompresiones = array_merge($this->tiposMimeDocumentos, $this->tiposMimeCompresiones);
-
+       
+        $this->utilizarDirectorioUploadUsuarios();        
+        
         //el directorio de downloads utilizado para la generacion de archivos exportados es para uso unico de usuarios.
         $baseUrl = $this->getRequest()->getBaseUrl();
-        $this->directorioDownloads = $baseUrl."/downloads/";
+        $this->directorioDownloads = $baseUrl."/".$this->nombreCarpetaDownloads."/";
+        $this->directorioImagenesSitio = $baseUrl."/".$this->nombreCarpetaImagenesSitio."/";
     }
 
     public function setTiposValidosDocumentos()
@@ -161,9 +172,9 @@ abstract class FileManagerAbstract extends HelperAbstract
     public function utilizarDirectorioUploadUsuarios()
     {
         $baseUrl = $this->getRequest()->getBaseUrl();
-        $directorioUpload = $baseUrl."/uploads/usuarios/";
-        $this->directorioUploadArchivos = $directorioUpload."archivos/";
-        $this->directorioUploadFotos = $directorioUpload."fotos/";
+        $directorioUpload = $baseUrl."/".$this->nombreCarpetaUploadsUsuario."/";
+        $this->directorioUploadArchivos = $directorioUpload.$this->nombreCarpetaArchivos."/";
+        $this->directorioUploadFotos = $directorioUpload.$this->nombreCarpetaFotos."/";
         return $this;
     }
 
@@ -181,11 +192,19 @@ abstract class FileManagerAbstract extends HelperAbstract
             $modulo = $request->getModuleName();
         }
 
-        $directorioUpload = $baseUrl."/uploads/sitio/".$modulo."/";
-        $this->directorioUploadArchivos = $directorioUpload."archivos/";
-        $this->directorioUploadFotos = $directorioUpload."fotos/";
+        $directorioUpload = $baseUrl."/".$this->nombreCarpetaUploadsSitio."/".$modulo."/";
+        $this->directorioUploadArchivos = $directorioUpload.$this->nombreCarpetaArchivos."/";
+        $this->directorioUploadFotos = $directorioUpload.$this->nombreCarpetaFotos."/";
 
         return $this;
+    }
+
+    private function addDocumentRoot($url)
+    {
+        //le saco la ultima barra porque el getBaseUrl ya la incorpora al string
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $root = substr($root,0,-1);
+        return $root.$url;
     }
 
     /**
@@ -198,10 +217,7 @@ abstract class FileManagerAbstract extends HelperAbstract
     public function getDirectorioUploadArchivos($serverRoot = false)
     {
         if($serverRoot){
-            //le saco la ultima barra porque el getBaseUrl ya la incorpora al string
-            $root = $_SERVER['DOCUMENT_ROOT'];
-            $root = substr($root,0,-1);
-            return $root.$this->directorioUploadArchivos;
+            return $this->addDocumentRoot($this->directorioUploadArchivos);
         }else{
             return $this->directorioUploadArchivos;
         }
@@ -214,10 +230,7 @@ abstract class FileManagerAbstract extends HelperAbstract
     public function getDirectorioUploadFotos($serverRoot = false)
     {
         if($serverRoot){
-            //le saco la ultima barra porque el getBaseUrl ya la incorpora al string
-            $root = $_SERVER['DOCUMENT_ROOT'];
-            $root = substr($root,0,-1);
-            return $root.$this->directorioUploadFotos;
+            return $this->addDocumentRoot($this->directorioUploadFotos);
         }else{
             return $this->directorioUploadFotos;
         }
@@ -226,12 +239,19 @@ abstract class FileManagerAbstract extends HelperAbstract
     public function getDirectorioDownloads($serverRoot = false)
     {
         if($serverRoot){
-            $root = $_SERVER['DOCUMENT_ROOT'];
-            $root = substr($root,0,-1);
-            return $root.$this->directorioDownloads;
+            return $this->addDocumentRoot($this->directorioDownloads);
         }else{
             return $this->directorioDownloads;
         }        
+    }
+
+    public function getDirectorioImagenesSitio($serverRoot = false)
+    {
+        if($serverRoot){
+            return $this->addDocumentRoot($this->directorioImagenesSitio);
+        }else{
+            return $this->directorioImagenesSitio;
+        }
     }
 
     /**

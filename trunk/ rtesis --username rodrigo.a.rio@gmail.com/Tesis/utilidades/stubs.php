@@ -1115,7 +1115,7 @@ $AutoEmbed_stubs = array(
     'embed-height' => '433',
   ),
   array(
-    'title' => 'TagTélé',
+    'title' => 'TagTï¿½lï¿½',
     'website' => 'http://www.tagtele.com',
     'url-match' => 'http://www\.tagtele\.com/(?:v/|videos/voir/)([0-9]{1,12})',
     'embed-src' => 'http://www.tagtele.com/v/$2',
@@ -1392,4 +1392,3 @@ $AutoEmbed_stubs = array(
     'embed-height' => '344',
   ),
 );
-?>

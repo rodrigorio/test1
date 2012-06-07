@@ -46,7 +46,12 @@ class PageControllerAbstract implements PageControllerInterface
      * Instancia de ExportarPlanillaCalculoHelper
      */
     private $exportarPlanilla = null;
+    /**
+     * Instancia de EmbedVideoHelper
+     */
+    private $embedVideo = null;
 
+    
     public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array())
     {
         $this->request = $request;
@@ -143,6 +148,15 @@ class PageControllerAbstract implements PageControllerInterface
             $this->exportarPlanilla = new ExportarPlanillaCalculoHelper();
         }
         return $this->exportarPlanilla;
+    }
+    
+    protected final function getEmbedVideoHelper()
+    {
+        if(null === $this->embedVideo)
+        {
+            $this->embedVideo = new EmbedVideoHelper();
+        }
+        return $this->embedVideo;
     }
 
     protected final function getRequest()

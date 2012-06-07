@@ -182,4 +182,23 @@ class IndexControllerIndex extends PageControllerAbstract
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('respuesta', false));
         }       
     }
+
+    /**
+     * Vista ampliada de un video.. para utilizar con algun visor de javascript
+     */
+    public function ampliarVideo()
+    {
+        $iEmbedVideoId = $this->getRequest()->getParam('embedVideoId');
+
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-01.gui.html", "frame");
+
+        $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+        $this->getTemplate()->set_var("popUpContent", $this->getEmbedVideoHelper()->getEmbedVideoCode($oEmbedVideo));
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
 }

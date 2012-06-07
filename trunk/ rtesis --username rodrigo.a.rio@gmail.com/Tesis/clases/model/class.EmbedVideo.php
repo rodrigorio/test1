@@ -2,10 +2,8 @@
 class EmbedVideo
 {
     private $iId;
-    private $iSeguimientosId;
-    private $iFichasAbstractasId;
     private $sCodigo; //codigo es la url donde esta el video
-    private $iOrden;
+    private $iOrden = "";
     private $sTitulo;
     private $sDescripcion;
     private $sOrigen; //origen es el lugar donde esta guardado por ej YouTube
@@ -76,7 +74,7 @@ class EmbedVideo
     {
         return $this->sDescripcion;
     }
- public function setOrigen($sOrigen)
+    public function setOrigen($sOrigen)
     {
         $this->sOrigen = $sOrigen;
         return $this;

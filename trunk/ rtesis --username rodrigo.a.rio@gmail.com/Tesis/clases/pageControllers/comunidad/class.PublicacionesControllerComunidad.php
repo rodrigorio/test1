@@ -1202,8 +1202,11 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             foreach($aEmbedVideos as $oEmbedVideo){
 
-                $this->getTemplate()->set_var("urlFoto", "");
-                $this->getTemplate()->set_var("hrefVideo", "");
+                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+
+                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
                 $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
 
                 $this->getTemplate()->parse("ThumbnailVideoEditBlock", true);
@@ -1220,6 +1223,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("FormularioCrearEmbedVideoBlock", "");
         }else{
             $this->getTemplate()->set_var("MensajeLimiteEmbedVideosBlock", "");
+            $this->getTemplate()->set_var("sServidoresPermitidos", $this->getEmbedVideoHelper()->getStringServidoresValidos());
         }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
@@ -1227,12 +1231,192 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
     public function videosProcesar()
     {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+        
+        if($this->getRequest()->has('agregarVideo')){
+            $this->agregarVideoPublicacion();
+            return;
+        }
 
+        if($this->getRequest()->has('guardarVideo')){
+            $this->guardarVideo();
+            return;
+        }
+
+        if($this->getRequest()->has('eliminarVideo')){
+            $this->eliminarVideo();
+            return;
+        }
+
+    }
+
+    private function agregarVideoPublicacion()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $objType = $this->getRequest()->getParam('objType');
+
+            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar videos a esta publicación", 401);
+            }
+
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            if(!$this->getEmbedVideoHelper()->canBeParsed($this->getRequest()->getPost('codigo'))){
+                $this->getJsonHelper()->setMessage("No se encontro un video para insertar desde la url ingresada. (o el servidor no es soportado)");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;                
+            }
+            
+            try{
+                $oEmbedVideo = new stdClass();               
+                $oEmbedVideo = Factory::getEmbedVideoInstance($oEmbedVideo);
+                $oEmbedVideo->setCodigo($this->getRequest()->getPost('codigo'));
+
+                $servidorOrigen = $this->getEmbedVideoHelper()->getServidor($oEmbedVideo);
+                $oEmbedVideo->setOrigen($servidorOrigen);
+
+                $oFicha->addEmbedVideo($oEmbedVideo);
+
+                ComunidadController::getInstance()->guardarEmbedVideosFicha($oFicha);
+
+                $this->restartTemplate();
+
+                //creo el thumbnail para agregar a la galeria
+                $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxThumbnailVideo", "ThumbnailVideoEditBlock");
+
+                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+
+                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
+
+                $this->getJsonHelper()->setMessage("El video fue agregado con éxito en la publicación");
+                $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxThumbnailVideo', false));
+                $this->getJsonHelper()->setSuccess(true);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                                                
+            }catch(Exception $e){
+                $this->getJsonHelper()->setMessage("Error al guardar en base de datos.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setMessage("Error al procesar el video");
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
+        }
     }
 
     public function formVideo()
     {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioVideoBlock");
 
+        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+        $this->getTemplate()->set_var("iEmbedVideoId", $iEmbedVideoId);
+
+        $sTitulo = $oEmbedVideo->getTitulo();
+        $sDescripcion = $oEmbedVideo->getDescripcion();
+        $iOrden = $oEmbedVideo->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function guardarVideo()
+    {        
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iEmbedVideoId = $this->getRequest()->getPost('iEmbedVideoId');
+
+            if(empty($iEmbedVideoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
+            if(!$bVideoUsuario){
+                throw new Exception("No tiene permiso para editar este video", 401);
+            }
+
+            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+            $oEmbedVideo->setOrden($this->getRequest()->getPost("orden"));
+            $oEmbedVideo->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oEmbedVideo->setTitulo($this->getRequest()->getPost("titulo"));
+
+            ComunidadController::getInstance()->guardarEmbedVideo($oEmbedVideo);
+
+            $this->getJsonHelper()->setMessage("El video se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                
+    }
+
+    private function eliminarVideo()
+    {        
+        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
+
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
+            if(!$bVideoUsuario){
+                throw new Exception("No tiene permiso para editar este video", 401);
+            }
+
+            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+            ComunidadController::getInstance()->borrarEmbedVideo($oEmbedVideo);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                
     }
  
     public function galeriaArchivos(){}

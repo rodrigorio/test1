@@ -253,7 +253,8 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:48px; width:48px}
 .th_vid_m{display:inline-block; padding:5px; position:relative}
 .th_vid_m span{bottom:4px; display:block; position:absolute; right:4px}
-.th_fto_m i, .th_fto_s i, .th_vid_m i{background-position:center 25%; background-repeat:no-repeat; display:block}
+.th_fto_m i, .th_fto_s i, .th_vid_m i{background-position:center 50%; background-repeat:no-repeat; display:block}
+.th_vid_m i{-o-background-size: 100% 100%, auto; -moz-background-size: 100% 100%, auto; -webkit-background-size: 100% 100%, auto; background-size: 100% 100%, auto}
 .thumbEdit{position:relative; margin-bottom:30px;}
 .thumbEditMenu{position:absolute; right:0px; bottom:-25px; padding-top:10px; width:150px}
 
