@@ -486,13 +486,15 @@ AjaxUpload.prototype = {
 				}
 				
 				var response;
-									
+                                									
 				if (doc.XMLDocument){
 					// response is a xml document IE property
 					response = doc.XMLDocument;
 				} else if (doc.body){
+                                        
 					// response is html document or plain text
-					response = doc.body.innerHTML;
+					response = doc.body.innerHTML;                                        
+                                        
 					if (settings.responseType && settings.responseType.toLowerCase() == 'json'){
 						// If the document was sent as 'application/javascript' or
 						// 'text/javascript', then the browser wraps the text in a <pre>

@@ -193,7 +193,8 @@ var optionsAjaxFormAgregarVideo = {
             $('#msg_form_agregar_video').addClass("correcto").fadeIn('slow');
 
             $('#Thumbnails').append(data.html);
-            $("a[rel^='prettyPhoto']").prettyPhoto();            
+            $("a[rel^='prettyPhoto']").prettyPhoto();
+            if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
         }
     }
 };
@@ -247,6 +248,64 @@ var optionsAjaxFormEditarVideo = {
                 $('#msg_form_editar_video .msg').html(data.mensaje);
             }
             $('#msg_form_editar_video').addClass("error").fadeIn('slow');
+        }else{
+            //si guardo bien directamente cierro el dialog
+            if($("#dialog").length != 0){
+                $("#dialog").hide("slow").remove();
+            }
+        }
+    }
+};
+
+var validateFormArchivo = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        orden:{digits:true, range:[1, 9999]}
+    },
+    messages:{
+        orden:{
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
+    }
+};
+
+var optionsAjaxFormArchivo = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'comunidad/publicaciones/galeria-archivos/procesar?guardarArchivo=1',
+    beforeSerialize:function(){
+        if($("#formArchivo").valid() == true){
+            $('#msg_form_archivo').hide();
+            $('#msg_form_archivo').removeClass("correcto").removeClass("error");
+            $('#msg_form_archivo .msg').html("");
+            setWaitingStatus('formArchivo', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formArchivo', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_archivo .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_archivo .msg').html(data.mensaje);
+            }
+            $('#msg_form_archivo').addClass("error").fadeIn('slow');
         }else{
             //si guardo bien directamente cierro el dialog
             if($("#dialog").length != 0){
@@ -358,6 +417,11 @@ function bindEventsReviewForm(){
 function bindEventsFotoForm(){
     $("#formFoto").validate(validateFormFoto);
     $("#formFoto").ajaxForm(optionsAjaxFormFoto);
+}
+
+function bindEventsArchivoForm(){
+    $("#formArchivo").validate(validateFormArchivo);
+    $("#formArchivo").ajaxForm(optionsAjaxFormArchivo);
 }
 
 function bindEventsAgregarVideoForm(){            
@@ -495,6 +559,33 @@ function editarVideo(iEmbedVideoId){
             });
 
             bindEventsEditarVideoForm();
+        }
+    );
+}
+
+function editarArchivo(iArchivoId){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
+
+    dialog.load(
+        "comunidad/publicaciones/galeria-archivos/form?iArchivoId="+iArchivoId,
+        {},
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:550,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsArchivoForm();
         }
     );
 }
@@ -638,6 +729,60 @@ function uploaderFotoGaleria(iPublicacionId, sTipoItemForm){
                     
                     $('#Thumbnails').append(html);
                     $("a[rel^='prettyPhoto']").prettyPhoto();
+                    if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
+                }
+                return;
+            }
+        });
+    }
+}
+
+function uploaderArchivoGaleria(iPublicacionId, sTipoItemForm){
+    if($('#archivoUploadGaleria').length){
+        new Ajax_upload('#archivoUploadGaleria', {
+            action:'comunidad/publicaciones/galeria-archivos/procesar',
+            data:{
+                agregarArchivo:"1",
+                iPublicacionId:iPublicacionId,
+                objType: sTipoItemForm
+            },
+            name:'archivoGaleria',
+            onSubmit:function(file , ext){
+                $('#msg_form_archivoGaleria').hide();
+                $('#msg_form_archivoGaleria').removeClass("correcto").removeClass("error");
+                $('#msg_form_archivoGaleria .msg').html("");
+                setWaitingStatus('formArchivoGaleria', true);
+                this.disable(); //solo un archivo a la vez
+            },
+            onComplete:function(file, response){
+                setWaitingStatus('formArchivoGaleria', false);
+                this.enable();
+
+                if(response == undefined){
+                    $('#msg_form_archivoGaleria .msg').html(lang['error procesar']);
+                    $('#msg_form_archivoGaleria').addClass("error").fadeIn('slow');
+                    return;
+                }
+
+                var dataInfo = response.split(';;');
+                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
+                var html = dataInfo[1]; //si se proceso bien aca queda el bloque del html con el nuevo thumbnail
+
+                if(resultado != "0" && resultado != "1"){
+                    $('#msg_form_archivoGaleria .msg').html(lang['error permiso']);
+                    $('#msg_form_archivoGaleria').addClass("info").fadeIn('slow');
+                    return;
+                }
+
+                if(resultado == '0'){
+                    $('#msg_form_archivoGaleria .msg').html(html);
+                    $('#msg_form_archivoGaleria').addClass("error").fadeIn('slow');
+                }else{
+                    $('#msg_form_archivoGaleria .msg').html(lang['exito procesar archivo']);
+                    $('#msg_form_archivoGaleria').addClass("correcto").fadeIn('slow');
+                    
+                    $('#Rows').append(html);
+                    if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
                 }
                 return;
             }
@@ -677,6 +822,25 @@ function borrarVideo(iEmbedVideoId){
             success:function(data){
                 if(data.success != undefined && data.success == 1){
                     $("#video_"+iEmbedVideoId).remove();
+                }
+            }
+        });
+    }
+}
+
+function borrarArchivo(iArchivoId){
+    if(confirm("Se borrara el archivo de la publicación, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"comunidad/publicaciones/galeria-archivos/procesar",
+            data:{
+                iArchivoId:iArchivoId,
+                eliminarArchivo:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#archivo_"+iArchivoId).remove();
                 }
             }
         });
@@ -793,9 +957,10 @@ $(document).ready(function(){
         return false;
     });
 
-    //Galeria de fotos
     var iPublicacionId = $("#iItemIdForm").val();
     var sTipoItemForm = $("#sTipoItemForm").val();
+
+    //Galeria de fotos
     if(iPublicacionId != undefined && iPublicacionId != "" &&
        sTipoItemForm != undefined && sTipoItemForm != ""){
         uploaderFotoGaleria(iPublicacionId, sTipoItemForm);
@@ -825,5 +990,20 @@ $(document).ready(function(){
         var iEmbedVideoId = $(this).attr("rel");
         borrarVideo(iEmbedVideoId);
     })
-    
+
+    //Galeria de archivos
+    if(iPublicacionId != undefined && iPublicacionId != "" &&
+       sTipoItemForm != undefined && sTipoItemForm != ""){
+        uploaderArchivoGaleria(iPublicacionId, sTipoItemForm);
+    }
+
+    $(".borrarArchivo").live('click', function(){
+        var iArchivoId = $(this).attr("rel");
+        borrarArchivo(iArchivoId);
+    })
+
+    $(".editarArchivo").live('click', function(){
+        var iArchivoId = $(this).attr("rel");
+        editarArchivo(iArchivoId);
+    });
 });

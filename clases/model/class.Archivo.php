@@ -12,7 +12,7 @@ class Archivo
     private $sTipoMime;
     private $iTamanio;
     private $sFechaAlta;
-    private $iOrden;
+    private $iOrden = "";
     private $sTitulo;
     private $sTipo;
     private $bModerado;
