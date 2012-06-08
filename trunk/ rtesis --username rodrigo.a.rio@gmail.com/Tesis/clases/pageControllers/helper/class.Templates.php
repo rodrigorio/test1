@@ -347,7 +347,7 @@ class Templates extends HelperAbstract
      * @param bool $bRepeat
      */
     public function pparse($sBlockName, $bRepeat=false,$bTranslate=false){
-        $this->parse($sBlockName, $bRepeat,$bTranslate);
+        $this->parse($sBlockName, $bRepeat, $bTranslate);
         return $this->ParsedBlocks[$sBlockName];
     }
 

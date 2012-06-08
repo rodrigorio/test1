@@ -1418,8 +1418,296 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();                
     }
- 
-    public function galeriaArchivos(){}
-    public function archivosProcesar(){}
-    public function formArchivo(){}
+
+    public function galeriaArchivos()
+    {
+        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+        $objType = $this->getRequest()->getParam('objType');
+
+        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->setFrameTemplate()
+             ->setHeadTag()
+             ->setMenuDerecha();
+
+        IndexControllerComunidad::setCabecera($this->getTemplate());
+        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+        $this->printMsgTop();
+
+        switch($objType)
+        {
+            case "publicacion":
+                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                break;
+            case "review":
+                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                break;
+        }
+
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaArchivosBlock");
+
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->set_var("sTipoItem", $objType);
+        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
+
+        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
+        $this->getTemplate()->set_var("sTipoItemForm", $objType);
+
+        $iRecordsTotal = 0;
+        $aArchivos = $oFicha->getArchivos();
+
+        if(count($aArchivos) > 0){
+
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
+            foreach($aArchivos as $oArchivo){
+
+                $nombreArchivo = $oArchivo->getTitulo();
+                if(empty($nombreArchivo)){
+                    $nombreArchivo = $oArchivo->getNombre();
+                }
+
+                $hrefDescargar = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+
+                $this->getTemplate()->set_var("sNombreArchivo", $nombreArchivo);
+                $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
+                $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
+
+                $this->getTemplate()->parse("RowArchivoEditBlock", true);
+            }
+
+            $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
+        }else{
+            $this->getTemplate()->set_var("RowArchivoEditBlock", "");
+            $this->getTemplate()->set_var("sNoRecords", "No hay archivos cargados para la publicación");
+        }
+
+        //aca despues hay que usar el parametros max fotos publicacion
+        if(count($aArchivos) >= 12){
+            $this->getTemplate()->set_var("FormularioCrearArchivoBlock", "");
+        }else{
+            $this->getTemplate()->set_var("MensajeLimiteArchivosBlock", "");
+
+            $this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
+            $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+            $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+        }
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    /**
+     * Tiene que validar que la publicacion sea efectivamente una que haya creado el usuario que esta en sesion.
+     */
+    public function archivosProcesar()
+    {
+        if($this->getRequest()->has('agregarArchivo')){
+            $this->agregarArchivoPublicacion();
+            return;
+        }
+
+        //este if va abajo porque los form de upload de archivo son con iframe oculto no con ajax
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('guardarArchivo')){
+            $this->guardarArchivo();
+            return;
+        }
+
+        if($this->getRequest()->has('eliminarArchivo')){
+            $this->eliminarArchivo();
+            return;
+        }
+    }
+
+    private function agregarArchivoPublicacion()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $objType = $this->getRequest()->getParam('objType');
+
+            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar archivos a esta publicación", 401);
+            }
+
+            $nombreInputFile = 'archivoGaleria';
+
+            $this->getUploadHelper()->setTiposValidosDocumentos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+
+                $idItem = $oFicha->getId();
+
+                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'publicacion', $nombreInputFile);
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+
+                try{
+                    $oArchivo = new stdClass();
+
+                    $oArchivo->sNombre = $nombreArchivo;
+                    $oArchivo->sNombreServidor = $nombreServidorArchivo;
+                    $oArchivo->sTipoMime = $tipoMimeArchivo;
+                    $oArchivo->iTamanio = $tamanioArchivo;
+                    $oArchivo = Factory::getArchivoInstance($oArchivo);
+                    $oArchivo->setTipoAdjunto();
+                    $oArchivo->isModerado(false);
+                    $oArchivo->isActivo(true);
+                    $oArchivo->isPublico(false);
+                    $oArchivo->isActivoComentarios(false);
+
+                    $oFicha->addArchivo($oArchivo);
+
+                    ComunidadController::getInstance()->guardarArchivoFicha($oFicha, $pathServidor);
+
+                    $this->restartTemplate();
+
+                    //creo el thumbnail para agregar a la galeria
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxRowFoto", "RowArchivoEditBlock");
+                    
+                    $nombreArchivo = $oArchivo->getTitulo();
+                    if(empty($nombreArchivo)){
+                        $nombreArchivo = $oArchivo->getNombre();
+                    }
+
+                    $hrefDescargar = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+                    
+                    $this->getTemplate()->set_var("sNombreArchivo", $nombreArchivo);
+                    $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                    $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                    $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
+                    $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
+                    
+                    $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxRowFoto', false);
+                    
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+                    
+                    $respuesta = "0;; Error al guardar en base de datos";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;
+                }
+            }
+        }catch(Exception $e){
+            
+            $respuesta = "0;; Error al procesar el archivo";
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
+        }
+    }
+
+    public function formArchivo()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
+
+        $iArchivoId = $this->getRequest()->getParam('iArchivoId');
+        if(empty($iArchivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+
+        $this->getTemplate()->set_var("iArchivoId", $iArchivoId);
+
+        $sTitulo = $oArchivo->getTitulo();
+        $sDescripcion = $oArchivo->getDescripcion();
+        $iOrden = $oArchivo->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function eliminarArchivo()
+    {
+        $iArchivoId = $this->getRequest()->getParam('iArchivoId');
+
+        if(empty($iArchivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //devuelve si el archivo es de una publicacion creada por el usuario que esta logueado
+            $bArchivoUsuario = ComunidadController::getInstance()->isArchivoPublicacionUsuario($iArchivoId);
+            if(!$bArchivoUsuario){
+                throw new Exception("No tiene permiso para borrar esta archivo", 401);
+            }
+
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+
+            ComunidadController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function guardarArchivo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iArchivoId = $this->getRequest()->getParam('iArchivoIdForm');
+
+            if(empty($iArchivoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $bArchivoUsuario = ComunidadController::getInstance()->isArchivoPublicacionUsuario($iArchivoId);
+            if(!$bArchivoUsuario){
+                throw new Exception("No tiene permiso para editar este archivo", 401);
+            }
+
+            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+
+            $oArchivo->setOrden($this->getRequest()->getPost("orden"));
+            $oArchivo->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oArchivo->setTitulo($this->getRequest()->getPost("titulo"));
+
+            ComunidadController::getInstance()->guardarArchivo($oArchivo);
+
+            $this->getJsonHelper()->setMessage("El archivo se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
 }

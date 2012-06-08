@@ -29,13 +29,32 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
         }else{
             return $this->insertarAsociado($oUsuario->getCurriculumVitae(), $iIdUsuario, get_class($oUsuario));
         }
-    }    
+    }
+
     public function guardarAntecedentesFile($oSeguimiento)
     {
         $iIdSeguimiento = $oSeguimiento->getId();
         return $this->insertarAsociado($oSeguimiento->getArchivoAntecedentes(), $iIdSeguimiento, get_class($oSeguimiento));
-    }    
+    }
 
+    /**
+     * En el peor de los casos se guarda 1 archivo solo, esto es por si se usa alguna libreria javascript
+     * en la que se pueden subir muchos archivos al mismo tiempo
+     */
+    public function guardarArchivosFicha(FichaAbstract $oFicha)
+    {
+        if(null !== $oFicha->getArchivos()){
+            foreach($oFicha->getArchivos() as $oArchivo){
+                if(null !== $oArchivo->getId()){
+                    return $this->actualizar($oArchivo);
+                }else{
+                    $iId = $oFicha->getId();
+                    return $this->insertarAsociado($oArchivo, $iId, get_class($oFicha));
+                }
+            }
+        }
+    }
+    
     public function borrar($aArchivos)
     {
         try{
@@ -69,6 +88,8 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             $publico = $oArchivo->isPublico() ? "1" : "0";
             $activoComentarios = $oArchivo->isActivoComentarios() ? "1" : "0";
 
+            $iOrden = ($oArchivo->getOrden() == "" || $oArchivo->getOrden() == '0') ? "null" : $oArchivo->getOrden();
+
             $sSQL = " update archivos " .
                     " set nombre = ".$this->escStr($oArchivo->getNombre()).", " .
                     " nombreServidor = ".$this->escStr($oArchivo->getNombreServidor()).", " .
@@ -76,7 +97,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                     " tipoMime = ".$this->escStr($oArchivo->getTipoMime()).", " .
                     " tamanio = ".$this->escInt($oArchivo->getTamanio()).", " .
                     " fechaAlta = '".$oArchivo->getFechaAlta()."', ".
-                    " orden = ".$this->escInt($oArchivo->getOrden()).", " .
+                    " orden = ".$iOrden.", " .
                     " titulo = ".$this->escStr($oArchivo->getTitulo()).", " .
                     " tipo = ".$this->escStr($oArchivo->getTipo()).", " .
                     " moderado = ".$this->escInt($moderado).", " .
@@ -86,6 +107,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                     " WHERE id = ".$this->escInt($oArchivo->getId());
 
             $db->execSQL($sSQL);
+            $db->commit();
 
             return true;
             
@@ -303,6 +325,37 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    public function isArchivoPublicacionUsuario($iArchivoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        archivos a
+                        JOIN fichas_abstractas fa ON a.fichas_abstractas_id = fa.id
+                        LEFT JOIN publicaciones p ON fa.id = p.id
+                        LEFT JOIN reviews r ON fa.id = r.id
+                      WHERE
+                        a.id = ".$this->escInt($iArchivoId)." AND
+                        (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId).")";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+    
     public function existe($filtro){}
     public function actualizarCampoArray($objects, $cambios){}
     public function insertar($objects){}

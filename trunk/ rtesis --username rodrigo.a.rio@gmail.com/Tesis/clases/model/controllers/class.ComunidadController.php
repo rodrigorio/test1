@@ -325,16 +325,10 @@ class ComunidadController
                 throw new Exception("El usuario no posee Curriculum");
             }
 
-            $pathServidorArchivo = $pathServidor.$usuario->getCurriculumVitae()->getNombreServidor();
-
-            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
-            $oArchivoIntermediary->borrar($usuario->getCurriculumVitae());
-
-            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
-                unlink($pathServidorArchivo);
-            }
+            $this->borrarArchivo($usuario->getCurriculumVitae(), $pathServidor);
 
             $usuario->setCurriculumVitae(null);
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -466,6 +460,22 @@ class ComunidadController
     	try{
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             return $oEmbedVideoIntermediary->borrar($oEmbedVideo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function borrarArchivo($oArchivo, $pathServidor)
+    {
+    	try{
+            $pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
+
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $oArchivoIntermediary->borrar($oArchivo);
+
+            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                unlink($pathServidorArchivo);
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -822,6 +832,52 @@ class ComunidadController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    /**
+     * Guarda todos los archivos vinculados a una ficha en tiempo de ejecucion.
+     *
+     * @param FichaAbstract $oFicha puede ser tanto una publicacion o un review
+     * @param string $pathServidor directorio donde estan guardados los archivos
+     */
+    public function guardarArchivoFicha($oFicha, $pathServidor)
+    {
+    	try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            return $oArchivoIntermediary->guardarArchivosFicha($oFicha);
+        }catch(Exception $e){
+            //si hubo error borro los archivos en disco
+            $aArchivos = $oFicha->getArchivos();
+            if(count($aArchivos) > 0){
+                foreach($aArchivos as $oArchivo){
+                    $pathServidorArchivo = $pathServidorArchivos.$oArchivo->getNombreServidor();
+                    if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                        unlink($pathServidorArchivo);
+                    }
+                }
+                $oFicha->setArchivos(null);
+            }
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Este metodo se debe usar solo para guardar la informacion del formulario de edicion de archivo.
+     * Titulo, descripcion, orden, etc.
+     *
+     * No sirve para asociar el archivo a ninguna entidad
+     */
+    public function guardarArchivo($oArchivo)
+    {
+    	try{
+            if(null === $oArchivo->getId()){
+                throw new Exception("El archivo no posee Id");
+            }
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            return $oArchivoIntermediary->actualizar($oArchivo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
