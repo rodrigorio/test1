@@ -25,7 +25,7 @@ var validateFormCrearSeguimiento = {
 
 var optionsAjaxFormCrearSeguimiento = {
     dataType: 'jsonp',
-    resetForm: true,
+    resetForm: false,
     url: "seguimientos/procesar-seguimiento",
     beforeSerialize: function($form, options){
 
@@ -61,9 +61,13 @@ var optionsAjaxFormCrearSeguimiento = {
 
             $("#persona").removeClass("selected");
             $("#persona").removeAttr("readonly");
-            $("#persona").val("");
-            $("#personaId").val("");
             ocultarElemento($('#persona_clean'));
+            $("#personaId").val("");
+            $("#persona").val("");
+            $("#frecuencias").val("");
+            $("#diaHorario").val("");
+            $("#diaHorario").val("");
+            $("#practica").val("");            
         }      
     }
 };
@@ -131,7 +135,7 @@ function borrarSeguimiento(iSeguimientoId)
             success:function(data){
                 if(data.success != undefined && data.success == 1){
                     //remuevo la fila y la ficha de la persona que se aprobo.
-                    $("."+seguimientoId).remove();
+                    $("."+iSeguimientoId).remove();
                 }
 
                 var dialog = $("#dialog");

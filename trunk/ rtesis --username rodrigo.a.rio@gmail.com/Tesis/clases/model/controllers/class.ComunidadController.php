@@ -944,7 +944,7 @@ class ComunidadController
     public function buscarPublicacionesUsuario($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-            $filtro[] = array("usuario" => $oUsuario->getId());
+            $filtro["usuario"] = $oUsuario->getId();
 
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
