@@ -71,7 +71,7 @@ class SeguimientosController
     public function obtenerSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-            $filtro[] = array("s.usuarios_id" => $oUsuario->getId());
+            $filtro["s.usuarios_id"] = $oUsuario->getId();
 
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
@@ -362,7 +362,7 @@ class SeguimientosController
             $aArchivos = $oSeguimiento->getArchivos();
             
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            $result = $oSeguimientoIntermediary->borrar($iSeguimientoId);
+            $result = $oSeguimientoIntermediary->borrar($oSeguimiento->getId());
             if($result){
                 //borro archivos de fotos y adjuntos en el servidor, los registros en db volaron en cascada
                 if(null != $aFotos){

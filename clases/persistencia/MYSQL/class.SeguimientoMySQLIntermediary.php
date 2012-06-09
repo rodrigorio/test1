@@ -91,10 +91,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
+            //siempre mando los detenidos al fondo 
             if(isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by $sOrderBy $sOrder ";
+                $sSQL .= " order by sEstado asc, $sOrderBy $sOrder ";
             }else{
-                $sSQL .= " order by s.fechaCreacion desc ";
+                $sSQL .= " order by sEstado asc, s.fechaCreacion desc ";
             }
             
             if ($iIniLimit!==null && $iRecordCount!==null){
@@ -181,6 +182,10 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo
                     FROM
                         seguimientos s
+                    LEFT JOIN
+                        seguimientos_personalizados sp ON sp.id = s.id
+                    LEFT JOIN
+                        seguimientos_scc sscc ON s.id = sscc.id
                     JOIN usuarios u ON u.id = s.usuarios_id
                     JOIN personas p ON p.id = s.discapacitados_id ";
 
@@ -193,6 +198,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
+            
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -228,10 +234,10 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     }
 
     public function guardar($oSeguimiento)
-    {
+    {        
         try{
             $seguimientoClass = get_class($oSeguimiento);
-            
+
             if($oSeguimiento->getId() != null){
                 if($seguimientoClass == self::TIPO_SEGUIMIENTO_PERSONALIZADO){
                     return $this->actualizar($oSeguimiento);
@@ -239,7 +245,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     return $this->actualizarSCC($oSeguimiento);
                 }
             }else{
-                if($seguimientoClass == self::TIPO_SEGUIMIENTO_SCC){
+                if($seguimientoClass == self::TIPO_SEGUIMIENTO_PERSONALIZADO){
                     return $this->insertar($oSeguimiento);
                 }else{
                     return $this->insertarSCC($oSeguimiento);

@@ -487,6 +487,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .table01 td{border-bottom:1px solid #E5E5E5; padding:10px 4px 10px 4px}
 .table01 .encabezado td, .table01 .encabezado th{color:#555571; text-transform:uppercase; font-weight:bold}
 .table01 .encabezado:hover{background-color:#FFF !important}
+.table01 .disabled{background-color:#EEE}
 
 /*** VARIOS ***/
 .fte2{font-size:0.8em}

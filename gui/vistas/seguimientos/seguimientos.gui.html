@@ -224,6 +224,7 @@
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <div id="listadoSeguimientosResult">
        <!--BeginGrillaSeguimientosBlock-->
+       <div class="fost_it pato2 pabo2">Cantidad seguimientos filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
        <table class="table01 wi100p mabo2">
            <tr class="encabezado">
                <td class="big iveal">Persona {orderByPersona}</td>
@@ -235,7 +236,12 @@
            </tr>
            <!--BeginSeguimientoBlock-->
            <tr class="{iSeguimientoId} {sEstadoClass}">
-               <td class="desplegable" rel="{iSeguimientoId}"><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
+               <td class="desplegable" rel="{iSeguimientoId}">
+                    <div class="fl_le mari2 th_fto_s thumb03">
+                        <i style="background-image:url('{scrAvatarPersona}')"></i>
+                    </div>
+                    <a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a>
+               </td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoPersonaDNI}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoTipo}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoFechaCreacion}</td>
