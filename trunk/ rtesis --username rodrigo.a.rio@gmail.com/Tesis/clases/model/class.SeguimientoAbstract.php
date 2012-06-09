@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Description of classSeguimientoAbstract
  *
@@ -8,6 +6,12 @@
  */
 abstract class SeguimientoAbstract
 {
+   /**
+    * Los valores tienen que corresponder con el enum de la tabla 
+    */
+   const ESTADO_ACTIVO = "activo";
+   const ESTADO_DETENIDO = "detenido";
+   
    protected $iId;
    protected $oDiscapacitado;
    protected $sFrecuenciaEncuentros;
@@ -28,80 +32,108 @@ abstract class SeguimientoAbstract
     protected $aArchivos = null;
     protected $fArchivoAntecedente = null;
 
-public function __construct(){}
+    public function __construct(){}
    
-public function setId($id){
+    public function setId($id){
         $this->iId = $id;
     }
-public function setFrecuenciaEncuentros($sFrecuenciaEncuentros){
+
+    public function setFrecuenciaEncuentros($sFrecuenciaEncuentros){
         $this->sFrecuenciaEncuentros = $sFrecuenciaEncuentros;
     }
-public function setDiscapacitado($oDiscapacitado){
+
+    public function setDiscapacitado($oDiscapacitado){
         $this->oDiscapacitado = $oDiscapacitado;
     }
-public function setUsuario($oUsuario){
+
+    public function setUsuario($oUsuario){
         $this->oUsuario = $oUsuario;
     }
-public function setPractica($oPractica){
+
+    public function setPractica($oPractica){
         $this->oPractica = $oPractica;
     }
-public function setAntecedentes($sAntecedentes){
+
+    public function setAntecedentes($sAntecedentes){
         $this->sAntecedentes = $sAntecedentes;
     }
-public function setPronostico($sPronostico){
+
+    public function setPronostico($sPronostico){
         $this->sPronostico = $sPronostico;
     }
-public function setDiaHorario($sDiaHorario){
+
+    public function setDiaHorario($sDiaHorario){
         $this->sDiaHorario = $sDiaHorario;
     }
-public function setFechaCreacion($dFechaCreacion){
+
+    public function setFechaCreacion($dFechaCreacion){
         $this->dFechaCreacion = $dFechaCreacion;
     }
-    
-public function setEstado($sEstado){
-        $this->sEstado = $sEstado;
-    }
 
-public function getId(){
+    public function getId(){
         return $this->iId;
     }
-public function getFrecuenciaEncuentros(){
+
+    public function getFrecuenciaEncuentros(){
         return $this->sFrecuenciaEncuentros;
     }
-public function getDiscapacitado(){
+
+    public function getDiscapacitado(){
         return $this->oDiscapacitado;
     }
-    
-public function getUsuario(){
+
+    public function getUsuario(){
         return $this->oUsuario;
     }
-public function getPractica(){
-        return $this->oPractica;
-    }    
-public function getAntecedentes(){
-        return $this->sAntecedentes;
-    }     
-public function getPronostico(){
-        return $this->sPronostico;
-    }  
-
-public function getDiaHorario(){
-        return $this->sDiaHorario;
-    }      
-public function getFechaCreacion(){
-	return $this->dFechaCreacion;
-	}
-public function getEstado(){
-      return  $this->sEstado;
+    /**
+     * Shortcut para el Id
+     */
+    public function getUsuarioId(){
+        return $this->oUsuario->getId();
     }
 
+    public function getPractica(){
+        return $this->oPractica;
+    }
 
-    public function setFotos($aFotos)
+    public function getAntecedentes(){
+        return $this->sAntecedentes;
+    }
+
+    public function getPronostico(){
+        return $this->sPronostico;
+    }
+
+    public function getDiaHorario(){
+        return $this->sDiaHorario;
+    }
+
+    public function getFechaCreacion(){
+        return $this->dFechaCreacion;
+    }
+
+    /**
+     * Estos son asi porque en la DB el campo tipo es un enum
+     */
+    public function setEstadoActivo()
     {
+        $this->sEstado = self::ESTADO_ACTIVO;
+        return $this;
+    }
+    public function setEstadoDetenido()
+    {
+        $this->sEstado = self::ESTADO_DETENIDO;
+        return $this;
+    }
+    public function getEstado(){
+        return  $this->sEstado;
+    }
+
+    public function setFotos($aFotos){
         $this->aFotos = $aFotos;
     }
-    public function setArchivos($aArchivos)
-    {
+
+    public function setArchivos($aArchivos){
         $this->aArchivos = $aArchivos;
     }
 
@@ -115,6 +147,7 @@ public function getEstado(){
     	}
         return $this->aFotos;
     }
+
     /**
      * @return array|null Archivo
      */
@@ -125,6 +158,7 @@ public function getEstado(){
     	}
         return $this->aArchivos;
     }
+
     /**
      * @return null|Archivo
      */
@@ -136,7 +170,7 @@ public function getEstado(){
         return $this->fArchivoAntecedente;
     }
     
-     public function setArchivoAntecedentes($fAntecedentes){
-     	$this->fArchivoAntecedente = $fAntecedentes;
-     }
+    public function setArchivoAntecedentes($fAntecedentes){
+        $this->fArchivoAntecedente = $fAntecedentes;
+    }
 }

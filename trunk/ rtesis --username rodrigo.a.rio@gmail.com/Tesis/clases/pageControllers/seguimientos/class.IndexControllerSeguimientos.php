@@ -63,26 +63,26 @@ class IndexControllerSeguimientos extends PageControllerAbstract
     public function buscarDiscapacitados(){
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
         try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $iRecordsTotal = 0;
-            $sOrderBy	= $sOrder=$iIniLimit=$iRecordCount=null;
-            $filtro 	= array("p.nombre"=>$this->getRequest()->get('str'));
-            $aDiscapacitados = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
+
+            $filtro = array("p.apellido" => $this->getRequest()->get('str'));
+            $aDiscapacitados = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro);
+            
             $vResult = array();
-            if(count($aDiscapacitados)>0){
+            if(count($aDiscapacitados) > 0){
                 foreach($aDiscapacitados as $oDiscapacitado){
-                    $obj        = new stdClass();
-                    $obj->iId   = $oDiscapacitado->getId();
+                    $obj = new stdClass();
+                    $obj->iId = $oDiscapacitado->getId();
                     $obj->sNombre = $oDiscapacitado->getNombre() . " " . $oDiscapacitado->getApellido();
                     $obj->iNumeroDocumento = $oDiscapacitado->getNumeroDocumento();
-                    $obj->sRutaFoto   = $this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar();
+                    $obj->sRutaFoto = $this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar();
                     $vResult[] = $obj;
                 }
             }
             //agrega una url para que el js redireccione
-            $this->getJsonHelper()->setSuccess(true)->setValor("discapacitados",$vResult);
+            $this->getJsonHelper()->setSuccess(true)->setValor("discapacitados", $vResult);
         }catch(Exception $e){
             print_r($e);
 	}

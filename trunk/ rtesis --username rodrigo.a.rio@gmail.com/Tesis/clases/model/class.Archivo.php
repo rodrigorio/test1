@@ -5,6 +5,10 @@
  */
 class Archivo
 {
+    const TIPO_ADJUNTO = "adjunto";
+    const TIPO_CV = "cv";
+    const TIPO_ANTECEDENTES = "antecedentes";
+
     private $iId;
     private $sNombre;
     private $sNombreServidor;
@@ -127,27 +131,28 @@ class Archivo
     {
         return $this->sTitulo;
     }
+
     /**
      * Estos son asi porque en la DB el campo tipo es un enum
      */
     public function setTipoCurriculum()
     {
-        $this->sTipo = "cv";
+        $this->sTipo = self::TIPO_CV;
         return $this;
     }
     
     public function setTipoAdjunto()
     {
-        $this->sTipo = "adjunto";
+        $this->sTipo = self::TIPO_ADJUNTO;
         return $this;
     }
-    
+
     public function setTipoAntecedentes()
     {
-        $this->sTipo = "antecedentes";
+        $this->sTipo = self::TIPO_ANTECEDENTES;
         return $this;
     }
-    
+        
     public function getTipo()
     {
         return $this->sTipo;

@@ -456,12 +456,16 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                          JOIN publicaciones pAux ON peAux.id = pAux.usuarios_id) AS ap ON ap.id = f.id ";
 
             $WHERE = array();
-            
+
+            //esto lo hago asi para no hacer todo un lio para 1 solo caso de uso en todo el sistema
+            if(isset($filtro['usuario']) && $filtro['usuario'] != ""){
+                $WHERE[] = " p.usuarios_id = '".$filtro['usuario']."' OR r.usuarios_id = '".$filtro['usuario']."' ";
+            }
             if(isset($filtro['f.titulo']) && $filtro['f.titulo'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('f.titulo', $filtro['f.titulo']);
             }
             if(isset($filtro['ap.apellido']) && $filtro['ap.apellido'] != ""){
-                $WHERE[] = $this->crearFiltroTexto('ap.apellido', $filtro['ap.apellido'], MYSQL_TYPE_INT);
+                $WHERE[] = $this->crearFiltroTexto('ap.apellido', $filtro['ap.apellido']);
             }
             //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
             if(isset($filtro['fecha']) && null !== $filtro['fecha']){
@@ -587,6 +591,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+    
     public function obtenerComentarios($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null) {
         try{
             $db = clone($this->conn);

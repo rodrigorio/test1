@@ -939,6 +939,21 @@ class ComunidadController
     }
 
     /**
+     * Agrega el filtro del usuario que esta logueado
+     */
+    public function buscarPublicacionesUsuario($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $filtro[] = array("usuario" => $oUsuario->getId());
+
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
      * @return array($cantFotos, $cantVideos, $cantArchivos)
      */
     public function obtenerCantidadMultimediaFicha($iFichaId)

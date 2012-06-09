@@ -6,6 +6,26 @@
  */
 class SeguimientosControllerSeguimientos extends PageControllerAbstract
 {
+    private $orderByConfig = array('persona' => array('variableTemplate' => 'orderByPersona',
+                                                      'orderBy' => 'p.nombre',
+                                                      'order' => 'desc'),
+                                   'tipo' => array('variableTemplate' => 'orderByTipo',
+                                                   'orderBy' => 'tipo',
+                                                   'order' => 'desc'),
+                                   'fecha' => array('variableTemplate' => 'orderByFecha',
+                                                    'orderBy' => 's.fechaCreacion',
+                                                    'order' => 'desc'),
+                                   'estado' => array('variableTemplate' => 'orderByEstado',
+                                                     'orderBy' => 's.estado',
+                                                     'order' => 'desc'));
+
+    private $filtrosFormConfig = array('filtroEstado' => 's.estado',
+                                       'filtroApellidoPersona' => 'p.apellido',
+                                       'filtroDni' => 'p.numeroDocumento',
+                                       'filtroTipoSeguimiento' => 'tipo',
+                                       'filtroFechaDesde' => 'fechaDesde',
+                                       'filtroFechaHasta' => 'fechaHasta');
+
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/seguimientos/frame01-01.gui.html", "frame");
         return $this;
@@ -37,6 +57,25 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "jsContent", "JsContent");
         return $this;
     }
+
+    private function setMenuDerechaHome()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContHomeBlock");
+
+        $this->getTemplate()->set_var("hrefCrearSeguimientos", $this->getUrlFromRoute("seguimientosSeguimientosNuevoSeguimiento", true));
+        $this->getTemplate()->set_var("hrefAgregarPersona", $this->getUrlFromRoute("seguimientosPersonasAgregar", true));
+        $this->getTemplate()->set_var("hrefListadoSeguimientos", $this->getUrlFromRoute("seguimientosIndexIndex", true));
+
+        return $this;
+    }
+
+    private function setMenuDerechaVerSeguimiento()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContVerSeguimientoBlock");
+
+        //falta crear el menu
+        return $this;
+    }
     
     public function index(){
         $this->listar();
@@ -44,99 +83,96 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
     public function listar()
     {
-        try{
+        try{            
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
-                 ->setHeadTag();
-
+                 ->setHeadTag()
+                 ->setMenuDerechaHome();
+                 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
-
-            //contenido ppal home seguimientos
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
-            $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
-            $this->getTemplate()->set_var("hrefListadoSeguimientos", "seguimientos/home");
-
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "ListadoSeguimientosBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-			$oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-			$obj = new stdClass();
-        	$oTipoSeg = Factory::getTipoSeguimientoInstance($obj);
-            $listaTiposSeguimiento = $oTipoSeg->getLista();
-            foreach ($listaTiposSeguimiento as $key=>$value){
-                $this->getTemplate()->set_var("iSeguimientoTiposId", $key);
-                $this->getTemplate()->set_var("sSeguimientoTiposNombre", $value);
-                $this->getTemplate()->parse("ListaTipoDeSeguimientosBlock", true);
+
+            //select form filtro                       
+            $aTiposSeguimientos = SeguimientosController::getInstance()->obtenerTiposSeguimiento();
+            foreach ($aTiposSeguimientos as $value => $descripcion){
+                $this->getTemplate()->set_var("sSeguimientoTipoValue", $value);
+                $this->getTemplate()->set_var("sSeguimientoTipoNombre", $descripcion);
+                $this->getTemplate()->parse("OptionTipoSeguimientoBlock", true);
             }
-            
-            $filtro 		= array("s.usuarios_id"=>$oUsuario->getId());
-            $iRecordsTotal 	= 0;
-            $sOrderBy 		= null; 
-            $sOrder 		= null;
-            $iIniLimit 		= null;
-            $iRecordCount 	= null;
-            $listaSeguimientos = SeguimientosController::getInstance()->listarSeguimientos($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
-            if(count($listaSeguimientos)>0){
-            	foreach ($listaSeguimientos as $seguimiento){
-            		$this->getTemplate()->set_var("iSeguimientoId",$seguimiento->getId());
-            		$this->getTemplate()->set_var("sSeguimientoPersona",$seguimiento->getDiscapacitado()->getNombreCompleto());
-                        $this->getTemplate()->set_var("iPersonaId",$seguimiento->getDiscapacitado()->getId());
-            		$this->getTemplate()->set_var("sSeguimientoTipo",$seguimiento->getTipoSeguimiento());
-            		$this->getTemplate()->set_var("sSeguimientoPersonaDNI",$seguimiento->getDiscapacitado()->getNumeroDocumento());
-            		$this->getTemplate()->set_var("sSeguimientoFechaCreacion",Utils::fechaFormateada($seguimiento->getFechaCreacion()));
 
-                        $this->getTemplate()->set_var("sEstadoSeguimiento","Activo");
-                        if($seguimiento->getEstado()=="activo"){
-                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
-                        }else{
-                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
-                        }
-            		$this->getTemplate()->parse("EstadoSeguimientoBlock",false);
-            		$this->getTemplate()->set_var("sEstadoSeguimiento","Detenido");
-                          if($seguimiento->getEstado()=="detenido"){
-                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
-                        }else{
-                            $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
-                        }
-            		$this->getTemplate()->parse("EstadoSeguimientoBlock",true);
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
+            $iRecordsTotal = 0;
+            $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-                        $this->getTemplate()->set_var("sFrecuenciaEncuentros",$seguimiento->getFrecuenciaEncuentros());
-                        $this->getTemplate()->set_var("sDiaHorarioEncuentros",$seguimiento->getDiaHorario());
-                        $this->getTemplate()->set_var("sTipoPractica",$seguimiento->getPractica()->getNombre());
+            if(count($aSeguimientos) > 0){
 
-                        $vFotos     = SeguimientosController::getInstance()->obtenerFotosSeguimiento($seguimiento->getId());
-                        $vArchivos  = SeguimientosController::getInstance()->obtenerArchivosSeguimiento($seguimiento->getId());
-                        $cantiArchivos = $cantiFotos = 0;
-                        if($vFotos){
-                            $cantiFotos = count($vFotos);
-                        }
-                        if($vArchivos){
-                            $cantiArchivos = count($vArchivos);
-                        }
-                        $cantidadAdjuntos = $cantiArchivos + $cantiFotos;
-                        $this->getTemplate()->set_var("sElementosMultimedia",$cantidadAdjuntos);
-                        $this->getTemplate()->parse("ListaDeSeguimientosBlock",true);
+                $this->getTemplate()->set_var("NoRecordsGrillaSeguimientosBlock", "");
+                
+            	foreach ($aSeguimientos as $oSeguimiento){
+
+                    $hrefAmpliarSeguimiento = $this->getUrlFromRoute("seguimientosSeguimientosVer", true);
+
+                    $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+                    $this->getTemplate()->set_var("sSeguimientoPersona", $oSeguimiento->getDiscapacitado()->getNombreCompleto());
+                    $this->getTemplate()->set_var("iPersonaId", $oSeguimiento->getDiscapacitado()->getId());
+                    
+                    $this->getTemplate()->set_var("sSeguimientoTipo", $aTiposSeguimientos[get_class($oSeguimiento)]);
+                    $this->getTemplate()->set_var("sSeguimientoPersonaDNI", $oSeguimiento->getDiscapacitado()->getNumeroDocumento());
+                    $this->getTemplate()->set_var("sSeguimientoFechaCreacion", Utils::fechaFormateada($oSeguimiento->getFechaCreacion()));
+
+                    $this->getTemplate()->set_var("sEstadoSeguimiento", "Activo");
+                    if($oSeguimiento->getEstado() == "activo"){
+                        $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","selected='selected'");
+                    }else{
+                        $this->getTemplate()->set_var("sSelectedEstadoSeguimiento","");
+                    }
+                    $this->getTemplate()->parse("EstadoSeguimientoBlock",false);
+                    $this->getTemplate()->set_var("sEstadoSeguimiento", "Detenido");
+                      if($oSeguimiento->getEstado() == "detenido"){
+                        $this->getTemplate()->set_var("sSelectedEstadoSeguimiento", "selected='selected'");
+                    }else{
+                        $this->getTemplate()->set_var("sSelectedEstadoSeguimiento", "");
+                    }
+                    $this->getTemplate()->parse("EstadoSeguimientoBlock",true);
+
+                    $this->getTemplate()->set_var("sFrecuenciaEncuentros", $oSeguimiento->getFrecuenciaEncuentros());
+                    $this->getTemplate()->set_var("sDiaHorarioEncuentros", $oSeguimiento->getDiaHorario());
+                    $this->getTemplate()->set_var("sTipoPractica", $oSeguimiento->getPractica()->getNombre());
+
+                    //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
+                    list($cantFotos, $cantVideos, $cantArchivos) = SeguimientosController::getInstance()->obtenerCantidadMultimediaSeguimiento($oSeguimiento->getId());
+                    $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
+                    $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
+                    $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                    $this->getTemplate()->parse("SeguimientoBlock", true);
             	}
-           		$this->getTemplate()->set_var("NoRecordsListaDeSeguimientosBlock","");
             }else{
-                    $this->getTemplate()->set_var("ListaDeSeguimientosBlock","");
-           		$this->getTemplate()->set_var("sNoRecords","No se encontraron seguimientos.");
-           		$this->getTemplate()->parse("NoRecordsListaDeSeguimientosBlock",false);
+                $this->getTemplate()->set_var("SeguimientoBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "Todavía no hay seguimientos creados.");
             }
+
+            $params = array();
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/buscar-seguimientos", "listadoSeguimientosResult", $params);
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
          }catch(Exception $e){
             print_r($e);
         } 
     }       
     
     public function buscarSeguimientos(){
-    	  //si accedio a traves de la url muestra pagina 404
+
+    	//si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
         try{
             $this->setFrameTemplate();
             $this->printMsgTop();
@@ -226,152 +262,155 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    public function nuevoSeguimiento(){
+    /**
+     * Form Nuevo Seguimiento
+     */
+    public function nuevoSeguimiento(){        
         try{
             $this->setFrameTemplate()
-            	->setJSSeguimientos()
-                 ->setHeadTag();
+                 ->setJSSeguimientos()
+                 ->setHeadTag()
+                 ->setMenuDerechaHome();
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+
             $this->printMsgTop();
 
             //titulo seccion
-             $this->getTemplate()->set_var("hrefListadoSeguimientos", "seguimientos/home");
-            $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
 
-            //contenido ppal home seguimientos
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
-            $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "FormularioCrearSeguimientoBlock");
 
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-            $listaTiposSeguimiento = array();
-            $obj = new stdClass();
-            $oTipoSeg = Factory::getTipoSeguimientoInstance($obj);
-            $listaTiposSeguimiento = $oTipoSeg->getLista();
-            foreach ($listaTiposSeguimiento as $key=>$value){
-                $this->getTemplate()->set_var("iSeguimientoTiposId", $key);
-                $this->getTemplate()->set_var("sSeguimientoTiposNombre", $value);
-                $this->getTemplate()->parse("ListaTipoDeSeguimientosBlock", true);
-            }
-            $oTipoPractica = Factory::getTipoPracticasSeguimientoInstance($obj);
-            $listaTiposPracticaSeguimiento = $oTipoPractica->getLista();
-            foreach ($listaTiposPracticaSeguimiento as $key=>$value){
-                $this->getTemplate()->set_var("iSeguimientoTiposPracticaId", $key);
-                $this->getTemplate()->set_var("sSeguimientoTiposPracticaNombre", $value);
-                $this->getTemplate()->parse("ListaTipoDePracticaSeguimientosBlock", true);
+            $aTiposSeguimientos = SeguimientosController::getInstance()->obtenerTiposSeguimiento();
+            $this->getTemplate()->set_var("sSeguimientoSCCValue", "SeguimientoSCC");
+            $this->getTemplate()->set_var("sSeguimientoSCCNombre", $aTiposSeguimientos['SeguimientoSCC']);
+            $this->getTemplate()->set_var("sSeguimientoPersonalizadoValue", "SeguimientoPersonalizado");
+            $this->getTemplate()->set_var("sSeguimientoPersonalizadoNombre", $aTiposSeguimientos['SeguimientoPersonalizado']);
+            
+            $aPracticas = SeguimientosController::getInstance()->obtenerPracticas();
+            foreach($aPracticas as $oPractica){
+                $this->getTemplate()->set_var("iPracticaId", $oPractica->getId());
+                $this->getTemplate()->set_var("sPracticaNombre", $oPractica->getNombre());
+                $this->getTemplate()->parse("OptionPracticaBlock", true);
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            
          }catch(Exception $e){
             print_r($e);
         }
     }
 
+    /**
+     * Guardar Seguimiento Nuevo
+     *
+     * El modificar tiene que ser metodo aparte porque no podes cambiar el tipo una vez creado.
+     */
     public function procesarSeguimiento(){
-        //si accedio a traves de la url muestra pagina 404
+
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
         try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iTipoSeguimiento = $this->getRequest()->getPost('tipoSeguimiento');
+
+            $sTipoSeguimiento = $this->getRequest()->getPost('tipoSeguimiento');
+            $iPersonaId = $this->getRequest()->getPost('personaId');
+            $sFrecuencias   = $this->getRequest()->getPost('frecuencias');
+            $sDiaHorario    = $this->getRequest()->getPost('diaHorario');
+
+            $filtro        = array("s.discapacitados_id" => $iPersonaId);
+            $aSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
             
-            $iPersona           = $this->getRequest()->getPost('personaId');
-            $filtro             = array("s.discapacitados_id"=>$iPersona);
-            $iRecordsTotal 	= 0;
-            $sOrderBy 		= null;
-            $sOrder 		= null;
-            $iIniLimit 		= null;
-            $iRecordCount 	= null;
-            $listaSeguimientos  = SeguimientosController::getInstance()->listarSeguimientos($filtro,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit, $iRecordCount);
-            
-            if(count($listaSeguimientos)>1){
-				$this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
+            if(count($aSeguimientos) > 1){
+                $this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
                 $this->getJsonHelper()->sendJsonAjaxResponse(); 
-			 	return;
-            }else if(count($listaSeguimientos)>0){
-                if($listaSeguimientos[0]->getTipoSeguimientoId() == $iTipoSeguimiento){
-                	 $this->getJsonHelper()->setSuccess(false)->setMessage("No puede agregar 2 seguimientos del mismo tipo a una persona");
-                	 $this->getJsonHelper()->sendJsonAjaxResponse(); 
-                	 return;
+                return;
+            }            
+            if(count($aSeguimientos) > 0){
+                if(get_class($aSeguimientos[0]) == $sTipoSeguimiento){
+                     $this->getJsonHelper()->setSuccess(false)->setMessage("No puede agregar 2 seguimientos del mismo tipo a una persona");
+                     $this->getJsonHelper()->sendJsonAjaxResponse();
+                     return;
                 }
             }
 
-            $sFrecuencias   = $this->getRequest()->getPost('frecuencias');
-            $sDiaHorario    = $this->getRequest()->getPost('diaHorario');
-            $iTipoPractica  = $this->getRequest()->getPost('tipoPractica');
-            
-            $oTipoSeg 		= Factory::getTipoSeguimientoInstance(new stdClass());
-            $sTipoSeguimiento = $oTipoSeg->getTipoById($iTipoSeguimiento);
-            $obj 			= new stdClass();
-            $oTipoPractica 	= Factory::getTipoPracticasSeguimientoInstance(new stdClass());
-            $oTipoPractica->setId($iTipoPractica); 
-            $iRecordsTotal	= 0;
-            $sOrderBy 		= null;
-            $sOrder 		= null;
-            $iIniLimit 		= null;
-            $iRecordCount 	= null;
-            $filtro = array("p.id" => $iPersona);
-            $aDiscapacitado = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
-            $oDiscapacitado = $aDiscapacitado[0];
-            $obj->oPractica 	= $oTipoPractica;
-            $obj->sFrecuenciaEncuentros = $sFrecuencias;
-            $obj->sDiaHorario 	= $sDiaHorario;
-            $obj->oDiscapacitado = $oDiscapacitado;
-            $obj->oUsuario	= $perfil->getUsuario();
-            if($sTipoSeguimiento == "SCC" ){
-                $oSeguimiento = Factory::getSeguimientoSCCInstance($obj);
-            }elseif( $sTipoSeguimiento == "PERSONALIZADO"){
-                $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($obj);
+            $iPracticaId  = $this->getRequest()->getPost('practica');
+            $oPractica = SeguimientosController::getInstance()->getPracticaById($iPracticaId);
+
+            $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaId);
+
+            $oSeguimiento = new stdClass();
+            $oSeguimiento->oPractica = $oPractica;
+            $oSeguimiento->sFrecuenciaEncuentros = $sFrecuencias;
+            $oSeguimiento->sDiaHorario = $sDiaHorario;
+            $oSeguimiento->oDiscapacitado = $oDiscapacitado;
+            $oSeguimiento->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+
+            switch($sTipoSeguimiento)
+            {
+                case "SeguimientoSCC":
+                    $oSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
+                    break;
+                case "SeguimientoPersonalizado":
+                    $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+                    break;
             }
             
-            $res = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-            if($res){
+            $resultado = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+            
+            if($resultado){
                 $this->getJsonHelper()->setSuccess(true);
+                $this->getJsonHelper()->setMessage("El seguimiento fue creado con exito");
             }else{
                 $this->getJsonHelper()->setSuccess(false);
             }
+            
         }catch(Exception $e){
            $this->getJsonHelper()->setSuccess(false);
         }
-        //setea headers y body en el response con los valores codificados
+        
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
-    public function cambiarEstadoSeguimientos(){
-    	 //si accedio a traves de la url muestra pagina 404
+    public function cambiarEstadoSeguimientos()
+    {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $perfil 		= SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iIdSeguimiento = $this->getRequest()->getPost('id');
-            $sEstadoSeguimiento = $this->getRequest()->getPost('estado');
-            $iRecordsTotal	= 0;
-            $sOrderBy 		= null;
-            $sOrder 		= null;
-            $iIniLimit 		= null;
-            $iRecordCount 	= null;
-            $oSeguimiento 	= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
-			$oSeguimiento->setEstado(strtolower($sEstadoSeguimiento));
-            $res 			= SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-            if($res){
-                $this->getJsonHelper()->setSuccess(true);
-            }else{
-                $this->getJsonHelper()->setSuccess(false);
-            }
-        }catch(Exception $e){
-           $this->getJsonHelper()->setSuccess(false);
+
+        $iIdSeguimiento = $this->getRequest()->getPost('iSeguimientoId');
+        $sEstadoSeguimiento = $this->getRequest()->getPost('estadoSeguimiento');
+
+        if(empty($iPublicacionId) || empty($sEstadoSeguimiento)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
-        //setea headers y body en el response con los valores codificados
-        $this->getJsonHelper()->sendJsonAjaxResponse();
+        
+        try{
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();            
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar este seguimiento", 401);
+            }
+
+            switch($sEstadoSeguimiento)
+            {
+                case "Activo":
+                    $oSeguimiento->setEstadoActivo();
+                    break;
+                case "Detenido":
+                    $oSeguimiento->setEstadoDetenido();
+                    break;
+            }
+                        
+            SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
     
 
- 	public function editarAntecedentes(){
+    public function editarAntecedentes(){
         try{
             $this->setFrameTemplate()
             	 ->setJSAntecedentes()                  
@@ -427,22 +466,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     }
     
     public function procesarAntecedentes(){
-    	 //si accedio a traves de la url muestra pagina 404
-   //     if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
+
     	if($this->getRequest()->has('fileAntecedentesUpload')){
             $this->fileAntecedentesUpload();
             return;
         }
-        
+
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+                
     	if($this->getRequest()->has('textoAntecedentes')){
             $this->procesarTextoAntecedentes();
             return;
         }
     }
     
- 	public function fileAntecedentesUpload(){
-   		 try{
+    private function fileAntecedentesUpload(){
+        try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
             
@@ -480,63 +519,80 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
     
-    public function procesarTextoAntecedentes(){
-   		 try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $perfil 		= SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iIdSeguimiento = $this->getRequest()->getPost('id');
-            $sAntecedentes 	= $this->getRequest()->getPost('antecedentes');
-            $iRecordsTotal	= 0;
-            $sOrderBy 		= null;
-            $sOrder 		= null;
-            $iIniLimit 		= null;
-            $iRecordCount 	= null;
-            $oSeguimiento 	= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
-			if($oSeguimiento){
-				$oSeguimiento->setAntecedentes($sAntecedentes);
-				$res = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-			}
-			
-			if($res){
+    private function procesarTextoAntecedentes()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        
+    	if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+    	}
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+        
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para editar este seguimiento", 401);
+            }
+                        
+            $sAntecedentes = $this->getRequest()->getPost('antecedentes');
+           
+            $oSeguimiento->setAntecedentes($sAntecedentes);
+            $resultado = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+            			
+            if($resultado){
                 $this->getJsonHelper()->setSuccess(true);
             }else{
                 $this->getJsonHelper()->setSuccess(false);
             }
+            
         }catch(Exception $e){
            $this->getJsonHelper()->setSuccess(false);
         }
-        //setea headers y body en el response con los valores codificados
+               
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
     public function eliminar()
     {
-    	$iSeguimientoId = $this->getRequest()->getParam('seguimientoId');
+    	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        
     	if(empty($iSeguimientoId)){
-    		throw new Exception("La url esta incompleta, no puede ejecutar la acci�n", 401);
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
-    
+
     	$this->getJsonHelper()->initJsonAjaxResponse();
     	try{
-    		$this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
 
-                $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-                $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
-    		$result = SeguimientosController::getInstance()->eliminarSeguimiento($iSeguimientoId, $pathServidorFotos, $pathServidorArchivos);
-    
-    		$this->restartTemplate();
-    
-    		if($result){
-    			$msg = "El seguimiento fue eliminado con exito";
-    			$bloque = 'MsgCorrectoBlockI32';
-    			$this->getJsonHelper()->setSuccess(true);
-    		}else{
-    			$msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
-    			$bloque = 'MsgErrorBlockI32';
-    			$this->getJsonHelper()->setSuccess(false);
-    		}
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para borrar este seguimiento", 401);
+            }
+
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
+            $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+
+            $result = SeguimientosController::getInstance()->eliminarSeguimiento($oSeguimiento, $pathServidorFotos, $pathServidorArchivos);
+
+            $this->restartTemplate();
+
+            if($result){
+                    $msg = "El seguimiento fue eliminado con exito";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+            }else{
+                    $msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
+                    $bloque = 'MsgErrorBlockI32';
+                    $this->getJsonHelper()->setSuccess(false);
+            }
     
     	}catch(Exception $e){
     		$msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
@@ -549,6 +605,14 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     	$this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
     
     	$this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    /**
+     * Metodo para la vista ampliada de un seguimiento
+     */
+    public function ver()
+    {
+        
     }
 }
 	  

@@ -27,7 +27,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 	}
 	
 	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-		try{
+        try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 

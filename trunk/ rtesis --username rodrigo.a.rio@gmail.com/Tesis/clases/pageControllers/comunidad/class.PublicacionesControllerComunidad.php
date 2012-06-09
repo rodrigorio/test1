@@ -154,7 +154,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
         
         if(count($aFichas) > 0){
 
@@ -262,9 +262,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
 
-            $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-            $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
-
             switch($objType)
             {
                 case "publicacion":
@@ -274,6 +271,15 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
                     break;
             }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para borrar esta publicacion", 401);
+            }              
+
+            $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
             //polimorfico
             $result = ComunidadController::getInstance()->borrarPublicacion($oFicha, $pathServidorFotos, $pathServidorArchivos);
@@ -440,11 +446,25 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         {
             case "publicacion":
                 $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+
+                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+                $iUsuarioId = $perfil->getUsuario()->getId();
+                if($oFicha->getUsuarioId() != $iUsuarioId){
+                    throw new Exception("No tiene permiso para modificar esta publicacion", 401);
+                }
+
                 $oFicha->isActivo($bActivo);
                 ComunidadController::getInstance()->guardarPublicacion($oFicha);
                 break;
             case "review":
                 $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+
+                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+                $iUsuarioId = $perfil->getUsuario()->getId();
+                if($oFicha->getUsuarioId() != $iUsuarioId){
+                    throw new Exception("No tiene permiso para modificar esta publicacion", 401);
+                }
+
                 $oFicha->isActivo($bActivo);
                 ComunidadController::getInstance()->guardarReview($oFicha);
                 break;
@@ -590,6 +610,12 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $iPublicacionIdForm = $this->getRequest()->getPost('publicacionIdForm');
             $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionIdForm);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oPublicacion->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar esta publicacion", 401);
+            }
 
             $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
@@ -845,6 +871,12 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $iReviewIdForm = $this->getRequest()->getPost('reviewIdForm');
             $oReview = ComunidadController::getInstance()->getReviewById($iReviewIdForm);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oReview->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar esta publicacion", 401);
+            }
 
             $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
@@ -1261,7 +1293,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
-
+            
             switch($objType)
             {
                 case "publicacion":
