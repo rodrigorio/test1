@@ -33,22 +33,51 @@ class SeguimientosController
         $this->db = $db;
     }
 
+    /**
+     *
+     * @return array Nombre de la clase => Descripcion
+     */
+    public function obtenerTiposSeguimiento()
+    {
+    	try{
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->obtenerTiposSeguimientos();
+        }catch(Exception $e){
+            throw new Exception($e);
+        }        
+    }
+
     public function guardarSeguimiento($oSeguimiento){
     	try{
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->guardar($oSeguimiento);
         }catch(Exception $e){
-                echo $e->getMessage();
+            throw new Exception($e);
         }
     }
 
-    public function listarSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function buscarSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $filtro[] = array("s.usuarios_id" => $oUsuario->getId());
+
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-          	$listaSeg = $oSeguimientoIntermediary->obtenerSeguimientos($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount );
-          	return $listaSeg;
+            return $oSeguimientoIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-                echo $e->getMessage();
+            throw new Exception($e);
+        }
+    }
+
+    public function obtenerSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    	try{
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $filtro[] = array("s.usuarios_id" => $oUsuario->getId());
+
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
+
+        }catch(Exception $e){
+            throw new Exception($e);
         }
     }
 
@@ -257,11 +286,11 @@ class SeguimientosController
         }
     }
 
-    public function getPracticaById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function getPracticaById($iPracticaId){
         try{
-            $filtro = array('p.id' => $iId);
+            $filtro = array('p.id' => $iPracticaId);
             $oPracticaIntermediary = PersistenceFactory::getPracticaIntermediary($this->db);
-            $aPractica = $oPracticaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            $aPractica = $oPracticaIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
             if(null !== $aPractica){
                 return $aPractica[0];
             }else{
@@ -273,6 +302,15 @@ class SeguimientosController
         }
     }
 
+    public function obtenerPracticas($filtro = array(), &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oPracticaIntermediary = PersistenceFactory::getPracticaIntermediary($this->db);
+            return $oPracticaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
     /**
      * @return array|null
      */
@@ -318,9 +356,8 @@ class SeguimientosController
         }          
     }
 
-    public function eliminarSeguimiento($iSeguimientoId, $pathServidorFotos, $pathServidorArchivos){
+    public function eliminarSeguimiento($oSeguimiento, $pathServidorFotos, $pathServidorArchivos){
         try{            
-            $oSeguimiento = $this->getSeguimientoById($iSeguimientoId);
             $aFotos = $oSeguimiento->getFotos();
             $aArchivos = $oSeguimiento->getArchivos();
             
@@ -412,6 +449,19 @@ class SeguimientosController
             }
 
             $seguimiento->setArchivoAntecedentes(null);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * @return array($cantFotos, $cantVideos, $cantArchivos)
+     */
+    public function obtenerCantidadMultimediaSeguimiento($iSeguimientoId)
+    {
+        try{
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->obtenerCantidadElementosAdjuntos($iSeguimientoId);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

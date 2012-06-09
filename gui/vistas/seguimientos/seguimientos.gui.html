@@ -16,104 +16,145 @@
 </script>
 <!--EndJsContent-->
 
-<!--BeginPageRightInnerContBlock-->
-<ul class="m_vert">
+<!--BeginPageRightInnerContHomeBlock-->
+<ul class="m_vert menu02">
     <li>
         <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
-            <span class="i mi relationshipPeople"></span>
             Listado de seguimientos
         </a>
     </li>
     <li>
         <a id="crearSeguimiento" href="{hrefCrearSeguimientos}">
-            <span class="i mi relationshipPeople"></span>
             Crear nuevo seguimiento
         </a>
     </li>
     <li>
-        <a id="agregarPersona" href="{hrefAgregarPersona}">
-            <span class="i bs userAdd"></span>
+        <a class="agregarPersona" href="">
             Agregar persona
         </a>
     </li>
 </ul>
-<!--EndPageRightInnerContBlock-->
+<!--EndPageRightInnerContHomeBlock-->
 
-<!--BeginFormularioBlock-->
-<div class='ficha04 bora grupo cl_bo' style="width:640px;float: left;">
+<!--BeginPageRightInnerContVerSeguimientoBlock-->
+<ul class="m_vert menu02">
+    <li>
+        falta hacer
+    </li>
+</ul>
+<!--EndPageRightInnerContVerSeguimientoBlock-->
+
+<!--BeginFormularioCrearSeguimientoBlock-->
+<div class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
-    <div class="di_no" id="msg_conf"></div>
-    <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="" method="post" >
+    <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-        <div id='msg_form_crearSeguimiento' class="msg_form iveal" style="display:none;">
-        	<span class="bs i"></span>
-        	<span class="msg"></span>
-        </div>
+        <h2 class="mabo3">Crear un nuevo seguimiento</h2>
 
-        <div id="msg_tipo" class="form_line msg_tipoSeguimiento">Tipo de Seguimiento
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <select class="requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
-                    	<option value="">Seleccione el tipo de Seguimiento</option>
-                    	<!--BeginListaTipoDeSeguimientosBlock-->
-                    	<option value="{iSeguimientoTiposId}" {sSeguimientoTiposSelect}>{sSeguimientoTiposNombre}</option>
-                    	<!--EndListaTipoDeSeguimientosBlock-->
-                    </select>
-                </div>
+        <div class="form_line msg_tipoSeguimiento">
+            <div class="cl_bo pato2">
+                <input id="radioSeguimientoSCC" type="radio" name="tipoSeguimiento" value="{sSeguimientoSCCValue}">
+                <label for="radioSeguimientoSCC">
+                    <span class="fowe_bo">{sSeguimientoSCCNombre}</span><br>
+                </label>
+                <p class="pabo">
+                    Info seguimiento SCC. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
+                    enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
+                    sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
+                </p>
+                <input id="radioSeguimientoPersonalizado" type="radio" name="tipoSeguimiento" value="{sSeguimientoPersonalizadoValue}">
+                <label for="radioSeguimientoPersonalizado">
+                    <span class="fowe_bo">{sSeguimientoPersonalizadoNombre}</span><br>
+                </label>
+                <p class="pabo">
+                    Info seguimiento Personalizado. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis dignissim viverra. In faucibus,
+                    enim at sollicitudin vestibulum, lorem massa malesuada sapien, nec sodales sapien massa nec lorem. Fusce non ipsum massa,
+                    sed faucibus nunc. Integer urna felis, lacinia quis mattis vel, rhoncus a lacus.
+                </p>
             </div>
         </div>
-        <div id="msg_nombre" class="form_line msg_personaId">Dni de la persona
+
+        <div class="form_line msg_personaId">
+            <label for="persona">
+                <span class="marca_obligatorio">&#8226;</span>
+                Persona <span class="fost_it fte2 pale">(Utilice el apellido para buscar)</span>
+            </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
                      <div id='persona_loading' class="i ajax_wait16 di_no"></div>
                      <span title="Quitar persona" id='persona_clean' class='i bs close ihover di_no'></span>
-                     <input type="text" name="persona" id="persona" title="persona" maxlength="40" value="{sPersona}" />
-                     <input type="hidden" name="personaId" id="personaId" value="{iPersonaId}" />
-<!--                     <input class="requerido" type="text" name="persona" id="persona" title="Persona" maxlength="40" value="{sSeguimientoPersona}" /> -->
+                     <input type="text" name="persona" id="persona" title="persona" maxlength="15" value="" />
+                     <input type="hidden" name="personaId" id="personaId" value="" />
                 </div>
             </div>
+            <p>
+                Ingrese el dni de la persona a la cual desea agregar un seguimiento.<br>
+                Si la persona no existe en el sistema puede <a class="agregarPersona" href="">agregar una nueva persona</a>,
+                luego de creada automaticamente aparecera en el listado.
+            </p>
         </div>
-        <div id="msg_email" class="form_line msg_frecuencias">Frecuencia de encuentros
-            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+
+        <div class="form_line msg_frecuencias">
+            <label for="frecuencias">
+                Frecuencia de encuentros
+            </label>           
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="requerido" type="text" name="frecuencias" id="frecuencias" title="Frecuencia de encuentros" maxlength="40" value="{sSeguimientoFrecuencia}" />
+                    <input type="text" name="frecuencias" id="frecuencias" title="Frecuencia de encuentros" maxlength="100" value="" />
                 </div>
             </div>
+            <p>
+                Texto de referencia que puede ingresar para recordar la frecuencia con la que se sigue a la persona.
+            </p>
         </div>
-        <div id="msg_email" class="form_line msg_diaHorario">Dias y horarios estipulados de encuentros
-            <div id="hintEmail" class="msg_campo_der hint iveal di_no"><span class="bs i"></span> <span class="msg">La invitacion se enviara a esta direccion de correo,<br> desde la cual el invitado debera acceder al formulario de registracion</span></div>
+
+        <div class="form_line msg_diaHorario">
+            <label for="diaHorario">
+                Dias y horarios estipulados de encuentros
+            </label>                       
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input class="" type="text" name="diaHorario" id="diaHorario" title="Dias y horarios" maxlength="40" value="{sSeguimientoDiaHorario}" />
+                    <input class="" type="text" name="diaHorario" id="diaHorario" title="Dias y horarios" maxlength="100" value="" />
                 </div>
             </div>
+            <p>
+                Texto de referencia para recordar que dias y que horario se realizan encuentros con la persona.
+            </p>
         </div>
-        <div id="msg_tipo" class="form_line msg_tipoPractica">Tipo de pr&aacute;ctica
+        
+        <div class="form_line msg_practica">
+            <label for="practica">
+                <span class="marca_obligatorio">&#8226;</span>
+                Tipo de pr&aacute;ctica
+            </label>                                   
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <select class="requerido" name="tipoPractica" id="tipoPractica" >
-                    	<option value="">Seleccione el tipo de pr&aacute;ctica</option>
-                    	<!--BeginListaTipoDePracticaSeguimientosBlock-->
-                    	<option value="{iSeguimientoTiposPracticaId}" {sSeguimientoTiposPracticaSelect}>{sSeguimientoTiposPracticaNombre}</option>
-                    	<!--EndListaTipoDePracticaSeguimientosBlock-->
+                    <select name="practica" id="practica" >
+                    	<option value="">Seleccionar</option>
+                    	<!--BeginOptionPracticaBlock-->
+                    	<option value="{iPracticaId}">{sPracticaNombre}</option>
+                    	<!--EndOptionPracticaBlock-->
                     </select>
                 </div>
             </div>
+            <p>
+                Tipo de pr&aacute;ctica asociada al seguimiento.
+            </p>
         </div>
 
-        <div class="fl_le">
-            <label for="CrearSeguimiento" class="button buttonConfirm buttonLarge mari3">
+        <div class="fl_le mabo2">
+            <label for="crearSeguimiento" class="button buttonConfirm buttonLarge">
                 <button id="crearSeguimiento" type="submit" name="crearSeguimiento" class="btn01">
-                    Guardar Seguimiento
+                    Crear Seguimiento
                 </button>
             </label>
         </div>
-        <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{idSeguimiento}" >
+
+        <div style="display:none;" id='msg_form_crearSeguimiento' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
     </form>
 </div>
-<!--EndFormularioBlock-->
+<!--EndFormularioCrearSeguimientoBlock-->
 
 <!--BeginListadoSeguimientosBlock-->
 <div class="ficha01 grupo mabo2">
@@ -126,84 +167,88 @@
         <div class="der"></div>
     </div>
     <div class="contenido">
-        <form action="" method="post">
+        <form id="formFiltrarSeguimientos" name="formFiltrarSeguimientos" action="" method="post">
             <div class="fl_le mari2 mabo2">
                 <span class="fowe_bo">Estado</span>
-                <select name="seguimiento_estado" id="seguimiento_estado">
+                <select name="filtroEstado" id="filtroEstado">
                       <option value="">Todos</option>
                       <option value="activo">Activo</option>
                       <option value="detenido">Detenido</option>
                  </select>
             </div>
             <div class="fl_le mari2 mabo2">
-                <span class="fowe_bo">Fecha de creacion</span>
-               <input type="text" name="seguimiento_fechaCreacion" id="seguimiento_fechaCreacion"/>
+               <span class="fowe_bo">Fecha desde</span>
+               <input readonly="readonly" type="text" name="filtroFechaDesde" id="filtroFechaDesde"/>
             </div>
             <div class="fl_le mari2 mabo2">
-                <span class="fowe_bo">Nombre de la persona</span>
-               <input type="text" name="seguimiento_nombrePersona" id="seguimiento_nombrePersona"/>
+               <span class="fowe_bo">Fecha hasta</span>
+               <input readonly="readonly" type="text" name="filtroFechaHasta" id="filtroFechaHasta"/>
             </div>
             <div class="fl_le mari2 mabo2">
-                <span class="fowe_bo">Dni de la persona</span>
-               <input type="text" name="seguimiento_dniPersona" id="seguimiento_dniPersona"/>
+               <span class="fowe_bo">Apellido Persona</span>
+               <input type="text" name="filtroApellidoPersona" id="filtroApellidoPersona"/>
             </div>
             <div class="fl_le mari2 mabo2">
-                <span class="fowe_bo">Tipo de Seguimiento</span>
-               <select class="defVal requerido" name="tipoSeguimiento" id="tipoSeguimiento" >
-                    <option value="">Selecciones un tipo</option>
-                    <!--BeginListaTipoDeSeguimientosBlock-->
-                    <option value="{iSeguimientoTiposId}">{sSeguimientoTiposNombre}</option>
-                    <!--EndListaTipoDeSeguimientosBlock-->
+                <span class="fowe_bo">Dni Persona</span>
+               <input type="text" name="filtroDni" id="filtroDni"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Tipo de Seguimiento</span>
+               <select name="filtroTipoSeguimiento" id="filtroTipoSeguimiento" >
+                    <option value="">Seleccionar</option>
+                    <!--BeginOptionTipoSeguimientoBlock-->
+                    <option value="{sSeguimientoTipoValue}">{sSeguimientoTipoNombre}</option>
+                    <!--EndOptionTipoSeguimientoBlock-->
                </select>
             </div>
 
             <br clear="all" />
-            
-            <label for="BuscarSeguimiento" class="button buttonConfirm buttonLarge mari3">
-                <button id="buscarSeguimiento" type="button" name="buscarSeguimiento" class="btn01" onclick="buscarSeguimientos();">
-                    Buscar Seguimiento
+
+            <label for="BuscarSeguimientos" class="button buttonConfirm mari">
+                <button id="BuscarSeguimientos" type="button" name="BuscarSeguimientos" class="btn01">
+                    Buscar Seguimientos
                 </button>
             </label>
-        </form>
+            <label for="limpiarFiltro" class="button">
+                <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
+                    Limpiar Filtro
+                </button>
+            </label>
+
+            <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
+            <input type="hidden" value="" name="sOrder" id="sOrder" />
+        </form>            
     </div>
 </div>
-
-    <!--BeginGrillaSeguimientoBlock-->
-    <div id="listadoSeguimientos" class="po_re">
-    	<form action="seguimientos/editar-antecedentes" id="editAntecedentes" method="post">
-    		<input type="hidden" value="" name="idSeg" id="idSeg"/>
-    	</form>
-       <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-       <table class="table01 wi100p">
+<div id="listadoSeguimientos" class="grupo">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <div id="listadoSeguimientosResult">
+       <!--BeginGrillaSeguimientosBlock-->
+       <table class="table01 wi100p mabo2">
            <tr class="encabezado">
-               <td>Persona</td>
-               <td>Dni</td>
-               <td>Tipo</td>
-               <td>FechaCreacion</td>
-               <td>Estado</td>
-               <td></td>
+               <td class="big iveal">Persona {orderByPersona}</td>
+               <td class="small">Dni</td>
+               <td class="small iveal">Tipo {orderByTipo}</td>
+               <td class="small iveal">FechaCreacion {orderByFecha}</td>
+               <td class="small iveal">Estado {orderByEstado}</td>
+               <td class="medium iveal"></td>
            </tr>
-           <!--BeginListaDeSeguimientosBlock-->
-           <tr class="{iSeguimientoId}" class="{odd}">
+           <!--BeginSeguimientoBlock-->
+           <tr class="{iSeguimientoId} {sEstadoClass}">
                <td class="desplegable" rel="{iSeguimientoId}"><a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a></td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoPersonaDNI}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoTipo}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoFechaCreacion}</td>
                <td>
-                    <select name="estado" id="estado" onchange="cambiarEstadoSeguimiento(this,{iSeguimientoId});">
+                    <select class="cambiarEstadoSeguimiento" name="estadoSeguimiento_{iSeguimientoId}" id="estadoSeguimiento_{iSeguimientoId}" rel="{iSeguimientoId}">
                         <!--BeginEstadoSeguimientoBlock-->
                         <option value="{sEstadoSeguimiento}" {sSelectedEstadoSeguimiento}>{sEstadoSeguimiento}</option>
                         <!--EndEstadoSeguimientoBlock-->
                     </select>
                </td>
                <td class="teal_ce">
-                   <span title="Ampliar Seguimiento" class="i mi expand ihover mari3" onclick="ampliarSeguimiento({iSeguimientoId});"></span>
-                   <!--BeginPermisoEditarSeguimientoBlock-->
-                  <!-- <span title="Editar Seguimiento" class="i bs edit ihover mari3" onclick="editarSeguimiento({iSeguimientoId});"></span>-->
-                   <!--EndPermisoEditarSeguimientoBlock-->
-                   <span title="Eliminar Seguimiento" class="i bs delete ihover mari3" onclick="eliminarSeguimiento({iSeguimientoId});"></span>
-                   
-                   <span title="Editar antecedentes" class="i bs edit ihover" onclick="editarAntecedentes({iSeguimientoId});"></span>
+                   <a class="di_inbl" href="{hrefAmpliarSeguimiento}?iSeguimientoId={iSeguimientoId}" title="Ampliar Seguimiento"><span class="i mi expand ihover"></span></a>
+                   <span title="Eliminar Seguimiento" rel="{iSeguimientoId}" class="i bs delete ihover borrarSeguimiento"></span>
                </td>
            </tr>
            <tr class="{iSeguimientoId} ba_no">
@@ -216,10 +261,12 @@
                         <br clear="all">
                         <div class="fl_le mari3 lihe2">
                             <span class="fowe_bo teta_up">Ultima Modificaci&oacute;n:</span> {sUltimaModificacion}<br>
-                            <span class="fowe_bo teta_up">Cantidad Elementos Multimedia:</span> {sElementosMultimedia}<br>
-                            <span class="fowe_bo teta_up">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}
+                            <span class="fowe_bo teta_up">Cantidad Fotos:</span> {iCantidadFotos}<br>
+                            <span class="fowe_bo teta_up">Cantidad Videos:</span> {iCantidadVideos}<br>
+                            <span class="fowe_bo teta_up">Cantidad Archivos:</span> {iCantidadArchivos}
                         </div>
                         <div class="fl_le lihe2">
+                            <span class="fowe_bo teta_up">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}
                             <span class="fowe_bo teta_up">Frecuencia de Encuentros:</span> {sFrecuenciaEncuentros}<br>
                             <span class="fowe_bo teta_up">D&iacute;a y horario encuentros:</span> {sDiaHorarioEncuentros}<br>
                             <span class="fowe_bo teta_up">Tipo de Practica:</span> {sTipoPractica}
@@ -227,16 +274,19 @@
                     </div>
                 </td>
            </tr>
-           <!--EndListaDeSeguimientosBlock-->
-           <!--BeginNoRecordsListaDeSeguimientosBlock-->
-           <tr class="{odd} ficha01">
-                <td colspan="6" class="titulo">{sNoRecords}</td>
-           </tr>
-           <!--EndNoRecordsListaDeSeguimientosBlock-->
+           <!--EndSeguimientoBlock-->
+
+            <!--BeginNoRecordsGrillaSeguimientosBlock-->
+            <tr>
+                <td colspan="6">{sNoRecords}</td>
+            </tr>
+            <!--EndNoRecordsGrillaSeguimientosBlock-->
+
        </table>
        {paginacion}
+    <!--EndGrillaSeguimientosBlock-->
     </div>
-    <!--EndGrillaSeguimientoBlock-->
+</div>
 <!--EndListadoSeguimientosBlock-->
 
 <!--BeginFichaSeguimientoBlock-->

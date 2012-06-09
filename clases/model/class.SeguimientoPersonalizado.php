@@ -10,9 +10,8 @@
  * @author Andres
  */
 class SeguimientoPersonalizado extends SeguimientoAbstract {
-    //put your code here
-    
- 	public function __construct(stdClass $oParams = null){
+
+    public function __construct(stdClass $oParams = null){
         parent::__construct();
 
         $vArray = get_object_vars($oParams);
@@ -27,13 +26,4 @@ class SeguimientoPersonalizado extends SeguimientoAbstract {
             }
         }
     }
-    
-    public function getTipoSeguimiento(){
-    	return "PERSONALIZADO";
-    }
-    
-	public function getTipoSeguimientoId(){
-    	return 2;
-    }
 }
-?>

@@ -82,6 +82,9 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
                 $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
             }
+            if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
+                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
+            }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
             }

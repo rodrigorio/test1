@@ -1,109 +1,141 @@
 <?php
 class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 {
-        private static $instance = null;
+    /**
+     * solo para generar los selects de filtros o las consultas dentro de esta clase,
+     * para cualquier otra cosa se utiliza el getClass en el objeto que hereda de SeguimientoAbstract.
+     *
+     * Los valores de las constantes TIENEN QUE COINCIDIR CON EL NOMBRE DE LAS CLASES CONCRETAS
+     * 'SeguimientoSCC', 'SeguimientoPersonalizado', etc.
+     * 
+     */
+    const TIPO_SEGUIMIENTO_SCC = "SeguimientoSCC";
+    const TIPO_SEGUIMIENTO_PERSONALIZADO = "SeguimientoPersonalizado";
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
+    private static $instance = null;
 
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return SeguimientoMySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (null === self::$instance){
+    protected function __construct( $conn) {
+            parent::__construct($conn);
+    }
+
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return SeguimientoMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn) {
+        if (null === self::$instance){
             self::$instance = new self($conn);
         }
         return self::$instance;
-	}
+    }
 
+    /**
+     * Nombre de la clase => Descripcion
+     */
+    public function obtenerTiposSeguimientos()
+    {
+        return array(self::TIPO_SEGUIMIENTO_SCC => 'Seguimiento Competencia Curricular',
+                     self::TIPO_SEGUIMIENTO_PERSONALIZADO => 'Seguimiento Personalizado');
+    }
 
-        public final function obtenerSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-            try{
-                $db = clone($this->conn);
-                $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                              s.id as iId,
-                              s.discapacitados_id as iDiscapacitadoId,
-                              s.frecuenciaEncuentros as sFrecuenciaEncuentros,
-                              s.diaHorario as sDiaHorario,
-                              s.practicas_id as iPracticaId,
-                              s.usuarios_id as iUsuarioId,
-                              s.antecedentes as sAntecedentes,
-                              s.pronostico as sPronostico,
-                              s.fechaCreacion as dFechaCreacion,
-                              IF(sp.id IS NULL,'SCC','PERSONALIZADO') as tipo,
-                              s.estado AS sEstado
-                        FROM
-                            seguimientos s
-                        LEFT JOIN
-                            seguimientos_personalizados sp ON sp.id = s.id
-                        LEFT JOIN
-                            seguimientos_scc sscc ON s.id = sscc.id
-                       	JOIN
-							`discapacitados` d ON d.`id` = s.`discapacitados_id`
-						JOIN 
-							`personas` p ON p.`id` = d.`id`
-						JOIN
-                            usuarios u ON u.id = s.usuarios_id ";
+    public final function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $db = clone($this->conn);
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                          s.id as iId,
+                          s.discapacitados_id as iDiscapacitadoId,
+                          s.frecuenciaEncuentros as sFrecuenciaEncuentros,
+                          s.diaHorario as sDiaHorario,
+                          s.practicas_id as iPracticaId,
+                          s.usuarios_id as iUsuarioId,
+                          s.antecedentes as sAntecedentes,
+                          s.pronostico as sPronostico,
+                          s.fechaCreacion as dFechaCreacion,
+                          s.estado AS sEstado,
+                          IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo,
+                          
+                          p.nombre
+                    FROM
+                        seguimientos s
+                    LEFT JOIN
+                        seguimientos_personalizados sp ON sp.id = s.id
+                    LEFT JOIN
+                        seguimientos_scc sscc ON s.id = sscc.id
+                    JOIN
+                        discapacitados d ON d.id = s.discapacitados_id
+                    JOIN
+                        personas p ON p.id = d.id
+                    JOIN
+                        usuarios u ON u.id = s.usuarios_id ";
 
-                if(!empty($filtro)){
-                    $val='';
-                    if (array_key_exists('sp.id', $filtro)) {
-                        $val = $filtro['sp.id'];
-                        unset($filtro['sp.id']);
-                    }
-                    $sSQL .=" WHERE ";
-                    if($val!=""){
-                        if($val=="IS NULL"){
-                            $sSQL .=" sp.id IS NULL AND";
-                        }else{
-                            $sSQL .=" sp.id IS NOT NULL AND ";
-                        }
-                    }
-                    $filtro = $this->escapeStringArray($filtro);
-                    $sSQL .= $this->crearCondicionSimple($filtro);
-                }
-                if (isset($sOrderBy) && isset($sOrder)){
-                    $sSQL .= " order by $sOrderBy $sOrder ";
-                }
-                if ($iIniLimit!==null && $iRecordCount!==null){
-                    $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-                }
-                $db->query($sSQL);
-                $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $WHERE = array();
 
-                if(empty($iRecordsTotal)){ return null; }
-                $aSeguimientos = array();
-                while($oObj = $db->oNextRecord()){
-                   
-                    $oSeguimiento 			= new stdClass();
-                    $oSeguimiento->iId 		= $oObj->iId;
-                    $oSeguimiento->oDiscapacitado   = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
-                    $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
-                    $oSeguimiento->sDiaHorario      = $oObj->sDiaHorario;
-                    $oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
-                    $oSeguimiento->oUsuario         = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
-                    $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
-                    $oSeguimiento->sPronostico      = $oObj->sPronostico;
-                    $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
-                    $oSeguimiento->sEstado          = $oObj->sEstado;
-                    if($oObj->tipo=='SCC'){
-                        $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
-                    }else{
-                        $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
-                    }
-                }
-                return $aSeguimientos;
-
-            }catch(Exception $e){
-                throw new Exception($e->getMessage(), 0);
+            if(isset($filtro['s.estado']) && $filtro['s.estado'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('s.estado', $filtro['s.estado']);
             }
-        }
+            if(isset($filtro['p.apellido']) && $filtro['p.apellido'] != ""){
+                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
+            }
+            if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento']);
+            }
+            
+            //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
+            if(isset($filtro['fecha']) && null !== $filtro['fecha']){
+                if(is_array($filtro['fecha'])){
+                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('s.fechaCreacion', $filtro['fecha']);
+                }
+            }
 
-	public function existe($filtro){
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by s.fechaCreacion desc ";
+            }
+            
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+
+            $db->query($sSQL);
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aSeguimientos = array();
+            while($oObj = $db->oNextRecord()){
+
+                $oSeguimiento 			= new stdClass();
+                $oSeguimiento->iId 		= $oObj->iId;
+                $oSeguimiento->oDiscapacitado   = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
+                $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
+                $oSeguimiento->sDiaHorario      = $oObj->sDiaHorario;
+                $oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                $oSeguimiento->oUsuario         = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+                $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
+                $oSeguimiento->sPronostico      = $oObj->sPronostico;
+                $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
+                $oSeguimiento->sEstado          = $oObj->sEstado;
+
+                if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
+                    $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
+                }else{
+                    $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+                }
+            }
+
+            return $aSeguimientos;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function existe($filtro){
     	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -130,28 +162,27 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         }
     }
     
-	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                          s.id as iId, 
-                          s.discapacitados_id as iDiscapacitadoId, 
+                          s.id as iId,
+                          s.discapacitados_id as iDiscapacitadoId,
                           s.frecuenciaEncuentros as sFrecuenciaEncuentros,
                           s.diaHorario as sDiaHorario,
                           s.practicas_id as iPracticaId,
                           s.usuarios_id as iUsuarioId,
                           s.antecedentes as sAntecedentes,
                           s.pronostico as sPronostico,
-                          s.fechaCreacion as dFechaCreacion ,
-                          s.estado as sEstado
+                          s.fechaCreacion as dFechaCreacion,
+                          s.estado as sEstado,
+                          IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo
                     FROM
-                        seguimientos s 
-                        
+                        seguimientos s
                     JOIN usuarios u ON u.id = s.usuarios_id
                     JOIN personas p ON p.id = s.discapacitados_id ";
-                        
 
             if(!empty($filtro)){
                 $sSQL .=" WHERE ".$this->crearCondicionSimple($filtro);
@@ -169,19 +200,24 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
             $aSeguimientos = array();
             while($oObj = $db->oNextRecord()){
-            	$oSeguimiento 			= new stdClass();
-            	$oSeguimiento->iId 		= $oObj->iId;
-            	$oSeguimiento->oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
-            	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
-            	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
-            	$oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
-            	$oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
-            	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
-            	$oSeguimiento->sPronostico = $oObj->sPronostico;
-            	$oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
-            	$oSeguimiento->sEstado = $oObj->sEstado;
-            	   	
-            	$aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+
+                $oSeguimiento = new stdClass();
+                $oSeguimiento->iId = $oObj->iId;
+                $oSeguimiento->oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
+                $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
+                $oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
+                $oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                $oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+                $oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
+                $oSeguimiento->sPronostico = $oObj->sPronostico;
+                $oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
+                $oSeguimiento->sEstado = $oObj->sEstado;
+                
+                if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
+                    $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
+                }else{
+                    $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+                }
             }
 
             return $aSeguimientos;
@@ -190,6 +226,31 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    public function guardar($oSeguimiento)
+    {
+        try{
+            $seguimientoClass = get_class($oSeguimiento);
+            
+            if($oSeguimiento->getId() != null){
+                if($seguimientoClass == self::TIPO_SEGUIMIENTO_PERSONALIZADO){
+                    return $this->actualizar($oSeguimiento);
+                }else{
+                    return $this->actualizarSCC($oSeguimiento);
+                }
+            }else{
+                if($seguimientoClass == self::TIPO_SEGUIMIENTO_SCC){
+                    return $this->insertar($oSeguimiento);
+                }else{
+                    return $this->insertarSCC($oSeguimiento);
+                }
+            }
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
      public function actualizar($oSeguimientoPersonalizado) {
         try{
 			$db = $this->conn;
@@ -291,27 +352,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 		}
     }
     
-    public function guardar($oSeguimiento)
-    {
-        try{
-            if($oSeguimiento->getId() != null){
-            	if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
-                    return $this->actualizar($oSeguimiento);
-                 }else{
-            		return $this->actualizarSCC($oSeguimiento);
-                 }
-            }else{
-                 if($oSeguimiento->getTipoSeguimiento() == "PERSONALIZADO"){
-                    return $this->insertar($oSeguimiento);
-                 }else{
-                    return $this->insertarSCC($oSeguimiento);
-                 }
-            }
-		}catch(Exception $e){
-			echo $e->getMessage();
-			throw new Exception($e->getMessage(), 0);
-		}
-    }
     public function insertar($oSeguimientoPersonalizado)
    {
 		try{
@@ -439,6 +479,41 @@ public function insertarSCC($oSeguimientoSCC)
             return true;
         }catch(Exception $e){
             return false;
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * La relacion con videos archivos y fotos es de la clase abstracta
+     * asi que me alcanza con utilizar la tabla seguimientos
+     */
+    public function obtenerCantidadElementosAdjuntos($iSeguimientoId)
+    {
+        try{
+            $cantFotos = $cantVideos = $cantArchivos = 0;
+
+            $db = $this->conn;
+
+            $db->query("SELECT
+                            COUNT(*) as cantidad
+                        FROM
+                            archivos where seguimientos_id = '".$iSeguimientoId."'");
+            $cantArchivos = $db->oNextRecord()->cantidad;
+
+            $db->query("SELECT
+                            COUNT(*) as cantidad
+                        FROM
+                            fotos where seguimientos_id = '".$iSeguimientoId."'");
+            $cantFotos = $db->oNextRecord()->cantidad;
+
+            $db->query("SELECT
+                            COUNT(*) as cantidad
+                        FROM
+                            embed_videos where seguimientos_id = '".$iSeguimientoId."'");
+            $cantVideos = $db->oNextRecord()->cantidad;
+
+            return array($cantFotos, $cantVideos, $cantArchivos);
+        }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }

@@ -9,8 +9,9 @@
  *
  * @author Andres
  */
-class SeguimientoSCC extends SeguimientoAbstract{
- 	public function __construct(stdClass $oParams = null){
+class SeguimientoSCC extends SeguimientoAbstract
+{
+    public function __construct(stdClass $oParams = null){
         parent::__construct();
 
         $vArray = get_object_vars($oParams);
@@ -25,11 +26,4 @@ class SeguimientoSCC extends SeguimientoAbstract{
             }
         }
     }
-    public function getTipoSeguimiento(){
-    	return "SCC";
-    }
-    public function getTipoSeguimientoId(){
-    	return 1;
-    }
 }
-?>
