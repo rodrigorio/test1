@@ -119,6 +119,11 @@ function cambiarEstadoSeguimiento(iSeguimientoId, valor){
             setWaitingStatus('listadoSeguimientos', true);
         },
         success:function(data){
+            if(valor == "Detenido"){
+               $("."+iSeguimientoId).addClass("disabled");
+            }else{
+               $("."+iSeguimientoId).removeClass("disabled");
+            }
             setWaitingStatus('listadoSeguimientos', false);
         }
     });

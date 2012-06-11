@@ -187,11 +187,11 @@ abstract class Intermediary
     protected final function crearFiltroFecha($campo, $fechaDesde = null, $fechaHasta = null){
     	$filtro = "";
     	if($fechaDesde != null && $fechaHasta != null){
-            $filtro = " date($campo) BETWEEN ".$this->escDate($fechaDesde)." AND ".$this->escDate($fechaHasta)." " ;
+            $filtro = " date($campo) BETWEEN '".$fechaDesde."' AND '".$fechaHasta."' " ;
     	}elseif($fechaDesde != null){
-            $filtro = " date($campo) >= ".$this->escDate($fechaDesde)." ";
+            $filtro = " date($campo) >= '".$fechaDesde."' ";
     	}elseif($fechaHasta != null){
-            $filtro = " date($campo) <= ".$this->escDate($fechaHasta)." ";
+            $filtro = " date($campo) <= '".$fechaHasta."' ";
     	}
         return $filtro;
     }
@@ -202,10 +202,20 @@ abstract class Intermediary
      */
     protected final function crearFiltroFechaDesdeHasta($campo, $aFechas)
     {
+        $aFechas = array_map('trim', $aFechas);
+
+        if(array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde']){
+            $aFechas['fechaDesde'] = Utils::fechaAFormatoSQL($aFechas['fechaDesde']);
+        }
+
+        if(array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta']){
+            $aFechas['fechaHasta'] = Utils::fechaAFormatoSQL($aFechas['fechaHasta']);
+        }
+               
         if(
             array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde'] &&
             array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta'])
-        {
+        {            
             return $this->crearFiltroFecha($campo, $aFechas['fechaDesde'], $aFechas['fechaHasta']);
         }
         

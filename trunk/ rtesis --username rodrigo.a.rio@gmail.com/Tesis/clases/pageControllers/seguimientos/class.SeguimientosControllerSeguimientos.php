@@ -171,7 +171,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/buscar-seguimientos", "listadoSeguimientosResult", $params);
             }else{
                 $this->getTemplate()->set_var("SeguimientoBlock", "");
-                $this->getTemplate()->set_var("sNoRecords", "Todavía no hay seguimientos creados.");
+                $this->getTemplate()->set_var("sNoRecords", "Todavia no hay seguimientos creados.");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -261,7 +261,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         }else{
             $this->getTemplate()->set_var("SeguimientoBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "Todavía no hay seguimientos creados.");
+            $this->getTemplate()->set_var("sNoRecords", "No hay seguimientos para el filtro actual.");
         }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('ajaxGrillaSeguimientosBlock', false));

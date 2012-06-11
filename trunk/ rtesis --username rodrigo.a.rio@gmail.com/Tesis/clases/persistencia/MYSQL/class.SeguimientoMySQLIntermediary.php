@@ -81,10 +81,17 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento']);
             }
+            if(isset($filtro['tipo']) && $filtro['tipo'] != ""){
+                if($filtro['tipo'] == "SeguimientoSCC"){
+                    $WHERE[] = " sscc.id != 'null' ";
+                }else{
+                    $WHERE[] = " sp.id != 'null' ";
+                }
+            }
             
             //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
             if(isset($filtro['fecha']) && null !== $filtro['fecha']){
-                if(is_array($filtro['fecha'])){
+                if(is_array($filtro['fecha'])){                    
                     $WHERE[] = $this->crearFiltroFechaDesdeHasta('s.fechaCreacion', $filtro['fecha']);
                 }
             }
