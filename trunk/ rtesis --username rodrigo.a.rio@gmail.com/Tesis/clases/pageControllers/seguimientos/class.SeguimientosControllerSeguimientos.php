@@ -150,6 +150,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }else{
                         $this->getTemplate()->set_var("sEstadoClass", "disabled");
                     }
+
+                    $this->getTemplate()->set_var("hrefAmpliarSeguimiento", $hrefAmpliarSeguimiento);
                                                             
                     $srcAvatarPersona = $this->getUploadHelper()->getDirectorioUploadFotos().$oSeguimiento->getDiscapacitado()->getNombreAvatar();
                     $this->getTemplate()->set_var("scrAvatarPersona", $srcAvatarPersona);
@@ -621,7 +623,24 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
      */
     public function ver()
     {
-        
+        try{
+            $this->setFrameTemplate()
+                 ->setJSSeguimientos()
+                 ->setHeadTag()
+                 ->setMenuDerechaVerSeguimiento();
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "verSeguimientoBlock");
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage());
+    	}
     }
 }
 	  

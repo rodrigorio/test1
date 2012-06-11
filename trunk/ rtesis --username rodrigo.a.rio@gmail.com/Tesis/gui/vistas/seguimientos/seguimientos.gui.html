@@ -37,9 +37,60 @@
 <!--EndPageRightInnerContHomeBlock-->
 
 <!--BeginPageRightInnerContVerSeguimientoBlock-->
-<ul class="m_vert menu02">
-    <li>
-        falta hacer
+<ul id="pageRightInnerContNav" class="m_vert menu05">
+    <li {currentOptionVerSeguimiento}>
+        <a href="{hrefVerSeguimiento}">
+            Ver Seguimiento
+        </a>
+    </li>
+    <li {currentOptionAgregarEntradaSeguimiento}>
+        <a href="{hrefAgregarEntradaSeguimiento}">
+            Editar Seguimiento
+        </a>
+        <ul class="m_vert">
+            <li {currentSubOptionAgregarEntradaSeguimiento}>
+                <a href="{hrefAgregarEntradaSeguimiento}">
+                    Agregar Entrada
+                </a
+            </li>
+            <li {currentSubOptionEditarAntecedentesSeguimiento}>
+                <a href="{hrefEditarAntecedentesSeguimiento}">
+                    Editar Antecedentes
+                </a
+            </li>
+            <li {currentSubOptionEditarDiagnosticoSeguimiento}>
+                <a href="{hrefEditarDiagnosticoSeguimiento}">
+                    Editar Diagnostico
+                </a
+            </li>
+        </ul>
+    </li>
+    <li {currentOptionVerAdjuntosSeguimiento}>
+        <a href="{hrefVerAdjuntosSeguimiento}">
+            Adjuntos Multimedia
+        </a>
+        <ul class="m_vert">
+            <li {currentSubOptionVerAdjuntosSeguimiento}>
+                <a href="{hrefVerAdjuntosSeguimiento}">
+                    Ver Adjuntos
+                </a
+            </li>
+            <li>
+                <a href="">
+                    Agregar Foto
+                </a
+            </li>
+            <li>
+                <a href="">
+                    Agregar Video
+                </a
+            </li>
+            <li>
+                <a href="">
+                    Agregar Archivo
+                </a
+            </li>
+        </ul>
     </li>
 </ul>
 <!--EndPageRightInnerContVerSeguimientoBlock-->
@@ -313,3 +364,7 @@
     <div>{sSeguimientoSitioWeb}</div>
 </div>
 <!--EndFichaSeguimientoBlock-->
+
+<!--BeguinVerSeguimientoBlock-->
+hello
+<!--EndVerSeguimientoBlock-->

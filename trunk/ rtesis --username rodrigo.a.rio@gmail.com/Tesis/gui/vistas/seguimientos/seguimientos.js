@@ -347,4 +347,16 @@ $(document).ready(function(){
         );
         return false;
     });
+
+    //menu derecha
+    $("#pageRightInnerContNav li").mouseenter(function(){
+        if(!$(this).hasClass("selected")){
+            $(this).children("ul").fadeIn();
+        }
+    });
+    $("#pageRightInnerContNav li").mouseleave(function(){
+        if(!$(this).hasClass("selected")){
+            $(this).children("ul").fadeOut();
+        }
+    });
 });
