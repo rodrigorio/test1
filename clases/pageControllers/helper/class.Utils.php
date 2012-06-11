@@ -4,7 +4,7 @@
  *	Aca se ponen todas las funciones que uno crea que son utiles y se usaran en mas de un lado.
  * @author Rodrigo A. Rio
  */
-class Utils {
+class Utils{
 	/**
 	 * 
 	 * Devuelve un fecha con el formato pasado como parametro, recibiendo una fecha con formato valido:

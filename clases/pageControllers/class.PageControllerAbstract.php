@@ -416,7 +416,7 @@ class PageControllerAbstract implements PageControllerInterface
         foreach($aFiltrosForm as $nombreFiltro => $columnaSql){
             if($this->getRequest()->has($nombreFiltro) && $this->getRequest()->getParam($nombreFiltro) != ""){
 
-                $paramsPaginador[] = $nombreFiltro."=".$this->getRequest()->getParam($nombreFiltro);
+                $paramsGet[] = $nombreFiltro."=".$this->getRequest()->getParam($nombreFiltro);
 
                 if($columnaSql != "fechaDesde" && $columnaSql != "fechaHasta"){
                     $filtroSql[$columnaSql] = $this->getRequest()->getParam($nombreFiltro);                                    
