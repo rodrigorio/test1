@@ -35,6 +35,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'nuevoSeguimiento'
                                 ));
+        $router->addRoute('seguimientosSeguimientosNuevoSeguimiento', $route);
         $route = new RegexRoute('seguimientos/form-modificar-seguimiento',
                                 array(
                                         'module' => 'seguimientos',
