@@ -69,11 +69,26 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         return $this;
     }
 
-    private function setMenuDerechaVerSeguimiento()
+    /**
+     * @param array $aCurrentOption es un array que tiene que tener el nombre de las variables
+     * seguin seguimientos.gui.html para marcar la opcion activa en el menu.
+     */
+    private function setMenuDerechaVerSeguimiento($aCurrentOption = null)
     {
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContVerSeguimientoBlock");
 
-        //falta crear el menu
+        $this->getTemplate()->set_var("hrefVerSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosVer", true));
+        $this->getTemplate()->set_var("hrefEditarAntecedentesSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
+        $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
+
+        //marco los selecteds en el menu de la izq
+        if(is_array($aCurrentOption)){
+            foreach($aCurrentOption as $sCurrentOption)
+            {
+                $this->getTemplate()->set_var($sCurrentOption, "class='selected'");
+            }
+        }
+        
         return $this;
     }
     
@@ -423,25 +438,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
     public function editarAntecedentes(){
         try{
+            $aCurrentOptions[] = "currentOptionAgregarEntradaSeguimiento";
+            $aCurrentOptions[] = "currentSubOptionEditarAntecedentesSeguimiento";
+
             $this->setFrameTemplate()
-            	 ->setJSAntecedentes()                  
-            	 ->setHeadTag();
+                 ->setJSAntecedentes()
+                 ->setHeadTag()
+                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("hrefListadoSeguimientos", "seguimientos/home");
-            $this->getTemplate()->set_var("tituloSeccion", "Seguimientos - Inicio");
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
-
-            //contenido ppal home seguimientos
-            $this->getTemplate()->set_var("hrefCrearSeguimientos", "seguimientos/nuevo-seguimiento");
-            $this->getTemplate()->set_var("hrefAgregarPersona", "seguimientos/agregar-persona");
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
           
             //form para ingresar uno nuevo
 	        $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
@@ -624,10 +636,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     public function ver()
     {
         try{
+            $aCurrentOptions[] = "currentOptionVerSeguimiento";
+            
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
                  ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento();
+                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
@@ -642,5 +656,30 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw new Exception($e->getMessage());
     	}
     }
+
+    public function verAdjuntos()
+    {
+        try{
+            $aCurrentOptions[] = "currentOptionVerAdjuntosSeguimiento";
+            $aCurrentOptions[] = "currentSubOptionVerAdjuntosSeguimiento";
+            
+            $this->setFrameTemplate()
+                 ->setJSSeguimientos()
+                 ->setHeadTag()
+                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
+            $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaAdjuntosBlock");
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage());
+    	}
+    }            
 }
 	  
