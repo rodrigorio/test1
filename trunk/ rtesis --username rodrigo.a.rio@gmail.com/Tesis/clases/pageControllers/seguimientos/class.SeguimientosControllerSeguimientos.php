@@ -400,6 +400,73 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
+
+    public function formModificarSeguimiento()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "popUpContent", "FormularioModificarSeguimientoBlock");
+
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+        $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+
+        $iPracticaId = $oSeguimiento->getPractica()->getId();
+        $sFrecuenciaEncuentros = $oSeguimiento->getFrecuenciaEncuentros();
+        $sDiaHorario = $oSeguimiento->getDiaHorario();
+        
+        $aPracticas = SeguimientosController::getInstance()->obtenerPracticas();
+        foreach($aPracticas as $oPractica){
+            $this->getTemplate()->set_var("iPracticaId", $oPractica->getId());
+            $this->getTemplate()->set_var("sPracticaNombre", $oPractica->getNombre());
+            if($oPractica->getId() == $iPracticaId){
+                $this->getTemplate()->set_var("sPracticaSelected", "selected='selected'");
+            }            
+            $this->getTemplate()->parse("OptionPracticaBlock", true);
+            $this->getTemplate()->set_var("sPracticaSelected", "");
+        }
+        
+        $this->getTemplate()->set_var("sFrecuenciaEncuentros", $sFrecuenciaEncuentros);
+        $this->getTemplate()->set_var("sDiaHorario", $sDiaHorario);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));      
+    }
+
+    public function guardarSeguimiento()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoIdForm');
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar este seguimiento", 401);
+            }
+
+            $iPracticaId  = $this->getRequest()->getPost('practica');
+            $oPractica = SeguimientosController::getInstance()->getPracticaById($iPracticaId);
+
+            $oSeguimiento->setPractica($oPractica);
+            $oSeguimiento->setDiaHorario($this->getRequest()->getPost("diaHorario"));
+            $oSeguimiento->setFrecuenciaEncuentros($this->getRequest()->getPost("frecuencias"));
+
+            SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+            
+            $this->getJsonHelper()->setMessage("El seguimiento se ha modificado con éxito. Los cambios se veran cuando refresque la pagina.");
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
     
     public function cambiarEstadoSeguimientos()
     {        

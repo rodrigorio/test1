@@ -670,6 +670,72 @@ function borrarArchivo(iArchivoId){
     }
 }
 
+function bindEventsFormModificarSeguimiento()
+{
+    var validateFormModificarSeguimiento = {
+        errorElement: "div",
+        validClass: "correcto",
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        focusInvalid: false,
+        focusCleanup: true,
+        errorPlacement:function(error, element){
+            error.appendTo(".msg_"+element.attr("name"));
+        },
+        highlight: function(element){},
+        unhighlight: function(element){},
+        rules:{
+            practica:{required:true}
+        },
+        messages:{
+            practica: mensajeValidacion("requerido")
+        }
+    }
+
+    var optionsAjaxFormModificarSeguimiento = {
+        dataType: 'jsonp',
+        resetForm: false,
+        url: "seguimientos/guardar-seguimiento",
+        beforeSerialize: function($form, options){
+
+            if($("#formModificarSeguimiento").valid() == true){
+                $('#msg_form_modificarSeguimiento').hide();
+                $('#msg_form_modificarSeguimiento').removeClass("correcto").removeClass("error");
+                $('#msg_form_modificarSeguimiento .msg').html("");
+
+                setWaitingStatus('formModificarSeguimiento', true);
+            }else{
+                return false;
+            }
+        },
+
+        success:function(data){
+
+            setWaitingStatus('formModificarSeguimiento', false);
+
+            if(data.success == undefined || data.success == 0){
+                if(data.mensaje == undefined){
+                    $('#msg_form_modificarSeguimiento .msg').html(lang['error procesar']);
+                }else{
+                    $('#msg_form_modificarSeguimiento .msg').html(data.mensaje);
+                }
+                $('#msg_form_modificarSeguimiento').addClass("error").fadeIn('slow');
+            }else{
+                if(data.mensaje == undefined){
+                    $('#msg_form_modificarSeguimiento .msg').html(lang['exito procesar']);
+                }else{
+                    $('#msg_form_modificarSeguimiento .msg').html(data.mensaje);
+                }
+                $('#msg_form_modificarSeguimiento').addClass("correcto").fadeIn('slow');
+            }
+        }
+    };
+
+    $("#formModificarSeguimiento").validate(validateFormModificarSeguimiento);
+    $("#formModificarSeguimiento").ajaxForm(optionsAjaxFormModificarSeguimiento);
+}
+
 $(document).ready(function(){
    
     //Listado Seguimientos
@@ -849,6 +915,33 @@ $(document).ready(function(){
         return false;
     });
 
+    $(".modificarSeguimiento").live('click',function(){
+
+        var dialog = $("#dialog");
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
+        }
+        dialog = $("<div id='dialog' title='Edicion Basica'></div>").appendTo('body');
+
+        dialog.load(
+            "seguimientos/form-modificar-seguimiento?iSeguimientoId="+$(this).attr('rel'),
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:450,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                bindEventsFormModificarSeguimiento();
+            }
+        );
+        return false;
+    });
+    
     //menu derecha
     $("#pageRightInnerContNav li").mouseenter(function(){
         if(!$(this).hasClass("selected")){

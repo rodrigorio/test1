@@ -35,7 +35,20 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'nuevoSeguimiento'
                                 ));
-        $router->addRoute('seguimientosSeguimientosNuevoSeguimiento', $route);
+        $route = new RegexRoute('seguimientos/form-modificar-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'formModificarSeguimiento'
+                                ));
+        $router->addRoute('seguimientosSeguimientosFormModificarSeguimiento', $route);
+        $route = new RegexRoute('seguimientos/guardar-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'guardarSeguimiento'
+                                ));
+        $router->addRoute('seguimientosSeguimientosGuardarSeguimiento', $route);
         $route = new RegexRoute('seguimientos/seguimientos-eliminar',
                                 array(
                                         'module' => 'seguimientos',
