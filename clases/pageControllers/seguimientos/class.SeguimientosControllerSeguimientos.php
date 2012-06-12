@@ -6,6 +6,9 @@
  */
 class SeguimientosControllerSeguimientos extends PageControllerAbstract
 {
+    const TIPO_SEGUIMIENTO_SCC = "SeguimientoSCC";
+    const TIPO_SEGUIMIENTO_PERSONALIZADO = "SeguimientoPersonalizado";
+    
     private $orderByConfig = array('persona' => array('variableTemplate' => 'orderByPersona',
                                                       'orderBy' => 'p.nombre',
                                                       'order' => 'desc'),
@@ -373,10 +376,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         
             switch($sTipoSeguimiento)
             {
-                case "SeguimientoSCC":
+                case self::TIPO_SEGUIMIENTO_SCC:
                     $oSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
                     break;
-                case "SeguimientoPersonalizado":
+                case self::TIPO_SEGUIMIENTO_PERSONALIZADO:
                     $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                     break;
             }            
@@ -456,32 +459,30 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
           
             //form para ingresar uno nuevo
-	        $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
-	        $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
-	        $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+            $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
+            $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+            $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
             
-            $iIdSeguimiento = $this->getRequest()->getPost('idSeg');
-            $iRecordsTotal	= 0;
-            $sOrderBy 		= null;
-            $sOrder 		= null;
-            $iIniLimit 		= null;
-            $iRecordCount 	= null;
-            $oSeguimiento 	= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento,$iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
-			if($oSeguimiento){
-				$this->getTemplate()->set_var("idSeguimiento", $iIdSeguimiento);
-				$this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
-				foreach($oSeguimiento->getArchivoAntecedentes() as $archivo){
-					$sNombreArchivo = $archivo->getNombreServidor();
-					$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
-					//$this->getTemplate()->set_var("sFileAntecedentes", "<a href='".$link."'>".$sNombreArchivo."</a>");
-					
-					$this->getTemplate()->set_var("sNombreArchivo", $archivo->getNombre());
-					$this->getTemplate()->set_var("sExtensionArchivo", $archivo->getTipoMime());
-					$this->getTemplate()->set_var("sTamanioArchivo", $archivo->getTamanio());
-					$this->getTemplate()->set_var("sFechaArchivo", $archivo->getFechaAlta());
-					$this->getTemplate()->set_var("hrefDescargarAntActual", $link);
-				}
-			}
+            $iIdSeguimiento = $this->getRequest()->getParam('iSeguimientoId');
+            $this->getTemplate()->set_var("iSeguimientoId", $iIdSeguimiento);
+
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+            
+            if($oSeguimiento){
+                $this->getTemplate()->set_var("idSeguimiento", $iIdSeguimiento);
+                $this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
+                foreach($oSeguimiento->getArchivoAntecedentes() as $archivo){
+                    $sNombreArchivo = $archivo->getNombreServidor();
+                    $link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
+                    //$this->getTemplate()->set_var("sFileAntecedentes", "<a href='".$link."'>".$sNombreArchivo."</a>");
+
+                    $this->getTemplate()->set_var("sNombreArchivo", $archivo->getNombre());
+                    $this->getTemplate()->set_var("sExtensionArchivo", $archivo->getTipoMime());
+                    $this->getTemplate()->set_var("sTamanioArchivo", $archivo->getTamanio());
+                    $this->getTemplate()->set_var("sFechaArchivo", $archivo->getFechaAlta());
+                    $this->getTemplate()->set_var("hrefDescargarAntActual", $link);
+                }
+            }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);
@@ -635,6 +636,20 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
      */
     public function ver()
     {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+
+        if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver este seguimiento", 401);
+        }
+        
         try{
             $aCurrentOptions[] = "currentOptionVerSeguimiento";
             
@@ -647,18 +662,119 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
 
-            //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "verSeguimientoBlock");
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            $sTipoSeguimiento = get_class($oSeguimiento);
+            switch($sTipoSeguimiento)
+            {
+                case self::TIPO_SEGUIMIENTO_SCC:
+                    $this->verSeguimientoSCC($oSeguimiento);
+                    break;
+                case self::TIPO_SEGUIMIENTO_PERSONALIZADO:
+                    $this->verSeguimientoPersonalizado($oSeguimiento);
+                    break;
+            }
     	}catch(Exception $e){
             throw new Exception($e->getMessage());
     	}
     }
 
+    private function verSeguimientoSCC($oSeguimiento)
+    {
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Seguimiento por competencia curricular");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "VerSeguimientoBlock");
+
+        $oDiscapacitado = $oSeguimiento->getDiscapacitado();
+       
+        $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+        $this->getTemplate()->set_var("sNombrePersona", $oDiscapacitado->getNombreCompleto());
+        $this->getTemplate()->set_var("iPersonaId", $oDiscapacitado->getId());
+
+        $this->getTemplate()->set_var("sSeguimientoPersonaDNI", $oDiscapacitado->getNumeroDocumento());
+        $this->getTemplate()->set_var("sSeguimientoFechaCreacion", Utils::fechaFormateada($oSeguimiento->getFechaCreacion()));
+
+        //foto de perfil actual
+        $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+        if(null != $oDiscapacitado->getFotoPerfil()){
+            $oFoto = $oDiscapacitado->getFotoPerfil();
+            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+        }else{
+            $pathFotoServidorMediumSize=$pathFotoServidorBigSize=$this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar(true);
+        }
+        $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
+        $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
+        
+        $this->getTemplate()->set_var("sFrecuenciaEncuentros", $oSeguimiento->getFrecuenciaEncuentros());
+        $this->getTemplate()->set_var("sDiaHorarioEncuentros", $oSeguimiento->getDiaHorario());
+        $this->getTemplate()->set_var("sTipoPractica", $oSeguimiento->getPractica()->getNombre());
+
+        //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
+        list($cantFotos, $cantVideos, $cantArchivos) = SeguimientosController::getInstance()->obtenerCantidadMultimediaSeguimiento($oSeguimiento->getId());
+        $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
+        $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
+        $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function verSeguimientoPersonalizado($oSeguimiento)
+    {
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Seguimiento Personalizado");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "VerSeguimientoBlock");
+
+        $oDiscapacitado = $oSeguimiento->getDiscapacitado();
+
+        $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+        $this->getTemplate()->set_var("sNombrePersona", $oDiscapacitado->getNombreCompleto());
+        $this->getTemplate()->set_var("iPersonaId", $oDiscapacitado->getId());
+
+        $this->getTemplate()->set_var("sSeguimientoPersonaDNI", $oDiscapacitado->getNumeroDocumento());
+        $this->getTemplate()->set_var("sSeguimientoFechaCreacion", Utils::fechaFormateada($oSeguimiento->getFechaCreacion()));
+
+        //foto de perfil actual
+        $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+        if(null != $oDiscapacitado->getFotoPerfil()){
+            $oFoto = $oDiscapacitado->getFotoPerfil();
+            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+        }else{
+            $pathFotoServidorMediumSize=$pathFotoServidorBigSize=$this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar(true);
+        }
+        $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
+        $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
+
+        $this->getTemplate()->set_var("sFrecuenciaEncuentros", $oSeguimiento->getFrecuenciaEncuentros());
+        $this->getTemplate()->set_var("sDiaHorarioEncuentros", $oSeguimiento->getDiaHorario());
+        $this->getTemplate()->set_var("sTipoPractica", $oSeguimiento->getPractica()->getNombre());
+
+        //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
+        list($cantFotos, $cantVideos, $cantArchivos) = SeguimientosController::getInstance()->obtenerCantidadMultimediaSeguimiento($oSeguimiento->getId());
+        $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
+        $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
+        $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
     public function verAdjuntos()
     {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+
+        if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver este seguimiento", 401);
+        }
+        
         try{
             $aCurrentOptions[] = "currentOptionVerAdjuntosSeguimiento";
             $aCurrentOptions[] = "currentSubOptionVerAdjuntosSeguimiento";
@@ -676,10 +792,699 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
             $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaAdjuntosBlock");
 
+            $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     	}catch(Exception $e){
             throw new Exception($e->getMessage());
     	}
-    }            
+    }
+
+    public function formAdjuntarFoto()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+
+        if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "GaleriaFotosBlock");
+
+        //borro estos bloques porque solo quiero usar el formulario
+        $this->getTemplate()->set_var("TituloGaleriaBlock", "");
+        $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
+        $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
+
+        list($cantFotos, $cantVideos, $cantArchivos) = SeguimientosController::getInstance()->obtenerCantidadMultimediaSeguimiento($iSeguimientoId);
+        if($cantFotos >= 12){
+            $this->getTemplate()->set_var("FormularioCrearFotoBlock", "");
+        }else{
+            $this->getTemplate()->set_var("MensajeLimiteFotosBlock", "");
+
+            $this->getUploadHelper()->setTiposValidosFotos();
+            $this->getTemplate()->set_var("sTiposPermitidosFoto", $this->getUploadHelper()->getStringTiposValidos());
+            $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+            $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+        }
+
+        $this->getTemplate()->set_var("iItemIdForm", $iSeguimientoId);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+    }
+
+    public function formAdjuntarVideo()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+
+        if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "GaleriaVideosBlock");
+
+        //borro estos bloques porque solo quiero usar el formulario
+        $this->getTemplate()->set_var("TituloGaleriaBlock", "");
+        $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
+        $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
+
+        list($cantFotos, $cantVideos, $cantArchivos) = SeguimientosController::getInstance()->obtenerCantidadMultimediaSeguimiento($iSeguimientoId);
+        if($cantVideos >= 12){
+            $this->getTemplate()->set_var("FormularioCrearEmbedVideoBlock", "");
+        }else{
+            $this->getTemplate()->set_var("MensajeLimiteEmbedVideosBlock", "");
+            $this->getTemplate()->set_var("sServidoresPermitidos", $this->getEmbedVideoHelper()->getStringServidoresValidos());
+        }
+
+        $this->getTemplate()->set_var("iItemIdForm", $iSeguimientoId);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+    
+    public function formAdjuntarArchivo()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+
+        if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "GaleriaArchivosBlock");
+
+        //borro estos bloques porque solo quiero usar el formulario
+        $this->getTemplate()->set_var("TituloGaleriaBlock", "");
+        $this->getTemplate()->set_var("RowArchivoEditBlock", "");
+        $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
+
+        list($cantFotos, $cantVideos, $cantArchivos) = SeguimientosController::getInstance()->obtenerCantidadMultimediaSeguimiento($iSeguimientoId);
+        if($cantArchivos >= 12){
+            $this->getTemplate()->set_var("FormularioCrearArchivoBlock", "");
+        }else{
+            $this->getTemplate()->set_var("MensajeLimiteArchivosBlock", "");
+
+            $this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
+            $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+            $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+        }
+
+        $this->getTemplate()->set_var("iItemIdForm", $iSeguimientoId);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+    }
+
+    //un mismo metodo para mostrar los 3 forms porq es simple esta accion
+    public function formEditarAdjunto()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('editarFoto')){
+            $this->formEditarFoto();
+            return;
+        }
+        if($this->getRequest()->has('editarArchivo')){
+            $this->formEditarArchivo();
+            return;
+        }
+        if($this->getRequest()->has('editarVideo')){
+            $this->formEditarVideo();
+            return;
+        }
+    }
+
+    private function formEditarFoto()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
+
+        $iFotoId = $this->getRequest()->getParam('iFotoId');
+        if(empty($iFotoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+
+        $this->getTemplate()->set_var("iFotoId", $iFotoId);
+
+        $sTitulo = $oFoto->getTitulo();
+        $sDescripcion = $oFoto->getDescripcion();
+        $iOrden = $oFoto->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function formEditarArchivo()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
+
+        $iArchivoId = $this->getRequest()->getParam('iArchivoId');
+        if(empty($iArchivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+
+        $this->getTemplate()->set_var("iArchivoId", $iArchivoId);
+
+        $sTitulo = $oArchivo->getTitulo();
+        $sDescripcion = $oArchivo->getDescripcion();
+        $iOrden = $oArchivo->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+    }
+
+    private function formEditarVideo()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioVideoBlock");
+
+        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+        $this->getTemplate()->set_var("iEmbedVideoId", $iEmbedVideoId);
+
+        $sTitulo = $oEmbedVideo->getTitulo();
+        $sDescripcion = $oEmbedVideo->getDescripcion();
+        $iOrden = $oEmbedVideo->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    public function procesarAdjunto()
+    {        
+        if($this->getRequest()->has('agregarFoto')){
+            $this->agregarFoto();
+            return;
+        }
+
+        if($this->getRequest()->has('agregarArchivo')){
+            $this->agregarArchivo();
+            return;
+        }
+        
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('agregarVideo')){
+            $this->agregarVideo();
+            return;
+        }
+
+        if($this->getRequest()->has('guardarVideo')){
+            $this->guardarVideo();
+            return;
+        }
+
+        if($this->getRequest()->has('eliminarVideo')){
+            $this->eliminarVideo();
+            return;
+        }
+
+        if($this->getRequest()->has('guardarFoto')){
+            $this->guardarFoto();
+            return;
+        }
+
+        if($this->getRequest()->has('eliminarFoto')){
+            $this->eliminarFoto();
+            return;
+        }
+
+        if($this->getRequest()->has('guardarArchivo')){
+            $this->guardarArchivo();
+            return;
+        }
+
+        if($this->getRequest()->has('eliminarArchivo')){
+            $this->eliminarArchivo();
+            return;
+        }
+    }
+
+    private function agregarFoto()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $objType = $this->getRequest()->getParam('objType');
+
+            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar fotos a esta publicación", 401);
+            }
+
+            $nombreInputFile = 'fotoGaleria';
+
+            $this->getUploadHelper()->setTiposValidosFotos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+
+                $idItem = $oFicha->getId();
+
+                //un array con los datos de las fotos
+                $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($idItem, $nombreInputFile);
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+
+                try{
+                    $oFoto = new stdClass();
+                    $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
+                    $oFoto->sNombreMediumSize = $aNombreArchivos['nombreFotoMediana'];
+                    $oFoto->sNombreSmallSize = $aNombreArchivos['nombreFotoChica'];
+
+                    $oFoto = Factory::getFotoInstance($oFoto);
+
+                    $oFoto->setTitulo('');
+                    $oFoto->setDescripcion('');
+                    $oFoto->setTipoAdjunto();
+
+                    $oFicha->addFoto($oFoto);
+
+                    ComunidadController::getInstance()->guardarFotoFicha($oFicha, $pathServidor);
+
+                    $this->restartTemplate();
+
+                    //creo el thumbnail para agregar a la galeria
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxThumbnailFoto", "ThumbnailFotoEditBlock");
+
+                    $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
+
+                    //OJO QUE SI TIENE UN ';' EL HTML Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
+                    $respuesta = "1; ".$this->getTemplate()->pparse('ajaxThumbnailFoto', false);
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+                    $respuesta = "0; Error al guardar en base de datos";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;
+                }
+            }
+        }catch(Exception $e){
+            $respuesta = "0; Error al procesar el archivo";
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
+        }        
+    }
+
+    private function agregarArchivo()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $objType = $this->getRequest()->getParam('objType');
+
+            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar archivos a esta publicación", 401);
+            }
+
+            $nombreInputFile = 'archivoGaleria';
+
+            $this->getUploadHelper()->setTiposValidosDocumentos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+
+                $idItem = $oFicha->getId();
+
+                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'publicacion', $nombreInputFile);
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+
+                try{
+                    $oArchivo = new stdClass();
+
+                    $oArchivo->sNombre = $nombreArchivo;
+                    $oArchivo->sNombreServidor = $nombreServidorArchivo;
+                    $oArchivo->sTipoMime = $tipoMimeArchivo;
+                    $oArchivo->iTamanio = $tamanioArchivo;
+                    $oArchivo = Factory::getArchivoInstance($oArchivo);
+                    $oArchivo->setTipoAdjunto();
+                    $oArchivo->isModerado(false);
+                    $oArchivo->isActivo(true);
+                    $oArchivo->isPublico(false);
+                    $oArchivo->isActivoComentarios(false);
+
+                    $oFicha->addArchivo($oArchivo);
+
+                    ComunidadController::getInstance()->guardarArchivoFicha($oFicha, $pathServidor);
+
+                    $this->restartTemplate();
+
+                    //creo el thumbnail para agregar a la galeria
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxRowFoto", "RowArchivoEditBlock");
+
+                    $nombreArchivo = $oArchivo->getTitulo();
+                    if(empty($nombreArchivo)){
+                        $nombreArchivo = $oArchivo->getNombre();
+                    }
+
+                    $hrefDescargar = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+
+                    $this->getTemplate()->set_var("sNombreArchivo", $nombreArchivo);
+                    $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                    $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                    $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
+                    $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
+
+                    $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxRowFoto', false);
+
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+
+                    $respuesta = "0;; Error al guardar en base de datos";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;
+                }
+            }
+        }catch(Exception $e){
+
+            $respuesta = "0;; Error al procesar el archivo";
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
+        }        
+    }
+
+    private function agregarVideo()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $objType = $this->getRequest()->getParam('objType');
+
+            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            switch($objType)
+            {
+                case "publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oFicha->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar videos a esta publicación", 401);
+            }
+
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            if(!$this->getEmbedVideoHelper()->canBeParsed($this->getRequest()->getPost('codigo'))){
+                $this->getJsonHelper()->setMessage("No se encontro un video para insertar desde la url ingresada. (o el servidor no es soportado)");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            try{
+                $oEmbedVideo = new stdClass();
+                $oEmbedVideo = Factory::getEmbedVideoInstance($oEmbedVideo);
+                $oEmbedVideo->setCodigo($this->getRequest()->getPost('codigo'));
+
+                $servidorOrigen = $this->getEmbedVideoHelper()->getServidor($oEmbedVideo);
+                $oEmbedVideo->setOrigen($servidorOrigen);
+
+                $oFicha->addEmbedVideo($oEmbedVideo);
+
+                ComunidadController::getInstance()->guardarEmbedVideosFicha($oFicha);
+
+                $this->restartTemplate();
+
+                //creo el thumbnail para agregar a la galeria
+                $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxThumbnailVideo", "ThumbnailVideoEditBlock");
+
+                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+
+                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
+
+                $this->getJsonHelper()->setMessage("El video fue agregado con éxito en la publicación");
+                $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxThumbnailVideo', false));
+                $this->getJsonHelper()->setSuccess(true);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+
+            }catch(Exception $e){
+                $this->getJsonHelper()->setMessage("Error al guardar en base de datos.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setMessage("Error al procesar el video");
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
+        }        
+    }
+
+    private function guardarFoto()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iFotoId = $this->getRequest()->getPost('iFotoIdForm');
+
+            if(empty($iFotoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoId);
+            if(!$bFotoUsuario){
+                throw new Exception("No tiene permiso para editar esta foto", 401);
+            }
+
+            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+
+            $oFoto->setOrden($this->getRequest()->getPost("orden"));
+            $oFoto->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oFoto->setTitulo($this->getRequest()->getPost("titulo"));
+
+            ComunidadController::getInstance()->guardarFoto($oFoto);
+
+            $this->getJsonHelper()->setMessage("La foto se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                
+    }
+
+    private function eliminarFoto()
+    {
+        $iFotoId = $this->getRequest()->getParam('iFotoId');
+
+        if(empty($iFotoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //devuelve si la foto es de una publicacion creada por el usuario que esta logueado
+            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoId);
+            if(!$bFotoUsuario){
+                throw new Exception("No tiene permiso para borrar esta foto", 401);
+            }
+
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+
+            ComunidadController::getInstance()->borrarFoto($oFoto, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                
+    }
+
+    private function guardarVideo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iEmbedVideoId = $this->getRequest()->getPost('iEmbedVideoId');
+
+            if(empty($iEmbedVideoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
+            if(!$bVideoUsuario){
+                throw new Exception("No tiene permiso para editar este video", 401);
+            }
+
+            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+            $oEmbedVideo->setOrden($this->getRequest()->getPost("orden"));
+            $oEmbedVideo->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oEmbedVideo->setTitulo($this->getRequest()->getPost("titulo"));
+
+            ComunidadController::getInstance()->guardarEmbedVideo($oEmbedVideo);
+
+            $this->getJsonHelper()->setMessage("El video se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                
+    }
+
+    private function eliminarVideo()
+    {
+        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
+
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
+            if(!$bVideoUsuario){
+                throw new Exception("No tiene permiso para editar este video", 401);
+            }
+
+            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+            ComunidadController::getInstance()->borrarEmbedVideo($oEmbedVideo);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();                        
+    }
+
+    private function guardarArchivo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iArchivoId = $this->getRequest()->getParam('iArchivoIdForm');
+
+            if(empty($iArchivoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $bArchivoUsuario = ComunidadController::getInstance()->isArchivoPublicacionUsuario($iArchivoId);
+            if(!$bArchivoUsuario){
+                throw new Exception("No tiene permiso para editar este archivo", 401);
+            }
+
+            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+
+            $oArchivo->setOrden($this->getRequest()->getPost("orden"));
+            $oArchivo->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oArchivo->setTitulo($this->getRequest()->getPost("titulo"));
+
+            ComunidadController::getInstance()->guardarArchivo($oArchivo);
+
+            $this->getJsonHelper()->setMessage("El archivo se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+
+    private function eliminarArchivo()
+    {
+        $iArchivoId = $this->getRequest()->getParam('iArchivoId');
+
+        if(empty($iArchivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //devuelve si el archivo es de una publicacion creada por el usuario que esta logueado
+            $bArchivoUsuario = ComunidadController::getInstance()->isArchivoPublicacionUsuario($iArchivoId);
+            if(!$bArchivoUsuario){
+                throw new Exception("No tiene permiso para borrar esta archivo", 401);
+            }
+
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+
+            ComunidadController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
 }
-	  

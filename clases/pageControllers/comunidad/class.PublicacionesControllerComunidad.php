@@ -1281,7 +1281,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->eliminarVideo();
             return;
         }
-
     }
 
     private function agregarVideoPublicacion()
