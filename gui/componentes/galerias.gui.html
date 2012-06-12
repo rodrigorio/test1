@@ -402,7 +402,7 @@
 <input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
 <input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
 
-<div class="fte2 mabo2">Galer&iacute;a de Fotos</div>
+<div class="fte3 mabo2">Galer&iacute;a de Fotos</div>
 
 <div id="ThumbnailsFotos" class="grupo mabo2">
     <!--BeginThumbnailFotoEditBlock-->
@@ -416,9 +416,16 @@
         </div>
     </div>
     <!--EndThumbnailFotoEditBlock-->
+    <!--BeginThumbnailFotoBlock-->
+    <div class="fl_le mari2">
+        <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
+            <i style="background-image:url('{urlFoto}')"></i>
+        </a>
+    </div>
+    <!--EndThumbnailFotoBlock-->
 </div>
 
-<div class="fte2 mabo2">Galer&iacute;a de Videos</div>
+<div class="fte3 mabo2">Galer&iacute;a de Videos</div>
 
 <div id="ThumbnailsVideos" class="grupo mabo2">
     <!--BeginThumbnailVideoEditBlock-->
@@ -433,9 +440,17 @@
         </div>
     </div>
     <!--EndThumbnailVideoEditBlock-->
+    <!--BeginThumbnailVideoBlock-->
+    <div class="fl_le mari2">
+        <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
+            <i style="background-image:url('{urlFoto}')"></i>
+            <span>Video</span>
+        </a>
+    </div>
+    <!--EndThumbnailVideoBlock-->
 </div>
 
-<div class="fte2 mabo2">Galer&iacute;a de Archivos</div>
+<div class="fte3 mabo2">Galer&iacute;a de Archivos</div>
 
 <div id="RowArchivos" class="grupo mabo2">
     <!--BeginRowArchivoEditBlock-->
@@ -455,6 +470,21 @@
         </div>
     </div>
     <!--EndRowArchivoEditBlock-->
+    <!--BeginRowArchivoBlock-->
+    <div class="grupo cl_bo pabo2 pato2 bobo2">
+        <div class="iveal fl_le mari2">
+            <span class="i bs document"></span>
+            <strong>{sNombreArchivo}</strong>
+        </div>
+        <div class="fl_le mari2">
+            Extensi&oacute;n: <span class="fost_it pari2">{sExtensionArchivo}</span>
+            Tama&ntilde;o: <span class="fost_it">{sTamanioArchivo} Kb.</span>
+        </div>
+        <div class="iveal fl_le mari2">
+            <a class="di_inbl veal_mi" href="{hrefDescargar}"><span class="i mi ihover download"></span></a>
+        </div>
+    </div>
+    <!--EndRowArchivoBlock-->
 </div>
 <!--EndGaleriaAdjuntosBlock-->
 

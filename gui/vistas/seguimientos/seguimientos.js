@@ -169,7 +169,7 @@ function borrarSeguimiento(iSeguimientoId)
     }
 }
 
-function bindEventsFormAgregarVideo()
+function bindEventsFormAgregarVideo(iSeguimientoId)
 {
     var validateFormAgregarVideo = {
         errorElement: "div",
@@ -198,10 +198,9 @@ function bindEventsFormAgregarVideo()
     var optionsAjaxFormAgregarVideo = {
         dataType: 'jsonp',
         resetForm: true,
-        url: 'comunidad/publicaciones/galeria-videos/procesar?agregarVideo=1',
+        url: 'seguimientos/procesar-adjunto?agregarVideo=1',
         data:{
-            iPublicacionId: function(){return $("#iItemIdForm").val()},
-            objType: function(){return $("#sTipoItemForm").val()}
+            iSeguimientoId:iSeguimientoId
         },
         beforeSerialize:function(){
             if($("#formAgregarVideo").valid() == true){
@@ -243,11 +242,10 @@ function bindEventsFormAgregarArchivo(iSeguimientoId)
 {
     if($('#archivoUploadGaleria').length){
         new Ajax_upload('#archivoUploadGaleria', {
-            action:'comunidad/publicaciones/galeria-archivos/procesar',
+            action:'seguimientos/procesar-adjunto',
             data:{
                 agregarArchivo:"1",
-                iPublicacionId:iPublicacionId,
-                objType: sTipoItemForm
+                iSeguimientoId:iSeguimientoId
             },
             name:'archivoGaleria',
             onSubmit:function(file , ext){
@@ -285,7 +283,6 @@ function bindEventsFormAgregarArchivo(iSeguimientoId)
                     $('#msg_form_archivoGaleria').addClass("correcto").fadeIn('slow');
 
                     $('#Rows').append(html);
-                    if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
                 }
                 return;
             }
@@ -298,11 +295,10 @@ function bindEventsFormAgregarFoto(iSeguimientoId)
     //galeria de fotos
     if($('#fotoUploadGaleria').length){
         new Ajax_upload('#fotoUploadGaleria', {
-            action:'comunidad/publicaciones/galeria-fotos/procesar',
+            action:'seguimientos/procesar-adjunto',
             data:{
                 agregarFoto:"1",
-                iPublicacionId:iPublicacionId,
-                objType: sTipoItemForm
+                iSeguimientoId:iSeguimientoId
             },
             name:'fotoGaleria',
             onSubmit:function(file , ext){
@@ -341,7 +337,6 @@ function bindEventsFormAgregarFoto(iSeguimientoId)
 
                     $('#Thumbnails').append(html);
                     $("a[rel^='prettyPhoto']").prettyPhoto();
-                    if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
                 }
                 return;
             }
@@ -376,7 +371,7 @@ var validateFormFoto = {
 var optionsAjaxFormFoto = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/galeria-fotos/procesar?guardarFoto=1',
+    url: 'seguimientos/procesar-adjunto?guardarFoto=1',
     beforeSerialize:function(){
         if($("#formFoto").valid() == true){
             $('#msg_form_foto').hide();
@@ -434,7 +429,7 @@ var validateFormEditarVideo = {
 var optionsAjaxFormEditarVideo = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/galeria-videos/procesar?guardarVideo=1',
+    url: 'seguimientos/procesar-adjunto?guardarVideo=1',
     beforeSerialize:function(){
         if($("#formEditarVideo").valid() == true){
             $('#msg_form_editar_video').hide();
@@ -492,7 +487,7 @@ var validateFormArchivo = {
 var optionsAjaxFormArchivo = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/galeria-archivos/procesar?guardarArchivo=1',
+    url: 'seguimientos/procesar-adjunto?guardarArchivo=1',
     beforeSerialize:function(){
         if($("#formArchivo").valid() == true){
             $('#msg_form_archivo').hide();
@@ -548,7 +543,7 @@ function editarFoto(iFotoId){
     dialog = $('<div id="dialog" title="Editar Foto"></div>').appendTo('body');
 
     dialog.load(
-        "comunidad/publicaciones/galeria-fotos/form?iFotoId="+iFotoId,
+        "seguimientos/form-editar-adjunto?editarFoto=1&iFotoId="+iFotoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -575,7 +570,7 @@ function editarVideo(iEmbedVideoId){
     dialog = $('<div id="dialog" title="Editar Video"></div>').appendTo('body');
 
     dialog.load(
-        "comunidad/publicaciones/galeria-videos/form?iEmbedVideoId="+iEmbedVideoId,
+        "form-editar-adjunto?editarVideo=1&iEmbedVideoId="+iEmbedVideoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -602,7 +597,7 @@ function editarArchivo(iArchivoId){
     dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
 
     dialog.load(
-        "comunidad/publicaciones/galeria-archivos/form?iArchivoId="+iArchivoId,
+        "form-editar-adjunto?editarArchivo=1&iArchivoId="+iArchivoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -620,11 +615,11 @@ function editarArchivo(iArchivoId){
 }
 
 function borrarFoto(iFotoId){
-    if(confirm("Se borrara la foto de la publicación, desea continuar?")){
+    if(confirm("Se borrara la foto del seguimiento, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"comunidad/publicaciones/galeria-fotos/procesar",
+            url:"seguimientos/procesar-adjunto",
             data:{
                 iFotoId:iFotoId,
                 eliminarFoto:"1"
@@ -639,11 +634,11 @@ function borrarFoto(iFotoId){
 }
 
 function borrarVideo(iEmbedVideoId){
-    if(confirm("Se borrara el video de la publicación, desea continuar?")){
+    if(confirm("Se borrara el video del seguimiento, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"comunidad/publicaciones/galeria-videos/procesar",
+            url:"seguimientos/procesar-adjunto",
             data:{
                 iEmbedVideoId:iEmbedVideoId,
                 eliminarVideo:"1"
@@ -658,11 +653,11 @@ function borrarVideo(iEmbedVideoId){
 }
 
 function borrarArchivo(iArchivoId){
-    if(confirm("Se borrara el archivo de la publicación, desea continuar?")){
+    if(confirm("Se borrara el archivo del seguimiento, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"comunidad/publicaciones/galeria-archivos/procesar",
+            url:"seguimientos/procesar-adjunto",
             data:{
                 iArchivoId:iArchivoId,
                 eliminarArchivo:"1"
@@ -868,7 +863,7 @@ $(document).ready(function(){
     });
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
-
+    
     //formulario adjuntar foto, video, archivo
     $(".agregarFotoSeguimiento").live('click',function(){
         
@@ -891,8 +886,11 @@ $(document).ready(function(){
                     modal:false,
                     closeOnEscape:true
                 });
-                
-                bindEventsFormAgregarFoto();                
+
+                var iSeguimientoId = $("#iItemIdForm").val();
+                if(iSeguimientoId != undefined && iSeguimientoId != ""){
+                    bindEventsFormAgregarFoto(iSeguimientoId);
+                }                          
             }
         );
 
@@ -921,7 +919,10 @@ $(document).ready(function(){
                     closeOnEscape:true
                 });
 
-                bindEventsFormAgregarVideo();
+                var iSeguimientoId = $("#iItemIdForm").val();
+                if(iSeguimientoId != undefined && iSeguimientoId != ""){
+                    bindEventsFormAgregarVideo(iSeguimientoId);
+                }
             }
         );
         return false;
@@ -949,10 +950,42 @@ $(document).ready(function(){
                     closeOnEscape:true
                 });
 
-                bindEventsFormAgregarArchivo();
+                var iSeguimientoId = $("#iItemIdForm").val();
+                if(iSeguimientoId != undefined && iSeguimientoId != ""){
+                    bindEventsFormAgregarArchivo(iSeguimientoId);
+                }
             }
         );
         return false;
     });
-    
+       
+    //Galeria de fotos
+    $(".borrarFoto").live('click', function(){
+        var iFotoId = $(this).attr("rel");
+        borrarFoto(iFotoId);
+    })
+    $(".editarFoto").live('click', function(){
+        var iFotoId = $(this).attr("rel");
+        editarFoto(iFotoId);
+    });
+
+    //Galeria de videos
+    $(".editarVideo").live('click', function(){
+        var iEmbedVideoId = $(this).attr("rel");
+        editarVideo(iEmbedVideoId);
+    });
+    $(".borrarVideo").live('click', function(){
+        var iEmbedVideoId = $(this).attr("rel");
+        borrarVideo(iEmbedVideoId);
+    })
+
+    //Galeria de archivos
+    $(".borrarArchivo").live('click', function(){
+        var iArchivoId = $(this).attr("rel");
+        borrarArchivo(iArchivoId);
+    })
+    $(".editarArchivo").live('click', function(){
+        var iArchivoId = $(this).attr("rel");
+        editarArchivo(iArchivoId);
+    });    
 });
