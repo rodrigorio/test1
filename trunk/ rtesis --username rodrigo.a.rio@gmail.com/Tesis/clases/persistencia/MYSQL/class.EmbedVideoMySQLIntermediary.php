@@ -36,6 +36,18 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
             }
         }
     }
+    
+    public function guardarEmbedVideosSeguimiento(SeguimientoAbstract $oSeguimiento)
+    {
+        foreach($oSeguimiento->getEmbedVideos() as $oEmbedVideo){
+            if(null !== $oEmbedVideo->getId()){
+                return $this->actualizar($oEmbedVideo);
+            }else{
+                $iId = $oSeguimiento->getId();
+                return $this->insertarAsociado($oEmbedVideo, $iId, get_class($oSeguimiento));
+            }
+        }
+    }
        
     public function borrar($aEmbedVideos)
     {
@@ -196,6 +208,34 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
                       WHERE
                         v.id = ".$this->escInt($iEmbedVideoId)." AND
                         (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId).")";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function isEmbedVideoSeguimientoUsuario($iEmbedVideoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        embed_videos v
+                        JOIN seguimientos s ON v.seguimientos_id = s.id
+                      WHERE
+                        v.id = ".$this->escInt($iEmbedVideoId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
 
             $db->query($sSQL);
 

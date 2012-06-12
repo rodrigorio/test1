@@ -1108,7 +1108,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+        $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
 
         $this->getTemplate()->set_var("iFotoId", $iFotoId);
 
@@ -1141,9 +1141,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
 
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);                        
-            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+            $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
             
-            ComunidadController::getInstance()->borrarFoto($oFoto, $pathServidor);
+            IndexController::getInstance()->borrarFoto($oFoto, $pathServidor);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1170,13 +1170,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 throw new Exception("No tiene permiso para editar esta foto", 401);
             }
             
-            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+            $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
             
             $oFoto->setOrden($this->getRequest()->getPost("orden"));
             $oFoto->setDescripcion($this->getRequest()->getPost("descripcion"));
             $oFoto->setTitulo($this->getRequest()->getPost("titulo"));
 
-            ComunidadController::getInstance()->guardarFoto($oFoto);
+            IndexController::getInstance()->guardarFoto($oFoto);
 
             $this->getJsonHelper()->setMessage("La foto se ha modificado con éxito");
             $this->getJsonHelper()->setSuccess(true);
@@ -1372,7 +1372,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
 
         $this->getTemplate()->set_var("iEmbedVideoId", $iEmbedVideoId);
 
@@ -1403,13 +1403,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 throw new Exception("No tiene permiso para editar este video", 401);
             }
 
-            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
 
             $oEmbedVideo->setOrden($this->getRequest()->getPost("orden"));
             $oEmbedVideo->setDescripcion($this->getRequest()->getPost("descripcion"));
             $oEmbedVideo->setTitulo($this->getRequest()->getPost("titulo"));
 
-            ComunidadController::getInstance()->guardarEmbedVideo($oEmbedVideo);
+            IndexController::getInstance()->guardarEmbedVideo($oEmbedVideo);
 
             $this->getJsonHelper()->setMessage("El video se ha modificado con éxito");
             $this->getJsonHelper()->setSuccess(true);
@@ -1437,9 +1437,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 throw new Exception("No tiene permiso para editar este video", 401);
             }
 
-            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
 
-            ComunidadController::getInstance()->borrarEmbedVideo($oEmbedVideo);
+            IndexController::getInstance()->borrarEmbedVideo($oEmbedVideo);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1662,7 +1662,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+        $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
 
         $this->getTemplate()->set_var("iArchivoId", $iArchivoId);
 
@@ -1695,9 +1695,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
 
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
-            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+            $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
 
-            ComunidadController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
+            IndexController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1724,13 +1724,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 throw new Exception("No tiene permiso para editar este archivo", 401);
             }
 
-            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+            $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
 
             $oArchivo->setOrden($this->getRequest()->getPost("orden"));
             $oArchivo->setDescripcion($this->getRequest()->getPost("descripcion"));
             $oArchivo->setTitulo($this->getRequest()->getPost("titulo"));
 
-            ComunidadController::getInstance()->guardarArchivo($oArchivo);
+            IndexController::getInstance()->guardarArchivo($oArchivo);
 
             $this->getJsonHelper()->setMessage("El archivo se ha modificado con éxito");
             $this->getJsonHelper()->setSuccess(true);

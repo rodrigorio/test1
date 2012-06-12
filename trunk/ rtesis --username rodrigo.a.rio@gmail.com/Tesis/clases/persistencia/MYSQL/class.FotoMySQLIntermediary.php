@@ -50,7 +50,21 @@ class FotoMySQLIntermediary extends FotoIntermediary
                 }
             }
         }                    
-    }    
+    } 
+    
+    public function guardarFotosSeguimiento(SeguimientoAbstract $oSeguimiento)
+    {
+        if(null !== $oSeguimiento->getFotos()){
+            foreach($oSeguimiento->getFotos() as $oFoto){
+                if(null !== $oFoto->getId()){
+                    return $this->actualizar($oFoto);
+                }else{
+                    $iId = $oSeguimiento->getId();
+                    return $this->insertarAsociado($oFoto, $iId, get_class($oSeguimiento));
+                }
+            }
+        }                    
+    }
 
     public function borrar($aFotos)
     {
@@ -251,6 +265,34 @@ class FotoMySQLIntermediary extends FotoIntermediary
             throw new Exception($e->getMessage(), 0);
             return false;
         }        
+    }
+
+    public function isFotoSeguimientoUsuario($iFotoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        fotos f
+                        JOIN seguimientos s ON f.seguimientos_id = s.id
+                      WHERE
+                        f.id = ".$this->escInt($iFotoId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
     }
     
     public function existe($filtro){}

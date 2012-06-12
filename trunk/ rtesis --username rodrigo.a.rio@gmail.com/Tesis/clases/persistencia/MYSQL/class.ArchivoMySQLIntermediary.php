@@ -55,6 +55,20 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
         }
     }
     
+    public function guardarArchivosSeguimiento(SeguimientoAbstract $oSeguimiento)
+    {
+        if(null !== $oSeguimiento->getArchivos()){
+            foreach($oSeguimiento->getArchivos() as $oArchivo){
+                if(null !== $oArchivo->getId()){
+                    return $this->actualizar($oArchivo);
+                }else{
+                    $iId = $oSeguimiento->getId();
+                    return $this->insertarAsociado($oArchivo, $iId, get_class($oSeguimiento));
+                }
+            }
+        }
+    }
+    
     public function borrar($aArchivos)
     {
         try{
@@ -341,6 +355,34 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                       WHERE
                         a.id = ".$this->escInt($iArchivoId)." AND
                         (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId).")";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function isArchivoSeguimientoUsuario($iArchivoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        archivos a
+                        JOIN seguimientos s ON a.seguimientos_id = s.id
+                      WHERE
+                        a.id = ".$this->escInt($iArchivoId)." AND 
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
 
             $db->query($sSQL);
 
