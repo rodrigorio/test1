@@ -229,7 +229,6 @@ function bindEventsFormAgregarVideo(iSeguimientoId)
 
                 $('#Thumbnails').append(data.html);
                 $("a[rel^='prettyPhoto']").prettyPhoto();
-                if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
             }
         }
     };
@@ -570,7 +569,7 @@ function editarVideo(iEmbedVideoId){
     dialog = $('<div id="dialog" title="Editar Video"></div>').appendTo('body');
 
     dialog.load(
-        "form-editar-adjunto?editarVideo=1&iEmbedVideoId="+iEmbedVideoId,
+        "seguimientos/form-editar-adjunto?editarVideo=1&iEmbedVideoId="+iEmbedVideoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -597,7 +596,7 @@ function editarArchivo(iArchivoId){
     dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
 
     dialog.load(
-        "form-editar-adjunto?editarArchivo=1&iArchivoId="+iArchivoId,
+        "seguimientos/form-editar-adjunto?editarArchivo=1&iArchivoId="+iArchivoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -882,7 +881,7 @@ $(document).ready(function(){
                     position:['center', '20'],
                     width:450,
                     resizable:false,
-                    draggable:false,
+                    draggable:true,
                     modal:false,
                     closeOnEscape:true
                 });
@@ -914,7 +913,7 @@ $(document).ready(function(){
                     position:['center', '20'],
                     width:450,
                     resizable:false,
-                    draggable:false,
+                    draggable:true,
                     modal:false,
                     closeOnEscape:true
                 });
@@ -945,7 +944,7 @@ $(document).ready(function(){
                     position:['center', '20'],
                     width:450,
                     resizable:false,
-                    draggable:false,
+                    draggable:true,
                     modal:false,
                     closeOnEscape:true
                 });

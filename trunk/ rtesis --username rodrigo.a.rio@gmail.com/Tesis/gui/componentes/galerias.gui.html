@@ -275,7 +275,7 @@
 
     <div id="Rows" class="grupo mabo2">
         <!--BeginRowArchivoEditBlock-->
-        <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo2 pato2 bobo2">
+        <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo pato bobo2 lihe2">
             <div class="iveal fl_le mari2">
                 <span class="i bs document"></span>
                 <strong>{sNombreArchivo}</strong>
@@ -394,18 +394,18 @@
 <!--EndFormularioArchivoBlock-->
 
 <!--BeginGaleriaAdjuntosBlock-->
-
+<div id="galeriaAdjuntos">
     <!--BeginTituloItemBlock-->
-    <div class="fte4 mabo3"><span class="teta_ca fowe_bo">{sTipoItem}:</span> {sTituloItem}</div>
+    <div class="fte3 mabo4 fowe_bo"><span class="teta_ca fowe_bo">{sTipoItem}:</span> {sTituloItem}</div>
     <!--EndTituloItemBlock-->
 
 <input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
 <input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
 
     <!--BeginGaleriaAdjuntosFotosBlock-->
-    <div class="fte3 mabo2">Galer&iacute;a de Fotos</div>
+    <div class="fowe_bo teta_up mabo3 iveal"><span class="i bs photoSingle"></span> Fotos</div>
 
-    <div id="ThumbnailsFotos" class="grupo mabo2">
+    <div id="ThumbnailsFotos" class="mabo2 ov_hi">
         <!--BeginThumbnailFotoEditBlock-->
         <div id="foto_{iFotoId}" class="thumbEdit fl_le mari2">
             <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
@@ -425,15 +425,15 @@
         </div>
         <!--EndThumbnailFotoBlock-->
         <!--BeginNoRecordsFotosBlock-->
-        <div id="msgNoRecord" class="teal_ce fowe_bo">No hay fotos cargadas.</div>
+        <div id="msgNoRecord" class="pa3">No hay fotos cargadas.</div>
         <!--EndNoRecordsFotosBlock-->
     </div>
     <!--EndGaleriaAdjuntosFotosBlock-->
 
     <!--BeginGaleriaAdjuntosVideosBlock-->
-    <div class="fte3 mabo2">Galer&iacute;a de Videos</div>
+    <div class="fowe_bo teta_up mabo3 iveal"><span class="i bs movie"></span> Videos</div>
 
-    <div id="ThumbnailsVideos" class="grupo mabo2">
+    <div id="ThumbnailsVideos" class="mabo2 ov_hi">
         <!--BeginThumbnailVideoEditBlock-->
         <div id="video_{iEmbedVideoId}" class="thumbEdit fl_le mari2">
             <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
@@ -455,17 +455,17 @@
         </div>
         <!--EndThumbnailVideoBlock-->
         <!--BeginNoRecordsVideosBlock-->
-        <div id="msgNoRecord" class="teal_ce fowe_bo">No hay videos asociados.</div>
+        <div id="msgNoRecord" class="pa3">No hay videos asociados.</div>
         <!--EndNoRecordsVideosBlock-->
     </div>
     <!--EndGaleriaAdjuntosVideosBlock-->
 
-    <!--BeginGaleriaAdjuntosVideosBlock-->
-    <div class="fte3 mabo2">Galer&iacute;a de Archivos</div>
+    <!--BeginGaleriaAdjuntosArchivosBlock-->
+    <div class="fowe_bo teta_up mabo3 iveal"><span class="i mi documentBlank"></span> Archivos</div>
 
-    <div id="RowArchivos" class="grupo mabo2">
+    <div id="RowArchivos" class="mabo2 ov_hi">
         <!--BeginRowArchivoEditBlock-->
-        <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo2 pato2 bobo2">
+        <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo pato bobo2 lihe2">
             <div class="iveal fl_le mari2">
                 <span class="i bs document"></span>
                 <strong>{sNombreArchivo}</strong>
@@ -497,10 +497,11 @@
         </div>
         <!--EndRowArchivoBlock-->
         <!--BeginNoRecordsArchivosBlock-->
-        <div id="msgNoRecord" class="teal_ce fowe_bo">No hay archivos cargados.</div>
+        <div id="msgNoRecord" class="pa3">No hay archivos cargados.</div>
         <!--EndNoRecordsArchivosBlock-->
     </div>
-    <!--EndGaleriaAdjuntosVideosBlock-->
+    <!--EndGaleriaAdjuntosArchivosBlock-->
+</div>
 <!--EndGaleriaAdjuntosBlock-->
 
 <!--BeginThumbnailFotoCelda4-->
