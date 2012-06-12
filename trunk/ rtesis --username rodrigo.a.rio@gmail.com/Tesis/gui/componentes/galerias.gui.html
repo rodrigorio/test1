@@ -384,6 +384,71 @@
 </div>
 <!--EndFormularioArchivoBlock-->
 
+<!--BeginGaleriaAdjuntosBlock-->
+
+    <!--BeginTituloItemBlock-->
+    <div class="fte4 mabo3"><span class="teta_ca fowe_bo">{sTipoItem}:</span> {sTituloItem}</div>
+    <!--EndTituloItemBlock-->
+
+<input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
+<input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
+
+<div class="fte2 mabo2">Galer&iacute;a de Fotos</div>
+
+<div id="ThumbnailsFotos" class="grupo mabo2">
+    <!--BeginThumbnailFotoEditBlock-->
+    <div id="foto_{iFotoId}" class="thumbEdit fl_le mari2">
+        <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
+            <i style="background-image:url('{urlFoto}')"></i>
+        </a>
+        <div style="display:none" class="thumbEditMenu teal_ri">
+            <span title="Editar" rel="{iFotoId}" class="i bs edit ihover editarFoto"></span>
+            <span title="Eliminar" rel="{iFotoId}" class="i bs delete ihover borrarFoto"></span>
+        </div>
+    </div>
+    <!--EndThumbnailFotoEditBlock-->
+</div>
+
+<div class="fte2 mabo2">Galer&iacute;a de Videos</div>
+
+<div id="ThumbnailsVideos" class="grupo mabo2">
+    <!--BeginThumbnailVideoEditBlock-->
+    <div id="video_{iEmbedVideoId}" class="thumbEdit fl_le mari2">
+        <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
+            <i style="background-image:url('{urlFoto}')"></i>
+            <span>Video</span>
+        </a>
+        <div style="display:none" class="thumbEditMenu teal_ri">
+            <span title="Editar" rel="{iEmbedVideoId}" class="i bs edit ihover editarVideo"></span>
+            <span title="Eliminar" rel="{iEmbedVideoId}" class="i bs delete ihover borrarVideo"></span>
+        </div>
+    </div>
+    <!--EndThumbnailVideoEditBlock-->
+</div>
+
+<div class="fte2 mabo2">Galer&iacute;a de Archivos</div>
+
+<div id="RowArchivos" class="grupo mabo2">
+    <!--BeginRowArchivoEditBlock-->
+    <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo2 pato2 bobo2">
+        <div class="iveal fl_le mari2">
+            <span class="i bs document"></span>
+            <strong>{sNombreArchivo}</strong>
+        </div>
+        <div class="fl_le mari2">
+            Extensi&oacute;n: <span class="fost_it pari2">{sExtensionArchivo}</span>
+            Tama&ntilde;o: <span class="fost_it">{sTamanioArchivo} Kb.</span>
+        </div>
+        <div class="iveal fl_le mari2">
+            <a class="di_inbl veal_mi" href="{hrefDescargar}"><span class="i mi ihover download"></span></a>
+            <span title="Editar" rel="{iArchivoId}" class="i bs edit ihover editarArchivo"></span>
+            <span title="Eliminar" rel="{iArchivoId}" class="i bs delete ihover borrarArchivo"></span>
+        </div>
+    </div>
+    <!--EndRowArchivoEditBlock-->
+</div>
+<!--EndGaleriaAdjuntosBlock-->
+
 <!--BeginThumbnailFotoCelda4-->
 <div class="celda4">
     <a href="{hrefFoto}" class="th_fto_m thumb01">

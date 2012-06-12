@@ -77,7 +77,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'editarAntecedentes'
                                 ));
-        $router->addRoute('seguimientosSeguimientosEditarSeguimientos', $route);
+        $router->addRoute('seguimientosSeguimientosEditarAntecedentes', $route);
         $route = new RegexRoute('seguimientos/procesar-antecedentes',
                                 array(
                                         'module' => 'seguimientos',
@@ -92,7 +92,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'ver'
                                 ));
         $router->addRoute('seguimientosSeguimientosVer', $route);
-
+        $route = new RegexRoute('seguimientos/ver-adjuntos',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'verAdjuntos'
+                                ));
+        $router->addRoute('seguimientosSeguimientosAdjuntos', $route);
 
         //personas
         $route = new RegexRoute('seguimientos/personas',
