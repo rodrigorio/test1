@@ -250,7 +250,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont{width:235px; float:right; padding:10px; margin-bottom:-2000px; padding-bottom:2000px}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:20px 10px; margin-right:256px; height:100%}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightContMenuTop{padding:5px 10px; overflow:auto; height:100%;}
-#frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont #pageRightInnerContNav{margin-left:-11px}
+#frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont #pageRightInnerContNav{margin-left:-11px; margin-top:20px;}
 
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
 .popUpScroll{max-height:450px; overflow:auto;}
