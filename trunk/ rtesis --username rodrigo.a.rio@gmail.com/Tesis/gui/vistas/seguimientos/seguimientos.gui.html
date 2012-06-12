@@ -39,54 +39,54 @@
 <!--BeginPageRightInnerContVerSeguimientoBlock-->
 <ul id="pageRightInnerContNav" class="m_vert menu05">
     <li {currentOptionVerSeguimiento}>
-        <a href="{hrefVerSeguimiento}">
+        <a href="{hrefVerSeguimiento}?iSeguimientoId={iSeguimientoId}">
             Ver Seguimiento
         </a>
     </li>
     <li {currentOptionAgregarEntradaSeguimiento}>
-        <a href="{hrefAgregarEntradaSeguimiento}">
+        <a href="{hrefAgregarEntradaSeguimiento}?iSeguimientoId={iSeguimientoId}">
             Editar Seguimiento
         </a>
         <ul class="m_vert">
             <li {currentSubOptionAgregarEntradaSeguimiento}>
-                <a href="{hrefAgregarEntradaSeguimiento}">
+                <a href="{hrefAgregarEntradaSeguimiento}?iSeguimientoId={iSeguimientoId}">
                     Agregar Entrada
                 </a
             </li>
             <li {currentSubOptionEditarAntecedentesSeguimiento}>
-                <a href="{hrefEditarAntecedentesSeguimiento}">
+                <a href="{hrefEditarAntecedentesSeguimiento}?iSeguimientoId={iSeguimientoId}">
                     Editar Antecedentes
                 </a
             </li>
             <li {currentSubOptionEditarDiagnosticoSeguimiento}>
-                <a href="{hrefEditarDiagnosticoSeguimiento}">
+                <a href="{hrefEditarDiagnosticoSeguimiento}?iSeguimientoId={iSeguimientoId}">
                     Editar Diagnostico
                 </a
             </li>
         </ul>
     </li>
     <li {currentOptionVerAdjuntosSeguimiento}>
-        <a href="{hrefVerAdjuntosSeguimiento}">
+        <a href="{hrefVerAdjuntosSeguimiento}?iSeguimientoId={iSeguimientoId}">
             Adjuntos Multimedia
         </a>
         <ul class="m_vert">
             <li {currentSubOptionVerAdjuntosSeguimiento}>
-                <a href="{hrefVerAdjuntosSeguimiento}">
+                <a href="{hrefVerAdjuntosSeguimiento}?iSeguimientoId={iSeguimientoId}">
                     Ver Adjuntos
                 </a
             </li>
             <li>
-                <a href="">
+                <a rel="{iSeguimientoId}" class="agregarFotoSeguimiento" href="">
                     Agregar Foto
                 </a
             </li>
             <li>
-                <a href="">
+                <a rel="{iSeguimientoId}" class="agregarVideoSeguimiento" href="">
                     Agregar Video
                 </a
             </li>
             <li>
-                <a href="">
+                <a rel="{iSeguimientoId}" class="agregarArchivoSeguimiento" href="">
                     Agregar Archivo
                 </a
             </li>
@@ -346,21 +346,25 @@
 </div>
 <!--EndListadoSeguimientosBlock-->
 
-<!--BeguinVerSeguimientoBlock-->
-<div class="ficha02">
-    <h2>{sSeguimientoNombre}</h2>
-    <div>{sSeguimientoTipo}</div>
-    <div>{sSeguimientoDescripcion}</div>
-    <div>{sSeguimientoActividades}</div>
-    <div>{sSeguimientoAutoridades}</div>
-    <div>{sSeguimientoSedes}</div>
-    <div><b>Direccion:</b>{sSeguimientoDireccion}</div>
-    <div>{sSeguimientoCiudad}</div>
-    <div>{sSeguimientoProvincia}</div>
-    <div>{sSeguimientoPais}</div>
-    <div><b>Horarios de atencion :</b>{sSeguimientoHorarios}</div>
-    <div><b>Email: </b>{sSeguimientoEmail}</div>
-    <div><b>Telefono:</b> {sSeguimientoTelefono}</div>
-    <div>{sSeguimientoSitioWeb}</div>
+<!--BeginVerSeguimientoBlock-->
+<div class="grupo">
+    <div class="fl_le mari2">
+        <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
+            <i style="background-image:url('{scrFotoPerfilActual}')"></i>
+        </a>
+    </div>
+    <h2 class="mabo2">{sNombrePersona}</h2>
+    <a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">ampliar persona</a>
+    <div class="cl_le pato2 lihe2">
+        <span class="fte2 txt_imp2">Fecha Creaci&oacute;n:</span> {sSeguimientoFechaCreacion}<br>
+        <span class="fte2 txt_imp2">Ultima Modificaci&oacute;n:</span> {sUltimaModificacion}<br>
+        <span class="fte2 txt_imp2">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}<br>
+        <span class="fte2 txt_imp2">Frecuencia de Encuentros:</span> {sFrecuenciaEncuentros}<br>
+        <span class="fte2 txt_imp2">D&iacute;a y horario encuentros:</span> {sDiaHorarioEncuentros}<br>
+        <span class="fte2 txt_imp2">Tipo de Practica:</span> {sTipoPractica}<br>
+        <span class="fte2 txt_imp2">Cantidad Fotos:</span> {iCantidadFotos}<br>
+        <span class="fte2 txt_imp2">Cantidad Videos:</span> {iCantidadVideos}<br>
+        <span class="fte2 txt_imp2">Cantidad Archivos:</span> {iCantidadArchivos}
+    </div>
 </div>
 <!--EndVerSeguimientoBlock-->

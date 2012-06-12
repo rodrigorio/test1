@@ -92,6 +92,8 @@ class RutasModuloSeguimientos
                                         'action'     => 'ver'
                                 ));
         $router->addRoute('seguimientosSeguimientosVer', $route);
+
+        //galeria adjuntos
         $route = new RegexRoute('seguimientos/ver-adjuntos',
                                 array(
                                         'module' => 'seguimientos',
@@ -99,6 +101,41 @@ class RutasModuloSeguimientos
                                         'action'     => 'verAdjuntos'
                                 ));
         $router->addRoute('seguimientosSeguimientosAdjuntos', $route);
+        $route = new RegexRoute('seguimientos/form-adjuntar-foto',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'formAdjuntarFoto'
+                                ));
+        $router->addRoute('seguimientosSeguimientosFormAdjuntarFoto', $route);
+        $route = new RegexRoute('seguimientos/form-adjuntar-video',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'formAdjuntarVideo'
+                                ));
+        $router->addRoute('seguimientosSeguimientosFormAdjuntarVideo', $route);
+        $route = new RegexRoute('seguimientos/form-adjuntar-archivo',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'formAdjuntarArchivo'
+                                ));
+        $router->addRoute('seguimientosSeguimientosFormAdjuntarArchivo', $route);
+        $route = new RegexRoute('seguimientos/form-editar-adjunto',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'formEditarAdjunto'
+                                ));
+        $router->addRoute('seguimientosSeguimientosFormEditarAdjunto', $route);
+        $route = new RegexRoute('seguimientos/procesar-adjunto',
+                                array(
+                                    'module' => 'seguimientos',
+                                    'controller' => 'seguimientos',
+                                    'action'     => 'procesarAdjunto'
+                                ));
+        $router->addRoute('seguimientosSeguimientosProcesarAdjunto', $route);
 
         //personas
         $route = new RegexRoute('seguimientos/personas',
@@ -135,6 +172,6 @@ class RutasModuloSeguimientos
                                         'controller' => 'personas',
                                         'action'     => 'ver'
                                 ));
-        $router->addRoute('seguimientosPersonasVer', $route);
+        $router->addRoute('seguimientosPersonasVer', $route);        
     }
 }
