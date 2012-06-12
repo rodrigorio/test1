@@ -196,7 +196,7 @@ class IndexControllerIndex extends PageControllerAbstract
 
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-01.gui.html", "frame");
 
-        $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
         $this->getTemplate()->set_var("popUpContent", $this->getEmbedVideoHelper()->getEmbedVideoCode($oEmbedVideo));
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
