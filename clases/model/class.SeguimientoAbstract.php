@@ -15,6 +15,7 @@ abstract class SeguimientoAbstract
    protected $iId;
    protected $oDiscapacitado;
    protected $sFrecuenciaEncuentros;
+   protected $iUsuarioId;
    protected $oUsuario;
    protected $oPractica;
    protected $sAntecedentes;
@@ -30,6 +31,11 @@ abstract class SeguimientoAbstract
     * array objetos Archivo
     */
     protected $aArchivos = null;
+    /*
+    * array objetos EmbedVideo
+    */
+    protected $aEmbedVideos = null;
+       
     protected $fArchivoAntecedente = null;
 
     public function __construct(){}
@@ -85,11 +91,17 @@ abstract class SeguimientoAbstract
     public function getUsuario(){
         return $this->oUsuario;
     }
-    /**
-     * Shortcut para el Id
-     */
-    public function getUsuarioId(){
-        return $this->oUsuario->getId();
+    
+    public function setUsuarioId($iUsuarioId){
+        $this->iUsuarioId = $iUsuarioId;
+        if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        }
+    }
+    
+    public function getUsuarioId()
+    {
+        return $this->iUsuarioId;
     }
 
     public function getPractica(){
@@ -132,9 +144,26 @@ abstract class SeguimientoAbstract
     public function setFotos($aFotos){
         $this->aFotos = $aFotos;
     }
-
+    public function addFoto($oFoto){
+        $this->aFotos[] = $oFoto;
+        return $this;
+    }
     public function setArchivos($aArchivos){
         $this->aArchivos = $aArchivos;
+    }
+    public function addArchivo($oArchivo)
+    {
+        $this->aArchivos[] = $oArchivo;
+        return $this;
+    }
+    public function setEmbedVideos($aEmbedVideos){
+        $this->aEmbedVideos = $aEmbedVideos;
+        return $this;
+    }
+    public function addEmbedVideo($oEmbedVideo)
+    {
+        $this->aEmbedVideos[] = $oEmbedVideo;
+        return $this;
     }
 
     /**
@@ -157,6 +186,13 @@ abstract class SeguimientoAbstract
             $this->aArchivos = SeguimientosController::getInstance()->obtenerArchivosSeguimiento($this->iId);
     	}
         return $this->aArchivos;
+    }
+
+    public function getEmbedVideos(){
+        if($this->aEmbedVideos === null){
+            $this->aEmbedVideos = SeguimientosController::getInstance()->obtenerEmbedVideosSeguimiento($this->iId);
+        }
+        return $this->aEmbedVideos;
     }
 
     /**

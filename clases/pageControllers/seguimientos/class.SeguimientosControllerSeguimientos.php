@@ -793,6 +793,90 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaAdjuntosBlock");
 
             $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+            $this->getTemplate()->set_var("iItemIdForm", $oSeguimiento->getId());
+
+            if( get_class($oSeguimiento) == self::TIPO_SEGUIMIENTO_SCC ){
+                $sTipoItem = "Seguimiento SCC";
+            }else{
+                $sTipoItem = "Seguimiento Personalizado";
+            }
+            $this->getTemplate()->set_var("sTipoItem", $sTipoItem);
+            $this->getTemplate()->set_var("sTituloItem", "Galería adjuntos");
+
+            //uso los thumbnails de edicion asi que descarto los otros:
+            $this->getTemplate()->set_var("ThumbnailFotoBlock", "");
+            $this->getTemplate()->set_var("ThumbnailVideoBlock", "");
+            $this->getTemplate()->set_var("RowArchivoBlock", "");
+            
+            //Fotos
+            $aFotos = $oSeguimiento->getFotos();
+            if(count($aFotos) > 0){
+                $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                foreach($aFotos as $oFoto){
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
+
+                    $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
+            }
+
+            //Videos
+            $aEmbedVideos = $oSeguimiento->getEmbedVideos();
+
+            if(count($aEmbedVideos) > 0){
+
+                foreach($aEmbedVideos as $oEmbedVideo){
+
+                    $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+
+                    $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                    $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                    $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
+
+                    $this->getTemplate()->parse("ThumbnailVideoEditBlock", true);
+                }
+
+                $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
+            }
+
+            //Archivos
+            $aArchivos = $oSeguimiento->getArchivos();
+
+            if(count($aArchivos) > 0){
+
+                $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
+                foreach($aArchivos as $oArchivo){
+
+                    $nombreArchivo = $oArchivo->getTitulo();
+                    if(empty($nombreArchivo)){
+                        $nombreArchivo = $oArchivo->getNombre();
+                    }
+
+                    $hrefDescargar = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+
+                    $this->getTemplate()->set_var("sNombreArchivo", $nombreArchivo);
+                    $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                    $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                    $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
+                    $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
+
+                    $this->getTemplate()->parse("RowArchivoEditBlock", true);
+                }
+
+                $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("RowArchivoEditBlock", "");
+            }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     	}catch(Exception $e){
@@ -926,7 +1010,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+        $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
 
         $this->getTemplate()->set_var("iFotoId", $iFotoId);
 
@@ -951,7 +1035,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+        $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
 
         $this->getTemplate()->set_var("iArchivoId", $iArchivoId);
 
@@ -976,7 +1060,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
 
         $this->getTemplate()->set_var("iEmbedVideoId", $iEmbedVideoId);
 
@@ -1046,27 +1130,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     private function agregarFoto()
     {
         try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-            $objType = $this->getRequest()->getParam('objType');
+            $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
 
-            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            if(empty($iSeguimientoId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para agregar fotos a esta publicación", 401);
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar fotos a este seguimiento", 401);
             }
 
             $nombreInputFile = 'fotoGaleria';
@@ -1075,7 +1150,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
 
-                $idItem = $oFicha->getId();
+                $idItem = $oSeguimiento->getId();
 
                 //un array con los datos de las fotos
                 $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($idItem, $nombreInputFile);
@@ -1093,9 +1168,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $oFoto->setDescripcion('');
                     $oFoto->setTipoAdjunto();
 
-                    $oFicha->addFoto($oFoto);
+                    $oSeguimiento->addFoto($oFoto);
 
-                    ComunidadController::getInstance()->guardarFotoFicha($oFicha, $pathServidor);
+                    SeguimientosController::getInstance()->guardarFotoSeguimiento($oSeguimiento, $pathServidor);
 
                     $this->restartTemplate();
 
@@ -1128,27 +1203,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     private function agregarArchivo()
     {
         try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-            $objType = $this->getRequest()->getParam('objType');
+            $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
 
-            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            if(empty($iSeguimientoId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para agregar archivos a esta publicación", 401);
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar archivos a este seguimiento", 401);
             }
 
             $nombreInputFile = 'archivoGaleria';
@@ -1157,9 +1223,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
 
-                $idItem = $oFicha->getId();
+                $idItem = $oSeguimiento->getId();
 
-                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'publicacion', $nombreInputFile);
+                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'seguimiento', $nombreInputFile);
                 $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
                 try{
@@ -1176,9 +1242,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $oArchivo->isPublico(false);
                     $oArchivo->isActivoComentarios(false);
 
-                    $oFicha->addArchivo($oArchivo);
+                    $oSeguimiento->addArchivo($oArchivo);
 
-                    ComunidadController::getInstance()->guardarArchivoFicha($oFicha, $pathServidor);
+                    SeguimientosController::getInstance()->guardarArchivoSeguimiento($oSeguimiento, $pathServidor);
 
                     $this->restartTemplate();
 
@@ -1219,27 +1285,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     private function agregarVideo()
     {
         try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-            $objType = $this->getRequest()->getParam('objType');
+            $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
 
-            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            if(empty($iSeguimientoId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para agregar videos a esta publicación", 401);
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para agregar videos a este seguimiento", 401);
             }
 
             $this->getJsonHelper()->initJsonAjaxResponse();
@@ -1259,9 +1316,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $servidorOrigen = $this->getEmbedVideoHelper()->getServidor($oEmbedVideo);
                 $oEmbedVideo->setOrigen($servidorOrigen);
 
-                $oFicha->addEmbedVideo($oEmbedVideo);
+                $oSeguimiento->addEmbedVideo($oEmbedVideo);
 
-                ComunidadController::getInstance()->guardarEmbedVideosFicha($oFicha);
+                SeguimientosController::getInstance()->guardarEmbedVideosSeguimiento($oSeguimiento);
 
                 $this->restartTemplate();
 
@@ -1275,7 +1332,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
                 $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
 
-                $this->getJsonHelper()->setMessage("El video fue agregado con éxito en la publicación");
+                $this->getJsonHelper()->setMessage("El video fue agregado con éxito en el seguimiento");
                 $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxThumbnailVideo', false));
                 $this->getJsonHelper()->setSuccess(true);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -1306,18 +1363,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoId);
+            $bFotoUsuario = SeguimientosController::getInstance()->isFotoSeguimientoUsuario($iFotoId);
             if(!$bFotoUsuario){
                 throw new Exception("No tiene permiso para editar esta foto", 401);
             }
 
-            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+            $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
 
             $oFoto->setOrden($this->getRequest()->getPost("orden"));
             $oFoto->setDescripcion($this->getRequest()->getPost("descripcion"));
             $oFoto->setTitulo($this->getRequest()->getPost("titulo"));
 
-            ComunidadController::getInstance()->guardarFoto($oFoto);
+            IndexController::getInstance()->guardarFoto($oFoto);
 
             $this->getJsonHelper()->setMessage("La foto se ha modificado con éxito");
             $this->getJsonHelper()->setSuccess(true);
@@ -1341,15 +1398,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         try{
 
             //devuelve si la foto es de una publicacion creada por el usuario que esta logueado
-            $bFotoUsuario = ComunidadController::getInstance()->isFotoPublicacionUsuario($iFotoId);
+            $bFotoUsuario = SeguimientosController::getInstance()->isFotoSeguimientoUsuario($iFotoId);
             if(!$bFotoUsuario){
                 throw new Exception("No tiene permiso para borrar esta foto", 401);
             }
 
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-            $oFoto = ComunidadController::getInstance()->getFotoById($iFotoId);
+            $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
 
-            ComunidadController::getInstance()->borrarFoto($oFoto, $pathServidor);
+            IndexController::getInstance()->borrarFoto($oFoto, $pathServidor);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1371,18 +1428,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
+            $bVideoUsuario = SeguimientosController::getInstance()->isEmbedVideoSeguimientoUsuario($iEmbedVideoId);
             if(!$bVideoUsuario){
                 throw new Exception("No tiene permiso para editar este video", 401);
             }
 
-            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
 
             $oEmbedVideo->setOrden($this->getRequest()->getPost("orden"));
             $oEmbedVideo->setDescripcion($this->getRequest()->getPost("descripcion"));
             $oEmbedVideo->setTitulo($this->getRequest()->getPost("titulo"));
 
-            ComunidadController::getInstance()->guardarEmbedVideo($oEmbedVideo);
+            IndexController::getInstance()->guardarEmbedVideo($oEmbedVideo);
 
             $this->getJsonHelper()->setMessage("El video se ha modificado con éxito");
             $this->getJsonHelper()->setSuccess(true);
@@ -1405,14 +1462,14 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
 
-            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
+            $bVideoUsuario = SeguimientosController::getInstance()->isEmbedVideoSeguimientoUsuario($iEmbedVideoId);
             if(!$bVideoUsuario){
                 throw new Exception("No tiene permiso para editar este video", 401);
             }
 
-            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
 
-            ComunidadController::getInstance()->borrarEmbedVideo($oEmbedVideo);
+            IndexController::getInstance()->borrarEmbedVideo($oEmbedVideo);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1434,18 +1491,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $bArchivoUsuario = ComunidadController::getInstance()->isArchivoPublicacionUsuario($iArchivoId);
+            $bArchivoUsuario = SeguimientosController::getInstance()->isArchivoSeguimientoUsuario($iArchivoId);
             if(!$bArchivoUsuario){
                 throw new Exception("No tiene permiso para editar este archivo", 401);
             }
 
-            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+            $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
 
             $oArchivo->setOrden($this->getRequest()->getPost("orden"));
             $oArchivo->setDescripcion($this->getRequest()->getPost("descripcion"));
             $oArchivo->setTitulo($this->getRequest()->getPost("titulo"));
 
-            ComunidadController::getInstance()->guardarArchivo($oArchivo);
+            IndexController::getInstance()->guardarArchivo($oArchivo);
 
             $this->getJsonHelper()->setMessage("El archivo se ha modificado con éxito");
             $this->getJsonHelper()->setSuccess(true);
@@ -1469,15 +1526,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         try{
 
             //devuelve si el archivo es de una publicacion creada por el usuario que esta logueado
-            $bArchivoUsuario = ComunidadController::getInstance()->isArchivoPublicacionUsuario($iArchivoId);
+            $bArchivoUsuario = SeguimientosController::getInstance()->isArchivoSeguimientoUsuario($iArchivoId);
             if(!$bArchivoUsuario){
-                throw new Exception("No tiene permiso para borrar esta archivo", 401);
+                throw new Exception("No tiene permiso para borrar este archivo", 401);
             }
 
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
-            $oArchivo = ComunidadController::getInstance()->getArchivoById($iArchivoId);
+            $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
 
-            ComunidadController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
+            IndexController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){

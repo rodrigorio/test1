@@ -123,6 +123,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
                 $oSeguimiento->sDiaHorario      = $oObj->sDiaHorario;
                 $oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                $oSeguimiento->iUsuarioId       = $oObj->iUsuarioId;
                 $oSeguimiento->oUsuario         = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
                 $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
                 $oSeguimiento->sPronostico      = $oObj->sPronostico;
@@ -220,6 +221,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
                 $oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
                 $oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                $oSeguimiento->iUsuarioId       = $oObj->iUsuarioId;
                 $oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
                 $oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
                 $oSeguimiento->sPronostico = $oObj->sPronostico;

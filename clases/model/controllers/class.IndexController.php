@@ -54,6 +54,7 @@ class IndexController
             echo $e->getMessage();
         }
     }
+
     /**
      * @param string $token
      */
@@ -112,6 +113,7 @@ class IndexController
 			echo $e->getMessage();
 		}
     }
+
     /**
      * @param string $token
      */
@@ -137,5 +139,169 @@ class IndexController
     {
         $oDocumentoTiposIntermediary = PersistenceFactory::getDocumentoTiposIntermediary($this->db);
         return $oDocumentoTiposIntermediary->obtenerTiposDocumentos();
-    }    
+    }
+
+    ///*** METODOS BASICOS DE ADJUNTOS ***///
+    
+    public function borrarFoto($oFoto, $pathServidor)
+    {
+    	try{
+            $aNombreArchivos = $oFoto->getArrayNombres();
+
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $oFotoIntermediary->borrar($oFoto);
+
+            foreach($aNombreArchivos as $nombreServidorArchivo){
+                $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                    unlink($pathServidorArchivo);
+                }
+            }
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function borrarEmbedVideo($oEmbedVideo)
+    {
+    	try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            return $oEmbedVideoIntermediary->borrar($oEmbedVideo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function borrarArchivo($oArchivo, $pathServidor)
+    {
+    	try{
+            $pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
+
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $oArchivoIntermediary->borrar($oArchivo);
+
+            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                unlink($pathServidorArchivo);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Devuelve una foto suelta sin asociarse a ningun objeto.
+     * Esto se necesita para el formulario en el que se modifica orden, titulo, etc.
+     * Tambien para obtener el objeto cuando se tiene que borrar.
+     */
+    public function getFotoById($iFotoId)
+    {
+        try{
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $filtro = array('f.id' => $iFotoId);
+            $iRecordsTotal = 0;
+            $aFotos = $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aFotos){
+                return $aFotos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
+    public function getEmbedVideoById($iEmbedVideoId)
+    {
+        try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            $filtro = array('v.id' => $iEmbedVideoId);
+            $iRecordsTotal = 0;
+            $aEmbedVideos = $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aEmbedVideos){
+                return $aEmbedVideos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
+    public function getArchivoById($iArchivoId)
+    {
+        try{
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            $filtro = array('a.id' => $iArchivoId);
+            $iRecordsTotal = 0;
+            $aArchivos = $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aArchivos){
+                return $aArchivos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
+    /**
+     * Este metodo se debe usar solo para guardar la informacion del formulario de edicion de foto.
+     * Titulo, descripcion, etc.
+     *
+     * No sirve para asociar la foto a ninguna entidad
+     */
+    public function guardarFoto($oFoto)
+    {
+    	try{
+            if(null === $oFoto->getId()){
+                throw new Exception("La foto no posee Id");
+            }
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            return $oFotoIntermediary->actualizar($oFoto);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Este metodo se debe usar solo para guardar la informacion del formulario de edicion de archivo.
+     * Titulo, descripcion, orden, etc.
+     *
+     * No sirve para asociar el archivo a ninguna entidad
+     */
+    public function guardarArchivo($oArchivo)
+    {
+    	try{
+            if(null === $oArchivo->getId()){
+                throw new Exception("El archivo no posee Id");
+            }
+            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
+            return $oArchivoIntermediary->actualizar($oArchivo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Este metodo se debe usar solo para guardar la informacion del formulario de edicion de foto.
+     * Titulo, descripcion, etc.
+     *
+     * No sirve para asociar la foto a ninguna entidad
+     */
+    public function guardarEmbedVideo($oEmbedVideo)
+    {
+    	try{
+            if(null === $oEmbedVideo->getId()){
+                throw new Exception("El video no posee Id");
+            }
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            return $oEmbedVideoIntermediary->actualizar($oEmbedVideo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }
