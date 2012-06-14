@@ -795,6 +795,33 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
         $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
+        //antecedentes
+        $sAntecedentes = $oSeguimiento->getAntecedentes();
+        $oAntecedentes = $oSeguimiento->getArchivoAntecedentes();
+
+        if(null === $sAntecedentes && $oAntecedentes === null){
+            $this->getTemplate()->set_var("VerAntecedentesActualBlock", "");
+            $this->getTemplate()->set_var("VerArchivoAntecedentesActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("NoInfoAntecedentesBlock", "");
+        }
+
+        if(null === $sAntecedentes){
+            $this->getTemplate()->set_var("VerAntecedentesActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("sAntecedentes", $sAntecedentes);
+        }
+
+        if(null === $oAntecedentes){
+            $this->getTemplate()->set_var("VerArchivoAntecedentesActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("sNombreArchivo", $oAntecedentes->getNombre());
+            $this->getTemplate()->set_var("sExtensionArchivo", $oAntecedentes->getTipoMime());
+            $this->getTemplate()->set_var("sTamanioArchivo", $oAntecedentes->getTamanio());
+            $this->getTemplate()->set_var("sFechaArchivo", $oAntecedentes->getFechaAlta());
+
+            $this->getTemplate()->set_var("hrefDescargar", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oAntecedentes->getNombreServidor());
+        }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
@@ -836,7 +863,34 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
         $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
+        //antecedentes
+        $sAntecedentes = $oSeguimiento->getAntecedentes();
+        $oAntecedentes = $oSeguimiento->getArchivoAntecedentes();
 
+        if(null === $sAntecedentes && $oAntecedentes === null){
+            $this->getTemplate()->set_var("VerAntecedentesActualBlock", "");
+            $this->getTemplate()->set_var("VerArchivoAntecedentesActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("NoInfoAntecedentesBlock", "");
+        }
+
+        if(null === $sAntecedentes){
+            $this->getTemplate()->set_var("VerAntecedentesActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("sAntecedentes", $sAntecedentes);
+        }
+
+        if(null === $oAntecedentes){
+            $this->getTemplate()->set_var("VerArchivoAntecedentesActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("sNombreArchivo", $oAntecedentes->getNombre());
+            $this->getTemplate()->set_var("sExtensionArchivo", $oAntecedentes->getTipoMime());
+            $this->getTemplate()->set_var("sTamanioArchivo", $oAntecedentes->getTamanio());
+            $this->getTemplate()->set_var("sFechaArchivo", $oAntecedentes->getFechaAlta());
+
+            $this->getTemplate()->set_var("hrefDescargar", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oAntecedentes->getNombreServidor());
+        }
+        
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
