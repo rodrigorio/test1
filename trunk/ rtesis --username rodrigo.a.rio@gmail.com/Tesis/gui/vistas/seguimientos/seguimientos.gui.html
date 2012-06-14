@@ -397,25 +397,64 @@
 <!--EndListadoSeguimientosBlock-->
 
 <!--BeginVerSeguimientoBlock-->
-<div class="grupo">
-    <div class="fl_le mari3">
-        <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01 mabo3">
-            <i style="background-image:url('{scrFotoPerfilActual}')"></i>
-        </a>    
-        <h2 class="mabo2">{sNombrePersona}</h2>
-        <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="seguimientos/ver-persona">Ampliar Persona</a>
+<div class="slide slide01">
+    <div class="slideExpanded iveal"><span class="i mi ihover"></span>Informaci&oacute;n B&aacute;sica</div>
+    <div class="contenido pa2">
+        
+        <div class="fl_le mari3">
+            <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01 mabo3">
+                <i style="background-image:url('{scrFotoPerfilActual}')"></i>
+            </a>
+            <h2 class="mabo2">{sNombrePersona}</h2>
+            <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="seguimientos/ver-persona">Ampliar Persona</a>
+        </div>
+        <div class="fl_le lihe2">
+            <span class="fte2 txt_imp2">Fecha Creaci&oacute;n:</span> {sSeguimientoFechaCreacion}<br>
+            <span class="fte2 txt_imp2">Ultima Modificaci&oacute;n:</span> {sUltimaModificacion}<br>
+            <span class="fte2 txt_imp2">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}<br>
+            <span class="fte2 txt_imp2">Frecuencia de Encuentros:</span> {sFrecuenciaEncuentros}<br>
+            <span class="fte2 txt_imp2">D&iacute;a y horario encuentros:</span> {sDiaHorarioEncuentros}<br>
+            <span class="fte2 txt_imp2">Tipo de Practica:</span> {sTipoPractica}<br>
+            <span class="fte2 txt_imp2">Cantidad Fotos:</span> {iCantidadFotos}<br>
+            <span class="fte2 txt_imp2">Cantidad Videos:</span> {iCantidadVideos}<br>
+            <span class="fte2 txt_imp2">Cantidad Archivos:</span> {iCantidadArchivos}<br>
+            <a class="fowe_bo modificarSeguimiento fte2" rel="{iSeguimientoId}" href="">Editar Seguimiento</a>
+        </div>
+        
     </div>
-    <div class="fl_le lihe2">
-        <span class="fte2 txt_imp2">Fecha Creaci&oacute;n:</span> {sSeguimientoFechaCreacion}<br>
-        <span class="fte2 txt_imp2">Ultima Modificaci&oacute;n:</span> {sUltimaModificacion}<br>
-        <span class="fte2 txt_imp2">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}<br>
-        <span class="fte2 txt_imp2">Frecuencia de Encuentros:</span> {sFrecuenciaEncuentros}<br>
-        <span class="fte2 txt_imp2">D&iacute;a y horario encuentros:</span> {sDiaHorarioEncuentros}<br>
-        <span class="fte2 txt_imp2">Tipo de Practica:</span> {sTipoPractica}<br>
-        <span class="fte2 txt_imp2">Cantidad Fotos:</span> {iCantidadFotos}<br>
-        <span class="fte2 txt_imp2">Cantidad Videos:</span> {iCantidadVideos}<br>
-        <span class="fte2 txt_imp2">Cantidad Archivos:</span> {iCantidadArchivos}<br>
-        <a class="fowe_bo modificarSeguimiento fte2" rel="{iSeguimientoId}" href="">Editar Seguimiento</a>
+</div>
+<div class="cl_le pabo2"></div>
+<div class="slide slide01">
+    <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Antecedentes</div>
+    <div class="contenido pa2" style="display:none">
+
+        <div class="fowe_bo teta_up mabo3">Antecedentes actuales de la persona</div>
+
+        <!--BeginNoInfoAntecedentesBlock-->
+        <p>No hay informaci&oacute;n cargada.</p>
+        <!--EndNoInfoAntecedentesBlock-->
+
+        <!--BeginVerAntecedentesActualBlock-->
+        <p>{sAntecedentes}</p>
+        <!--EndVerAntecedentesActualBlock-->
+
+        <!--BeginVerArchivoAntecedentesActualBlock-->
+        <div class="fowe_bo teta_up mabo3">Archivo actual antecedentes</div>
+
+        <div class="grupo cl_bo">
+            <div class="iveal fl_le mari2">
+                <span class="i bs document"></span>
+                <strong>{sNombreArchivo}</strong>
+            </div>
+            <div class="fl_le mari2">
+                Extensi&oacute;n: <span class="fost_it pari2">{sExtensionArchivo}</span>
+                Tama&ntilde;o: <span class="fost_it">{sTamanioArchivo} Kb.</span>
+            </div>
+            <div class="iveal fl_le mari2">
+                <a class="di_inbl veal_mi" href="{hrefDescargar}"><span class="i mi ihover download"></span></a>
+            </div>
+        </div>        
+        <!--EndVerArchivoAntecedentesActualBlock-->
     </div>
 </div>
 <!--EndVerSeguimientoBlock-->
