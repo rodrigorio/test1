@@ -803,6 +803,20 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+    
+    public function obtenerComentariosFicha($iFichaId)
+    {
+        try{
+            $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
+            $filtro = array('c.fichas_abstractas_id' => $iFichaId);
+            return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, 
+
+        $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }        
+    }
 
     /**
      *  no hace falta distinguir tipo review/publicacion
