@@ -399,13 +399,34 @@
     <div class="fte3 mabo4 fowe_bo"><span class="teta_ca fowe_bo">{sTipoItem}:</span> {sTituloItem}</div>
     <!--EndTituloItemBlock-->
 
+    <!--BeginMenuGaleriaAdjuntos-->
+    <ul class="m_horiz menu02">
+        <li>
+            <a class="agregarFotoSeguimiento" href="">
+                Agregar Foto
+            </a
+        </li>
+        <li>
+            <a class="agregarVideoSeguimiento" href="">
+                Agregar Video
+            </a
+        </li>
+        <li>
+            <a class="agregarArchivoSeguimiento" href="">
+                Agregar Archivo
+            </a
+        </li>
+    </ul>
+    <br clear="all" />
+    <!--EndMenuGaleriaAdjuntos-->
+
 <input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
 <input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
 
     <!--BeginGaleriaAdjuntosFotosBlock-->
     <div class="fowe_bo teta_up mabo3 iveal"><span class="i bs photoSingle"></span> Fotos</div>
 
-    <div id="ThumbnailsFotos" class="mabo2 ov_hi">
+    <div id="ThumbnailsFotos" class="mabo3 ov_hi">
         <!--BeginThumbnailFotoEditBlock-->
         <div id="foto_{iFotoId}" class="thumbEdit fl_le mari2">
             <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
@@ -433,7 +454,7 @@
     <!--BeginGaleriaAdjuntosVideosBlock-->
     <div class="fowe_bo teta_up mabo3 iveal"><span class="i bs movie"></span> Videos</div>
 
-    <div id="ThumbnailsVideos" class="mabo2 ov_hi">
+    <div id="ThumbnailsVideos" class="mabo3 ov_hi">
         <!--BeginThumbnailVideoEditBlock-->
         <div id="video_{iEmbedVideoId}" class="thumbEdit fl_le mari2">
             <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
@@ -463,7 +484,7 @@
     <!--BeginGaleriaAdjuntosArchivosBlock-->
     <div class="fowe_bo teta_up mabo3 iveal"><span class="i mi documentBlank"></span> Archivos</div>
 
-    <div id="RowArchivos" class="mabo2 ov_hi">
+    <div id="RowArchivos" class="mabo3 ov_hi">
         <!--BeginRowArchivoEditBlock-->
         <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo pato bobo2 lihe2">
             <div class="iveal fl_le mari2">

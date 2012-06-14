@@ -35,9 +35,12 @@ abstract class SeguimientoAbstract
     * array objetos EmbedVideo
     */
     protected $aEmbedVideos = null;
+    
+    /**
+     * Instancia de clase Archivo
+     */
+    protected $oAntecedentes;
        
-    protected $fArchivoAntecedente = null;
-
     public function __construct(){}
    
     public function setId($id){
@@ -200,13 +203,10 @@ abstract class SeguimientoAbstract
      */
     public function getArchivoAntecedentes()
     {
-    	if($this->fArchivoAntecedente == null){
-            $this->fArchivoAntecedente = SeguimientosController::getInstance()->obtenerArchivoAntecedente($this->iId);
-    	}
-        return $this->fArchivoAntecedente;
+        return $this->oAntecedentes;
     }
     
-    public function setArchivoAntecedentes($fAntecedentes){
-        $this->fArchivoAntecedente = $fAntecedentes;
+    public function setArchivoAntecedentes($oAntecedentes){
+        $this->oAntecedentes = $oAntecedentes;
     }
 }

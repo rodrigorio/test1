@@ -239,10 +239,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oCurriculumVitae->iOrden = $oObj->iCvOrden;
                     $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
                     $oCurriculumVitae->sTipo = $oObj->sCvTipo;
-                    $oCurriculumVitae->bModerado = $oObj->bCvModerado;
-                    $oCurriculumVitae->bActivo = $oObj->bCvActivo;
-                    $oCurriculumVitae->bPublico = $oObj->bCvPublico;
-                    $oCurriculumVitae->bActivoComentarios = $oObj->bCvActivoComentarios;
+                    $oCurriculumVitae->bModerado = ($oObj->bCvModerado == '1')?true:false;
+                    $oCurriculumVitae->bActivo = ($oObj->bCvActivo == '1')?true:false;
+                    $oCurriculumVitae->bPublico = ($oObj->bCvPublico == '1')?true:false;
+                    $oCurriculumVitae->bActivoComentarios = ($oObj->bCvActivoComentarios == '1')?true:false;
                     $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
                 }
 
