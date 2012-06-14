@@ -55,6 +55,21 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           s.fechaCreacion as dFechaCreacion,
                           s.estado AS sEstado,
                           IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo,
+
+                          a.id as iArchivoId,
+                          a.nombre as sArchivoNombre,
+                          a.nombreServidor as sArchivoNombreServidor,
+                          a.descripcion as sArchivoDescripcion,
+                          a.tipoMime as sArchivoTipoMime,
+                          a.tamanio as iArchivoTamanio,
+                          a.fechaAlta as sArchivoFechaAlta,
+                          a.orden as iArchivoOrden,
+                          a.titulo as sArchivoTitulo,
+                          a.tipo as sArchivoTipo,
+                          a.moderado as bArchivoModerado,
+                          a.activo as bArchivoActivo,
+                          a.publico as bArchivoPublico,
+                          a.activoComentarios as bArchivoActivoComentarios,
                           
                           p.nombre
                     FROM
@@ -63,6 +78,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                         seguimientos_personalizados sp ON sp.id = s.id
                     LEFT JOIN
                         seguimientos_scc sscc ON s.id = sscc.id
+                    LEFT JOIN
+			(SELECT * FROM archivos WHERE archivos.tipo = 'antecedentes') AS a ON a.seguimientos_id = s.id
                     JOIN
                         discapacitados d ON d.id = s.discapacitados_id
                     JOIN
@@ -130,6 +147,25 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
                 $oSeguimiento->sEstado          = $oObj->sEstado;
 
+                if(null !== $oObj->iArchivoId){
+                    $oAntecedentes = new stdClass();
+                    $oAntecedentes->iId = $oObj->iArchivoId;
+                    $oAntecedentes->sNombre = $oObj->sArchivoNombre;
+                    $oAntecedentes->sNombreServidor = $oObj->sArchivoNombreServidor;
+                    $oAntecedentes->sDescripcion = $oObj->sArchivoDescripcion;
+                    $oAntecedentes->sTipoMime = $oObj->sArchivoTipoMime;
+                    $oAntecedentes->iTamanio = $oObj->iArchivoTamanio;
+                    $oAntecedentes->sFechaAlta = $oObj->sArchivoFechaAlta;
+                    $oAntecedentes->iOrden = $oObj->iArchivoOrden;
+                    $oAntecedentes->sTitulo = $oObj->sArchivoTitulo;
+                    $oAntecedentes->sTipo = $oObj->sArchivoTipo;
+                    $oAntecedentes->bModerado = ($oObj->bArchivoModerado == '1')?true:false;
+                    $oAntecedentes->bActivo = ($oObj->bArchivoActivo == '1')?true:false;
+                    $oAntecedentes->bPublico = ($oObj->bArchivoPublico == '1')?true:false;
+                    $oAntecedentes->bActivoComentarios = ($oObj->bArchivoActivoComentarios == '1')?true:false;
+                    $oSeguimiento->oAntecedentes = Factory::getArchivoInstance($oAntecedentes);
+                }
+
                 if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
                     $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
                 }else{
@@ -187,7 +223,22 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           s.pronostico as sPronostico,
                           s.fechaCreacion as dFechaCreacion,
                           s.estado as sEstado,
-                          IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo
+                          IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo,
+
+                          a.id as iArchivoId,
+                          a.nombre as sArchivoNombre,
+                          a.nombreServidor as sArchivoNombreServidor,
+                          a.descripcion as sArchivoDescripcion,
+                          a.tipoMime as sArchivoTipoMime,
+                          a.tamanio as iArchivoTamanio,
+                          a.fechaAlta as sArchivoFechaAlta,
+                          a.orden as iArchivoOrden,
+                          a.titulo as sArchivoTitulo,
+                          a.tipo as sArchivoTipo,
+                          a.moderado as bArchivoModerado,
+                          a.activo as bArchivoActivo,
+                          a.publico as bArchivoPublico,
+                          a.activoComentarios as bArchivoActivoComentarios
                     FROM
                         seguimientos s
                     LEFT JOIN
@@ -195,10 +246,12 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     LEFT JOIN
                         seguimientos_scc sscc ON s.id = sscc.id
                     JOIN usuarios u ON u.id = s.usuarios_id
+                    LEFT JOIN
+			(SELECT * FROM archivos WHERE archivos.tipo = 'antecedentes') AS a ON a.seguimientos_id = s.id 
                     JOIN personas p ON p.id = s.discapacitados_id ";
 
             if(!empty($filtro)){
-                $sSQL .=" WHERE ".$this->crearCondicionSimple($filtro);
+                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
             }
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
@@ -227,6 +280,25 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $oSeguimiento->sPronostico = $oObj->sPronostico;
                 $oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
                 $oSeguimiento->sEstado = $oObj->sEstado;
+
+                if(null !== $oObj->iArchivoId){
+                    $oAntecedentes = new stdClass();
+                    $oAntecedentes->iId = $oObj->iArchivoId;
+                    $oAntecedentes->sNombre = $oObj->sArchivoNombre;
+                    $oAntecedentes->sNombreServidor = $oObj->sArchivoNombreServidor;
+                    $oAntecedentes->sDescripcion = $oObj->sArchivoDescripcion;
+                    $oAntecedentes->sTipoMime = $oObj->sArchivoTipoMime;
+                    $oAntecedentes->iTamanio = $oObj->iArchivoTamanio;
+                    $oAntecedentes->sFechaAlta = $oObj->sArchivoFechaAlta;
+                    $oAntecedentes->iOrden = $oObj->iArchivoOrden;
+                    $oAntecedentes->sTitulo = $oObj->sArchivoTitulo;
+                    $oAntecedentes->sTipo = $oObj->sArchivoTipo;
+                    $oAntecedentes->bModerado = ($oObj->bArchivoModerado == '1')?true:false; 
+                    $oAntecedentes->bActivo = ($oObj->bArchivoActivo == '1')?true:false;
+                    $oAntecedentes->bPublico = ($oObj->bArchivoPublico == '1')?true:false;
+                    $oAntecedentes->bActivoComentarios = ($oObj->bArchivoActivoComentarios == '1')?true:false;
+                    $oSeguimiento->oAntecedentes = Factory::getArchivoInstance($oAntecedentes);
+                }
                 
                 if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
                     $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
@@ -247,7 +319,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         try{
             $seguimientoClass = get_class($oSeguimiento);
 
-            if($oSeguimiento->getId() != null){
+            if($oSeguimiento->getId() !== null){
                 if($seguimientoClass == self::TIPO_SEGUIMIENTO_PERSONALIZADO){
                     return $this->actualizar($oSeguimiento);
                 }else{
@@ -359,6 +431,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
 			 $db->commit();
+
+                         return true;
 
 
 		}catch(Exception $e){

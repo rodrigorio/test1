@@ -958,7 +958,9 @@ $(document).ready(function(){
     
     //formulario adjuntar foto, video, archivo
     $(".agregarFotoSeguimiento").live('click',function(){
-        
+
+        var iSeguimientoId = $("#iItemIdForm").val();
+
         var dialog = $("#dialog");
         if ($("#dialog").length != 0){
             dialog.hide("slow");
@@ -967,7 +969,7 @@ $(document).ready(function(){
         dialog = $("<div id='dialog' title='Agregar Foto'></div>").appendTo('body');
                
         dialog.load(
-            "seguimientos/form-adjuntar-foto?iSeguimientoId="+$(this).attr('rel'),
+            "seguimientos/form-adjuntar-foto?iSeguimientoId="+iSeguimientoId,
             {},
             function(responseText, textStatus, XMLHttpRequest){                
                 dialog.dialog({
@@ -979,7 +981,6 @@ $(document).ready(function(){
                     closeOnEscape:true
                 });
 
-                var iSeguimientoId = $("#iItemIdForm").val();
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarFoto(iSeguimientoId);
                 }                          
@@ -991,6 +992,8 @@ $(document).ready(function(){
 
     $(".agregarVideoSeguimiento").live('click',function(){
 
+        var iSeguimientoId = $("#iItemIdForm").val();
+        
         var dialog = $("#dialog");
         if ($("#dialog").length != 0){
             dialog.hide("slow");
@@ -999,7 +1002,7 @@ $(document).ready(function(){
         dialog = $("<div id='dialog' title='Agregar Video'></div>").appendTo('body');
 
         dialog.load(
-            "seguimientos/form-adjuntar-video?iSeguimientoId="+$(this).attr('rel'),
+            "seguimientos/form-adjuntar-video?iSeguimientoId="+iSeguimientoId,
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 dialog.dialog({
@@ -1010,8 +1013,7 @@ $(document).ready(function(){
                     modal:false,
                     closeOnEscape:true
                 });
-
-                var iSeguimientoId = $("#iItemIdForm").val();
+                
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarVideo(iSeguimientoId);
                 }
@@ -1022,6 +1024,8 @@ $(document).ready(function(){
 
     $(".agregarArchivoSeguimiento").live('click',function(){
 
+        var iSeguimientoId = $("#iItemIdForm").val();
+
         var dialog = $("#dialog");
         if ($("#dialog").length != 0){
             dialog.hide("slow");
@@ -1030,7 +1034,7 @@ $(document).ready(function(){
         dialog = $("<div id='dialog' title='Agregar Archivo'></div>").appendTo('body');
 
         dialog.load(
-            "seguimientos/form-adjuntar-archivo?iSeguimientoId="+$(this).attr('rel'),
+            "seguimientos/form-adjuntar-archivo?iSeguimientoId="+iSeguimientoId,
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 dialog.dialog({
@@ -1041,8 +1045,7 @@ $(document).ready(function(){
                     modal:false,
                     closeOnEscape:true
                 });
-
-                var iSeguimientoId = $("#iItemIdForm").val();
+                
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarArchivo(iSeguimientoId);
                 }

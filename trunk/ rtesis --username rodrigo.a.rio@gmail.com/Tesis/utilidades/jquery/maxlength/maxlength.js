@@ -49,7 +49,7 @@
 					// Cut down the string
 					item.val(item.val().substr(0,settings.maxCharacters));
 					// Show the alert dialog box, if its set to true
-					showAlert();
+					//showAlert();
 				} 
 				else 
 				{
@@ -77,9 +77,9 @@
 			// Insert the status div
 			if(settings.status) 
 			{
-				var clases_div_caracteres = settings.statusClass;						
-				item.after($("<div/>").addClass(clases_div_caracteres).html('-').hide()); /* SOY RE PRO */
-				updateStatus();
+                            var clases_div_caracteres = settings.statusClass;
+                            item.after($("<div/>").addClass(clases_div_caracteres).html('-'));
+                            updateStatus();
 			}
 
 		});

@@ -25,7 +25,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
     {
         $iIdUsuario = $oUsuario->getId();
         if(null !== $oUsuario->getCurriculumVitae()->getId()){
-            return $this->actualizar($oArchivo);
+            return $this->actualizar($oUsuario->getCurriculumVitae());
         }else{
             return $this->insertarAsociado($oUsuario->getCurriculumVitae(), $iIdUsuario, get_class($oUsuario));
         }
@@ -34,7 +34,11 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
     public function guardarAntecedentesFile($oSeguimiento)
     {
         $iIdSeguimiento = $oSeguimiento->getId();
-        return $this->insertarAsociado($oSeguimiento->getArchivoAntecedentes(), $iIdSeguimiento, get_class($oSeguimiento));
+        if(null !== $oSeguimiento->getArchivoAntecedentes()->getId()){
+            return $this->actualizar($oSeguimiento->getArchivoAntecedentes());
+        }else{
+            return $this->insertarAsociado($oSeguimiento->getArchivoAntecedentes(), $iIdSeguimiento, get_class($oSeguimiento));
+        }
     }
 
     /**
@@ -175,11 +179,13 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             " activoComentarios = ".$this->escInt($activoComentarios)." ";
 
             $db->execSQL($sSQL);
+
             $iLastId = $db->insert_id();
             
             $db->commit();
 
             $oArchivo->setId($iLastId);
+            $oArchivo->setFechaAlta(date("d/m/Y"));
 
             return true;
 
@@ -261,10 +267,10 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $oArchivo->iOrden               = $oObj->iOrden;
                 $oArchivo->sTitulo              = $oObj->sTitulo;
                 $oArchivo->sTipo                = $oObj->sTipo;
-                $oArchivo->bModerado            = $oObj->bModerado;
-                $oArchivo->bActivo              = $oObj->bActivo;
-                $oArchivo->bPublico             = $oObj->bPublico;
-                $oArchivo->bActivoComentarios   = $oObj->bActivoComentarios;
+                $oArchivo->bModerado            = ($oObj->bModerado == '1')?true:false; 
+                $oArchivo->bActivo              = ($oObj->bActivo == '1')?true:false; 
+                $oArchivo->bPublico             = ($oObj->bPublico == '1')?true:false; 
+                $oArchivo->bActivoComentarios   = ($oObj->bActivoComentarios == '1')?true:false;
 
                 $aArchivos[] = Factory::getArchivoInstance($oArchivo);
             }

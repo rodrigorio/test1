@@ -71,8 +71,8 @@ select{padding:5px 2px}
 input, textarea{color:#333}
 input[type="text"], input[type="password"], select{-moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
 textarea{outline:0px; vertical-align:bottom}
-.textareaAutoGrow{resize:none; overflow:hidden}
-.textAreaExpanded{height:300px !important}
+textarea{height:250px !important}
+.textareaAutoGrow{resize:none; overflow:hidden; height:16px !important}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
 input.small, select.small, textarea.small{width:150px;}

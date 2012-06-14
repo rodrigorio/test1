@@ -394,15 +394,15 @@ class SeguimientosController
         }    
     }
     
- 	public function guardarAntecedentesFile($seguimiento, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor) {
+    public function guardarAntecedentesFile($seguimiento, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor) {
     	try{           
             //creo el objeto archivo y lo guardo.
-            $oArchivo 			= new stdClass();
+            $oArchivo = new stdClass();
             $oArchivo->sNombre 	= $nombreArchivo;
             $oArchivo->sNombreServidor = $nombreServidorArchivo;
             $oArchivo->sTipoMime= $tipoMimeArchivo;
             $oArchivo->iTamanio = $tamanioArchivo;
-            $antecedentes 		= Factory::getArchivoInstance($oArchivo);
+            $antecedentes = Factory::getArchivoInstance($oArchivo);
 
             $antecedentes->setTipoAntecedentes();
             $antecedentes->isModerado(false);
@@ -420,7 +420,8 @@ class SeguimientosController
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             return $oArchivoIntermediary->guardarAntecedentesFile($seguimiento);
             
-        }catch(Exception $e){            
+        }catch(Exception $e){
+
             $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
             if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                 unlink($pathServidorArchivo);
@@ -431,24 +432,17 @@ class SeguimientosController
         }
     }
     
-    public function borrarAntecedentesFile($seguimiento, $pathServidor){
+    public function borrarAntecedentesFile($seguimiento, $pathServidor)
+    {
     	try{
-    		if(null === $seguimiento->getArchivoAntecedentes()){
-    			throw new Exception("El usuario no posee foto de perfil");
-    		}
-    		foreach($seguimiento->getArchivoAntecedentes() as $arch){
-    			$oArchivo = $arch;
-    		}
-    		$pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
-
-            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
-            $oArchivoIntermediary->borrar($oArchivo);
-
-            if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
-                unlink($pathServidorArchivo);
+            if(null === $seguimiento->getArchivoAntecedentes()){
+                throw new Exception("El seguimiento no posee archivo de antecedentes");
             }
 
+            IndexController::getInstance()->borrarArchivo($seguimiento->getArchivoAntecedentes(), $pathServidor);
+
             $seguimiento->setArchivoAntecedentes(null);
+
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

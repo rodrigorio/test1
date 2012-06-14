@@ -253,7 +253,7 @@ function paginar(iPage ,toUrl, div, params){
                                 }));
                         }
                 });
-            }  ,
+            } ,
         minLength: 8
     });
  }
@@ -275,14 +275,19 @@ $(document).ready(function(){
     $("input.defVal").live("blur", function(){valueToggleBlur($(this),false);});
 
     $("textarea.maxlength").maxlength();
+    
     $("textarea.defVal").live("focus", function(){
         var elemento = $(this);
         valueToggleFocus(elemento);
         elemento.next().show(); /*contar caracteres*/
     });
     $("textarea.defVal").live("blur", function(){valueToggleBlur($(this),true);});
-    $("textarea.textareaAutoGrow").live("focus", function(){$(this).addClass("textAreaExpanded")});
-    $("textarea.textareaAutoGrow").live("blur", function(){$(this).removeClass("textAreaExpanded")});
+    $("textarea.textareaAutoGrow").live("focus", function(){
+        $(this).addClass("textAreaExpanded").removeClass("textareaAutoGrow");
+    });
+    $("textarea.textAreaExpanded").live("blur", function(){
+        $(this).addClass("textareaAutoGrow").removeClass("textAreaExpanded");
+    });
 
     //Slides
     $(".slideExpanded").live("click", function(){

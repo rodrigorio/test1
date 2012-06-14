@@ -505,8 +505,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
     
-
     public function editarAntecedentes(){
+
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+    	if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+    	}
+        
         try{
             $aCurrentOptions[] = "currentOptionAgregarEntradaSeguimiento";
             $aCurrentOptions[] = "currentSubOptionEditarAntecedentesSeguimiento";
@@ -522,34 +527,36 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
-
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
           
             //form para ingresar uno nuevo
+            $this->getUploadHelper()->setTiposValidosDocumentos();
             $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
             $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
             $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
             
-            $iIdSeguimiento = $this->getRequest()->getParam('iSeguimientoId');
-            $this->getTemplate()->set_var("iSeguimientoId", $iIdSeguimiento);
+            $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
 
-            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
             
-            if($oSeguimiento){
-                $this->getTemplate()->set_var("idSeguimiento", $iIdSeguimiento);
-                $this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
-                foreach($oSeguimiento->getArchivoAntecedentes() as $archivo){
-                    $sNombreArchivo = $archivo->getNombreServidor();
-                    $link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$sNombreArchivo;
-                    //$this->getTemplate()->set_var("sFileAntecedentes", "<a href='".$link."'>".$sNombreArchivo."</a>");
+            $this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
 
-                    $this->getTemplate()->set_var("sNombreArchivo", $archivo->getNombre());
-                    $this->getTemplate()->set_var("sExtensionArchivo", $archivo->getTipoMime());
-                    $this->getTemplate()->set_var("sTamanioArchivo", $archivo->getTamanio());
-                    $this->getTemplate()->set_var("sFechaArchivo", $archivo->getFechaAlta());
-                    $this->getTemplate()->set_var("hrefDescargarAntActual", $link);
-                }
+            //si ya tiene un archivo de antecedentes que aparezca.
+            if(null !== $oSeguimiento->getArchivoAntecedentes()){
+                $oAntecedentes = $oSeguimiento->getArchivoAntecedentes();
+
+                $this->getTemplate()->set_var("sNombreArchivo", $oAntecedentes->getNombre());
+                $this->getTemplate()->set_var("sExtensionArchivo", $oAntecedentes->getTipoMime());
+                $this->getTemplate()->set_var("sTamanioArchivo", $oAntecedentes->getTamanio());
+                $this->getTemplate()->set_var("sFechaArchivo", $oAntecedentes->getFechaAlta());
+
+                $this->getTemplate()->set_var("hrefDescargarAntActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oAntecedentes->getNombreServidor());
+
+                $this->getTemplate()->parse("ArchivoAntecedentesActualBlock");
+            }else{
+                $this->getTemplate()->unset_blocks("ArchivoAntecedentesActualBlock");
             }
+            
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);
@@ -565,63 +572,70 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
                 
-    	if($this->getRequest()->has('textoAntecedentes')){
-            $this->procesarTextoAntecedentes();
+    	if($this->getRequest()->has('formAntecedentes')){
+            $this->guardarFormAntecedentes();
             return;
         }
     }
     
-    private function fileAntecedentesUpload(){
-        try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
+    private function fileAntecedentesUpload()
+    {
+        try{            
             $this->getJsonHelper()->initJsonAjaxResponse();
             
-            $perfil 			= SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $idItem 			= $perfil->getUsuario()->getId();
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $idItem = $perfil->getUsuario()->getId();
             
-            $iIdSeguimiento 	= $this->getRequest()->getPost('seguimientoId');
-            $nombreInputFile 	= 'fileAntecedentes'; //el nombre del input file (se setea por javascript con el ajax uploader)
-			$oSeguimiento		= SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+            $iIdSeguimiento = $this->getRequest()->getPost('iSeguimientoId');
+            $nombreInputFile = 'archivoAntecedentes';
+
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+            
+            if($oSeguimiento->getUsuarioId() != $idItem){
+                throw new Exception("No tiene permiso para editar este seguimiento", 401);
+            }
 			
-			$this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getUploadHelper()->setTiposValidosDocumentos();
             
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+
             	$pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+
             	list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, "antecedentes", $nombreInputFile);
-				$res = SeguimientosController::getInstance()->guardarAntecedentesFile($oSeguimiento,$nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
-				$oArchivo = $oSeguimiento->getArchivoAntecedentes();
-				
-				$this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "antecedentesActual", "AntecedentesActualBlock");
-				$link =   $this->getUploadHelper()->getDirectorioUploadArchivos().$oArchivo->getNombreServidor();
-				$this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
-				$this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
-				$this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
-				$this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
-				$this->getTemplate()->set_var("hrefDescargarAntActual", $link);
-				$respuesta = "1; ";
+                $resultado = SeguimientosController::getInstance()->guardarAntecedentesFile($oSeguimiento, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor);
+                $oArchivo = $oSeguimiento->getArchivoAntecedentes();
+
+                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "ajaxAntecedentesActual", "ArchivoAntecedentesActualBlock");
+                $link = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+
+                $this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
+                $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
+                $this->getTemplate()->set_var("hrefDescargarAntActual", $link);
+                $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxAntecedentesActual', false);
             }
-			$respuesta .= $this->getTemplate()->pparse('antecedentesActual', false);
-			$this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
 			
         }catch(Exception $e){
-            $respuesta = "0; Error al guardar en base de datos";
+            $respuesta = "0;; Error al guardar en base de datos";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }
     }
     
-    private function procesarTextoAntecedentes()
+    private function guardarFormAntecedentes()
     {
-        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        $iSeguimientoId = $this->getRequest()->getParam('idSeguimiento');
         
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
-
+        
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
 
-            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
         
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
@@ -844,7 +858,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         
         try{
             $aCurrentOptions[] = "currentOptionVerAdjuntosSeguimiento";
-            $aCurrentOptions[] = "currentSubOptionVerAdjuntosSeguimiento";
             
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
