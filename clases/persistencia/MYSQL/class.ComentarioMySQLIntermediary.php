@@ -174,6 +174,6 @@ class ComentarioMySQLIntermediary extends ComentarioIntermediary
 	
 	
     public function actualizarCampoArray($objects, $cambios){}
-    
+    public function insertar($oComentario){}
     public function existe($filtro){}
 }
