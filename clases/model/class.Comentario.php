@@ -5,7 +5,7 @@ class Comentario
     private $iId;
     private $dFecha;
     private $sDescripcion;
-    private $fValoracion;
+    private $fValoracion = 0;
     private $iUsuarioId;
     private $oUsuario;    
 
@@ -44,10 +44,6 @@ class Comentario
     {
         $this->fValoracion = $fValoracion;
     }
-    public function setNombreApellido($sNombreApellido)
-    {
-        $this->sNombreApellido = $sNombreApellido;
-    }
     
     //GETS
     public function getId()
@@ -65,10 +61,6 @@ class Comentario
     public function getValoracion()
     {
         return $this->fValoracion;
-    }
-    public function getNombreApellido()
-    {
-        return $this->sNombreApellido;
     }
 
     public function getUsuario(){

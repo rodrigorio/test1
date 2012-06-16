@@ -403,6 +403,76 @@ var optionsAjaxFormReview = {
     }
 };
 
+function bindEventsComentarForm(iPublicacionId, sTipoItemForm){
+    
+    var validateFormComentar = {
+        errorElement: "div",
+        validClass: "correcto",
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        focusInvalid: false,
+        focusCleanup: true,
+        errorPlacement:function(error, element){
+            error.appendTo(".msg_"+element.attr("id"));
+        },
+        highlight: function(element){},
+        unhighlight: function(element){},
+        rules:{
+            comentario:{ignorarDefault:true, required:true}
+        },
+        messages:{
+            comentario:mensajeValidacion("requerido")
+        }
+    };
+
+    var optionsAjaxFormComentar = {
+        dataType: 'jsonp',
+        resetForm: true,
+        url: 'comunidad/publicaciones/procesar?comentar=1',
+        data:{
+            iPublicacionId:iPublicacionId,
+            objType:sTipoItemForm
+        },
+        beforeSerialize:function(){
+            if($("#formComentar").valid() == true){
+                $('#msg_form_comentar').hide();
+                $('#msg_form_comentar').removeClass("correcto").removeClass("error");
+                $('#msg_form_comentar .msg').html("");
+                setWaitingStatus('formComentar', true);
+            }else{
+                return false;
+            }
+        },
+
+        success:function(data){
+            setWaitingStatus('formComentar', false);
+
+            if(data.success == undefined || data.success == 0){
+                if(data.mensaje == undefined){
+                    $('#msg_form_comentar .msg').html(lang['error procesar']);
+                }else{
+                    $('#msg_form_comentar .msg').html(data.mensaje);
+                }
+                $('#msg_form_comentar').addClass("error").fadeIn('slow');
+            }else{
+                if(data.mensaje == undefined){
+                    $('#msg_form_comentar .msg').html(lang['exito procesar']);
+                }else{
+                    $('#msg_form_comentar .msg').html(data.mensaje);
+                }
+                $('#msg_form_comentar').addClass("correcto").fadeIn('slow');
+
+                $("#comentario").val("");
+                $("#comentarios").append(data.html);
+            }
+        }
+    };
+    
+    $("#formComentar").validate(validateFormComentar);
+    $("#formComentar").ajaxForm(optionsAjaxFormComentar);
+}
+
 function bindEventsPublicacionForm(){
     $("#formPublicacion").validate(validateFormPublicacion);
     $("#formPublicacion").ajaxForm(optionsAjaxFormPublicacion);
@@ -463,7 +533,7 @@ function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
         beforeSend: function(){
             setWaitingStatus('listadoMisPublicaciones', true);
         },
-        success:function(data){
+        success: function(data){
             setWaitingStatus('listadoMisPublicaciones', false);
         }
     });
@@ -1006,4 +1076,9 @@ $(document).ready(function(){
         var iArchivoId = $(this).attr("rel");
         editarArchivo(iArchivoId);
     });
+
+    //publicacion ampliada.
+    if($("#formComentar").length){
+        bindEventsComentarForm(iPublicacionId, sTipoItemForm);
+    }
 });

@@ -835,6 +835,17 @@ class ComunidadController
         }
     }
 
+    public function guardarComentariosFicha($oFicha)
+    {
+    	try{
+            $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
+            return $oComentariosIntermediary->guardarComentariosFicha($oFicha);
+        }catch(Exception $e){
+            $oFicha->setComentarios(null);
+            throw new Exception($e->getMessage());
+        }        
+    }
+
     /**
      *  no hace falta distinguir tipo review/publicacion
      *  porque se borra desde ficha abstracta en cascada

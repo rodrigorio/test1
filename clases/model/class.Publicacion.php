@@ -1,6 +1,6 @@
 <?php
 
-class Publicacion extends FichaAbstract
+class Publicacion extends FichaAbstract implements PublicacionesInterface
 {
     private $iUsuarioId;
     private $oUsuario;

@@ -1,43 +1,48 @@
 <!--BeginComentariosBlock-->
-<div class="pabo bobo1 mabo2">
-    <span class="fte3 mari2">Comentarios</span>
-</div>
+<div id="comentarios">
+    <div class="pabo bobo1 mabo2">
+        <span class="fte3 mari2">Comentarios</span>
+    </div>
 
     <!--BeginComentarioBlock-->
-    <div class="ficha03 pa0 mabo2 grupo">
-        <div class="header mabo2 grupo">
-            <div class="th_fto_s">
+    <div class="pa2 mabo2 baco4 grupo">
+        <div class="mabo2 bobo2 pabo2">
+            <div class="th_fto_s thumb03 mari2">
                 <i style="background-image:url('{scrAvatarAutor}')"></i>
             </div>
             <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
         </div>
-        <p>{sComentario}</p>
+        <p class="mabo0">{sComentario}</p>
     </div>
     <!--EndComentarioBlock-->
-<!--EndComentariosBlock-->
 
-<!--BeginComentarioValoracionBlock-->
-<div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">                            
-    <div class="header mabo2 grupo">                    
-        <!--BeginValoracion0Block--><span class="fl_le mari valoracion val0"></span><!--EndValoracion0Block-->
-        <!--BeginValoracion0_2Block--><span class="fl_le mari valoracion val0_2"></span><!--EndValoracion0_2Block-->    
-        <!--BeginValoracion1Block--><span class="fl_le mari valoracion val1"></span><!--EndValoracion1Block-->    
-        <!--BeginValoracion1_2Block--><span class="fl_le mari valoracion val1_2"></span><!--EndValoracion1_2Block-->    
-        <!--BeginValoracion2Block--><span class="fl_le mari valoracion val2"></span><!--EndValoracion2Block-->    
-        <!--BeginValoracion2_2Block--><span class="fl_le mari valoracion val2_2"></span><!--EndValoracion2_2Block-->    
-        <!--BeginValoracion3Block--><span class="fl_le mari valoracion val3"></span><!--EndValoracion3Block-->    
-        <!--BeginValoracion3_2Block--><span class="fl_le mari valoracion val3_2"></span><!--EndValoracion3_2Block-->    
-        <!--BeginValoracion4Block--><span class="fl_le mari valoracion val4"></span><!--EndValoracion4Block-->    
-        <!--BeginValoracion4_2Block--><span class="fl_le mari valoracion val4_2"></span><!--EndValoracion4_2Block-->    
-        <!--BeginValoracion5Block--><span class="fl_le mari valoracion val5"></span><!--EndValoracion5Block-->                 
-        <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
-    </div>                    
-    <p>{sComentario}</p>
-</div> 
-<!--EndComentarioValoracionBlock-->
+    <!--BeginComentarioValoracionBlock-->
+    <div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">
+        <div class="header mabo2 grupo">
+            <!--BeginValoracion0Block--><span class="fl_le mari valoracion val0"></span><!--EndValoracion0Block-->
+            <!--BeginValoracion0_2Block--><span class="fl_le mari valoracion val0_2"></span><!--EndValoracion0_2Block-->
+            <!--BeginValoracion1Block--><span class="fl_le mari valoracion val1"></span><!--EndValoracion1Block-->
+            <!--BeginValoracion1_2Block--><span class="fl_le mari valoracion val1_2"></span><!--EndValoracion1_2Block-->
+            <!--BeginValoracion2Block--><span class="fl_le mari valoracion val2"></span><!--EndValoracion2Block-->
+            <!--BeginValoracion2_2Block--><span class="fl_le mari valoracion val2_2"></span><!--EndValoracion2_2Block-->
+            <!--BeginValoracion3Block--><span class="fl_le mari valoracion val3"></span><!--EndValoracion3Block-->
+            <!--BeginValoracion3_2Block--><span class="fl_le mari valoracion val3_2"></span><!--EndValoracion3_2Block-->
+            <!--BeginValoracion4Block--><span class="fl_le mari valoracion val4"></span><!--EndValoracion4Block-->
+            <!--BeginValoracion4_2Block--><span class="fl_le mari valoracion val4_2"></span><!--EndValoracion4_2Block-->
+            <!--BeginValoracion5Block--><span class="fl_le mari valoracion val5"></span><!--EndValoracion5Block-->
+            <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
+        </div>
+        <p>{sComentario}</p>
+    </div>
+    <!--EndComentarioValoracionBlock-->
+</div>
+<!--EndComentariosBlock-->
 
 <!--BeginNuevoComentarioBlock-->
 <div id="nuevoComentario" class="ficha02 mabo3 cl_bo grupo">
+
+    <input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
+    <input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
 
     <!--BeginPuntuarBlock-->
     <div class="puntuar mabo2 grupo">
