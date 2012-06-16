@@ -212,7 +212,8 @@ class AdminController
         try{
             $filtro = array('a.id' => $iAccionId);
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
-            $aAcciones = $oPermisosIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            $aAcciones = $oPermisosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
             if(null !== $aAcciones){
                 return $aAcciones[0];
             }else{

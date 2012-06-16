@@ -13,6 +13,7 @@
  */
 class Response
 {
+    
     /**
      * Body content
      * @var array
@@ -265,13 +266,16 @@ class Response
             throw new Exception('Invalid HTTP response code');
         }
 
-        if ((300 <= $code) && (307 >= $code)) {
+        if ((300 <= $code) && (307 >= $code)){
             $this->_isRedirect = true;
         } else {
             $this->_isRedirect = false;
         }
 
         $this->_httpResponseCode = $code;
+
+        FrontController::getInstance()->getPlugin("PluginRedireccionAccionDesactivada")->setServerStatusCode($code);
+
         return $this;
     }
 
@@ -310,7 +314,7 @@ class Response
      * @return Response
      */
     public function sendHeaders()
-    {
+    {                
         // Only check if we can send headers if we have headers to send
         if (count($this->_headersRaw) || count($this->_headers) || (200 != $this->_httpResponseCode)) {
             $this->canSendHeaders(true);
@@ -318,7 +322,7 @@ class Response
             // Haven't changed the response code, and we have no headers
             return $this;
         }
-
+       
         $httpCodeSent = false;
 
         foreach ($this->_headersRaw as $header) {
@@ -330,7 +334,7 @@ class Response
             }
         }
 
-        foreach ($this->_headers as $header) {
+        foreach ($this->_headers as $header){
             if (!$httpCodeSent && $this->_httpResponseCode) {
                 header($header['name'] . ': ' . $header['value'], $header['replace'], $this->_httpResponseCode);
                 $httpCodeSent = true;
@@ -338,12 +342,12 @@ class Response
                 header($header['name'] . ': ' . $header['value'], $header['replace']);
             }
         }
-
+        
         if (!$httpCodeSent) {
             header('HTTP/1.1 ' . $this->_httpResponseCode);
             $httpCodeSent = true;
         }
-
+                
         return $this;
     }
 

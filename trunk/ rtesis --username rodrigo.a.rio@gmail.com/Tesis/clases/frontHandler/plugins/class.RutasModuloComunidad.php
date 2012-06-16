@@ -290,6 +290,33 @@ class RutasModuloComunidad
                                     'action'     => "formVideo"
                                 ));
         $router->addRoute('comunidadPublicacionesFormVideo', $route);
-        //FALTA EL VER PUBLICACION AMPLIADA QUE ES URL AMIGABLE. HAY QUE ARMAR EL REGEX
+        
+        //publicacion ampliada comunidad.
+        //http://domain.com/comunidad/publicaciones/32-Nombre de la publicacion
+        //ó http://domain.com/comunidad/reviews/32-Nombre del review
+        $route = new RegexRoute('comunidad/publicaciones/(\d+)-(.+)',
+                                array(
+                                    'module' => 'comunidad',
+                                    'controller' => 'publicaciones',
+                                    'action'     => 'verPublicacion'
+                                ),
+                                array(
+                                    1 => 'iPublicacionId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                'comunidad/publicaciones/%d-%s');
+        $router->addRoute('comunidadPublicacionesVerPublicacion', $route);
+        $route = new RegexRoute('comunidad/reviews/(\d+)-(.+)',
+                                array(
+                                    'module' => 'comunidad',
+                                    'controller' => 'publicaciones',
+                                    'action'     => 'verReview'
+                                ),
+                                array(
+                                    1 => 'iReviewId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                'comunidad/reviews/%d-%s');
+        $router->addRoute('comunidadPublicacionesVerReview', $route);
     }
 }

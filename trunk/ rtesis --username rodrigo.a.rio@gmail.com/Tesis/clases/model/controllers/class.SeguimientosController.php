@@ -85,7 +85,8 @@ class SeguimientosController
         try{
             $filtro = array('s.id' => $iSeguimientoId);
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            $aSeguimiento = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            $aSeguimiento = $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
             if(null !== $aSeguimiento){
                 return $aSeguimiento[0];
             }else{
@@ -290,7 +291,8 @@ class SeguimientosController
         try{
             $filtro = array('p.id' => $iPracticaId);
             $oPracticaIntermediary = PersistenceFactory::getPracticaIntermediary($this->db);
-            $aPractica = $oPracticaIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            $aPractica = $oPracticaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
             if(null !== $aPractica){
                 return $aPractica[0];
             }else{
@@ -319,7 +321,8 @@ class SeguimientosController
         try{
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             $filtro = array('f.seguimientos_id' => $iSeguimientoId);
-            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -334,7 +337,8 @@ class SeguimientosController
         try{
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             $filtro = array('a.seguimientos_id' => $iSeguimientoId);
-            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -349,7 +353,8 @@ class SeguimientosController
         try{
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             $filtro = array('a.seguimientos_id' => $iSeguimientoId, 'a.tipo'=>"antecedentes");
-            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -486,7 +491,8 @@ class SeguimientosController
         try{
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             $filtro = array('v.seguimientos_id' => $iSeguimientoId);
-            return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;

@@ -566,7 +566,8 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             //ahora extraigo los datos que ya estan en el filtro del form del listado
             $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
             $this->initOrderBy($sOrderBy = null, $sOrder = null, $this->orderByConfig);
-            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal = 0, $sOrderBy, $sOrder, $iMinLimit = null, $iItemsForPage = null);
+            $iRecordsTotal = 0;
+            $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit = null, $iItemsForPage = null);
 
             //agrego las filas con las que se va a crear el archivo.
             if(count($aUsuarios) > 0){

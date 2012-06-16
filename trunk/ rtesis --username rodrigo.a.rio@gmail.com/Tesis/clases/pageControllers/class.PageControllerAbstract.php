@@ -19,9 +19,9 @@ class PageControllerAbstract implements PageControllerInterface
      */
     private $template = null;
     /**
-     * Instancia de UrlHelper
+     * Instancia de InflectorHelper
      */
-    private $url = null;
+    private $inflector = null;
     /**
      * Instancia de JsonHelper
      */
@@ -87,13 +87,13 @@ class PageControllerAbstract implements PageControllerInterface
         return $this;
     }
 
-    protected final function getUrlHelper()
+    protected final function getInflectorHelper()
     {
-        if(null === $this->url)
+        if(null === $this->inflector)
         {
-            $this->url = new UrlHelper();
+            $this->inflector = new InflectorHelper();
         }
-        return $this->url;
+        return $this->inflector;
     }
 
     protected final function getJsonHelper()
@@ -214,6 +214,8 @@ class PageControllerAbstract implements PageControllerInterface
      */
     protected final function printMsgTop($iconos = true)
     {
+        $bHayMensaje = false;
+        
         if (null !== $this->template)
         {
             switch(true){
@@ -221,24 +223,30 @@ class PageControllerAbstract implements PageControllerInterface
                 {
                     $msg = $this->request->getParam('msgInfo');
                     $bloque = ($iconos)?'MsgTopInfoBlockI32':'MsgTopInfoBlock';
+                    $bHayMensaje = true;
                     break;
                 }
                 case $this->request->has('msgError'):
                 {
                     $msg = $this->request->getParam('msgError');
                     $bloque = ($iconos)?'MsgTopErrorBlockI32':'MsgTopErrorBlock';
+                    $bHayMensaje = true;
                     break;                    
                 }
                 case $this->request->has('msgCorrecto'):
                 {
                     $msg = $this->request->getParam('msgCorrecto');
                     $bloque = ($iconos)?'MsgTopCorrectoBlockI32':'MsgTopCorrectoBlock';
+                    $bHayMensaje = true;
                     break;
                 }
                 default: return;
             }
-            $this->template->load_file_section("gui/componentes/carteles.gui.html", "msgTop", $bloque);
-            $this->template->set_var("sMensajeTop", $msg);
+
+            if($bHayMensaje){
+                $this->template->load_file_section("gui/componentes/carteles.gui.html", "msgTop", $bloque);
+                $this->template->set_var("sMensajeTop", $msg);
+            }
         }
     }
 
@@ -247,10 +255,9 @@ class PageControllerAbstract implements PageControllerInterface
      * Sin embargo el metodo puede ser modificado por algun controlador concreto en caso de que se quiera funcionalidad extra.
      * Por ejemplo, puedo redeclarar el metodo en PublicacionesControllerIndex para mostrar un listado de las ultimas publicaciones.
      *
-     * @TODO programar la vista, por ahora para probar simplemente imprime que la pagina no existe.
      */
-    public function redireccion404()
-    {
+    protected function redireccion404()
+    {        
         //establesco titulo y mensaje de la ficha de mensaje
         switch(true){
             case $this->request->has('msgInfo'):

@@ -30,10 +30,11 @@ class PluginPermisos extends PluginAbstract
                                ->setActionName('index')
                                ->setParam('msgInfo', $mensajeSolicitaLogin)
                                ->setParam('codigoError', '401');
-        }else{
+        }else{            
             //si ya se hizo login y no tiene permiso redirecciono. (a que lugar depende el perfil, se determina por parametro).
             //con esto tengo la flexibilidad de enviar a completar datos de perfil a un usuario inactivo, etc.
             list($modulo, $controlador, $accion) = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUrlRedireccion();
+                                   
             $this->getRequest()->setModuleName($modulo)
                                ->setControllerName($controlador)
                                ->setActionName($accion)
@@ -80,11 +81,21 @@ class PluginPermisos extends PluginAbstract
     public function postDispatch(HttpRequest $request)
     {
         if($this->getResponse()->hasExceptionOfCode(401))
-        {
+        {            
             $this->setRequest($request);
+
+            if($request->isXmlHttpRequest())
+            {
+                $request->setModuleName('index')
+                        ->setControllerName('index')
+                        ->setActionName('ajaxError')
+                        ->setParam('msgInfo', $this->getResponse()->getMessagesByCode(401))
+                        ->setParam('codigoError', '401');
+                return;
+            }
             
             //El mensaje se captura desde la excepcion arrojada por la accion del pageController
-            $this->redireccionarRuta($response->getMessagesByCode(401));
+            $this->redireccionarRuta($this->getResponse()->getMessagesByCode(401));
 
             //seteo como no despachada el request para que muestre la nueva vista
             $request->setDispatched(false);

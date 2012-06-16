@@ -36,8 +36,15 @@ class Administrador extends PerfilAbstract
      */
     public function getUrlRedireccion($pathInfo = false)
     {
-        $keyPermiso = FrontController::getInstance()->getRequest()->getKeyPermiso();
-        throw new Exception("ERROR, el administrador no debe tener acciones deshabilitadas. Accion: ".$keyPermiso." no aparece entre los permisos del perfil.");
+        $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+        if(!$pathInfo){
+            $modulo = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCION_MODULO');
+            $controlador = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCION_CONTROLADOR');
+            $accion = $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCION_ACCION');
+            return array($modulo, $controlador, $accion);
+        }else{
+            return $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCION_PATH');
+        }        
     }
 
     /**

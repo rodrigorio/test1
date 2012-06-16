@@ -34,7 +34,7 @@ class IndexControllerIndex extends PageControllerAbstract
     /**
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      */
-    static function setCabecera(Templates &$template)
+    static function setCabecera(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
         
@@ -51,7 +51,7 @@ class IndexControllerIndex extends PageControllerAbstract
     /**
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      */
-    static function setFooter(Templates &$template)
+    static function setFooter(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
         

@@ -33,7 +33,7 @@ class IndexControllerAdmin extends PageControllerAbstract
     /*
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      */
-    static function setCabecera(Templates &$template)
+    static function setCabecera(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
         
@@ -62,7 +62,7 @@ class IndexControllerAdmin extends PageControllerAbstract
     /*
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      */
-    static function setMenu(Templates &$template, $currentOption = '')
+    static function setMenu(Templates $template, $currentOption = '')
     {
         $request = FrontController::getInstance()->getRequest();
 

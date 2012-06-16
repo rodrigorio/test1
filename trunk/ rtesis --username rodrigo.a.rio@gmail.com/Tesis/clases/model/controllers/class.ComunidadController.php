@@ -264,7 +264,7 @@ class ComunidadController
         }
     }
 
-    public function buscarUsuarios($filtro,$iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function buscarUsuarios($filtro, $iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
@@ -574,7 +574,8 @@ class ComunidadController
         try{
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             $filtro = array('f.fichas_abstractas_id' => $iFichaId);
-            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -612,7 +613,8 @@ class ComunidadController
         try{
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             $filtro = array('v.fichas_abstractas_id' => $iFichaId);
-            return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -642,7 +644,8 @@ class ComunidadController
         try{
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             $filtro = array('a.fichas_abstractas_id' => $iFichaId);
-            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -672,7 +675,8 @@ class ComunidadController
         try{
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             $filtro = array('a.categoria_id' => $iCategoriaId);
-            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;

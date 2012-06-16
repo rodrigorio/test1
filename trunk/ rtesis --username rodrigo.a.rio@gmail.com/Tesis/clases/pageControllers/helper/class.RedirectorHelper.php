@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * para referencia http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+ *
  * Esta clase establece metodos para redireccionar desde las acciones de los pageControllers.
  *
  * NOTA: Se puede redireccionar por suspencion de sistema/modulo, porque hay un error 404,
@@ -203,6 +205,7 @@ class RedirectorHelper extends HelperAbstract
             }
             $url = $uri . '/' . ltrim($url, '/');
         }
+        
         $this->redirectUrl = $url;
         $this->getResponse()->setRedirect($url, $this->getCode());
     }
@@ -300,7 +303,7 @@ class RedirectorHelper extends HelperAbstract
     {
         $this->setGotoUrl($url, $options);
 
-        if ($this->getExit()) {
+        if($this->getExit()) {
             $this->redirectAndExit();
         }
     }
@@ -324,7 +327,7 @@ class RedirectorHelper extends HelperAbstract
      * @return void
      */
     public function redirectAndExit()
-    {
+    {        
         if ($this->getCloseSessionOnExit()) {
             // Close session, if started
             if (class_exists('Session') && Session::isStarted()) {
@@ -333,7 +336,7 @@ class RedirectorHelper extends HelperAbstract
                 session_write_close();
             }
         }
-
+        
         $this->getResponse()->sendHeaders();
         exit();
     }
