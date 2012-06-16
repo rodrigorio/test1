@@ -113,9 +113,21 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                 $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
-                $this->getTemplate()->set_var("hrefAmpliarPublicacion", "");
+                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
                 $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
+
+                /*
+                 * la url de publicacion ampliada es diferente segun el tipo
+                 *
+                 * http://domain.com/comunidad/publicaciones/32-Nombre de la publicacion
+                 * http://domain.com/comunidad/reviews/32-Nombre del review
+                 */
+                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
+                if(get_class($oFicha) == 'Publicacion'){
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                }else{
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                }
 
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
@@ -910,6 +922,153 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    /**
+     * Este metodo tiene un par de cuestiones.
+     *
+     * VALIDACION 1.
+     * Si el id de publicacion no existe -> la url existe (porque entro al metodo) pero esta incompleta.
+     *
+     * VALIDACION 2.
+     * Si el id existe pero cuando se hace el getById devuelve null quiere decir que la publicacion se elimino,
+     * entonces se redirecciona al listado de publicaciones con header 404
+     *
+     * VALIDACION 3.
+     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada'
+     * se redirecciona al listado de publicaciones con header de redireccion temporal.
+     *
+     * VALIDACION 4.
+     * Si el id existe, se obtiene la publicacion y cuando se compara el titulo en formato url con el parametro del titulo
+     * en formato url devuelve que son distintos entonces quiere decir que el link de la url amigable cambio.
+     * Por lo que se tiene que hacer una redireccion y recargar la pagina con el link nuevo.
+     *
+     * por ejemplo si el titulo de una publicacion era "novedades de enero" y el ID era 20
+     * el link es www.dominio.com/comunidad/publicaciones/20-novedades-de-enero
+     * si luego el titulo cambia a "novedades para este verano" el link que empieza a circular es
+     * www.dominio.com/comunidad/publicaciones/20-novedades-para-este-verano.
+     * Si alguien guardo el link viejo se compara en este metodo y se redirecciona a la url nueva
+     * con el header de redireccion.
+     *
+     */
+    public function verPublicacion()
+    {
+        try{
+            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
+
+            //validacion 1.
+            if(empty($iPublicacionId))
+            {
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            //validacion 2.
+            $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+            if(null === $oPublicacion)
+            {
+                $this->redireccion404();
+            }
+
+            //validacion 3.
+            if(!$oPublicacion->isActivo()){
+                $this->getRedirectorHelper()->setCode(307);
+                $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
+                $this->getRedirectorHelper()->gotoUrl($url);
+            }
+
+            $this->setFrameTemplate()
+                 ->setHeadTag()
+                 ->setMenuDerecha();
+
+            IndexControllerComunidad::setCabecera($this->getTemplate());
+            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+            $this->printMsgTop();
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
+
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoPublicacionesBlock");
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }            
+    }
+
+    public function verReview()
+    {
+
+    }
+
+    /**
+     * Agrega la funcionalidad de mostrar las ultimas publicaciones en la comunidad
+     */
+    public function redireccion404()
+    {
+        try{
+            
+            $tituloMensajeError = "No se ha encontrado la publicación solicitada.";
+            $ficha = "MsgFichaInfoBlock";
+
+            $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
+
+            $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+            $this->getTemplate()->set_var("sTituloVista", "La publicacion no existe");
+            $this->getTemplate()->set_var("sMetaDescription", "");
+            $this->getTemplate()->set_var("sMetaKeywords", "");
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/redireccion404.gui.html", "centerPageContent", "TituloBlock");
+
+            $mensajeInfoError = "Puedes que hayas ingresado un enlace caducado o que hayas escrito mal la dirección.
+                                 En algunas direcciones web se distingue entre mayúsculas y minúsculas.";
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "centerPageContent", $ficha, true);
+            $this->getTemplate()->set_var("sTituloMsgFicha", $tituloMensajeError);
+            $this->getTemplate()->set_var("sMsgFicha", $mensajeInfoError);
+
+            //Link a Inicio y pagina anterior
+            $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "itemExtraMsgFicha", "MenuVertical02Block");
+            $this->getTemplate()->set_var("idOpcion", 'opt1');
+            $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
+            $this->getTemplate()->set_var("sNombreOpcion", "Volver a inicio");
+            $this->getTemplate()->parse("OpcionesMenu", true);
+
+            $this->getTemplate()->set_var("idOpcion", 'opt1');
+            $this->getTemplate()->set_var("hrefOpcion", "javascript:history.go(-1)");
+            $this->getTemplate()->set_var("sNombreOpcion", "Volver a la página anterior");
+            $this->getTemplate()->parse("OpcionMenuLastOpt");
+
+            //listado con las ultimas 10 publicaciones para que siga navegando el usuario.
+            $iRecordsTotal = 0;
+            $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = 1, $iItemsForPage = 10);
+            if(count($aFichas) > 0){
+
+                $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "centerPageContent", "UltimasPublicacionesBlock", true);
+
+                foreach($aFichas as $oFicha){
+
+                    $oUsuario = $oFicha->getUsuario();
+                    $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+
+                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                    $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+
+                    $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
+                    if(get_class($oFicha) == 'Publicacion'){
+                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                    }else{
+                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                    }
+
+                    $this->getTemplate()->parse("PublicacionRowBlock", true);
+                }
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     public function galeriaFotos()

@@ -11,7 +11,7 @@ class IndexControllerSeguimientos extends PageControllerAbstract
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      *
      */
-    static function setCabecera(Templates &$template)
+    static function setCabecera(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
 
@@ -32,7 +32,7 @@ class IndexControllerSeguimientos extends PageControllerAbstract
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      *
      */
-    static function setCenterHeader(Templates &$template){
+    static function setCenterHeader(Templates $template){
         $request = FrontController::getInstance()->getRequest();
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $perfilDesc = $perfil->getDescripcion();

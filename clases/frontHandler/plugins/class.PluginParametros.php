@@ -197,6 +197,10 @@ class PluginParametros extends PluginAbstract
                         'PERFIL_MODERADOR_REDIRECCIONLOGIN_ACCION' => 'index',
                         'PERFIL_MODERADOR_REDIRECCIONLOGIN_PATH' => '/admin/home',
 
+                        'PERFIL_ADMINISTRADOR_REDIRECCION_MODULO' => 'admin',
+                        'PERFIL_ADMINISTRADOR_REDIRECCION_CONTROLADOR' => 'index',
+                        'PERFIL_ADMINISTRADOR_REDIRECCION_ACCION' => 'index',
+                        'PERFIL_ADMINISTRADOR_REDIRECCION_PATH' => '/admin',
                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_MODULO' => 'admin',
                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_CONTROLADOR' => 'index',
                         'PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_ACCION' => 'index',

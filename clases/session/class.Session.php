@@ -719,9 +719,9 @@ class Session extends SessionAbstract
      * @param string $namespace
      * @return bool
      */
-    public static function namespaceIsset($namespace)
+    public static function namespaceIsset($namespace, $name = null)
     {
-        return parent::namespaceIsset($namespace);
+        return parent::namespaceIsset($namespace, $name);
     }
 
 
@@ -732,9 +732,9 @@ class Session extends SessionAbstract
      * @throws SessionException
      * @return void
      */
-    public static function namespaceUnset($namespace)
+    public static function namespaceUnset($namespace, $name = null)
     {
-        parent::namespaceUnset($namespace);
+        parent::namespaceUnset($namespace, $name);
         SessionNamespace::resetSingleInstance($namespace);
     }
 

@@ -102,6 +102,11 @@ function mensajeValidacion(template, value)
  */
 function bindEventsAdmin()
 {
+    /* para ocultar msgTop 10 segundos despues que se termina de cargar la pagina */
+    setTimeout(function(){
+        $("#msg_top").hide('drop', {direction: "up"}, 1000)
+    }, 5000);
+
     $("textarea.maxlength").maxlength();
     
     // Notification Close Button

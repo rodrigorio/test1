@@ -23,7 +23,7 @@ abstract class Intermediary
     /**
      * @param DB $conn;
      */
-    abstract protected static function &getInstance(IMYSQL $conn);
+    protected static function &getInstance(IMYSQL $conn){}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////// METODOS PRIVADOS DE AYUDA PARA UTILIZAR CUANDO SE ESRIBAN LOS METODOS QUE REALIZAN CONSULTAS  ///////////

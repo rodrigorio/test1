@@ -11,14 +11,20 @@
  * se redirecciona a la url anterior en la que estaba parado. Si el namespace se encuentra vacio entonces se redirecciona a traves del
  * metodo del perfil getUrlRedireccion().
  *
- * LAS REDIRECCIONES SON 302, IMAGINENSE QUE SI SE DESACTIVA UN MODULO DE LA PAGINA DE LOS VISITANTES SE TIENE QUE DAR A ENTENDER
+ * LAS REDIRECCIONES SON 307, IMAGINENSE QUE SI SE DESACTIVA UN MODULO DE LA PAGINA DE LOS VISITANTES SE TIENE QUE DAR A ENTENDER
  * QUE EN UN FUTURO SE VA A PODER ACCEDER A LA ACCION, Y QUE ESTA DESACTIVADA MOMENTANEAMENTE.
+ * PARA MAS INFORMACION DEL CODIGO 307 Y LOS OTROS CODIGOS VISITAR http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
  * 
  * Nuevamente la peticion puede ser Ajax, en tal caso no hay redireccion sino que se devuelve codigo de error con mensaje al .js
  *
  * Es conceptualmente correcto NO DESACTIVAR la vista que corresponde a la home de un modulo,
  * en todo caso se desactiva el modulo entero con el parametros de sistema utilizado para tal caso.
  * No esta de mas decirlo, NO TIENE SENTIDO DESACTIVAR EL MODULO DE ADMINISTRADOR.
+ *
+ * Otro aspecto importante a tener en cuenta es que el helper de redireccion puede setear un mensaje si verifica que la pagina que se esta
+ * procesando tiene un header 307.
+ * Por ejemplo si se ingresa la url de una publicacion que existe pero que el autor la 'desactivo' momentaneamente.
+ * La redireccion ya esta hecha, pero hay que agregar el parametro del mensaje en el request.
  *
  * NOTA: hay funciones del modulo index controlador index que no pueden ser deshabilitadas
  *       (las de error de ajax o las de sitio fuera de linea, etc)
@@ -30,6 +36,7 @@
 class PluginRedireccionAccionDesactivada extends PluginAbstract
 {
     const MENSAJE_ACCION_DESACTIVADA = 'La accion se encuentra desactivada momentaneamente.';
+    const MENSAJE_ITEM_DESACTIVADO = 'El item se encuentra desactivado momentaneamente.';
     const MENSAJE_MODULO_DESACTIVADO = 'El modulo se encuentra desactivado momentaneamente.';
 
     /**
@@ -66,6 +73,19 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
     public static function getLastRequestUri()
     {       
         return self::$lastRequestUri;
+    }
+
+    public function isRedirectAccionDesactivada()
+    {
+        return ($this->historial->server_status_code == 307) ? true : false;
+    }
+    
+    /**
+     * La ultima pagina que se proceso que codigo devolvio ? 307 302, etc.
+     */
+    public function setServerStatusCode($code)
+    {
+        $this->historial->server_status_code = $code;
     }
 
     /**
@@ -164,11 +184,11 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
 
     private function redireccionarSitioFueraDeLinea()
     {
-        $this->getResponse()->setHttpResponseCode(302);
+        $this->getResponse()->setHttpResponseCode(307);
         $this->getRequest()->setModuleName('index')
                            ->setControllerName('index')
                            ->setActionName('sitioOffLine')
-                           ->setParam('codigoRedireccion', '302');
+                           ->setParam('codigoRedireccion', '307');
     }
     
     /**
@@ -234,12 +254,12 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
         //pero la home esta activada redirecciono a la home del sitio
         if($request->getModuleName() != $moduloHome && !$moduloActivo && $moduloHomeActivo)
         {
-            $this->getResponse()->setHttpResponseCode(302);
+            $this->getResponse()->setHttpResponseCode(307);
             $request->setModuleName($moduloHome)
                     ->setControllerName($controladorHome)
                     ->setActionName($accionHome)
                     ->setParam('msgInfo', self::MENSAJE_MODULO_DESACTIVADO)
-                    ->setParam('codigoRedireccion', '302');
+                    ->setParam('codigoRedireccion', '307');
             return;
         }
 
@@ -256,10 +276,10 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
 
         //Si la accion en particular del request esta deshabilitada
         //trato de ir a la accion guardada en el historial.
-        //Si no hay ninguna accion guardada ejecuto redireccion 302 dependiendo el perfil.
+        //Si no hay ninguna accion guardada ejecuto redireccion 307 dependiendo el perfil.
         if(!$accionActivo)
         {
-            $this->getResponse()->setHttpResponseCode(302);
+            $this->getResponse()->setHttpResponseCode(307);
             if(!$this->rutearUltimaVista())
             {
                 list($modulo, $controlador, $accion) = $perfil->getUrlRedireccion();
@@ -269,9 +289,17 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
             }
             //se haya redireccionado a la vista guardada en el historial o la vista de redireccion por defecto se agrega siempre mensaje y cod.
             $request->setParam('msgInfo', self::MENSAJE_ACCION_DESACTIVADA)
-                    ->setParam('codigoRedireccion', '302');
+                    ->setParam('codigoRedireccion', '307');
             return;
-        }               
+        }
+
+        //si llego hasta aca es que la vista se puede procesar
+        //sin embargo, agrego el mensaje si posee un header 307.
+        //supongamos que algun metodo de page controller uso el redirector helper con codigo 307
+        //entonces tengo que agregar el mensaje que la vista que se esta mostrando es una redireccion porque la original SI estaba desactivada
+        if($this->isRedirectAccionDesactivada()){
+            $request->setParam('msgInfo', self::MENSAJE_ITEM_DESACTIVADO);
+        }
     }
 
     public function dispatchLoopShutdown()

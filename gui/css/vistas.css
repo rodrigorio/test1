@@ -399,11 +399,11 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px; border:1px solid #CCC; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
 .ficha03 .encabezado, .ficha03 .contenido{padding:10px; overflow:auto}
 .ficha03 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
-.ficha03 .encabezado .izq{position:relative}
+.ficha03 .encabezado .izq{position:relative; z-index:1;}
 .ficha03 .encabezado .izq .icono{float:left; margin-right:10px}
 .ficha03 .encabezado .izq .titulo{font-size:1.7em}
 .ficha03 .encabezado .izq .subtitulo{font-size:0.8em}
-.ficha03 .encabezado .der{float:right; position:relative; margin-left:20px;}
+.ficha03 .encabezado .der{float:right; position:relative; margin-left:20px; z-index:2}
 .ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
@@ -413,7 +413,6 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 /* esto lo tengo que hacer todo con important porq la ficha05 es de carteles, etc. y puede estar dentro de OTRA ficha */
 .ficha05{text-align:left !important; padding:10px !important; background-color:#FFF !important; border:1px solid #CCC !important}
 .ficha05 .titulo{padding-left:0px !important; background-color:#FFF !important; border-top:none !important; font-size:1.7em !important; border-bottom:1px solid #AAA !important; padding-bottom:10px !important; margin-bottom:10px !important;}
-.ficha05 p{margin-bottom:0px}
 
 /* debajo de la ficha como un anexo */
 .anexoFicha{padding:20px 10px 10px 10px; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #999 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border:1px solid #CCC; border-top:1px solid #333}
