@@ -9,6 +9,7 @@ class Review extends FichaAbstract
     private $bPublico;
     private $sDescripcionBreve;
     private $sKeywords;
+    private $aComentarios;
 
     /**
      * 'product','business','event','person','place','website','url'
@@ -202,5 +203,23 @@ class Review extends FichaAbstract
     public function getFuenteOriginal()
     {
         return $this->sFuenteOriginal;
+    }
+
+    public function getComentarios()
+    {
+        if($this->aComentarios === null){
+            $this->aComentarios = ComunidadController::getInstance()->obtenerComentariosReview($this->iId);
+        }
+        return $this->aComentarios;
+    }
+    public function setComentarios($aComentarios)
+    {
+        $this->aComentarios = $aComentarios;
+        return $this;
+    }
+    public function addComentario($oComentario)
+    {
+        $this->aComentarios[] = $oComentario;
+        return $this;
     }
 }

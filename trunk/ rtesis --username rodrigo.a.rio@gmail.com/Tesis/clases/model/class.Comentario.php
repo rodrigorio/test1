@@ -3,16 +3,11 @@
 class Comentario
 {
     private $iId;
-    private $iReviewId;
-    private $iPublicacionId;
-    private $iArchivoId;
     private $dFecha;
     private $sDescripcion;
     private $fValoracion;
     private $iUsuarioId;
-    private $oUsuario;
-    private $sNombreApellido;
-    
+    private $oUsuario;    
 
    /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase
@@ -36,18 +31,6 @@ class Comentario
     {
         $this->iId = $iId;
     }
-    public function setReviewId($iReviewId)
-    {
-        $this->iReviewId = $iReviewId;
-     }
-    public function setPublicacionId($iPublicacionId)
-    {
-        $this->iPublicacionId = $iPublicacionId;
-    }
-    public function setArchivoId($iArchivoId)
-    {
-        $this->iArchivoId = $iArchivoId;
-    }
     public function setFecha($dFecha)
     {
         $this->dFecha = $dFecha;
@@ -56,18 +39,8 @@ class Comentario
     {
         $this->sDescripcion = $sDescripcion;
         return $this;
-    }
-    
-    public function setUsuario($oUsuario)
-    {
-        $this->oUsuario = $oUsuario;
-        return $this;
-    }
-    public function setUsuarioId($iUsuarioId)
-    {
-        $this->iUsuarioId = $iUsuarioId;
-     }
-   public function setValoracion($fValoracion)
+    }   
+    public function setValoracion($fValoracion)
     {
         $this->fValoracion = $fValoracion;
     }
@@ -81,18 +54,6 @@ class Comentario
     {
         return $this->iId;
     }
-    public function getReviewId()
-    {
-        return $this->iReviewId;
-    }
-    public function getPublicacionId()
-    {
-        return $this->iPublicacionId;
-    }
-    public function getArchivoId()
-    {
-        return $this->iArchivoId;
-    }
     public function getFecha()
     {
         return $this->dFecha;
@@ -105,18 +66,33 @@ class Comentario
     {
         return $this->fValoracion;
     }
+    public function getNombreApellido()
+    {
+        return $this->sNombreApellido;
+    }
+
     public function getUsuario(){
     	if($this->oUsuario == null && !empty($this->iUsuarioId)){
             $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($this->iUsuarioId);
     	}
         return $this->oUsuario;
     }
+
     public function getUsuarioId()
     {
         return $this->iUsuarioId;
     }
-    public function getNombreApellido()
+    
+    public function setUsuarioId($iUsuarioId){
+        $this->iUsuarioId = $iUsuarioId;
+        if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        }
+    }
+
+    public function setUsuario($oUsuario)
     {
-        return $this->sNombreApellido;
+        $this->oUsuario = $oUsuario;
+        return $this;
     }
 }

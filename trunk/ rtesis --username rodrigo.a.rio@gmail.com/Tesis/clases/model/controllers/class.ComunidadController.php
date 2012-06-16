@@ -773,6 +773,7 @@ class ComunidadController
      */
     public function buscarPublicacionesComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
+            $filtro["f.activo"] = "1";
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
@@ -787,7 +788,7 @@ class ComunidadController
         try{
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
             $filtro["usuario"] = $oUsuario->getId();
-
+            
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
@@ -808,18 +809,30 @@ class ComunidadController
         }
     }
     
-    public function obtenerComentariosFicha($iFichaId)
+    public function obtenerComentariosPublicacion($iPublicacionId)
     {
         try{
             $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
-            $filtro = array('c.fichas_abstractas_id' => $iFichaId);
-            return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, 
-
-        $iIniLimit = null, $iRecordCount = null);
+            $filtro = array('c.publicaciones_id' => $iPublicacionId);
+            $iRecordsTotal = 0;
+            return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
         }        
+    }
+
+    public function obtenerComentariosReview($iReviewId)
+    {
+        try{
+            $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
+            $filtro = array('c.reviews_id' => $iReviewId);
+            $iRecordsTotal = 0;
+            return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
     }
 
     /**

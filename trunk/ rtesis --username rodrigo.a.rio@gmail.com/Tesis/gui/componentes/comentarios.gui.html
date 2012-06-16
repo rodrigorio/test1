@@ -1,27 +1,20 @@
-<!--BeginFiltroComentariosBlock-->
+<!--BeginComentariosBlock-->
 <div class="pabo bobo1 mabo2">
-    <span class="fte3 mari2">Mostrando comentarios {iTotalComentariosPagina} de {iTotalComentarios}</span>
-    <span class="fte2">Ordenar por</span>
-    <select id="ordenar_comentarios">    
-        <option>Recientes primero</option>
-        <option>Antig&uuml;os primero</option>
-        <option>Preferidos por la gente</option>
-    </select>                
-</div>      
-<!--EndFiltroComentariosBlock-->
+    <span class="fte3 mari2">Comentarios</span>
+</div>
 
-<!--BeginComentarioBlock-->
-<div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">                            
-    <div class="header mabo2 grupo">                    
-        <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
-    </div>                    
-    <p>{sComentario}</p>
-    <div class="fte2 fl_ri mabo2">a {iPersonas} personas le/s gusta el comentario</div>
-    <br clear="all">
-    <a class="fte2 fl_le" href="{hrefReportar}">Reportar Moderador</a>
-    <a class="fte2 fl_ri" href="{hrefMeGusta}">Me Gusta</a>
-</div> 
-<!--EndComentarioBlock-->
+    <!--BeginComentarioBlock-->
+    <div class="ficha03 pa0 mabo2 grupo">
+        <div class="header mabo2 grupo">
+            <div class="th_fto_s">
+                <i style="background-image:url('{scrAvatarAutor}')"></i>
+            </div>
+            <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
+        </div>
+        <p>{sComentario}</p>
+    </div>
+    <!--EndComentarioBlock-->
+<!--EndComentariosBlock-->
 
 <!--BeginComentarioValoracionBlock-->
 <div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">                            
@@ -40,26 +33,8 @@
         <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
     </div>                    
     <p>{sComentario}</p>
-    <div class="fte2 fl_ri mabo2">a {iPersonas} personas le/s gusta el comentario</div>
-    <br clear="all">
-    <a class="fte2 fl_le" href="{hrefReportar}">Reportar Moderador</a>
-    <a class="fte2 fl_ri" href="{hrefMeGusta}">Me Gusta</a>
 </div> 
 <!--EndComentarioValoracionBlock-->
-
-<!--BeginPaginacionComentariosBlock-->
-<div id="paginacion" class="paginacion1 teal_ce mabo2">
-
-	<!--BeginLinksPaginas-->
-    <a rel="nofollow" href="{hrefPagina}">{iPagina}</a>
-    <!--EndLinksPaginas-->
-    
-    <!--BeginLinkPaginaActiva-->
-    <a rel="nofollow" class="texto_importante" href="{hrefPagina}">{iPagina}</a>
-    <!--EndLinkPaginaActiva-->    
-    
-</div>                                                                              
-<!--EndPaginacionComentariosBlock-->
 
 <!--BeginNuevoComentarioBlock-->
 <div id="nuevoComentario" class="ficha02 mabo3 cl_bo grupo">
@@ -78,25 +53,21 @@
     <form id="formComentar" name="formComentar" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
-        <div id='msg_form_comentar' class="msg_form iveal di_no"><span class="bs i"></span> <span class="msg"></span></div>
-
-        <div class="ta_wrap mabo2">
-            <div class="inner_fwrap">
-                <textarea rows="0" cols="30" id="comentarioMensaje" class="tarea_ctrl defVal maxlength" title="Escribe tu comentario">Escribe tu comentario</textarea>
+        <div class="form_line msg_comentario">
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="comentario" name="comentario" class="defVal maxlength textareaAutoGrow" title="Escribe un comentario">Escribe un comentario</textarea>
+                </div>
             </div>
         </div>
 
-        <input class="celda3 defVal" type="text" name="nombre" id="comentarioNombre" value="Nombre" title="Nombre"/>
-        <input class="celda3 defVal" type="text" name="mail" id="comentarioMail" value="E-Mail (No se mostrar&aacute;)" title="E-Mail (No se mostrar&aacute;)" />
-        <input class="celda3 defVal mari0" type="text" name="sitioweb" id="comentarioSitioWeb" value="Sitio Web (Opcional)" title="Sitio Web (Opcional)" />
+        <label for="comentarioPublicar" class="button buttonConfirm">
+            <button id="comentarioPublicar" type="submit" name="comentarioPublicar" class="btn01">
+                Agregar Comentario
+            </button>
+        </label>
 
-        <div class="fl_le">
-            <input id="comentarioSuscribirse" name="suscribirse" class="veal_mi" type="checkbox" checked="checked">
-            <label for="comentarioSuscribirse">Notificarme nuevos comentarios por mail y suscribirme!.</label>
-        </div>
-        <div class="fl_ri">
-            <button id="comentarioPublicar" type="submit" name="publicar" class="btn01">Publicar</button>
-        </div>
+        <div style="display:none;" id='msg_form_comentar' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
     </form>
 </div>                        
 <!--EndNuevoComentarioBlock-->
