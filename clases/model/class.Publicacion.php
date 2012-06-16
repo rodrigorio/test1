@@ -9,6 +9,7 @@ class Publicacion extends FichaAbstract
     private $bPublico = false;
     private $sDescripcionBreve;
     private $sKeywords;
+    private $aComentarios;
 
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -90,5 +91,23 @@ public function setKeywords($sKeywords){
     
     public function getKeywords(){
         return $this->sKeywords;
-    }   
+    }
+
+    public function getComentarios()
+    {
+        if($this->aComentarios === null){
+            $this->aComentarios = ComunidadController::getInstance()->obtenerComentariosPublicacion($this->iId);
+        }
+        return $this->aComentarios;
+    }
+    public function setComentarios($aComentarios)
+    {
+        $this->aComentarios = $aComentarios;
+        return $this;
+    }
+    public function addComentario($oComentario)
+    {
+        $this->aComentarios[] = $oComentario;
+        return $this;
+    }
 }

@@ -308,7 +308,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             	$oPublicacion->iId = $oObj->iId;
             	$oPublicacion->sTitulo  = $oObj->sTitulo;
             	$oPublicacion->dFecha = $oObj->dFecha;
-            	$oPublicacion->bActivo = ($oObj->bActivo == "1") ? true : false;
+            	$oPublicacion->bActivo = ($oObj->bActivo == "1")?true:false;
             	$oPublicacion->sDescripcion = $oObj->sDescripcion;
             	$oPublicacion->iUsuarioId = $oObj->iUsuarioId;
             	$oPublicacion->bModerado = ($oObj->bModerado == "1") ? true:false;
@@ -466,6 +466,9 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             }
             if(isset($filtro['ap.apellido']) && $filtro['ap.apellido'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('ap.apellido', $filtro['ap.apellido']);
+            }
+            if(isset($filtro['f.activo']) && $filtro['f.activo'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('f.activo', $filtro['f.activo']);
             }
             //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
             if(isset($filtro['fecha']) && null !== $filtro['fecha']){

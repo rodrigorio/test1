@@ -148,90 +148,101 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
     public function misPublicaciones()
     {
-        $this->setFrameTemplate()
-             ->setHeadTag()
-             ->setMenuDerecha();
+        try{
 
-        IndexControllerComunidad::setCabecera($this->getTemplate());
-        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+            $this->setFrameTemplate()
+                 ->setHeadTag()
+                 ->setMenuDerecha();
 
-        $this->printMsgTop();
+            IndexControllerComunidad::setCabecera($this->getTemplate());
+            IndexControllerComunidad::setCenterHeader($this->getTemplate());
 
-        //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+            $this->printMsgTop();
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoMisPublicacionesBlock");
-        
-        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-        $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
 
-        $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-        
-        if(count($aFichas) > 0){
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoMisPublicacionesBlock");
 
-            $this->getTemplate()->set_var("NoRecordsMisPublicacionesBlock", "");
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
-            foreach($aFichas as $oFicha){
+            $iRecordsTotal = 0;
+            $aFichas = ComunidadController::getInstance()->buscarPublicacionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-                $hrefAmpliarPublicacion = "";
-                $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
-                $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
-                $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
+            if(count($aFichas) > 0){
 
-                $bPublico = $oFicha->isPublico();
-                $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
-                $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
-                $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
+                $this->getTemplate()->set_var("NoRecordsMisPublicacionesBlock", "");
 
-                $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
-                $this->getTemplate()->set_var("hrefAmpliarPublicacion", $hrefAmpliarPublicacion);
-                $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
-                $this->getTemplate()->set_var("hrefGaleriaVideos", $hrefEditarVideos);
-                $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);
+                foreach($aFichas as $oFicha){
 
-                if($oFicha->isActivo()){
-                    $this->getTemplate()->set_var("sSelectedPublicacionActivo", "selected='selected'");
-                }else{
-                    $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "selected='selected'");
+                    $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
+                    if(get_class($oFicha) == 'Publicacion'){
+                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                    }else{
+                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                    }
+                    
+                    $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
+                    $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
+                    $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
+
+                    $bPublico = $oFicha->isPublico();
+                    $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
+                    $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
+                    $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
+
+                    $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());                    
+                    $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
+                    $this->getTemplate()->set_var("hrefGaleriaVideos", $hrefEditarVideos);
+                    $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);
+
+                    if($oFicha->isActivo()){
+                        $this->getTemplate()->set_var("sSelectedPublicacionActivo", "selected='selected'");
+                    }else{
+                        $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "selected='selected'");
+                    }
+
+                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                    $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+                    $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
+                    $this->getTemplate()->set_var("sPublico", $sPublico);
+
+                    //si esta marcada como publica y no esta moderada muestro un cartel
+                    if($bPublico && !$oFicha->isModerado()){
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", "MsgFichaInfoBlock");
+                        $this->getTemplate()->set_var("sTituloMsgFicha", "Moderación Pendiente");
+                        $this->getTemplate()->set_var("sMsgFicha", "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.");
+                        $this->getTemplate()->parse("sMensajePublicacion", false);
+                    }
+
+                    $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
+
+                    //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
+                    list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
+                    $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
+                    $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
+                    $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                    $this->getTemplate()->parse("MiPublicacionBlock", true);
+
+                    $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
+                    $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
+                    $this->getTemplate()->set_var("sMensajePublicacion","");
                 }
+            }else{
+                $this->getTemplate()->set_var("MiPublicacionBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "Todavía no hay publicaciones creadas.");
+            }
 
-                $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
-                $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
-                $this->getTemplate()->set_var("sPublico", $sPublico);
+            $params[] = "masMisPublicaciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoMisPublicacionesResult", $params);
 
-                //si esta marcada como publica y no esta moderada muestro un cartel
-                if($bPublico && !$oFicha->isModerado()){
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", "MsgFichaInfoBlock");
-                    $this->getTemplate()->set_var("sTituloMsgFicha", "Moderación Pendiente");
-                    $this->getTemplate()->set_var("sMsgFicha", "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.");
-                    $this->getTemplate()->parse("sMensajePublicacion", false);
-                }
-                
-                $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
-                
-                //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
-                list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
-                $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
-                $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
-                $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
-
-                $this->getTemplate()->parse("MiPublicacionBlock", true);
-
-                $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
-                $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
-                $this->getTemplate()->set_var("sMensajePublicacion","");
-            }           
-        }else{
-            $this->getTemplate()->set_var("MiPublicacionBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "Todavía no hay publicaciones creadas.");
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            echo $e->getMessage();
+            throw new Exception($e->getMessage());
         }
-
-        $params[] = "masMisPublicaciones=1";
-        $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoMisPublicacionesResult", $params);
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     public function procesar()
@@ -338,6 +349,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             foreach($aFichas as $oFicha){
 
+                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
+                if(get_class($oFicha) == 'Publicacion'){
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                }else{
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                }
+
                 $oUsuario = $oFicha->getUsuario();
                 $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
@@ -348,8 +366,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                 $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
-                $this->getTemplate()->set_var("hrefAmpliarPublicacion", "");
+                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
                 $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
 
                 $this->getTemplate()->parse("PublicacionBlock", true);
@@ -381,7 +398,13 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             foreach($aFichas as $oFicha){
 
-                $hrefAmpliarPublicacion = "";
+                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
+                if(get_class($oFicha) == 'Publicacion'){
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                }else{
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                }
+                
                 $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
                 $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
                 $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
@@ -968,6 +991,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             if(null === $oPublicacion)
             {
                 $this->redireccion404();
+                return;
             }
 
             //validacion 3.
@@ -977,6 +1001,15 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
 
+            //validacion 4.
+            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oPublicacion->getTitulo());
+
+            if($sTituloUrlized != $sTituloUrlizedActual){
+                $this->getRedirectorHelper()->setCode(301);
+                $url = 'comunidad/publicaciones/'.$oPublicacion->getId()."-".$sTituloUrlizedActual;
+                $this->getRedirectorHelper()->gotoUrl($url);
+            }
+            
             $this->setFrameTemplate()
                  ->setHeadTag()
                  ->setMenuDerecha();
@@ -988,8 +1021,29 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "PublicacionAmpliadaBlock");
 
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoPublicacionesBlock");
+            $oUsuarioAutor = $oPublicacion->getUsuario();
+            $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuarioAutor->getNombreAvatar();
+
+            $sNombreAutor = $oUsuarioAutor->getApellido()." ".$oUsuarioAutor->getNombre();
+            $sTipoPublicacion = "Publicacion";
+
+            $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+            $this->getTemplate()->set_var("sTitulo", $oPublicacion->getTitulo());
+            $this->getTemplate()->set_var("sFecha", $oPublicacion->getFecha());
+            $this->getTemplate()->set_var("sAutor", $sNombreAutor);
+            $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
+            $this->getTemplate()->set_var("sDescripcionBreve", $oPublicacion->getDescripcionBreve());
+            $this->getTemplate()->set_var("sDescripcion", $oPublicacion->getDescripcion());
+
+            $this->agregarGaleriaAdjuntosFicha($oPublicacion);
+
+            if($oPublicacion->isActivoComentarios()){
+                $this->agregarComentariosFicha($oPublicacion);
+            }
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
             
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -999,6 +1053,119 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     public function verReview()
     {
 
+    }
+
+    private function agregarGaleriaAdjuntosFicha($oFicha)
+    {
+        list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
+
+        if($cantFotos > 0 || $cantVideos > 0 || $cantArchivos > 0){
+
+            $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
+
+            //primero borro todos los bloques que ya se que no se usan
+            $this->getTemplate()->set_var("TituloItemBlock", "");
+            $this->getTemplate()->set_var("MenuGaleriaAdjuntos", "");
+            $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
+            $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
+            $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
+            $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
+            $this->getTemplate()->set_var("RowArchivoEditBlock", "");
+            $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
+
+            if($cantFotos > 0){
+
+                $aFotos = $oFicha->getFotos();
+
+                $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
+                foreach($aFotos as $oFoto){
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->parse("ThumbnailFotoBlock", true);
+                }
+
+            }else{
+                $this->getTemplate()->set_var("GaleriaAdjuntosFotosBlock", "");
+            }
+
+            if($cantVideos > 0)
+            {
+                $aEmbedVideos = $oFicha->getEmbedVideos();
+
+                foreach($aEmbedVideos as $oEmbedVideo){
+
+                    $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+
+                    $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                    $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);                    
+                    $this->getTemplate()->parse("ThumbnailVideoBlock", true);
+                }
+
+            }else{
+                $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
+            }
+
+            if($cantArchivos > 0)
+            {
+                $aArchivos = $oFicha->getArchivos();
+
+                $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+
+                foreach($aArchivos as $oArchivo){
+
+                    $nombreArchivo = $oArchivo->getTitulo();
+                    if(empty($nombreArchivo)){
+                        $nombreArchivo = $oArchivo->getNombre();
+                    }
+
+                    $hrefDescargar = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+
+                    $this->getTemplate()->set_var("sNombreArchivo", $nombreArchivo);
+                    $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
+                    $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                    $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
+
+                    $this->getTemplate()->parse("RowArchivoBlock", true);
+                }
+            }else{
+                $this->getTemplate()->set_var("GaleriaAdjuntosArchivosBlock", "");
+            }
+        }
+    }
+
+    private function agregarComentariosFicha($oFicha)
+    {
+        try{
+            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "NuevoComentarioBlock");
+            $this->getTemplate()->set_var("PuntuarBlock", "");
+
+            $aComentarios = $oFicha->getComentarios();
+
+            if(count($aComentarios)>0){
+                $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "ComentariosBlock", true);
+
+                foreach($aComentarios as $oComentario){
+
+                    $oUsuario = $oFicha->getUsuario();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+                    $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+
+                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                    $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                    $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+
+                    $this->getTemplate()->parse("ComentarioBlock", true);
+                }
+            }
+        }catch(Exception $e){
+            print($e->getMessage());
+        }
     }
 
     /**

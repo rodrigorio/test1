@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of class ComentarioMySQLIntermediary
  *
@@ -6,26 +7,27 @@
  */
 class ComentarioMySQLIntermediary extends ComentarioIntermediary
 {
-	private static $instance = null;
+    private static $instance = null;
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
+    protected function __construct( $conn) {
+            parent::__construct($conn);
+    }
 
 
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return ComentarioMySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (null === self::$instance){
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return ComentarioMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn) {
+        if (null === self::$instance){
             self::$instance = new self($conn);
         }
         return self::$instance;
-	}
-	
+    }
+
+
 public  function insertar($oComentario)
    {
 		try{
@@ -89,7 +91,7 @@ public  function insertar($oComentario)
 		}
 	}
 	
-	public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null) {
+    public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null) {
         try{
             $db = clone($this->conn);
 
@@ -98,28 +100,18 @@ public  function insertar($oComentario)
                         c.fecha as dFecha,
                         c.descripcion as sDescripcion,
                         c.valoracion as fValoracion,
-                        c.usuarios_id as iUsuarioId
-                        
+                        c.usuarios_id as iUsuarioId                        
                     FROM
-                        comentario c ";
+                        comentarios c ";
 
             $WHERE = array();
-            if(isset($filtro['c.id']) && $filtro['c.id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('c.id', $filtro['c.id'], MYSQL_TYPE_INT);
+
+            if(isset($filtro['c.reviews_id']) && $filtro['c.reviews_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('c.reviews_id', $filtro['c.reviews_id'], MYSQL_TYPE_INT);
             }
-                    
-            if(isset($filtro['c.fecha']) && $filtro['c.fecha']!=""){
-                $WHERE[] = $this->crearFiltroSimple('c.fecha', $filtro['c.fecha'], MYSQL_TYPE_INT);
-            }
-            if(isset($filtro['c.descripcion']) && $filtro['c.descripcion']!=""){
-                $WHERE[] = $this->crearFiltroSimple('c.descripcion', $filtro['c.descripcion'], MYSQL_TYPE_INT);
-            }
-              if(isset($filtro['c.valoracion']) && $filtro['c.valoracion']!=""){
-                $WHERE[] = $this->crearFiltroSimple('c.valoracion', $filtro['c.valoracion'], MYSQL_TYPE_INT);
-            }
-              if(isset($filtro['c.usuarios_id']) && $filtro['c.usuarios_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('c.usuarios_id', $filtro['c.usuarios_id'], MYSQL_TYPE_INT);
-            }
+            if(isset($filtro['c.publicaciones_id']) && $filtro['c.publicaciones_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('c.publicaciones_id', $filtro['c.publicaciones_id'], MYSQL_TYPE_INT);
+            }                    
             
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
@@ -140,10 +132,11 @@ public  function insertar($oComentario)
             while($oObj = $db->oNextRecord()){
                 $oComentario                       = new stdClass();
                 $oComentario->iId                  = $oObj->iId;
+                $oComentario->dFecha               = $oObj->dFecha;
                 $oComentario->sDescripcion         = $oObj->sDescripcion;
-                $oComentario->fValoracion            = $oObj->fValoracion;
-                $oComentario->iUsuarioId             = $oObj->iUsuarioId;
-                
+                $oComentario->fValoracion          = $oObj->fValoracion;
+                $oComentario->iUsuarioId           = $oObj->iUsuarioId;
+                                
                 $aComentarios[] = Factory::getComentarioInstance($oComentario);
             }
 
@@ -155,7 +148,7 @@ public  function insertar($oComentario)
     }
 	
 	
-	public function actualizarCampoArray($objects, $cambios){
-		
-	}
+    public function actualizarCampoArray($objects, $cambios){}
+    
+    public function existe($filtro){}
 }
