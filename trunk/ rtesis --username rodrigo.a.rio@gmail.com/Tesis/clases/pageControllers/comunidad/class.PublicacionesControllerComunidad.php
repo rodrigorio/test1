@@ -271,6 +271,76 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->borrarPublicacion();
             return;
         }
+
+        if($this->getRequest()->has('comentar')){
+            $this->agregarComentarioPublicacion();
+            return;
+        }
+    }
+
+    private function agregarComentarioPublicacion()
+    {
+        $iPublicacionId = $this->getRequest()->getPost('iPublicacionId');
+        $objType = $this->getRequest()->getPost('objType');
+
+        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            switch($objType)
+            {
+                case "Publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "Review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+
+            if(!$oFicha->isActivoComentarios())
+            {
+                $this->getJsonHelper()->setMessage("Se desactivaron los comentarios para esta publicacion");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $oComentario = new stdClass();
+            $oComentario = Factory::getComentarioInstance($oComentario);
+
+            $oComentario->setDescripcion($this->getRequest()->getPost("comentario"));           
+            $oComentario->setUsuario($oUsuario);
+
+            $oFicha->addComentario($oComentario);
+
+            ComunidadController::getInstance()->guardarComentariosFicha($oFicha);
+           
+            //devuelvo la ficha del nuevo comentario
+            $this->restartTemplate();
+            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "ajaxComentario", "ComentarioBlock");
+
+            $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+            $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+
+            $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+            $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+            $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
+            $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                        
+            $this->getJsonHelper()->setMessage("El comentario se agrego satisfactoriamente");
+            $this->getJsonHelper()->setValor('html', $this->getTemplate()->pparse('ajaxComentario', false));
+            $this->getJsonHelper()->setSuccess(true);
+            
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();            
     }
     
     private function borrarPublicacion()
@@ -1040,7 +1110,10 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->agregarGaleriaAdjuntosFicha($oPublicacion);
 
             if($oPublicacion->isActivoComentarios()){
-                $this->agregarComentariosFicha($oPublicacion);
+                $this->listarComentariosFicha($oPublicacion);
+
+                $this->getTemplate()->set_var("iItemIdForm", $oPublicacion->getId());
+                $this->getTemplate()->set_var("sTipoItemForm", get_class($oPublicacion));
             }
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -1137,7 +1210,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         }
     }
 
-    private function agregarComentariosFicha($oFicha)
+    private function listarComentariosFicha($oFicha)
     {
         try{
             $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "NuevoComentarioBlock");
@@ -1147,6 +1220,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             if(count($aComentarios)>0){
                 $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "ComentariosBlock", true);
+                $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
 
                 foreach($aComentarios as $oComentario){
 

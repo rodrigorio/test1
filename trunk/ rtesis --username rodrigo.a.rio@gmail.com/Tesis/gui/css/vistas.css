@@ -148,7 +148,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .fost_it{font-style:italic;}
 .ov_au{overflow:auto} .ov_hi{overflow:hidden}
 
-.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
+.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF}
 .ba_no, .ba_no:hover{background:none !important}
 
 .bora{-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
@@ -517,7 +517,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .thumb02 i:hover{border:1px solid #FFF}
 .thumb02 span{padding:1px 5px; background:none repeat scroll 0 0 #333; color:#FFF}
 /* no ampliable */
-.thumb03{padding:3px; border-width:1px 2px 2px 1px; border-style:solid; border-color:#E7EBF2 #AAA #AAA #E7EBF2; cursor:default !important; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
+.thumb03{padding:3px; border-width:1px 2px 2px 1px; border-style:solid; border-color:#E7EBF2 #AAA #AAA #E7EBF2; background-color:#FFF;  cursor:default !important; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 
 /*** BOTONES ***/
 /* confirmar accion */

@@ -27,28 +27,52 @@ class ComentarioMySQLIntermediary extends ComentarioIntermediary
         return self::$instance;
     }
 
+    public function guardarComentariosFicha($oFicha)
+    {
+        if(null !== $oFicha->getComentarios()){
+            foreach($oFicha->getComentarios() as $oComentario){
+                if(null !== $oComentario->getId()){
+                    return $this->actualizar($oComentario);
+                }else{
+                    $iId = $oFicha->getId();
+                    return $this->insertarAsociado($oComentario, $iId, get_class($oFicha));
+                }
+            }
+        }                    
+    }
 
-public  function insertar($oComentario)
-   {
-		try{
-			$db = $this->conn;
-			$sSQL =	" insert into comentarios ".               
-			        " set reviews_id =".$db->escape($oComentario->getReviewId(),false,MYSQL_TYPE_INT)." ,".
-			        " publicaciones_id =".$db->escape($oComentario->getUsuarioId(),false,MYSQL_TYPE_INT)." ,".
-			        " archivos_id =".$db->escape($oComentario->getArchivoId(),false,MYSQL_TYPE_INT)." ,".
-                    " fecha = '".$oComentario->getFecha()."', ".
-			        " descripcion =".$db->escape($oComentario->getDescripcion(),true).", " .
-			        " valoracion =".$db->escape($oComentario->getValoracion(),false,MYSQL_TYPE_FLOAT).", " .
-                    " usuario_id =".$db->escape($oComentario->getUsuarioId(),false,MYSQL_TYPE_INT)." ";
-                    			 
-			 $db->execSQL($sSQL);
-			 $db->commit();
+    public function insertarAsociado($oComentario, $iIdItem, $sObjetoAsociado)
+    {
+        try{
+            $db = $this->conn;
+            $iIdItem = $this->escInt($iIdItem);
 
-             
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+            $sSQL = " INSERT INTO comentarios SET ";
+
+            switch($sObjetoAsociado){
+                case "Publicacion": $sSQL .= "publicaciones_id = ".$iIdItem.", "; break;
+                case "Review": $sSQL .= "reviews_id = ".$iIdItem.", "; break;
+            }
+
+            $iUsuarioId = $oComentario->getUsuario()->getId();
+
+            $sSQL .= " descripcion = ".$this->escStr($oComentario->getDescripcion()).", " .
+                     " valoracion = '".$oComentario->getValoracion()."', " .
+                     " usuarios_id = '".$iUsuarioId."' ";
+            
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+            $db->commit();
+
+            $oComentario->setId($iLastId);
+            $oComentario->setFecha(date("d/m/Y"));
+
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
     
 	public function actualizar($oComentario)
    {
@@ -68,6 +92,7 @@ public  function insertar($oComentario)
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+
     public function guardar($oComentario)
     {
         try{
