@@ -56,7 +56,7 @@ class Comentario
     }
     public function getDescripcion()
     {
-        return $this->sDescripcion;
+        return nl2br($this->sDescripcion);
     }
     public function getValoracion()
     {

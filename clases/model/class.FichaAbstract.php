@@ -118,7 +118,11 @@ abstract class FichaAbstract
     public function getFecha(){
         return $this->dFecha;
     }
-    public function getDescripcion(){
-        return $this->sDescripcion;
+    public function getDescripcion($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
     }
  }

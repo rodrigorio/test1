@@ -401,7 +401,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha03 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha03 .encabezado .izq{position:relative; z-index:1;}
 .ficha03 .encabezado .izq .icono{float:left; margin-right:10px}
-.ficha03 .encabezado .izq .titulo{font-size:1.7em}
+.ficha03 .encabezado .izq .titulo{font-size:1.7em; text-transform:uppercase}
 .ficha03 .encabezado .izq .subtitulo{font-size:0.8em}
 .ficha03 .encabezado .der{float:right; position:relative; margin-left:20px; z-index:2}
 .ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF}
@@ -565,7 +565,7 @@ p .destacado{font-weight:bold;}
 .ajax_wait16{height:16px; width:16px; background-image:url("../images/iconos/wait16trans.gif");}
 
 /*** ICONOS ***/
-.valoracion, .puntaje{background-image:url("../images/iconos/puntajes_bn.png"); background-repeat:no-repeat}
+.valoracion, .puntaje{background-image:url("../images/iconos/puntajes.png"); background-repeat:no-repeat}
 .puntaje{cursor:pointer}
 /* val = valoraciones, pun = form puntuar */
 .val0{background-position:-89px -142px}
