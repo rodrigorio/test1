@@ -1105,7 +1105,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sAutor", $sNombreAutor);
             $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
             $this->getTemplate()->set_var("sDescripcionBreve", $oPublicacion->getDescripcionBreve());
-            $this->getTemplate()->set_var("sDescripcion", $oPublicacion->getDescripcion());
+            $this->getTemplate()->set_var("sDescripcion", $oPublicacion->getDescripcion(true));
 
             $this->agregarGaleriaAdjuntosFicha($oPublicacion);
 
@@ -1125,7 +1125,163 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
     public function verReview()
     {
+        try{
+            $iReviewId = $this->getRequest()->getParam('iReviewId');
+            $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
 
+            //validacion 1.
+            if(empty($iReviewId))
+            {
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            //validacion 2.
+            $oReview = ComunidadController::getInstance()->getReviewById($iReviewId);
+            if(null === $oReview)
+            {
+                $this->redireccion404();
+                return;
+            }
+
+            //validacion 3.
+            if(!$oReview->isActivo()){
+                $this->getRedirectorHelper()->setCode(307);
+                $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
+                $this->getRedirectorHelper()->gotoUrl($url);
+            }
+
+            //validacion 4.
+            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oReview->getTitulo());
+
+            if($sTituloUrlized != $sTituloUrlizedActual){
+                $this->getRedirectorHelper()->setCode(301);
+                $url = 'comunidad/reviews/'.$oReview->getId()."-".$sTituloUrlizedActual;
+                $this->getRedirectorHelper()->gotoUrl($url);
+            }
+
+            $this->setFrameTemplate()
+                 ->setHeadTag()
+                 ->setMenuDerecha();
+
+            IndexControllerComunidad::setCabecera($this->getTemplate());
+            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+            $this->printMsgTop();
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ReviewAmpliadaBlock");
+
+            $oUsuarioAutor = $oReview->getUsuario();
+            $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuarioAutor->getNombreAvatar();
+
+            $sNombreAutor = $oUsuarioAutor->getApellido()." ".$oUsuarioAutor->getNombre();
+            $sTipoPublicacion = "Review";
+
+            $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+            $this->getTemplate()->set_var("sTitulo", $oReview->getTitulo());
+            $this->getTemplate()->set_var("sFecha", $oReview->getFecha());
+            $this->getTemplate()->set_var("sAutor", $sNombreAutor);
+            $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
+            $this->getTemplate()->set_var("sDescripcionBreve", $oReview->getDescripcionBreve());
+            $this->getTemplate()->set_var("sDescripcion", $oReview->getDescripcion(true));
+
+            //detalles review
+            $this->getTemplate()->set_var("sItemName", $oReview->getItemName());
+            
+            if(null !== $oReview->getItemType()){
+                $sItemType = "";
+
+                switch($oReview->getItemType()){
+                    case "product":
+                        $sItemType = "producto"; break;
+                    case "business":
+                        $sItemType = "negocio"; break;
+                    case "event":
+                        $sItemType = "evento"; break;
+                    case "person":
+                        $sItemType = "persona"; break;
+                    case "place":
+                        $sItemType = "lugar"; break;
+                    case "website":
+                        $sItemType = "sitio web"; break;
+                    case "url":
+                        $sItemType = "link"; break;
+                }
+
+                $this->getTemplate()->set_var("sItemType", $sItemType);
+                $this->getTemplate()->parse("ItemTypeBlock");
+            }else{
+                $this->getTemplate()->set_var("ItemTypeBlock", "");
+            }
+            
+            if(null !== $oReview->getItemEventSummary()){
+                $this->getTemplate()->set_var("sItemEventSummary", $oReview->getItemEventSummary());
+                $this->getTemplate()->parse("ItemEventSummaryBlock");
+            }else{
+                $this->getTemplate()->set_var("ItemEventSummaryBlock", "");
+            }
+
+            if(null !== $oReview->getItemUrl()){
+                $this->getTemplate()->set_var("hrefItemUrl", $oReview->getItemUrl());
+                $this->getTemplate()->set_var("sItemUrl", $oReview->getItemUrl());
+                $this->getTemplate()->parse("ItemUrlBlock");
+            }else{
+                $this->getTemplate()->set_var("ItemUrlBlock", "");
+            }
+
+            if(null !== $oReview->getRating()){
+                $fRating = $oReview->getRating();
+                $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                           'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                           'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                           'Valoracion4_2Block', 'Valoracion5Block');
+                switch($fRating){
+                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                    default: $valoracionBloque = 'Valoracion0Block'; break;
+                }
+
+                //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                $this->getTemplate()->unset_blocks($bloquesValoracion);
+
+                $this->getTemplate()->parse("RatingBlock");
+            }else{
+                $this->getTemplate()->set_var("RatingBlock", "");
+            }
+
+            if(null !== $oReview->getFuenteOriginal()){
+                $this->getTemplate()->set_var("hrefFuenteUriginal", $oReview->getFuenteOriginal());
+                $this->getTemplate()->set_var("sFuenteOriginal", $oReview->getFuenteOriginal());
+                $this->getTemplate()->parse("FuenteOriginalBlock");
+            }else{
+                $this->getTemplate()->set_var("FuenteOriginalBlock", "");
+            }
+
+            $this->agregarGaleriaAdjuntosFicha($oReview);
+
+            if($oReview->isActivoComentarios()){
+                $this->listarComentariosFicha($oReview);
+
+                $this->getTemplate()->set_var("iItemIdForm", $oReview->getId());
+                $this->getTemplate()->set_var("sTipoItemForm", get_class($oReview));
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }                    
     }
 
     private function agregarGaleriaAdjuntosFicha($oFicha)
