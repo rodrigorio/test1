@@ -566,6 +566,30 @@ class ComunidadController
         }        
     }
 
+    public function getFotoDestacadaFicha($iFichaId)
+    {
+        try{
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $filtro = array('f.fichas_abstractas_id' => $iFichaId);
+            return $oFotoIntermediary->obtenerFotoDestacada($filtro);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }                
+    }
+
+    public function getEmbedVideoDestacadoFicha($iFichaId)
+    {
+        try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            $filtro = array('v.fichas_abstractas_id' => $iFichaId);
+            return $oEmbedVideoIntermediary->obtenerEmbedVideoDestacado($filtro);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }           
+    }
+
     /**
      * @return array|null
      */

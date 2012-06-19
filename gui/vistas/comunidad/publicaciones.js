@@ -705,6 +705,7 @@ function masPublicaciones(){
         success:function(data){
             setWaitingStatus('listadoPublicaciones', false);
             $("#listadoPublicacionesResult").html(data);
+            $("a[rel^='prettyPhoto']").prettyPhoto();
         }
     });
 }

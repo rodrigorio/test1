@@ -105,6 +105,7 @@ class IndexControllerComunidad extends PageControllerAbstract
     /**
      * Sirve para crear enlaces de descarga para cualquier archivo en general del modulo comunidad
      *
+     * Es mejor que el link se genere con el nombre del archivo en el servidor. porque sino cambias el id y empezas a bajar archivos
      */
     public function descargarArchivo()
     {
