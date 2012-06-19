@@ -140,7 +140,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
 .po_re{position:relative !important}
 .po_ab{position:absolute !important}
-.co{color:#333 !important}
+.co{color:#333 !important} .co1{color:#999 !important}
 .veal_mi{vertical-align:middle !important}
 .mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
 .miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
@@ -396,7 +396,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha02 .puntuar .desc{font-weight:bold;}
 .ficha02 .puntuar #txt_puntaje{font-size:1.7em}
 
-.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px; border:1px solid #CCC; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
+.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px 10px 0 10px; border:1px solid #CCC; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
 .ficha03 .encabezado, .ficha03 .contenido{padding:10px; overflow:auto}
 .ficha03 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha03 .encabezado .izq{position:relative; z-index:1;}
@@ -404,7 +404,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha03 .encabezado .izq .titulo{font-size:1.7em; text-transform:uppercase}
 .ficha03 .encabezado .izq .subtitulo{font-size:0.8em}
 .ficha03 .encabezado .der{float:right; position:relative; margin-left:20px; z-index:2}
-.ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF}
+.ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF; margin-bottom:10px;}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
 .ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}

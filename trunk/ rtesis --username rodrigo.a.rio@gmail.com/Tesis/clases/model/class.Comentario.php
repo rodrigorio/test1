@@ -52,7 +52,7 @@ class Comentario
     }
     public function getFecha()
     {
-        return $this->dFecha;
+        return Utils::fechaFormateada($this->dFecha);
     }
     public function getDescripcion()
     {

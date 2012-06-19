@@ -116,7 +116,7 @@ abstract class FichaAbstract
         return $this->sTitulo;
     }
     public function getFecha(){
-        return $this->dFecha;
+        return Utils::fechaFormateada($this->dFecha);
     }
     public function getDescripcion($nl2br = false){
         if($nl2br){
