@@ -17,10 +17,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                                                    'order' => 'desc'),
                                    'fecha' => array('variableTemplate' => 'orderByFecha',
                                                     'orderBy' => 's.fechaCreacion',
-                                                    'order' => 'desc'),
-                                   'estado' => array('variableTemplate' => 'orderByEstado',
-                                                     'orderBy' => 's.estado',
-                                                     'order' => 'desc'));
+                                                    'order' => 'desc'));
 
     private $filtrosFormConfig = array('filtroEstado' => 's.estado',
                                        'filtroApellidoPersona' => 'p.apellido',
@@ -1007,7 +1004,29 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
                     $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
 
+                    $sTitulo = $oArchivo->getTitulo();
+                    $sDescripcion = $oArchivo->getDescripcion();
+                    if(empty($sTitulo) && empty($sDescripcion)){
+                        $this->getTemplate()->set_var("TituloInfoArchivoBlock", "");
+                        $this->getTemplate()->set_var("DescripcionInfoArchivoBlock", "");
+                    }else{
+                        if(empty($sTitulo)){
+                            $this->getTemplate()->set_var("TituloInfoArchivoBlock", "");
+                        }else{
+                            $this->getTemplate()->set_var("tituloArchivo", $sTitulo);
+                        }
+
+                        if(empty($sDescripcion)){
+                            $this->getTemplate()->set_var("DescripcionInfoArchivoBlock", "");
+                        }else{
+                            $this->getTemplate()->set_var("descripcionArchivo", $sDescripcion);
+                        }
+                    }
+
                     $this->getTemplate()->parse("RowArchivoEditBlock", true);
+                    $this->getTemplate()->delete_parsed_blocks("InfoArchivoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("TituloInfoArchivoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("DescripcionInfoArchivoBlock");
                 }
 
                 $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");

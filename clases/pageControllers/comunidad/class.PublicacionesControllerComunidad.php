@@ -129,35 +129,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
                 }
 
-                //thumb destacado. (muestro foto o video con menor numero de orden)
-                $thumbDestacado = "";
-                $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oFicha->getId());
-                if(null !== $oFoto){
-                    //agrego thumbnail foto                    
-                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbFoto", "ThumbnailFotoSingleBlock");
-                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
-                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();                    
-                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
-                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
-                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
-
-                    $thumbDestacado = $this->getTemplate()->pparse("thumbFoto");
-                }else{                    
-                    $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoDestacadoFicha($oFicha->getId());
-                    if(null !== $oEmbedVideo){                                                
-                        //agrego thumbnail video
-                        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbVideo", "ThumbnailVideoSingleBlock");
-                        $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                        $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
-                        $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                        $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
-                        $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
-                        $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                        $thumbDestacado = $this->getTemplate()->pparse("thumbVideo");
-                    }
-                }
-                $this->getTemplate()->set_var("thumbDestacado", $thumbDestacado);
+                $this->thumbDestacadoFicha($oFicha);
+                $this->comentariosFicha($oFicha);
 
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
@@ -174,6 +147,73 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $params);
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function thumbDestacadoFicha($oFicha)
+    {
+        //thumb destacado. (muestro foto o video con menor numero de orden)
+        $thumbDestacado = "";
+        $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oFicha->getId());
+        if(null !== $oFoto){
+            //agrego thumbnail foto
+            $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbFoto", "ThumbnailFotoSingleBlock");
+            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+            $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+            $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+            $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+            $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+
+            $thumbDestacado = $this->getTemplate()->pparse("thumbFoto");
+        }else{
+            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoDestacadoFicha($oFicha->getId());
+            if(null !== $oEmbedVideo){
+                //agrego thumbnail video
+                $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbVideo", "ThumbnailVideoSingleBlock");
+                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
+                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
+                $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
+                $thumbDestacado = $this->getTemplate()->pparse("thumbVideo");
+            }
+        }
+        $this->getTemplate()->set_var("thumbDestacado", $thumbDestacado);        
+    }
+
+    private function comentariosFicha($oFicha)
+    {
+        $comentarios = "";
+        $aComentarios = $oFicha->getComentarios();
+        $iCantidad = count($aComentarios);
+        if($iCantidad > 0){
+            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "listaComentarios", "ComentariosBlock");
+            $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
+            $this->getTemplate()->set_var("totalComentarios", $iCantidad);
+
+            //solo muestro los ultimos 3
+            if($iCantidad > 3){ $i = $iCantidad - 3; }else{ $i = 0; }
+            for($i; $i < $iCantidad; $i++){
+                $oComentario = $aComentarios[$i];
+                $oUsuario = $oComentario->getUsuario();
+                $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+
+                $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
+                $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+
+                $this->getTemplate()->parse("ComentarioBlock", true);
+            }
+        }
+        
+        $comentarios = $this->getTemplate()->pparse("listaComentarios");
+        $this->getTemplate()->set_var("comentarios", $comentarios);        
+        $this->getTemplate()->delete_parsed_blocks("ComentarioBlock");
+        $this->getTemplate()->delete_parsed_blocks("ComentariosBlock");
     }
 
     public function misPublicaciones()
@@ -469,33 +509,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
                 $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
 
-                //thumb destacado. (muestro foto o video con menor numero de orden)
-                $thumbDestacado = "";
-                $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oFicha->getId());
-                if(null !== $oFoto){
-                    //agrego thumbnail foto
-                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbFoto", "ThumbnailFotoSingleBlock");
-                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
-                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
-                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
-                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
-                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
-                }else{
-                    $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoDestacadoFicha($oFicha->getId());
-                    if(null !== $oEmbedVideo){
-                        //agrego thumbnail video
-                        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbVideo", "ThumbnailVideoSingleBlock");
-                        $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                        $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
-                        $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                        $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
-                        $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
-                        $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                        $thumbDestacado = $this->getTemplate()->pparse("thumbVideo");
-                    }
-                }
-                $this->getTemplate()->set_var("thumbDestacado", $thumbDestacado);
+                $this->thumbDestacadoFicha($oFicha);
+                $this->comentariosFicha($oFicha);
 
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
@@ -1418,7 +1433,30 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
                     $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
 
+                    $sTitulo = $oArchivo->getTitulo();
+                    $sDescripcion = $oArchivo->getDescripcion();
+                    if(empty($sTitulo) && empty($sDescripcion)){
+                        $this->getTemplate()->set_var("TituloInfoArchivoBlock", "");
+                        $this->getTemplate()->set_var("DescripcionInfoArchivoBlock", "");
+                    }else{
+                        if(empty($sTitulo)){
+                            $this->getTemplate()->set_var("TituloInfoArchivoBlock", "");
+                        }else{
+                            $this->getTemplate()->set_var("tituloArchivo", $sTitulo);
+                        }
+
+                        if(empty($sDescripcion)){
+                            $this->getTemplate()->set_var("DescripcionInfoArchivoBlock", "");
+                        }else{
+                            $this->getTemplate()->set_var("descripcionArchivo", $sDescripcion);
+                        }                        
+                    }
+
                     $this->getTemplate()->parse("RowArchivoBlock", true);
+
+                    $this->getTemplate()->delete_parsed_blocks("InfoArchivoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("TituloInfoArchivoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("DescripcionInfoArchivoBlock");
                 }
             }else{
                 $this->getTemplate()->set_var("GaleriaAdjuntosArchivosBlock", "");
@@ -1437,10 +1475,11 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             if(count($aComentarios)>0){
                 $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "ComentariosBlock", true);
                 $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
+                $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
 
-                    $oUsuario = $oFicha->getUsuario();
+                    $oUsuario = $oComentario->getUsuario();
                     $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                     $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
