@@ -95,7 +95,7 @@
                 <div class="encabezado">
                     <div class="der">
                         <span class="fost_it">{sTipoPublicacion}</span> |
-                        <a href="{hrefAmpliarPublicacion}">Ampliar</a>
+                        <a href="{hrefAmpliarPublicacion}">Ver Completo</a>
                     </div>
                     <div class="izq">
                         <div class="icono">
@@ -108,7 +108,10 @@
                     </div>
                 </div>
                 <div class="contenido">
-                    {sDescripcionBreve}
+                    {thumbDestacado}
+                    
+                    <div class="fowe_bo fost_it mabo2">Resumen</div>
+                    <p class="mabo0">{sDescripcionBreve}</p>
                 </div>
             </div>
             <!--EndPublicacionBlock-->
@@ -568,7 +571,9 @@
         <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
     </ul>
 </div>
-{comentarios}
+<div id="comentarios">
+    {comentarios}
+</div>
 <!--EndPublicacionAmpliadaBlock-->
 
 <!--BeginReviewAmpliadaBlock-->
@@ -647,5 +652,7 @@
         <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
     </ul>
 </div>
-{comentarios}
+<div id="comentarios">
+    {comentarios}
+</div>
 <!--EndReviewAmpliadaBlock-->

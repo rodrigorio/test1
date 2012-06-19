@@ -264,7 +264,7 @@ function paginar(iPage ,toUrl, div, params){
 //////////////DOCUMENT READY (LAS FUNC DE VISTAS TIENEN QUE SER BINDEADS EN .live()//////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-$(document).ready(function(){					   		   
+$(document).ready(function(){
 	
     /* para ocultar msgTop 10 segundos despues que se termina de cargar la pagina */
     setTimeout(function(){

@@ -11,8 +11,8 @@
     <div id="Thumbnails" class="grupo mabo2">
         <!--BeginThumbnailFotoEditBlock-->
         <div id="foto_{iFotoId}" class="thumbEdit fl_le mari2">
-            <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
-                <i style="background-image:url('{urlFoto}')"></i>
+            <a rel="prettyPhoto[galeriaFotos]" title="{descripcionFoto}" href="{hrefFoto}" class="th_fto_m thumb01">
+                <i title="{tituloFoto}" style="background-image:url('{urlFoto}')"></i>
             </a>
             <div style="display:none" class="thumbEditMenu teal_ri">
                 <span title="Editar" rel="{iFotoId}" class="i bs edit ihover editarFoto"></span>
@@ -135,8 +135,8 @@
     <div id="Thumbnails" class="grupo mabo2">
         <!--BeginThumbnailVideoEditBlock-->
         <div id="video_{iEmbedVideoId}" class="thumbEdit fl_le mari2">
-            <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
-                <i style="background-image:url('{urlFoto}')"></i>
+            <a rel="prettyPhoto[galeriaVideos]" title="{descripcionVideo}" href="{hrefAmpliarVideo}&ajax=true" class="th_vid_m thumb02">
+                <i title="{tituloVideo}" style="background-image:url('{urlFoto}')"></i>
                 <span>Video</span>
             </a>
             <div style="display:none" class="thumbEditMenu teal_ri">
@@ -429,9 +429,9 @@
     <div id="ThumbnailsFotos" class="mabo3 ov_hi">
         <!--BeginThumbnailFotoEditBlock-->
         <div id="foto_{iFotoId}" class="thumbEdit fl_le mari2">
-            <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
-                <i style="background-image:url('{urlFoto}')"></i>
-            </a>
+            <a rel="prettyPhoto[galeriaFotos]" title="{descripcionFoto}" href="{hrefFoto}" class="th_fto_m thumb01">
+                <i title="{tituloFoto}" style="background-image:url('{urlFoto}')"></i>
+            </a>            
             <div style="display:none" class="thumbEditMenu teal_ri">
                 <span title="Editar" rel="{iFotoId}" class="i bs edit ihover editarFoto"></span>
                 <span title="Eliminar" rel="{iFotoId}" class="i bs delete ihover borrarFoto"></span>
@@ -440,9 +440,9 @@
         <!--EndThumbnailFotoEditBlock-->
         <!--BeginThumbnailFotoBlock-->
         <div class="fl_le mari2">
-            <a rel="prettyPhoto" href="{hrefFoto}" class="th_fto_m thumb01">
-                <i style="background-image:url('{urlFoto}')"></i>
-            </a>
+            <a rel="prettyPhoto[galeriaFotos]" title="{descripcionFoto}" href="{hrefFoto}" class="th_fto_m thumb01">
+                <i title="{tituloFoto}" style="background-image:url('{urlFoto}')"></i>
+            </a>            
         </div>
         <!--EndThumbnailFotoBlock-->
         <!--BeginNoRecordsFotosBlock-->
@@ -457,8 +457,8 @@
     <div id="ThumbnailsVideos" class="mabo3 ov_hi">
         <!--BeginThumbnailVideoEditBlock-->
         <div id="video_{iEmbedVideoId}" class="thumbEdit fl_le mari2">
-            <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
-                <i style="background-image:url('{urlFoto}')"></i>
+            <a rel="prettyPhoto[galeriaVideos]" title="{descripcionVideo}" href="{hrefAmpliarVideo}&ajax=true" class="th_vid_m thumb02">
+                <i title="{tituloVideo}" style="background-image:url('{urlFoto}')"></i>
                 <span>Video</span>
             </a>
             <div style="display:none" class="thumbEditMenu teal_ri">
@@ -469,8 +469,8 @@
         <!--EndThumbnailVideoEditBlock-->
         <!--BeginThumbnailVideoBlock-->
         <div class="fl_le mari2">
-            <a rel="prettyPhoto" href="{hrefAmpliarVideo}&iframe=true" class="th_vid_m thumb02">
-                <i style="background-image:url('{urlFoto}')"></i>
+            <a rel="prettyPhoto[galeriaVideos]" title="{descripcionVideo}" href="{hrefAmpliarVideo}&ajax=true" class="th_vid_m thumb02">
+                <i title="{tituloVideo}" style="background-image:url('{urlFoto}')"></i>
                 <span>Video</span>
             </a>
         </div>
@@ -524,6 +524,27 @@
     <!--EndGaleriaAdjuntosArchivosBlock-->
 </div>
 <!--EndGaleriaAdjuntosBlock-->
+
+<!--BeginVideoAmpliarBlock-->   
+{sEmbedCode}
+<!--EndVideoAmpliarBlock-->
+
+<!--BeginThumbnailFotoSingleBlock-->
+<div class="fl_le mari2">
+    <a rel="prettyPhoto" title="{descripcionFoto}" href="{hrefFoto}" class="th_fto_m thumb01">
+        <i title="{tituloFoto}" style="background-image:url('{urlFoto}')"></i>
+    </a>
+</div>
+<!--EndThumbnailFotoSingleBlock-->
+
+<!--BeginThumbnailVideoSingleBlock-->
+<div class="fl_le mari2">
+    <a rel="prettyPhoto" title="{descripcionVideo}" href="{hrefAmpliarVideo}&ajax=true" class="th_vid_m thumb02">
+        <i title="{tituloVideo}" style="background-image:url('{urlFoto}')"></i>
+        <span>Video</span>
+    </a>
+</div>
+<!--EndThumbnailVideoSingleBlock-->
 
 <!--BeginThumbnailFotoCelda4-->
 <div class="celda4">

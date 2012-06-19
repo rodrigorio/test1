@@ -132,7 +132,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .cl_bo{clear:both} .cl_le{clear:left !important} .cl_ri{clear:right !important}
 .teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center}
 .tetr_ca{text-transform:capitalize}
-.lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
+.lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
 .bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
@@ -162,8 +162,8 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .bosh2{-moz-box-shadow:1px 2px 6px 0; box-shadow:1px 2px 6px 0; -webkit-box-shadow:1px 2px 6px 0 #333;}
 .bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
 
-.wi100p{width:100% !important;}
-.wi300{width:300px !important;}
+.he100p{height:100% !important;}
+.wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important}
 
 .he400{height:400px !important; }
 /****************************************/
@@ -771,7 +771,7 @@ a .i{margin-right:4px; float:left}
 .ui-autocomplete a{color:#333; text-decoration:none}
 .ui-autocomplete .ui-state-hover{background-color:#EEEFFF}
 /* datepicker */
-.ui-datepicker{background-color:#FFF; border:1px solid #CCC}
+.ui-datepicker{background-color:#FFF; border:1px solid #CCC; z-index:10 !important}
 
 /* botones de la parte inferior en los popups */
 .ui-button{color: #333 !important; background-color:#EEE !important; background-image:-moz-linear-gradient(top, #FFF, #CCC) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)) !important; background-image:linear-gradient(top, #FFF, #CCC) !important; border-color:#CCC #666 #666 #CCC !important; border-style: solid !important; border-width: 1px !important;

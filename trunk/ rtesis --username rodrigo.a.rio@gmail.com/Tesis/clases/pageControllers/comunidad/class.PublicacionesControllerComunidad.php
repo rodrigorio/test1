@@ -129,6 +129,36 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
                 }
 
+                //thumb destacado. (muestro foto o video con menor numero de orden)
+                $thumbDestacado = "";
+                $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oFicha->getId());
+                if(null !== $oFoto){
+                    //agrego thumbnail foto                    
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbFoto", "ThumbnailFotoSingleBlock");
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();                    
+                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+
+                    $thumbDestacado = $this->getTemplate()->pparse("thumbFoto");
+                }else{                    
+                    $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoDestacadoFicha($oFicha->getId());
+                    if(null !== $oEmbedVideo){                                                
+                        //agrego thumbnail video
+                        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbVideo", "ThumbnailVideoSingleBlock");
+                        $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                        $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
+                        $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                        $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                        $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
+                        $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
+                        $thumbDestacado = $this->getTemplate()->pparse("thumbVideo");
+                    }
+                }
+                $this->getTemplate()->set_var("thumbDestacado", $thumbDestacado);
+
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
             
@@ -438,6 +468,34 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
                 $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
                 $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
+
+                //thumb destacado. (muestro foto o video con menor numero de orden)
+                $thumbDestacado = "";
+                $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oFicha->getId());
+                if(null !== $oFoto){
+                    //agrego thumbnail foto
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbFoto", "ThumbnailFotoSingleBlock");
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+                }else{
+                    $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoDestacadoFicha($oFicha->getId());
+                    if(null !== $oEmbedVideo){
+                        //agrego thumbnail video
+                        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbVideo", "ThumbnailVideoSingleBlock");
+                        $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
+                        $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
+                        $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
+                        $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                        $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
+                        $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
+                        $thumbDestacado = $this->getTemplate()->pparse("thumbVideo");
+                    }
+                }
+                $this->getTemplate()->set_var("thumbDestacado", $thumbDestacado);
 
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
@@ -1330,7 +1388,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
 
                     $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                    $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);                    
+                    $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                    $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
+                    $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
                     $this->getTemplate()->parse("ThumbnailVideoBlock", true);
                 }
 
@@ -1517,9 +1577,11 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             foreach($aFotos as $oFoto){
                 
                 $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
-                $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                $hrefFoto = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                 $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
-                $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                $this->getTemplate()->set_var("hrefFoto", $hrefFoto);
+                $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
                 $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
                 
                 $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
@@ -1636,6 +1698,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
                     //OJO QUE SI TIENE UN ';' EL HTML Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
@@ -1791,10 +1855,12 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             foreach($aEmbedVideos as $oEmbedVideo){
 
                 $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
 
                 $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
                 $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
+                $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
                 $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
 
                 $this->getTemplate()->parse("ThumbnailVideoEditBlock", true);
@@ -1896,6 +1962,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
                 $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
                 $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
+                $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
+                $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
                 $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
 
                 $this->getJsonHelper()->setMessage("El video fue agregado con éxito en la publicación");

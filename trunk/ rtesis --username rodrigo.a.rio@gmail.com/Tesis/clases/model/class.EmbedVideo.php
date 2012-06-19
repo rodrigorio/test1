@@ -7,6 +7,7 @@ class EmbedVideo
     private $sTitulo;
     private $sDescripcion;
     private $sOrigen; //origen es el lugar donde esta guardado por ej YouTube
+    private $sUrlKey;
 
     /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase
@@ -26,7 +27,18 @@ class EmbedVideo
         }
     }
 
-	public function setId($iId)
+    public function getUrlKey()
+    {
+        return $this->sUrlKey;
+    }
+
+    public function setUrlKey($sUrlKey)
+    {
+        $this->sUrlKey = $sUrlKey;
+        return $this;
+    }
+
+    public function setId($iId)
     {
         $this->iId = $iId;
         return $this;
@@ -70,9 +82,13 @@ class EmbedVideo
         $this->sDescripcion = $sDescripcion;
         return $this;
     }
-    public function getDescripcion()
+    public function getDescripcion($nl2br = false)
     {
-        return $this->sDescripcion;
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
     }
     public function setOrigen($sOrigen)
     {

@@ -952,6 +952,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
                     $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
@@ -1317,6 +1319,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
                     //OJO QUE SI TIENE UN ';' EL HTML Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!

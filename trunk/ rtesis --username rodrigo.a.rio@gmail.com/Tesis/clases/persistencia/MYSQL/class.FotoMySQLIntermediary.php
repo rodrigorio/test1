@@ -187,7 +187,7 @@ class FotoMySQLIntermediary extends FotoIntermediary
             
             if(isset($filtro['f.id']) && $filtro['f.id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('f.id', $filtro['f.id'], MYSQL_TYPE_INT);
-            }            
+            }
             if(isset($filtro['f.seguimientos_id']) && $filtro['f.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('f.seguimientos_id', $filtro['f.seguimientos_id'], MYSQL_TYPE_INT);
             }
@@ -293,6 +293,62 @@ class FotoMySQLIntermediary extends FotoIntermediary
             throw new Exception($e->getMessage(), 0);
             return false;
         }
+    }
+
+    public function obtenerFotoDestacada($filtro)
+    {
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        f.id as iFotoId,
+                        f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize,
+                        f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden,
+                        f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion,
+                        f.tipo as sFotoTipo
+                    FROM
+                        fotos f ";
+
+            $WHERE = array();
+
+            if(isset($filtro['f.fichas_abstractas_id']) && $filtro['f.fichas_abstractas_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('f.fichas_abstractas_id', $filtro['f.fichas_abstractas_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['f.categorias_id']) && $filtro['f.categorias_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('f.categorias_id', $filtro['f.categorias_id'], MYSQL_TYPE_INT);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            $sSQL .= " order by f.orden asc ";            
+            $sSQL .= " limit 1";
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $oObj = $db->oNextRecord();
+            
+            $oFoto = new stdClass();
+            $oFoto->iId = $oObj->iFotoId;
+            $oFoto->sNombreBigSize = $oObj->sFotoNombreBigSize;
+            $oFoto->sNombreMediumSize = $oObj->sFotoNombreMediumSize;
+            $oFoto->sNombreSmallSize = $oObj->sFotoNombreSmallSize;
+            $oFoto->iOrden = $oObj->iFotoOrden;
+            $oFoto->sTitulo = $oObj->sFotoTitulo;
+            $oFoto->sDescripcion = $oObj->sFotoDescripcion;
+            $oFoto->sTipo = $oObj->sFotoTipo;
+          
+            return Factory::getFotoInstance($oFoto);
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }        
     }
     
     public function existe($filtro){}

@@ -229,6 +229,42 @@ class IndexController
             return false;
         }
     }
+    
+    public function getFotoUrlKey($iFotoId, $sUrlKey)
+    {
+        try{
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            $filtro = array('f.urlKey' => $sUrlKey, 'f.id' => $iFotoId);
+            $iRecordsTotal = 0;
+            $aFotos = $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aFotos){
+                return $aFotos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
+    public function getEmbedVideoUrlKey($iEmbedVideoId, $sUrlKey)
+    {
+        try{
+            $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
+            $filtro = array('v.urlKey' => $sUrlKey, 'v.id' => $iEmbedVideoId);
+            $iRecordsTotal = 0;
+            $aEmbedVideos = $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aEmbedVideos){
+                return $aEmbedVideos[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
 
     public function getArchivoById($iArchivoId)
     {

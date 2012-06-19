@@ -103,6 +103,10 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
             $db = $this->conn;
             $iIdItem = $this->escInt($iIdItem);
 
+            $time = time();
+            $urlKey = md5($time.$iIdItem.$sObjetoAsociado);
+            $oEmbedVideo->setUrlKey($urlKey);
+
             $sSQL = " INSERT INTO embed_videos SET ";
 
             switch($sObjetoAsociado){
@@ -115,6 +119,7 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
             $sSQL .= " codigo = ".$this->escStr($oEmbedVideo->getCodigo()).", " .
                      " titulo = ".$this->escStr($oEmbedVideo->getTitulo()).", " .
                      " descripcion = ".$this->escStr($oEmbedVideo->getDescripcion()).", " .
+                     " urlKey = '".$oEmbedVideo->getUrlKey()."', ".
                      " origen = ".$this->escStr($oEmbedVideo->getOrigen());
 
             $db->execSQL($sSQL);
@@ -141,7 +146,8 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
                         v.orden as iOrden,
                         v.titulo as sTitulo,
                         v.descripcion as sDescripcion,
-                        v.origen as sOrigen
+                        v.origen as sOrigen,
+                        v.urlKey as sUrlKey
                     FROM
                         embed_videos v ";
 
@@ -149,7 +155,10 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
 
             if(isset($filtro['v.id']) && $filtro['v.id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('v.id', $filtro['v.id'], MYSQL_TYPE_INT);
-            }            
+            }
+            if(isset($filtro['v.urlKey']) && $filtro['v.urlKey']!=""){
+                $WHERE[] = $this->crearFiltroSimple('v.urlKey', $filtro['v.urlKey']);
+            }
             if(isset($filtro['v.seguimientos_id']) && $filtro['v.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('v.seguimientos_id', $filtro['v.seguimientos_id'], MYSQL_TYPE_INT);
             }
@@ -182,6 +191,7 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
                 $oEmbedVideo->sTitulo = $oObj->sTitulo;
                 $oEmbedVideo->sDescripcion = $oObj->sDescripcion;
                 $oEmbedVideo->sOrigen = $oObj->sOrigen;
+                $oEmbedVideo->sUrlKey = $oObj->sUrlKey;
 
                 $aEmbedVideos[] = Factory::getEmbedVideoInstance($oEmbedVideo);
            }
@@ -248,6 +258,60 @@ class EmbedVideoMySQLIntermediary extends EmbedVideoIntermediary
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
             return false;
+        }
+    }
+
+    public function obtenerEmbedVideoDestacado($filtro)
+    {
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        v.id as iId,
+                        v.codigo as sCodigo,
+                        v.orden as iOrden,
+                        v.titulo as sTitulo,
+                        v.descripcion as sDescripcion,
+                        v.origen as sOrigen,
+                        v.urlKey as sUrlKey
+                    FROM
+                        embed_videos v ";
+
+            $WHERE = array();
+
+            if(isset($filtro['v.seguimientos_id']) && $filtro['v.seguimientos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('v.seguimientos_id', $filtro['v.seguimientos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['v.fichas_abstractas_id']) && $filtro['v.fichas_abstractas_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('v.fichas_abstractas_id', $filtro['v.fichas_abstractas_id'], MYSQL_TYPE_INT);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+           
+            $sSQL .= " order by v.orden asc ";         
+            $sSQL .= " limit  1";
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+            
+            $oObj = $db->oNextRecord();
+
+            $oEmbedVideo = new stdClass();
+            $oEmbedVideo->iId = $oObj->iId;
+            $oEmbedVideo->sCodigo = $oObj->sCodigo;
+            $oEmbedVideo->iOrden = $oObj->iOrden;
+            $oEmbedVideo->sTitulo = $oObj->sTitulo;
+            $oEmbedVideo->sDescripcion = $oObj->sDescripcion;
+            $oEmbedVideo->sOrigen = $oObj->sOrigen;
+            $oEmbedVideo->sUrlKey = $oObj->sUrlKey;
+
+            return Factory::getEmbedVideoInstance($oEmbedVideo);
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
         }
     }
     

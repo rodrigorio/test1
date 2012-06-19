@@ -108,9 +108,13 @@ class Foto
         $this->sDescripcion = $sDescripcion;
         return $this;
     }
-    public function getDescripcion()
+    public function getDescripcion($nl2br = false)
     {
-        return $this->sDescripcion;
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
     }
 
     /**

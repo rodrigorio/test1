@@ -184,21 +184,44 @@ class IndexControllerIndex extends PageControllerAbstract
     }
 
     /**
-     * Vista ampliada de un video.. para utilizar con algun visor de javascript
+     * Vista ampliada de un video.. para utilizar con algun visor de javascript en modo iframe
      */
-    public function ampliarVideo()
+    public function video()
     {
-        $iEmbedVideoId = $this->getRequest()->getParam('embedVideoId');
+        $sUrlKey = $this->getRequest()->getParam('v');
+        $iEmbedVideoId = $this->getRequest()->getParam('id');
 
-        if(empty($iEmbedVideoId)){
+        if(empty($sUrlKey) || empty($iEmbedVideoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-01.gui.html", "frame");
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
 
-        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
-        $this->getTemplate()->set_var("popUpContent", $this->getEmbedVideoHelper()->getEmbedVideoCode($oEmbedVideo));
+        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoUrlKey($iEmbedVideoId, $sUrlKey);
 
+        if(null === $oEmbedVideo){
+            throw new Exception("El video no existe", 404);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "videoAmpliarHtml", "VideoAmpliarBlock");
+
+        if(null !== $oEmbedVideo->getTitulo()){
+            $this->getTemplate()->set_var("sTitulo", $oEmbedVideo->getTitulo());
+        }else{
+            $this->getTemplate()->set_var("TituloVideoAmpliarBlock", "");
+        }
+
+        $this->getTemplate()->set_var("sEmbedCode", $this->getEmbedVideoHelper()->getEmbedVideoCode($oEmbedVideo));
+
+        if(null !== $oEmbedVideo->getDescripcion()){
+            $this->getTemplate()->set_var("sDescripcion", $oEmbedVideo->getDescripcion(true));
+        }else{
+            $this->getTemplate()->set_var("DescripcionVideoAmpliarBlock", "");
+        }
+
+        $videoAmpliarHtml = $this->getTemplate()->pparse("videoAmpliarHtml");
+        $this->getTemplate()->set_var("popUpContent", $videoAmpliarHtml);
+            
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 }
