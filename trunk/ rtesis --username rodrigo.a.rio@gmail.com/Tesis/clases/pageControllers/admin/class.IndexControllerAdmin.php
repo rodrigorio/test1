@@ -86,6 +86,9 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("sHrefCategoriaCargar", $request->getBaseTagUrl()."admin/nueva-categoria");
         $template->set_var("sHrefCategoriaListar", $request->getBaseTagUrl()."admin/listar-categoria");
 
+        //publicaciones
+        $template->set_var("sHrefPublicacionesListar", $request->getBaseTagUrl()."admin/publicaciones");
+
         //personas
         $template->set_var("sHrefDiscapacitadosListar", $request->getBaseTagUrl()."admin/personas");
 

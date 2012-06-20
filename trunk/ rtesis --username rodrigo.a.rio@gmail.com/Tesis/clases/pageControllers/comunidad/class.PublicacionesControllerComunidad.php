@@ -279,12 +279,15 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sPublico", $sPublico);
 
                     //si esta marcada como publica y no esta moderada muestro un cartel
+                    /*
                     if($bPublico && !$oFicha->isModerado()){
                         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", "MsgFichaInfoBlock");
                         $this->getTemplate()->set_var("sTituloMsgFicha", "Moderación Pendiente");
                         $this->getTemplate()->set_var("sMsgFicha", "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.");
                         $this->getTemplate()->parse("sMensajePublicacion", false);
                     }
+                     * 
+                     */
 
                     $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
 
