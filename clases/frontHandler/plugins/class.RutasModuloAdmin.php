@@ -286,5 +286,12 @@ class RutasModuloAdmin
                                     'action'     => 'form'
                                 ));
         $router->addRoute('adminPublicacionesForm', $route);
+        $route = new RegexRoute('admin/publicaciones-moderacion',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'publicaciones',
+                                    'action'     => 'listarModeraciones'
+                                ));
+        $router->addRoute('adminPublicacionesModerar', $route);
     }
 }
