@@ -141,6 +141,7 @@ class RutasModuloAdmin
                                         'action'     => 'buscarCategoria'
                                 ));
         $router->addRoute('adminCategoriaBuscar', $route);
+        $router->addRoute('adminProcesarModeracion', $route);
         $route = new RegexRoute('admin/personas-moderacion',
                                 array(
                                         'module' => 'admin',
@@ -204,6 +205,8 @@ class RutasModuloAdmin
                                     'action'     => 'form'
                                 ));
         $router->addRoute('adminAccionesPerfilForm', $route);
+
+        //usuarios
         $route = new RegexRoute('admin/usuarios',
                                 array(
                                         'module' => 'admin',
@@ -260,5 +263,28 @@ class RutasModuloAdmin
                                         'action'     => 'exportar'
                                 ));
         $router->addRoute('adminUsuariosExportar', $route);
+
+        //publicaciones
+        $route = new RegexRoute('admin/publicaciones',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'publicaciones',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminPublicacionesIndex', $route);
+        $route = new RegexRoute('admin/publicaciones-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'publicaciones',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminPublicacionesProcesar', $route);
+        $route = new RegexRoute('admin/publicaciones-form',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'publicaciones',
+                                    'action'     => 'form'
+                                ));
+        $router->addRoute('adminPublicacionesForm', $route);
     }
 }

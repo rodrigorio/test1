@@ -130,7 +130,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             $activoComentarios = $oPublicacion->isActivoComentarios()?"1":"0";
              
             $sSQL = " update publicaciones set ".
-                    " moderado = ".$moderado.", ".
                     " publico = ".$publico.", ".
                     " activoComentarios = ".$activoComentarios.", ".
                     " descripcionBreve = ".$db->escape($oPublicacion->getDescripcionBreve(), true).", ".
@@ -241,7 +240,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             }
 
             $sSQL = " update reviews set ".
-                    " moderado = ".$moderado.", ".
                     " publico = ".$publico.", ".
                     " activoComentarios = ".$activoComentarios.", ".
                     " descripcionBreve = ".$db->escape($oReview->getDescripcionBreve(), true).", ".
@@ -277,7 +275,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           f.descripcion as sDescripcion,
                           
                           p.usuarios_id as iUsuarioId,
-                          p.moderado as bModerado,
                           p.publico as bPublico,
                           p.activoComentarios as bActivoComentarios,
                           p.descripcionBreve as sDescripcionBreve,
@@ -311,7 +308,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             	$oPublicacion->bActivo = ($oObj->bActivo == "1")?true:false;
             	$oPublicacion->sDescripcion = $oObj->sDescripcion;
             	$oPublicacion->iUsuarioId = $oObj->iUsuarioId;
-            	$oPublicacion->bModerado = ($oObj->bModerado == "1") ? true:false;
             	$oPublicacion->bPublico = ($oObj->bPublico == "1") ? true:false;
             	$oPublicacion->bActivoComentarios = ($oObj->bActivoComentarios == "1")?true:false;
             	$oPublicacion->sDescripcionBreve = $oObj->sDescripcionBreve;
@@ -340,7 +336,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           f.descripcion as sDescripcion,
 
                           r.usuarios_id as iUsuarioId,
-                          r.moderado as bModerado,
                           r.publico as bPublico,
                           r.activoComentarios as bActivoComentarios,
                           r.descripcionBreve as sDescripcionBreve,
@@ -380,7 +375,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             	$oReview->bActivo = ($oObj->bActivo == "1") ? true : false;
             	$oReview->sDescripcion = $oObj->sDescripcion;
             	$oReview->iUsuarioId = $oObj->iUsuarioId;
-            	$oReview->bModerado = ($oObj->bModerado == "1") ? true:false;
             	$oReview->bPublico = ($oObj->bPublico == "1") ? true:false;
             	$oReview->bActivoComentarios = ($oObj->bActivoComentarios == "1")?true:false;
             	$oReview->sDescripcionBreve = $oObj->sDescripcionBreve;
@@ -420,7 +414,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           f.descripcion as sDescripcion,
 
                           p.usuarios_id as iUsuarioIdP,
-                          p.moderado as bModeradoP,
                           p.publico as bPublicoP,
                           p.activoComentarios as bActivoComentariosP,
                           p.descripcionBreve as sDescripcionBreveP,
@@ -506,7 +499,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                     $oPublicacion->bActivo = ($oObj->bActivo == "1") ? true : false;
                     $oPublicacion->sDescripcion = $oObj->sDescripcion;
                     $oPublicacion->iUsuarioId = $oObj->iUsuarioIdP;
-                    $oPublicacion->bModerado = ($oObj->bModeradoP == "1") ? true:false;
                     $oPublicacion->bPublico = ($oObj->bPublicoP == "1") ? true:false;
                     $oPublicacion->bActivoComentarios = ($oObj->bActivoComentariosP == "1")?true:false;
                     $oPublicacion->sDescripcionBreve = $oObj->sDescripcionBreveP;
@@ -523,7 +515,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                     $oReview->bActivo = ($oObj->bActivo == "1") ? true : false;
                     $oReview->sDescripcion = $oObj->sDescripcion;
                     $oReview->iUsuarioId = $oObj->iUsuarioIdR;
-                    $oReview->bModerado = ($oObj->bModeradoR == "1") ? true:false;
                     $oReview->bPublico = ($oObj->bPublicoR == "1") ? true:false;
                     $oReview->bActivoComentarios = ($oObj->bActivoComentariosR == "1")?true:false;
                     $oReview->sDescripcionBreve = $oObj->sDescripcionBreveR;
