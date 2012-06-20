@@ -5,7 +5,6 @@ class Publicacion extends FichaAbstract implements PublicacionesInterface
     private $iUsuarioId;
     private $oUsuario;
     private $bActivoComentarios = true;
-    private $bModerado = false;
     private $bPublico = false;
     private $sDescripcionBreve;
     private $sKeywords;
@@ -38,16 +37,7 @@ class Publicacion extends FichaAbstract implements PublicacionesInterface
         $this->oUsuario = $oUsuario;
         return $this;
     }
-    
-public function isModerado($flag = null){
-        if(null !== $flag){
-            $this->bModerado = $flag ? true : false;
-            return $this;
-        }else{
-            return $this->bModerado;
-        }
- }
- 
+     
 public function isPublico($flag = null){
         if(null !== $flag){
             $this->bPublico = $flag ? true : false;

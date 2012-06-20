@@ -8,7 +8,6 @@ interface PublicacionesInterface
 {
     public function setUsuarioId($iUsuarioId);
     public function setUsuario($oUsuario);
-    public function isModerado($flag = null);
     public function isPublico($flag = null);
     public function isActivoComentarios($flag = null);
     public function setDescripcionBreve($sDescripcionBreve);

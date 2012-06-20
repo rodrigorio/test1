@@ -5,7 +5,6 @@ class Review extends FichaAbstract implements PublicacionesInterface
     private $iUsuarioId;
     private $oUsuario;
     private $bActivoComentarios;
-    private $bModerado;
     private $bPublico;
     private $sDescripcionBreve;
     private $sKeywords;
@@ -80,15 +79,6 @@ class Review extends FichaAbstract implements PublicacionesInterface
     {
         $this->oUsuario = $oUsuario;
         return $this;
-    }
-
-    public function isModerado($flag = null){
-        if(null !== $flag){
-            $this->bModerado = $flag ? true : false;
-            return $this;
-        }else{
-            return $this->bModerado;
-        }
     }
 
     public function isPublico($flag = null){
