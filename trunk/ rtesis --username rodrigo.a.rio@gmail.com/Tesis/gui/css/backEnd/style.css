@@ -947,6 +947,7 @@ legend {
 .ie8 legend, .ie7 legend { margin-bottom:30px; }
 .ie8 legend { top:-25px; }
 .ie7 legend { top:-35px; }
+
 form dt {
 	width:150px;
 	text-align:right;
@@ -955,6 +956,15 @@ form dd {
 	position:relative;
 	top:-24px;
 	left:165px;
+}
+
+#popUpCont form dt{
+    width:100px !important;
+}
+
+#popUpCont form dd{
+    left:115px !important;
+    max-width:500px !important;
 }
 
 .autoComplete{

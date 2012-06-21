@@ -246,25 +246,75 @@
 </div>
 <form id="formPublicacion" name="formPublicacion" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    
     <dt>
         <label for="titulo">T&iacute;tulo</label>
     </dt>
     <dd>
         <input name="titulo" id="titulo" type="text" class="medium" maxlength="255" value="{sTitulo}">
+        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcionBreve">Descripcion Breve</label>
+    </dt>
+    <dd>
+        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
+        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
     </dd>
     
     <dt>
-        <label for="sexo">Sexo</label>
+        <label for="activo">Visible?</label>
     </dt>
     <dd>
-        <select name="sexo" id="sexo" title="Sexo" class="small">
-            <option value="">Elija Sexo:</option>
-            <option value="m">Masculino</option>
-            <option value="f">Femenino</option>
+        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivo} value="1">S&iacute;</option>
+            <option {sSelectedDesactivado} value="0">No</option>
         </select>
+        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
     </dd>
 
-    <button id="crearUsuario" name="crearUsuario" type="submit">Crear Usuario</button>
+    <dt>
+        <label for="publico">Alcance Privacidad?</label>
+    </dt>
+    <dd>
+        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedPublico} value="1">El mundo</option>
+            <option {sSelectedComunidad} value="0">Solo comunidad</option>
+        </select>
+        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+    </dd>
+
+    <dt>
+        <label for="activoComentarios">Activar Comentarios?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+            <option {sSelectedDesactivadoComentarios} value="0">No</option>
+        </select>
+        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Contenido Publicaci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="keywords">Palabras Clave</label>
+    </dt>
+    <dd>
+        <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+    </dd>
+   
+    <button id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
     <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
 </form>
 <!--EndFormularioPublicacionBlock-->

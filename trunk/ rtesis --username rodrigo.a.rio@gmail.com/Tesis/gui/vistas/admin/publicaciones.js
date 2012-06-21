@@ -232,7 +232,7 @@ function editarPublicacion(iPublicacionId, tipo){
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
-                width:600,
+                width:700,
                 resizable:false,
                 draggable:true,
                 modal:false,
