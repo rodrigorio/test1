@@ -397,4 +397,16 @@ class AdminController
             throw new Exception($e->getMessage());
         }
     }
+
+    /**
+     * Se diferencia del metodo que lleva el mismo nombre en el controlador de comunidad
+     */
+    public function buscarPublicacionesComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }

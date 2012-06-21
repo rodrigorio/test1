@@ -64,49 +64,50 @@
             <table class="mabo2">
                 <thead>
                     <tr>
-                        <th class="iveal">Nombre completo {orderByNombre}</th>
+                        <th class="iveal">Nombre autor {orderByAutor}</th>
+                        <th class="iveal">T&iacute;tulo Publicaci&oacute;n {orderByTitulo}</th>
+                        <th class="iveal">Fecha {orderByFecha}</th>
+                        <th class="iveal">Estado {orderByActivo}</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                <!--BeginUsuarioBlock-->
-                    <tr class="{iUsuarioId}" class="{odd}">
-                        <td>
-                            <a id="fotoPerfilActual_{iUsuarioId}" href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
-                                <img src="{scrAvatarUsuario}" />
-                            </a>
+                <!--BeginPublicacionBlock-->
+                    <tr class="{iPublicacionId}">
+                        <td>                            
+                            <img src="{scrAvatarAutor}" class="pari" />
+                            <span class="fowe_bo">{sAutor}</span>
+                        </td>
+                        <td class="teal_le">
+                            {sTitulo}
                         </td>
                         <td>
-                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sNombreUsuario}</a>
+                            {sFecha}
                         </td>
-                        <td>{sPerfil}</td>
-                        <td><a href="mailto:{sEmail}">{sEmail}</a></td>
                         <td>
-                            <select class="cambiarEstadoUsuario" name="estadoUsuario_{iUsuarioId}" id="estadoUsuario_{iUsuarioId}" rel="{iUsuarioId}">
-                                <option value="1" {sSelectedUsuarioActivo}>Activo</option>
-                                <option value="0" {sSelectedUsuarioSuspendido}>Suspendido</option>
+                            <select class="cambiarEstadoPublicacion" name="estadoPublicacion_{iPublicacionId}" id="estadoPublicacion_{iPublicacionId}" rel="{sTipo}_{iPublicacionId}">
+                                <option value="1" {sSelectedPublicacionActivo}>Activa</option>
+                                <option value="0" {sSelectedPublicacionDesactivado}>Desactivada</option>
                             </select>
                         </td>
                         <td class="teal_ce">
-                            <a rel="tooltip" original-title="Editar Usuario" href="{hrefEditarUsuario}?editar=1&iUsuarioId={iUsuarioId}"><span class="i bs edit ihover"></span></a>
-                            <!--BeginDeleteButton-->
-                            <span title="cerrar cuenta usuario" rel="{iUsuarioId}" class="i bs delete ihover cerrarCuentaUsuario"></span>
-                            <!--EndDeleteButton-->
+                            <span title="Editar" rel="{sTipo}_{iPublicacionId}" class="i bs edit ihover editarPublicacion"></span>
+                            <span title="Eliminar" rel="{sTipo}_{iPublicacionId}" class="i bs delete ihover borrarPublicacion"></span>
                         </td>
                     </tr>
-                <!--EndUsuarioBlock-->
-                <!--BeginNoRecordsUsuariosBlock-->
+                <!--EndPublicacionBlock-->
+                <!--BeginNoRecordsPublicacionesBlock-->
                     <tr>
                         <td colspan="6">{sNoRecords}</td>
                     </tr>
-                <!--EndNoRecordsUsuariosBlock-->
+                <!--EndNoRecordsPublicacionesBlock-->
                 </tbody>
             </table>
             {paginacion}
-            <!--EndGrillaUsuariosBlock-->
+            <!--EndGrillaPublicacionesBlock-->
         </div>
 </section>
-<!--EndListadoUsuariosBlock-->
+<!--EndListadoPublicacionesBlock-->
 
 <!--BeginFichaUsuarioBlock-->
 <article class="full-block pa2 clearfix mabo0">
@@ -237,83 +238,21 @@
 </article>
 <!--EndFichaUsuarioBlock-->
 
-<!--BeginFormularioCrearBlock-->
-<div class="notification note">
-    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p>Al crear un usuario se requieren los datos m&iacute;nimos. Una vez creado el usuario se podr&aacute;n editar por completo.</p>
-</div>
-<h1 class="teta_up">Crear un nuevo usuario</h1>
-<div style="display:none"  id='msg_form_crearUsuario' class="notification">
+<!--BeginFormularioPublicacionBlock-->
+<h1 class="teta_up">Modificar publicaci&oacute;n</h1>
+<div style="display:none"  id='msg_form_publicacion' class="notification">
     <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
     <p class="msg"></p>
 </div>
-<form id="formCrearUsuario" name="formCrearUsuario" action="" method="post">
+<form id="formPublicacion" name="formPublicacion" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <fieldset>
-        <legend>Documento</legend>
-        <dl>
-            <dt>
-                <label for="tipoDocumento">Tipo Documento</label>
-            </dt>
-            <dd>
-                <select name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento" class="small">
-                    <option value="">Tipo:</option>
-                    <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
-                </select>
-            </dd>
-            <dt>
-                <label for="nroDocumento">N&uacute;mero Documento</label>
-            </dt>
-            <dd>
-                <input maxlength="8" name="nroDocumento" id="nroDocumento" type="text" class="small" value="">
-            </dd>
-        </dl>
-    </fieldset>
     <dt>
-        <label for="nombre">Nombre</label>
+        <label for="titulo">T&iacute;tulo</label>
     </dt>
     <dd>
-        <input name="nombre" id="nombre" type="text" class="small" value="">
+        <input name="titulo" id="titulo" type="text" class="medium" maxlength="255" value="{sTitulo}">
     </dd>
-    <dt>
-        <label for="apellido">Apellido</label>
-    </dt>
-    <dd>
-        <input name="apellido" id="apellido" type="text" class="small" value="">
-    </dd>
-    <dt>
-        <label for="email">E-mail</label>
-    </dt>
-    <dd>
-        <input name="email" id="email" type="text" class="small" value="">
-    </dd>
-    <dt>
-        <label for="nombreUsuario">Nombre Usuario</label>
-    </dt>
-    <dd>
-        <input name="nombreUsuario" id="nombreUsuario" type="text" class="small" value="">
-    </dd>
-
-    <fieldset>
-        <legend>Contrase&ntilde;a</legend>
-        <dl>
-            <dt>
-                <label for="contrasenia">Contrase&ntilde;a</label>
-            </dt>
-            <dd>
-                <input class="small" type="password" name="contrasenia" id="contrasenia" title="Contrasenia" maxlength="30" />
-                <p>La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</p>
-                <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
-            </dd>
-            <dt>
-                <label for="contraseniaConfirmar">Vuelva a Ingresarla</label>
-            </dt>
-            <dd>
-                <input class="small" type="password" name="reContrasenia" id="reContrasenia" title="Confirmar Contrase&ntilde;a" maxlength="30" />
-            </dd>
-        </dl>
-    </fieldset>
-
+    
     <dt>
         <label for="sexo">Sexo</label>
     </dt>
@@ -325,41 +264,7 @@
         </select>
     </dd>
 
-    <fieldset>
-        <legend>Fecha Nacimiento</legend>
-        <dl>
-            <dt>
-                <label for="fechaNacimientoDia">D&iacute;a</label>
-            </dt>
-            <dd>
-                <select class="small" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
-                    <option value="">D&iacute;a:</option>
-                    <!--BeginOptionSelectDia--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDia-->
-                </select>
-            </dd>
-
-            <dt>
-                <label for="fechaNacimientoMes">Mes</label>
-            </dt>
-            <dd>
-                <select class="small" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
-                    <option value="">Mes:</option>
-                    <!--BeginOptionSelectMes--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectMes-->
-                </select>
-            </dd>
-
-            <dt>
-                <label for="fechaNacimientoAnio">A&ntilde;o</label>
-            </dt>
-            <dd>
-                <select class="small" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
-                    <option value="">A&ntilde;o:</option>
-                    <!--BeginOptionSelectAnio--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectAnio-->
-                </select>
-            </dd>
-        </dl>
-    </fieldset>
-
     <button id="crearUsuario" name="crearUsuario" type="submit">Crear Usuario</button>
+    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
 </form>
-<!--EndFormularioCrearBlock-->
+<!--EndFormularioPublicacionBlock-->

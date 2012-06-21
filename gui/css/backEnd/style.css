@@ -1352,3 +1352,6 @@ body.login { background:#e6e6e6; }
 
 /* positioning */
 .ui-icon-closethick{background-position:-96px -128px}
+
+/* datepicker */
+.ui-datepicker{background-color:#FFF; border:1px solid #CCC; z-index:10 !important}

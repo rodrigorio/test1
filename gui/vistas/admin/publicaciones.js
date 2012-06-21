@@ -195,7 +195,7 @@ function selectItemTypeReviewEvent(){
 function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
     $.ajax({
         type: "POST",
-        url: "comunidad/publicaciones/procesar",
+        url: "admin/publicaciones-procesar",
         data:{
             iPublicacionId:iPublicacionId,
             estadoPublicacion:valor,
@@ -223,21 +223,18 @@ function editarPublicacion(iPublicacionId, tipo){
     }
     dialog = $('<div id="dialog" title="Modificar '+tipo+'"></div>').appendTo('body');
 
-    var url = "";
-    switch(tipo){
-        case "publicacion": url = "comunidad/publicaciones/form-modificar-publicacion"; break;
-        case "review": url = "comunidad/publicaciones/form-modificar-review"; break;
-    }
-
     dialog.load(
-        url+"?publicacionId="+iPublicacionId,
-        {},
+        "admin/publicaciones-form",
+        {
+            iPublicacionId:iPublicacionId,
+            objType:tipo
+        },
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
-                width:550,
+                width:600,
                 resizable:false,
-                draggable:false,
+                draggable:true,
                 modal:false,
                 closeOnEscape:true
             });
@@ -339,15 +336,20 @@ function masPublicaciones(){
     var filtroFechaDesde = $('#filtroFechaDesde').val();
     var filtroFechaHasta = $('#filtroFechaHasta').val();
 
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
     $.ajax({
         type:"POST",
-        url:"comunidad/publicaciones/procesar",
+        url:"admin/publicaciones-procesar",
         data:{
             masPublicaciones:"1",
             filtroTitulo: filtroTitulo,
             filtroApellidoAutor: filtroApellidoAutor,
             filtroFechaDesde: filtroFechaDesde,
-            filtroFechaHasta: filtroFechaHasta
+            filtroFechaHasta: filtroFechaHasta,
+            sOrderBy: sOrderBy,
+            sOrder: sOrder
         },
         beforeSend: function(){
             setWaitingStatus('listadoPublicaciones', true);
@@ -355,7 +357,6 @@ function masPublicaciones(){
         success:function(data){
             setWaitingStatus('listadoPublicaciones', false);
             $("#listadoPublicacionesResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
         }
     });
 }
@@ -365,7 +366,7 @@ function borrarPublicacion(iPublicacionId, tipo){
         $.ajax({
             type:"post",
             dataType: 'jsonp',
-            url:"comunidad/publicaciones/procesar",
+            url:"admin/publicaciones-procesar",
             data:{
                 iPublicacionId:iPublicacionId,
                 objType:tipo,
@@ -379,7 +380,7 @@ function borrarPublicacion(iPublicacionId, tipo){
 
                 var dialog = $("#dialog");
                 if($("#dialog").length){
-                    dialog.attr("title","Borrar Publicación");
+                    dialog.attr("title", "Borrar Publicación");
                 }else{
                     dialog = $('<div id="dialog" title="Borrar Publicación"></div>').appendTo('body');
                 }
@@ -490,7 +491,7 @@ $(document).ready(function(){
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
-        masMisPublicaciones();
+        masPublicaciones();
     });
 
     $(".cambiarEstadoPublicacion").live("change", function(){
