@@ -185,33 +185,38 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     private function comentariosFicha($oFicha)
     {
         $comentarios = "";
-        $aComentarios = $oFicha->getComentarios();
-        $iCantidad = count($aComentarios);
-        if($iCantidad > 0){
-            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "listaComentarios", "ComentariosBlock");
-            $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
-            $this->getTemplate()->set_var("totalComentarios", $iCantidad);
+        
+        if($oFicha->isActivoComentarios()){            
+            $aComentarios = $oFicha->getComentarios();
+            $iCantidad = count($aComentarios);
+            if($iCantidad > 0){
+                $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "listaComentarios", "ComentariosBlock");
+                $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
+                $this->getTemplate()->set_var("totalComentarios", $iCantidad);
 
-            //solo muestro los ultimos 3
-            if($iCantidad > 3){ $i = $iCantidad - 3; }else{ $i = 0; }
-            for($i; $i < $iCantidad; $i++){
-                $oComentario = $aComentarios[$i];
-                $oUsuario = $oComentario->getUsuario();
-                $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                //solo muestro los ultimos 3
+                if($iCantidad > 3){ $i = $iCantidad - 3; }else{ $i = 0; }
+                for($i; $i < $iCantidad; $i++){
+                    $oComentario = $aComentarios[$i];
+                    $oUsuario = $oComentario->getUsuario();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
-                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+                    $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
 
-                $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
-                $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
-                $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-                $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                    $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                    $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
 
-                $this->getTemplate()->parse("ComentarioBlock", true);
-            }
+                    $this->getTemplate()->parse("ComentarioBlock", true);
+                }
+
+                $comentarios = $this->getTemplate()->pparse("listaComentarios");
+            }            
         }
         
-        $comentarios = $this->getTemplate()->pparse("listaComentarios");
-        $this->getTemplate()->set_var("comentarios", $comentarios);        
+        $this->getTemplate()->set_var("comentarios", $comentarios);
+        
         $this->getTemplate()->delete_parsed_blocks("ComentarioBlock");
         $this->getTemplate()->delete_parsed_blocks("ComentariosBlock");
     }

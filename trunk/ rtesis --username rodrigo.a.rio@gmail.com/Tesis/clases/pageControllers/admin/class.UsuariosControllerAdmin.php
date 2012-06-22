@@ -1287,122 +1287,126 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
-    private function verDatos(){
-        
-        $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
-        if(empty($iUsuarioId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
+    private function verDatos()
+    {
+        try{
+            $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
+            if(empty($iUsuarioId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
 
-        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "popUpContent", "FichaUsuarioBlock");
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "popUpContent", "FichaUsuarioBlock");
 
-        $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+            $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
 
-        $hrefDescargarCvActual = "";
-        if(null !== $oUsuario->getCurriculumVitae()){
-            $oArchivo = $oUsuario->getCurriculumVitae();
-            $hrefDescargarCvActual = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
-            $this->getTemplate()->set_var("hrefDescargarCvActual", $hrefDescargarCvActual);
-        }else{
-            $this->getTemplate()->set_var("DescargarButton", "");
-        }
-       
-        $iPaisId = "";
-        $iProvinciaId = "";
-        $iCiudadId = "";
-        $sUbicacion = "";
-        if(null != $oUsuario->getCiudad()){
-            $iCiudadId = $oUsuario->getCiudad()->getId();
-            $sUbicacion .= $oUsuario->getCiudad()->getNombre();
-            if(null != $oUsuario->getCiudad()->getProvincia()){
-                $iProvinciaId = $oUsuario->getCiudad()->getProvincia()->getId();
-                $sUbicacion .= " ".$oUsuario->getCiudad()->getProvincia()->getNombre();
-                if(null != $oUsuario->getCiudad()->getProvincia()->getPais()){
-                    $iPaisId = $oUsuario->getCiudad()->getProvincia()->getPais()->getId();
-                    $sUbicacion .= " ".$oUsuario->getCiudad()->getProvincia()->getPais()->getNombre();
+            $hrefDescargarCvActual = "";
+            if(null !== $oUsuario->getCurriculumVitae()){
+                $oArchivo = $oUsuario->getCurriculumVitae();
+                $hrefDescargarCvActual = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+                $this->getTemplate()->set_var("hrefDescargarCvActual", $hrefDescargarCvActual);
+            }else{
+                $this->getTemplate()->set_var("DescargarButton", "");
+            }
+
+            $iPaisId = "";
+            $iProvinciaId = "";
+            $iCiudadId = "";
+            $sUbicacion = "";
+            if(null != $oUsuario->getCiudad()){
+                $iCiudadId = $oUsuario->getCiudad()->getId();
+                $sUbicacion .= $oUsuario->getCiudad()->getNombre();
+                if(null != $oUsuario->getCiudad()->getProvincia()){
+                    $iProvinciaId = $oUsuario->getCiudad()->getProvincia()->getId();
+                    $sUbicacion .= " ".$oUsuario->getCiudad()->getProvincia()->getNombre();
+                    if(null != $oUsuario->getCiudad()->getProvincia()->getPais()){
+                        $iPaisId = $oUsuario->getCiudad()->getProvincia()->getPais()->getId();
+                        $sUbicacion .= " ".$oUsuario->getCiudad()->getProvincia()->getPais()->getNombre();
+                    }
                 }
             }
+
+            $iInstitucionId = "";
+            $sNombreInstitucion = "";
+            if(null != $oUsuario->getInstitucion()){
+                $iInstitucionId = $oUsuario->getInstitucion()->getId();
+                $sNombreInstitucion = $oUsuario->getInstitucion()->getNombre();
+            }
+
+            //foto de perfil actual
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            if(null != $oUsuario->getFotoPerfil()){
+                $oFoto = $oUsuario->getFotoPerfil();
+                $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                $scrFotoPerfilActual = $pathFotoServidorMediumSize;
+                $hrefFotoPerfilActualAmpliada = $pathFotoServidorBigSize;
+                $this->getTemplate()->set_var("scrFotoPerfilActual", $scrFotoPerfilActual);
+                $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $hrefFotoPerfilActualAmpliada);
+            }else{
+                $this->getTemplate()->unset_blocks("FotoPerfilActualBlock");
+            }
+
+            $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+            $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
+
+            $sNombre = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+            $sEmail = $oUsuario->getEmail();
+            $sSexo = ($oUsuario->getSexo() == 'm')?"Masculino":"Femenino";
+            $sFechaNacimiento = Utils::fechaFormateada($oUsuario->getFechaNacimiento(), "d/m/Y");
+            $sCiudadOrigen = $oUsuario->getCiudadOrigen();
+            $sCodigoPostal = $oUsuario->getCodigoPostal();
+            $sDireccion = $oUsuario->getDomicilio();
+            $sTelefono = $oUsuario->getTelefono();
+            $sCelular = $oUsuario->getCelular();
+            $sFax = $oUsuario->getFax();
+            $sInstitucionCargo = $oUsuario->getCargoInstitucion();
+            $sBiografia = $oUsuario->getBiografia();
+            $sEmpresa = $oUsuario->getEmpresa();
+            $sSecundaria = $oUsuario->getSecundaria();
+            $sUniversidad = $oUsuario->getUniversidad();
+            $sCarrera = $oUsuario->getUniversidadCarrera();
+            $sFinalizada = ($oUsuario->isCarreraFinalizada())?"Sí":"No";
+            $sSitioWeb = $oUsuario->getSitioWeb();
+
+            $sEspecialidad = "";
+            if(null != $oUsuario->getEspecialidad()){
+                $sEspecialidad = $oUsuario->getEspecialidad()->getNombre();
+            }
+
+            $this->getTemplate()->set_var("iUsuarioId", $iUsuarioId);
+            $this->getTemplate()->set_var("sDocumento", $sDocumento);
+            $this->getTemplate()->set_var("sNombre", $sNombre);
+            $this->getTemplate()->set_var("sEmail", $sEmail);
+            $this->getTemplate()->set_var("sSexo", $sSexo);
+            $this->getTemplate()->set_var("sFechaNacimiento", $sFechaNacimiento);
+            $this->getTemplate()->set_var("sUbicacion", $sUbicacion);
+            $this->getTemplate()->set_var("sCiudadOrigen", $sCiudadOrigen);
+            $this->getTemplate()->set_var("sCodigoPostal", $sCodigoPostal);
+            $this->getTemplate()->set_var("sDireccion", $sDireccion);
+            $this->getTemplate()->set_var("sTelefono", $sTelefono);
+            $this->getTemplate()->set_var("sCelular", $sCelular);
+            $this->getTemplate()->set_var("sFax", $sFax);
+            $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
+            $this->getTemplate()->set_var("sNombreInstitucion", $sNombreInstitucion);
+            $this->getTemplate()->set_var("sInstitucionCargo", $sInstitucionCargo);
+            $this->getTemplate()->set_var("sBiografia", $sBiografia);
+            $this->getTemplate()->set_var("sEmpresa", $sEmpresa);
+            $this->getTemplate()->set_var("sSecundaria", $sSecundaria);
+            $this->getTemplate()->set_var("sUniversidad", $sUniversidad);
+            $this->getTemplate()->set_var("sCarrera", $sCarrera);
+            $this->getTemplate()->set_var("sFinalizada", $sFinalizada);
+            $this->getTemplate()->set_var("sEspecialidad", $sEspecialidad);
+
+            if(null !== $sSitioWeb){
+                $this->getTemplate()->set_var("sSitioWeb", $sSitioWeb);
+            }else{
+                $this->getTemplate()->set_var("SitioWebButton", "");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e->getMessage());
         }
-
-        $iInstitucionId = "";
-        $sNombreInstitucion = "";
-        if(null != $oUsuario->getInstitucion()){
-            $iInstitucionId = $oUsuario->getInstitucion()->getId();
-            $sNombreInstitucion = $oUsuario->getInstitucion()->getNombre();
-        }
-
-        //foto de perfil actual
-        $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
-        if(null != $oUsuario->getFotoPerfil()){
-            $oFoto = $oUsuario->getFotoPerfil();
-            $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
-            $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
-            $scrFotoPerfilActual = $pathFotoServidorMediumSize;
-            $hrefFotoPerfilActualAmpliada = $pathFotoServidorBigSize;
-            $this->getTemplate()->set_var("scrFotoPerfilActual", $scrFotoPerfilActual);
-            $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $hrefFotoPerfilActualAmpliada);
-        }else{
-            $this->getTemplate()->unset_blocks("FotoPerfilActualBlock");
-        }
-        
-        $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
-        $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
-
-        $sNombre = $oUsuario->getNombre()." ".$oUsuario->getApellido();
-        $sEmail = $oUsuario->getEmail();
-        $sSexo = ($oUsuario->getSexo() == 'm')?"Masculino":"Femenino";
-        $sFechaNacimiento = Utils::fechaFormateada($oUsuario->getFechaNacimiento(), "d/m/Y");
-        $sCiudadOrigen = $oUsuario->getCiudadOrigen();
-        $sCodigoPostal = $oUsuario->getCodigoPostal();
-        $sDireccion = $oUsuario->getDomicilio();
-        $sTelefono = $oUsuario->getTelefono();
-        $sCelular = $oUsuario->getCelular();
-        $sFax = $oUsuario->getFax(); 
-        $sInstitucionCargo = $oUsuario->getCargoInstitucion();
-        $sBiografia = $oUsuario->getBiografia();
-        $sEmpresa = $oUsuario->getEmpresa();
-        $sSecundaria = $oUsuario->getSecundaria();
-        $sUniversidad = $oUsuario->getUniversidad();
-        $sCarrera = $oUsuario->getUniversidadCarrera();
-        $sFinalizada = ($oUsuario->isCarreraFinalizada())?"Sí":"No";
-        $sSitioWeb = $oUsuario->getSitioWeb();       
-                       
-        $sEspecialidad = "";
-        if(null != $oUsuario->getEspecialidad()){
-            $sEspecialidad = $oUsuario->getEspecialidad()->getNombre();
-        }                
-
-        $this->getTemplate()->set_var("iUsuarioId", $iUsuarioId);
-        $this->getTemplate()->set_var("sDocumento", $sDocumento);
-        $this->getTemplate()->set_var("sNombre", $sNombre);
-        $this->getTemplate()->set_var("sEmail", $sEmail);
-        $this->getTemplate()->set_var("sSexo", $sSexo);
-        $this->getTemplate()->set_var("sFechaNacimiento", $sFechaNacimiento);
-        $this->getTemplate()->set_var("sUbicacion", $sUbicacion);
-        $this->getTemplate()->set_var("sCiudadOrigen", $sCiudadOrigen);
-        $this->getTemplate()->set_var("sCodigoPostal", $sCodigoPostal);
-        $this->getTemplate()->set_var("sDireccion", $sDireccion);
-        $this->getTemplate()->set_var("sTelefono", $sTelefono);
-        $this->getTemplate()->set_var("sCelular", $sCelular);
-        $this->getTemplate()->set_var("sFax", $sFax);
-        $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
-        $this->getTemplate()->set_var("sNombreInstitucion", $sNombreInstitucion);
-        $this->getTemplate()->set_var("sInstitucionCargo", $sInstitucionCargo);
-        $this->getTemplate()->set_var("sBiografia", $sBiografia);
-        $this->getTemplate()->set_var("sEmpresa", $sEmpresa);
-        $this->getTemplate()->set_var("sSecundaria", $sSecundaria);
-        $this->getTemplate()->set_var("sUniversidad", $sUniversidad);
-        $this->getTemplate()->set_var("sCarrera", $sCarrera);
-        $this->getTemplate()->set_var("sFinalizada", $sFinalizada);
-        $this->getTemplate()->set_var("sEspecialidad", $sEspecialidad);
-
-        if(null !== $sSitioWeb){
-            $this->getTemplate()->set_var("sSitioWeb", $sSitioWeb);
-        }else{
-            $this->getTemplate()->set_var("SitioWebButton", "");
-        }
-               
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 }

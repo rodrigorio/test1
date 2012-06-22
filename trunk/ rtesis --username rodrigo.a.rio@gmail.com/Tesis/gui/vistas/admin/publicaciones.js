@@ -1,17 +1,19 @@
 //validacion y submit
 var validateFormPublicacion = {
-    errorElement: "div",
-    validClass: "correcto",
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
     onfocusout: false,
     onkeyup: false,
     onclick: false,
     focusInvalid: false,
     focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
     },
-    highlight: function(element){},
-    unhighlight: function(element){},
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
     rules:{
         titulo:{required:true},
         descripcionBreve:{required:true},
@@ -35,13 +37,13 @@ var validateFormPublicacion = {
 var optionsAjaxFormPublicacion = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/guardar-publicacion',
+    url: 'admin/publicaciones-procesar',
     beforeSerialize:function(){
 
         if($("#formPublicacion").valid() == true){
 
             $('#msg_form_publicacion').hide();
-            $('#msg_form_publicacion').removeClass("correcto").removeClass("error");
+            $('#msg_form_publicacion').removeClass("success").removeClass("error2");
             $('#msg_form_publicacion .msg').html("");
             setWaitingStatus('formPublicacion', true);
 
@@ -59,38 +61,34 @@ var optionsAjaxFormPublicacion = {
             }else{
                 $('#msg_form_publicacion .msg').html(data.mensaje);
             }
-            $('#msg_form_publicacion').addClass("error").fadeIn('slow');
+            $('#msg_form_publicacion').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_publicacion .msg').html(lang['exito procesar']);
             }else{
                 $('#msg_form_publicacion .msg').html(data.mensaje);
-            }
-            if(data.agregarPublicacion != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formPublicacion').each(function(){
-                  this.reset();
-                });
-            }
-            $('#msg_form_publicacion').addClass("correcto").fadeIn('slow');
+            }            
+            $('#msg_form_publicacion').addClass("success").fadeIn('slow');
         }
     }
 };
 
 //validacion y submit
 var validateFormReview = {
-    errorElement: "div",
-    validClass: "correcto",
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
     onfocusout: false,
     onkeyup: false,
     onclick: false,
     focusInvalid: false,
     focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
     },
-    highlight: function(element){},
-    unhighlight: function(element){},
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
     rules:{
         itemEventSummary:{required:function(element){
                             return $("#itemType option:selected").val() == "event";
@@ -124,12 +122,12 @@ var validateFormReview = {
 var optionsAjaxFormReview = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/guardar-review',
+    url: 'admin/publicaciones-procesar',
     beforeSerialize:function(){
         if($("#formReview").valid() == true){
 
             $('#msg_form_review').hide();
-            $('#msg_form_review').removeClass("correcto").removeClass("error");
+            $('#msg_form_review').removeClass("success").removeClass("error2");
             $('#msg_form_review .msg').html("");
             setWaitingStatus('formReview', true);
 
@@ -147,20 +145,14 @@ var optionsAjaxFormReview = {
             }else{
                 $('#msg_form_review .msg').html(data.mensaje);
             }
-            $('#msg_form_review').addClass("error").fadeIn('slow');
+            $('#msg_form_review').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_review .msg').html(lang['exito procesar']);
             }else{
                 $('#msg_form_review .msg').html(data.mensaje);
             }
-            if(data.agregarReview != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formReview').each(function(){
-                  this.reset();
-                });
-            }
-            $('#msg_form_review').addClass("correcto").fadeIn('slow');
+            $('#msg_form_review').addClass("success").fadeIn('slow');
         }
     }
 };
@@ -248,14 +240,49 @@ function editarPublicacion(iPublicacionId, tipo){
     );
 }
 
-function editarFoto(iFotoId){
+/**
+ * Tipo es Publicacion/Review
+ */
+function ampliarPublicacion(iPublicacionId, tipo){
 
     var dialog = $("#dialog");
     if ($("#dialog").length != 0){
         dialog.hide("slow");
         dialog.remove();
     }
-    dialog = $('<div id="dialog" title="Editar Foto"></div>').appendTo('body');
+    dialog = $('<div id="dialog" title="Ficha '+tipo+' ID: '+iPublicacionId+'"></div>').appendTo('body');
+
+    dialog.load(
+        "admin/publicaciones-procesar",
+        {
+            ampliarPublicacion:"1",
+            iPublicacionId:iPublicacionId,
+            objType:tipo
+        },
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:700,
+                resizable:false,
+                draggable:true,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsAdmin();
+            $("a[rel^='prettyPhoto']").prettyPhoto();
+        }
+    );
+}
+
+function editarFoto(iFotoId){
+
+    var dialog = $("#dialog2");
+    if ($("#dialog2").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div class="zin2" id="dialog2" title="Editar Foto"></div>').appendTo('body');
 
     dialog.load(
         "comunidad/publicaciones/galeria-fotos/form?iFotoId="+iFotoId,
@@ -277,12 +304,12 @@ function editarFoto(iFotoId){
 
 function editarVideo(iEmbedVideoId){
 
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
+    var dialog = $("#dialog2");
+    if ($("#dialog2").length != 0){
         dialog.hide("slow");
         dialog.remove();
     }
-    dialog = $('<div id="dialog" title="Editar Video"></div>').appendTo('body');
+    dialog = $('<div class="zin2" id="dialog" title="Editar Video"></div>').appendTo('body');
 
     dialog.load(
         "comunidad/publicaciones/galeria-videos/form?iEmbedVideoId="+iEmbedVideoId,
@@ -304,12 +331,12 @@ function editarVideo(iEmbedVideoId){
 
 function editarArchivo(iArchivoId){
 
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
+    var dialog = $("#dialog2");
+    if ($("#dialog2").length != 0){
         dialog.hide("slow");
         dialog.remove();
     }
-    dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
+    dialog = $('<div class="zin2" id="dialog" title="Editar Archivo"></div>').appendTo('body');
 
     dialog.load(
         "comunidad/publicaciones/galeria-archivos/form?iArchivoId="+iArchivoId,
@@ -404,6 +431,25 @@ function borrarPublicacion(iPublicacionId, tipo){
     }
 }
 
+function borrarComentario(iComentarioId){
+    if(confirm("Se borrara el comentario de la publicación, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"admin/publicaciones-procesar",
+            data:{
+                iComentarioId:iComentarioId,
+                eliminarComentario:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#comentario_"+iComentarioId).remove();
+                }
+            }
+        });
+    }
+}
+
 function borrarFoto(iFotoId){
     if(confirm("Se borrara la foto de la publicación, desea continuar?")){
         $.ajax({
@@ -461,6 +507,25 @@ function borrarArchivo(iArchivoId){
     }
 }
 
+function borrarFotoPerfil(iUsuarioId){
+    if(confirm("Se borrara la foto de perfil del usuario, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"admin/usuarios-procesar",
+            data:{
+                iUsuarioId:iUsuarioId,
+                borrarFotoPerfil:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#fotoPerfilActualCont").remove();
+                }
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
@@ -488,6 +553,14 @@ $(document).ready(function(){
         return false;
     });
 
+    $(".ampliarPublicacion").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];
+        ampliarPublicacion(iPublicacionId, tipo);
+        return false;
+    });
+
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
@@ -506,7 +579,12 @@ $(document).ready(function(){
         var tipo = rel[0];
         var iPublicacionId = rel[1];
         borrarPublicacion(iPublicacionId, tipo);
-    })
+    });
+
+    $(".borrarComentario").live('click', function(){
+        var iComentarioId = $(this).attr("rel");
+        borrarComentario(iComentarioId);
+    });
 
     var iPublicacionId = $("#iItemIdForm").val();
     var sTipoItemForm = $("#sTipoItemForm").val();
@@ -540,4 +618,40 @@ $(document).ready(function(){
         var iArchivoId = $(this).attr("rel");
         editarArchivo(iArchivoId);
     });
+
+    $(".verFichaUsuario").live('click',function(){
+
+        var dialog = $("#dialog");
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
+        }
+        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
+
+        dialog.load(
+            "admin/usuarios-procesar?ver=1&iUsuarioId="+$(this).attr('rel'),
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:650,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                bindEventsAdmin();
+                $("a[rel^='prettyPhoto']").prettyPhoto();
+            }
+        );
+        return false;
+    });
+
+    //ficha usuario autor publicacion
+    $("#fotoPerfilBorrar").live('click', function(){
+        var iUsuarioId = $(this).attr("rel");
+        borrarFotoPerfil(iUsuarioId);
+        return false; //porq es un <a>
+    });
+
 });

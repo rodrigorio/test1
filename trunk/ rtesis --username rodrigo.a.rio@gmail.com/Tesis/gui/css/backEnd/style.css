@@ -76,8 +76,10 @@ body, select, input, textarea { color:#666; }
 .miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
 .mihe0{min-height:100px} .mihe1{min-height:200px} .mihe2{min-height:300px} .mihe3{min-height:400px} .mihe4{min-height:500px}
 .fost_it{font-style:italic;}
+.ov_au{overflow:auto} .ov_hi{overflow:hidden}
+.zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}
 
-.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
+.baco1{background-color:#FFF} .baco2{background-color:#E6E6E6} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
 .ba_no{background:none !important}
 .ba_no:hover{background:none !important}
 
@@ -611,7 +613,7 @@ section .sidetab-switch li {
 	-moz-transition:all 400ms ease;
 	-o-transition:all 400ms ease;
 	transition:all 400ms ease;
-/*	line-height:100%;*/
+        /* line-height:100%;*/
 	overflow:visible;
 	width:auto;
 }
@@ -1102,6 +1104,10 @@ table input[type="checkbox"] {
 	position:static;
 }
 
+/*************************************************************/
+/*** VARIOS MIOS PORQUE ESTA BASTANTE INCOMPLETA ESTA HOJA ***/
+/*************************************************************/
+
 /* filas desplegables */
 .desplegable{cursor:pointer}
 
@@ -1118,6 +1124,17 @@ table input[type="checkbox"] {
 .subHeader01{padding:20px 10px; background-color:#F2F2F2; border-top:1px dashed #AAA; border-bottom:1px dashed #AAA}
 
 .paginacion .activo{text-decoration:underline !important}
+
+.fte2{font-size:0.8em}
+.txt_cuidado{color:#F00}
+.txt_imp{font-weight:bold; text-transform:capitalize}
+.txt_imp2{font-weight:bold; text-transform:uppercase}
+p .destacado{font-weight:bold;}
+
+/* para ubicar en posiciones absolutas */
+.topRight{top:5px; right:5px}
+
+
 
 /**********************************************************************/
 /*********** ICONOS, (SON LOS MISMOS PARA TODO EL SISTEMA *************/

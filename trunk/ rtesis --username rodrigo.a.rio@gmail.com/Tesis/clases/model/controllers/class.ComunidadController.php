@@ -913,4 +913,14 @@ class ComunidadController
             return false;
         }            
     }
+
+    public function borrarComentario($iComentarioId)
+    {
+    	try{
+            $oComentarioIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
+            return $oComentarioIntermediary->borrar($iComentarioId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }
