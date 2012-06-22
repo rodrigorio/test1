@@ -23,6 +23,7 @@ abstract class SeguimientoAbstract
    protected $sDiaHorario;
    protected $dFechaCreacion;
    protected $sEstado;
+  
    /*
     * array objetos Foto
     */
@@ -41,6 +42,8 @@ abstract class SeguimientoAbstract
      */
     protected $oAntecedentes;
        
+    protected $oDiagnostico;
+    
     public function __construct(){}
    
     public function setId($id){
@@ -208,5 +211,11 @@ abstract class SeguimientoAbstract
     
     public function setArchivoAntecedentes($oAntecedentes){
         $this->oAntecedentes = $oAntecedentes;
+    }
+    
+    public function getDiagnostico(){
+    	if(!$this->oDiagnostico){
+    		$this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoByIdSeg($this->iId);
+    	}
     }
 }

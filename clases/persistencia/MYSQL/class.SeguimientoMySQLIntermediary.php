@@ -112,10 +112,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $WHERE[] = $this->crearFiltroFechaDesdeHasta('s.fechaCreacion', $filtro['fecha']);
                 }
             }
-
+         	if(isset($filtro['u.id']) && $filtro['u.id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('u.id', $filtro['u.id']);
+            }
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
-            //siempre mando los detenidos al fondo 
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by sEstado asc, $sOrderBy $sOrder ";
             }else{
