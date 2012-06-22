@@ -76,7 +76,7 @@
                     <tr class="{iPublicacionId}">
                         <td>                            
                             <img src="{scrAvatarAutor}" class="pari" />
-                            <span class="fowe_bo">{sAutor}</span>
+                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>                            
                         </td>
                         <td class="teal_le">
                             {sTitulo}
@@ -91,7 +91,8 @@
                             </select>
                         </td>
                         <td class="teal_ce">
-                            <span title="Editar" rel="{sTipo}_{iPublicacionId}" class="i bs edit ihover editarPublicacion"></span>
+                            <span title="Ampliar" rel="{sTipo}_{iPublicacionId}" class="i mi expand ihover ampliarPublicacion mari"></span>
+                            <span title="Editar" rel="{sTipo}_{iPublicacionId}" class="i bs edit ihover editarPublicacion mari"></span>
                             <span title="Eliminar" rel="{sTipo}_{iPublicacionId}" class="i bs delete ihover borrarPublicacion"></span>
                         </td>
                     </tr>
@@ -109,141 +110,8 @@
 </section>
 <!--EndListadoPublicacionesBlock-->
 
-<!--BeginFichaUsuarioBlock-->
-<article class="full-block pa2 clearfix mabo0">
-    <header>
-        <h2>Ficha Usuario ID: {iUsuarioId}</h2>
-        <nav>
-            <ul class="tab-switch">
-                <li><a rel="tooltip" title="Informaci&oacute;n B&aacute;sica del Integrante" class="default-tab" href="#tab1">B&aacute;sica</a></li>
-                <li><a rel="tooltip" title="Informaci&oacute;n de Conctacto" href="#tab2">Contacto</a></li>
-                <li><a rel="tooltip" title="Informaci&oacute;n de formaci&oacute;n profesional" href="#tab3">Profesional</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section>
-        <div class="tab default-tab" id="tab1">
-            <h3>Informaci&oacute;n b&aacute;sica del usuario</h3>
-
-            <div class="teal_le mabo2">
-                <p>
-                    <span class="fowe_bo teta_up">documento:</span> {sDocumento}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">nombre:</span> {sNombre}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">e-mail:</span> {sEmail}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">sexo:</span> {sSexo}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}
-                </p>
-            </div>
-            <!--BeginFotoPerfilActualBlock-->
-            <div id="fotoPerfilActualCont" class="teal_le">
-                <p>
-                    <span class="fowe_bo teta_up">Foto de Perfil</span>
-                </p>
-                <div class="image-frame left">
-                    <img src="{scrFotoPerfilActual}" />
-                    <ul class="image-actions">
-                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
-                        <li class="delete"><a id="fotoPerfilBorrar" href="#" rel="{iUsuarioId}">Borrar</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!--EndFotoPerfilActualBlock-->
-        </div>
-
-        <div class="tab" id="tab2">
-            <h3>Informaci&oacute;n de contacto</h3>
-            <div class="teal_le">
-                <p>
-                    <span class="fowe_bo teta_up">ubicacion:</span> {sUbicacion}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">ciudad de origen:</span> {sCiudadOrigen}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">codigo postal:</span> {sCodigoPostal}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">direccion:</span> {sDireccion}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">telefono:</span> {sTelefono}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">celular:</span> {sCelular}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">fax:</span> {sFax}
-                </p>
-            </div>
-        </div>
-
-        <div class="tab" id="tab3">
-            <h3>Informaci&oacute;n de formaci&oacute;n profesional</h3>
-            <div class="teal_le">
-                <p>
-                    <span class="fowe_bo teta_up">institucion:</span>
-                    <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">cargo institucion:</span> {sInstitucionCargo}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">biografia</span>
-                </p>
-                <p>
-                    {sBiografia}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">empresa:</span> {sEmpresa}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">secundaria:</span> {sSecundaria}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">universidad:</span> {sUniversidad}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">carrera:</span> {sCarrera}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">finalizada?:</span> {sFinalizada}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">sitio web:</span>
-                    <!--BeginSitioWebButton-->
-                    <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a>
-                    <!--EndSitioWebButton-->
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">especialidad:</span> {sEspecialidad}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">curriculum vitae:</span>
-                    <!--BeginDescargarButton-->
-                    <a href="{hrefDescargarCvActual}"><span class="i mi download"></span> Descargar</a>
-                    <!--EndDescargarButton-->
-                </p>
-            </div>
-        </div>
-    </section>
-</article>
-<!--EndFichaUsuarioBlock-->
-
 <!--BeginFormularioPublicacionBlock-->
-<h1 class="teta_up">Modificar publicaci&oacute;n</h1>
-<div style="display:none"  id='msg_form_publicacion' class="notification">
-    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p class="msg"></p>
-</div>
+<h1 class="teta_up mabo2">Modificar publicaci&oacute;n</h1>
 <form id="formPublicacion" name="formPublicacion" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     
@@ -251,7 +119,7 @@
         <label for="titulo">T&iacute;tulo</label>
     </dt>
     <dd>
-        <input name="titulo" id="titulo" type="text" class="medium" maxlength="255" value="{sTitulo}">
+        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
         <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
     </dd>
 
@@ -303,18 +171,250 @@
         <label for="descripcion">Contenido Publicaci&oacute;n</label>
     </dt>
     <dd>
-        <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
     </dd>
 
     <dt>
         <label for="keywords">Palabras Clave</label>
     </dt>
     <dd>
-        <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
         <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
     </dd>
    
-    <button id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
+    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
     <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
+
+    <div style="display:none"  id='msg_form_publicacion' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
 </form>
 <!--EndFormularioPublicacionBlock-->
+
+<!--BeginFormularioReviewBlock-->
+<div class="mabo3">
+    <h1 class="teta_up mabo">Modificar review</h1>
+    <span class="fost_it">Los reviews tienen como objetivo lograr aportes a la comunidad en forma de cr&iacute;ticas constructivas</span>
+</div>
+<form id="formReview" name="formReview" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="itemType">Acerca de?</label>
+    </dt>
+    <dd>
+        <select class="small" name="itemType" id="itemType" title="Review acerca de?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedProduct} value="product">Un Producto</option>
+            <option {sSelectedBusiness} value="business">Un Negocio o Empresa</option>
+            <option {sSelectedEvent} value="event">Un Evento</option>
+            <option {sSelectedPerson} value="person">Una Persona</option>
+            <option {sSelectedPlace} value="place">Un Lugar</option>
+            <option {sSelectedWebsite} value="website">Un Sitio Web</option>
+            <option {sSelectedUrl} value="url">Un Link &oacute; Enlace</option>
+        </select>
+        <p>Este campo opcional provee informaci&oacute;n acerca del item sobre el que se hace el review.</p>
+    </dd>
+
+    <div id="itemEventSummaryFormLine" style="display:none;">
+        <dt>
+            <label for="itemEventSummary">Resumen Evento</label>
+        </dt>
+        <dd>
+            <input class="large" type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
+            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>            
+        </dd>
+    </div>
+    
+    <dt>
+        <label for="item">Nombre Item</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="item" id="item" title="Nombre del Item al que hace referencia el review" maxlength="255" value="{sItemName}" />
+        <p>
+            El review debe tener al menos el nombre del item al que se refiere el art&iacute;culo / revisi&oacute;n.<br>
+            Por ejemplo, si el review es acerca de un lugar debe ingresar el nombre del sitio.<br>
+            Si fuera un art&iacute;culo acerca de una persona debe ingresar aqui el nombre de la misma, etc.
+        </p>
+    </dd>
+    
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
+        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcionBreve">Descripcion Breve</label>
+    </dt>
+    <dd>
+        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
+        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+    </dd>
+
+    <dt>
+        <label for="activo">Visible?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivo} value="1">S&iacute;</option>
+            <option {sSelectedDesactivado} value="0">No</option>
+        </select>
+        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+    </dd>
+
+    <dt>
+        <label for="publico">Alcance Privacidad?</label>
+    </dt>
+    <dd>
+        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedPublico} value="1">El mundo</option>
+            <option {sSelectedComunidad} value="0">Solo comunidad</option>
+        </select>
+        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+    </dd>
+
+    <dt>
+        <label for="activoComentarios">Activar Comentarios?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+            <option {sSelectedDesactivadoComentarios} value="0">No</option>
+        </select>
+        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Contenido Publicaci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="rating">Valuaci&oacute;n</label>
+    </dt>
+    <dd>
+        <select class="small" name="rating" id="rating" title="Valuaci&oacute;n del Item al cual se le hace el Review">
+            <option value="">Seleccionar</option>
+            <option value="0" {sSelected_0} >0</option>
+            <option value="0.5" {sSelected_05} >0.5</option>
+            <option value="1" {sSelected_1} >1</option>
+            <option value="1.5" {sSelected_15} >1.5</option>
+            <option value="2" {sSelected_2} >2</option>
+            <option value="2.5" {sSelected_25} >2.5</option>
+            <option value="3" {sSelected_3} >3</option>
+            <option value="3.5" {sSelected_35} >3.5</option>
+            <option value="4" {sSelected_4} >4</option>
+            <option value="4.5" {sSelected_45} >4.5</option>
+            <option value="5" {sSelected_5}>5</option>
+        </select>
+        <p>
+            Puede valorar el Item del Review.<br>
+            Si por ejemplo el review es acerca de un nuevo portal web puede valorarlo con este campo.
+        </p>
+    </dd>
+
+    <dt>
+        <label for="itemUrl">Link</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
+        <p>
+            En lo posible adjuntar al review una Url http://www.ejemplo.com asociada al item del art&iacute;culo.<br>
+            Por ejemplo, se podr&iacute;a brindar el link a la cuenta de twitter si es un review acerca de un profesional.
+        </p>
+    </dd>
+
+    <dt>
+        <label for="fuenteOriginal">Fuente Original</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="fuenteOriginal" id="fuenteOriginal" title="Referencia autor original o fuente" maxlength="500" value="{sFuenteOriginal}" />
+        <p>Si Ud. no es el Autor del art&iacute;culo, utilice este campo para referenciar la fuente original de donde se extrajo.</p>
+    </dd>
+
+    <dt>
+        <label for="keywords">Palabras Clave</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+    </dd>
+
+    <button class="mabo" id="modificarReview" name="modificarReview" type="submit">Modificar Review</button>
+    <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
+
+    <div style="display:none"  id='msg_form_review' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioReviewBlock-->
+
+<!--BeginFichaPublicacionBlock-->
+<article class="full-block pa2 clearfix mabo0">
+    <header>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Publicaci&oacute;n" class="default-tab" href="#tab1">Publicaci&oacute;n</a></li>
+                <li><a rel="tooltip" title="Comentarios" href="#tab2">Comentarios</a></li>
+                <li><a rel="tooltip" title="Adjuntos" href="#tab3">Adjuntos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="tab default-tab" id="tab1">
+            <h3>Publicaci&oacute;n</h3>
+
+            <div class="teal_le mabo2">
+                <p>
+                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Activa?:</span> {sActiva}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Alance Privacidad:</span> {sPrivacidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Activo Comentarios:</span> {sActivoComentarios}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">descripcion breve:</span><br> {sDescripcionBreve}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">descripcion:</span><br> {sDescripcion}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="tab" id="tab2">
+            <h3>Comentarios</h3>
+            {comentarios}
+        </div>
+
+        <div class="tab" id="tab3">
+            <h3>Adjuntos</h3>
+            {galeriaAdjuntos}
+        </div>
+    </section>
+</article>
+<!--EndFichaPublicacionBlock-->

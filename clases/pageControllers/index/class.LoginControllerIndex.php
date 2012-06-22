@@ -58,7 +58,7 @@ class LoginControllerIndex extends PageControllerAbstract
             if($errorDatos){            
                 //indica que la accion no se concreto con exito y agrega un mensaje de error
                 $this->getJsonHelper()->setSuccess(false)
-                                      ->setMessage('Datos Incorrectos')
+                                      ->setMessage('Usuario o contraseña incorrectos.')
                                       ->sendJsonAjaxResponse();
                 return;
             }

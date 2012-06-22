@@ -228,7 +228,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
 
             $db->execSQL($sSQL);
 
-            $moderado = $oReview->isModerado()?"1":"0";
             $publico = $oReview->isPublico()?"1":"0";
             $activoComentarios = $oReview->isActivoComentarios()?"1":"0";
 

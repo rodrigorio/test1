@@ -1,0 +1,218 @@
+<!--BeginFormularioFotoBlock-->
+<h1 class="teta_up mabo2">Editar Foto</h1>
+<div class="mabo3 fost_it">El t&iacute;tulo y la descripci&oacute;n se ver&aacute;n en la vista ampliada.</div>
+
+<form id="formFoto" name="formFoto" action="" method="post">
+    
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Foto" maxlength="255" value="{sTitulo}" />
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="orden">Orden</label>
+    </dt>
+    <dd>
+        <input class="small" type="text" name="orden" id="orden" title="N&uacute;mero de Orden" maxlength="4" value="{iOrden}" />
+        <p>
+           El numero de orden es una cifra mayor o igual a 1.<br>
+           Puede utilizar este campo para modificar el orden en el que aparecer&aacute;n las fotograf&iacute;as.
+        </p>
+    </dd>
+
+    <button class="mabo" id="modificarFoto" name="modificarFoto" type="submit">Modificar Foto</button>
+    <input type="hidden" value="{iFotoId}" name="iFotoIdForm" id="iFotoIdForm" />
+
+    <div style="display:none"  id='msg_form_foto' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioFotoBlock-->
+
+<!--BeginFormularioVideoBlock-->
+<h1 class="teta_up mabo2">Editar Video</h1>
+<div class="mabo3 fost_it">El t&iacute;tulo y la descripci&oacute;n se ver&aacute;n en la vista ampliada.</div>
+
+<form id="formEditarVideo" name="formEditarVideo" action="" method="post">
+
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Video" maxlength="255" value="{sTitulo}" />
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="orden">Orden</label>
+    </dt>
+    <dd>
+        <input class="small" type="text" name="orden" id="orden" title="N&uacute;mero de Orden" maxlength="4" value="{iOrden}" />
+        <p>
+           El numero de orden es una cifra mayor o igual a 1.<br>
+           Puede utilizar este campo para modificar el orden en el que aparecer&aacute;n los videos.
+        </p>
+    </dd>
+
+    <button class="mabo" id="modificarVideo" name="modificarVideo" type="submit">Modificar Video</button>
+    <input type="hidden" value="{iEmbedVideoId}" name="iEmbedVideoId" id="iEmbedVideoId" />
+
+    <div style="display:none"  id='msg_form_editar_video' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioVideoBlock-->
+
+<!--BeginFormularioArchivoBlock-->
+<h1 class="teta_up mabo2">Editar Archivo</h1>
+<div class="mabo3 fost_it">El t&iacute;tulo y la descripci&oacute;n se ver&aacute;n en la vista ampliada.</div>
+
+<form id="formArchivo" name="formArchivo" action="" method="post">
+
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Archivo" maxlength="255" value="{sTitulo}" />
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="orden">Orden</label>
+    </dt>
+    <dd>
+        <input class="small" type="text" name="orden" id="orden" title="N&uacute;mero de Orden" maxlength="4" value="{iOrden}" />
+        <p>
+           El numero de orden es una cifra mayor o igual a 1.<br>
+           Puede utilizar este campo para modificar el orden en el que aparecer&aacute;n los archivos.
+        </p>
+    </dd>
+
+    <button class="mabo" id="modificarArchivo" name="modificarArchivo" type="submit">Modificar Archivo</button>
+    <input type="hidden" value="{iArchivoId}" name="iArchivoIdForm" id="iArchivoIdForm" />
+
+    <div style="display:none"  id='msg_form_archivo' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioArchivoBlock-->
+
+<!--BeginGaleriaAdjuntosBlock-->
+<div id="galeriaAdjuntos">
+
+    <input type="hidden" value="{iItemIdForm}" name="iItemIdForm" id="iItemIdForm" />
+    <input type="hidden" value="{sTipoItemForm}" name="sTipoItemForm" id="sTipoItemForm" />
+
+    <!--BeginGaleriaAdjuntosFotosBlock-->
+    <div class="fowe_bo teta_up mabo3 iveal"><span class="i bs photoSingle"></span> Fotos</div>
+
+    <div id="ThumbnailsFotos" class="mabo3 ov_hi">
+        <!--BeginThumbnailFotoEditBlock-->
+        <div id="foto_{iFotoId}" class="image-frame left mari2">
+            <a rel="prettyPhoto[galeriaFotos]" title="{descripcionFoto}" href="{hrefFoto}">
+                <i class="di_no" title="{tituloFoto}"></i>
+                <img src="{urlFoto}" />
+            </a>            
+            <ul class="image-actions">
+                <li class="edit"><a title="Editar" href="#" rel="{iFotoId}" class="editarFoto">Editar</a></li>
+                <li class="delete"><a title="Eliminar" href="#" rel="{iFotoId}" class="borrarFoto">Borrar</a></li>
+            </ul>
+        </div>       
+        <!--EndThumbnailFotoEditBlock-->
+        
+        <!--BeginNoRecordsFotosBlock-->
+        <div id="msgNoRecord" class="pa3">No hay fotos cargadas.</div>
+        <!--EndNoRecordsFotosBlock-->
+    </div>
+    <!--EndGaleriaAdjuntosFotosBlock-->
+
+    <!--BeginGaleriaAdjuntosVideosBlock-->
+    <div class="fowe_bo teta_up mabo3 iveal"><span class="i bs movie"></span> Videos</div>
+
+    <div id="ThumbnailsVideos" class="mabo3 ov_hi">
+
+        <!--BeginThumbnailVideoEditBlock-->
+        <div id="video_{iEmbedVideoId}" class="image-frame left mari2">
+            <a rel="prettyPhoto[galeriaVideos]" title="{descripcionVideo}" href="{hrefAmpliarVideo}&ajax=true">
+                <i class="di_no" title="{tituloVideo}"></i>
+                <img src="{urlFoto}" />
+                <span>Video</span>
+            </a>
+            <ul class="image-actions">
+                <li class="edit"><a title="Editar" href="#" rel="{iEmbedVideoId}" class="editarVideo">Editar</a></li>
+                <li class="delete"><a title="Eliminar" href="#" rel="{iEmbedVideoId}" class="borrarVideo">Borrar</a></li>
+            </ul>
+        </div>
+        <!--EndThumbnailVideoEditBlock-->
+
+        <!--BeginNoRecordsVideosBlock-->
+        <div id="msgNoRecord" class="pa3">No hay videos asociados.</div>
+        <!--EndNoRecordsVideosBlock-->
+    </div>
+    <!--EndGaleriaAdjuntosVideosBlock-->
+
+    <!--BeginGaleriaAdjuntosArchivosBlock-->
+    <div class="fowe_bo teta_up mabo3 iveal"><span class="i mi documentBlank"></span> Archivos</div>
+
+    <div id="RowArchivos" class="mabo3 ov_hi">
+        <!--BeginRowArchivoEditBlock-->
+        <div id="archivo_{iArchivoId}" class="grupo cl_bo pabo2 pato2 bobo2">
+            <div class="iveal fl_le mari2">
+                <span class="i bs document"></span>
+                <strong>{sNombreArchivo}</strong>
+            </div>
+            <div class="fl_le mari2">
+                Extensi&oacute;n: <span class="fost_it pari2">{sExtensionArchivo}</span>
+                Tama&ntilde;o: <span class="fost_it">{sTamanioArchivo} Kb.</span>
+            </div>
+            <div class="iveal fl_le mari2">
+                <a class="di_inbl veal_mi" href="{hrefDescargar}"><span class="i mi ihover download"></span></a>
+                <span title="Editar" rel="{iArchivoId}" class="i bs edit ihover editarArchivo"></span>
+                <span title="Eliminar" rel="{iArchivoId}" class="i bs delete ihover borrarArchivo"></span>
+            </div>
+
+            <!--BeginTituloInfoArchivoBlock-->
+            <div class="pato2 cl_bo">
+                <span class="fte2 fowe_bo teta_up">t&iacute;tulo: </span><span class="fost_it">{tituloArchivo}</span>
+            </div>
+            <!--EndTituloInfoArchivoBlock-->
+
+            <!--BeginDescripcionInfoArchivoBlock-->
+            <div class="pato2 cl_bo">
+                <span class="fte2 fowe_bo teta_up">descripci&oacute;n: </span><span class="fost_it">{descripcionArchivo}</span>
+            </div>
+            <!--EndDescripcionInfoArchivoBlock-->
+        </div>
+        <!--EndRowArchivoEditBlock-->
+        
+        <!--BeginNoRecordsArchivosBlock-->
+        <div id="msgNoRecord" class="pa3">No hay archivos cargados.</div>
+        <!--EndNoRecordsArchivosBlock-->
+    </div>
+    <!--EndGaleriaAdjuntosArchivosBlock-->
+</div>
+<!--EndGaleriaAdjuntosBlock-->

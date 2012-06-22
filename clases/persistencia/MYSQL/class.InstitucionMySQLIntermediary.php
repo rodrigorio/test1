@@ -201,7 +201,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion 			= new stdClass();
             	$oInstitucion->iId 		= $oObj->iId;
             	$oInstitucion->sNombre  = $oObj->sNombre;
-            	$oUsuario->oCiudades 	= null;
+            	$oInstitucion->oCiudad 	= null;
             	$oInstitucion->iModerado= $oObj->iModerado;
             	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
             	$oInstitucion->iTipoInstitucion 	= $oObj->iTipoInstitucion;

@@ -105,16 +105,17 @@ class ComentarioMySQLIntermediary extends ComentarioIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-	public function borrar($oComentario) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from comentarios where id=".$db->escape($oComentario->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
 
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+    public function borrar($iComentarioId)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from comentarios where id = '".$iComentarioId."'");
+            $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 	
     public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null) {
         try{
