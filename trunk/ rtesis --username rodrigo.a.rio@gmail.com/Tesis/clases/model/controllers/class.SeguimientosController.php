@@ -603,4 +603,26 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
+    /**
+     * Obtener diagnostico de un seguimiento
+     *
+     */
+ 	public function getDiagnosticoByIdSeg($iSeguimientoId)
+    {
+    	try{
+    		$filtro = array('s.id' => $iSeguimientoId);
+            $iRecordsTotal = 0;
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            $aDiagnostico = $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aDiagnostico){
+                return $aDiagnostico[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            $oSeguimiento->setEmbedVideos(null);
+            throw new Exception($e->getMessage());
+        }
+    }
 }

@@ -58,6 +58,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         return $this;
     }
 
+  	private function setJSDiagnostico(){
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "jsContent", "JsContent");
+        return $this;
+    }
     private function setMenuDerechaHome()
     {
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContHomeBlock");
@@ -79,6 +83,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getTemplate()->set_var("hrefVerSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosVer", true));
         $this->getTemplate()->set_var("hrefEditarAntecedentesSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
+        $this->getTemplate()->set_var("hrefEditarDiagnosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
         $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
 
         //marco los selecteds en el menu de la izq
@@ -124,7 +129,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
             $iRecordsTotal = 0;
-            $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            
+            $filtro["u.id"] = $perfil->getUsuario()->getId();
+            $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
 
             if(count($aSeguimientos) > 0){
@@ -214,6 +222,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
         $iRecordsTotal = 0;
+        $filtroSql["u.id"] = $perfil->getUsuario()->getId();
         $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
@@ -511,7 +520,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     	}
         
         try{
-            $aCurrentOptions[] = "currentOptionAgregarEntradaSeguimiento";
+            $aCurrentOptions[] = "currentOptionSeguimiento";
             $aCurrentOptions[] = "currentSubOptionEditarAntecedentesSeguimiento";
 
             $this->setFrameTemplate()
@@ -523,8 +532,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
 
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Mis Seguimientos");
+            $this->getTemplate()->set_var("tituloSeccion","Antecedentes");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
           
             //form para ingresar uno nuevo
@@ -534,8 +544,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
             
             $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
-
-            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
             
             $this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
 
@@ -724,6 +732,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+       
         $iUsuarioId = $perfil->getUsuario()->getId();
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para ver este seguimiento", 401);
@@ -1701,5 +1710,68 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+    
+    public function editarDiagnostico(){
+    	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+    	if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+    	}
+        try{
+        	$aCurrentOptions[] = "currentOptionSeguimiento";
+            $aCurrentOptions[] = "currentSubOptionEditarDiagnosticoSeguimiento";
+			 IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+            $this->setFrameTemplate()
+                 ->setJSDiagnostico()
+                 ->setHeadTag()
+                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+            $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+            if(get_class($oSeguimiento) == "SeguimientoPersonalizado"){
+            	$this->formDiagnosticoPersonalizado($oSeguimiento);
+            }else{
+            	$this->formDiagnosticoSCC($oSeguimiento);
+            }
+           
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+    
+    private function formDiagnosticoPersonalizado($oSeguimiento){
+   		try{
+             //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Diagnostico Personalizado");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioPersonalizadoBlock");
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            
+            $oDiagnostico = SeguimientosController::getInstance()->obtenerDiagnostico($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            
+            //$this->getTemplate()->set_var("sDiagnostico", $oSeguimiento->getDiagnostico());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+   		  }catch(Exception $e){
+            print_r($e);
+        }
+    }
+	private function formDiagnosticoSCC($oSeguimiento){
+   		try{
+    	 	
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+             //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Diagnostico SCC");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioSCCBlock");
+          
+            //$this->getTemplate()->set_var("sDiagnostico", $oSeguimiento->getDiagnostico());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+   		  }catch(Exception $e){
+            print_r($e);
+        }
     }
 }

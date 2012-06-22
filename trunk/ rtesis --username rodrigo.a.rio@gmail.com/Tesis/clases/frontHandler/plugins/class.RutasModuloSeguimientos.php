@@ -186,6 +186,14 @@ class RutasModuloSeguimientos
                                         'controller' => 'personas',
                                         'action'     => 'ver'
                                 ));
-        $router->addRoute('seguimientosPersonasVer', $route);        
+        $router->addRoute('seguimientosPersonasVer', $route); 
+           
+          $route = new RegexRoute('seguimientos/editar-diagnostico',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'editarDiagnostico'
+                                ));
+        $router->addRoute('seguimientosEditarDiagnostico', $route);      
     }
 }
