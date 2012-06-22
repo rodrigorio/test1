@@ -64,7 +64,7 @@ body, select, input, textarea { color:#666; }
 .tetr_ca{text-transform:capitalize}
 .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
-.bobo1{border-bottom:1px solid #CCC} .bo{border:1px solid #333 !important}
+.bo{border:1px solid #333 !important} .bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
@@ -79,7 +79,7 @@ body, select, input, textarea { color:#666; }
 .ov_au{overflow:auto} .ov_hi{overflow:hidden}
 .zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}
 
-.baco1{background-color:#FFF} .baco2{background-color:#E6E6E6} .baco3{background-color:#3C9} .baco4{background-color:#CFC}
+.baco1{background-color:#FFF} .baco2{background-color:#F2F2F2} .baco3{background-color:#E6E6E6}
 .ba_no{background:none !important}
 .ba_no:hover{background:none !important}
 
@@ -856,6 +856,8 @@ article img {
 	border:1px solid #b3b3b3;
 }
 div.tab > img, div.tab > .image-frame img { margin-top:0; }
+
+.video-frame img{height:130px; width:170px}
 
 /*  Content Image Mini Menu  */
 .image-frame { position:relative; }

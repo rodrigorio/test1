@@ -419,7 +419,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
             $this->agregarComentariosAmpliarFicha($oPublicacion);
 
-            //$this->agregarAdjuntosAmpliarFicha($oPublicacion);
+            $this->agregarAdjuntosAmpliarFicha($oPublicacion);
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
@@ -439,17 +439,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
         if($cantFotos > 0 || $cantVideos > 0 || $cantArchivos > 0){
 
-            $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
-
-            //primero borro todos los bloques que ya se que no se usan
-            $this->getTemplate()->set_var("TituloItemBlock", "");
-            $this->getTemplate()->set_var("MenuGaleriaAdjuntos", "");
-            $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
-            $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
-            $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
-            $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
-            $this->getTemplate()->set_var("RowArchivoEditBlock", "");
-            $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
+            $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
 
             if($cantFotos > 0){
 
@@ -462,11 +452,15 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
-                    $this->getTemplate()->parse("ThumbnailFotoBlock", true);
+                    $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
+
+                    $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
                 }
 
+                $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
+
             }else{
-                $this->getTemplate()->set_var("GaleriaAdjuntosFotosBlock", "");
+                $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
             }
 
             if($cantVideos > 0)
@@ -482,11 +476,13 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
                     $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
                     $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                    $this->getTemplate()->parse("ThumbnailVideoBlock", true);
-                }
+                    $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
 
+                    $this->getTemplate()->parse("ThumbnailVideoEditBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
             }else{
-                $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
+                $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
             }
 
             if($cantArchivos > 0)
@@ -507,6 +503,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sNombreArchivo", $nombreArchivo);
                     $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
                     $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
+                    $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
                     $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
 
                     $sTitulo = $oArchivo->getTitulo();
@@ -528,16 +525,22 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                         }
                     }
 
-                    $this->getTemplate()->parse("RowArchivoBlock", true);
+                    $this->getTemplate()->parse("RowArchivoEditBlock", true);
 
                     $this->getTemplate()->delete_parsed_blocks("InfoArchivoBlock");
                     $this->getTemplate()->delete_parsed_blocks("TituloInfoArchivoBlock");
                     $this->getTemplate()->delete_parsed_blocks("DescripcionInfoArchivoBlock");
                 }
+                $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
             }else{
-                $this->getTemplate()->set_var("GaleriaAdjuntosArchivosBlock", "");
+                $this->getTemplate()->set_var("RowArchivoEditBlock", "");
             }
-        }        
+
+            $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
+            $this->getTemplate()->set_var("sTipoItemForm", get_class($oFicha));
+        }else{
+            $this->getTemplate()->set_var("galeriaAdjuntos", "La publicacion no tiene adjuntos");
+        }
     }
 
     private function agregarComentariosAmpliarFicha($oFicha)
@@ -565,6 +568,8 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->parse("ComentarioBlock", true);
                 }
+            }else{
+                $this->getTemplate()->set_var("comentarios", "La publicacion no tiene comentarios");
             }
         }catch(Exception $e){
             print($e->getMessage());

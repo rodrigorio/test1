@@ -285,8 +285,11 @@ function editarFoto(iFotoId){
     dialog = $('<div class="zin2" id="dialog2" title="Editar Foto"></div>').appendTo('body');
 
     dialog.load(
-        "comunidad/publicaciones/galeria-fotos/form?iFotoId="+iFotoId,
-        {},
+        "admin/usuarios-procesar",
+        {
+            iFotoId:iFotoId,
+            formFoto:"1"
+        },
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
@@ -312,8 +315,11 @@ function editarVideo(iEmbedVideoId){
     dialog = $('<div class="zin2" id="dialog" title="Editar Video"></div>').appendTo('body');
 
     dialog.load(
-        "comunidad/publicaciones/galeria-videos/form?iEmbedVideoId="+iEmbedVideoId,
-        {},
+        "admin/usuarios-procesar",
+        {
+            iEmbedVideoId:iEmbedVideoId,
+            formVideo:"1"
+        },
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
@@ -339,8 +345,11 @@ function editarArchivo(iArchivoId){
     dialog = $('<div class="zin2" id="dialog" title="Editar Archivo"></div>').appendTo('body');
 
     dialog.load(
-        "comunidad/publicaciones/galeria-archivos/form?iArchivoId="+iArchivoId,
-        {},
+        "admin/usuarios-procesar",
+        {
+            iArchivoId:iArchivoId,
+            formArchivo:"1"
+        },
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
@@ -436,13 +445,14 @@ function borrarComentario(iComentarioId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/publicaciones-procesar",
+            url:"admin/usuarios-procesar",
             data:{
                 iComentarioId:iComentarioId,
                 eliminarComentario:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
+                    $("#comentario_"+iComentarioId).hide("slow");
                     $("#comentario_"+iComentarioId).remove();
                 }
             }
@@ -455,13 +465,14 @@ function borrarFoto(iFotoId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"comunidad/publicaciones/galeria-fotos/procesar",
+            url:"admin/usuarios-procesar",
             data:{
                 iFotoId:iFotoId,
                 eliminarFoto:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
+                    $("#foto_"+iFotoId).hide("slow");
                     $("#foto_"+iFotoId).remove();
                 }
             }
@@ -474,13 +485,14 @@ function borrarVideo(iEmbedVideoId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"comunidad/publicaciones/galeria-videos/procesar",
+            url:"admin/usuarios-procesar",
             data:{
                 iEmbedVideoId:iEmbedVideoId,
                 eliminarVideo:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
+                    $("#video_"+iEmbedVideoId).hide("slow");
                     $("#video_"+iEmbedVideoId).remove();
                 }
             }
@@ -493,13 +505,14 @@ function borrarArchivo(iArchivoId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"comunidad/publicaciones/galeria-archivos/procesar",
+            url:"admin/usuarios-procesar",
             data:{
                 iArchivoId:iArchivoId,
                 eliminarArchivo:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
+                    $("#archivo_"+iArchivoId).hide("slow");
                     $("#archivo_"+iArchivoId).remove();
                 }
             }
