@@ -147,41 +147,17 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
         try{
 			$db = $this->conn;
 					
-			if($oDiagnosticoPersonalizado->getUsuario()!= null){
-				$usuarioId = $oDiagnosticoPersonalizado->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-        	if($oDiagnosticoPersonalizado->getDiscapacitado()!= null){
-				$discapacitadoId = $oDiagnosticoPersonalizado->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-            if($oDiagnosticoPersonalizado->getPractica()!= null){
-				$practicaId = $oDiagnosticoPersonalizado->getPractica()->getId();
-			}else {
-				$practicaId = null;
-			}
-			
+						
             $db->begin_transaction();
             $sSQL = " update diagnosticos " .
-                    " set frecuenciaEncuentros =".$db->escape($oDiagnosticoPersonalizado->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario =".$db->escape($oDiagnosticoPersonalizado->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->escape($oDiagnosticoPersonalizado->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oDiagnosticoPersonalizado->getPronostico(), true) .", ".
-                    " estado= ".$db->escape($oDiagnosticoPersonalizado->getEstado(), true) ." ".
+                    " set descripcion =".$db->escape($oDiagnosticoPersonalizado->getDescripcion(),true)." ".
                     " WHERE id = ".$db->escape($oDiagnosticoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
-
-			
-			 $diagnosticoPersonalizadoId = null;
-			 
+				 
              $sSQL =" update diagnosticos_personalizados ".
-                    " set diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." ".
+                    " set codigo =".$db->escape($oDiagnosticoPersonalizado->getCodigo(),true)." ".
 					" WHERE id = ".$db->escape($oDiagnosticoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
+             
 			 $db->execSQL($sSQL);
 			 $db->commit();
 			 return true;
@@ -197,47 +173,21 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
     {
         try{
 			$db = $this->conn;
-					
-			if($oDiagnosticoSCC->getUsuario()!= null){
-				$usuarioId = $oDiagnosticoSCC->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-        	if($oDiagnosticoSCC->getDiscapacitado()!= null){
-				$discapacitadoId = $oDiagnosticoSCC->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-            if($oDiagnosticoSCC->getPractica()!= null){
-				$practicaId = $oDiagnosticoSCC->getPractica()->getId();
-			}else {
-				$practicaId = null;
-			}
-			
+						
             $db->begin_transaction();
             $sSQL = " update diagnosticos " .
-                    " set frecuenciaEncuentros =".$db->escape($oDiagnosticoSCC->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario =".$db->escape($oDiagnosticoSCC->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->escape($oDiagnosticoSCC->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oDiagnosticoSCC->getPronostico(), true) .", ".
-            		" estado= ".$db->escape($oDiagnosticoSCC->getEstado(), true) ." ".
+                    " set descripcion =".$db->escape($oDiagnosticoPersonalizado->getDescripcion(),true)." ".
                     " WHERE id = ".$db->escape($oDiagnosticoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 
 			 $db->execSQL($sSQL);
-
-			 
-			 $diagnosticoSCCId = null;
-			 
+					 
              $sSQL =" update diagnosticos_scc ".
-                    " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
+                    " set areas_id =".$db->escape($oDiagnosticoSCC->getArea()->getId(),false,MYSQL_TYPE_INT)."  ". 
 					" WHERE id = ".$db->escape($oDiagnosticoSCC->getId(),false,MYSQL_TYPE_INT)." ";
+             
 			 $db->execSQL($sSQL);
 			 $db->commit();
-
-                         return true;
+             return true;
 
 
 		}catch(Exception $e){
@@ -251,54 +201,18 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 		try{
             $db = $this->conn;
 					
-			if($oDiagnosticoPersonalizado->getUsuario()!= null){
-				$usuarioId = $oDiagnosticoPersonalizado->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-                        if($oDiagnosticoPersonalizado->getDiscapacitado()!= null){
-				$discapacitadoId = $oDiagnosticoPersonalizado->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-                        if($oDiagnosticoPersonalizado->getPractica()!= null){
-				$practicaId = $oDiagnosticoPersonalizado->getPractica()->getId();
-			}else {
-				$practicaId = null;
-			}
-			
-			
 			$db->begin_transaction();
 			$sSQL =	" insert into diagnosticos ".
-                        " set frecuenciaEncuentros =".$db->escape($oDiagnosticoPersonalizado->getFrecuenciaEncuentros(),true).", " .
-                        " diaHorario =".$db->escape($oDiagnosticoPersonalizado->getDiaHorario(),true).", " .
-						" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                        " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                        " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                        " antecedentes =".$db->escape($oDiagnosticoPersonalizado->getAntecedentes(),true).", " .
-                        " pronostico= ".$db->escape($oDiagnosticoPersonalizado->getPronostico(), true) ." ";
+                        " set  descripcion =".$db->escape($oDiagnosticoPersonalizado->getDescripcion(),true)." ";
 			
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
 			
-			$diagnosticoPersonalizadoId = null;
-			
-			$sSQL =" insert into diagnosticos_personalizados set ".
-                        " id=".$db->escape($iLastId,false).", " .
-                        " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." " ;
+		    $sSQL =" insert into diagnosticos_personalizados set ".
+                        " id =".$db->escape($iLastId,false).", " .
+                        " codigo =".$db->escape($oDiagnosticoPersonalizado->getCodigo(),true)." ";
 			$db->execSQL($sSQL);
-
-			$sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1 ";
-            $db->query($sSQL);
-            while($oObj = $db->oNextRecord()){
-            	$iUnidadId = $oObj->iId;
-            }
-
-            $sSQL =" insert into diagnostico_x_unidades set ".
-            " unidad_id = ".$db->escape($iUnidadId,false).", " .
-            " diagnostico_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT)." " ;
-
-			$db->execSQL($sSQL);
+						
 			$db->commit();
 			return true;
 
@@ -315,43 +229,16 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 		try{
 		    $db = $this->conn;
 					
-			if($oDiagnosticoSCC->getUsuario()!= null){
-				$usuarioId = $oDiagnosticoSCC->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-        	if($oDiagnosticoSCC->getDiscapacitado()!= null){
-				$discapacitadoId = $oDiagnosticoSCC->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-            if($oDiagnosticoSCC->getPractica()!= null){
-				$practicaId = $oDiagnosticoSCC->getpractica()->getId();
-			}else {
-				$practicaId = null;
-			}
-			
-			
 			$db->begin_transaction();
 			$sSQL =	" insert into diagnosticos ".
-                    " set frecuenciaEncuentros =".$db->escape($oDiagnosticoSCC->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario =".$db->escape($oDiagnosticoSCC->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->escape($oDiagnosticoSCC->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oDiagnosticoSCC->getPronostico(), true) ." ";
+                        " set  descripcion =".$db->escape($oDiagnosticoSCC->getDescripcion(),true)." ";
 			
 			$db->execSQL($sSQL);
-			$iLastId = $db->insert_id();
-			
-			//ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
-			$diagnosticoSCCId = null;
+			$iLastId = $db->insert_id();		
 			
 			$sSQL =" insert into diagnosticos_scc set ".
-                    " id=".$db->escape($iLastId,false).", " .
-                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;	
+                    " id =".$db->escape($iLastId,false).", " .
+                    " areas_id =".$db->escape($oDiagnosticoSCC->getArea()->getId(),false,MYSQL_TYPE_INT)." " ;	
 		
 			$db->execSQL($sSQL);
 			 $db->commit();
