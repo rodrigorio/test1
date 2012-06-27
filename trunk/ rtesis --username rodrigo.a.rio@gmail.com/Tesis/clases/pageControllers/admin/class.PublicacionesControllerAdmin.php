@@ -187,7 +187,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
         $this->getTemplate()->set_var("sKeywords", $sKeywords);
 
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
 
     private function formModificarReview($iReviewIdForm)
@@ -302,11 +302,11 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sItemUrl", $sItemUrl);
         $this->getTemplate()->set_var("sFuenteOriginal", $sFuenteOriginal);
 
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));                
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
 
     public function procesar()
-    {
+    {        
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
@@ -343,6 +343,44 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
         if($this->getRequest()->has('eliminarComentario')){
             $this->eliminarComentario();
+            return;
+        }
+
+        //adjuntos en publicacion ampliada 
+        if($this->getRequest()->has('eliminarArchivo')){
+            $this->eliminarArchivo();
+            return;
+        }
+        if($this->getRequest()->has('eliminarVideo')){
+            $this->eliminarVideo();
+            return;
+        }
+        if($this->getRequest()->has('eliminarFoto')){
+            $this->eliminarFoto();
+            return;
+        }
+        if($this->getRequest()->has('formArchivo')){
+            $this->formArchivo();
+            return;
+        }
+        if($this->getRequest()->has('formVideo')){
+            $this->formVideo();
+            return;
+        }
+        if($this->getRequest()->has('formFoto')){
+            $this->formFoto();
+            return;
+        }        
+        if($this->getRequest()->has('guardarFoto')){
+            $this->guardarFoto();
+            return;
+        }
+        if($this->getRequest()->has('guardarVideo')){
+            $this->guardarVideo();
+            return;
+        }
+        if($this->getRequest()->has('guardarArchivo')){
+            $this->guardarArchivo();
             return;
         }
     }
@@ -421,7 +459,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
             $this->agregarAdjuntosAmpliarFicha($oPublicacion);
             
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -440,7 +478,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         if($cantFotos > 0 || $cantVideos > 0 || $cantArchivos > 0){
 
             $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
-
+                 
             if($cantFotos > 0){
 
                 $aFotos = $oFicha->getFotos();
@@ -452,6 +490,8 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
                     $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
@@ -470,7 +510,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                 foreach($aEmbedVideos as $oEmbedVideo){
 
                     $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
 
                     $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
                     $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
@@ -786,6 +826,241 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
         $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    //adjuntos
+    public function formArchivo()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
+
+        $iArchivoId = $this->getRequest()->getParam('iArchivoId');
+        if(empty($iArchivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
+
+        $this->getTemplate()->set_var("iArchivoId", $iArchivoId);
+
+        $sTitulo = $oArchivo->getTitulo();
+        $sDescripcion = $oArchivo->getDescripcion();
+        $iOrden = $oArchivo->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function eliminarArchivo()
+    {
+        $iArchivoId = $this->getRequest()->getParam('iArchivoId');
+
+        if(empty($iArchivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
+            $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
+
+            IndexController::getInstance()->borrarArchivo($oArchivo, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function guardarArchivo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iArchivoId = $this->getRequest()->getParam('iArchivoIdForm');
+
+            if(empty($iArchivoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $oArchivo = IndexController::getInstance()->getArchivoById($iArchivoId);
+
+            $oArchivo->setOrden($this->getRequest()->getPost("orden"));
+            $oArchivo->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oArchivo->setTitulo($this->getRequest()->getPost("titulo"));
+
+            IndexController::getInstance()->guardarArchivo($oArchivo);
+
+            $this->getJsonHelper()->setMessage("El archivo se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    public function formVideo()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioVideoBlock");
+
+        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+        $this->getTemplate()->set_var("iEmbedVideoId", $iEmbedVideoId);
+
+        $sTitulo = $oEmbedVideo->getTitulo();
+        $sDescripcion = $oEmbedVideo->getDescripcion();
+        $iOrden = $oEmbedVideo->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function guardarVideo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iEmbedVideoId = $this->getRequest()->getPost('iEmbedVideoId');
+
+            if(empty($iEmbedVideoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+            $oEmbedVideo->setOrden($this->getRequest()->getPost("orden"));
+            $oEmbedVideo->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oEmbedVideo->setTitulo($this->getRequest()->getPost("titulo"));
+
+            IndexController::getInstance()->guardarEmbedVideo($oEmbedVideo);
+
+            $this->getJsonHelper()->setMessage("El video se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function eliminarVideo()
+    {
+        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
+
+        if(empty($iEmbedVideoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
+
+            IndexController::getInstance()->borrarEmbedVideo($oEmbedVideo);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function formFoto()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
+               
+        $iFotoId = $this->getRequest()->getParam('iFotoId');
+        if(empty($iFotoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
+
+        $this->getTemplate()->set_var("iFotoId", $iFotoId);
+
+        $sTitulo = $oFoto->getTitulo();
+        $sDescripcion = $oFoto->getDescripcion();
+        $iOrden = $oFoto->getOrden();
+
+        $this->getTemplate()->set_var("sTitulo", $sTitulo);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function eliminarFoto()
+    {
+        $iFotoId = $this->getRequest()->getParam('iFotoId');
+
+        if(empty($iFotoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
+
+            IndexController::getInstance()->borrarFoto($oFoto, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function guardarFoto()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iFotoId = $this->getRequest()->getPost('iFotoIdForm');
+
+            if(empty($iFotoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $oFoto = IndexController::getInstance()->getFotoById($iFotoId);
+
+            $oFoto->setOrden($this->getRequest()->getPost("orden"));
+            $oFoto->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oFoto->setTitulo($this->getRequest()->getPost("titulo"));
+
+            IndexController::getInstance()->guardarFoto($oFoto);
+
+            $this->getJsonHelper()->setMessage("La foto se ha modificado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
