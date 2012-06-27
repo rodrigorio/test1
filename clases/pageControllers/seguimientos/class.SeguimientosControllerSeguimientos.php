@@ -977,7 +977,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 foreach($aEmbedVideos as $oEmbedVideo){
 
                     $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
 
                     $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
                     $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
@@ -1493,7 +1493,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxThumbnailVideo", "ThumbnailVideoEditBlock");
 
                 $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?embedVideoId=".$oEmbedVideo->getId();
+                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
 
                 $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
                 $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);

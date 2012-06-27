@@ -184,6 +184,238 @@ function selectItemTypeReviewEvent(){
     });
 }
 
+var validateFormFoto = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        orden:{digits:true, range:[1, 9999]}
+    },
+    messages:{
+        orden:{
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
+    }
+};
+
+var optionsAjaxFormFoto = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/publicaciones-procesar?guardarFoto=1',
+    beforeSerialize:function(){
+        if($("#formFoto").valid() == true){
+            $('#msg_form_foto').hide();
+            $('#msg_form_foto').removeClass("correcto").removeClass("error");
+            $('#msg_form_foto .msg').html("");
+            setWaitingStatus('formFoto', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formFoto', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_foto .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_foto .msg').html(data.mensaje);
+            }
+            $('#msg_form_foto').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_foto .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_foto .msg').html(data.mensaje);
+            }
+            $('#msg_form_foto').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+var validateFormAgregarVideo = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        codigo:{required:true, url:true}
+    },
+    messages:{
+        codigo:{
+            required: mensajeValidacion("requerido"),
+            url: mensajeValidacion("url")
+        }
+    }
+};
+
+var validateFormEditarVideo = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        orden:{digits:true, range:[1, 9999]}
+    },
+    messages:{
+        orden:{
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
+    }
+};
+
+var optionsAjaxFormEditarVideo = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/publicaciones-procesar?guardarVideo=1',
+    beforeSerialize:function(){
+        if($("#formEditarVideo").valid() == true){
+            $('#msg_form_editar_video').hide();
+            $('#msg_form_editar_video').removeClass("correcto").removeClass("error");
+            $('#msg_form_editar_video .msg').html("");
+            setWaitingStatus('formEditarVideo', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formEditarVideo', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_editar_video .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_editar_video .msg').html(data.mensaje);
+            }
+            $('#msg_form_editar_video').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_editar_video .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_editar_video .msg').html(data.mensaje);
+            }
+            $('#msg_form_editar_video').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+var validateFormArchivo = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        orden:{digits:true, range:[1, 9999]}
+    },
+    messages:{
+        orden:{
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
+    }
+};
+
+var optionsAjaxFormArchivo = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/publicaciones-procesar?guardarArchivo=1',
+    beforeSerialize:function(){
+        if($("#formArchivo").valid() == true){
+            $('#msg_form_archivo').hide();
+            $('#msg_form_archivo').removeClass("correcto").removeClass("error");
+            $('#msg_form_archivo .msg').html("");
+            setWaitingStatus('formArchivo', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formArchivo', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_archivo .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_archivo .msg').html(data.mensaje);
+            }
+            $('#msg_form_archivo').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_archivo .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_archivo .msg').html(data.mensaje);
+            }
+            $('#msg_form_archivo').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+function bindEventsFotoForm(){
+    $("#formFoto").validate(validateFormFoto);
+    $("#formFoto").ajaxForm(optionsAjaxFormFoto);
+}
+
+function bindEventsArchivoForm(){
+    $("#formArchivo").validate(validateFormArchivo);
+    $("#formArchivo").ajaxForm(optionsAjaxFormArchivo);
+}
+
+function bindEventsAgregarVideoForm(){
+    $("#formAgregarVideo").validate(validateFormAgregarVideo);
+    $("#formAgregarVideo").ajaxForm(optionsAjaxFormAgregarVideo);
+}
+
+function bindEventsEditarVideoForm(){
+    $("#formEditarVideo").validate(validateFormEditarVideo);
+    $("#formEditarVideo").ajaxForm(optionsAjaxFormEditarVideo);
+}
+
 function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
     $.ajax({
         type: "POST",
@@ -285,7 +517,7 @@ function editarFoto(iFotoId){
     dialog = $('<div class="zin2" id="dialog2" title="Editar Foto"></div>').appendTo('body');
 
     dialog.load(
-        "admin/usuarios-procesar",
+        "admin/publicaciones-procesar",
         {
             iFotoId:iFotoId,
             formFoto:"1"
@@ -293,9 +525,9 @@ function editarFoto(iFotoId){
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
-                width:550,
+                width:700,
                 resizable:false,
-                draggable:false,
+                draggable:true,
                 modal:false,
                 closeOnEscape:true
             });
@@ -315,7 +547,7 @@ function editarVideo(iEmbedVideoId){
     dialog = $('<div class="zin2" id="dialog" title="Editar Video"></div>').appendTo('body');
 
     dialog.load(
-        "admin/usuarios-procesar",
+        "admin/publicaciones-procesar",
         {
             iEmbedVideoId:iEmbedVideoId,
             formVideo:"1"
@@ -323,9 +555,9 @@ function editarVideo(iEmbedVideoId){
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
-                width:550,
+                width:700,
                 resizable:false,
-                draggable:false,
+                draggable:true,
                 modal:false,
                 closeOnEscape:true
             });
@@ -345,7 +577,7 @@ function editarArchivo(iArchivoId){
     dialog = $('<div class="zin2" id="dialog" title="Editar Archivo"></div>').appendTo('body');
 
     dialog.load(
-        "admin/usuarios-procesar",
+        "admin/publicaciones-procesar",
         {
             iArchivoId:iArchivoId,
             formArchivo:"1"
@@ -353,9 +585,9 @@ function editarArchivo(iArchivoId){
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
-                width:550,
+                width:700,
                 resizable:false,
-                draggable:false,
+                draggable:true,
                 modal:false,
                 closeOnEscape:true
             });
@@ -445,15 +677,16 @@ function borrarComentario(iComentarioId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/usuarios-procesar",
+            url:"admin/publicaciones-procesar",
             data:{
                 iComentarioId:iComentarioId,
                 eliminarComentario:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("#comentario_"+iComentarioId).hide("slow");
-                    $("#comentario_"+iComentarioId).remove();
+                    $("#comentario_"+iComentarioId).hide("slow", function(){
+                        $("#comentario_"+iComentarioId).remove();
+                    });
                 }
             }
         });
@@ -465,15 +698,16 @@ function borrarFoto(iFotoId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/usuarios-procesar",
+            url:"admin/publicaciones-procesar",
             data:{
                 iFotoId:iFotoId,
                 eliminarFoto:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("#foto_"+iFotoId).hide("slow");
-                    $("#foto_"+iFotoId).remove();
+                    $("#foto_"+iFotoId).hide("slow", function(){
+                        $("#foto_"+iFotoId).remove();
+                    });
                 }
             }
         });
@@ -485,15 +719,16 @@ function borrarVideo(iEmbedVideoId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/usuarios-procesar",
+            url:"admin/publicaciones-procesar",
             data:{
                 iEmbedVideoId:iEmbedVideoId,
                 eliminarVideo:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("#video_"+iEmbedVideoId).hide("slow");
-                    $("#video_"+iEmbedVideoId).remove();
+                    $("#video_"+iEmbedVideoId).hide("slow", function(){
+                        $("#video_"+iEmbedVideoId).remove();
+                    });
                 }
             }
         });
@@ -505,15 +740,16 @@ function borrarArchivo(iArchivoId){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/usuarios-procesar",
+            url:"admin/publicaciones-procesar",
             data:{
                 iArchivoId:iArchivoId,
                 eliminarArchivo:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("#archivo_"+iArchivoId).hide("slow");
-                    $("#archivo_"+iArchivoId).remove();
+                    $("#archivo_"+iArchivoId).hide("slow", function(){
+                        $("#archivo_"+iArchivoId).remove();
+                    });                    
                 }
             }
         });
@@ -532,7 +768,9 @@ function borrarFotoPerfil(iUsuarioId){
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("#fotoPerfilActualCont").remove();
+                    $("#fotoPerfilActualCont").hide("slow", function(){
+                        $("#fotoPerfilActualCont").remove();
+                    });
                 }
             }
         });
@@ -605,31 +843,37 @@ $(document).ready(function(){
     $(".borrarFoto").live('click', function(){
         var iFotoId = $(this).attr("rel");
         borrarFoto(iFotoId);
-    })
+        return false;
+    });
 
     $(".editarFoto").live('click', function(){
         var iFotoId = $(this).attr("rel");
         editarFoto(iFotoId);
+        return false;
     });
 
     $(".editarVideo").live('click', function(){
         var iEmbedVideoId = $(this).attr("rel");
         editarVideo(iEmbedVideoId);
+        return false;
     });
 
     $(".borrarVideo").live('click', function(){
         var iEmbedVideoId = $(this).attr("rel");
         borrarVideo(iEmbedVideoId);
-    })
+        return false;
+    });
 
     $(".borrarArchivo").live('click', function(){
         var iArchivoId = $(this).attr("rel");
         borrarArchivo(iArchivoId);
-    })
+        return false;
+    });
 
     $(".editarArchivo").live('click', function(){
         var iArchivoId = $(this).attr("rel");
         editarArchivo(iArchivoId);
+        return false;
     });
 
     $(".verFichaUsuario").live('click',function(){
