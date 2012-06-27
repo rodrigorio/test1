@@ -14,6 +14,7 @@ abstract class DiagnosticoAbstract {
 	protected $sDescripcion;
 	
 	public function __construct(){}
+	
 	/**
  	 *  @param int $iId
 	 */

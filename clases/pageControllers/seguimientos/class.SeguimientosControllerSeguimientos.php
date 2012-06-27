@@ -222,6 +222,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
         $iRecordsTotal = 0;
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $filtroSql["u.id"] = $perfil->getUsuario()->getId();
         $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
@@ -1717,6 +1718,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
+        $filtroSql["s.id"] = $iSeguimientoId;
+        $iRecordsTotal = 0;
+        $sOrderBy = $sOrder =  $iIniLimit =  $iRecordCount = null;
+        $vSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtroSql,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        if( count($vSeguimientos) == 0 ){
+        	throw new Exception("No tiene permiso para este seguimiento", 401);
+        }else{
+        	$oSeguimiento = $vSeguimientos[0];
+        }
         try{
         	$aCurrentOptions[] = "currentOptionSeguimiento";
             $aCurrentOptions[] = "currentSubOptionEditarDiagnosticoSeguimiento";
@@ -1727,14 +1737,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setJSDiagnostico()
                  ->setHeadTag()
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions);
-            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+           
             $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
             if(get_class($oSeguimiento) == "SeguimientoPersonalizado"){
             	$this->formDiagnosticoPersonalizado($oSeguimiento);
             }else{
             	$this->formDiagnosticoSCC($oSeguimiento);
             }
-           
         }catch(Exception $e){
             print_r($e);
         }
@@ -1746,11 +1755,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("tituloSeccion", "Diagnostico Personalizado");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioPersonalizadoBlock");
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-            
-            $oDiagnostico = SeguimientosController::getInstance()->obtenerDiagnostico($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-            
-            //$this->getTemplate()->set_var("sDiagnostico", $oSeguimiento->getDiagnostico());
-
+            $oDiagnostico = $oSeguimiento->getDiagnostico();
+            if($oDiagnostico ){
+            	$this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
+           		$this->getTemplate()->set_var("sCodigo",$oDiagnostico->getCodigo());
+           		$this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
+            }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
    		  }catch(Exception $e){
             print_r($e);
@@ -1758,20 +1768,68 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     }
 	private function formDiagnosticoSCC($oSeguimiento){
    		try{
-    	 	
-
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
              //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Diagnostico SCC");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioSCCBlock");
-          
-            //$this->getTemplate()->set_var("sDiagnostico", $oSeguimiento->getDiagnostico());
 
+            $oDiagnostico = $oSeguimiento->getDiagnostico();
+         	if($oDiagnostico ){
+	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
+	            if( $oDiagnostico->getArea() ){
+	           		$this->getTemplate()->set_var("iArea",$oDiagnostico->getArea()->getId());
+	            }
+	            $this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
+         	}
+            
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
    		  }catch(Exception $e){
             print_r($e);
         }
     }
+    
+    public function procesarDiagnostico(){
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+           //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        	//$filtroSql["u.id"] = $perfil->getUsuario()->getId();
+        
+            $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
+           // TODO Agregar validacion de pedir el diagnostico segun permiso d
+            $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
+			if($oDiagnostico){
+				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
+	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
+	            	$sCodigo	 	= $this->getRequest()->getPost('codigo');
+			    	$oDiagnostico->setCodigo($sCodigo);
+	            }else{
+	            	$iAreaId	    = $this->getRequest()->getPost('areaId');
+			    	//TODO agregar objeto area
+			    	$stdArea = new stdClass();
+			    	$stdArea->iId = 1;
+			    	$oArea = Factory::getAreaInstance($stdArea);
+			    	$oDiagnostico->setArea($oArea);
+	            }
+	            $oDiagnostico->setDescripcion($sDescripcion);
+		        $res		 	= SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+			}else{
+				$res = false;
+			}
+			if($res){
+				 $this->getJsonHelper()->setSuccess(true);
+			}else{
+				 $this->getJsonHelper()->setSuccess(false);
+			}
+            
+        }catch(Exception $e){
+           $this->getJsonHelper()->setMessage($e->getMessage());
+           $this->getJsonHelper()->setSuccess(false);
+        }
+        
+        $this->getJsonHelper()->sendJsonAjaxResponse($oDiagnostico);
+    }
+    
 }

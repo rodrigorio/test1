@@ -213,4 +213,30 @@ class Factory
         $oComentario = new Comentario($obj);
         return $oComentario;
     }
+    
+    /**
+     * @param stdClass $obj
+     * @return DiagnosticoPersonalizado|null
+     */
+    public static function &getDiagnosticoPersonalizadoInstance(stdClass $obj){
+        $oDiagnosticoPersonalizado = new DiagnosticoPersonalizado($obj);
+        return $oDiagnosticoPersonalizado;
+    }
+    /**
+     * @param stdClass $obj
+     * @return DiagnosticoSCC|null
+     */
+    public static function &getDiagnosticoSCCInstance(stdClass $obj){
+        $oDiagnosticoSCC = new DiagnosticoSCC($obj);
+        return $oDiagnosticoSCC;
+    }
+    
+   /**
+     * @param stdClass $obj
+     * @return Area|null
+     */
+    public static function &getAreaInstance(stdClass $obj){
+        $oArea = new Area($obj);
+        return $oArea;
+    }
 }

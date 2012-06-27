@@ -23,7 +23,6 @@ abstract class SeguimientoAbstract
    protected $sDiaHorario;
    protected $dFechaCreacion;
    protected $sEstado;
-  
    /*
     * array objetos Foto
     */
@@ -36,12 +35,10 @@ abstract class SeguimientoAbstract
     * array objetos EmbedVideo
     */
     protected $aEmbedVideos = null;
-    
     /**
      * Instancia de clase Archivo
      */
     protected $oAntecedentes;
-       
     protected $oDiagnostico;
     
     public function __construct(){}
@@ -213,9 +210,13 @@ abstract class SeguimientoAbstract
         $this->oAntecedentes = $oAntecedentes;
     }
     
+ 	public function setDiagnostico($oDiagnostico){
+    	$this->oDiagnostico = $oDiagnostico;
+    }
     public function getDiagnostico(){
     	if(!$this->oDiagnostico){
-    		$this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoByIdSeg($this->iId);
+    		$this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoBySeg($this);
     	}
+    	return $this->oDiagnostico;
     }
 }
