@@ -19,7 +19,7 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return PaisMySQLIntermediary
+	 * @return ProvinciaMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
 		if (null === self::$instance){
@@ -67,7 +67,7 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into provincias ".
-                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
+                    " set nombre =".$db->escape($oProvincia->getNombre(),true).", " .
                     " paises_id =".$db->escape($oProvincia->getPais()->getId(),false,MYSQL_TYPE_INT)." ";
 			 
 			 $db->execSQL($sSQL);

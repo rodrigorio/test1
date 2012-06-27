@@ -17,7 +17,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 	 * Singleton
 	 *
 	 * @param mixed $conn
-	 * @return PaisMySQLIntermediary
+	 * @return CiudadMySQLIntermediary
 	 */
 	public static function &getInstance(IMYSQL $conn) {
 		if (null === self::$instance){
