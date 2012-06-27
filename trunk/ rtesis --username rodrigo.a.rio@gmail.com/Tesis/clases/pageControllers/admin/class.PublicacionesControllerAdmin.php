@@ -468,7 +468,123 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
     private function ampliarReview($iReviewId)
     {
-        echo "entro ampliar review"; exit();
+        try{
+            $oReview = ComunidadController::getInstance()->getReviewById($iReviewId);
+
+            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oReview->getTitulo());
+            $sPermalink = 'comunidad/reviews/'.$oReview->getId()."-".$sTituloUrlizedActual;
+
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "popUpContent", "FichaReviewBlock");
+
+            $oUsuarioAutor = $oReview->getUsuario();
+            $sNombreAutor = $oUsuarioAutor->getApellido()." ".$oUsuarioAutor->getNombre();
+
+            $sActiva = ($oReview->isActivo())?"Si":"No";
+            $sPrivacidad = ($oReview->isPublico())?"El Mundo":"Comunidad";
+            $sActivoComentarios = ($oReview->isActivoComentarios())?"Si":"No";
+
+            $this->getTemplate()->set_var("sTitulo", $oReview->getTitulo());
+            $this->getTemplate()->set_var("sFecha", $oReview->getFecha());
+            $this->getTemplate()->set_var("sAutor", $sNombreAutor);
+            $this->getTemplate()->set_var("sActiva", $sActiva);
+            $this->getTemplate()->set_var("sPrivacidad", $sPrivacidad);
+            $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
+            $this->getTemplate()->set_var("sDescripcionBreve", $oReview->getDescripcionBreve());
+            $this->getTemplate()->set_var("sDescripcion", $oReview->getDescripcion(true));
+            $this->getTemplate()->set_var("sPermalink", $sPermalink);
+
+            //detalles review
+            $this->getTemplate()->set_var("sItemName", $oReview->getItemName());
+
+            if(null !== $oReview->getItemType()){
+                $sItemType = "";
+
+                switch($oReview->getItemType()){
+                    case "product":
+                        $sItemType = "producto"; break;
+                    case "business":
+                        $sItemType = "negocio"; break;
+                    case "event":
+                        $sItemType = "evento"; break;
+                    case "person":
+                        $sItemType = "persona"; break;
+                    case "place":
+                        $sItemType = "lugar"; break;
+                    case "website":
+                        $sItemType = "sitio web"; break;
+                    case "url":
+                        $sItemType = "link"; break;
+                }
+
+                $this->getTemplate()->set_var("sItemType", $sItemType);
+                $this->getTemplate()->parse("ItemTypeBlock");
+            }else{
+                $this->getTemplate()->set_var("ItemTypeBlock", "");
+            }
+
+            if(null !== $oReview->getItemEventSummary()){
+                $this->getTemplate()->set_var("sItemEventSummary", $oReview->getItemEventSummary());
+                $this->getTemplate()->parse("ItemEventSummaryBlock");
+            }else{
+                $this->getTemplate()->set_var("ItemEventSummaryBlock", "");
+            }
+
+            if(null !== $oReview->getItemUrl()){
+                $this->getTemplate()->set_var("hrefItemUrl", $oReview->getItemUrl());
+                $this->getTemplate()->set_var("sItemUrl", $oReview->getItemUrl());
+                $this->getTemplate()->parse("ItemUrlBlock");
+            }else{
+                $this->getTemplate()->set_var("ItemUrlBlock", "");
+            }
+
+            if(null !== $oReview->getRating()){
+                $fRating = $oReview->getRating();
+                $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                           'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                           'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                           'Valoracion4_2Block', 'Valoracion5Block');
+                switch($fRating){
+                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                    default: $valoracionBloque = 'Valoracion0Block'; break;
+                }
+
+                //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                $this->getTemplate()->unset_blocks($bloquesValoracion);
+
+                $this->getTemplate()->parse("RatingBlock");
+            }else{
+                $this->getTemplate()->set_var("RatingBlock", "");
+            }
+
+            if(null !== $oReview->getFuenteOriginal()){
+                $this->getTemplate()->set_var("hrefFuenteUriginal", $oReview->getFuenteOriginal());
+                $this->getTemplate()->set_var("sFuenteOriginal", $oReview->getFuenteOriginal());
+                $this->getTemplate()->parse("FuenteOriginalBlock");
+            }else{
+                $this->getTemplate()->set_var("FuenteOriginalBlock", "");
+            }
+
+            $this->agregarComentariosAmpliarFicha($oReview);
+
+            $this->agregarAdjuntosAmpliarFicha($oReview);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }                    
     }
 
     private function agregarAdjuntosAmpliarFicha($oFicha)
@@ -1067,6 +1183,6 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
     public function listarModeraciones()
     {
-        
+        echo "moderaciones"; exit();
     }
 }

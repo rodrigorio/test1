@@ -419,3 +419,110 @@
     </section>
 </article>
 <!--EndFichaPublicacionBlock-->
+
+<!--BeginFichaReviewBlock-->
+<article class="full-block pa2 clearfix mabo0">
+    <header>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Review" class="default-tab" href="#tab1">Review</a></li>
+                <li><a rel="tooltip" title="Comentarios" href="#tab2">Comentarios</a></li>
+                <li><a rel="tooltip" title="Adjuntos" href="#tab3">Adjuntos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="tab default-tab" id="tab1">
+            <h3>Review</h3>
+
+            <div class="teal_le mabo2">
+                <p>
+                    <span class="fowe_bo teta_up">nombre item:</span> {sItemName}
+                </p>
+
+                <!--BeginRatingBlock-->
+                <div class="mabo2 ov_au veal_mi">
+                    <div class="fl_le teta_up fowe_bo mari">valoraci&oacute;n:</div>
+                        <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
+                        <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
+                        <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
+                        <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
+                        <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
+                        <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
+                        <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
+                        <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
+                        <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
+                        <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
+                        <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
+                </div>
+                <!--EndRatingBlock-->
+
+                <!--BeginItemTypeBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">Acerca de un/a:</span> {sItemType}
+                </p>
+                <!--EndItemTypeBlock-->
+
+                <!--BeginItemEventSummaryBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">detalles evento:</span> {sItemEventSummary}
+                </p>
+                <!--EndItemEventSummaryBlock-->
+
+                <!--BeginItemUrlBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">link:</span> <a href="{hrefItemUrl}">{sItemUrl}</a>
+                </p>
+                <!--EndItemUrlBlock-->
+
+                <!--BeginFuenteOriginalBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">fuente original:</span> <a href="{hrefFuenteUriginal}">{sFuenteOriginal}</a>
+                </p>
+                <!--EndFuenteOriginalBlock-->
+                
+                <p>
+                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">activa?:</span> {sActiva}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">alance Privacidad:</span> {sPrivacidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">activo Comentarios:</span> {sActivoComentarios}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
+                </p>
+
+                <div class="fowe_bo teta_up mabo">descripcion breve</div>
+                <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
+
+                <div class="fowe_bo teta_up mabo">descripcion</div>
+                <div class="baco2 pa mabo2">{sDescripcion}</div>
+
+                <p>
+                    <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="tab" id="tab2">
+            <h3>Comentarios</h3>
+            {comentarios}
+        </div>
+
+        <div class="tab" id="tab3">
+            <h3>Adjuntos</h3>
+            {galeriaAdjuntos}
+        </div>
+    </section>
+</article>
+<!--EndFichaReviewBlock-->
+
