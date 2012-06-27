@@ -147,16 +147,4 @@ class PersistenceFactory {
             return (DiagnosticoMySQLIntermediary::getInstance($conn));
         }
     }
-    public static function getComentariosIntermediary(IMYSQL $conn)
-    {
-        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-            return (ComentarioMySQLIntermediary::getInstance($conn));
-        }
-    }
-    public static function getDiagnosticoIntermediary(IMYSQL $conn)
-    {
-        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-            return (DiagnosticoMySQLIntermediary::getInstance($conn));
-        }
-    }
 }

@@ -836,7 +836,7 @@ class ComunidadController
     public function obtenerComentariosPublicacion($iPublicacionId)
     {
         try{
-            $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
+            $oComentariosIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
             $filtro = array('c.publicaciones_id' => $iPublicacionId);
             $iRecordsTotal = 0;
             return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
@@ -849,7 +849,7 @@ class ComunidadController
     public function obtenerComentariosReview($iReviewId)
     {
         try{
-            $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
+            $oComentariosIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
             $filtro = array('c.reviews_id' => $iReviewId);
             $iRecordsTotal = 0;
             return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
@@ -862,7 +862,7 @@ class ComunidadController
     public function guardarComentariosFicha($oFicha)
     {
     	try{
-            $oComentariosIntermediary = PersistenceFactory::getComentariosIntermediary($this->db);
+            $oComentariosIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
             return $oComentariosIntermediary->guardarComentariosFicha($oFicha);
         }catch(Exception $e){
             $oFicha->setComentarios(null);
