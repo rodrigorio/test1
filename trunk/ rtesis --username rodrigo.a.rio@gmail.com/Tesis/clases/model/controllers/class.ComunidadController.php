@@ -923,4 +923,12 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+     public function guardarDiagnostico($oDiagnostico){
+        try{
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            return $oDiagnosticoIntermediary->guardar($oDiagnostico);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }
