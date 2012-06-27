@@ -22,7 +22,7 @@ var validateFormDiagnostico = {
 var optionsAjaxFormDiagnostico = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/procesar-diagnostico?formDiagnostico=1',
+    url: 'seguimientos/procesar-diagnostico',
     beforeSerialize:function(){        
         if($("#formGuardarDiagnostico").valid() == true){
             $('#msg_form_guardarDiagnostico').hide();

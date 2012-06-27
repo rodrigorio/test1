@@ -302,10 +302,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 }
                 
                 if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
-                    $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
+              		$objSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
                 }else{
-                    $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+                	$objSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                 }
+                $aSeguimientos[] = $objSeguimiento;
             }
 
             return $aSeguimientos;

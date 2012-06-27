@@ -608,20 +608,53 @@ class SeguimientosController
      * Obtener diagnostico de un seguimiento
      *
      */
- 	public function getDiagnosticoByIdSeg($iSeguimientoId)
+ 	public function getDiagnosticoBySeg($oSeguimiento)
     {
     	try{
-    		$filtro = array('s.id' => $iSeguimientoId);
-            $iRecordsTotal = 0;
+    		$filtro = array('s.id' => $oSeguimiento->getId());
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
-            $aDiagnostico = $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $iRecordsTotal = 0;
+            if(get_class($oSeguimiento)=="SeguimientoPersonalizado"){
+            	$aDiagnostico = $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, null, null, null, null);
+            }else{
+            	$aDiagnostico = $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, null, null, null, null);
+            }
+            
             if(null !== $aDiagnostico){
                 return $aDiagnostico[0];
             }else{
                 return null;
             }
         }catch(Exception $e){
-            $oSeguimiento->setEmbedVideos(null);
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Obtener diagnostico por id
+     *
+     */
+ 	public function getDiagnosticoById($iId)
+    {
+    	try{
+    		$filtro = array('d.id' => $iId);
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aDiagnostico = $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aDiagnostico){
+                return $aDiagnostico[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function guardarDiagnostico($oDiagnostico){
+        try{
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            return $oDiagnosticoIntermediary->guardar($oDiagnostico);
+        }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }

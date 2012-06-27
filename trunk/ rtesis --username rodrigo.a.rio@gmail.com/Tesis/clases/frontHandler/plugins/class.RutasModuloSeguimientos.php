@@ -194,6 +194,14 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'editarDiagnostico'
                                 ));
-        $router->addRoute('seguimientosEditarDiagnostico', $route);      
+        $router->addRoute('seguimientosEditarDiagnostico', $route);  
+           
+        $route = new RegexRoute('seguimientos/procesar-diagnostico',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'procesarDiagnostico'
+                                ));
+        $router->addRoute('seguimientosProcesarDiagnostico', $route);  
     }
 }

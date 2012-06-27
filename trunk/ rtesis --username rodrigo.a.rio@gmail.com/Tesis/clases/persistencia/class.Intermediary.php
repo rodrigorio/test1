@@ -139,7 +139,9 @@ abstract class Intermediary
         if($valor != ""){
             switch($tipo){
                 case MYSQL_TYPE_STRING: $valor = $this->escStr($valor); break;
-                case MYSQL_TYPE_INT: $valor = $this->escInt($valor); break;
+                case MYSQL_TYPE_INT:
+                	$valor = $this->escInt($valor); 
+                	break;
                 case MYSQL_TYPE_FLOAT: $valor = $this->escFloat($valor); break;
                 case MYSQL_TYPE_DATE: $valor = $this->escDate($valor); break;
                 default: $valor = $this->escStr($valor);

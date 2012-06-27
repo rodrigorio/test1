@@ -12,7 +12,8 @@ class DiagnosticoPersonalizado extends DiagnosticoAbstract{
 	 * @param stdClass $oParams
 	 */
 	public function __construct(stdClass $oParams = null){
-		parent::__contruct();
+		parent::__construct();
+		
 		$vArray = get_object_vars($oParams);
 		$vThisVars = get_class_vars(__CLASS__);
 		if(is_array($vArray)){
