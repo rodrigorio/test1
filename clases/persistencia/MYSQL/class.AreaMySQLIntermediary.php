@@ -32,7 +32,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCiclosId
+                        a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCicloId
                     FROM
                        areas a ";
                     if(!empty($filtro)){     
@@ -49,8 +49,8 @@ class AreaMySQLIntermediary extends AreaIntermediary
             	$oArea 		= new stdClass();
             	$oAreaº->iId 		= $oObj->iId;
             	$oArea->sDescripcion	= $oObj->sDescripcion;
-            	$filtroArea = array("a.id"=>$oObj->iAreaId);
-            	$oArea->oCiclo    = SeguimientoController::getInstance()->getCicloById($filtroArea);
+            	$filtroCiclo = array("a.id"=>$oObj->iCicloId);
+            	$oArea->oCiclo    = SeguimientoController::getInstance()->getCicloById($filtroCiclo);
             	$aAreas[]		= Factory::getAreaInstance($oArea);
             }
             return $aAreas;

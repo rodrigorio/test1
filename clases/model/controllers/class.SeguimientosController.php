@@ -650,6 +650,61 @@ class SeguimientosController
         }
     }
 
+    
+    /**
+     * Obtener ciclo por id
+     *
+     */
+ 	public function getCicloById($iId)
+    {
+    	try{
+    		$filtro = array('d.id' => $iId);
+            $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aCiclo){
+                return $aCiclo[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+     public function getNivelById($iId)
+      {
+    	try{
+    		$filtro = array('d.id' => $iId);
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aNivel = $oNivelIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aNivel){
+                return $aNivel[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+    public function getAreaById($iId)
+      {
+    	try{
+    		$filtro = array('d.id' => $iId);
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aArea){
+                return $aArea[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
     public function guardarDiagnostico($oDiagnostico){
         try{
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);

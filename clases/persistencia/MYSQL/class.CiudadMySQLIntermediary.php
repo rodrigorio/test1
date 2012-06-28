@@ -49,7 +49,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
             	$oCiudad 		= new stdClass();
             	$oCiudad->iId 		= $oObj->iId;
             	$oCiudad->sNombre	= $oObj->sNombre;
-            	$filtroProv 		= array("p.id"=>$oObj->iProvinciaId);
+            	$filtroProv 		= array("c.id"=>$oObj->iProvinciaId);
             	$oCiudad->oProvincia    = ComunidadController::getInstance()->getProvinciaById($filtroProv);
             	$aCiudades[]		= Factory::getCiudadInstance($oCiudad);
             }
