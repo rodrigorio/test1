@@ -49,8 +49,8 @@ public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrd
             	$oCiclo 		= new stdClass();
             	$oCiclo->iId 	= $oObj->iId;
             	$oCiclo->sDescripcion = $oObj->sDescripcion;
-            	$filtroCiclo = array("c.id"=>$oObj->iNivelesId);
-            	$oProvincia->oPais= SeguimientoController::getInstance()->getNivelById($filtroCiclo);
+            	$filtroNivel = array("c.id"=>$oObj->iNivelesId);
+            	$oProvincia->oPais= SeguimientoController::getInstance()->getNivelById($filtroNivel);
             	$aCiclos[] = Factory::getCicloInstance($oCiclo);
             }
 
