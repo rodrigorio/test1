@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of classSeguimientoAbstract
  *
@@ -23,6 +24,7 @@ abstract class SeguimientoAbstract
    protected $sDiaHorario;
    protected $dFechaCreacion;
    protected $sEstado;
+   
    /*
     * array objetos Foto
     */
@@ -135,11 +137,13 @@ abstract class SeguimientoAbstract
         $this->sEstado = self::ESTADO_ACTIVO;
         return $this;
     }
+
     public function setEstadoDetenido()
     {
         $this->sEstado = self::ESTADO_DETENIDO;
         return $this;
     }
+
     public function getEstado(){
         return  $this->sEstado;
     }
@@ -147,22 +151,27 @@ abstract class SeguimientoAbstract
     public function setFotos($aFotos){
         $this->aFotos = $aFotos;
     }
+
     public function addFoto($oFoto){
         $this->aFotos[] = $oFoto;
         return $this;
     }
+
     public function setArchivos($aArchivos){
         $this->aArchivos = $aArchivos;
     }
+
     public function addArchivo($oArchivo)
     {
         $this->aArchivos[] = $oArchivo;
         return $this;
     }
+
     public function setEmbedVideos($aEmbedVideos){
         $this->aEmbedVideos = $aEmbedVideos;
         return $this;
     }
+
     public function addEmbedVideo($oEmbedVideo)
     {
         $this->aEmbedVideos[] = $oEmbedVideo;
@@ -210,9 +219,10 @@ abstract class SeguimientoAbstract
         $this->oAntecedentes = $oAntecedentes;
     }
     
- 	public function setDiagnostico($oDiagnostico){
+    public function setDiagnostico($oDiagnostico){
     	$this->oDiagnostico = $oDiagnostico;
     }
+    
     public function getDiagnostico(){
     	if(!$this->oDiagnostico){
     		$this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoBySeg($this);

@@ -202,11 +202,13 @@ class Review extends FichaAbstract implements PublicacionesInterface
         }
         return $this->aComentarios;
     }
+
     public function setComentarios($aComentarios)
     {
         $this->aComentarios = $aComentarios;
         return $this;
     }
+
     public function addComentario($oComentario)
     {
         $this->aComentarios[] = $oComentario;

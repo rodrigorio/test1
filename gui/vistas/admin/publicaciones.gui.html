@@ -33,6 +33,16 @@
 </article>
 <!--EndHeaderBlock-->
 
+<!--BeginHeaderModeracionesBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Moderar publicaciones sistema</h2>
+</header>
+<section>
+    <h3>Aprobar-Rechazar publicaciones y reviews marcados como visibles al público en general</h3>
+</section>
+<!--EndHeaderModeracionesBlock-->
+
 <!--BeginListadoPublicacionesBlock-->
 <form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
     <fieldset>
@@ -109,6 +119,100 @@
         </div>
 </section>
 <!--EndListadoPublicacionesBlock-->
+
+<!--BeginListadoModeracionBlock-->
+<section id="listadoModeraciones">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id="listadoModeracionesResult">
+
+            <!--BeginGrillaModeracionesBlock-->
+            <div class="mabo">
+                Cantidad publicaciones por moderar: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th class="iveal small">Nombre autor</th>
+                        <th class="iveal big">T&iacute;tulo Publicaci&oacute;n</th>
+                        <th class="iveal">Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginPublicacionModerarBlock-->
+                    <tr class="{iPublicacionId}">
+                        <td class="desplegable" rel="{iPublicacionId}">
+                            <img src="{scrAvatarAutor}" class="pari" />
+                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>
+                        </td>
+                        <td class="teal_le desplegable" rel="{iPublicacionId}">
+                            {sTitulo}
+                        </td>
+                        <td class="desplegable" rel="{iPublicacionId}">
+                            {sFecha}
+                        </td>
+                        <td class="teal_ce">
+                            <span title="Ampliar" rel="{sTipo}_{iPublicacionId}" class="i mi expand ihover ampliarPublicacion mari"></span>
+                        </td>
+                    </tr>
+                    <tr class="{iPublicacionId}">
+                        <td id="desplegable_{iPublicacionId}" class="pa0" colspan="4" style="display:none;">
+                            <article class="nested clearrm mabo0">
+                                <header>
+                                    <h2>Historial moderaciones publicaci&oacute;n Id: {iPublicacionId}</h2>
+                                </header>
+                                <section>
+                                    <table>
+                                        <!--BeginModeracionHistorialPublicacionBlock-->
+                                        <tr>
+                                            <td>asd {sFechaModeracion}</td>
+                                            <td>asdasd {sEstadoModeracion}</td>
+                                            <td>asdasd {sMensaje}</td>
+                                        </tr>
+                                        <!--EndModeracionHistorialPublicacionBlock-->
+                                    </table>
+                                </section>
+                                <section class="teal_le">
+                                    <h3 class="teta_up mabo2">Moderar</h3>                                    
+                                    <form class="moderarPublicacion" id="formModerar_{iPublicacionId}" name="formModerar_{iPublicacionId}" action="" method="post">
+
+                                        <fieldset>
+                                                <legend>Seleccionar Estado</legend>
+                                                <dl>
+                                                    <dt class="radio"><label for="aprobar_{iPublicacionId}">Aprobar</label></dt>
+                                                    <dd><input type="radio" id="aprobar_{iPublicacionId}" name="estado" value="{sEstadoAprobarValue}"></dd>
+                                                    <dt class="radio"><label for="rechazar_{iPublicacionId}">Rechazar</label></dt>
+                                                    <dd><input type="radio" id="rechazar_{iPublicacionId}" name="estado" value="{sEstadoRechazarValue}"></dd>
+                                                </dl>
+                                        </fieldset>
+                                        
+                                        <dt>
+                                            <label for="mensaje_{iPublicacionId}">Mensaje</label>
+                                        </dt>
+                                        <dd>
+                                            <textarea class="mihe medium" id="mensaje_{iPublicacionId}" rows="0" cols="0" name="mensaje" title="Mensaje Moderaci&oacute;n"></textarea>
+                                        </dd>
+                                       
+                                        <button name="moderarSubmit" type="submit">Moderar publicaci&oacute;n</button>
+                                        <input type="hidden" value="{iPublicacionId}" name="iPublicacionId" />
+                                    </form>
+                                </section>
+                            </article>
+                        </td>
+                    </tr>
+                <!--EndPublicacionModerarBlock-->
+                <!--BeginNoRecordsModeracionesBlock-->
+                    <tr>
+                        <td colspan="4">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsModeracionesBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaModeracionesBlock-->
+        </div>
+</section>
+<!--EndListadoModeracionBlock-->
 
 <!--BeginFormularioPublicacionBlock-->
 <h1 class="teta_up mabo2">Modificar publicaci&oacute;n</h1>

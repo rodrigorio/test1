@@ -283,16 +283,31 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
                     $this->getTemplate()->set_var("sPublico", $sPublico);
 
-                    //si esta marcada como publica y no esta moderada muestro un cartel
-                    /*
-                    if($bPublico && !$oFicha->isModerado()){
-                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", "MsgFichaInfoBlock");
-                        $this->getTemplate()->set_var("sTituloMsgFicha", "Moderación Pendiente");
-                        $this->getTemplate()->set_var("sMsgFicha", "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.");
+                    //si esta marcada como publica muestro cartel segun moderacion
+                    if($bPublico){
+                        if($oFicha->getModeracion()->isPendiente()){
+                            $cartelModeracion = "MsgFichaInfoBlock";
+                            $tituloModeracion = "Moderación Pendiente";
+                            $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
+                        }
+
+                        if($oFicha->getModeracion()->isRechazado()){
+                            $cartelModeracion = "MsgFichaErrorBlock";
+                            $tituloModeracion = "Publicación Rechazada";
+                            $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
+                        }
+
+                        if($oFicha->getModeracion()->isAprobado()){
+                            $cartelModeracion = "MsgFichaCorrectoBlock";
+                            $tituloModeracion = "Publicación Moderada";
+                            $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
+                        }
+
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", $cartelModeracion);
+                        $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
+                        $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
                         $this->getTemplate()->parse("sMensajePublicacion", false);
                     }
-                     * 
-                     */
 
                     $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
 
@@ -582,11 +597,29 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
                 $this->getTemplate()->set_var("sPublico", $sPublico);
 
-                //si esta marcada como publica y no esta moderada muestro un cartel
-                if($bPublico && !$oFicha->isModerado()){
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", "MsgFichaInfoBlock");
-                    $this->getTemplate()->set_var("sTituloMsgFicha", "Moderación Pendiente");
-                    $this->getTemplate()->set_var("sMsgFicha", "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.");
+                //si esta marcada como publica muestro cartel segun moderacion
+                if($bPublico){
+                    if($oFicha->getModeracion()->isPendiente()){
+                        $cartelModeracion = "MsgFichaInfoBlock";
+                        $tituloModeracion = "Moderación Pendiente";
+                        $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
+                    }
+
+                    if($oFicha->getModeracion()->isRechazado()){
+                        $cartelModeracion = "MsgFichaErrorBlock";
+                        $tituloModeracion = "Publicación Rechazada";
+                        $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
+                    }
+
+                    if($oFicha->getModeracion()->isAprobado()){
+                        $cartelModeracion = "MsgFichaCorrectoBlock";
+                        $tituloModeracion = "Publicación Moderada";
+                        $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
+                    }
+
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", $cartelModeracion);
+                    $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
+                    $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
                     $this->getTemplate()->parse("sMensajePublicacion", false);
                 }
 

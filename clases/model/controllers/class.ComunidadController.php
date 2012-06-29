@@ -509,6 +509,9 @@ class ComunidadController
     public function guardarPublicacion($oPublicacion){
     	try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            
+            $this->procesarModeracionFicha($oPublicacion);
+
             return $oPublicacionIntermediary->guardar($oPublicacion);
           }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -517,8 +520,71 @@ class ComunidadController
     public function guardarReview($oReview){
     	try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+
+            $this->procesarModeracionFicha($oReview);
+            
             return $oPublicacionIntermediary->guardarReview($oReview);
           }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Si esta marcada como publica:
+     *
+     * - Si la ultima moderacion no existe o existe y el estado es diferente de 'pendiente'
+     * entonces creo una nueva entrada en el historial de moderaciones para la ficha.
+     * 
+     * - Si la ultima moderacion esta en estado pendiente no hago nada.
+     * 
+     * Si la ficha no esta marcada como publica:
+     * 
+     * - Si la ultima moderacion existe y el estado es 'pendiente' entonces la elimino.
+     *
+     *
+     * Si el usuario que realiza la modificacion es admin o moderador se aprueba automaticamente
+     * y ese registro queda fijo, nunca mas se vuelve a cambiar se mantiene asi.
+     */
+    private function procesarModeracionFicha($oFicha)
+    {        
+        try{
+            $classPerfil = SessionAutentificacion::getInstance()->getClassPerfilAutentificado();
+            if($classPerfil == "Administrador" || $classPerfil == "Moderador"){
+                if(null === $oFicha->getModeracion()){
+                    $oModeracion = new stdClass();
+                    $oModeracion = Factory::getModeracionInstance($oModeracion);
+                    $oModeracion->setEstadoAprobado();
+                    $oModeracion->setMensaje("Moderacion automatica por perfil Administrador o Moderador.");
+                    $oFicha->setModeracion($oModeracion);
+                    
+                    $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                    $oModeracionIntermediary->guardarModeracionFicha($oFicha);
+                }
+                return;
+            }
+
+            if($oFicha->isPublico()){
+                if((null === $oFicha->getModeracion()) ||
+                   (!$oFicha->getModeracion()->isPendiente()))
+                {
+                    //fecha se genera sola, mensaje vacio, estado pendiente por defecto.
+                    $oModeracion = new stdClass();
+                    $oModeracion = Factory::getModeracionInstance($oModeracion);
+                    $oFicha->setModeracion($oModeracion);
+
+                    $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                    $oModeracionIntermediary->guardarModeracionFicha($oFicha);
+                }
+            }else{
+                if((null !== $oFicha->getModeracion()) ||
+                   ($oFicha->getModeracion()->isPendiente()))
+                {
+                    $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                    $oModeracionIntermediary->borrar($oFicha->getModeracion()->getId());
+                    $oFicha->setModeracion(null);
+                }
+            }
+        }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
