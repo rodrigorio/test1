@@ -276,11 +276,30 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           p.publico as bPublico,
                           p.activoComentarios as bActivoComentarios,
                           p.descripcionBreve as sDescripcionBreve,
-                          p.keywords as sKeywords
+                          p.keywords AS sKeywords,
+
+                          m.iModeracionId,
+                          m.sModeracionEstado,
+                          m.sModeracionMensaje,
+                          m.dModeracionFecha
                     FROM
                         fichas_abstractas f
                     JOIN
-                        publicaciones p ON p.id = f.id";
+                        publicaciones p ON p.id = f.id
+                    LEFT JOIN
+                        (SELECT
+                                m.id AS iModeracionId,
+                                m.fichas_abstractas_id,
+                                m.estado AS sModeracionEstado,
+                                m.mensaje AS sModeracionMensaje,
+                                m.fecha AS dModeracionFecha
+                        FROM
+                                moderaciones m
+                        WHERE
+                                fichas_abstractas_id = 8
+                        ORDER BY
+                                fecha DESC
+                        LIMIT 1) AS m ON m.fichas_abstractas_id = f.id ";
                     
             if(!empty($filtro)){
                 $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
@@ -310,6 +329,17 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             	$oPublicacion->bActivoComentarios = ($oObj->bActivoComentarios == "1")?true:false;
             	$oPublicacion->sDescripcionBreve = $oObj->sDescripcionBreve;
             	$oPublicacion->sKeywords = $oObj->sKeywords;
+
+                //objeto ultima moderacion
+                if(null !== $oObj->iModeracionId){
+                    $oModeracion                   = new stdClass();
+                    $oModeracion->iId              = $oObj->iModeracionId;
+                    $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                    $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                    $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                    $oPublicacion->oModeracion = Factory::getModeracionInstance($oModeracion);
+                }
   
             	$aPublicaciones[] = Factory::getPublicacionInstance($oPublicacion);
             }
@@ -343,11 +373,30 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           r.itemEventSummary as sItemEventSummary,
                           r.itemUrl as sItemUrl,
                           r.rating as fRating,
-                          r.fuenteOriginal as sFuenteOriginal
+                          r.fuenteOriginal as sFuenteOriginal,
+
+                          m.iModeracionId,
+                          m.sModeracionEstado,
+                          m.sModeracionMensaje,
+                          m.dModeracionFecha
                     FROM
                         fichas_abstractas f
                     JOIN
-                        reviews r ON r.id = f.id";
+                        reviews r ON r.id = f.id
+                    LEFT JOIN
+                        (SELECT
+                                m.id AS iModeracionId,
+                                m.fichas_abstractas_id,
+                                m.estado AS sModeracionEstado,
+                                m.mensaje AS sModeracionMensaje,
+                                m.fecha AS dModeracionFecha
+                        FROM
+                                moderaciones m
+                        WHERE
+                                fichas_abstractas_id = 8
+                        ORDER BY
+                                fecha DESC
+                        LIMIT 1) AS m ON m.fichas_abstractas_id = f.id ";                        
 
             if(!empty($filtro)){
                 $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
@@ -384,6 +433,17 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                 $oReview->fRating = $oObj->fRating;
                 $oReview->sFuenteOriginal = $oObj->sFuenteOriginal;
 
+                //objeto ultima moderacion
+                if(null !== $oObj->iModeracionId){
+                    $oModeracion                   = new stdClass();
+                    $oModeracion->iId              = $oObj->iModeracionId;
+                    $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                    $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                    $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                    $oReview->oModeracion = Factory::getModeracionInstance($oModeracion);
+                }
+
             	$aReviews[] = Factory::getReviewInstance($oReview);
             }
 
@@ -418,7 +478,6 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           p.keywords as sKeywordsP,
 
                           r.usuarios_id as iUsuarioIdR,
-                          r.moderado as bModeradoR,
                           r.publico as bPublicoR,
                           r.activoComentarios as bActivoComentariosR,
                           r.descripcionBreve as sDescripcionBreveR,
@@ -430,6 +489,11 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                           r.rating as fRatingR,
                           r.fuenteOriginal as sFuenteOriginalR,
 
+                          m.iModeracionId,
+                          m.sModeracionEstado,
+                          m.sModeracionMensaje,
+                          m.dModeracionFecha,
+
                           IF(r.id IS NULL, 'PUBLICACION', 'REVIEW') as sObjType
                     FROM
                         fichas_abstractas f
@@ -437,6 +501,20 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                         reviews r ON r.id = f.id
                     LEFT JOIN
                         publicaciones p ON f.id = p.id
+                    LEFT JOIN
+                        (SELECT
+                                m.id AS iModeracionId,
+                                m.fichas_abstractas_id,
+                                m.estado AS sModeracionEstado,
+                                m.mensaje AS sModeracionMensaje,
+                                m.fecha AS dModeracionFecha
+                        FROM
+                                moderaciones m
+                        WHERE
+                                fichas_abstractas_id = 8
+                        ORDER BY
+                                fecha DESC
+                        LIMIT 1) AS m ON m.fichas_abstractas_id = f.id                                        
                     JOIN
                         (SELECT rAux.id, peAux.apellido
                          FROM personas peAux
@@ -452,6 +530,10 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             if(isset($filtro['usuario']) && $filtro['usuario'] != ""){
                 $WHERE[] = " p.usuarios_id = '".$filtro['usuario']."' OR r.usuarios_id = '".$filtro['usuario']."' ";
             }
+            //lo mismo
+            if(isset($filtro['publico']) && $filtro['publico'] != ""){
+                $WHERE[] = " p.publico = '".$filtro['publico']."' OR r.publico = '".$filtro['publico']."' ";
+            }            
             if(isset($filtro['f.titulo']) && $filtro['f.titulo'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('f.titulo', $filtro['f.titulo']);
             }
@@ -460,12 +542,16 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             }
             if(isset($filtro['f.activo']) && $filtro['f.activo'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('f.activo', $filtro['f.activo']);
-            }
+            }            
             //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
             if(isset($filtro['fecha']) && null !== $filtro['fecha']){
                 if(is_array($filtro['fecha'])){
                     $WHERE[] = $this->crearFiltroFechaDesdeHasta('f.fecha', $filtro['fecha']);
                 }
+            }
+            //para listar solo moderaciones pendientes
+            if(isset($filtro['m.sModeracionEstado']) && $filtro['m.sModeracionEstado'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('m.sModeracionEstado', $filtro['m.sModeracionEstado']);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -502,6 +588,17 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                     $oPublicacion->sDescripcionBreve = $oObj->sDescripcionBreveP;
                     $oPublicacion->sKeywords = $oObj->sKeywordsP;
 
+                    //objeto ultima moderacion
+                    if(null !== $oObj->iModeracionId){
+                        $oModeracion                   = new stdClass();
+                        $oModeracion->iId              = $oObj->iModeracionId;
+                        $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                        $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                        $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                        $oPublicacion->oModeracion = Factory::getModeracionInstance($oModeracion);
+                    }
+
                     $aPublicacionesReviews[] = Factory::getPublicacionInstance($oPublicacion);
                 }
 
@@ -523,6 +620,17 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                     $oReview->sItemUrl = $oObj->sItemUrlR;
                     $oReview->fRating = $oObj->fRatingR;
                     $oReview->sFuenteOriginal = $oObj->sFuenteOriginalR;
+
+                    //objeto ultima moderacion
+                    if(null !== $oObj->iModeracionId){
+                        $oModeracion                   = new stdClass();
+                        $oModeracion->iId              = $oObj->iModeracionId;
+                        $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                        $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                        $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                        $oReview->oModeracion = Factory::getModeracionInstance($oModeracion);
+                    }
 
                     $aPublicacionesReviews[] = Factory::getReviewInstance($oReview);
                 }

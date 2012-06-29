@@ -229,8 +229,7 @@ class Factory
     public static function &getDiagnosticoSCCInstance(stdClass $obj){
         $oDiagnosticoSCC = new DiagnosticoSCC($obj);
         return $oDiagnosticoSCC;
-    }
-    
+    }    
    /**
      * @param stdClass $obj
      * @return Area|null
@@ -239,4 +238,12 @@ class Factory
         $oArea = new Area($obj);
         return $oArea;
     }
+   /**
+     * @param stdClass $obj
+     * @return Area|null
+     */
+    public static function &getModeracionInstance(stdClass $obj){
+        $oModeracion = new Moderacion($obj);
+        return $oModeracion;
+    }    
 }

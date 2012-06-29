@@ -38,27 +38,30 @@ class Publicacion extends FichaAbstract implements PublicacionesInterface
         return $this;
     }
      
-public function isPublico($flag = null){
+    public function isPublico($flag = null){
         if(null !== $flag){
             $this->bPublico = $flag ? true : false;
             return $this;
         }else{
             return $this->bPublico;
         }
- }
-public function isActivoComentarios($flag = null){
+    }
+
+    public function isActivoComentarios($flag = null){
         if(null !== $flag){
             $this->bActivoComentarios = $flag ? true : false;
             return $this;
         }else{
             return $this->bActivoComentarios;
         }
- }
-public function setDescripcionBreve($sDescripcionBreve){
+    }
+
+    public function setDescripcionBreve($sDescripcionBreve){
     	$this->sDescripcionBreve = $sDescripcionBreve;
         return $this;
     }
-public function setKeywords($sKeywords){
+
+    public function setKeywords($sKeywords){
     	$this->sKeywords = $sKeywords;
         return $this;
     }
@@ -90,11 +93,13 @@ public function setKeywords($sKeywords){
         }
         return $this->aComentarios;
     }
+
     public function setComentarios($aComentarios)
     {
         $this->aComentarios = $aComentarios;
         return $this;
     }
+
     public function addComentario($oComentario)
     {
         $this->aComentarios[] = $oComentario;

@@ -316,6 +316,11 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             return;
         }
 
+        if($this->getRequest()->has('masModeraciones')){
+            $this->masModeraciones();
+            return;
+        }
+
         if($this->getRequest()->has('cambiarEstado')){
             $this->cambiarEstadoPublicacion();
             return;
@@ -1183,6 +1188,124 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
     public function listarModeraciones()
     {
-        echo "moderaciones"; exit();
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionModeracion");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "widgetsContent", "HeaderModeracionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "mainContent", "ListadoModeracionBlock");
+
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+            $iRecordsTotal = 0;
+            $aFichas = AdminController::getInstance()->buscarPublicacionesModeracion($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+
+            if(count($aFichas) > 0){
+
+                foreach($aFichas as $oFicha){
+
+                    $oUsuario = $oFicha->getUsuario();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+                    $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+
+                    $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
+                    $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
+                    $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                    $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
+
+                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                    $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                    $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+
+                    $this->getTemplate()->parse("PublicacionModerarBlock", true);
+                }
+
+                $this->getTemplate()->set_var("NoRecordsModeracionesBlock", "");
+
+            }else{
+                $this->getTemplate()->set_var("PublicacionModerarBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "noRecords", "NoRecordsModeracionesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay publicaciones pendientes de moderación");
+                $this->getTemplate()->parse("noRecords", false);
+            }
+
+            $params[] = "masModeraciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/publicaciones-procesar", "listadoModeracionesResult", $params);
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }        
+    }
+
+    private function masModeraciones()
+    {
+        try{
+            $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "ajaxGrillaPublicacionesBlock", "GrillaPublicacionesBlock");
+
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
+
+            $iRecordsTotal = 0;
+            $aFichas = AdminController::getInstance()->buscarPublicacionesComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+
+            if(count($aFichas) > 0){
+
+                foreach($aFichas as $oFicha){
+
+                    $oUsuario = $oFicha->getUsuario();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+
+                    $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+
+                    $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
+                    $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
+                    $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                    $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
+
+                    if($oFicha->isActivo()){
+                        $this->getTemplate()->set_var("sSelectedPublicacionActivo", "selected='selected'");
+                    }else{
+                        $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "selected='selected'");
+                    }
+
+                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                    $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                    $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+
+                    $this->getTemplate()->parse("PublicacionBlock", true);
+                    $this->getTemplate()->set_var("sSelectedPublicacionActivo", "");
+                    $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "");
+                }
+
+                $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
+            }else{
+                $this->getTemplate()->set_var("PublicacionBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "noRecords", "NoRecordsPublicacionesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No se encontraron publicaciones");
+                $this->getTemplate()->parse("noRecords", false);
+            }
+
+            $paramsPaginador[] = "masPublicaciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/publicaciones-procesar", "listadoPublicacionesResult", $paramsPaginador);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaPublicacionesBlock', false));
+        }catch(Exception $e){
+            print_r($e);
+        }        
     }
 }
