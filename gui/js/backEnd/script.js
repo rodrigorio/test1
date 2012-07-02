@@ -106,8 +106,6 @@ function bindEventsAdmin()
     setTimeout(function(){
         $("#msg_top").hide('drop', {direction: "up"}, 1000)
     }, 5000);
-
-    $("textarea.maxlength").maxlength();
     
     // Notification Close Button
     $(".close-notification").click(
@@ -138,23 +136,6 @@ function bindEventsAdmin()
 
     // IE7 doesn't support :disabled
     $('.ie7').find(':disabled').addClass('disabled');
-
-    // Menu Dropdown
-    $("#main-nav li ul").hide(); //Hide all sub menus
-    $("#main-nav li.current a").parent().find("ul").slideToggle("slow"); // Slide down the current sub menu
-    $("#main-nav li a").click(
-            function () {
-                    $(this).parent().siblings().find("ul").slideUp("normal"); // Slide up all menus except the one clicked
-                    $(this).parent().find("ul").slideToggle("normal"); // Slide down the clicked sub menu
-                    return false;
-            }
-    );
-    $("#main-nav li a.no-submenu").click(
-            function () {
-                    window.location.href=(this.href); // Open link instead of a sub menu
-                    return false;
-            }
-    );
 
     // Widget Close Button
     $(".close-widget").click(
@@ -210,6 +191,27 @@ function bindEventsAdmin()
                     $(this).parent().parent().find("section, footer").toggle();
             }
     );
+}
+
+$(function(){
+    $("textarea.maxlength").maxlength();
+
+    // Menu Dropdown
+    $("#main-nav li ul").hide(); //Hide all sub menus
+    $("#main-nav li.current a").parent().find("ul").slideToggle("slow"); // Slide down the current sub menu
+    $("#main-nav li a").click(
+            function () {
+                    $(this).parent().siblings().find("ul").slideUp("normal"); // Slide up all menus except the one clicked
+                    $(this).parent().find("ul").slideToggle("normal"); // Slide down the clicked sub menu
+                    return false;
+            }
+    );
+    $("#main-nav li a.no-submenu").click(
+            function () {
+                    window.location.href=(this.href); // Open link instead of a sub menu
+                    return false;
+            }
+    );
 
     //para las filas desplegables de una tabla.
     $(".desplegable").live("click", function(){
@@ -220,8 +222,6 @@ function bindEventsAdmin()
             $("#desplegable_" + id).hide();
         }
     });
-}
 
-$(function () {
     bindEventsAdmin();
 });

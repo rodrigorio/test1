@@ -1225,8 +1225,22 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                     $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                     $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+                    
+                    $aModeracion = AdminController::getInstance()->obtenerHistorialModeracionesFicha($oFicha->getId());
+                    //al menos 1 porque es un listado de publicaciones con moderacion pendiente.
+                    foreach($aModeracion as $oModeracion){
+                        $this->getTemplate()->set_var("sFechaModeracion", $oModeracion->getFecha(true));
+                        $this->getTemplate()->set_var("sEstadoModeracion", $oModeracion->getEstado());
 
+                        $sMensajeModeracion = $oModeracion->getMensaje(true);
+                        if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }                      
+                        $this->getTemplate()->set_var("sMensaje", $sMensajeModeracion);
+                        
+                        $this->getTemplate()->parse("ModeracionHistorialPublicacionBlock", true);
+                    }                    
+                    
                     $this->getTemplate()->parse("PublicacionModerarBlock", true);
+                    $this->getTemplate()->set_var("ModeracionHistorialPublicacionBlock", "");
                 }
 
                 $this->getTemplate()->set_var("NoRecordsModeracionesBlock", "");

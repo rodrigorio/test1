@@ -288,18 +288,12 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                         publicaciones p ON p.id = f.id
                     LEFT JOIN
                         (SELECT
-                                m.id AS iModeracionId,
-                                m.fichas_abstractas_id,
-                                m.estado AS sModeracionEstado,
-                                m.mensaje AS sModeracionMensaje,
-                                m.fecha AS dModeracionFecha
-                        FROM
-                                moderaciones m
-                        WHERE
-                                fichas_abstractas_id = 8
-                        ORDER BY
-                                fecha DESC
-                        LIMIT 1) AS m ON m.fichas_abstractas_id = f.id ";
+                            m.id AS iModeracionId, m.fichas_abstractas_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
+                         FROM
+                            moderaciones m
+                         JOIN
+                            (SELECT MAX(m.id) AS idd FROM moderaciones m GROUP BY fichas_abstractas_id) AS filtro ON filtro.idd = m.id)
+                        AS m ON m.fichas_abstractas_id = f.id ";
                     
             if(!empty($filtro)){
                 $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
@@ -385,18 +379,12 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                         reviews r ON r.id = f.id
                     LEFT JOIN
                         (SELECT
-                                m.id AS iModeracionId,
-                                m.fichas_abstractas_id,
-                                m.estado AS sModeracionEstado,
-                                m.mensaje AS sModeracionMensaje,
-                                m.fecha AS dModeracionFecha
-                        FROM
-                                moderaciones m
-                        WHERE
-                                fichas_abstractas_id = 8
-                        ORDER BY
-                                fecha DESC
-                        LIMIT 1) AS m ON m.fichas_abstractas_id = f.id ";                        
+                            m.id AS iModeracionId, m.fichas_abstractas_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
+                         FROM
+                            moderaciones m
+                         JOIN
+                            (SELECT MAX(m.id) AS idd FROM moderaciones m GROUP BY fichas_abstractas_id) AS filtro ON filtro.idd = m.id)
+                        AS m ON m.fichas_abstractas_id = f.id ";
 
             if(!empty($filtro)){
                 $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
@@ -503,18 +491,12 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                         publicaciones p ON f.id = p.id
                     LEFT JOIN
                         (SELECT
-                                m.id AS iModeracionId,
-                                m.fichas_abstractas_id,
-                                m.estado AS sModeracionEstado,
-                                m.mensaje AS sModeracionMensaje,
-                                m.fecha AS dModeracionFecha
-                        FROM
-                                moderaciones m
-                        WHERE
-                                fichas_abstractas_id = 8
-                        ORDER BY
-                                fecha DESC
-                        LIMIT 1) AS m ON m.fichas_abstractas_id = f.id                                        
+                            m.id AS iModeracionId, m.fichas_abstractas_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
+                         FROM 
+                            moderaciones m
+                         JOIN
+                            (SELECT MAX(m.id) AS idd FROM moderaciones m GROUP BY fichas_abstractas_id) AS filtro ON filtro.idd = m.id)
+                        AS m ON m.fichas_abstractas_id = f.id
                     JOIN
                         (SELECT rAux.id, peAux.apellido
                          FROM personas peAux

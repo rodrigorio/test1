@@ -423,4 +423,16 @@ class AdminController
             throw new Exception($e->getMessage());
         }
     }
+
+    public function obtenerHistorialModeracionesFicha($iFichaId)
+    {
+        try{
+            $filtro["m.fichas_abstractas_id"] = $iFichaId;
+            $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
 }

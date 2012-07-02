@@ -126,7 +126,7 @@ class ComunidadController
         try{
             $filtro = array('c.id' => $iId);
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
-            $aCiudad = $oCiudadIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            $aCiudad = $oCiudadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount);
             if(null !== $aCiudad){
                 return $aCiudad[0];
             }else{

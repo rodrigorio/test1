@@ -157,6 +157,72 @@ var optionsAjaxFormReview = {
     }
 };
 
+var validateFormModeracion = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        mensaje:{required:true}
+    },
+    messages:{
+        mensaje: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormModeracion = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/publicaciones-procesar',
+    beforeSerialize:function(){
+
+        alert("entro entro");
+
+        return false;
+        
+        if($("#formReview").valid() == true){
+
+            $('#msg_form_review').hide();
+            $('#msg_form_review').removeClass("success").removeClass("error2");
+            $('#msg_form_review .msg').html("");
+            setWaitingStatus('formReview', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formReview', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_review .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_review .msg').html(data.mensaje);
+            }
+            $('#msg_form_review').addClass("error2").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_review .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_review .msg').html(data.mensaje);
+            }
+            $('#msg_form_review').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
 function bindEventsPublicacionForm(){
     $("#formPublicacion").validate(validateFormPublicacion);
     $("#formPublicacion").ajaxForm(optionsAjaxFormPublicacion);
@@ -166,6 +232,11 @@ function bindEventsReviewForm(){
     $("#formReview").validate(validateFormReview);
     $("#formReview").ajaxForm(optionsAjaxFormReview);
     selectItemTypeReviewEvent();
+}
+
+function bindEventsModeracionForm(){
+    $(".moderarPublicacion").validate(validateFormModeracion);
+    $(".moderarPublicacion").ajaxForm(optionsAjaxFormModeracion);    
 }
 
 function selectItemTypeReviewEvent(){
@@ -911,4 +982,5 @@ $(document).ready(function(){
         return false; //porq es un <a>
     });
 
+    bindEventsModeracionForm();
 });
