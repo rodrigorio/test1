@@ -26,30 +26,32 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
         return self::$instance;
 	}
 	
-	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        c.id as iId, c.nombre as sNombre,c.provincia_id as iProvinciaId
+                        c.id as iId, c.nombre as sNombre, c.provincia_id as iProvinciaId
                     FROM
                        ciudades c ";
-                    if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
-                    }
+            
+            if(!empty($filtro)){
+                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            }
 
             $db->query($sSQL);
+                                              
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
             
             if(empty($iRecordsTotal)){ return null; }
             
-			$aCiudades = array();
+            $aCiudades = array();
             while($oObj = $db->oNextRecord()){
             	$oCiudad 		= new stdClass();
             	$oCiudad->iId 		= $oObj->iId;
             	$oCiudad->sNombre	= $oObj->sNombre;
-            	$filtroProv 		= array("c.id"=>$oObj->iProvinciaId);
+            	$filtroProv 		= array("p.id" => $oObj->iProvinciaId);
             	$oCiudad->oProvincia    = ComunidadController::getInstance()->getProvinciaById($filtroProv);
             	$aCiudades[]		= Factory::getCiudadInstance($oCiudad);
             }
@@ -57,7 +59,8 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-	}
+    }
+    
 	public  function insertar($oCiudad)
    {
 		try{

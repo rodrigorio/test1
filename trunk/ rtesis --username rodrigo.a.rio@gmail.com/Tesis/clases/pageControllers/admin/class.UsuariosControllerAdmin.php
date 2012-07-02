@@ -1294,7 +1294,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             if(empty($iUsuarioId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
-
+                        
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
             $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "popUpContent", "FichaUsuarioBlock");
 
@@ -1308,14 +1308,14 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             }else{
                 $this->getTemplate()->set_var("DescargarButton", "");
             }
-
+                        
             $iPaisId = "";
             $iProvinciaId = "";
             $iCiudadId = "";
             $sUbicacion = "";
             if(null != $oUsuario->getCiudad()){
-                $iCiudadId = $oUsuario->getCiudad()->getId();
-                $sUbicacion .= $oUsuario->getCiudad()->getNombre();
+                $iCiudadId = $oUsuario->getCiudad()->getId();                                
+                $sUbicacion .= $oUsuario->getCiudad()->getNombre();                                                        
                 if(null != $oUsuario->getCiudad()->getProvincia()){
                     $iProvinciaId = $oUsuario->getCiudad()->getProvincia()->getId();
                     $sUbicacion .= " ".$oUsuario->getCiudad()->getProvincia()->getNombre();
@@ -1405,7 +1405,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
         }catch(Exception $e){
+            
             print_r($e->getMessage());
         }
     }

@@ -141,7 +141,7 @@
                 <tbody>
                 <!--BeginPublicacionModerarBlock-->
                     <tr class="{iPublicacionId}">
-                        <td class="desplegable" rel="{iPublicacionId}">
+                        <td class="desplegable teal_le pale2" rel="{iPublicacionId}">
                             <img src="{scrAvatarAutor}" class="pari" />
                             <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>
                         </td>
@@ -165,9 +165,9 @@
                                     <table>
                                         <!--BeginModeracionHistorialPublicacionBlock-->
                                         <tr>
-                                            <td>asd {sFechaModeracion}</td>
-                                            <td>asdasd {sEstadoModeracion}</td>
-                                            <td>asdasd {sMensaje}</td>
+                                            <td>{sFechaModeracion}</td>
+                                            <td><strong>{sEstadoModeracion}</strong></td>
+                                            <td>{sMensaje}</td>
                                         </tr>
                                         <!--EndModeracionHistorialPublicacionBlock-->
                                     </table>
@@ -177,12 +177,20 @@
                                     <form class="moderarPublicacion" id="formModerar_{iPublicacionId}" name="formModerar_{iPublicacionId}" action="" method="post">
 
                                         <fieldset>
-                                                <legend>Seleccionar Estado</legend>
+                                            <legend>Estado Pendiente</legend>
                                                 <dl>
-                                                    <dt class="radio"><label for="aprobar_{iPublicacionId}">Aprobar</label></dt>
-                                                    <dd><input type="radio" id="aprobar_{iPublicacionId}" name="estado" value="{sEstadoAprobarValue}"></dd>
-                                                    <dt class="radio"><label for="rechazar_{iPublicacionId}">Rechazar</label></dt>
-                                                    <dd><input type="radio" id="rechazar_{iPublicacionId}" name="estado" value="{sEstadoRechazarValue}"></dd>
+                                                    <dt class="radio">
+                                                        <label for="aprobar_{iPublicacionId}">Aprobar</label>
+                                                    </dt>
+                                                    <dd>
+                                                        <input type="radio" id="aprobar_{iPublicacionId}" name="estado" value="{sEstadoAprobarValue}">
+                                                    </dd>
+                                                    <dt class="radio">
+                                                        <label for="rechazar_{iPublicacionId}">Rechazar</label>
+                                                    </dt>
+                                                    <dd>
+                                                        <input type="radio" id="rechazar_{iPublicacionId}" name="estado" value="{sEstadoRechazarValue}">
+                                                    </dd>
                                                 </dl>
                                         </fieldset>
                                         
@@ -190,7 +198,7 @@
                                             <label for="mensaje_{iPublicacionId}">Mensaje</label>
                                         </dt>
                                         <dd>
-                                            <textarea class="mihe medium" id="mensaje_{iPublicacionId}" rows="0" cols="0" name="mensaje" title="Mensaje Moderaci&oacute;n"></textarea>
+                                            <textarea class="mihe1 medium maxlength" id="mensaje_{iPublicacionId}" rows="0" cols="0" name="mensaje" title="Mensaje Moderaci&oacute;n"></textarea>
                                         </dd>
                                        
                                         <button name="moderarSubmit" type="submit">Moderar publicaci&oacute;n</button>

@@ -180,7 +180,7 @@ abstract class PersonaAbstract
     	return $this->iCiudadId;
     }
 
-    public function getCiudad(){
+    public function getCiudad(){                
     	if($this->oCiudad == null && !empty($this->iCiudadId)){
             $this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
     	}
