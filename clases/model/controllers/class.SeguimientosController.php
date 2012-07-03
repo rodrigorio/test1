@@ -713,4 +713,16 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
+    public function getNiveles($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+      {
+    	try{
+    		echo "1";
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+    		echo "2";
+            return $oNivelIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }

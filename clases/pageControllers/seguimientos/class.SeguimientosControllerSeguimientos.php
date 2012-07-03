@@ -1730,7 +1730,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         try{
         	$aCurrentOptions[] = "currentOptionSeguimiento";
             $aCurrentOptions[] = "currentSubOptionEditarDiagnosticoSeguimiento";
-			 IndexControllerSeguimientos::setCabecera($this->getTemplate());
+			IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
             $this->setFrameTemplate()
@@ -1774,7 +1774,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
              //titulo seccion
             $this->getTemplate()->set_var("tituloSeccion", "Diagnostico SCC");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioSCCBlock");
-
             $oDiagnostico = $oSeguimiento->getDiagnostico();
          	if($oDiagnostico ){
 	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
@@ -1783,7 +1782,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 	            }
 	            $this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
          	}
-            
+         	$iRecordsTotal = 0;
+        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
+        	$filtroSql 	= array();
+         	$vNiveles 	= SeguimientosController::getInstance()->getNiveles($filtroSql, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+         	if( $vNiveles ){
+         	  	foreach($vNiveles as $oNivel){
+	                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+	                $this->getTemplate()->set_var("sNivel", $oNivel->getDescripcion());
+	                $this->getTemplate()->parse("OptionPracticaBlock", true);
+            	}
+         	}
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
    		  }catch(Exception $e){
             print_r($e);

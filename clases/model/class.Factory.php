@@ -238,6 +238,22 @@ class Factory
         $oArea = new Area($obj);
         return $oArea;
     }
+ 	/**
+     * @param stdClass $obj
+     * @return Nivel|null
+     */
+    public static function &getNivelInstance(stdClass $obj){
+        $oNivel = new Nivel($obj);
+        return $oNivel;
+    }
+ 	/**
+     * @param stdClass $obj
+     * @return Ciclo|null
+     */
+    public static function &getCicloInstance(stdClass $obj){
+        $oCiclo = new Ciclo($obj);
+        return $oCiclo;
+    }
    /**
      * @param stdClass $obj
      * @return Area|null
