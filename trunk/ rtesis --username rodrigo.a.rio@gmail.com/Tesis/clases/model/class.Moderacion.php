@@ -44,7 +44,7 @@ class Moderacion
 
     public function setMensaje($sMensaje)
     {
-        $this->sDescripcion = $sDescripcion;
+        $this->sMensaje = $sMensaje;
         return $this;
     }
     

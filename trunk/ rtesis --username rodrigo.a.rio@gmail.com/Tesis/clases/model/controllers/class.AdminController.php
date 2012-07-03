@@ -435,4 +435,31 @@ class AdminController
             throw new Exception($e->getMessage());
         }        
     }
+
+    public function getModeracionById($iModeracionId)
+    {
+        try{
+            $filtro = array('m.id' => $iModeracionId);
+            $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aModeracion = $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aModeracion){
+                return $aModeracion[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    public function guardarModeracion($oModeracion)
+    {
+        try{
+            $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+            return $oModeracionIntermediary->guardar($oModeracion);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
 }

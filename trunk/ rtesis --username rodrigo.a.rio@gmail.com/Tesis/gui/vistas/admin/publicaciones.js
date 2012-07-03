@@ -157,72 +157,6 @@ var optionsAjaxFormReview = {
     }
 };
 
-var validateFormModeracion = {
-    errorElement: "span",
-    validClass: "valid-side-note",
-    errorClass: "invalid-side-note",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    highlight: function(element, errorClass, validClass){
-        $(element).addClass("invalid");
-    },
-    unhighlight: function(element, errorClass, validClass){
-        $(element).removeClass("invalid");
-    },
-    rules:{
-        mensaje:{required:true}
-    },
-    messages:{
-        mensaje: mensajeValidacion("requerido")
-    }
-};
-
-var optionsAjaxFormModeracion = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url: 'admin/publicaciones-procesar',
-    beforeSerialize:function(){
-
-        alert("entro entro");
-
-        return false;
-        
-        if($("#formReview").valid() == true){
-
-            $('#msg_form_review').hide();
-            $('#msg_form_review').removeClass("success").removeClass("error2");
-            $('#msg_form_review .msg').html("");
-            setWaitingStatus('formReview', true);
-
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formReview', false);
-
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_review .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_review .msg').html(data.mensaje);
-            }
-            $('#msg_form_review').addClass("error2").fadeIn('slow');
-        }else{
-            if(data.mensaje == undefined){
-                $('#msg_form_review .msg').html(lang['exito procesar']);
-            }else{
-                $('#msg_form_review .msg').html(data.mensaje);
-            }
-            $('#msg_form_review').addClass("success").fadeIn('slow');
-        }
-    }
-};
-
 function bindEventsPublicacionForm(){
     $("#formPublicacion").validate(validateFormPublicacion);
     $("#formPublicacion").ajaxForm(optionsAjaxFormPublicacion);
@@ -232,11 +166,6 @@ function bindEventsReviewForm(){
     $("#formReview").validate(validateFormReview);
     $("#formReview").ajaxForm(optionsAjaxFormReview);
     selectItemTypeReviewEvent();
-}
-
-function bindEventsModeracionForm(){
-    $(".moderarPublicacion").validate(validateFormModeracion);
-    $(".moderarPublicacion").ajaxForm(optionsAjaxFormModeracion);    
 }
 
 function selectItemTypeReviewEvent(){
@@ -288,7 +217,7 @@ var optionsAjaxFormFoto = {
     beforeSerialize:function(){
         if($("#formFoto").valid() == true){
             $('#msg_form_foto').hide();
-            $('#msg_form_foto').removeClass("correcto").removeClass("error");
+            $('#msg_form_foto').removeClass("success").removeClass("error2");
             $('#msg_form_foto .msg').html("");
             setWaitingStatus('formFoto', true);
         }else{
@@ -305,7 +234,7 @@ var optionsAjaxFormFoto = {
             }else{
                 $('#msg_form_foto .msg').html(data.mensaje);
             }
-            $('#msg_form_foto').addClass("error").fadeIn('slow');
+            $('#msg_form_foto').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_foto .msg').html(lang['exito procesar']);
@@ -376,7 +305,7 @@ var optionsAjaxFormEditarVideo = {
     beforeSerialize:function(){
         if($("#formEditarVideo").valid() == true){
             $('#msg_form_editar_video').hide();
-            $('#msg_form_editar_video').removeClass("correcto").removeClass("error");
+            $('#msg_form_editar_video').removeClass("success").removeClass("error2");
             $('#msg_form_editar_video .msg').html("");
             setWaitingStatus('formEditarVideo', true);
         }else{
@@ -393,7 +322,7 @@ var optionsAjaxFormEditarVideo = {
             }else{
                 $('#msg_form_editar_video .msg').html(data.mensaje);
             }
-            $('#msg_form_editar_video').addClass("error").fadeIn('slow');
+            $('#msg_form_editar_video').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_editar_video .msg').html(lang['exito procesar']);
@@ -438,7 +367,7 @@ var optionsAjaxFormArchivo = {
     beforeSerialize:function(){
         if($("#formArchivo").valid() == true){
             $('#msg_form_archivo').hide();
-            $('#msg_form_archivo').removeClass("correcto").removeClass("error");
+            $('#msg_form_archivo').removeClass("success").removeClass("error2");
             $('#msg_form_archivo .msg').html("");
             setWaitingStatus('formArchivo', true);
         }else{
@@ -455,7 +384,7 @@ var optionsAjaxFormArchivo = {
             }else{
                 $('#msg_form_archivo .msg').html(data.mensaje);
             }
-            $('#msg_form_archivo').addClass("error").fadeIn('slow');
+            $('#msg_form_archivo').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_archivo .msg').html(lang['exito procesar']);
@@ -982,5 +911,85 @@ $(document).ready(function(){
         return false; //porq es un <a>
     });
 
-    bindEventsModeracionForm();
+    //estos formularios los valido a mano sin plugin porque se repiten por cada fila y hay problemas
+    $('.moderarSubmit').live('click', function()
+    {
+        var mensajeValidacion = "Todos los campos son obligatorios";
+        var iPublicacionId = $(this).attr('rel');
+        var cartel = $('#msg_form_moderacion_'+iPublicacionId);
+        var mensajeCont = $('#msg_form_moderacion_'+iPublicacionId+" .msg");
+
+        cartel.hide();
+        cartel.removeClass("correcto").removeClass("error2");
+        mensajeCont.html("");
+        
+        if(!$('#aprobar_'+iPublicacionId).is(':checked') &&
+           !$('#rechazar_'+iPublicacionId).is(':checked')){
+
+            mensajeCont.html(mensajeValidacion);
+            cartel.addClass("error").fadeIn('slow');
+            return false;
+        }
+
+        
+        if($('#mensaje_'+iPublicacionId).val() == ""){
+
+            mensajeCont.html(mensajeValidacion);
+            cartel.addClass("error").fadeIn('slow');
+            return false;
+        }
+        
+        var estado;
+        if($('#aprobar_'+iPublicacionId).is(':checked')){
+            estado = $('#aprobar_'+iPublicacionId).val();
+        }else{
+            estado = $('#rechazar_'+iPublicacionId).val();
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "admin/publicaciones-procesar",
+            data:{
+                iModeracionId: function(){return $('#moderacionId_'+iPublicacionId).val(); },
+                moderarPublicacion: "1",
+                estado: estado,
+                mensaje: function(){return $('#mensaje_'+iPublicacionId).val(); }
+            },
+            beforeSend: function(){
+                setWaitingStatus('listadoModeraciones', true);
+            },
+            success: function(data){
+                setWaitingStatus('listadoModeraciones', false);
+
+                if(data.success != undefined && data.success == 1){
+                    $("."+iPublicacionId).hide("slow", function(){
+                        $("."+iPublicacionId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length){
+                    dialog.attr("title", "Moderar Publicación ID: "+iPublicacionId);
+                }else{
+                    dialog = $('<div id="dialog" title="Moderar Publicación ID: '+iPublicacionId+'"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    });
+    
 });

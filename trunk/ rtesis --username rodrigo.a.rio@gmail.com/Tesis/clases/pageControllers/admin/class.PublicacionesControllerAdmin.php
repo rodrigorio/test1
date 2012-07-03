@@ -350,6 +350,11 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->eliminarComentario();
             return;
         }
+        
+        if($this->getRequest()->has('moderarPublicacion')){
+            $this->moderarPublicacion();
+            return;
+        }
 
         //adjuntos en publicacion ampliada 
         if($this->getRequest()->has('eliminarArchivo')){
@@ -388,6 +393,52 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->guardarArchivo();
             return;
         }
+    }
+
+    private function moderarPublicacion()
+    {        
+        $iModeracionId = $this->getRequest()->getParam('iModeracionId');
+        $sEstado = $this->getRequest()->getParam('estado');
+        $sMensaje = $this->getRequest()->getParam('mensaje');
+
+        if(empty($iModeracionId) || empty($sEstado) || empty($sMensaje)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $oModeracion = AdminController::getInstance()->getModeracionById($iModeracionId);
+
+            switch($sEstado)
+            {
+                case "aprobado": $oModeracion->setEstadoAprobado(); break;
+                case "rechazado": $oModeracion->setEstadoRechazado(); break;
+            }
+
+            $oModeracion->setMensaje($sMensaje);
+
+            $result = AdminController::getInstance()->guardarModeracion($oModeracion);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "La publicación fue moderada";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha procesado la moderacion en la publicación";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
     private function eliminarComentario()
@@ -1235,9 +1286,13 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                         $sMensajeModeracion = $oModeracion->getMensaje(true);
                         if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }                      
                         $this->getTemplate()->set_var("sMensaje", $sMensajeModeracion);
+                        $this->getTemplate()->set_var("iModeracionId", $oModeracion->getId());
                         
                         $this->getTemplate()->parse("ModeracionHistorialPublicacionBlock", true);
-                    }                    
+                    }
+
+                    $this->getTemplate()->set_var("sEstadoAprobarValue", "aprobado");
+                    $this->getTemplate()->set_var("sEstadoRechazarValue", "rechazado");
                     
                     $this->getTemplate()->parse("PublicacionModerarBlock", true);
                     $this->getTemplate()->set_var("ModeracionHistorialPublicacionBlock", "");
@@ -1264,15 +1319,12 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
     private function masModeraciones()
     {
         try{
-            $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
-
-            $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "ajaxGrillaPublicacionesBlock", "GrillaPublicacionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "ajaxGrillaModeracionesBlock", "GrillaModeracionesBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
-
+            
             $iRecordsTotal = 0;
-            $aFichas = AdminController::getInstance()->buscarPublicacionesComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            $aFichas = AdminController::getInstance()->buscarPublicacionesModeracion($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
 
@@ -1290,34 +1342,45 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
                     $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
 
-                    if($oFicha->isActivo()){
-                        $this->getTemplate()->set_var("sSelectedPublicacionActivo", "selected='selected'");
-                    }else{
-                        $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "selected='selected'");
-                    }
-
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                     $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                     $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
 
-                    $this->getTemplate()->parse("PublicacionBlock", true);
-                    $this->getTemplate()->set_var("sSelectedPublicacionActivo", "");
-                    $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "");
+                    $aModeracion = AdminController::getInstance()->obtenerHistorialModeracionesFicha($oFicha->getId());
+                    //al menos 1 porque es un listado de publicaciones con moderacion pendiente.
+                    foreach($aModeracion as $oModeracion){
+                        $this->getTemplate()->set_var("sFechaModeracion", $oModeracion->getFecha(true));
+                        $this->getTemplate()->set_var("sEstadoModeracion", $oModeracion->getEstado());
+
+                        $sMensajeModeracion = $oModeracion->getMensaje(true);
+                        if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }
+                        $this->getTemplate()->set_var("sMensaje", $sMensajeModeracion);
+                        $this->getTemplate()->set_var("iModeracionId", $oModeracion->getId());
+
+                        $this->getTemplate()->parse("ModeracionHistorialPublicacionBlock", true);
+                    }
+
+                    $this->getTemplate()->set_var("sEstadoAprobarValue", "aprobado");
+                    $this->getTemplate()->set_var("sEstadoRechazarValue", "rechazado");
+
+                    $this->getTemplate()->parse("PublicacionModerarBlock", true);
+                    $this->getTemplate()->set_var("ModeracionHistorialPublicacionBlock", "");
                 }
 
-                $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
+                $this->getTemplate()->set_var("NoRecordsModeracionesBlock", "");
+
             }else{
-                $this->getTemplate()->set_var("PublicacionBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "noRecords", "NoRecordsPublicacionesBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron publicaciones");
+                $this->getTemplate()->set_var("PublicacionModerarBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "noRecords", "NoRecordsModeracionesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay publicaciones pendientes de moderación");
                 $this->getTemplate()->parse("noRecords", false);
             }
 
-            $paramsPaginador[] = "masPublicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/publicaciones-procesar", "listadoPublicacionesResult", $paramsPaginador);
+            $paramsPaginador[] = "masModeraciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/publicaciones-procesar", "listadoModeracionesResult", $paramsPaginador);
 
-            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaPublicacionesBlock', false));
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaModeracionesBlock', false));
         }catch(Exception $e){
             print_r($e);
         }        
