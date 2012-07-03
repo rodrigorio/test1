@@ -146,9 +146,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
                 if($oObj->tipo == self::TIPO_DIAGNOSTICO_SCC){
-                	//$filtroDiagn = array("d.id"=>$oObj->iId????);
-            	    //$oDiagnostico->oArea = SeguimientoController::getInstance()->getAreaById($filtroDiagn);
-	                $oDiagnostico->oArea = null;
+	                $oDiagnostico->oArea =  SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);;
             	    $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
                 }else{
                 	$oDiagnostico->sCodigo = $oObj->sCodigo;
@@ -203,7 +201,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             	$oDiagnostico 				= new stdClass();
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
-            	$oDiagnostico->oArea = SeguimientoController::getInstance()->getAreaById($oObj->iAreaId);
+            	$oDiagnostico->oArea = SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);
 	            $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
             }
             return $aDiagnosticos;

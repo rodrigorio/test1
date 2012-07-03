@@ -220,10 +220,10 @@ class SeguimientoSCCMySQLIntermediary extends SeguimientoIntermediary
             while($oObj = $db->oNextRecord()){
             	$oSeguimiento 			= new stdClass();
             	$oSeguimiento->iId 		= $oObj->iId;
-            	$oSeguimiento->oDiscapacitado = SeguimientoController::getInstance()->getDiscapacitadoById($Obj->iDispacitadoId);
+            	$oSeguimiento->oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($Obj->iDispacitadoId);
             	$oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
             	$oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
-            	$oSeguimiento->oPractica = SeguimientoController::getInstance()->getPracticaById($Obj->iPracticaId);
+            	$oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($Obj->iPracticaId);
             	$oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($Obj->iUsuarioId);
             	$oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
             	$oSeguimiento->sPronostico = $oObj->sPronostico;

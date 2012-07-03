@@ -153,4 +153,26 @@ class PersistenceFactory {
             return (ModeracionMySQLIntermediary::getInstance($conn));
         }
     }
+    
+    public static function getNivelIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (NivelMySQLIntermediary::getInstance($conn));
+        }
+    }
+      public static function getAreaIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (AreaMySQLIntermediary::getInstance($conn));
+        }
+    }
+    
+      public static function getCicloIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (CicloMySQLIntermediary::getInstance($conn));
+        }
+    }
+    
+    
 }

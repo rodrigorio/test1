@@ -34,7 +34,7 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             $sSQL = "SELECT
                         c.id as iId, c.descripcion as sDescripcion, c.niveles_id as iNivelesId
                     FROM
-                       ciclo c ";
+                       ciclos c ";
                     if(!empty($filtro)){     
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
@@ -49,7 +49,7 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             	$oCiclo 		= new stdClass();
             	$oCiclo->iId 	= $oObj->iId;
             	$oCiclo->sDescripcion = $oObj->sDescripcion;
-            	$oCiclo->oNivel= SeguimientoController::getInstance()->getNivelById($oObj->iNivelesId);
+            	$oCiclo->oNivel= SeguimientosController::getInstance()->getNivelById($oObj->iNivelesId);
             	$aCiclos[] = Factory::getCicloInstance($oCiclo);
             }
 

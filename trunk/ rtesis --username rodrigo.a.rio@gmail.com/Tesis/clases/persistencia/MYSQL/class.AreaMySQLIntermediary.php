@@ -49,7 +49,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
             	$oArea 		= new stdClass();
             	$oArea->iId 		= $oObj->iId;
             	$oArea->sDescripcion	= $oObj->sDescripcion;
-            	$oArea->oCiclo    = SeguimientoController::getInstance()->getCicloById($oObj->iCicloId);
+            	$oArea->oCiclo    = SeguimientosController::getInstance()->getCicloById($oObj->iCicloId);
             	$aAreas[]		= Factory::getAreaInstance($oArea);
             }
             return $aAreas;
