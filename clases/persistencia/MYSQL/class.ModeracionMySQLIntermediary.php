@@ -69,12 +69,16 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
         try{
             $db = $this->conn;
             
-            $sSQL = " update moderaciones ".
+            $sSQL = "UPDATE moderaciones SET ".
             " estado = ".$this->escStr($oModeracion->getEstado()).", " .
             " mensaje = ".$this->escStr($oModeracion->getMensaje())." " .
-            " where id = ".$this->escInt($oModeracion->getId())." " ;
+            " WHERE id = ".$this->escInt($oModeracion->getId())." ";
+            
             $db->execSQL($sSQL);
             $db->commit();
+
+            return true;
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -117,6 +121,10 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
                         moderaciones m ";
 
             $WHERE = array();
+
+            if(isset($filtro['m.id']) && $filtro['m.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('m.id', $filtro['m.id'], MYSQL_TYPE_INT);
+            }
 
             if(isset($filtro['m.fichas_abstractas_id']) && $filtro['m.fichas_abstractas_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('m.fichas_abstractas_id', $filtro['m.fichas_abstractas_id'], MYSQL_TYPE_INT);

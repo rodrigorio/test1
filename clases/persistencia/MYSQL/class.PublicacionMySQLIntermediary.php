@@ -510,11 +510,11 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
 
             //esto lo hago asi para no hacer todo un lio para 1 solo caso de uso en todo el sistema
             if(isset($filtro['usuario']) && $filtro['usuario'] != ""){
-                $WHERE[] = " p.usuarios_id = '".$filtro['usuario']."' OR r.usuarios_id = '".$filtro['usuario']."' ";
+                $WHERE[] = " (p.usuarios_id = '".$filtro['usuario']."' OR r.usuarios_id = '".$filtro['usuario']."') ";
             }
             //lo mismo
             if(isset($filtro['publico']) && $filtro['publico'] != ""){
-                $WHERE[] = " p.publico = '".$filtro['publico']."' OR r.publico = '".$filtro['publico']."' ";
+                $WHERE[] = " (p.publico = '".$filtro['publico']."' OR r.publico = '".$filtro['publico']."') ";
             }            
             if(isset($filtro['f.titulo']) && $filtro['f.titulo'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('f.titulo', $filtro['f.titulo']);
@@ -547,7 +547,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
+
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");

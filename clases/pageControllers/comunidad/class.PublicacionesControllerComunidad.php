@@ -581,7 +581,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
 
                 $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
-                $this->getTemplate()->set_var("hrefAmpliarPublicacion", $hrefAmpliarPublicacion);
                 $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
                 $this->getTemplate()->set_var("hrefGaleriaVideos", $hrefEditarVideos);
                 $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);

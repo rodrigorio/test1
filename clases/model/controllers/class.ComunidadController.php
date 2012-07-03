@@ -509,22 +509,18 @@ class ComunidadController
     public function guardarPublicacion($oPublicacion){
     	try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
-            
-            $this->procesarModeracionFicha($oPublicacion);
-
-            return $oPublicacionIntermediary->guardar($oPublicacion);
-          }catch(Exception $e){
+            $oPublicacionIntermediary->guardar($oPublicacion);
+            $this->procesarModeracionFicha($oPublicacion);           
+        }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
     public function guardarReview($oReview){
     	try{
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
-
+            $oPublicacionIntermediary->guardarReview($oReview);
             $this->procesarModeracionFicha($oReview);
-            
-            return $oPublicacionIntermediary->guardarReview($oReview);
-          }catch(Exception $e){
+        }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
