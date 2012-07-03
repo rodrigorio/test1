@@ -26,7 +26,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
         }
         return self::$instance;
 	}
-public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
@@ -49,8 +49,7 @@ public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrd
             	$oCiclo 		= new stdClass();
             	$oCiclo->iId 	= $oObj->iId;
             	$oCiclo->sDescripcion = $oObj->sDescripcion;
-            	$filtroNivel = array("c.id"=>$oObj->iNivelesId);
-            	$oProvincia->oPais= SeguimientoController::getInstance()->getNivelById($filtroNivel);
+            	$oCiclo->oNivel= SeguimientoController::getInstance()->getNivelById($oObj->iNivelesId);
             	$aCiclos[] = Factory::getCicloInstance($oCiclo);
             }
 

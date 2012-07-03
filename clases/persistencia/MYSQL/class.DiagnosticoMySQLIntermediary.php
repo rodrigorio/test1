@@ -203,9 +203,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             	$oDiagnostico 				= new stdClass();
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
-                //$filtroDiagn = array("d.id"=>$oObj->iId????);
-            	//$oDiagnostico->oArea = SeguimientoController::getInstance()->getAreaById($filtroDiagn);
-                $oDiagnostico->oArea = null;
+            	$oDiagnostico->oArea = SeguimientoController::getInstance()->getAreaById($oObj->iAreaId);
 	            $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
             }
             return $aDiagnosticos;

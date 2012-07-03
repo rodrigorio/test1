@@ -658,7 +658,7 @@ class SeguimientosController
  	public function getCicloById($iId)
     {
     	try{
-    		$filtro = array('d.id' => $iId);
+    		$filtro = array('c.id' => $iId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             $iRecordsTotal = 0;
             $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -675,7 +675,7 @@ class SeguimientosController
      public function getNivelById($iId)
       {
     	try{
-    		$filtro = array('d.id' => $iId);
+    		$filtro = array('n.id' => $iId);
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             $iRecordsTotal = 0;
             $aNivel = $oNivelIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -692,7 +692,7 @@ class SeguimientosController
     public function getAreaById($iId)
       {
     	try{
-    		$filtro = array('d.id' => $iId);
+    		$filtro = array('a.id' => $iId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             $iRecordsTotal = 0;
             $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
