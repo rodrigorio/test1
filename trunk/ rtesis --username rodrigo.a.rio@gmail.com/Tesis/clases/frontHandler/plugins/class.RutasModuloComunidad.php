@@ -85,15 +85,24 @@ class RutasModuloComunidad
                                         'action'     => "modificarPrivacidadCampo"
                                 ));
         $router->addRoute('comunidadModificarPrivacidadCampo', $route);
+        $route = new RegexRoute('comunidad/cerrar-cuenta',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "datosPersonales",
+                                    'action'     => "cerrarCuenta"
+                                ));
+        $router->addRoute('comunidadDatosPersonalesCerrarCuenta', $route);
+
+
+        
+        //////////INSTITUCIONES
         $route = new RegexRoute('comunidad/editar-institucion',
                                 array(
-                                        'module' => "comunidad",
-                                        'controller' => "instituciones",
-                                        'action'     => "editarInstitucion"
+                                    'module' => "comunidad",
+                                    'controller' => "instituciones",
+                                    'action'     => "editarInstitucion"
                                 ));
         $router->addRoute('comunidadInstitucionesEditarInstitucion', $route);
-
-        //url amigable ampliar institucion
         $route = new RegexRoute('comunidad/instituciones/(\d+)-(.+)',
                                 array(
                                     'module' => 'comunidad',
@@ -105,8 +114,7 @@ class RutasModuloComunidad
                                     2 => 'sTituloUrlized'
                                 ),
                                 'comunidad/instituciones/%d-%s');
-        $router->addRoute('comunidadInstitucionesAmpliarInstitucion', $route);
-        
+        $router->addRoute('comunidadInstitucionesAmpliarInstitucion', $route);        
         $route = new RegexRoute('comunidad/masInstituciones',
                                 array(
                                         'module' => "comunidad",
@@ -116,9 +124,9 @@ class RutasModuloComunidad
         $router->addRoute('comunidadInstitucionesMasInstituciones', $route);                
         $route = new RegexRoute('comunidad/nueva-institucion',
                                 array(
-                                        'module' => "comunidad",
-                                        'controller' => "instituciones",
-                                        'action'     => "nuevaInstitucion"
+                                    'module' => "comunidad",
+                                    'controller' => "instituciones",
+                                    'action'     => "nuevaInstitucion"
                                 ));
         $router->addRoute('comunidadInstitucionesNueva', $route);
         $route = new RegexRoute('comunidad/institucion-procesar',
@@ -142,6 +150,13 @@ class RutasModuloComunidad
                                     'action'     => "misInstituciones"
                                 ));
         $router->addRoute('comunidadInstitucionesMisInstituciones', $route);
+        $route = new RegexRoute('comunidad/masMisInstituciones',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "masMisInstituciones"
+                                ));
+        $router->addRoute('comunidadInstitucionesMasMisInstituciones', $route);
         $route = new RegexRoute('comunidad/buscar-instituciones',
                                 array(
                                         'module' => "comunidad",
@@ -149,13 +164,14 @@ class RutasModuloComunidad
                                         'action'     => "buscarInstituciones"
                                 ));
         $router->addRoute('comunidadInstitucionesBuscarInstituciones', $route);
-        $route = new RegexRoute('comunidad/cerrar-cuenta',
+        $route = new RegexRoute('comunidad/guardar-institucion',
                                 array(
-                                    'module' => "comunidad",
-                                    'controller' => "datosPersonales",
-                                    'action'     => "cerrarCuenta"
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "guardar"
                                 ));
-        $router->addRoute('comunidadDatosPersonalesCerrarCuenta', $route);
+        $router->addRoute('comunidadInstitucionesGuardar', $route);
+
 
         /////////PUBLICACIONES
         $route = new RegexRoute('comunidad/publicaciones',
