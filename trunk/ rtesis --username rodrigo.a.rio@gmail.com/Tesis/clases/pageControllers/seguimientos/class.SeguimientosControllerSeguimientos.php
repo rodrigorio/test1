@@ -1775,10 +1775,16 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("tituloSeccion", "Diagnostico SCC");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioSCCBlock");
             $oDiagnostico = $oSeguimiento->getDiagnostico();
+            $iAreaId = "";
+            $iCicloId = "";
+            $iNivelId = "";
          	if($oDiagnostico ){
 	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
 	            if( $oDiagnostico->getArea() ){
-	           		$this->getTemplate()->set_var("iArea",$oDiagnostico->getArea()->getId());
+	            	$iAreaId = $oDiagnostico->getArea()->getId();
+	           		$this->getTemplate()->set_var("iArea",$iAreaId);
+	           		$iCicloId = $oDiagnostico->getArea()->getCiclo()->getId();
+	           		$iNivelId = $oDiagnostico->getArea()->getCiclo()->getNivel()->getId();
 	            }
 	            $this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
          	}
@@ -1788,10 +1794,44 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
          	$vNiveles 	= SeguimientosController::getInstance()->getNiveles($filtroSql, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
          	if( $vNiveles ){
          	  	foreach($vNiveles as $oNivel){
+         	  		if($iNivelId == $oNivel->getId()){
+         	  			 $this->getTemplate()->set_var("sSelectedNivel", "selected='selected'");
+         	  		}else{
+         	  			 $this->getTemplate()->set_var("sSelectedNivel", "");
+         	  		}
 	                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-	                $this->getTemplate()->set_var("sNivel", $oNivel->getDescripcion());
+	                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
 	                $this->getTemplate()->parse("OptionPracticaBlock", true);
             	}
+         	}
+         	
+         	$iRecordsTotal = 0;
+         	if($iNivelId!=""){
+	  			$vCiclos 	= SeguimientosController::getInstance()->getCicloByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+	  			foreach($vCiclos as $oCiclo){
+	  				if($iCicloId == $oCiclo->getId()){
+         	  			 $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
+         	  		}else{
+         	  			 $this->getTemplate()->set_var("sSelectedCiclo", "");
+         	  		}
+					$this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+		            $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
+		            $this->getTemplate()->parse("CiclosListBlock", true);
+	          	}
+	         }
+   			$iRecordsTotal = 0;
+         	if($iCicloId!=""){
+	         	$vAreas 	= SeguimientosController::getInstance()->getAreasByCicloId($iCicloId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+	  			foreach($vAreas as $oArea){
+	  				if($iAreaId == $oArea->getId()){
+         	  			 $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
+         	  		}else{
+         	  			 $this->getTemplate()->set_var("sSelectedArea", "");
+         	  		}
+					$this->getTemplate()->set_var("iAreaId", $oArea->getId());
+		            $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
+		            $this->getTemplate()->parse("AreasListBlock", true);
+	          	}
          	}
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
    		  }catch(Exception $e){
@@ -1806,19 +1846,20 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
            //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         	//$filtroSql["u.id"] = $perfil->getUsuario()->getId();
         
-            $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
+            echo$iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
            // TODO Agregar validacion de pedir el diagnostico segun permiso d
             $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
+            print_r($oDiagnostico );
 			if($oDiagnostico){
 				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
 	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
 	            	$sCodigo	 	= $this->getRequest()->getPost('codigo');
 			    	$oDiagnostico->setCodigo($sCodigo);
 	            }else{
-	            	$iAreaId	    = $this->getRequest()->getPost('areaId');
+	            	$iAreaId	    = $this->getRequest()->getPost('area');
 			    	//TODO agregar objeto area
 			    	$stdArea = new stdClass();
-			    	$stdArea->iId = 1;
+			    	$stdArea->iId = $iAreaId;
 			    	$oArea = Factory::getAreaInstance($stdArea);
 			    	$oDiagnostico->setArea($oArea);
 	            }
@@ -1841,4 +1882,52 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse($oDiagnostico);
     }
     
+    public function listarCiclosPorNiveles(){
+    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ciclos", "CiclosListBlock");
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $iNivelId	    = $this->getRequest()->getPost('nivelId');
+            $iRecordsTotal 	= 0;
+        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
+  			$vCiclos 	= SeguimientosController::getInstance()->getCicloByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+			$this->getTemplate()->set_var("iCicloId", "");
+            $this->getTemplate()->set_var("sCicloDescripcion", "Seleccione el ciclo");
+            $this->getTemplate()->parse("CiclosListBlock", true);	
+  			foreach($vCiclos as $oCiclo){
+				$this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+	            $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
+	            $this->getTemplate()->parse("CiclosListBlock", true);
+          	}
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ciclos', false));
+        }catch(Exception $e){
+            $this->getAjaxHelper()->sendHtmlAjaxResponse("");
+            return;
+        }
+    }
+    
+ 	 public function listarAreasPorCiclos(){
+    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "areas", "AreasListBlock");
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $iCicloId	    = $this->getRequest()->getPost('cicloId');
+            $iRecordsTotal 	= 0;
+        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
+  			$vAreas 	= SeguimientosController::getInstance()->getAreasByCicloId($iCicloId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+			$this->getTemplate()->set_var("iAreaId", "");
+            $this->getTemplate()->set_var("sAreaDescripcion", "Seleccione el area");
+            $this->getTemplate()->parse("AreasListBlock", true);	
+  			foreach($vAreas as $oArea){
+				$this->getTemplate()->set_var("iAreaId", $oArea->getId());
+	            $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
+	            $this->getTemplate()->parse("AreasListBlock", true);
+          	}
+          	
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('areas', false));
+        }catch(Exception $e){
+            $this->getAjaxHelper()->sendHtmlAjaxResponse("");
+            return;
+        }
+    }
 }

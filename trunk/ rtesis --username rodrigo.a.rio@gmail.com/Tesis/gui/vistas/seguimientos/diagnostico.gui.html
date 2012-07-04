@@ -83,17 +83,44 @@
                         <textarea name="diagnostico" id="diagnostico" cols="0" rows="0">{sDiagnostico}</textarea>
                     </div>
                 </div>
-                <div class="fwrap">
+            </div>
+                <div class="form_line msg_nivel">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Nivel</span>
-		                <select name="nivel" id="nivel">
+		                <select name="nivel" id="nivel" >
+		                	<option value="">Seleccione el nivel</option>
 		                	<!--BeginNivelesListBlock-->
-		                      <option value="{iNivelId}">{sNivel}</option>
+		                      <option value="{iNivelId}" {sSelectedNivel}>{sNivelDescripcion}</option>
 		                	<!--EndNivelesListBlock-->
 		                 </select>
                     </div>
                 </div>
-            </div>
+                 <div class="form_line msg_ciclo">
+                    <div class="inner_fwrap">
+                       	<span class="fowe_bo">Ciclo</span>
+                       	<!--BeginCiclosDivBlock-->
+		                <select name="ciclo" id="ciclo" >
+		                	<option value="">Seleccione el ciclo</option>
+		                	<!--BeginCiclosListBlock-->
+		                      <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
+		                	<!--EndCiclosListBlock-->
+		                 </select>
+                       	<!--EndCiclosDivBlock-->
+                    </div>
+                </div>
+                 <div class="form_line msg_area">
+                    <div class="inner_fwrap">
+                       	<span class="fowe_bo">Area</span>
+                      	<!--BeginAreaDivBlock-->
+		                <select name="area" id="area">
+		                	<option value="">Seleccione el area</option>
+		                	<!--BeginAreasListBlock-->
+		                      <option value="{iAreaId}" {sSelectedArea}>{sAreaDescripcion}</option>
+		                	<!--EndAreasListBlock-->
+		                 </select>
+		                <!--EndAreaDivBlock-->
+                    </div>
+                </div>
 
             <div class="fl_le mabo2">
                 <label for="guardarDiagnostico" class="button buttonConfirm buttonLarge mari3">

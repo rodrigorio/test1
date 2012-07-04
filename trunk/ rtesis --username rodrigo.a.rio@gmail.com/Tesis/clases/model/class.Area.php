@@ -65,7 +65,7 @@ class Area {
 	 * @return Ciclo
 	 */
 	public function getCiclo(){
-		$this->oCiclo;
+		return $this->oCiclo;
 	}
 }
 ?>
