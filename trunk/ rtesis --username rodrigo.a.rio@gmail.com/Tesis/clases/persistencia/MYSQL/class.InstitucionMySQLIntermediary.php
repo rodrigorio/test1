@@ -1,8 +1,7 @@
 <?php
+
 /**
  * Description of class InstitucionMySQLIntermediary
- *
- *
  */
 class InstitucionMySQLIntermediary extends InstitucionIntermediary
 {
@@ -130,59 +129,65 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
+        
     public function guardar($oInstitucion)
     {
         try{
-			if($oInstitucion->getId() != null){
-            	return $this->actualizar($oInstitucion);
+            if($oInstitucion->getId() != null){
+                return $this->actualizar($oInstitucion);
             }else{
-				return $this->insertar($oInstitucion);
+                return $this->insertar($oInstitucion);
             }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+        }catch(Exception $e){
+                throw new Exception($e->getMessage(), 0);
+        }
     }
 
-    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                          i.id as iId, 
+                          i.id as iId,
                           i.nombre as sNombre,
-                          i.`ciudades_id` as iCiudad,
-                          i.`moderado` as iModerado,
-                          i.`descripcion` as sDescripcion,
-                          i.`tipoInstitucion_id` as iTipoInstitucion,
-                          it.`nombre` as sNombreTipoInstitucion,
-                          i.`direccion` as sDireccion,
-                          i.`email` as sEmail,
-                          i.`telefono` as sTelefono,
-                          i.`sitioWeb` as sSitioWeb,
-                          i.`horariosAtencion` as sHorariosAtencion,
-                          i.`autoridades` as sAutoridades,
-                          i.`cargo` as sCargo,
-                          i.`personeriaJuridica` as sPersoneriaJuridica,
-                          i.`sedes` as sSedes,
-                          i.`actividadesMes` as sActividadesMes,
-                          i.`usuario_id` as iUsuarioId,
-                          i.`latitud` as sLatitud,
-                          i.`longitud` as sLongitud,
-                          prov.`id` as provinciaId,
-                          pais.id as paisId
-                    FROM
-                        instituciones i
-                    JOIN
-                        usuarios u ON u.id = i.usuario_id
-                    JOIN
-                        instituciones_tipos it ON it.id = i.tipoInstitucion_id
-                    LEFT JOIN `ciudades` c on c.`id` = i.`ciudades_id`
-                    LEFT JOIN `provincias` prov on prov.`id` = c.`provincia_id`
-                    LEFT JOIN `paises` pais on pais.`id` = prov.`paises_id` ";
+                          i.ciudades_id as iCiudadId,
+                          i.descripcion as sDescripcion,
+                          i.tipoInstitucion_id as iTipoInstitucionId,
+                          i.direccion as sDireccion,
+                          i.email as sEmail,
+                          i.telefono as sTelefono,
+                          i.sitioWeb as sSitioWeb,
+                          i.horariosAtencion as sHorariosAtencion,
+                          i.autoridades as sAutoridades,
+                          i.cargo as sCargo,
+                          i.personeriaJuridica as sPersoneriaJuridica,
+                          i.sedes as sSedes,
+                          i.actividadesMes as sActividadesMes,
+                          i.usuario_id as iUsuarioId,
+                          i.latitud as sLatitud,
+                          i.longitud as sLongitud,
+
+                          it.nombre as sNombreTipoInstitucion
+                     FROM
+                       	instituciones i
+                     JOIN
+                     	usuarios u ON u.id = i.usuario_id
+                     JOIN
+                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id
+                     LEFT JOIN
+                        (SELECT
+                            m.id AS iModeracionId, m.instituciones_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
+                         FROM
+                            moderaciones m
+                         JOIN
+                            (SELECT MAX(m.id) AS idd FROM moderaciones m GROUP BY instituciones_id) AS filtro ON filtro.idd = m.id)
+                         AS m ON m.instituciones_id = i.id
+                     LEFT JOIN ciudades c on c.id = i.ciudades_id ";
 
             if(!empty($filtro)){
-                $sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
             }
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
@@ -198,24 +203,28 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
             $aInstituciones = array();
             while($oObj = $db->oNextRecord()){
-            	$oInstitucion 			= new stdClass();
-            	$oInstitucion->iId 		= $oObj->iId;
-            	$oInstitucion->sNombre  = $oObj->sNombre;
-            	$oInstitucion->oCiudad 	= null;
-            	$oInstitucion->iModerado= $oObj->iModerado;
-            	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
-            	$oInstitucion->iTipoInstitucion 	= $oObj->iTipoInstitucion;
-            	$oInstitucion->sDireccion 	= $oObj->sDireccion;
-            	$oInstitucion->sEmail 	= $oObj->sEmail;
-            	$oInstitucion->sTelefono= $oObj->sTelefono;
-            	$oInstitucion->sSitioWeb	= $oObj->sSitioWeb;
-            	$oInstitucion->sHorariosAtencion 	= $oObj->sHorariosAtencion;
-            	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
-            	$oInstitucion->sCargo 	= $oObj->sCargo;
-            	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
-            	$oInstitucion->sSedes 	= $oObj->sSedes;
-            	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
-  
+            	$oInstitucion = new stdClass();
+            	$oInstitucion->iId = $oObj->iId;
+            	$oInstitucion->sNombre = $oObj->sNombre;
+                $oInstitucion->iCiudadId = $oObj->iCiudadId;
+                $oInstitucion->oCiudad = ComunidadController::getInstance()->getCiudadById($oObj->iCiudadId);
+            	$oInstitucion->sDescripcion = $oObj->sDescripcion;
+            	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucionId;
+            	$oInstitucion->sNombreTipoInstitucion = $oObj->sNombreTipoInstitucion;
+            	$oInstitucion->sDireccion = $oObj->sDireccion;
+            	$oInstitucion->sEmail = $oObj->sEmail;
+            	$oInstitucion->sTelefono = $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb = $oObj->sSitioWeb;
+            	$oInstitucion->sHorariosAtencion = $oObj->sHorariosAtencion;
+            	$oInstitucion->sAutoridades = $oObj->sAutoridades;
+            	$oInstitucion->sCargo = $oObj->sCargo;
+            	$oInstitucion->sPersoneriaJuridica = $oObj->sPersoneriaJuridica;
+            	$oInstitucion->sSedes = $oObj->sSedes;
+            	$oInstitucion->sActividadesMes = $oObj->sActividadesMes;
+            	$oInstitucion->sLatitud= $oObj->sLatitud;
+            	$oInstitucion->sLongitud= $oObj->sLongitud;
+            	$oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+
             	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }
 
@@ -226,119 +235,130 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         }
     }
 
-	public final function obtenerInstituciones($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-	 	try{
-            $db = $this->conn;
-            //$filtro = $this->escapeStringArray($filtro);
+    /**
+     * Join con otras tablas para realizar el filtro.
+     */
+    public function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = clone($this->conn);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                           i.id as iId, 
                           i.nombre as sNombre,
-						  i.`ciudades_id` as iCiudad,
-						  i.`moderado` as iModerado,
-						  i.`descripcion` as sDescripcion,
-						  i.`tipoInstitucion_id` as iTipoInstitucion,
-						  it.`nombre` as sNombreTipoInstitucion,
-						  i.`direccion` as sDireccion,
-						  i.`email` as sEmail,
-						  i.`telefono` as sTelefono,
-						  i.`sitioWeb` as sSitioWeb,
-						  i.`horariosAtencion` as sHorariosAtencion,
-						  i.`autoridades` as sAutoridades,
-						  i.`cargo` as sCargo,
-						  i.`personeriaJuridica` as sPersoneriaJuridica,
-						  i.`sedes` as sSedes,
-						  i.`actividadesMes` as sActividadesMes,
-						  i.`usuario_id` as iUsuarioId,
-						  i.`latitud` as sLatitud,
-						  i.`longitud` as sLongitud,
-						  prov.`id` as provinciaId, 
-						  pais.id as paisId
+                          i.ciudades_id as iCiudadId,
+                          i.descripcion as sDescripcion,
+                          i.tipoInstitucion_id as iTipoInstitucionId,
+                          i.direccion as sDireccion,
+                          i.email as sEmail,
+                          i.telefono as sTelefono,
+                          i.sitioWeb as sSitioWeb,
+                          i.horariosAtencion as sHorariosAtencion,
+                          i.autoridades as sAutoridades,
+                          i.cargo as sCargo,
+                          i.personeriaJuridica as sPersoneriaJuridica,
+                          i.sedes as sSedes,
+                          i.actividadesMes as sActividadesMes,
+                          i.usuario_id as iUsuarioId,
+                          i.latitud as sLatitud,
+                          i.longitud as sLongitud,
+
+                          it.nombre as sNombreTipoInstitucion,
+                          
+                          pa.id as iPaisId,
+                          pr.id as iProvinciaId                                                   
                      FROM
                        	instituciones i 
                      JOIN 
                      	usuarios u ON u.id = i.usuario_id 
                      JOIN
                      	instituciones_tipos it ON it.id = i.tipoInstitucion_id
- 					LEFT JOIN `ciudades` c on c.`id` = i.`ciudades_id`
- 					LEFT JOIN `provincias` prov on prov.`id` = c.`provincia_id`
- 					LEFT JOIN `paises` pais on pais.`id` = prov.`paises_id` ";
-            $WHERE = array();
-           	if(isset($filtro['i.nombre']) && $filtro['i.nombre']!=""){
-	           	$WHERE[]= $this->crearFiltroTexto('i.nombre', $filtro['i.nombre']);
-           	}
-           	if(isset($filtro['i.id']) && $filtro['i.id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('i.id', $filtro['i.id'], MYSQL_TYPE_INT);
-           	}
-           	if(isset($filtro['i.tipoInstitucion_id']) && $filtro['i.tipoInstitucion_id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('i.tipoInstitucion_id', $filtro['i.tipoInstitucion_id'], MYSQL_TYPE_INT);
-           	}
-           	if(isset($filtro['pais.id']) && $filtro['pais.id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('pais.id', $filtro['pais.id'], MYSQL_TYPE_INT);
-           	}
-           	if(isset($filtro['prov.id']) && $filtro['prov.id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('prov.id', $filtro['prov.id'], MYSQL_TYPE_INT);
-           	}
-           	if(isset($filtro['i.ciudades_id']) && $filtro['i.ciudades_id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('i.ciudades_id', $filtro['i.ciudades_id'], MYSQL_TYPE_INT);
-           	}
-           	if(isset($filtro['i.usuario_id']) && $filtro['i.usuario_id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('i.usuario_id', $filtro['i.usuario_id'], MYSQL_TYPE_INT);
-           	}
-           	if(isset($filtro['i.tipoInstitucion_id']) && $filtro['i.tipoInstitucion_id']!=""){
-	           	$WHERE[]= $this->crearFiltroSimple('i.tipoInstitucion_id', $filtro['i.tipoInstitucion_id'], MYSQL_TYPE_INT);
-           	}
-            $sSQL 	= $this->agregarFiltrosConsulta($sSQL, $WHERE);
+                     LEFT JOIN
+                        (SELECT
+                            m.id AS iModeracionId, m.instituciones_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
+                         FROM
+                            moderaciones m
+                         JOIN
+                            (SELECT MAX(m.id) AS idd FROM moderaciones m GROUP BY instituciones_id) AS filtro ON filtro.idd = m.id)
+                         AS m ON m.instituciones_id = i.id 
+                     LEFT JOIN ciudades c on c.id = i.ciudades_id
+                     LEFT JOIN provincias pr on pr.id = c.provincia_id 
+                     LEFT JOIN paises pa on pa.id = pr.paises_id ";
             
-			/*if(!empty($filtro)){     
-            	$sSQL .=" AND ".$this->crearCondicionSimple($filtro);
-            }*/
-                    
-	 		if (isset($sOrderBy) && isset($sOrder)){
-				$sSQL .= " order by $sOrderBy $sOrder ";
-			}
-			if ($iIniLimit!==null && $iRecordCount!==null){
-				$sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-			}
+            $WHERE = array();
+            
+            if(isset($filtro['i.nombre']) && $filtro['i.nombre']!=""){
+                $WHERE[]= $this->crearFiltroTexto('i.nombre', $filtro['i.nombre']);
+            }
+            if(isset($filtro['i.tipoInstitucion_id']) && $filtro['i.tipoInstitucion_id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('i.tipoInstitucion_id', $filtro['i.tipoInstitucion_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['pa.id']) && $filtro['pa.id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('pa.id', $filtro['pa.id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['pr.id']) && $filtro['pr.id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('pr.id', $filtro['pr.id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['i.ciudades_id']) && $filtro['i.ciudades_id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('i.ciudades_id', $filtro['i.ciudades_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['i.usuario_id']) && $filtro['i.usuario_id']!=""){
+                $WHERE[]= $this->crearFiltroSimple('i.usuario_id', $filtro['i.usuario_id'], MYSQL_TYPE_INT);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by i.nombre asc ";
+            }
+
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+                   
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-			$aInstituciones = array();
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aInstituciones = array();
             while($oObj = $db->oNextRecord()){
-            	$oInstitucion 			= new stdClass();
-            	$oInstitucion->iId 		= $oObj->iId;
-            	$oInstitucion->sNombre  = $oObj->sNombre;
-            	$oInstitucion->iModerado= $oObj->iModerado;
-            	$oInstitucion->sDescripcion	= $oObj->sDescripcion;
-            	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucion;
+
+            	$oInstitucion = new stdClass();
+            	$oInstitucion->iId = $oObj->iId;
+            	$oInstitucion->sNombre = $oObj->sNombre;                
+                $oInstitucion->iCiudadId = $oObj->iCiudadId;
+                $oInstitucion->oCiudad = ComunidadController::getInstance()->getCiudadById($oObj->iCiudadId);
+            	$oInstitucion->sDescripcion = $oObj->sDescripcion;
+            	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucionId;
             	$oInstitucion->sNombreTipoInstitucion = $oObj->sNombreTipoInstitucion;
-            	$oInstitucion->sDireccion 	= $oObj->sDireccion;
-            	$oInstitucion->sEmail   = $oObj->sEmail;
-            	$oInstitucion->sTelefono= $oObj->sTelefono;
-            	$oInstitucion->sSitioWeb= $oObj->sSitioWeb;
-            	$oInstitucion->sHorariosAtencion= $oObj->sHorariosAtencion;
-            	$oInstitucion->sAutoridades	= $oObj->sAutoridades;
-            	$oInstitucion->sCargo   = $oObj->sCargo;
-            	$oInstitucion->sPersoneriaJuridica 	= $oObj->sPersoneriaJuridica;
-            	$oInstitucion->sSedes   = $oObj->sSedes;
-            	$oInstitucion->sActividadesMes 	= $oObj->sActividadesMes;
-            	$oInstitucion->iCiudadId= $oObj->iCiudad;
+            	$oInstitucion->sDireccion = $oObj->sDireccion;
+            	$oInstitucion->sEmail = $oObj->sEmail;
+            	$oInstitucion->sTelefono = $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb = $oObj->sSitioWeb;                
+            	$oInstitucion->sHorariosAtencion = $oObj->sHorariosAtencion;
+            	$oInstitucion->sAutoridades = $oObj->sAutoridades;
+            	$oInstitucion->sCargo = $oObj->sCargo;
+            	$oInstitucion->sPersoneriaJuridica = $oObj->sPersoneriaJuridica;
+            	$oInstitucion->sSedes = $oObj->sSedes;
+            	$oInstitucion->sActividadesMes = $oObj->sActividadesMes;
             	$oInstitucion->sLatitud= $oObj->sLatitud;
-            	$oInstitucion->sLongitud= $oObj->sLongitud;
-            	$oInstitucion->oCiudad  = ComunidadController::getInstance()->getCiudadById($oObj->iCiudad);
-            	$oInstitucion->oUsuario  = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+            	$oInstitucion->sLongitud= $oObj->sLongitud;            	
+            	$oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+
             	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }
 
-          	return $aInstituciones;
+            return $aInstituciones;
+            
         }catch(Exception $e){
-           return null;
             throw new Exception($e->getMessage(), 0);
         }
-	}
-    
-    
+    }
+       
     /**
      * Le pongo NULL a todos los usuarios que estan asignados a la institucion
      */
@@ -358,9 +378,9 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         }
     }
    
-    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function listaTiposDeInstitucion($filtro = array(), &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
-   	        $db = $this->conn;
+            $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
@@ -378,7 +398,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
 			$vInstitucionesTipos = array();
             while($oObj = $db->oNextRecord()){
-            	$vInstitucionesTipos[]	= $oObj;
+            	$vInstitucionesTipos[] = $oObj;
             }
 
            return $vInstitucionesTipos;

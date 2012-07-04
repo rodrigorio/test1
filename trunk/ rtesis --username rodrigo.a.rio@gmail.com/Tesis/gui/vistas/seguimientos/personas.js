@@ -300,7 +300,7 @@ function bindEventsPersonaForm(){
 
         $.ajax({
             type: "POST",
-            url: "comunidad/provinciasByPais",
+            url: "provinciasByPais",
             data: "iPaisId="+idPais,
             beforeSend: function(){
                 setWaitingStatus('selectsUbicacion', true);
@@ -332,7 +332,7 @@ function bindEventsPersonaForm(){
         }
         $.ajax({
             type: "POST",
-            url: "comunidad/ciudadesByProvincia",
+            url: "ciudadesByProvincia",
             data: "iProvinciaId="+idProvincia,
             beforeSend: function(){
                 setWaitingStatus('selectsUbicacion', true);

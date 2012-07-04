@@ -89,5 +89,20 @@ class RutasModuloIndex
                                     'action'     => 'video'
                                 ));
         $router->addRoute('indexIndexVideoAmpliar', $route);
+
+        $route = new RegexRoute('provinciasByPais',
+                                array(
+                                    'module' => "index",
+                                    'controller' => "index",
+                                    'action' => "provinciasByPais"
+                                ));
+        $router->addRoute('provinciasByPais', $route);
+        $route = new RegexRoute('ciudadesByProvincia',
+                                array(
+                                    'module' => "index",
+                                    'controller' => "index",
+                                    'action' => "ciudadesByProvincia"
+                                ));
+        $router->addRoute('ciudadesByProvincia', $route);
     }   
 }

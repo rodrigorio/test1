@@ -136,15 +136,15 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
             
             $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
+
+            $params[] = "masPublicaciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $params);
         }else{
             $this->getTemplate()->set_var("PublicacionBlock", "");
             $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "noRecords", "NoRecordsPublicacionesBlock");
             $this->getTemplate()->set_var("sNoRecords", "No hay publicaciones cargados en la comunidad");
             $this->getTemplate()->parse("noRecords", false);
         }
-
-        $params[] = "masPublicaciones=1";
-        $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $params);
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
@@ -323,13 +323,14 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
                     $this->getTemplate()->set_var("sMensajePublicacion","");
                 }
+                
+                $params[] = "masMisPublicaciones=1";
+                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoMisPublicacionesResult", $params);
+                
             }else{
                 $this->getTemplate()->set_var("MiPublicacionBlock", "");
                 $this->getTemplate()->set_var("sNoRecords", "Todavía no hay publicaciones creadas.");
             }
-
-            $params[] = "masMisPublicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoMisPublicacionesResult", $params);
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){

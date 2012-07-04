@@ -92,34 +92,28 @@ class RutasModuloComunidad
                                         'action'     => "editarInstitucion"
                                 ));
         $router->addRoute('comunidadInstitucionesEditarInstitucion', $route);
-        $route = new RegexRoute('comunidad/ampliar-institucion',
+
+        //url amigable ampliar institucion
+        $route = new RegexRoute('comunidad/instituciones/(\d+)-(.+)',
                                 array(
-                                        'module' => "comunidad",
-                                        'controller' => "instituciones",
-                                        'action'     => "ampliarInstitucion"
-                                ));
+                                    'module' => 'comunidad',
+                                    'controller' => 'instituciones',
+                                    'action'     => 'ampliarInstitucion'
+                                ),
+                                array(
+                                    1 => 'iInstitucionId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                'comunidad/instituciones/%d-%s');
         $router->addRoute('comunidadInstitucionesAmpliarInstitucion', $route);
+        
         $route = new RegexRoute('comunidad/masInstituciones',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "instituciones",
                                         'action'     => "masInstituciones"
                                 ));
-        $router->addRoute('comunidadInstitucionesMasInstituciones', $route);
-        $route = new RegexRoute('comunidad/provinciasByPais',
-                                array(
-                                        'module' => "comunidad",
-                                        'controller' => "instituciones",
-                                        'action'     => "provinciasByPais"
-                                ));
-        $router->addRoute('comunidadInstitucionesProvinciasByPais', $route);
-        $route = new RegexRoute('comunidad/ciudadesByProvincia',
-                                array(
-                                        'module' => "comunidad",
-                                        'controller' => "instituciones",
-                                        'action'     => "ciudadesByProvincia"
-                                ));
-        $router->addRoute('comunidadInstitucionesCiudadesByProvincia', $route);
+        $router->addRoute('comunidadInstitucionesMasInstituciones', $route);                
         $route = new RegexRoute('comunidad/nueva-institucion',
                                 array(
                                         'module' => "comunidad",
@@ -134,13 +128,6 @@ class RutasModuloComunidad
                                         'action'     => "procesar"
                                 ));
         $router->addRoute('comunidadInstitucionesProcesar', $route);
-        $route = new RegexRoute('comunidad/instituciones-listado',
-                                array(
-                                        'module' => "comunidad",
-                                        'controller' => "instituciones",
-                                        'action'     => "listadoInstituciones"
-                                ));
-        $router->addRoute('comunidadInstitucionesListado', $route);
         $route = new RegexRoute('comunidad/instituciones',
                                 array(
                                         'module' => "comunidad",
@@ -148,6 +135,13 @@ class RutasModuloComunidad
                                         'action'     => "index"
                                 ));
         $router->addRoute('comunidadInstitucionesIndex', $route);
+        $route = new RegexRoute('comunidad/instituciones/mis-instituciones',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "instituciones",
+                                    'action'     => "misInstituciones"
+                                ));
+        $router->addRoute('comunidadInstitucionesMisInstituciones', $route);
         $route = new RegexRoute('comunidad/buscar-instituciones',
                                 array(
                                         'module' => "comunidad",
