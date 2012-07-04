@@ -157,10 +157,19 @@ class ComunidadController
     }
     
     
-    public function obtenerInstitucion($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function obtenerInstitucion($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+    public function buscarInstitucionesComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    	try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

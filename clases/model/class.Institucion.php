@@ -1,10 +1,10 @@
 <?php
 class Institucion {
+    
 	private $iId;
 	private $sNombre;
 	private $iCiudadId;
 	private $oCiudad;
- 	private $iModerado;
  	private $sDescripcion;
   	private $iTipoInstitucion;
   	private $sNombreTipoInstitucion;
@@ -175,17 +175,12 @@ class Institucion {
         }
         return $this->oCiudad;
 	}
-	/**
-	 *  @return int $iModerado
-	 */
-	public function getModerado(){
-		return $this->iModerado ;
-	}
+        
 	/**
 	 *  @return int $iTipoInstitucion
 	 */
 	public function getTipoInstitucion(){
-		return $this->iTipoInstitucion ;
+            return $this->iTipoInstitucion ;
 	}
 	/**
  	 *  @return string $sNombreTipoInstitucion
@@ -193,12 +188,15 @@ class Institucion {
 	public function getNombreTipoInstitucion(){
 		return $this->sNombreTipoInstitucion ;
 	}
-	/**
-	 *  @return int $sDescripcion
-	 */
-	public function getDescripcion(){
-		return $this->sDescripcion ;
-	}
+
+        public function getDescripcion($nl2br = false){
+            if($nl2br){
+                return nl2br($this->sDescripcion);
+            }else{
+                return $this->sDescripcion;
+            }
+        }
+        
 	/**
 	 *  @return int $sDireccion
 	 */

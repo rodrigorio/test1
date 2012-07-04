@@ -224,4 +224,53 @@ class IndexControllerIndex extends PageControllerAbstract
             
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
+
+    public function provinciasByPais()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+    	try{
+            $iPaisId = $this->getRequest()->getPost("iPaisId");
+
+            $result = array();
+            if($iPaisId != 0){
+                $vListaProvincias = ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
+                if(count($vListaProvincias)>0){
+                    foreach($vListaProvincias as $oProvincia){
+                        $obj = new stdClass();
+                        $obj->id = $oProvincia->getId();
+                        $obj->sNombre = $oProvincia->getNombre();
+                        array_push($result,$obj);
+                    }
+                }
+            }
+
+            echo json_encode($result);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function ciudadesByProvincia()
+    {
+         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+         
+    	 try{
+            $iProvinciaId =  $this->getRequest()->getPost("iProvinciaId");
+            $result = array();
+            if($iProvinciaId != 0){
+                $vListaCiudades	= ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
+                foreach($vListaCiudades as $oCiudad){
+                    $obj = new stdClass();
+                    $obj->id = $oCiudad->getId();
+                    $obj->sNombre = $oCiudad->getNombre();
+                    array_push($result,$obj);
+                }
+            }
+
+            echo json_encode($result);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }

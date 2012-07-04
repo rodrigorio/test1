@@ -397,9 +397,9 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha02 .puntuar .desc{font-weight:bold;}
 .ficha02 .puntuar #txt_puntaje{font-size:1.7em}
 
-.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px 10px 0 10px; border:1px solid #CCC; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
+.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px 10px 0 10px; border:1px solid #CCC; border-top:1px solid #999; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
 .ficha03 .encabezado, .ficha03 .contenido{padding:10px; overflow:auto}
-.ficha03 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
+.ficha03 .encabezado{background-color:#EFEFEF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha03 .encabezado .izq{position:relative; z-index:1;}
 .ficha03 .encabezado .izq .icono{float:left; margin-right:10px}
 .ficha03 .encabezado .izq .titulo{font-size:1.7em; text-transform:uppercase}
