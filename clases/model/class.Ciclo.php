@@ -65,7 +65,7 @@ class Ciclo {
 	 * @return Nivel
 	 */
 	public function getNivel(){
-		$this->oNivel;
+		return $this->oNivel;
 	}
 }
 ?>

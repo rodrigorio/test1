@@ -12,10 +12,16 @@ var validateFormDiagnostico = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        diagnostico:{required:true}
+        diagnostico:{required:true},
+        nivel:{required:true},
+        ciclo:{required:true},
+        area:{required:true}
     },
     messages:{
-        diagnostico: mensajeValidacion("requerido")
+        diagnostico: mensajeValidacion("requerido"),
+        nivel: mensajeValidacion("requerido"),
+        ciclo: mensajeValidacion("requerido"),
+        area: mensajeValidacion("requerido")
     }
 };
 
@@ -136,4 +142,41 @@ $(document).ready(function(){
     $("#formGuardarDiagnostico").ajaxForm(optionsAjaxFormDiagnostico);
 
     bindEventFormAgregarArchivo($('#idSeguimiento').val());
+    
+    $("#nivel").live("change",function(){
+    	me = this;
+    	$.ajax({
+            url: "seguimientos/listar-ciclos-por-niveles",
+            type: "POST",
+            data:{
+                "nivelId":me.value
+            },
+            beforeSend: function(){
+                setWaitingStatus('ciclo', true);
+            },
+            success:function(data){
+                setWaitingStatus('ciclo', false);
+                $("#ciclo").html(data);
+                $("#area").html("<option value=''>Seleccione un area</option>");
+                
+            }
+        });
+    });
+    $("#ciclo").live("change",function(){
+    	me = this;
+    	$.ajax({
+            url: "seguimientos/listar-areas-por-ciclos",
+            type: "POST",
+            data:{
+                "cicloId":me.value
+            },
+            beforeSend: function(){
+                setWaitingStatus('area', true);
+            },
+            success:function(data){
+                setWaitingStatus('area', false);
+                $("#area").html(data);
+            }
+        });
+    });
 });

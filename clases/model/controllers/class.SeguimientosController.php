@@ -717,10 +717,36 @@ class SeguimientosController
     public function getNiveles($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
       {
     	try{
-    		echo "1";
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
-    		echo "2";
             return $oNivelIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+   /**
+     * Obtener ciclo por id de nivel
+     *
+     */
+ 	public function getCicloByNivelId($iId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+    		$filtro = array('n.id' => $iId);
+            $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
+            return  $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+   /**
+     * Obtener areas por id de ciclo
+     *
+     */
+ 	public function getAreasByCicloId($iId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+    		$filtro = array('c.id' => $iId);
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            return  $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

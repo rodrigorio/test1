@@ -203,5 +203,20 @@ class RutasModuloSeguimientos
                                         'action'     => 'procesarDiagnostico'
                                 ));
         $router->addRoute('seguimientosProcesarDiagnostico', $route);  
+        
+        $route = new RegexRoute('seguimientos/listar-ciclos-por-niveles',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'listarCiclosPorNiveles'
+                                ));
+        $router->addRoute('seguimientosListarCiclosPorNivel', $route);  
+        $route = new RegexRoute('seguimientos/listar-areas-por-ciclos',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'listarAreasPorCiclos'
+                                ));
+        $router->addRoute('seguimientosListarAreasPorCiclo', $route);  
     }
 }

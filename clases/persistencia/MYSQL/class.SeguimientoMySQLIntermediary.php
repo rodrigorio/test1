@@ -548,7 +548,7 @@ public function insertarSCC($oSeguimientoSCC)
 			
 			$sSQL =" insert into seguimientos_scc set ".
                     " id=".$db->escape($iLastId,false).", " .
-                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;	
+                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
 		
 			$db->execSQL($sSQL);
 			 $db->commit();

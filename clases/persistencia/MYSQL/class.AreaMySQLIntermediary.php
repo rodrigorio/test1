@@ -34,9 +34,12 @@ class AreaMySQLIntermediary extends AreaIntermediary
             $sSQL = "SELECT
                         a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCicloId
                     FROM
-                       areas a ";
+                        areas a 
+                    JOIN 
+                    	ciclos c ON a.ciclos_id = c.id ";
+            
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);

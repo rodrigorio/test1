@@ -26,7 +26,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
         }
         return self::$instance;
 	}
-public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
@@ -34,9 +34,10 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             $sSQL = "SELECT
                         c.id as iId, c.descripcion as sDescripcion, c.niveles_id as iNivelesId
                     FROM
-                       ciclos c ";
+                       ciclos c 
+                    JOIN niveles n ON c.niveles_id = n.id ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
                     }
 
             $db->query($sSQL);

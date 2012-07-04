@@ -56,10 +56,10 @@ class Variable {
 		$this->sDescripcion = $sDescripcion;
 	}
    /**
- 	 *  @param int $iUnidadId
+ 	 *  @param int $oUnidad
 	 */
-	public function setUnidadId($iUnidadId){
-		$this->iUnidadId= (int)$iUnidadId;
+	public function setUnidadId($oUnidad){
+		$this->oUnidad=$oUnidad;
 	}	
 	/**
  	 *  @param int $dFechaHora
@@ -93,13 +93,14 @@ class Variable {
 		return $this->sDescripcion;
 	}
     /**
-	 * @return string $iUnidadId
+	 * @return string $oUnidad
 	 */
-	public function getUnidadId(){
+	public function getUnidad(){
 		
 		if($this->oUnidad==null){
+			//TODO llamar a metodo que trae unidad segun variableid
 		} 		
-		return $this->iUnidadId;
+		return $this->oUnidad;
 	}
     /**
 	 * @return string $dFechaHora
