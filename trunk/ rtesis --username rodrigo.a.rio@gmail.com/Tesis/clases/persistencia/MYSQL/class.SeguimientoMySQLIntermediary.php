@@ -336,7 +336,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             }
             
         }catch(Exception $e){
+        	echo  $e->getMessage();
             throw new Exception($e->getMessage(), 0);
+            return false;
         }
     }
 
@@ -478,7 +480,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
 			
-			$diagnosticoPersonalizadoId = null;
+			$oDiagnostico = Factory::getDiagnosticoPersonalizadoInstance(new stdClass());
+			$diagnosticoPersonalizadoId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
 			
 			$sSQL =" insert into seguimientos_personalizados set ".
                         " id=".$db->escape($iLastId,false).", " .
@@ -542,17 +545,17 @@ public function insertarSCC($oSeguimientoSCC)
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
 			
-			//ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			
-			$diagnosticoSCCId = null;
+			$oDiagnostico = Factory::getDiagnosticoSCCInstance(new stdClass());
+			$diagnosticoSCCId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
 			
 			$sSQL =" insert into seguimientos_scc set ".
                     " id=".$db->escape($iLastId,false).", " .
                     " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
 		
 			$db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+			$db->commit();
+			return true;
 
 		}catch(Exception $e){
 			$db->rollback_transaction();

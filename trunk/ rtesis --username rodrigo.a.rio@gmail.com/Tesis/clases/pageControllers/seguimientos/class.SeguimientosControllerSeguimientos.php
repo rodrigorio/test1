@@ -355,20 +355,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $iRecordsTotal = 0;
             $aSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
-
-            if(count($aSeguimientos) > 1){
+            if(count($aSeguimientos) > 4){
                 $this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
                 $this->getJsonHelper()->sendJsonAjaxResponse(); 
                 return;
             }
-
-            if(count($aSeguimientos) > 0){
+            /*if(count($aSeguimientos) > 0){
                 if(get_class($aSeguimientos[0]) == $sTipoSeguimiento){
                      $this->getJsonHelper()->setSuccess(false)->setMessage("No puede agregar 2 seguimientos del mismo tipo a una persona");
                      $this->getJsonHelper()->sendJsonAjaxResponse();
                      return;
                 }
-            }
+            }*/
 
             $iPracticaId  = $this->getRequest()->getPost('practica');
             $oPractica = SeguimientosController::getInstance()->getPracticaById($iPracticaId);
@@ -391,12 +389,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                     break;
             }            
-            
             $resultado = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-            
             if($resultado){
-                $this->getJsonHelper()->setSuccess(true);
                 $this->getJsonHelper()->setMessage("El seguimiento fue creado con exito");
+                $this->getJsonHelper()->setSuccess(true);
             }else{
                 $this->getJsonHelper()->setSuccess(false);
             }
@@ -1737,7 +1733,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setJSDiagnostico()
                  ->setHeadTag()
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions);
-           
             $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
             if(get_class($oSeguimiento) == "SeguimientoPersonalizado"){
             	$this->formDiagnosticoPersonalizado($oSeguimiento);
@@ -1846,10 +1841,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
            //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         	//$filtroSql["u.id"] = $perfil->getUsuario()->getId();
         
-            echo$iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
+            $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
            // TODO Agregar validacion de pedir el diagnostico segun permiso d
             $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
-            print_r($oDiagnostico );
 			if($oDiagnostico){
 				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
 	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
