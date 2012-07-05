@@ -164,7 +164,8 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+            $sSQL = "SELECT
+            			SQL_CALC_FOUND_ROWS
                     	d.id as iId,
                     	d.descripcion as sDescripcion,
                     	dscc.areas_id as iAreaId
@@ -193,9 +194,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             }
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
             if(empty($iRecordsTotal)){ return null; }
-
             $aDiagnosticos = array();
             while($oObj = $db->oNextRecord()){
             	$oDiagnostico 				= new stdClass();
@@ -272,7 +271,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                     return $this->actualizarSCC($oDiagnostico);
                 }
             }else{
-                if($sDiagnosticoClass == self::TIPO_DIAGNOSTICO_SCC){
+                if($sDiagnosticoClass == self::TIPO_DIAGNOSTICO_PERSONALIZADO){
                     return $this->insertar($oDiagnostico);
                 }else{
                     return $this->insertarSCC($oDiagnostico);
@@ -280,6 +279,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             }
             
         }catch(Exception $e){
+        	echo $e->getMessage();
             throw new Exception($e->getMessage(), 0);
         }
     }
@@ -354,7 +354,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 			$db->execSQL($sSQL);
 						
 			$db->commit();
-			return true;
+			return $iLastId;
 
 		}catch(Exception $e){
 			$db->rollback_transaction();
@@ -374,15 +374,17 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                         " set  descripcion =".$db->escape($oDiagnosticoSCC->getDescripcion(),true)." ";
 			
 			$db->execSQL($sSQL);
-			$iLastId = $db->insert_id();		
 			
+			$iLastId = $db->insert_id();		
 			$sSQL =" insert into diagnosticos_scc set ".
-                    " id =".$db->escape($iLastId,false).", " .
-                    " areas_id =".$db->escape($oDiagnosticoSCC->getArea()->getId(),false,MYSQL_TYPE_INT)." " ;	
-		
+                    " id =".$db->escape($iLastId,false)." ";
+			if($oDiagnosticoSCC->getArea()){
+              $sSQL.=" ,areas_id =".$db->escape($oDiagnosticoSCC->getArea()->getId(),false,MYSQL_TYPE_INT)." " ;
+			}
+			$sSQL ;
 			$db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+			$db->commit();
+			return $iLastId;
 
 		}catch(Exception $e){
 			$db->rollback_transaction();

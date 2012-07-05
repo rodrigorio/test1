@@ -71,7 +71,6 @@ class LoginControllerIndex extends PageControllerAbstract
             }
                 
         }catch(Exception $e){
-        	
             $this->getJsonHelper()->setSuccess(false)
                                   ->setMessage('Ocurrio un error al tratar de procesar la informacion')
                                   ->sendJsonAjaxResponse();

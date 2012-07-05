@@ -619,7 +619,6 @@ class SeguimientosController
             }else{
             	$aDiagnostico = $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, null, null, null, null);
             }
-            
             if(null !== $aDiagnostico){
                 return $aDiagnostico[0];
             }else{

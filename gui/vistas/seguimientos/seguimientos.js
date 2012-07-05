@@ -43,7 +43,6 @@ var optionsAjaxFormCrearSeguimiento = {
     success:function(data){
 
         setWaitingStatus('formCrearSeguimiento', false);
-
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
                 $('#msg_form_crearSeguimiento .msg').html(lang['error procesar']);
