@@ -10,7 +10,8 @@ class Variable {
 	private $sNombre;
 	private $iTipo;
 	private $sDescripcion;
-	private $oUnidad;	
+	private $oUnidad;
+	private $iUnidadId;	
 	private $dFechaHora;
 	
 	/**
@@ -98,11 +99,13 @@ class Variable {
 	public function getUnidad(){
 		
 		if($this->oUnidad==null){
-			//TODO llamar a metodo que trae unidad segun variableid
+			$this->oUnidad = SeguimientosController::getInstance()->getUnidadById($this->iUnidadId);
+			//TODO llamar a metodo que trae unidad segun variableid (o unidadId???? dice Andres)
 		} 		
 		return $this->oUnidad;
 	}
-    /**
+	
+   /**
 	 * @return string $dFechaHora
 	 */
 	public function getFechaHora(){

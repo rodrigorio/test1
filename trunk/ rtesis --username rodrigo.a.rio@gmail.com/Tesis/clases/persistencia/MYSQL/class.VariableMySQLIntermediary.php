@@ -3,7 +3,7 @@
  *
  * @author Andrés
  */
-class VariableMySQLIntermediary extends CiudadIntermediary
+class VariableMySQLIntermediary extends VariableIntermediary
 {
 	private static $instance = null;
 
