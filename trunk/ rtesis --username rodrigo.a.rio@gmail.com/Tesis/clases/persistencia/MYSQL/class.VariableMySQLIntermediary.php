@@ -92,8 +92,8 @@ class VariableMySQLIntermediary extends CiudadIntermediary
 			        " tipo =".$db->escape($oVariable->getTipo(),false,MYSQL_TYPE_INT).", ".
 			        " descripcion =".$db->escape($oVariable->getDescripcion(),true).", ".
 			        " unidad_id =".$db->escape($oVariable->getUnidad()->getId(),false,MYSQL_TYPE_INT).",".
-			        " fechaHora =".$db->escape($oVariable->getFechaHora(),true)." ";
-						 
+			        " fechaHora =".$db->escape($oVariable->getFechaHora(),true)." ".
+					" where id =".$db->escape($oVariable->getId(),false,MYSQL_TYPE_INT)." " ;	 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
