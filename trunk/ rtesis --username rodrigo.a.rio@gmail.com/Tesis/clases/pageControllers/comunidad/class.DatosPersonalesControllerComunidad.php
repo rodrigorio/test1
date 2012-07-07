@@ -150,9 +150,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
             if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
                ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
-                $this->getJsonHelper()->setValor('integranteActivo', '1');
+               $this->getJsonHelper()->setValor('integranteActivo', '1');
             }else{
-                $this->getJsonHelper()->setValor('integranteActivo', '0');
+               $this->getJsonHelper()->setValor('integranteActivo', '0');
             }
 
             $this->getJsonHelper()->setSuccess(true);

@@ -188,16 +188,6 @@ class AdminController
         }        
     }
 
-    public function eliminarInstitucion($iInstitucionId){
-        try{
-            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->borrar($iInstitucionId);
-        }catch(Exception $e){
-            throw new Exception($e);
-            return false;
-        }
-    }
-
     public function obtenerAccionesSistema($filtro = null, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
@@ -424,6 +414,18 @@ class AdminController
         }
     }
 
+    public function buscarInstitucionesModeracion($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $filtro["m.sModeracionEstado"] = "pendiente";
+
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function obtenerHistorialModeracionesFicha($iFichaId)
     {
         try{
@@ -434,6 +436,18 @@ class AdminController
         }catch (Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    public function obtenerHistorialModeracionesInstitucion($iInstitucionId)
+    {
+        try{
+            $filtro["m.instituciones_id"] = $iInstitucionId;
+            $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     public function getModeracionById($iModeracionId)

@@ -137,22 +137,47 @@ class ComunidadController
         }
     }
 
-    ///tipea andres
     public function guardarInstitucion($oInstitucion){
         try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->guardar($oInstitucion);
+            $oInstitucionIntermediary->guardar($oInstitucion);
+
+            $classPerfil = SessionAutentificacion::getInstance()->getClassPerfilAutentificado();
+            if($classPerfil == "Administrador" || $classPerfil == "Moderador"){
+                if(null === $oInstitucion->getModeracion()){
+                    $oModeracion = new stdClass();
+                    $oModeracion = Factory::getModeracionInstance($oModeracion);
+                    $oModeracion->setEstadoAprobado();
+                    $oModeracion->setMensaje("Moderacion automatica por perfil Administrador o Moderador.");
+                    $oInstitucion->setModeracion($oModeracion);
+
+                    $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                    $oModeracionIntermediary->guardarModeracionEntidad($oInstitucion);
+                }
+                return;
+            }
+           
+            if((null === $oInstitucion->getModeracion()) || (!$oInstitucion->getModeracion()->isPendiente()))
+            {
+                //fecha se genera sola, mensaje vacio, estado pendiente por defecto.
+                $oModeracion = new stdClass();
+                $oModeracion = Factory::getModeracionInstance($oModeracion);
+                $oInstitucion->setModeracion($oModeracion);
+
+                $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                $oModeracionIntermediary->guardarModeracionEntidad($oInstitucion);
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
 
-    public function borrarInstitucion($oInstitucion){
+    public function borrarInstitucion($iInstitucionId){
         try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-            return $oInstitucionIntermediary->borrar($oInstitucion);
+            return $oInstitucionIntermediary->borrar($iInstitucionId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
     
@@ -173,6 +198,21 @@ class ComunidadController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Devuelve un array de objetos usuario con todos los integrantes asociados a una institucion.
+     */
+    public function obtenerUsuariosAsociadosInstitucion($iInstitucionId)
+    {
+        try{
+            $filtro = array('p.instituciones_id' => $iInstitucionId);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oUsuarioIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }                
     }
 
     public function getInstitucionById($iInstitucionId){
@@ -563,7 +603,7 @@ class ComunidadController
                     $oFicha->setModeracion($oModeracion);
                     
                     $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
-                    $oModeracionIntermediary->guardarModeracionFicha($oFicha);
+                    $oModeracionIntermediary->guardarModeracionEntidad($oFicha);
                 }
                 return;
             }
@@ -578,7 +618,7 @@ class ComunidadController
                     $oFicha->setModeracion($oModeracion);
 
                     $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
-                    $oModeracionIntermediary->guardarModeracionFicha($oFicha);
+                    $oModeracionIntermediary->guardarModeracionEntidad($oFicha);
                 }
             }else{
                 if((null !== $oFicha->getModeracion()) ||
@@ -886,6 +926,21 @@ class ComunidadController
             
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Agrega el filtro del usuario que esta logueado
+     */
+    public function buscarInstitucionesUsuario($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $filtro["i.usuario_id"] = $oUsuario->getId();
+
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
             throw new Exception($e->getMessage());
         }

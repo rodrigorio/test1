@@ -108,7 +108,7 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            $result = AdminController::getInstance()->eliminarInstitucion($iInstitucionId);
+            $result = ComunidadController::getInstance()->borrarInstitucion($iInstitucionId);
 
             $this->restartTemplate();
 

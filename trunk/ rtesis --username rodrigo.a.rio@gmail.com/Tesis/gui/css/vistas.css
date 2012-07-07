@@ -405,7 +405,8 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .ficha03 .encabezado .izq .titulo{font-size:1.7em; text-transform:uppercase}
 .ficha03 .encabezado .izq .subtitulo{font-size:0.8em}
 .ficha03 .encabezado .der{float:right; position:relative; margin-left:20px; z-index:2}
-.ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF; margin-bottom:10px;}
+.ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF; margin-bottom:10px; border-bottom:1px solid #CCC}
+.ficha03 .contenido.row{margin-bottom:5px !important; border-bottom:1px dashed #CCC !important;}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
 .ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}

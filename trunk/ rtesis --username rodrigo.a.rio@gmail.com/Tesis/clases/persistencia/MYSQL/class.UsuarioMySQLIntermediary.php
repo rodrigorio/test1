@@ -331,6 +331,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(isset($filtro['u.activo']) && $filtro['u.activo']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.activo', $filtro['u.activo']);
             }
+            if(isset($filtro['p.instituciones_id']) && $filtro['p.instituciones_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.instituciones_id', $filtro['p.instituciones_id'], MYSQL_TYPE_INT);
+            }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
                        

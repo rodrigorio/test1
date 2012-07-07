@@ -21,6 +21,16 @@ class Institucion {
   	private $sLatitud;
   	private $sLongitud;
   	private $oUsuario;
+
+       /**
+        * array objetos Moderacion, el historial completo
+        */
+        protected  $aModeraciones;
+
+       /**
+        * objeto Moderacion, estado de la ultima entrada en moderaciones, null si no tiene
+        */
+        protected  $oModeracion = null;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
@@ -55,8 +65,9 @@ class Institucion {
 	 * @param Ciudad $oCiudad
 	 */
 	public function setCiudad($oCiudad){
-		$this->oCiudad = $oCiudad;
+            $this->oCiudad = $oCiudad;
 	}
+        
 	/**
  	 *  @param int $iModerado
 	 */
@@ -166,21 +177,22 @@ class Institucion {
 	public function getNombre(){
 		return $this->sNombre;
 	}
+        
 	/**
 	 * @return  Ciudad $oCiudad
 	 */
 	public function getCiudad(){
-		if($this->oCiudad == null){
+            if($this->oCiudad == null){
     		$this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
-        }
-        return $this->oCiudad;
+            }
+            return $this->oCiudad;
 	}
         
 	/**
 	 *  @return int $iTipoInstitucion
 	 */
-	public function getTipoInstitucion(){
-            return $this->iTipoInstitucion ;
+	public function getTipoInstitucionId(){
+            return $this->iTipoInstitucion;
 	}
 	/**
  	 *  @return string $sNombreTipoInstitucion
@@ -201,25 +213,25 @@ class Institucion {
 	 *  @return int $sDireccion
 	 */
 	public function getDireccion(){
-		return $this->sDireccion ;
+            return $this->sDireccion ;
 	}
 	/**
 	 *  @return int $sEmail
 	 */
 	public function getEmail(){
-		return $this->sEmail ;
+            return $this->sEmail ;
 	}
 	/**
 	 *  @return int $sTelefono
 	 */
 	public function getTelefono(){
-		return $this->sTelefono ;
+            return $this->sTelefono ;
 	}
 	/**
 	 *  @return int $sSitioWeb
 	 */
 	public function getSitioWeb(){
-		return $this->sSitioWeb ;
+            return $this->sSitioWeb ;
 	}
 	/**
 	 *  @return int $sHorariosAtencion
@@ -230,8 +242,12 @@ class Institucion {
 	/**
 	 *  @return int $sAutoridades
 	 */
-	public function getAutoridades(){
-		return $this->sAutoridades ;
+	public function getAutoridades($nl2br = false){
+            if($nl2br){
+                return nl2br($this->sAutoridades);
+            }else{
+                return $this->sAutoridades;
+            }
 	}
 	/**
 	 *  @return int $sCargo
@@ -239,23 +255,34 @@ class Institucion {
 	public function getCargo(){
 		return $this->sCargo ;
 	}
+        
 	/**
 	 *  @return int $sPersoneriaJuridica
 	 */
 	public function getPersoneriaJuridica(){
 		return $this->sPersoneriaJuridica ;
 	}
+        
 	/**
 	 *  @return int $sSedes
 	 */
-	public function getSedes(){
-		return $this->sSedes ;
+	public function getSedes($nl2br = false){
+            if($nl2br){
+                return nl2br($this->sSedes);
+            }else{
+                return $this->sSedes;
+            }
 	}
+        
 	/**
 	 *  @return int $sActividadesMes
 	 */
-	public function getActividadesMes(){
-		return $this->sActividadesMes ;
+	public function getActividadesMes($nl2br = false){
+            if($nl2br){
+                return nl2br($this->sActividadesMes);
+            }else{
+                return $this->sActividadesMes;
+            }
 	}
 
 	public function getUsuario(){
@@ -268,5 +295,23 @@ class Institucion {
 
 	public function getLongitud(){
 		return $this->sLongitud;
-	}	
+	}
+
+        public function getHistorialModeraciones()
+        {
+            if($this->aModeraciones === null){
+                $this->aModeraciones = AdminController::getInstance()->obtenerHistorialModeracionesInstitucion($this->iId);
+            }
+            return $this->aModeraciones;
+        }
+
+        public function getModeracion()
+        {
+            return $this->oModeracion;
+        }
+
+        public function setModeracion($oModeracion)
+        {
+            $this->oModeracion = $oModeracion;
+        }
 }

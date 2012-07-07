@@ -21,15 +21,19 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
         return self::$instance;
     }
 
-    public function guardarModeracionFicha($oFicha)
+    /**
+     * polimorfico para todas las entidades del sistema que son moderadas
+     * con la clase Moderacion
+     */
+    public function guardarModeracionEntidad($oObj)
     {
-        if(null !== $oFicha->getModeracion()){
-            $oModeracion = $oFicha->getModeracion();
+        if(null !== $oObj->getModeracion()){
+            $oModeracion = $oObj->getModeracion();
             if(null !== $oModeracion->getId()){
                 return $this->actualizar($oModeracion);
             }else{
-                $iId = $oFicha->getId();
-                return $this->insertarAsociado($oModeracion, $iId, get_class($oFicha));
+                $iId = $oObj->getId();
+                return $this->insertarAsociado($oModeracion, $iId, get_class($oObj));
             }
         }
     }
@@ -45,6 +49,7 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
             switch($sObjetoAsociado){
                 case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                case "Institucion": $sSQL .= "instituciones_id = ".$iIdItem.", "; break;
             }
 
             $sSQL .= " estado = ".$this->escStr($oModeracion->getEstado()).", ".
@@ -128,6 +133,9 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
 
             if(isset($filtro['m.fichas_abstractas_id']) && $filtro['m.fichas_abstractas_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('m.fichas_abstractas_id', $filtro['m.fichas_abstractas_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['m.instituciones_id']) && $filtro['m.instituciones_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('m.instituciones_id', $filtro['m.instituciones_id'], MYSQL_TYPE_INT);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);

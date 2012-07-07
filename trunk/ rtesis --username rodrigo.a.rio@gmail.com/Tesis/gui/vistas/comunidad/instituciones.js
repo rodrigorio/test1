@@ -1,63 +1,63 @@
-function listaProvinciasByPais(idPais){
+function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idContenedor){
     //si el valor elegido es '' entonces marco como disabled
     if(idPais == ''){
-        $('#filtroProvincia').addClass("disabled");
+        $('#'+idSelectProvincia).addClass("disabled");
     }else{
-        $('#filtroProvincia').removeClass("disabled");
+        $('#'+idSelectProvincia).removeClass("disabled");
     }
-    $('#filtroCiudad').addClass("disabled");
+    $('#'+idSelectCiudad).addClass("disabled");
 
     $.ajax({
         type: "POST",
         url: "provinciasByPais",
         data: "iPaisId="+idPais,
         beforeSend: function(){
-            setWaitingStatus('formFiltrarInstituciones', true);
+            setWaitingStatus(idContenedor, true);
         },
         success: function(data){
             var lista = $.parseJSON(data);
-            $('#filtroProvincia').html("");
+            $('#'+idSelectProvincia).html("");
             //dejo vacio el de ciudad si cambio de pais hasta que elija una provincia
-            $('#filtroCiudad').html("");
-            $('#filtroCiudad').html(new Option('Elija Ciudad:', '',true));
+            $('#'+idSelectCiudad).html("");
+            $('#'+idSelectCiudad).html(new Option('Elija Ciudad:', '',true));
             if(lista.length != undefined && lista.length > 0){
-                $('#filtroProvincia').append(new Option('Elija Provincia:', '',true));
+                $('#'+idSelectProvincia).append(new Option('Elija Provincia:', '',true));
                 for(var i=0;i<lista.length;i++){
-                    $('#filtroProvincia').append(new Option(lista[i].sNombre, lista[i].id));
+                    $('#'+idSelectProvincia).append(new Option(lista[i].sNombre, lista[i].id));
                 }
             }else{
-                $('#filtroProvincia').html(new Option('Elija Provincia:', '',true));
+                $('#'+idSelectProvincia).html(new Option('Elija Provincia:', '',true));
             }
-            setWaitingStatus('formFiltrarInstituciones', false);
+            setWaitingStatus(idContenedor, false);
         }
     });
  }
 
-function listaCiudadesByProvincia(idProvincia){
+function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
     if(idProvincia == ''){
-        $('#filtroCiudad').addClass("disabled");
+        $('#'+idSelectCiudad).addClass("disabled");
     }else{
-        $('#filtroCiudad').removeClass("disabled");
+        $('#'+idSelectCiudad).removeClass("disabled");
     }
     $.ajax({
         type: "POST",
         url: "ciudadesByProvincia",
         data: "iProvinciaId="+idProvincia,
         beforeSend: function(){
-            setWaitingStatus('formFiltrarInstituciones', true);
+            setWaitingStatus(idContenedor, true);
         },
         success: function(data){
             var lista = $.parseJSON(data);
-            $('#filtroCiudad').html("");
+            $('#'+idSelectCiudad).html("");
             if(lista.length != undefined && lista.length > 0){
-                $('#filtroCiudad').append(new Option('Elija Ciudad:', '',true));
+                $('#'+idSelectCiudad).append(new Option('Elija Ciudad:', '',true));
                 for(var i=0;i<lista.length;i++){
-                    $('#filtroCiudad').append(new Option(lista[i].sNombre, lista[i].id));
+                    $('#'+idSelectCiudad).append(new Option(lista[i].sNombre, lista[i].id));
                 }
             }else{
-                $('#filtroCiudad').append(new Option('Elija Ciudad:', '',true));
+                $('#'+idSelectCiudad).append(new Option('Elija Ciudad:', '',true));
             }
-            setWaitingStatus('formFiltrarInstituciones', false);
+            setWaitingStatus(idContenedor, false);
         }
     });
 }
@@ -77,69 +77,75 @@ var validateFormInstitucion = {
     unhighlight: function(element){},
     rules:{
         nombre:{required:true},
+        descripcion:{required:true},
         tipo:{required:true},
         cargo:{required:true},
-        tel:{required:true},
+        direccion:{required:true},
         pais:{required:true},
         provincia:{required:true},
         ciudad:{required:true},
-        direccion:{required:true},
+        email:{required:true, email:true},
+        telefono:{required:true},
+        sitioWeb:{url:true}
     },
     messages:{
-        nombre: "Debe especificar un nombre",
-        tipo:{
-                required: mensajeValidacion("requerido")
-        },
-        cargo:{
-                required: mensajeValidacion("requerido")
-        },
-        tel:{
-                required: mensajeValidacion("requerido")
-        },
-        pais:{
-                required: mensajeValidacion("requerido")
-        },
-        provincia:{
-                required: mensajeValidacion("requerido")
-        },
-        ciudad:{
-                required: mensajeValidacion("requerido")
-        },
-        direccion:{
-                required: mensajeValidacion("requerido")
-        },
+        nombre: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido"),
+        tipo: mensajeValidacion("requerido"),
+        cargo: mensajeValidacion("requerido"),
+        direccion: mensajeValidacion("requerido"),
+        pais: mensajeValidacion("requerido"),
+        provincia: mensajeValidacion("requerido"),
+        ciudad: mensajeValidacion("requerido"),
         email:{
-                required: mensajeValidacion("requerido"),
-                email: mensajeValidacion("email"),
-        }
+            required: mensajeValidacion("requerido"),
+            email: mensajeValidacion("email")
+        },
+        telefono: mensajeValidacion("requerido"),
+        sitioWeb:mensajeValidacion("url")
     }
 };
 
 var optionsAjaxFormInstitucion = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 	"comunidad/institucion-procesar",
+    url:"comunidad/guardar-institucion",
 
     beforeSerialize: function($form, options){
-        if($("#formCrearInstitucion").valid() == true){
+        if($("#formInstitucion").valid() == true){
             $('#msg_form_institucion').hide();
             $('#msg_form_institucion').removeClass("correcto").removeClass("error");
             $('#msg_form_institucion .msg').html("");
-            setWaitingStatus('formInfoBasica', true);
+            setWaitingStatus('formInstitucion', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formCrearInstitucion', false);
+        setWaitingStatus('formInstitucion', false);
+
         if(data.success == undefined || data.success == 0){
-            $('#msg_form_institucion .msg').html(lang['error procesar']);
+            if(data.mensaje == undefined){
+                $('#msg_form_institucion .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_institucion .msg').html(data.mensaje);
+            }
             $('#msg_form_institucion').addClass("error").fadeIn('slow');
         }else{
-            $('#msg_form_institucion .msg').html(lang['exito procesar']);
+            if(data.mensaje == undefined){
+                $('#msg_form_institucion .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_institucion .msg').html(data.mensaje);
+            }
             $('#msg_form_institucion').addClass("correcto").fadeIn('slow');
-            $('#formCrearInstitucion input[type=text],#formCrearInstitucion select,,#formCrearInstitucion textarea').val("");
+        }
+
+        if(data.agregarInstitucion != undefined){
+            //limpio el form
+            $('#formInstitucion').each(function(){
+                this.reset();
+            });
         }
     }
 };
@@ -172,15 +178,92 @@ function masInstituciones(){
     });
 }
 
+function masMisInstituciones(){
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
+    $.ajax({
+        type:"POST",
+        url:"comunidad/instituciones/mas-mis-instituciones",
+        data:{
+            sOrderBy: sOrderBy,
+            sOrder: sOrder
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoMisInstituciones', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoMisInstituciones', false);
+            $("#listadoMisInstitucionesResult").html(data);
+        }
+    });
+}
+
+function borrarInstitucion(iInstitucionId){
+    if(confirm("Se borrara la institucion del sistema de manera permanente, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"comunidad/instituciones/procesar",
+            data:{
+                iInstitucionId:iInstitucionId,
+                borrarInstitucion:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iInstitucionId).hide("slow", function(){
+                        $("."+iInstitucionId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length){
+                    dialog.attr("title","Borrar Institución");
+                }else{
+                    dialog = $('<div id="dialog" title="Borrar Institución"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
 $(function(){
 
-    if($("#formCrearInstitucion").length){
-        $("#formCrearInstitucion").validate(validateFormInstitucion);
-        $("#formCrearInstitucion").ajaxForm(optionsAjaxFormInstitucion);
+    $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    if($("#formInstitucion").length){
+        $("#formInstitucion").validate(validateFormInstitucion);
+        $("#formInstitucion").ajaxForm(optionsAjaxFormInstitucion);
+
+        $("#pais").change(function(){
+            listaProvinciasByPais($("#pais option:selected").val(), 'provincia', 'ciudad', 'selectsUbicacion');
+        });
+        $("#provincia").change(function(){
+            listaCiudadesByProvincia($("#provincia option:selected").val(), 'ciudad', 'selectsUbicacion');
+        });
     }
 
-    $("#filtroPais").change(function(){listaProvinciasByPais($("#filtroPais option:selected").val());});
-    $("#filtroProvincia").change(function(){listaCiudadesByProvincia($("#filtroProvincia option:selected").val());});
+    $("#filtroPais").change(function(){
+        listaProvinciasByPais($("#filtroPais option:selected").val(), 'filtroProvincia', 'filtroCiudad', 'formFiltrarInstituciones');
+    });
+    $("#filtroProvincia").change(function(){
+        listaCiudadesByProvincia($("#filtroProvincia option:selected").val(), 'filtroCiudad', 'formFiltrarInstituciones');
+    });
 
     //listado instituciones comunidad
     $("#BuscarInstituciones").live('click', function(){
@@ -195,6 +278,19 @@ $(function(){
         return false;
     });
     ///////////////////////////////
+
+
+    //Listado Mis Instituciones
+    $(".borrarInstitucion").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        borrarInstitucion(iInstitucionId);
+    });
+
+    $(".orderLink").live('click', function(){
+        $('#sOrderBy').val($(this).attr('orderBy'));
+        $('#sOrder').val($(this).attr('order'));
+        masMisInstituciones();
+    });
     
 });
 

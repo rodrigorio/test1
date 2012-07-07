@@ -55,91 +55,108 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
     public  function insertar($oInstitucion)
     {
         try{
-                $db = $this->conn;
-                if($oInstitucion->getCiudad()!= null){
-                        $ciudadId = ($oInstitucion->getCiudad()->getId());
-                }else {
-                        $ciudadId = null;
-                }
-                $sSQL =	" insert into instituciones ".
-                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", ".
-                    " ciudades_id =".$db->escape($ciudadId,false,MYSQL_TYPE_INT).", ".
-					" moderado =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
-					" descripcion =".$db->escape($oInstitucion->getDescripcion(),true).", ".
-					" tipoInstitucion_id =".$db->escape($oInstitucion->getTipoInstitucion(),false,MYSQL_TYPE_INT).", ".
-					" direccion =".$db->escape($oInstitucion->getDireccion(),true).", ".
-					" email =".$db->escape($oInstitucion->getEmail(),true).", ".
-					" telefono =".$db->escape($oInstitucion->getTelefono(),true).", ".
-					" sitioWeb =".$db->escape($oInstitucion->getSitioWeb(),true).", ".
-					" horariosAtencion =".$db->escape($oInstitucion->getHorariosAtencion(),true).", ".
-					" autoridades =".$db->escape($oInstitucion->getAutoridades(),true).", ".
-					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
-					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
-					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
-                                        " latitud =".$db->escape($oInstitucion->getLatitud(),true).", ".
-					" longitud =".$db->escape($oInstitucion->getLongitud(),true).", ".
-					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true).", ".
-					" usuario_id =".$db->escape($oInstitucion->getUsuario()->getId(),true)." ";
+            $db = $this->conn;
 
+            if(null !== $oInstitucion->getCiudad()){
+                $iCiudadId = $oInstitucion->getCiudad()->getId();
+            }else{
+                $iCiudadId = 'null';
+            }
+
+            if(null !== $oInstitucion->getUsuario()){
+                $iUsuarioId = $oInstitucion->getUsuario()->getId();
+            }else{
+                $iUsuarioId = 'null';
+            }
+
+            $sSQL = " INSERT INTO instituciones ".
+                    " SET nombre = ".$this->escStr($oInstitucion->getNombre()).", ".
+                    " ciudades_id = '".$iCiudadId."', ".
+                    " descripcion = ".$this->escStr($oInstitucion->getDescripcion()).", ".
+                    " tipoInstitucion_id = ".$this->escInt($oInstitucion->getTipoInstitucionId()).", ".
+                    " direccion = ".$this->escStr($oInstitucion->getDireccion()).", ".
+                    " email = ".$this->escStr($oInstitucion->getEmail()).", ".
+                    " telefono = ".$this->escStr($oInstitucion->getTelefono()).", ".
+                    " sitioWeb = ".$this->escStr($oInstitucion->getSitioWeb()).", ".
+                    " horariosAtencion = ".$this->escStr($oInstitucion->getHorariosAtencion()).", ".
+                    " autoridades = ".$this->escStr($oInstitucion->getAutoridades()).", ".
+                    " cargo = ".$this->escStr($oInstitucion->getCargo()).", ".
+                    " personeriaJuridica = ".$this->escStr($oInstitucion->getPersoneriaJuridica()).", ".
+                    " sedes = ".$this->escStr($oInstitucion->getSedes()).", ".
+                    " latitud = ".$this->escStr($oInstitucion->getLatitud()).", ".
+                    " longitud = ".$this->escStr($oInstitucion->getLongitud()).", ".
+                    " actividadesMes = ".$this->escStr($oInstitucion->getActividadesMes()).", ".
+                    " usuario_id = '".$iUsuarioId."' ";
 			
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
-		}catch(Exception $e){
-			return false;
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+            
+            $db->commit();
+            $oInstitucion->setId($iLastId);
+            return true;
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
     
-	public function actualizar($oInstitucion)
-   	{
-		try{
-			$db = $this->conn;
-		if($oInstitucion->getCiudad()!= null){
-			$ciudadId = ($oInstitucion->getCiudad()->getId());
-			}else {
-				$ciudadId = null;
-			}
-        
-			$sSQL =	" update instituciones ".
-                    " set nombre =".$db->escape($oInstitucion->getNombre(),true).", " .
-                    " ciudades_id =".$db->escape($ciudadId,false,MYSQL_TYPE_INT).", ".
-					" moderado =".$db->escape($oInstitucion->getModerado(),false,MYSQL_TYPE_INT).", ".
-					" descripcion =".$db->escape($oInstitucion->getDescripcion(),true).", ".
-					" tipoInstitucion_id =".$db->escape($oInstitucion->getTipoInstitucion(),false,MYSQL_TYPE_INT).", ".
-					" direccion =".$db->escape($oInstitucion->getDireccion(),true).", ".
-					" email =".$db->escape($oInstitucion->getEmail(),true).", ".
-					" telefono =".$db->escape($oInstitucion->getTelefono(),true).", ".
-					" sitioWeb =".$db->escape($oInstitucion->getSitioWeb(),true).", ".
-					" horariosAtencion =".$db->escape($oInstitucion->getHorariosAtencion(),true).", ".
-					" autoridades =".$db->escape($oInstitucion->getAutoridades(),true).", ".
-					" cargo =".$db->escape($oInstitucion->getCargo(),true).", ".
-					" personeriaJuridica =".$db->escape($oInstitucion->getPersoneriaJuridica(),true).", ".
-					" sedes =".$db->escape($oInstitucion->getSedes(),true).", ".
-					" latitud =".$db->escape($oInstitucion->getLatitud(),true).", ".
-					" longitud =".$db->escape($oInstitucion->getLongitud(),true).", ".
-					" actividadesMes =".$db->escape($oInstitucion->getActividadesMes(),true)." ".
-                    " where id =".$db->escape($oInstitucion->getId(),false,MYSQL_TYPE_INT)." ";
-						 
-			 $db->execSQL($sSQL);
-			 $db->commit();
+    public function actualizar($oInstitucion)
+    {
+        try{
+            $db = $this->conn;
+            
+            if(null !== $oInstitucion->getCiudad()){
+                $iCiudadId = $oInstitucion->getCiudad()->getId();
+            }else{
+                $iCiudadId = 'null';
+            }
 
+            if(null !== $oInstitucion->getUsuario()){
+                $iUsuarioId = $oInstitucion->getUsuario()->getId();
+            }else{
+                $iUsuarioId = 'null';
+            }
+       
+            $sSQL = " UPDATE instituciones ".
+                    " SET nombre = ".$this->escStr($oInstitucion->getNombre()).", ".
+                    " ciudades_id = '".$iCiudadId."', ".
+                    " descripcion = ".$this->escStr($oInstitucion->getDescripcion()).", ".
+                    " tipoInstitucion_id = ".$this->escInt($oInstitucion->getTipoInstitucionId()).", ".
+                    " direccion = ".$this->escStr($oInstitucion->getDireccion()).", ".
+                    " email = ".$this->escStr($oInstitucion->getEmail()).", ".
+                    " telefono = ".$this->escStr($oInstitucion->getTelefono()).", ".
+                    " sitioWeb = ".$this->escStr($oInstitucion->getSitioWeb()).", ".
+                    " horariosAtencion = ".$this->escStr($oInstitucion->getHorariosAtencion()).", ".
+                    " autoridades = ".$this->escStr($oInstitucion->getAutoridades()).", ".
+                    " cargo = ".$this->escStr($oInstitucion->getCargo()).", ".
+                    " personeriaJuridica = ".$this->escStr($oInstitucion->getPersoneriaJuridica()).", ".
+                    " sedes = ".$this->escStr($oInstitucion->getSedes()).", ".
+                    " latitud = ".$this->escStr($oInstitucion->getLatitud()).", ".
+                    " longitud = ".$this->escStr($oInstitucion->getLongitud()).", ".
+                    " actividadesMes = ".$this->escStr($oInstitucion->getActividadesMes()).", ".
+                    " usuario_id = '".$iUsuarioId."' ".
+                    " where id = '".$oInstitucion->getId()."' ";
+						 
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
              
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
         
     public function guardar($oInstitucion)
     {
         try{
-            if($oInstitucion->getId() != null){
+            if($oInstitucion->getId() != null){                
                 return $this->actualizar($oInstitucion);
             }else{
                 return $this->insertar($oInstitucion);
             }
         }catch(Exception $e){
-                throw new Exception($e->getMessage(), 0);
+            throw new Exception($e->getMessage(), 0);
         }
     }
 
@@ -169,7 +186,12 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                           i.latitud as sLatitud,
                           i.longitud as sLongitud,
 
-                          it.nombre as sNombreTipoInstitucion
+                          it.nombre as sNombreTipoInstitucion,
+
+                          m.iModeracionId,
+                          m.sModeracionEstado,
+                          m.sModeracionMensaje,
+                          m.dModeracionFecha
                      FROM
                        	instituciones i
                      JOIN
@@ -225,6 +247,17 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sLongitud= $oObj->sLongitud;
             	$oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
 
+                //objeto ultima moderacion
+                if(null !== $oObj->iModeracionId){
+                    $oModeracion                   = new stdClass();
+                    $oModeracion->iId              = $oObj->iModeracionId;
+                    $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                    $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                    $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                    $oInstitucion->oModeracion = Factory::getModeracionInstance($oModeracion);
+                }
+
             	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }
 
@@ -266,7 +299,12 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                           it.nombre as sNombreTipoInstitucion,
                           
                           pa.id as iPaisId,
-                          pr.id as iProvinciaId                                                   
+                          pr.id as iProvinciaId,
+
+                          m.iModeracionId,
+                          m.sModeracionEstado,
+                          m.sModeracionMensaje,
+                          m.dModeracionFecha
                      FROM
                        	instituciones i 
                      JOIN 
@@ -304,6 +342,9 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             }
             if(isset($filtro['i.usuario_id']) && $filtro['i.usuario_id']!=""){
                 $WHERE[]= $this->crearFiltroSimple('i.usuario_id', $filtro['i.usuario_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['m.sModeracionEstado']) && $filtro['m.sModeracionEstado'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('m.sModeracionEstado', $filtro['m.sModeracionEstado']);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -346,7 +387,19 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sSedes = $oObj->sSedes;
             	$oInstitucion->sActividadesMes = $oObj->sActividadesMes;
             	$oInstitucion->sLatitud= $oObj->sLatitud;
-            	$oInstitucion->sLongitud= $oObj->sLongitud;            	
+            	$oInstitucion->sLongitud= $oObj->sLongitud;
+
+                //objeto ultima moderacion
+                if(null !== $oObj->iModeracionId){
+                    $oModeracion                   = new stdClass();
+                    $oModeracion->iId              = $oObj->iModeracionId;
+                    $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                    $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                    $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                    $oInstitucion->oModeracion = Factory::getModeracionInstance($oModeracion);
+                }
+
             	$oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
 
             	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
@@ -372,9 +425,9 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
             $db->commit();
             return true;
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
    
