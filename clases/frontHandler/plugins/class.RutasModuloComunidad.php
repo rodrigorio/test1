@@ -129,7 +129,7 @@ class RutasModuloComunidad
                                     'action'     => "nuevaInstitucion"
                                 ));
         $router->addRoute('comunidadInstitucionesNueva', $route);
-        $route = new RegexRoute('comunidad/institucion-procesar',
+        $route = new RegexRoute('comunidad/instituciones/procesar',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "instituciones",
@@ -150,7 +150,7 @@ class RutasModuloComunidad
                                     'action'     => "misInstituciones"
                                 ));
         $router->addRoute('comunidadInstitucionesMisInstituciones', $route);
-        $route = new RegexRoute('comunidad/masMisInstituciones',
+        $route = new RegexRoute('comunidad/instituciones/mas-mis-instituciones',
                                 array(
                                         'module' => "comunidad",
                                         'controller' => "instituciones",

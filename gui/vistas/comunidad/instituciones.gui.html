@@ -9,6 +9,7 @@ $LAB
 .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
 .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
 .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+.script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
 .script("{pathUrlBase}"+"gui/js/vistas.js")
 .script("{pathUrlBase}"+"gui/vistas/comunidad/instituciones.js");	
 </script>
@@ -152,7 +153,7 @@ $LAB
         <table class="table01 wi100p mabo2">
             <tr class="encabezado">
                <td class="big iveal">Nombre {orderByNombre}</td>
-               <td class="small iveal">Tipo Instituci&oacute;n {orderByTipoInstitucion}</td>
+               <td class="medium iveal">Tipo Instituci&oacute;n {orderByTipoInstitucion}</td>
                <td class="medium iveal">Cargo</td>
                <td class="medium"></td>
             </tr>
@@ -163,7 +164,7 @@ $LAB
                 <td class="desplegable" rel="{iInstitucionId}">{sCargo}</td>
                 <td class="teal_ce">
                     <a class="di_inbl" href="{hrefAmpliarInstitucion}" title="Ampliar Instituci&oacute;n"><span class="i mi expand ihover"></span></a>
-                    <span title="Editar" rel="{iInstitucionId}" class="i bs edit ihover editarInstitucion"></span>
+                    <a class="di_inbl" href="{hrefEditarInstitucion}" title="Editar"><span class="i bs edit ihover"></span></a>
                     <span title="Eliminar" rel="{iInstitucionId}" class="i bs delete ihover borrarInstitucion"></span>
                 </td>
             </tr>
@@ -194,7 +195,7 @@ $LAB
 <!--EndListadoMisInstitucionesBlock-->
 
 <!--BeginFichaInstitucionBlock-->
-<div class="ficha03 grupo">
+<div class="ficha03 grupo mabo3">
     <div class="encabezado">
         <!--BeginSolicitarInstitucionBlock-->
         <div class="der">
@@ -208,9 +209,11 @@ $LAB
         </div>
     </div>
     
-    <div class="contenido mabo3">
+    <div class="contenido row">
         <p>{sDescripcion}</p>
-
+    </div>
+    
+    <div class="contenido mabo3">
         <span class="teta_up fowe_bo">Actividades del mes</span><br>
         <p>{sActividadesMes}</p>
 
@@ -218,14 +221,18 @@ $LAB
         <p>{sAutoridades}</p>
 
         <span class="teta_up fowe_bo">Sedes</span><br>
-        <p>{sInstitucionSedes}</p>
+        <p>{sSedes}</p>
 
         <span class="teta_up fowe_bo">Horarios de atenci&oacute;n: </span> {sHorariosAtencion}<br>
         <span class="teta_up fowe_bo">Email: </span> <a href="mailto:{sEmail}">{sEmail}</a><br>
         <span class="teta_up fowe_bo">Tel&eacute;fono: </span> {sTelefono}<br>
+
+        <!--BeginSitioWebBlock-->
         <span class="teta_up fowe_bo">Sitio Web: </span> <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a><br>
+        <!--EndSitioWebBlock-->
         
-        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>       
+        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>
+        
         <!--BeginMapaInstitucionBlock-->
         <div id="mapaInstitucion"></div>
         <!--EndMapaInstitucionBlock-->
@@ -237,12 +244,17 @@ $LAB
 </div>
 
 <div id="integrantesInstitucion">
+    <div class="pabo bobo1 mabo2">
+        <span class="mari2 fost_it">Integrantes de la comunidad asociados a la instituci&oacute;n</span>
+    </div>
+    
     <!--BeginIntegranteBlock-->
-    <div class="pa male3 mabo2 baco4 grupo">
-        <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2">
+    <div class="pa mari2 mabo2 baco4 fl_le grupo">
+        <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
             <i style="background-image:url('{scrAvatarAutor}')"></i>
         </a>
-        <span class="txt_imp2 mari">{sNombreUsuario}</span><br>
+        <span class="txt_imp2 mari">{sNombreUsuario}</span>
+        <br clear="all">
         <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
 
         <!--BeginTelefonoBlock-->
@@ -262,6 +274,10 @@ $LAB
         <!--EndCvBlock-->
     </div>
     <!--EndIntegranteBlock-->
+    
+    <!--BeginIntegranteNoRecords-->
+    <div class="teal_ce fowe_bo">No hay integrantes de la comunidad asociados a esta instituci&oacute;n</div>
+    <!--EndIntegranteNoRecords-->
 </div>
 <!--EndFichaInstitucionBlock-->
 
@@ -328,7 +344,7 @@ $LAB
         </div>
         
         <div class="form_line msg_personaJuridica">
-            <label for="personaJuridica">
+            <label for="personeriaJuridica">
                 Personer&iacute;a Jur&iacute;dica
             </label>            
             <div class="fwrap">
@@ -348,6 +364,7 @@ $LAB
                     <input type="text" name="direccion" id="direccion" title="Direcci&oacute;n" maxlength="60" value="{sDireccion}" />
                 </div>
             </div>
+            <p>Ingrese la direcci&oacute;n de la casa central. Puede especificar otras ubicaciones en 'sedes'</p>
         </div>
 
         <div id="selectsUbicacion" class="grupo">
