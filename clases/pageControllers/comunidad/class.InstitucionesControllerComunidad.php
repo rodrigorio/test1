@@ -596,10 +596,10 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sUbicacion", $sUbicacion);                       
             $this->getTemplate()->set_var("sDescripcion", $oInstitucion->getDescripcion(true));
 
-            $sActividadesMes = (null === $oInstitucion->getActividadesMes(true))? $oInstitucion->getActividadesMes(true) : " - ";
-            $sAutoridades = (null === $oInstitucion->getAutoridades(true))? $oInstitucion->getAutoridades(true) : " - ";
-            $sSedes = (null === $oInstitucion->getSedes(true))? $oInstitucion->getSedes(true) : " - ";
-            $sHorariosAtencion = (null === $oInstitucion->getHorariosAtencion())? $oInstitucion->getHorariosAtencion() : " - ";
+            $sActividadesMes = (null !== $oInstitucion->getActividadesMes(true))? $oInstitucion->getActividadesMes(true) : " - ";
+            $sAutoridades = (null !== $oInstitucion->getAutoridades(true))? $oInstitucion->getAutoridades(true) : " - ";
+            $sSedes = (null !== $oInstitucion->getSedes(true))? $oInstitucion->getSedes(true) : " - ";
+            $sHorariosAtencion = (null !== $oInstitucion->getHorariosAtencion())? $oInstitucion->getHorariosAtencion() : " - ";
 
             $this->getTemplate()->set_var("sActividadesMes", $sActividadesMes);
             $this->getTemplate()->set_var("sAutoridades", $sAutoridades);
