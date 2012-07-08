@@ -218,6 +218,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $oInstitucion->setSitioWeb($this->getRequest()->getPost('sitioWeb'));
             $oInstitucion->setAutoridades($this->getRequest()->getPost('autoridades'));
             $oInstitucion->setEmail($this->getRequest()->getPost('email'));
+            $oInstitucion->setSedes($this->getRequest()->getPost('sedes'));
             $oInstitucion->setHorariosAtencion($this->getRequest()->getPost('horariosAtencion'));
             $oInstitucion->setActividadesMes($this->getRequest()->getPost('actividadesMes'));
             $oInstitucion->setLatitud($this->getRequest()->getPost('latitud'));
@@ -629,31 +630,53 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 
                     //foto de perfil actual
                     $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
                     if(null != $oUsuario->getFotoPerfil()){
                         $oFoto = $oUsuario->getFotoPerfil();
                         $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                         $this->getTemplate()->set_var("hrefFotoPerfil", $pathFotoServidorBigSize);
-                    }
-                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                    }else{
+                        $this->getTemplate()->set_var("hrefFotoPerfil", $scrAvatarAutor);
+                    }                                        
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
 
-                    $hrefDescargarCv = "";
-                    if(null !== $oUsuario->getCurriculumVitae()){
+                    $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                    $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                    $this->getTemplate()->set_var("sEmail", $oUsuario->getEmail());
+
+                    $aPrivacidad = $oUsuario->obtenerPrivacidad();
+
+                    if($aPrivacidad['telefono'] == 'comunidad' && null !== $oUsuario->getTelefono()){
+                        $this->getTemplate()->set_var("sTelefono", $oUsuario->getTelefono());
+                        $this->getTemplate()->parse("TelefonoBlock");
+                    }else{
+                        $this->getTemplate()->set_var("TelefonoBlock", "");
+                    }
+
+                    if($aPrivacidad['celular'] == 'comunidad' && null !== $oUsuario->getCelular()){
+                        $this->getTemplate()->set_var("sCelular", $oUsuario->getCelular());
+                        $this->getTemplate()->parse("CelularBlock");                        
+                    }else{
+                        $this->getTemplate()->set_var("CelularBlock", "");
+                    }
+
+                    if($aPrivacidad['fax'] == 'comunidad' && null !== $oUsuario->getFax()){
+                        $this->getTemplate()->set_var("sFax", $oUsuario->getFax());
+                        $this->getTemplate()->parse("FaxBlock");                        
+                    }else{
+                        $this->getTemplate()->set_var("FaxBlock", "");
+                    }
+
+                    if($aPrivacidad['curriculum'] == 'comunidad' && null !== $oUsuario->getCurriculumVitae()){
+                        $hrefDescargarCv = "";
                         $oArchivo = $oUsuario->getCurriculumVitae();
                         $hrefDescargarCv = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
                         $this->getTemplate()->set_var("hrefDescargarCv", $hrefDescargarCv);
+                        $this->getTemplate()->parse("CvBlock");
                     }else{
                         $this->getTemplate()->set_var("CvBlock", "");
                     }
-
-                    $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
-
-                    $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
-                    $this->getTemplate()->set_var("sEmail", $oUsuario->getEmail());
-                    $this->getTemplate()->set_var("sTelefono", $oUsuario->getTelefono());
-                    $this->getTemplate()->set_var("sCelular", $oUsuario->getCelular());
-                    $this->getTemplate()->set_var("sFax", $oUsuario->getFax());
-
+                    
                     $this->getTemplate()->parse("IntegranteBlock", true);
                 }
             }else{

@@ -300,11 +300,20 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         f.orden as iFotoOrden, f.titulo as sFotoTitulo,
                         f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
 
+                        a.id as iCvId, a.nombre as sCvNombre,
+                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
+                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
+                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
+                        a.moderado as bCvModerado, a.activo as bCvActivo,
+                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios,
+
                         pe.descripcion as sPerfilDescripcion
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
                         JOIN perfiles pe ON u.perfiles_id = pe.id
                         LEFT JOIN fotos f ON f.personas_id = u.id
+                        LEFT JOIN archivos a ON a.usuarios_id = u.id
                         LEFT JOIN ciudades c ON p.ciudades_id = c.id
                         LEFT JOIN instituciones i ON p.instituciones_id = i.id";
 
@@ -404,6 +413,25 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oUsuario->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
                 }
 
+                if(null !== $oObj->iCvId){
+                    $oCurriculumVitae = new stdClass();
+                    $oCurriculumVitae->iId = $oObj->iCvId;
+                    $oCurriculumVitae->sNombre = $oObj->sCvNombre;
+                    $oCurriculumVitae->sNombreServidor = $oObj->sCvNombreServidor;
+                    $oCurriculumVitae->sDescripcion = $oObj->sCvDescripcion;
+                    $oCurriculumVitae->sTipoMime = $oObj->sCvTipoMime;
+                    $oCurriculumVitae->iTamanio = $oObj->iCvTamanio;
+                    $oCurriculumVitae->sFechaAlta = $oObj->sCvFechaAlta;
+                    $oCurriculumVitae->iOrden = $oObj->iCvOrden;
+                    $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
+                    $oCurriculumVitae->sTipo = $oObj->sCvTipo;
+                    $oCurriculumVitae->bModerado = ($oObj->bCvModerado == '1')?true:false;
+                    $oCurriculumVitae->bActivo = ($oObj->bCvActivo == '1')?true:false;
+                    $oCurriculumVitae->bPublico = ($oObj->bCvPublico == '1')?true:false;
+                    $oCurriculumVitae->bActivoComentarios = ($oObj->bCvActivoComentarios == '1')?true:false;
+                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
+                }
+
                 $aUsuarios[] = Factory::getUsuarioInstance($oUsuario);
            }
 
@@ -412,6 +440,138 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
+    }
+
+    /**
+     * Devuelve todos los usuarios que realizan seguimientos a un discapacitado
+     */
+    public function obtenerUsuariosAsociadosPersona($iDiscapacitadoId)
+    {
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "SELECT DISTINCT SQL_CALC_FOUND_ROWS
+                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
+                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
+                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
+                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
+                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+                        p.documento_tipos_id as iTipoDocumentoId,
+                        p.numeroDocumento as sNumeroDocumento,
+
+                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario, u.activo as bActivo,
+                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
+                        u.invitacionesDisponibles as iInvitacionesDisponibles,
+                        u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
+                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+
+                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
+
+                        a.id as iCvId, a.nombre as sCvNombre,
+                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
+                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
+                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
+                        a.moderado as bCvModerado, a.activo as bCvActivo,
+                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios
+                    FROM
+                        personas p JOIN usuarios u ON p.id = u.id
+                        LEFT JOIN fotos f ON f.personas_id = u.id
+                        LEFT JOIN archivos a ON a.usuarios_id = u.id
+                        JOIN seguimientos s ON s.usuarios_id = u.id
+                    WHERE
+                        s.discapacitados_id = ".$iDiscapacitadoId." 
+                    ORDER BY p.apellido ASC";
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aUsuarios = array();
+            while($oObj = $db->oNextRecord()){
+                $oUsuario                   = new stdClass();
+                $oUsuario->iId              = $oObj->iId;
+                $oUsuario->sNombre          = $oObj->sNombre;
+                $oUsuario->sApellido        = $oObj->sApellido;
+                $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
+                $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
+                $oUsuario->sSexo            = $oObj->sSexo;
+                $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
+                $oUsuario->sEmail           = $oObj->sEmail;
+                $oUsuario->sTelefono        = $oObj->sTelefono;
+                $oUsuario->sCelular         = $oObj->sCelular;
+                $oUsuario->sFax             = $oObj->sFax;
+                $oUsuario->sDomicilio       = $oObj->sDomicilio;
+                $oUsuario->iCiudadId        = $oObj->iCiudadId; //para sacar objeto ciudad por demanda
+                $oUsuario->iInstitucionId   = $oObj->iInstitucionId; //lo mismo xq es un obj pesado
+                $oUsuario->oCiudad          = null;
+                $oUsuario->oInstitucion     = null;
+                $oUsuario->oEspecialidad    = null;
+                $oUsuario->oFotoPerfil      = null;
+                $oUsuario->oCurriculumVitae = null;
+                $oUsuario->sCiudadOrigen    = $oObj->sCiudadOrigen;
+                $oUsuario->sCodigoPostal    = $oObj->sCodigoPostal;
+                $oUsuario->sEmpresa         = $oObj->sEmpresa;
+                $oUsuario->sUniversidad     = $oObj->sUniversidad;
+                $oUsuario->sSecundaria      = $oObj->sSecundaria;
+                $oUsuario->sSitioWeb        = $oObj->sSitioWeb;
+                $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
+                $oUsuario->sContrasenia     = $oObj->sContrasenia;
+                $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->sCargoInstitucion    = $oObj->sCargoInstitucion;
+                $oUsuario->sBiografia           = $oObj->sBiografia;
+                $oUsuario->sUniveridadCarrera   = $oObj->sUniveridadCarrera;
+                $oUsuario->bCarreraFinalizada   = $oObj->bCarreraFinalizada ? true : false;
+                $oUsuario->bActivo = ($oObj->bActivo == '1')?true:false;
+                $oUsuario->iInvitacionesDisponibles = $oObj->iInvitacionesDisponibles;
+
+                if(null !== $oObj->iFotoId){
+                    $fotoPerfil = new stdClass();
+                    $fotoPerfil->iId = $oObj->iFotoId;
+                    $fotoPerfil->sNombreBigSize = $oObj->sFotoNombreBigSize;
+                    $fotoPerfil->sNombreMediumSize = $oObj->sFotoNombreMediumSize;
+                    $fotoPerfil->sNombreSmallSize = $oObj->sFotoNombreSmallSize;
+                    $fotoPerfil->iOrden = $oObj->iFotoOrden;
+                    $fotoPerfil->sTitulo = $oObj->sFotoTitulo;
+                    $fotoPerfil->sDescripcion = $oObj->sFotoDescripcion;
+                    $fotoPerfil->sTipo = $oObj->sFotoTipo;
+                    $oUsuario->oFotoPerfil = Factory::getFotoInstance($fotoPerfil);
+                }
+
+                if(null !== $oObj->iCvId){
+                    $oCurriculumVitae = new stdClass();
+                    $oCurriculumVitae->iId = $oObj->iCvId;
+                    $oCurriculumVitae->sNombre = $oObj->sCvNombre;
+                    $oCurriculumVitae->sNombreServidor = $oObj->sCvNombreServidor;
+                    $oCurriculumVitae->sDescripcion = $oObj->sCvDescripcion;
+                    $oCurriculumVitae->sTipoMime = $oObj->sCvTipoMime;
+                    $oCurriculumVitae->iTamanio = $oObj->iCvTamanio;
+                    $oCurriculumVitae->sFechaAlta = $oObj->sCvFechaAlta;
+                    $oCurriculumVitae->iOrden = $oObj->iCvOrden;
+                    $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
+                    $oCurriculumVitae->sTipo = $oObj->sCvTipo;
+                    $oCurriculumVitae->bModerado = ($oObj->bCvModerado == '1')?true:false;
+                    $oCurriculumVitae->bActivo = ($oObj->bCvActivo == '1')?true:false;
+                    $oCurriculumVitae->bPublico = ($oObj->bCvPublico == '1')?true:false;
+                    $oCurriculumVitae->bActivoComentarios = ($oObj->bCvActivoComentarios == '1')?true:false;
+                    $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
+                }
+
+                $aUsuarios[] = Factory::getUsuarioInstance($oUsuario);
+           }
+
+           return $aUsuarios;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }        
     }
 
     public function existe($filtro){
