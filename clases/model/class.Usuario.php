@@ -72,10 +72,12 @@ class Usuario extends PersonaAbstract
     {
         return SysController::getInstance()->getPrivacidadCampo($this->iId, $nombreCampo);
     }
+    
     public function obtenerPrivacidad()
     {
         return SysController::getInstance()->getPrivacidad($this->iId);
     }
+    
     public function guardarPrivacidadCampo($nombreCampo, $valorPrivacidad)
     {
         return SysController::getInstance()->setPrivacidadCampo($this->iId, $nombreCampo, $valorPrivacidad);

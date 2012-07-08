@@ -750,4 +750,17 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+
+    /**
+     * Devuelve un array con usuarios realizando seguimientos a una persona
+     */
+    public function obtenerUsuariosAsociadosPersona($iDiscapacitadoId)
+    {
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->obtenerUsuariosAsociadosPersona($iDiscapacitadoId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }         
+    }
 }

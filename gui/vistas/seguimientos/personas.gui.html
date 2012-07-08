@@ -352,7 +352,7 @@
 <!--EndFormularioBlock-->
 
 <!--BeginFichaPersonaBlock-->
-<div class="ficha01">
+<div class="ficha03 mabo2">
     <div class="encabezado">
         <div class="izq">
             <div id="fotoPerfilActual">
@@ -368,7 +368,7 @@
             </a>
         </div>
     </div>
-    <div class="contenido">
+    <div class="contenido row">
         <h2 class="mabo3">Informaci&oacute;n B&aacute;sica</h2>
 
         <span class="fowe_bo teta_up">documento:</span> {sDocumento}<br>
@@ -397,4 +397,38 @@
         <span class="fowe_bo teta_up">Instituci&oacute;n:</span> <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
     </div>
 </div>
+    <!--BeginIntegrantesPersona-->
+    <div id="integrantesPersona">
+        <div class="pabo bobo1 mabo2">
+            <span class="mari2 fost_it">Integrantes realizando seguimientos a esta persona</span>
+        </div>
+
+        <!--BeginIntegranteBlock-->
+        <div class="pa mari2 mabo2 baco4 grupo">
+            <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+                <i style="background-image:url('{scrAvatarAutor}')"></i>
+            </a>
+            <span class="txt_imp2 mari">{sNombreUsuario}</span>
+            <br clear="all">
+            <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
+
+            <!--BeginTelefonoBlock-->
+            <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefono}</span><br>
+            <!--EndTelefonoBlock-->
+
+            <!--BeginCelularBlock-->
+            <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelular}</span><br>
+            <!--EndCelularBlock-->
+
+            <!--BeginFaxBlock-->
+            <span class="co1 fte2">Fax: {sFax}</span><br>
+            <!--EndFaxBlock-->
+
+            <!--BeginCvBlock-->
+            <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCv}">Descargar</a></span>
+            <!--EndCvBlock-->
+        </div>
+        <!--EndIntegranteBlock-->
+    </div>
+    <!--EndIntegrantesPersona-->
 <!--EndFichaPersonaBlock-->
