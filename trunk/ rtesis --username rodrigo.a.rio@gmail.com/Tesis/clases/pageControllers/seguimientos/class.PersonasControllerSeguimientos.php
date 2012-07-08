@@ -745,6 +745,12 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         if(count($aUsuarios) > 0){
             foreach($aUsuarios as $oUsuario){
 
+                //no se muestra a si mismo
+                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+                if($oUsuario->getId() == $perfil->getUsuario()->getId()){
+                    continue;
+                }
+
                 //foto de perfil actual
                 $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
                 $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();

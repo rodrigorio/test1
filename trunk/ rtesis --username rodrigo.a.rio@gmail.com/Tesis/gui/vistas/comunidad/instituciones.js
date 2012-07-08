@@ -279,7 +279,6 @@ $(function(){
     });
     ///////////////////////////////
 
-
     //Listado Mis Instituciones
     $(".borrarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
@@ -290,18 +289,8 @@ $(function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
         masMisInstituciones();
-    });
-    
+    });    
 });
-
-/*
-function ampliarInstitucion(id){
-   window.location = "comunidad/ampliar-institucion?iInstitucionId="+id;
-}
-function editarInstitucion(id){
-   window.location = "comunidad/editar-institucion?iInstitucionId="+id;
-}
-*/
 
 /*
 var geocoder;
