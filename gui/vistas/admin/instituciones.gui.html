@@ -30,6 +30,16 @@
 </section>
 <!--EndHeaderBlock-->
 
+<!--BeginHeaderModeracionesBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Moderar instituciones sistema</h2>
+</header>
+<section>
+    <h3>Aprobar-Rechazar instituciones para que sean visibles fuera de la comunidad</h3>
+</section>
+<!--EndHeaderModeracionesBlock-->
+
 <!--BeginListadoInstitucionesBlock-->
 <section>
     <table class="datatable">
@@ -47,7 +57,11 @@
                 <td>{sNombre}</td>
                 <td>{sTipo}</td>
                 <td>{sUbicacion}</td>
-                <td class="teal_ce"><span rel="{iInstitucionId}" class="i bs delete ihover borrarInstitucion"></span></td>
+                <td class="teal_ce">
+                    <span title="Ampliar" rel="{iInstitucionId}" class="i mi expand ihover ampliarInstitucion mari"></span>
+                    <span title="Editar" rel="{iInstitucionId}" class="i bs edit ihover editarInstitucion mari"></span>
+                    <span title="Eliminar" rel="{iInstitucionId}" class="i bs delete ihover borrarInstitucion"></span>
+                </td>
             </tr>
         <!--EndInstitucionesBlock-->
         <!--BeginNoRecordsInstitucionesBlock-->
@@ -59,3 +73,307 @@
     </table>
 </section>
 <!--EndListadoInstitucionesBlock-->
+
+<!--BeginListadoModeracionBlock-->
+<section id="listadoModeraciones">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id="listadoModeracionesResult">
+
+            <!--BeginGrillaModeracionesBlock-->
+            <div class="mabo">
+                Cantidad de instituciones por moderar: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th class="iveal small">Nombre</th>
+                        <th class="iveal big">Tipo</th>
+                        <th class="iveal">Ubicaci&oacute;n</th>
+                        <th class="iveal">Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginInstitucionModerarBlock-->
+                    <tr class="{iInstitucionId}">
+                        <td class="teal_le desplegable" rel="{iInstitucionId}">
+                            {sNombre}
+                        </td>
+                        <td class="teal_le desplegable" rel="{iInstitucionId}">
+                            {sTipo}
+                        </td>
+                        <td class="desplegable" rel="{iInstitucionId}">
+                            {sUbicacion}
+                        </td>
+                        <td class="desplegable" rel="{iInstitucionId}">
+                            <a href="mailto:{sEmail}">{sEmail}</a>
+                        </td>
+                        <td class="teal_ce">
+                            <span title="Ampliar" rel="{iInstitucionId}" class="i mi expand ihover ampliarInstitucion mari"></span>
+                        </td>
+                    </tr>
+                    <tr class="{iInstitucionId}">
+                        <td id="desplegable_{iInstitucionId}" class="pa0" colspan="5" style="display:none;">
+                            <article class="nested clearrm mabo0">
+                                <header>
+                                    <h2>Historial moderaciones instituci&oacute;n Id: {iInstitucionId}</h2>
+                                </header>
+                                <section>
+                                    <table>
+                                        <!--BeginModeracionHistorialInstitucionBlock-->
+                                        <tr>
+                                            <td class="small">{sFechaModeracion}</td>
+                                            <td class="small"><strong>{sEstadoModeracion}</strong></td>
+                                            <td>{sMensaje}</td>
+                                        </tr>
+                                        <!--EndModeracionHistorialInstitucionBlock-->
+                                    </table>
+                                </section>
+                                <section class="teal_le">
+                                    <h3 class="teta_up mabo2">Moderar</h3>
+                                    <form>
+                                        <fieldset>
+                                            <legend>Estado Pendiente</legend>
+                                                <dl>
+                                                    <dt class="radio">
+                                                        <label for="aprobar_{iInstitucionId}">Aprobar</label>
+                                                    </dt>
+                                                    <dd>
+                                                        <input type="radio" id="aprobar_{iInstitucionId}" name="estado_{iInstitucionId}" value="{sEstadoAprobarValue}">
+                                                    </dd>
+                                                    <dt class="radio">
+                                                        <label for="rechazar_{iInstitucionId}">Rechazar</label>
+                                                    </dt>
+                                                    <dd>
+                                                        <input type="radio" id="rechazar_{iInstitucionId}" name="estado_{iInstitucionId}" value="{sEstadoRechazarValue}">
+                                                    </dd>
+                                                </dl>
+                                        </fieldset>
+
+                                        <dt>
+                                            <label for="mensaje_{iInstitucionId}">Mensaje</label>
+                                        </dt>
+                                        <dd>
+                                            <textarea class="mihe1 medium maxlength" id="mensaje_{iInstitucionId}" rows="0" cols="0" name="mensaje_{iInstitucionId}" title="Mensaje Moderaci&oacute;n"></textarea>
+                                        </dd>
+
+                                        <button rel="{iInstitucionId}" class="moderarSubmit mabo2" type="button">Moderar instituci&oacute;n</button>
+                                        <input type="hidden" id="moderacionId_{iInstitucionId}" name="moderacionId_{iInstitucionId}" value="{iModeracionId}">
+
+                                        <div style="display:none"  id='msg_form_moderacion_{iInstitucionId}' class="notification">
+                                            <p class="msg"></p>
+                                        </div>
+                                    </form>
+                                </section>
+                            </article>
+                        </td>
+                    </tr>
+                <!--EndInstitucionModerarBlock-->
+                <!--BeginNoRecordsModeracionesBlock-->
+                    <tr>
+                        <td colspan="5">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsModeracionesBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaModeracionesBlock-->
+        </div>
+</section>
+<!--EndListadoModeracionBlock-->
+
+<!--BeginFormularioInstitucionBlock-->
+<h1 class="teta_up mabo2">Modificar instituci&oacute;n</h1>
+<form id="formInstitucion" name="formInstitucion" action="" method="post">   
+    <dt>
+        <label for="nombre">Nombre</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="nombre" id="nombre" title="Nombre de la instituci&oacute;n" maxlength="80" value="{sNombre}" />
+    </dd>
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large maxlength" rows="0" cols="0" id="descripcion" name="descripcion" title="Breve descripcion de la instituci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+    <dt>
+        <label for="tipo">Tipo de instituci&oacute;n</label>
+    </dt>
+    <dd>
+        <select class="medium" name="tipo" id="tipo">
+            <option value="">Elija tipo instituci&oacute;n:</option>
+            <!--BeginOptionSelectTipoInstitucion-->
+            <option value="{iTipoInstitucionValue}" {sSelectedTipoInstitucion}>{sTipoInstitucion}</option>
+            <!--EndOptionSelectTipoInstitucion-->
+        </select>        
+    </dd>
+    <dt>
+        <label for="cargo">Cargo instituci&oacute;n</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="cargo" id="cargo" title="Cargo que ocupa en la instituci&oacute;n" maxlength="50" value="{sCargo}" />
+    </dd>
+    <dt>
+        <label for="personeriaJuridica">Personer&iacute;a Jur&iacute;dica</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="personeriaJuridica" id="personeriaJuridica" title="Personer&iacute;a Jur&iacute;dica" maxlength="100" value="{sPersoneriaJuridica}" />
+    </dd>
+    <dt>
+        <label for="direccion">Direcci&oacute;n</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="direccion" id="direccion" title="Direcci&oacute;n" maxlength="60" value="{sDireccion}" />
+    </dd>
+
+    <fieldset>
+        <legend>Ubicaci&oacute;n</legend>
+        <dl>
+            <dt>
+                <label for="pais">Pa&iacute;s</label>
+            </dt>
+            <dd>
+                <select class="small" name="pais" id="pais" title="Pais">
+                    <option value="">Elija Pa&iacute;s:</option>
+                    <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
+                </select>
+            </dd>
+
+            <dt>
+                <label for="provincia">Provincia</label>
+            </dt>
+            <dd>
+                <select class="small" name="provincia" id="provincia" title="Provincia">
+                    <option value="">Elija Provincia:</option>
+                    <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
+                </select>
+            </dd>
+
+            <dt>
+                <label for="ciudad">Ciudad</label>
+            </dt>
+            <dd>
+                <select class="small" name="ciudad" id="ciudad" title="Ciudad">
+                    <option value="">Elija Ciudad:</option>
+                    <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
+                </select>
+            </dd>
+        </dl>
+    </fieldset>
+    <dt>
+        <label for="email">Email de contacto</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="email" id="email" title="Email de la instituci&oacute;n" maxlength="50" value="{sEmail}" />
+    </dd>
+    <dt>
+        <label for="telefono">Tel&eacute;fono de contacto</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="telefono" id="telefono" title="Tel&eacute;fono de contacto" maxlength="50" value="{sTelefono}" />
+    </dd>
+    <dt>
+        <label for="sitioWeb">Sitio Web</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="sitioWeb" id="sitioWeb" title="Sitio web" maxlength="60" value="{sSitioWeb}" />
+    </dd>
+    <dt>
+        <label for="horariosAtencion">Horarios de atenci&oacute;n</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="horariosAtencion" id="horariosAtencion" title="Horarios de atenci&oacute;n" maxlength="80" value="{sHorariosAtencion}" />
+    </dd>
+    <dt>
+        <label for="sedes">Sedes instituci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea rows="0" cols="0" id="sedes" name="sedes" class="mihe2 large maxlength" title="Sedes instituci&oacute;n">{sSedes}</textarea>
+    </dd>
+    <dt>
+        <label for="autoridades">Autoridades</label>
+    </dt>
+    <dd>
+        <textarea rows="0" cols="0" id="autoridades" name="autoridades" class="mihe2 large maxlength" title="Autoridades">{sAutoridades}</textarea>
+    </dd>
+    <dt>
+        <label for="actividadesMes">Actividades del mes</label>
+    </dt>
+    <dd>
+        <textarea rows="0" cols="0" id="actividadesMes" name="actividadesMes" class="mihe2 large maxlength" title="Actividades del mes">{sActividadesMes}</textarea>
+    </dd>
+
+    <input type="hidden" name="latitud" id="latitud" value="{sLatitud}" >
+    <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >
+    
+    <button class="mabo" id="modificarInstitucion" name="modificarInstitucion" type="submit">Modificar Instituci&oacute;n</button>
+    <input type="hidden" value="{iInstitucionId}" name="institucionIdForm" id="institucionIdForm" />
+
+    <div style="display:none"  id='msg_form_institucion' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioInstitucionBlock-->
+
+<!--BeginFichaInstitucionBlock-->
+<article class="full-block pa2 clearfix mabo0">
+    <header>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Instituci&oacute;n" class="default-tab" href="#tab1">Instituci&oacute;n</a></li>
+                <li><a rel="tooltip" title="Integrantes Asociados" href="#tab2">Integrantes Asociados</a></li>
+                <li><a rel="tooltip" title="Personas Asociadas" href="#tab3">Personas Asociadas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="tab default-tab" id="tab1">
+            <h3>Instituci&oacute;n</h3>
+
+            <div class="teal_le mabo2">
+                <p>
+                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Activa?:</span> {sActiva}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Alance Privacidad:</span> {sPrivacidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Activo Comentarios:</span> {sActivoComentarios}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
+                </p>
+
+                <div class="fowe_bo teta_up mabo">descripcion breve</div>
+                <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
+
+                <div class="fowe_bo teta_up mabo">descripcion</div>
+                <div class="baco2 pa mabo2">{sDescripcion}</div>
+
+                <p>
+                    <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="tab" id="tab2">
+            <h3>Integrantes Asociados</h3>
+            
+        </div>
+
+        <div class="tab" id="tab3">
+            <h3>Personas Asociadas</h3>
+            
+        </div>
+    </section>
+</article>
+<!--EndFichaInstitucionBlock-->
