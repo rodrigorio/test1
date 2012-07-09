@@ -170,6 +170,10 @@ class RutasModuloAdmin
                                         'action'     => 'procesarPersona'
                                 ));
         $router->addRoute('adminPersonasProcesar', $route);
+
+
+
+        //instituciones
         $route = new RegexRoute('admin/instituciones',
                                 array(
                                         'module' => 'admin',
@@ -184,6 +188,22 @@ class RutasModuloAdmin
                                         'action'     => 'procesar'
                                 ));
         $router->addRoute('adminInstitucionesProcesar', $route);
+        $route = new RegexRoute('admin/instituciones-moderacion',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'instituciones',
+                                        'action'     => 'listarModeraciones'
+                                ));
+        $router->addRoute('adminInstitucionesModerar', $route);
+        $route = new RegexRoute('admin/instituciones-form',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'instituciones',
+                                    'action'     => 'form'
+                                ));
+        $router->addRoute('adminInstitucionesForm', $route);
+        
+       
         $route = new RegexRoute('admin/acciones-perfil',
                                 array(
                                         'module' => 'admin',

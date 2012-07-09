@@ -215,6 +215,18 @@ class ComunidadController
         }                
     }
 
+    public function obtenerDiscapacitadosAsociadosInstitucion($iInstitucionId)
+    {
+        try{
+            $filtro = array('p.instituciones_id' => $iInstitucionId);
+            $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oDiscapacitadoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function getInstitucionById($iInstitucionId){
     	try{
             $filtro = array('i.id' => $iInstitucionId);
