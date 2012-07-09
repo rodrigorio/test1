@@ -76,6 +76,16 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $this->borrarInstitucion();
             return;
         }
+        
+        if($this->getRequest()->has('solicitarInstitucion')){
+            $this->solicitarInstitucion();
+            return;
+        }
+    }
+
+    private function solicitarInstitucion()
+    {
+        //falta hacer
     }
 
     private function borrarInstitucion()
