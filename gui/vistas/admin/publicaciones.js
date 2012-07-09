@@ -629,6 +629,24 @@ function masPublicaciones(){
     });
 }
 
+function masModeraciones(){
+
+    $.ajax({
+        type:"POST",
+        url:"admin/publicaciones-procesar",
+        data:{
+            masModeraciones:"1"
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoModeraciones', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoModeraciones', false);
+            $("#listadoModeracionesResult").html(data);
+        }
+    });
+}
+
 function borrarPublicacion(iPublicacionId, tipo){
     if(confirm("Se borrara la publicacion del sistema de manera permanente, desea continuar?")){
         $.ajax({

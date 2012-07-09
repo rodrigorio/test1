@@ -86,7 +86,7 @@ var validateFormInstitucion = {
         ciudad:{required:true},
         email:{required:true, email:true},
         telefono:{required:true},
-        sitioWeb:{url:true}
+        sitioWeb:{url:true}        
     },
     messages:{
         nombre: mensajeValidacion("requerido"),
@@ -116,6 +116,12 @@ var optionsAjaxFormInstitucion = {
             $('#msg_form_institucion').hide();
             $('#msg_form_institucion').removeClass("correcto").removeClass("error");
             $('#msg_form_institucion .msg').html("");
+
+            verificarValorDefecto("descripcion");
+            verificarValorDefecto("sedes");
+            verificarValorDefecto("autoridades");
+            verificarValorDefecto("actividadesMes");
+            
             setWaitingStatus('formInstitucion', true);
         }else{
             return false;

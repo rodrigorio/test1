@@ -109,10 +109,10 @@ function bindEventsAdmin()
     
     // Notification Close Button
     $(".close-notification").click(
-            function () {
-                    $(this).parent().fadeTo(350, 0, function () {$(this).slideUp(600);});
-                    return false;
-            }
+        function () {
+            $(this).parent().fadeTo(350, 0, function () {$(this).slideUp(600);});
+            return false;
+        }
     );
 
     // jQuery Tipsy
@@ -194,6 +194,7 @@ function bindEventsAdmin()
 }
 
 $(function(){
+    
     $("textarea.maxlength").maxlength();
 
     // Menu Dropdown

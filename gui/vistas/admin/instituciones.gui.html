@@ -8,6 +8,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
 
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
@@ -96,10 +97,10 @@
                 <tbody>
                 <!--BeginInstitucionModerarBlock-->
                     <tr class="{iInstitucionId}">
-                        <td class="teal_le desplegable" rel="{iInstitucionId}">
+                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
                             {sNombre}
                         </td>
-                        <td class="teal_le desplegable" rel="{iInstitucionId}">
+                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
                             {sTipo}
                         </td>
                         <td class="desplegable" rel="{iInstitucionId}">
@@ -227,7 +228,7 @@
         <input class="large" type="text" name="direccion" id="direccion" title="Direcci&oacute;n" maxlength="60" value="{sDireccion}" />
     </dd>
 
-    <fieldset>
+    <fieldset id="selectsUbicacion">
         <legend>Ubicaci&oacute;n</legend>
         <dl>
             <dt>
@@ -261,6 +262,7 @@
             </dd>
         </dl>
     </fieldset>
+    
     <dt>
         <label for="email">Email de contacto</label>
     </dt>
@@ -306,14 +308,11 @@
 
     <input type="hidden" name="latitud" id="latitud" value="{sLatitud}" >
     <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >
-    
-    <button class="mabo" id="modificarInstitucion" name="modificarInstitucion" type="submit">Modificar Instituci&oacute;n</button>
-    <input type="hidden" value="{iInstitucionId}" name="institucionIdForm" id="institucionIdForm" />
 
-    <div style="display:none"  id='msg_form_institucion' class="notification">
-        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-        <p class="msg"></p>
-    </div>
+    <div style="display:none"  id='msg_form_institucion' class="notification mabo2"><p class="msg"></p></div>
+    
+    <button id="modificarInstitucion" name="modificarInstitucion" type="submit">Modificar Instituci&oacute;n</button>
+    <input type="hidden" value="{iInstitucionId}" name="institucionIdForm" id="institucionIdForm" />
 </form>
 <!--EndFormularioInstitucionBlock-->
 
@@ -335,44 +334,98 @@
 
             <div class="teal_le mabo2">
                 <p>
-                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                    <span class="fowe_bo teta_up">nombre:</span> {sNombre}
                 </p>
                 <p>
-                    <span class="fowe_bo teta_up">Activa?:</span> {sActiva}
+                    <span class="fowe_bo teta_up">tipo instituci&oacute;n:</span> {sTipo}
                 </p>
                 <p>
-                    <span class="fowe_bo teta_up">Alance Privacidad:</span> {sPrivacidad}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">Activo Comentarios:</span> {sActivoComentarios}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
+                    <span class="fowe_bo teta_up">ubicaci&oacute;n:</span> {sUbicacion}
                 </p>
 
-                <div class="fowe_bo teta_up mabo">descripcion breve</div>
-                <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
-
-                <div class="fowe_bo teta_up mabo">descripcion</div>
+                <div class="fowe_bo teta_up mabo">descripci&oacute;n</div>
                 <div class="baco2 pa mabo2">{sDescripcion}</div>
 
+                <div class="fowe_bo teta_up mabo">actividades del mes</div>
+                <div class="baco2 pa mabo2">{sActividadesMes}</div>
+
+                <div class="fowe_bo teta_up mabo">autoridades</div>
+                <div class="baco2 pa mabo2">{sAutoridades}</div>
+
+                <div class="fowe_bo teta_up mabo">sedes</div>
+                <div class="baco2 pa mabo2">{sSedes}</div>
+
+                <p>
+                    <span class="fowe_bo teta_up">horarios de atenci&oacute;n:</span> {sHorariosAtencion}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">email:</span> <a href="mailto:{sEmail}">{sEmail}</a>
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">tel&eacute;fono:</span> {sTelefono}
+                </p>
+                <!--BeginSitioWebBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">sitio web:</span> <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a>
+                </p>
+                <!--EndSitioWebBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">direcci&oacute;n:</span> {sDireccion}
+                </p>
                 <p>
                     <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
                 </p>
+
+                <!--BeginMapaInstitucionBlock-->
+                <div id="mapaInstitucion"></div>
+                <!--EndMapaInstitucionBlock-->
             </div>
         </div>
 
         <div class="tab" id="tab2">
             <h3>Integrantes Asociados</h3>
-            
+
+            <!--BeginIntegranteBlock-->
+            <div class="pa mari2 mabo2 baco2 fl_le grupo">
+                <a href="{hrefFotoPerfilIntegrante}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                    <img src="{scrAvatarIntegrante}" />
+                </a>
+                <span class="txt_imp2 mari">{sNombreUsuario}</span>
+                <br clear="all">
+                <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
+                <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefono}</span><br>
+                <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelular}</span><br>
+                <span class="co1 fte2">Fax: {sFax}</span><br>
+                <!--BeginCvBlock-->
+                <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCv}">Descargar</a></span>
+                <!--EndCvBlock-->
+            </div>
+            <!--EndIntegranteBlock-->
+
+            <!--BeginIntegranteNoRecords-->
+            <div class="teal_ce fowe_bo">No hay integrantes de la comunidad asociados a esta instituci&oacute;n</div>
+            <!--EndIntegranteNoRecords-->            
         </div>
 
         <div class="tab" id="tab3">
             <h3>Personas Asociadas</h3>
-            
+
+            <!--BeginDiscapacitadoBlock-->
+            <div class="pa mari2 mabo2 baco2 fl_le grupo">
+                <a href="{hrefFotoPerfilPersona}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                    <img src="{scrAvatarPersona}" />
+                </a>
+                <span class="txt_imp2 mari">{sNombrePersona}</span>
+                <br clear="all">
+                <span class="co1 fte2">Documento: {sDocumento}</span><br>
+                <span class="co1 fte2">Sexo: {sSexo}</span><br>
+                <span class="co1 fte2">Fecha de nacimiento: {sFechaNacimiento}</span>
+            </div>
+            <!--EndDiscapacitadoBlock-->
+
+            <!--BeginDiscapacitadoNoRecords-->
+            <div class="teal_ce fowe_bo">No hay personas asociadas a esta instituci&oacute;n</div>
+            <!--EndDiscapacitadoNoRecords-->
         </div>
     </section>
 </article>

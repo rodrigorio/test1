@@ -310,7 +310,6 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 
             $sTituloForm = "Modificar Institución";
 
-            //valores por defecto en el agregar
             $sNombre = $oInstitucion->getNombre();
             $sDescripcion = $oInstitucion->getDescripcion();
             $iTipoInstitucion = $oInstitucion->getTipoInstitucionId();
