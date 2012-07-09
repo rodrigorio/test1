@@ -333,6 +333,32 @@
             <h3>Instituci&oacute;n</h3>
 
             <div class="teal_le mabo2">
+                
+                <div class="fowe_bo teta_up mabo">Integrante Administrador</div>
+                <!--BeginIntegranteAdministradorBlock-->
+                <div id="integranteAdministradorCont" class="baco2 pa mabo2 mabo2 ov_au po_re">
+                    <span title="Destituir Integrante" rel="{iInstitucionId}" class="i bs delete ihover destituirIntegrante po_ab topRight"></span>
+                    <a href="{hrefFotoPerfilIntegranteAdministrador}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                        <img src="{scrAvatarIntegranteAdministrador}" />
+                    </a>
+                    <span class="txt_imp2 mari">{sNombreUsuarioAdministrador}</span>
+                    <br clear="all">
+                    <span class="co1 fte2">Email: <a href="mailto:{sEmailAdministrador}">{sEmailAdministrador}</a></span><br>
+                    <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefonoAdministrador}</span><br>
+                    <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelularAdministrador}</span><br>
+                    <span class="co1 fte2">Fax: {sFaxAdministrador}</span><br>
+                    <!--BeginCvAdministradorBlock-->
+                    <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCvAdministrador}">Descargar</a></span>
+                    <!--EndCvAdministradorBlock-->
+                </div>
+                <!--EndIntegranteAdministradorBlock-->
+                <!--BeginIntegranteAdministradorNoExisteBlock-->
+                <div id="solicitudAdministradorCont" class="baco2 pa mabo2">
+                    Esta instituci&oacute;n no tiene un integrante que administre su contenido.<br>
+                    <a rel="{iInstitucionId}" class="solicitarInstitucion" href="#">Quiero ser administrador de esta instituci&oacute;n</a>
+                </div>
+                <!--EndIntegranteAdministradorNoExisteBlock-->
+                
                 <p>
                     <span class="fowe_bo teta_up">nombre:</span> {sNombre}
                 </p>
@@ -386,7 +412,7 @@
             <h3>Integrantes Asociados</h3>
 
             <!--BeginIntegranteBlock-->
-            <div class="pa mari2 mabo2 baco2 fl_le grupo">
+            <div class="pa mari2 mabo2 baco2 fl_le">
                 <a href="{hrefFotoPerfilIntegrante}" rel="prettyPhoto" class="fl_le mari2 mabo">
                     <img src="{scrAvatarIntegrante}" />
                 </a>
