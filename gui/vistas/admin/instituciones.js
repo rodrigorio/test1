@@ -281,6 +281,44 @@ function masModeraciones(){
     });
 }
 
+function destituirIntegrante(iInstitucionId){
+    if(confirm("Se quitara al integrante como administrador del contenido de la institucion, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"admin/instituciones-procesar",
+            data:{
+                iInstitucionId:iInstitucionId,
+                destituirIntegrante:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#integranteAdministradorCont").hide("slow", function(){
+                        $("#integranteAdministradorCont").remove();
+                    });
+                }
+            }
+        });
+    }
+}
+
+function solicitarAdministrarContenido(iInstitucionId){
+    $.ajax({
+        type:"post",
+        dataType:"jsonp",
+        url:"admin/instituciones-procesar",
+        data:{
+            iInstitucionId:iInstitucionId,
+            solicitarAdministrarContenido:"1"
+        },
+        success:function(data){
+            if(data.success != undefined && data.success == 1){
+                $("#solicitudAdministradorCont").html("Su usario ha sido asignado a la institución");
+            }
+        }
+    });
+}
+
 $(document).ready(function(){
     
     $(".borrarInstitucion").click(function(){
@@ -297,6 +335,17 @@ $(document).ready(function(){
     $(".ampliarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
         ampliarInstitucion(iInstitucionId);
+        return false;
+    });
+
+    $(".destituirIntegrante").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        destituirIntegrante(iInstitucionId);
+    });
+
+    $(".solicitarInstitucion").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        solicitarAdministrarContenido(iInstitucionId);
         return false;
     });
 

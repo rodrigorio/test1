@@ -60,18 +60,18 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             if(null !== $oInstitucion->getCiudad()){
                 $iCiudadId = $oInstitucion->getCiudad()->getId();
             }else{
-                $iCiudadId = 'null';
+                $iCiudadId = 'NULL';
             }
 
             if(null !== $oInstitucion->getUsuario()){
                 $iUsuarioId = $oInstitucion->getUsuario()->getId();
             }else{
-                $iUsuarioId = 'null';
+                $iUsuarioId = 'NULL';
             }
 
             $sSQL = " INSERT INTO instituciones ".
                     " SET nombre = ".$this->escStr($oInstitucion->getNombre()).", ".
-                    " ciudades_id = '".$iCiudadId."', ".
+                    " ciudades_id = ".$iCiudadId.", ".
                     " descripcion = ".$this->escStr($oInstitucion->getDescripcion()).", ".
                     " tipoInstitucion_id = ".$this->escInt($oInstitucion->getTipoInstitucionId()).", ".
                     " direccion = ".$this->escStr($oInstitucion->getDireccion()).", ".
@@ -86,7 +86,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                     " latitud = ".$this->escStr($oInstitucion->getLatitud()).", ".
                     " longitud = ".$this->escStr($oInstitucion->getLongitud()).", ".
                     " actividadesMes = ".$this->escStr($oInstitucion->getActividadesMes()).", ".
-                    " usuario_id = '".$iUsuarioId."' ";
+                    " usuario_id = ".$iUsuarioId." ";
 			
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
@@ -108,18 +108,18 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             if(null !== $oInstitucion->getCiudad()){
                 $iCiudadId = $oInstitucion->getCiudad()->getId();
             }else{
-                $iCiudadId = 'null';
+                $iCiudadId = 'NULL';
             }
 
             if(null !== $oInstitucion->getUsuario()){
                 $iUsuarioId = $oInstitucion->getUsuario()->getId();
             }else{
-                $iUsuarioId = 'null';
+                $iUsuarioId = 'NULL';
             }
        
             $sSQL = " UPDATE instituciones ".
                     " SET nombre = ".$this->escStr($oInstitucion->getNombre()).", ".
-                    " ciudades_id = '".$iCiudadId."', ".
+                    " ciudades_id = ".$iCiudadId.", ".
                     " descripcion = ".$this->escStr($oInstitucion->getDescripcion()).", ".
                     " tipoInstitucion_id = ".$this->escInt($oInstitucion->getTipoInstitucionId()).", ".
                     " direccion = ".$this->escStr($oInstitucion->getDireccion()).", ".
@@ -134,9 +134,9 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                     " latitud = ".$this->escStr($oInstitucion->getLatitud()).", ".
                     " longitud = ".$this->escStr($oInstitucion->getLongitud()).", ".
                     " actividadesMes = ".$this->escStr($oInstitucion->getActividadesMes()).", ".
-                    " usuario_id = '".$iUsuarioId."' ".
+                    " usuario_id = ".$iUsuarioId." ".
                     " where id = '".$oInstitucion->getId()."' ";
-						 
+            
             $db->execSQL($sSQL);
             $db->commit();
 
@@ -194,7 +194,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                           m.dModeracionFecha
                      FROM
                        	instituciones i
-                     JOIN
+                     LEFT JOIN
                      	usuarios u ON u.id = i.usuario_id
                      JOIN
                      	instituciones_tipos it ON it.id = i.tipoInstitucion_id
@@ -225,6 +225,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
             $aInstituciones = array();
             while($oObj = $db->oNextRecord()){
+                
             	$oInstitucion = new stdClass();
             	$oInstitucion->iId = $oObj->iId;
             	$oInstitucion->sNombre = $oObj->sNombre;
@@ -245,7 +246,12 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sActividadesMes = $oObj->sActividadesMes;
             	$oInstitucion->sLatitud= $oObj->sLatitud;
             	$oInstitucion->sLongitud= $oObj->sLongitud;
-            	$oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+               
+                if(null !== $oObj->iUsuarioId){
+                    $oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+                }else{
+                    $oInstitucion->oUsuario = null;
+                }
 
                 //objeto ultima moderacion
                 if(null !== $oObj->iModeracionId){
@@ -307,7 +313,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                           m.dModeracionFecha
                      FROM
                        	instituciones i 
-                     JOIN 
+                     LEFT JOIN
                      	usuarios u ON u.id = i.usuario_id 
                      JOIN
                      	instituciones_tipos it ON it.id = i.tipoInstitucion_id
@@ -389,6 +395,12 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             	$oInstitucion->sLatitud= $oObj->sLatitud;
             	$oInstitucion->sLongitud= $oObj->sLongitud;
 
+                if(null !== $oObj->iUsuarioId){
+                    $oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+                }else{
+                    $oInstitucion->oUsuario = null;
+                }
+
                 //objeto ultima moderacion
                 if(null !== $oObj->iModeracionId){
                     $oModeracion                   = new stdClass();
@@ -399,8 +411,6 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
                     $oInstitucion->oModeracion = Factory::getModeracionInstance($oModeracion);
                 }
-
-            	$oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
 
             	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
             }

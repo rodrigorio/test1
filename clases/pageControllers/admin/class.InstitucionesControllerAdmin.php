@@ -238,6 +238,59 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             $this->moderarInstitucion();
             return;
         }
+        
+        if($this->getRequest()->has('destituirIntegrante')){
+            $this->destituirIntegrante();
+            return;
+        }
+
+        if($this->getRequest()->has('solicitarAdministrarContenido')){
+            $this->solicitarAdministrarContenido();
+            return;
+        }
+    }
+    
+    private function solicitarAdministrarContenido()
+    {
+        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
+
+        if(empty($iInstitucionId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
+            $oInstitucion->setUsuario(SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario());
+            ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function destituirIntegrante()
+    {
+        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
+
+        if(empty($iInstitucionId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
+            $oInstitucion->setUsuario(null);
+            ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+            
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+
+            $this->getJsonHelper()->setSuccess(false);
+        }
+        $this->getJsonHelper()->sendJsonAjaxResponse(); 
     }
 
     private function ampliar()
@@ -266,6 +319,60 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
                           $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre();
 
             $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+
+            //integrante administrador de contenido
+            if(null !== $oInstitucion->getUsuario())
+            {
+                $this->getTemplate()->set_var("IntegranteAdministradorNoExisteBlock", "");
+
+                $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oInstitucion->getUsuario()->getNombreAvatar();
+                if(null != $oInstitucion->getUsuario()->getFotoPerfil()){
+                    $oFoto = $oInstitucion->getUsuario()->getFotoPerfil();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("hrefFotoPerfilIntegranteAdministrador", $pathFotoServidorBigSize);
+                }else{
+                    $this->getTemplate()->set_var("hrefFotoPerfilIntegranteAdministrador", $scrAvatarAutor);
+                }
+                $this->getTemplate()->set_var("scrAvatarIntegranteAdministrador", $scrAvatarAutor);
+
+                $sNombreUsuario = $oInstitucion->getUsuario()->getNombre()." ".$oInstitucion->getUsuario()->getApellido();
+                $this->getTemplate()->set_var("sNombreUsuarioAdministrador", $sNombreUsuario);
+                $this->getTemplate()->set_var("sEmailAdministrador", $oInstitucion->getUsuario()->getEmail());
+
+                if(null !== $oInstitucion->getUsuario()->getTelefono()){
+                    $this->getTemplate()->set_var("sTelefonoAdministrador", $oInstitucion->getUsuario()->getTelefono());
+                }else{
+                    $this->getTemplate()->set_var("sTelefonoAdministrador", " - ");
+                }
+
+                if(null !== $oInstitucion->getUsuario()->getCelular()){
+                    $this->getTemplate()->set_var("sCelularAdministrador", $oInstitucion->getUsuario()->getCelular());
+                }else{
+                    $this->getTemplate()->set_var("sCelularAdministrador", " - ");
+                }
+
+                if(null !== $oInstitucion->getUsuario()->getFax()){
+                    $this->getTemplate()->set_var("sFaxAdministrador", $oInstitucion->getUsuario()->getFax());
+                }else{
+                    $this->getTemplate()->set_var("sFaxAdministrador", " - ");
+                }
+
+                if(null !== $oInstitucion->getUsuario()->getCurriculumVitae()){
+                    $hrefDescargarCv = "";
+                    $oArchivo = $oInstitucion->getUsuario()->getCurriculumVitae();
+                    $hrefDescargarCv = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+                    $this->getTemplate()->set_var("hrefDescargarCvAdministrador", $hrefDescargarCv);
+                    $this->getTemplate()->parse("CvAdministradorBlock");
+                }else{
+                    $this->getTemplate()->set_var("CvAdministradorBlock", "");
+                }
+
+                $this->getTemplate()->parse("IntegranteAdministradorBlock", true);
+            }else{
+                $this->getTemplate()->set_var("IntegranteAdministradorBlock", "");
+            }
+
             $this->getTemplate()->set_var("sPermalink", $sPermalink);
             $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
             $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());

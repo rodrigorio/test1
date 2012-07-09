@@ -20,17 +20,17 @@ class Institucion {
   	private $sActividadesMes;
   	private $sLatitud;
   	private $sLongitud;
-  	private $oUsuario;
+  	private $oUsuario = null;
 
        /**
         * array objetos Moderacion, el historial completo
         */
-        protected  $aModeraciones;
+        private  $aModeraciones;
 
        /**
         * objeto Moderacion, estado de la ultima entrada en moderaciones, null si no tiene
         */
-        protected  $oModeracion = null;
+        private  $oModeracion = null;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
