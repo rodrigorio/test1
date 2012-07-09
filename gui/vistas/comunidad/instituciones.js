@@ -248,6 +248,23 @@ function borrarInstitucion(iInstitucionId){
     }
 }
 
+function solicitarInstitucion(iInstitucionId){
+    $.ajax({
+        type:"post",
+        dataType:"jsonp",
+        url:"comunidad/instituciones/procesar",
+        data:{
+            iInstitucionId:iInstitucionId,
+            solicitarInstitucion:"1"
+        },
+        success:function(data){
+            if(data.success != undefined && data.success == 1){
+                $("#solicitarInstitucionCont").html("Solicitud Enviada");
+            }
+        }
+    });
+}
+
 $(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
@@ -269,6 +286,12 @@ $(function(){
     });
     $("#filtroProvincia").change(function(){
         listaCiudadesByProvincia($("#filtroProvincia option:selected").val(), 'filtroCiudad', 'formFiltrarInstituciones');
+    });
+
+    $(".solicitarInstitucion").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        solicitarInstitucion(iInstitucionId);
+        return false;
     });
 
     //listado instituciones comunidad
