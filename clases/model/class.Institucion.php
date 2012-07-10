@@ -31,6 +31,11 @@ class Institucion {
         * objeto Moderacion, estado de la ultima entrada en moderaciones, null si no tiene
         */
         private  $oModeracion = null;
+
+        /**
+         * array de objetos Solicitud de los integrantes que quieren administrar el contenido
+         */
+        private $aSolicitudes;
 	
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Pais
@@ -313,5 +318,21 @@ class Institucion {
         public function setModeracion($oModeracion)
         {
             $this->oModeracion = $oModeracion;
+        }
+
+        public function getSolicitudes()
+        {
+            if($this->aSolicitudes === null){
+                $this->aSolicitudes = AdminController::getInstance()->obtenerHistorialSolicitudesInstitucion($this->iId);
+            }
+            return $this->aSolicitudes;
+        }
+
+        public function addSolicitud($oSolicitud){
+            $this->aSolicitudes[] = $oSolicitud;
+        }
+
+        public function setSolicitudes($aSolicitudes){
+            $this->aSolicitudes = $aSolicitudes;
         }
 }

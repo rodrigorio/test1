@@ -77,15 +77,69 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             return;
         }
         
-        if($this->getRequest()->has('solicitarInstitucion')){
-            $this->solicitarInstitucion();
+        if($this->getRequest()->has('solicitarInstitucionForm')){
+            $this->solicitarInstitucionForm();
+            return;
+        }
+
+        if($this->getRequest()->has('solicitarInstitucionProcesar')){
+            $this->solicitarInstitucionProcesar();
             return;
         }
     }
 
-    private function solicitarInstitucion()
+    private function solicitarInstitucionProcesar()
     {
-        //falta hacer
+        $iInstitucionId = $this->getRequest()->getParam('iInstitucionIdForm');
+        if(empty($iInstitucionId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            
+            if(ComunidadController::getInstance()->existeSolicitudInstitucion($iInstitucionId, $iUsuarioId))
+            {
+                $this->getJsonHelper()->setMessage("Ya hay una solicitud pendiente de moderación");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
+
+            $oSolicitud = new stdClass();
+            $oSolicitud->oUsuario = $perfil->getUsuario();
+            $oSolicitud->sMensaje = $this->getRequest()->getPost('mensaje');
+            $oSolicitud = Factory::getSolicitudInstance($oSolicitud);
+
+            $oInstitucion->addSolicitud($oSolicitud);
+            ComunidadController::getInstance()->guardarSolicitudesInstitucion($oInstitucion);
+            $this->getJsonHelper()->setSuccess(true);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setMessage("Hubo un error al tratar de procesar la solicitud");
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+        }       
+    }
+
+    private function solicitarInstitucionForm()
+    {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "popUpContent", "FormularioSolicitarInstitucionBlock");
+
+        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
+        if(empty($iInstitucionId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
 
     private function borrarInstitucion()
@@ -590,9 +644,19 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("tituloSeccion", "Instituciones Comunidad");
             $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FichaInstitucionBlock");
 
+            $oUsuarioSesion = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+
             if(null !== $oInstitucion->getUsuario())
             {
                 $this->getTemplate()->set_var("SolicitarInstitucionBlock", "");
+                $this->getTemplate()->set_var("SolicitudEnviadaInstitucionBlock", "");
+            }else{
+                if(ComunidadController::getInstance()->existeSolicitudInstitucion($iInstitucionId, $oUsuarioSesion->getId()))
+                {
+                    $this->getTemplate()->set_var("SolicitarInstitucionBlock", "");
+                }else{
+                    $this->getTemplate()->set_var("SolicitudEnviadaInstitucionBlock", "");
+                }
             }
 
             $sUbicacion = $oInstitucion->getCiudad()->getNombre()." ".

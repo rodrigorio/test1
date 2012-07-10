@@ -262,4 +262,9 @@ class Factory
         $oModeracion = new Moderacion($obj);
         return $oModeracion;
     }    
+    
+    public static function &getSolicitudInstance(stdClass $obj){
+        $oSolicitud = new Solicitud($obj);
+        return $oSolicitud;
+    }
 }

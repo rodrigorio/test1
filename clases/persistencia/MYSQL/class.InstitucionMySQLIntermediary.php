@@ -421,11 +421,133 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    /**
+     * Devuelve todas las instituciones que tienen solicitud para administracion de contenido
+     */
+    public function obtenerInstitucionesSolicitud($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try
+        {
+            $db = $this->conn;
+            
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT DISTINCT SQL_CALC_FOUND_ROWS
+                          i.id as iId,
+                          i.nombre as sNombre,
+                          i.ciudades_id as iCiudadId,
+                          i.descripcion as sDescripcion,
+                          i.tipoInstitucion_id as iTipoInstitucionId,
+                          i.direccion as sDireccion,
+                          i.email as sEmail,
+                          i.telefono as sTelefono,
+                          i.sitioWeb as sSitioWeb,
+                          i.horariosAtencion as sHorariosAtencion,
+                          i.autoridades as sAutoridades,
+                          i.cargo as sCargo,
+                          i.personeriaJuridica as sPersoneriaJuridica,
+                          i.sedes as sSedes,
+                          i.actividadesMes as sActividadesMes,
+                          i.usuario_id as iUsuarioId,
+                          i.latitud as sLatitud,
+                          i.longitud as sLongitud,
+
+                          it.nombre as sNombreTipoInstitucion,
+
+                          m.iModeracionId,
+                          m.sModeracionEstado,
+                          m.sModeracionMensaje,
+                          m.dModeracionFecha
+                     FROM
+                       	instituciones i
+                     LEFT JOIN
+                     	usuarios u ON u.id = i.usuario_id
+                     JOIN
+                     	instituciones_tipos it ON it.id = i.tipoInstitucion_id
+                     JOIN
+                        institucion_solicitudes iss ON iss.instituciones_id = i.id
+                     LEFT JOIN
+                        (SELECT
+                            m.id AS iModeracionId, m.instituciones_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
+                         FROM
+                            moderaciones m
+                         JOIN
+                            (SELECT MAX(m.id) AS idd FROM moderaciones m GROUP BY instituciones_id) AS filtro ON filtro.idd = m.id)
+                         AS m ON m.instituciones_id = i.id
+                     LEFT JOIN ciudades c on c.id = i.ciudades_id ";
+
+            if(!empty($filtro)){
+                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
+            }
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+
+            $db->query($sSQL);
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aInstituciones = array();
+            while($oObj = $db->oNextRecord()){
+
+            	$oInstitucion = new stdClass();
+            	$oInstitucion->iId = $oObj->iId;
+            	$oInstitucion->sNombre = $oObj->sNombre;
+                $oInstitucion->iCiudadId = $oObj->iCiudadId;
+                $oInstitucion->oCiudad = ComunidadController::getInstance()->getCiudadById($oObj->iCiudadId);
+            	$oInstitucion->sDescripcion = $oObj->sDescripcion;
+            	$oInstitucion->iTipoInstitucion = $oObj->iTipoInstitucionId;
+            	$oInstitucion->sNombreTipoInstitucion = $oObj->sNombreTipoInstitucion;
+            	$oInstitucion->sDireccion = $oObj->sDireccion;
+            	$oInstitucion->sEmail = $oObj->sEmail;
+            	$oInstitucion->sTelefono = $oObj->sTelefono;
+            	$oInstitucion->sSitioWeb = $oObj->sSitioWeb;
+            	$oInstitucion->sHorariosAtencion = $oObj->sHorariosAtencion;
+            	$oInstitucion->sAutoridades = $oObj->sAutoridades;
+            	$oInstitucion->sCargo = $oObj->sCargo;
+            	$oInstitucion->sPersoneriaJuridica = $oObj->sPersoneriaJuridica;
+            	$oInstitucion->sSedes = $oObj->sSedes;
+            	$oInstitucion->sActividadesMes = $oObj->sActividadesMes;
+            	$oInstitucion->sLatitud= $oObj->sLatitud;
+            	$oInstitucion->sLongitud= $oObj->sLongitud;
+
+                if(null !== $oObj->iUsuarioId){
+                    $oInstitucion->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+                }else{
+                    $oInstitucion->oUsuario = null;
+                }
+
+                //objeto ultima moderacion
+                if(null !== $oObj->iModeracionId){
+                    $oModeracion                   = new stdClass();
+                    $oModeracion->iId              = $oObj->iModeracionId;
+                    $oModeracion->dFecha           = $oObj->dModeracionFecha;
+                    $oModeracion->sMensaje         = $oObj->sModeracionMensaje;
+                    $oModeracion->sEstado          = $oObj->sModeracionEstado;
+
+                    $oInstitucion->oModeracion = Factory::getModeracionInstance($oModeracion);
+                }
+                
+            	$aInstituciones[] = Factory::getInstitucionInstance($oInstitucion);
+            }
+
+            return $aInstituciones;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
        
     /**
      * Le pongo NULL a todos los usuarios que estan asignados a la institucion
      */
-    public function borrar($iInstitucionId) {
+    public function borrar($iInstitucionId)
+    {
         try{
             $db = $this->conn;
             $db->begin_transaction();
@@ -469,5 +591,167 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         	return null;
             throw new Exception($e->getMessage(), 0);
         }
+    }
+
+    public function obtenerSolicitudes($filtro = array(), &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        iss.id as iId,
+                        iss.fecha as dFecha,
+                        iss.mensaje as sMensaje,
+                        iss.usuarios_id as iUsuarioId
+                    FROM
+                        institucion_solicitudes iss ";
+
+            $WHERE = array();
+
+            if(isset($filtro['iss.id']) && $filtro['iss.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('iss.id', $filtro['iss.id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['iss.usuarios_id']) && $filtro['iss.usuarios_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('iss.usuarios_id', $filtro['iss.usuarios_id'], MYSQL_TYPE_INT);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by fecha asc ";
+            }
+
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aSolicitudes = array();
+            while($oObj = $db->oNextRecord()){
+                $oSolicitud = new stdClass();
+                $oSolicitud->iId = $oObj->iId;
+                $oSolicitud->dFecha = $oObj->dFecha;
+                $oSolicitud->sMensaje = $oObj->sMensaje;
+                $oSolicitud->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+
+                $aSolicitudes[] = Factory::getSolicitudInstance($oSolicitud);
+            }
+
+            return $aSolicitudes;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }        
+    }
+
+    /**
+     * @return boolean si el usuario ya tiene una solicitud de administracion de institucion pendiente.
+     */
+    public function existeSolicitud($iInstitucionId, $iUsuarioId)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        institucion_solicitudes iss
+                    WHERE iss.usuarios_id = ".$iUsuarioId."
+                          AND iss.instituciones_id = ".$iInstitucionId;
+            
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function guardarSolicitudes($oInstitucion)
+    {
+        if(null !== $oInstitucion->getSolicitudes()){
+            foreach($oInstitucion->getSolicitudes() as $oSolicitud){
+                if(null !== $oSolicitud->getId()){
+                    return $this->actualizarSolicitud($oSolicitud);
+                }else{                    
+                    return $this->insertarSolicitud($oSolicitud, $oInstitucion->getId());
+                }
+            }
+        }
+    }
+
+    public function actualizarSolicitud($oSolicitud)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "UPDATE institucion_solicitudes SET ".                    
+                    "   mensaje = ".$this->escStr($oSolicitud->getMensaje())." ".
+                    "WHERE id = ".$this->escInt($oSolicitud->getId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function insertarSolicitud($oSolicitud, $iInstitucionId)
+    {
+        try{
+            $db = $this->conn;
+
+            $iUsuarioId = $oSolicitud->getUsuario()->getId();
+
+            $sSQL = "INSERT INTO institucion_solicitudes SET ".
+                    "   usuarios_id = ".$iUsuarioId.", ".
+                    "   instituciones_id = ".$iInstitucionId.", ".
+                    "   mensaje = ".$this->escStr($oSolicitud->getMensaje())." ";
+
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+            $db->commit();
+
+            $oSolicitud->setId($iLastId);
+            $oSolicitud->setFecha(date("d/m/Y"));
+
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Limpia todas las solicitudes para una institucion dada.
+     */
+    public function limpiarSolicitudes($iInstitucionId)
+    {
+        try{
+            $db = $this->conn;
+           
+            $db->execSQL("delete from institucion_solicitudes where instituciones_id = ".$iInstitucionId." ");
+            $db->commit();
+
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }        
     }
 }

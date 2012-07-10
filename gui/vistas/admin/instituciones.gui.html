@@ -41,6 +41,16 @@
 </section>
 <!--EndHeaderModeracionesBlock-->
 
+<!--BeginHeaderSolicitudesBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Moderar solicitudes en instituciones de comunidad</h2>
+</header>
+<section>
+    <h3>Aprobar a usuarios que solicitan administrar el contenido de una institucion.</h3>
+</section>
+<!--EndHeaderSolicitudesBlock-->
+
 <!--BeginListadoInstitucionesBlock-->
 <section>
     <table class="datatable">
@@ -182,6 +192,85 @@
         </div>
 </section>
 <!--EndListadoModeracionBlock-->
+
+<!--BeginListadoSolicitudesBlock-->
+<section id="listadoSolicitudes">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id="listadoSolicitudesResult">
+
+            <!--BeginGrillaSolicitudesBlock-->
+            <div class="mabo">
+                Cantidad de instituciones por moderar: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th class="iveal small">Nombre</th>
+                        <th class="iveal big">Tipo</th>
+                        <th class="iveal">Ubicaci&oacute;n</th>
+                        <th class="iveal">Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginInstitucionSolicitarBlock-->
+                    <tr class="solicitud_{iInstitucionId}">
+                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
+                            {sNombre}
+                        </td>
+                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
+                            {sTipo}
+                        </td>
+                        <td class="desplegable" rel="{iInstitucionId}">
+                            {sUbicacion}
+                        </td>
+                        <td class="desplegable" rel="{iInstitucionId}">
+                            <a href="mailto:{sEmail}">{sEmail}</a>
+                        </td>
+                        <td class="teal_ce">
+                            <span title="Ampliar" rel="{iInstitucionId}" class="i mi expand ihover ampliarInstitucion mari"></span>
+                        </td>
+                    </tr>
+                    <tr class="solicitud_{iInstitucionId}">
+                        <td id="desplegable_{iInstitucionId}" class="pa0" colspan="5" style="display:none;">
+                            <article class="nested clearrm mabo0">
+                                <header>
+                                    <h2>Historial solicitudes instituci&oacute;n Id: {iInstitucionId}</h2>
+                                </header>
+                                <section>
+                                    <h6 class="teal_le mabo">Solo se puede asignar un usuario. Al hacer click en 'Asignar Usuario' el resto de las solicitudes seran eliminadas.</h6>
+                                    <table>
+                                        <!--BeginSolicitudHistorialInstitucionBlock-->
+                                        <tr>
+                                            <td>
+                                                <img src="{scrAvatarUsuario}" class="pari" />
+                                                <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sNombreUsuario}</a>
+                                            </td>
+                                            <td class="small">{sFechaSolicitud}</td>
+                                            <td class="teal_le">{sMensaje}</td>
+                                            <td class="teal_le">
+                                                <a rel="{iInstitucionId}_{iUsuarioId}" class="aprobarSolicitud" href="">Asignar Usuario</a>
+                                            </td>
+                                        </tr>
+                                        <!--EndSolicitudHistorialInstitucionBlock-->
+                                    </table>
+                                </section>
+                            </article>
+                        </td>
+                    </tr>
+                <!--EndInstitucionSolicitarBlock-->
+                <!--BeginNoRecordsSolicitudesBlock-->
+                    <tr>
+                        <td colspan="5">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsSolicitudesBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaSolicitudesBlock-->
+        </div>
+</section>
+<!--EndListadoSolicitudesBlock-->
 
 <!--BeginFormularioInstitucionBlock-->
 <h1 class="teta_up mabo2">Modificar instituci&oacute;n</h1>

@@ -425,6 +425,46 @@ class AdminController
             throw new Exception($e->getMessage());
         }
     }
+    
+    public function buscarInstitucionesSolicitud($filtro = array(), &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oInstitucionIntermediary->obtenerInstitucionesSolicitud($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function obtenerHistorialSolicitudesInstitucion($iInstitucionId)
+    {
+        try{
+            $filtro["iss.instituciones_id"] = $iInstitucionId;
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oInstitucionIntermediary->obtenerSolicitudes($filtro, $iRecordsTotal, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+    
+    public function getSolicitudInstitucionById($iSolicitudId)
+    {
+        try{
+            $filtro["iss.id"] = $iSolicitudId;
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aSolicitudes = $oInstitucionIntermediary->obtenerSolicitudes($filtro, $iRecordsTotal, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aSolicitudes){
+                return $aSolicitudes[0];
+            }else{
+                return null;
+            }
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
 
     public function obtenerHistorialModeracionesFicha($iFichaId)
     {

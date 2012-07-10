@@ -203,6 +203,11 @@ $LAB
             <a rel="{iInstitucionId}" class="solicitarInstitucion" href="">Solicitar la administraci&oacute;n de esta instituci&oacute;n</a>
         </div>
         <!--EndSolicitarInstitucionBlock-->
+        <!--BeginSolicitudEnviadaInstitucionBlock-->
+        <div class="der">
+            Solicitud de administraci&oacute;n enviada.
+        </div>
+        <!--EndSolicitudEnviadaInstitucionBlock-->
         
         <div class="izq">
             <div class="titulo">{sNombre}</div>
@@ -514,3 +519,37 @@ $LAB
     </form>
 </div>
 <!--EndFormularioBlock-->
+
+<!--BeginFormularioSolicitarInstitucionBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mc bank32"></span></div>
+    <form id="formSolicitarInstitucion" name="formSolicitarInstitucion" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <h2 class="mabo">Solicitud para administraci&oacute;n de contenido</h2>
+        <div class="mabo3 fost_it">La solicitud quedara pendiente de moderaci&oacute;n. Si es aprobada, la instituci&oacute;n aparecer&aacute; en su listado 'mis instituciones'.</div>
+
+        <div class="form_line msg_mensaje">
+            <label for="mensaje">
+                Mensaje
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2 maxlength" rows="0" cols="0" id="mensaje" name="mensaje" title="Mensaje Solicitud"></textarea>
+                </div>
+            </div>
+            <p>Ingrese un breve texto explicando las razones por las que desea ser el administrador de esta instituci&oacute;n</p>
+        </div>
+
+        <div class="fl_le iveal mabo2">
+            <label for="solicitarInstitucion" class="button buttonConfirm buttonLarge mari3">
+                <button id="solicituarInstitucion" type="submit" name="solicituarInstitucion" class="btn01">
+                    Enviar Solicitud
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iInstitucionId}" name="iInstitucionIdForm" id="iInstitucionIdForm" />
+
+        <div style="display:none;" id='msg_form_solicitarInstitucion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndFormularioSolicitarInstitucionBlock-->
