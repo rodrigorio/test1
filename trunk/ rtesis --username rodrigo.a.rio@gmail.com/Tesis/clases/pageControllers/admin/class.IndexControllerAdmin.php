@@ -75,6 +75,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("sHrefPersonasModeracion", $request->getBaseTagUrl()."admin/personas-moderacion");
         $template->set_var("sHrefPublicacionesModeracion", $request->getBaseTagUrl()."admin/publicaciones-moderacion");
         $template->set_var("sHrefInstitucionesModeracion", $request->getBaseTagUrl()."admin/instituciones-moderacion");
+        $template->set_var("sHrefInstitucionesSolicitudes", $request->getBaseTagUrl()."admin/instituciones-solicitudes");
         $template->set_var("sHrefSoftwareModeracion", $request->getBaseTagUrl()."admin/software-moderacion");
 
         //especialidades

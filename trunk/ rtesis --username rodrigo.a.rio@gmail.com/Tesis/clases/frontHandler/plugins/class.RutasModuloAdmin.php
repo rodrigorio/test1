@@ -195,6 +195,13 @@ class RutasModuloAdmin
                                         'action'     => 'listarModeraciones'
                                 ));
         $router->addRoute('adminInstitucionesModerar', $route);
+        $route = new RegexRoute('admin/instituciones-solicitudes',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'instituciones',
+                                        'action'     => 'listarSolicitudes'
+                                ));                        
+        $router->addRoute('adminInstitucionesSolicitudes', $route);
         $route = new RegexRoute('admin/instituciones-form',
                                 array(
                                     'module' => 'admin',

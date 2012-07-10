@@ -223,6 +223,11 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             $this->masModeraciones();
             return;
         }
+        
+        if($this->getRequest()->has('masSolicitudes')){
+            $this->masSolicitudes();
+            return;
+        }
 
         if($this->getRequest()->has('modificarInstitucion')){
             $this->modificarInstitucion();
@@ -248,8 +253,66 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             $this->solicitarAdministrarContenido();
             return;
         }
+        
+        if($this->getRequest()->has('aprobarSolicitud')){
+            $this->aprobarSolicitud();
+            return;
+        }       
     }
-    
+
+    /**
+     * Este metodo es el que se ejecuta cuando se acepta la solicitud de administracino de contenido
+     * desde el listado de solicitudes.
+     */
+    private function aprobarSolicitud()
+    {
+        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
+        $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
+
+        if(empty($iInstitucionId) || empty($iUsuarioId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
+            //esto es por si un moderador o administrador justo se asocio 
+            if(null !== $oInstitucion->getUsuario()){
+                $msg = "La institución ya posee un usuario administrador de contenido (vea en ficha ampliada)";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+
+            }else{
+
+                $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+                $oInstitucion->setUsuario($oUsuario);
+                ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
+
+                $msg = "El usuario fue asignado correctamente a la institucion";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha procesado la solicitud para la institución";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->restartTemplate();
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+
+    /**
+     * ESTE METODO ES PARA PISAR EL USUARIO ACTUAL DE UNA INSTITUCION Y NO ES EL QUE SE DISPARA
+     * DESDE EL LISTADO DE MODERACION DE SOLICITUDES.
+     * POR ESO NO SE COMPRUEBA QUE LA INSTITUCION TENGA EL USUARIO EN NULL.     
+     */
     private function solicitarAdministrarContenido()
     {
         $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
@@ -584,7 +647,6 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->setMessage("La institucion se modifico exitosamente");
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
-            echo "<pre>"; print_r($e->getMessage()); echo "</pre>";
             $this->getJsonHelper()->setSuccess(false);
         }
 
@@ -755,6 +817,143 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/instituciones-procesar", "listadoModeracionesResult", $paramsPaginador);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaModeracionesBlock', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    public function listarSolicitudes()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionModeracion");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "widgetsContent", "HeaderSolicitudesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "mainContent", "ListadoSolicitudesBlock");
+
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+            $iRecordsTotal = 0;
+            $aInstituciones = AdminController::getInstance()->buscarInstitucionesSolicitud($filtro = array(), $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+
+            if(count($aInstituciones) > 0){
+
+                foreach($aInstituciones as $oInstitucion){
+
+                    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+
+                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
+                    $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
+                    $this->getTemplate()->set_var("sUbicacion", $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre());
+                    $this->getTemplate()->set_var("sEmail", $oInstitucion->getEmail());
+
+                    $aSolicitud = $oInstitucion->getSolicitudes();
+                                       
+                    //al menos 1 porque es un listado de instituciones con solicitudes pendientes.
+                    foreach($aSolicitud as $oSolicitud){
+                        $this->getTemplate()->set_var("sFechaSolicitud", $oSolicitud->getFecha(true));
+                        $this->getTemplate()->set_var("sMensaje", $oSolicitud->getMensaje(true));
+                        $this->getTemplate()->set_var("iSolicitudId", $oSolicitud->getId());
+
+                        //usuario que realizo la solicitud
+                        $oUsuario = $oSolicitud->getUsuario();
+                        $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                        $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+                        $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                        $this->getTemplate()->set_var("scrAvatarUsuario", $scrAvatarAutor);
+                        $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                        
+                        $this->getTemplate()->parse("SolicitudHistorialInstitucionBlock", true);
+                    }
+
+                    $this->getTemplate()->parse("InstitucionSolicitarBlock", true);
+                    $this->getTemplate()->set_var("SolicitudHistorialInstitucionBlock", "");
+                }
+
+                $this->getTemplate()->set_var("NoRecordsSolicitudesBlock", "");
+
+            }else{
+                $this->getTemplate()->set_var("InstitucionSolicitarBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "noRecords", "NoRecordsSolicitudesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay solicitudes pendientes de moderación");
+                $this->getTemplate()->parse("noRecords", false);
+            }
+
+            $params[] = "masSolicitudes=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/instituciones-procesar", "listadoSolicitudesResult", $params);
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }        
+    }
+
+    private function masSolicitudes()
+    {
+        try{
+            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "ajaxGrillaSolicitudesBlock", "GrillaSolicitudesBlock");
+
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+            $iRecordsTotal = 0;
+            $aInstituciones = AdminController::getInstance()->buscarInstitucionesSolicitud($filtro = array(), $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+
+            if(count($aInstituciones) > 0){
+
+                foreach($aInstituciones as $oInstitucion){
+
+                    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+
+                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
+                    $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
+                    $this->getTemplate()->set_var("sUbicacion", $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre());
+                    $this->getTemplate()->set_var("sEmail", $oInstitucion->getEmail());
+
+                    $aSolicitud = $oInstitucion->getSolicitudes();
+                    
+                    //al menos 1 porque es un listado de instituciones con solicitudes pendientes.
+                    foreach($aSolicitud as $oSolicitud){
+                        $this->getTemplate()->set_var("sFechaSolicitud", $oSolicitud->getFecha(true));
+                        $this->getTemplate()->set_var("sMensaje", $oSolicitud->getMensaje(true));
+                        $this->getTemplate()->set_var("iSolicitudId", $oSolicitud->getId());
+
+                        //usuario que realizo la solicitud
+                        $oUsuario = $oSolicitud->getUsuario();
+                        $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                        $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+                        $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                        $this->getTemplate()->set_var("scrAvatarUsuario", $scrAvatarAutor);
+                        $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+
+                        $this->getTemplate()->parse("SolicitudHistorialInstitucionBlock", true);
+                    }
+
+                    $this->getTemplate()->parse("InstitucionSolicitarBlock", true);
+                    $this->getTemplate()->set_var("SolicitudHistorialInstitucionBlock", "");
+                }
+
+                $this->getTemplate()->set_var("NoRecordsSolicitudesBlock", "");
+
+            }else{
+                $this->getTemplate()->set_var("InstitucionSolicitarBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "noRecords", "NoRecordsSolicitudesBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay solicitudes pendientes de moderación");
+                $this->getTemplate()->parse("noRecords", false);
+            }
+
+            $paramsPaginador[] = "masSolicitudes=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/instituciones-procesar", "listadoSolicitudesResult", $paramsPaginador);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaSolicitudesBlock', false));
         }catch(Exception $e){
             print_r($e);
         }

@@ -142,6 +142,11 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             $oInstitucionIntermediary->guardar($oInstitucion);
 
+            //si se guarda con objeto usuario limpio las solicitudes de administracion de contenido pendientes.
+            if(null !== $oInstitucion->getUsuario()){
+                $oInstitucionIntermediary->limpiarSolicitudes($oInstitucion->getId());
+            }
+
             $classPerfil = SessionAutentificacion::getInstance()->getClassPerfilAutentificado();
             if($classPerfil == "Administrador" || $classPerfil == "Moderador"){
                 if(null === $oInstitucion->getModeracion()){
@@ -261,13 +266,41 @@ class ComunidadController
         }
     }
 
-    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-    try{
-        $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
-        return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+    public function listaTiposDeInstitucion($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Devuelve true si el usuario ya envio una solicitud para administrar la institucion
+     */
+    public function existeSolicitudInstitucion($iInstitucionId, $iUsuarioId)
+    {
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->existeSolicitud($iInstitucionId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
+
+    /**
+     * Guarda las solicitudes de una institucion en DB
+     */
+    public function guardarSolicitudesInstitucion($oInstitucion)
+    {
+        try{
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->guardarSolicitudes($oInstitucion);
+        }catch(Exception $e){
+            $oInstitucion->setSolicitudes(null);
+            throw new Exception($e->getMessage());
+        }        
     }
        
     /**

@@ -314,7 +314,56 @@ function solicitarAdministrarContenido(iInstitucionId){
         success:function(data){
             if(data.success != undefined && data.success == 1){
                 $("#solicitudAdministradorCont").html("Su usario ha sido asignado a la institución");
+                
+                //si se ejecuto la accion desde el listado de solicitudes de institucion elimino la fila porque ya no sirve.
+                if($(".solicitud_"+iInstitucionId).length){
+                    $(".solicitud_"+iInstitucionId).hide("slow", function(){
+                        $(".solicitud_"+iInstitucionId).remove();
+                    });
+                }
             }
+        }
+    });
+}
+
+function aprobarSolicitud(iInstitucionId, iUsuarioId){    
+    $.ajax({
+        type:"post",
+        dataType:"jsonp",
+        url:"admin/instituciones-procesar",
+        data:{
+            iInstitucionId:iInstitucionId,
+            iUsuarioId:iUsuarioId,
+            aprobarSolicitud:"1"
+        },
+        success:function(data){
+            if(data.success != undefined && data.success == 1){
+                $(".solicitud_"+iInstitucionId).hide("slow", function(){
+                    $(".solicitud_"+iInstitucionId).remove();
+                });
+            }
+
+            var dialog = $("#dialog");
+            if($("#dialog").length){
+                dialog.attr("title", "Solicitud Institución ID: "+iInstitucionId);
+            }else{
+                dialog = $('<div id="dialog" title="Solicitud Institución ID: '+iInstitucionId+'"></div>').appendTo('body');
+            }
+            dialog.html(data.html);
+
+            dialog.dialog({
+                position:['center', 'center'],
+                width:400,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true,
+                buttons:{
+                    "Aceptar": function() {
+                        $(this).dialog( "close" );
+                    }
+                }
+            });
         }
     });
 }
@@ -346,6 +395,42 @@ $(document).ready(function(){
     $(".solicitarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
         solicitarAdministrarContenido(iInstitucionId);
+        return false;
+    });
+    
+    $(".aprobarSolicitud").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iInstitucionId = rel[0];
+        var iUsuarioId = rel[1];
+        aprobarSolicitud(iInstitucionId, iUsuarioId);
+        return false;
+    });
+
+    $(".verFichaUsuario").live('click',function(){
+
+        var dialog = $("#dialog");
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
+        }
+        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
+
+        dialog.load(
+            "admin/usuarios-procesar?ver=1&iUsuarioId="+$(this).attr('rel'),
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:650,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                bindEventsAdmin();
+                $("a[rel^='prettyPhoto']").prettyPhoto();
+            }
+        );
         return false;
     });
 

@@ -156,6 +156,73 @@ var optionsAjaxFormInstitucion = {
     }
 };
 
+var validateFormSolicitarInstitucion = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        mensaje:{required:true}
+    },
+    messages:{
+        mensaje: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormSolicitarInstitucion = {
+    dataType: 'jsonp',
+    resetForm: true,
+    url: 'comunidad/instituciones/procesar',
+    data:{
+        solicitarInstitucionProcesar:"1"
+    },
+    beforeSerialize:function(){
+        if($("#formSolicitarInstitucion").valid() == true){
+            $('#msg_form_solicitarInstitucion').hide();
+            $('#msg_form_solicitarInstitucion').removeClass("correcto").removeClass("error");
+            $('#msg_form_solicitarInstitucion .msg').html("");
+            setWaitingStatus('formSolicitarInstitucion', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formSolicitarInstitucion', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_solicitarInstitucion .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_solicitarInstitucion .msg').html(data.mensaje);
+            }
+            $('#msg_form_solicitarInstitucion').addClass("error").fadeIn('slow');
+        }else{
+            $('#solicitarInstitucionCont').html("Solicitud de administración enviada.");
+
+            $("#dialog").hide("slow", function(){
+                $("#dialog").remove();
+            });
+        }
+    }
+};
+
+function bindEventsFormSolicitarInstitucion()
+{
+    $("#formSolicitarInstitucion").validate(validateFormSolicitarInstitucion);
+    $("#formSolicitarInstitucion").ajaxForm(optionsAjaxFormSolicitarInstitucion);
+    
+    $("textarea.maxlength").maxlength();
+}
+
 function masInstituciones(){
 
     var filtroNombre = $('#filtroNombre').val();
@@ -251,16 +318,31 @@ function borrarInstitucion(iInstitucionId){
 function solicitarInstitucion(iInstitucionId){
     $.ajax({
         type:"post",
-        dataType:"jsonp",
         url:"comunidad/instituciones/procesar",
         data:{
             iInstitucionId:iInstitucionId,
-            solicitarInstitucion:"1"
+            solicitarInstitucionForm:"1"
         },
         success:function(data){
-            if(data.success != undefined && data.success == 1){
-                $("#solicitarInstitucionCont").html("Solicitud Enviada");
+
+            var dialog = $("#dialog");
+            if($("#dialog").length){
+                dialog.attr("title", "Solicitar Institución");
+            }else{
+                dialog = $('<div id="dialog" title="Solicitar Institución"></div>').appendTo('body');
             }
+            dialog.html(data);
+
+            dialog.dialog({
+                position:['center', 'center'],
+                width:500,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsFormSolicitarInstitucion();           
         }
     });
 }
