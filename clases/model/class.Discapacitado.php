@@ -58,13 +58,22 @@ class Discapacitado extends PersonaAbstract
     public function getFechaNacimientoMadre(){
         return $this->dFechaNacimientoMadre;
     }
-    public function getOcupacionPadre(){
+    public function getOcupacionPadre($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sOcupacionPadre);
+        }
         return $this->sOcupacionPadre;
     }
-    public function getOcupacionMadre(){
+    public function getOcupacionMadre($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sOcupacionMadre);
+        }
         return $this->sOcupacionMadre;
     }
-    public function getNombreHermanos(){
+    public function getNombreHermanos($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sNombreHermanos);
+        }
         return $this->sNombreHermanos;
     }
 

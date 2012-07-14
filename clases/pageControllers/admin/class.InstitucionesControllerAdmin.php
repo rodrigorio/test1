@@ -44,33 +44,17 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "widgetsContent", "HeaderBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "mainContent", "ListadoInstitucionesBlock");
 
-            $filtro = array();
-            $iRecordPerPage = 5;
-            $iPage = $this->getRequest()->getPost("iPage");
-            $iPage = strlen($iPage) ? $iPage : 1;
-            $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-            $iMinLimit = ($iPage-1) * $iItemsForPage;
-            $sOrderBy = null;
-            $sOrder = null;
             $iRecordsTotal = 0;
-
-            //array con objetos discapacitados desde discapacitados_moderacion (datos sin aprobar).
-            $aInstituciones = ComunidadController::getInstance()->obtenerInstituciones($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $aInstituciones = ComunidadController::getInstance()->obtenerInstituciones($filtro = array(), $iRecordsTotal, null, null, null, null);
 
             if(count($aInstituciones) > 0){
-            	$i=0;
                 foreach($aInstituciones as $oInstitucion){
-
-                    $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-
                     $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
                     $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
                     $this->getTemplate()->set_var("sUbicacion", $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre());
 
                     $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
-                    $this->getTemplate()->parse("InstitucionesBlock", true);
-                    
-                    $i++;
+                    $this->getTemplate()->parse("InstitucionesBlock", true);                   
                 }
                 $this->getTemplate()->set_var("NoRecordsInstitucionesBlock", "");
             }else{

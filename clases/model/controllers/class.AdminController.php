@@ -49,39 +49,59 @@ class AdminController
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
-    public function buscar($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    
+    public function obtenerEspecialidadById($iEspecialidadId){
         try{
+            $filtro = array('e.id' => $iEspecialidadId);
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
-            return $oEspecialidadIntermediary->search($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            $iRecordsTotal = 0;
+            $aEspecialidades = $oEspecialidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aEspecialidades){
+                return $aEspecialidades[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
-            echo $e->getMessage();
-        }
+            throw new Exception($e);
+        }          
     }
+        
     public function guardarEspecialidad($oEspecialidad){
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->guardar($oEspecialidad);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
-     public function eliminarEspecialidad($oEspecialidad){
+
+    public function borrarEspecialidad($iEspecialidadId){
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
-            return $oEspecialidadIntermediary->borrar($oEspecialidad);
+            return $oEspecialidadIntermediary->borrar($iEspecialidadId);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
-     public function especialidadUsadaPorUsuario($oEspecialidad){
+
+    /**
+     * El objeto especialidad si o si tiene que traer el nombre
+     */
+    public function verificarExisteEspecialidad($oEspecialidad){
         try{
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
-            return $oEspecialidadIntermediary->especialidadUsadaPorUsuario($oEspecialidad);
+
+            $filtro = array('e.nombre' => $oEspecialidad->getNombre());
+            if(null !== $oEspecialidad->getId()){
+                $filtro['no_e.id'] = $oEspecialidad->getId();
+            }
+                
+            return $oEspecialidadIntermediary->existe($filtro);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
 
@@ -90,7 +110,7 @@ class AdminController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
     public function guardarCategoria($oCategoria){
@@ -98,7 +118,7 @@ class AdminController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->guardar($oCategoria);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
      public function eliminarCategoria($oCategoria){
@@ -106,7 +126,7 @@ class AdminController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->borrar($oCategoria);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
      public function categoriaUsadaPorUsuario($oCategoria){
@@ -114,7 +134,7 @@ class AdminController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->especialidadUsadaPorUsuario($oCategoria);
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
 
@@ -124,7 +144,7 @@ class AdminController
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->obtenerModeracion($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            echo $e->getMessage();
+            throw new Exception($e);
         }
     }
 
@@ -152,8 +172,7 @@ class AdminController
             }
             return $result;
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw new Exception($e);            
         }
     }
 
@@ -184,7 +203,6 @@ class AdminController
             return $result;
         }catch(Exception $e){
             throw new Exception($e);
-            return false;
         }        
     }
 
@@ -194,7 +212,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
     public function getAccionById($iAccionId)
@@ -210,7 +228,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
     public function guardarAccion($oAccion)
@@ -219,7 +237,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->guardar($oAccion);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
     public function borrarAccion($oAccion)
@@ -228,7 +246,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->borrar($oAccion);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
     public function existeAccion($oAccion)
@@ -238,7 +256,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->existe($filtro);
         }catch(Exception $e){
-           throw new Exception($e->getMessage());
+           throw new Exception($e);
         }        
     }
 
@@ -248,7 +266,7 @@ class AdminController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);            
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
 
@@ -286,7 +304,6 @@ class AdminController
             return $result;
         }catch(Exception $e){
             throw new Exception($e);
-            return false;
         }    
     }
     
@@ -300,7 +317,7 @@ class AdminController
             $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
             return $oPerfil->getDescripcion();
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }                
     }
 
@@ -323,7 +340,7 @@ class AdminController
                 return false;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -336,7 +353,7 @@ class AdminController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->obtenerPerfiles();
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }            
     }
 
@@ -374,7 +391,7 @@ class AdminController
                     break;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -384,7 +401,7 @@ class AdminController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -397,7 +414,7 @@ class AdminController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -410,7 +427,7 @@ class AdminController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -422,7 +439,7 @@ class AdminController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
     
@@ -433,7 +450,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oInstitucionIntermediary->obtenerInstitucionesSolicitud($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -445,7 +462,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oInstitucionIntermediary->obtenerSolicitudes($filtro, $iRecordsTotal, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
     
@@ -462,7 +479,7 @@ class AdminController
                 return null;
             }
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
 
@@ -474,7 +491,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
 
@@ -486,7 +503,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 
@@ -503,7 +520,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
 
@@ -513,7 +530,7 @@ class AdminController
             $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
             return $oModeracionIntermediary->guardar($oModeracion);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }        
     }
 }

@@ -29,6 +29,8 @@ class RutasModuloAdmin
                                         'action'     => 'index'
                                 ));
         $router->addRoute('adminIndexIndex', $route);
+
+        //especialidades
         $route = new RegexRoute('admin/procesar-especialidad',
                                 array(
                                         'module' => 'admin',
@@ -45,9 +47,9 @@ class RutasModuloAdmin
         $router->addRoute('adminEspecialidadListarEspecialidades', $route);
         $route = new RegexRoute('admin/nueva-especialidad',
                                 array(
-                                        'module' => 'admin',
-                                        'controller' => 'especialidad',
-                                        'action'     => 'nuevaEspecialidad'
+                                    'module' => 'admin',
+                                    'controller' => 'especialidad',
+                                    'action'     => 'nuevaEspecialidad'
                                 ));
         $router->addRoute('adminEspecialidadNuevaEspecialidad', $route);
         $route = new RegexRoute('admin/editar-especialidad',
@@ -78,13 +80,9 @@ class RutasModuloAdmin
                                         'action'     => 'verificarUsoDeEspecialidad'
                                 ));
         $router->addRoute('adminEspecialidadVerificarUsoDeEspecialidad', $route);
-        $route = new RegexRoute('admin/buscar-especialidad',
-                                array(
-                                        'module' => 'admin',
-                                        'controller' => 'especialidad',
-                                        'action'     => 'buscarEspecialidad'
-                                ));
-        $router->addRoute('adminEspecialidadBuscar', $route);
+
+
+        //categorias
         $route = new RegexRoute('admin/procesar-categoria',
                                 array(
                                         'module' => 'admin',

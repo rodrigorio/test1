@@ -19,91 +19,76 @@
 </script>
 <!--EndJsContent-->
 
-<!--BeginWidgetsContent-->
-<div class="widget increase" id="new-visitors">
-    <a href="#" class="close-widget" title="Hide Widget" rel="tooltip">x</a>
-    <span>increase</span>
-    <p><strong>+35,18<sup>%</sup></strong> +2489 new visitors</p>
-</div>
-<div class="widget decrease" id="new-orders">
-    <a href="#" class="close-widget" title="Hide Widget" rel="tooltip">x</a>
-    <span>decrease</span>
-    <p><strong>-12,50<sup>%</sup></strong> -311 new orders</p>
-</div>
-<!--EndWidgetsContent-->
-
-<!--BeginMainContent-->
-<article class="full-block clearfix"> 
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
 <header>
-    <h2>Administrador BackEnd del Sistema</h2>
+    <h2>Administrar Categorias del catalogo</h2>
 </header>
 <section>
-    <h3>Administrar categorias</h3>
+    <h3>Categorias del catalogo de software de la comunidad</h3>
 </section>
+<!--EndHeaderBlock-->
 
-<!--BeginCargarCategoriaBlock-->
-<div class="sidetab default-sidetab" id="sidetab2">
-    <h3></h3>
-    <form action="admin/procesar-categoria" method="post" name="nueva-categoria" >
-        <fieldset>
-                <legend>Nueva categoria o áreas de desempeño profesional.</legend>
-                <dl>
-                    <dt>
-                        <label>Nombre</label>
-                    </dt>
-                    <dd>
-                        <input type="hidden" name="id" value="{iCategoriaId}">
-                        <input type="text" class="small" name="nombre" value="{sNombre}">
-                        <p>Nombre de la categoria o área de desempeño profesional.</p>
-                    </dd>
-                    <dt>
-                        <label>Descripcion</label>
-                    </dt>
-                    <dd>
-                        <!-- Use class .wysiwyg for jQuery jWYSIWYG initiation -->
-                        <textarea name="descripcion" rows="5" cols="40" class="wysiwyg large">{sDescripcion}</textarea>
-                        <p>Breve descripcion.</p>
-                    </dd>
-                </dl>
-        </fieldset>
-        <button type="submit">Submit</button> or <a href="javascript: reset();">Cancel</a>
-    </form>
-</div>
-<!--EndCargarCategoriaBlock-->
-<!--BeginListadoCategoriasBlock-->
-<div class="col2" id="categorias">
-<form name="editar" action="admin/editar-categoria" method="post">
-  	<input type="hidden" name="iCategoriaId" id="iCategoriaId">
+<!--BeginFormCategoriaBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formCategoria" name="formCategoria" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <dt>
+        <label for="nombre">Nombre</label>
+    </dt>
+    <dd>
+        <input type="text" class="small" name="nombre" id="nombre" value="{sNombre}">
+    </dd>
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 large maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+    
+    <!--BeginSubmitCrearCategoriaBlock-->
+    <button id="crearCategoria" name="crearCategoria" type="submit">Crear Categoria</button>
+    <!--EndSubmitCrearCategoriaBlock-->
+
+    <!--BeginSubmitModificarCategoriaBlock-->
+    <button id="modificarCategoria" name="modificarCategoria" type="submit">Modificar Categoria</button>
+    <input type="hidden" name="iCategoriaId" id="iCategoriaId" value="{iCategoriaId}">
+    <!--EndSubmitModificarCategoriaBlock-->
+
+    <div style="display:none"  id='msg_form_categoria' class="notification">
+        <p class="msg"></p>
+    </div>
 </form>
-<table class="datatable">
-    <thead>
-        <tr>
-        <th>&nbsp;</th>
-        <th>Nombre</th>
-        <th>Descripcion</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
-        </tr>
-    </thead>
-    <tbody>
-    <!--BeginListaCategoriasBlock-->
+<!--EndFormCategoriaBlock-->
+
+
+<!--BeginListadoCategoriasBlock-->
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginCategoriasBlock-->
         <tr class="{odd}">
-        	<td>
-        	<input type="checkbox">
-        	</td>
             <td>{sNombre}</td>
             <td>{sDescripcion}</td>
-            <td><span class="i bs edit" onclick="editarCategoria({iCategoriaId});"></span></td>
-            <td><span class="i bs delete" onclick="verificarUsoCategoria({iCategoriaId});"></span></td>
+            <td>
+                <a rel="tooltip" original-title="Editar Categoria" href="{hrefEditarCategoria}"><span class="i bs edit ihover"></span></a>
+                <span title="eliminar categoria" rel="{iCategoriaId}" class="i bs delete ihover borrarCategoria"></span>
+            </td>
         </tr>
-    <!--EndListaCategoriasBlock-->
-    <!--BeginNoRecordsListaCategoriasBlock-->
-	    <tr>
-	       	<td colspan="5">{sNoRecords}</td>
-	    </tr>
-    <!--EndNoRecordsListaCategoriasBlock-->
-    </tbody>
-</table>
-</div>
+        <!--EndCategoriasBlock-->
+        <!--BeginNoRecordsCategoriasBlock-->
+        <tr>
+            <td colspan="3">No hay categorias cargadas</td>
+        </tr>
+        <!--EndNoRecordsCategoriasBlock-->
+        </tbody>
+    </table>
+</section>
 <!--EndListadoCategoriasBlock-->
-<!--EndMainContent-->

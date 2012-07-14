@@ -1,10 +1,5 @@
 <?php
 
-/**
- *  Action Controller Publicaciones
- *
- * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.*
- */
 class EspecialidadControllerAdmin extends PageControllerAbstract
 {
     private function setFrameTemplate(){
@@ -31,8 +26,13 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
         
         return $this;
     }
-    
+
     public function index(){
+        $this->listarEspecialidades();
+    }
+    
+    public function listarEspecialidades()
+    {
         try{
             $this->setFrameTemplate()
                  ->setHeadTag();
@@ -42,214 +42,211 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
 
             $this->printMsgTop();
 
-            $this->getTemplate()->set_var("CargarEspecialidadBlock","");
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
-            //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
-            $filtro = array();
-           	$iRecordPerPage	= 5;
-	    	$iPage			= $this->getRequest()->getPost("iPage");
-		   	$iPage			= strlen($iPage) ? $iPage : 1;
-		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-			$iMinLimit		= ($iPage-1) * $iItemsForPage;
-			$sOrderBy		= null;	
-			$sOrder			= null;
-			$iRecordsTotal	= 0;
-            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "ListadoEspecialidadesBlock");
+
+            $iRecordsTotal = 0;
+            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro = array(), $iRecordsTotal, null, null, null);
             if(count($vEspecialidad)>0){
-            	$i=0;
-	            foreach ($vEspecialidad as $oEspecialidad){
-	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-	                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
-	                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
-	                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
-	                $i++;
-	            }
-                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
-            }else{
-                $this->getTemplate()->set_var("ListaEspecialidadesBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-	            $this->getTemplate()->parse("noRecords", false);
-            }
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-        }catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function nuevaEspecialidad(){
-         try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
-
-            $this->printMsgTop();
-            
-            $this->getTemplate()->set_var("ListadoEspecialidadesBlock","");
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
-            //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-        }catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function editarEspecialidad(){
-         try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
-
-            $this->printMsgTop();
-            
-            $this->getTemplate()->set_var("ListadoEspecialidadesBlock","");
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "WidgetsContent");
-            //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "MainContent");
-            
-            if($this->getRequest()->getPost("iEspecialidadId")!=""){
-                $filtro = array("e.id"=>$this->getRequest()->getPost("iEspecialidadId"));
-                $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
                 foreach ($vEspecialidad as $oEspecialidad){
-	                $this->getTemplate()->set_var("iEspecialidadId",     $oEspecialidad->getId());
-	                $this->getTemplate()->set_var("sNombre",     $oEspecialidad->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
+
+                    $hrefEditarEspecialidad = $this->getUrlFromRoute("adminEspecialidadEditarEspecialidad", true)."?id=".$oEspecialidad->getId();
+
+                    $this->getTemplate()->set_var("hrefEditarEspecialidad", $hrefEditarEspecialidad);
+                    $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
+                    $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
+
+                    $sDescripcion = (null === $oEspecialidad->getDescripcion())?" - ":$oEspecialidad->getDescripcion();
+                    $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
+                    $this->getTemplate()->parse("EspecialidadesBlock", true);
                 }
+                $this->getTemplate()->set_var("NoRecordsEspecialidadesBlock", "");
+            }else{
+                $this->getTemplate()->set_var("EspecialidadesBlock", "");
             }
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
+    public function nuevaEspecialidad()
+    {
+        try{            
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
+
+            $this->printMsgTop();
+            
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "FormEspecialidadBlock");
+
+            $this->getTemplate()->set_var("sTituloForm", "Crear nueva especialidad");
+            $this->getTemplate()->set_var("SubmitModificarEspecialidadBlock", "");
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
+    public function editarEspecialidad()
+    {
+        try{
+            $iEspecialidadId = $this->getRequest()->getParam('id');
+
+            if(empty($iEspecialidadId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+            
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "FormEspecialidadBlock");
+
+            $this->getTemplate()->set_var("sTituloForm", "Modificar especialidad");
+            $this->getTemplate()->set_var("SubmitCrearEspecialidadBlock", "");
+
+            $oEspecialidad = AdminController::getInstance()->obtenerEspecialidadById($iEspecialidadId);
+
+            $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
+            $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
+            $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
                 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            
         }catch(Exception $e){
-            print_r($e);
+            throw new Exception($e);
         }
     }
-    
-    public function verificarUsoDeEspecialidad() {
-    	try{
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
-            $filtroEliminar = array("e.id"=>$this->getRequest()->getParam("id") );
-            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtroEliminar);
-            $res = false;
-			if(count($vEspecialidad)>0){
-            	$oEspecialidad = $vEspecialidad[0];
-            	$res = AdminController::getInstance()->especialidadUsadaPorUsuario($oEspecialidad);
-			}
-			echo $res;
-    	}catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function eliminarEspecialidad(){
-		try{
-			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
-            $filtroEliminar = array("e.id"=>$this->getRequest()->getPost("id"));
-            $vEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtroEliminar);
-            if(count($vEspecialidad)>0){
-            	$oEspecialidad = $vEspecialidad[0];
-	            $res = AdminController::getInstance()->eliminarEspecialidad($oEspecialidad);
-	            if($res){
-		            $filtro			 = array();
-		           	$iRecordPerPage	= 5;
-			    	$iPage			= $this->getRequest()->getPost("iPage");
-				   	$iPage			= strlen($iPage) ? $iPage : 1;
-				  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-					$iMinLimit		= ($iPage-1) * $iItemsForPage;
-					$sOrderBy		= null;	
-					$sOrder			= null;
-					$iRecordsTotal	= 0;
-		            $vEspecialidad 	= AdminController::getInstance()->obtenerEspecialidad($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
-		            if(count($vEspecialidad)>0){
-		            	$i=0;
-			            foreach ($vEspecialidad as $oEspecialidad){
-			            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-			                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
-			                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
-			                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
-			                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
-			                $i++;
-			            }
-		                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
-		            }else{
-		                $this->getTemplate()->set_var("listaEspecialidad", "");
-		                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
-		                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-			            $this->getTemplate()->parse("noRecords", false);
-		            }
-	            }
-            }
-            $this->getResponse()->setBody($this->getTemplate()->pparse('listaEspecialidad', false));
-        }catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function procesarEspecialidad(){
-        try{
-            $sNombre        = $this->getRequest()->getPost("nombre");
-            $sDescripcion   = $this->getRequest()->getPost("descripcion");
-            if($sNombre == "" && $sDescripcion==""){
-                $this->index();
-                return;
-            }
-            if($this->getRequest()->getPost("id")!=""){
-                $filtro = array("e.id"=>$this->getRequest()->getPost("id"));
-                $oEspecialidad = AdminController::getInstance()->obtenerEspecialidad($filtro);
-                $oEspecialidad = $oEspecialidad[0];
-            }else{
-                $oEspecialidad = Factory::getEspecialidadInstance(new stdClass());
-            }
-			$oEspecialidad->setDescripcion($sDescripcion);
+
+    /**
+     * Si viene id quiere decir que se esta modificando y se verifica si existe el nombre
+     * pero con la excepcion de ese registro.
+     *
+     * si no viene id la especialidad no existe y se fija si ya se usa el nombre en toda
+     * la tabla
+     */
+    public function verificarUsoDeEspecialidad()
+    {
+        $iEspecialidadId = $this->getRequest()->getParam('iEspecialidadId');
+        $sNombre = $this->getRequest()->getParam('sNombre');
+
+        if(null === $iEspecialidadId){
+            $oEspecialidad = new stdClass();
+            $oEspecialidad->sNombre = $sNombre;
+            $oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
+        }else{
+            $oEspecialidad = AdminController::getInstance()->obtenerEspecialidadById($iEspecialidadId);
+            //no lo guardo es solo para la comprobacion
             $oEspecialidad->setNombre($sNombre);
-            $r = AdminController::getInstance()->guardarEspecialidad($oEspecialidad);
-            $this->index();
+        }
+
+        $dataResult = '0';
+        if(AdminController::getInstance()->verificarExisteEspecialidad($oEspecialidad)){
+            $dataResult = '1';
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
+    }
+    
+    public function eliminarEspecialidad()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        $iEspecialidadId = $this->getRequest()->getParam('iEspecialidadId');
+        if(empty($iEspecialidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+        
+        try{
+
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            try{
+                $result = AdminController::getInstance()->borrarEspecialidad($iEspecialidadId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "La especialidad fue eliminada del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "No se pudo eliminar la institucion del sistema. Compruebe que ningun usuario este asociado a esta especialidad.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            
         }catch(Exception $e){
-            print_r($e);
+            throw new Exception($e);
         }
     }
     
-  	public function buscarEspecialidad(){
-		try{
-			$this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "listaEspecialidad", "ListadoEspecialidadesBlock");
-            $filtro = array("e.nombre"=>$this->getRequest()->getPost("nombre"));
-           	$iRecordPerPage	= 5;
-	    	$iPage			= $this->getRequest()->getPost("iPage");
-		   	$iPage			= strlen($iPage) ? $iPage : 1;
-		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-			$iMinLimit		= ($iPage-1) * $iItemsForPage;
-			$sOrderBy		= null;	
-			$sOrder			= null;
-			$iRecordsTotal	= 0;
-            $vEspecialidad = AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
-            if(count($vEspecialidad)>0){
-            	$i=0;
-	            foreach ($vEspecialidad as $oEspecialidad){
-	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-	                $this->getTemplate()->set_var("iEspecialidadId", $oEspecialidad->getId());
-	                $this->getTemplate()->set_var("sNombre", $oEspecialidad->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oEspecialidad->getDescripcion());
-	                $this->getTemplate()->parse("ListaEspecialidadesBlock", true);
-	                $i++;
-	            }
-                $this->getTemplate()->set_var("NoRecordsListaEspecialidadesBlock", "");
-            }else{
-                $this->getTemplate()->set_var("listaEspecialidad", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "noRecords", "NoRecordsListaEspecialidadesBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-	            $this->getTemplate()->parse("noRecords", false);
+    public function procesarEspecialidad()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sNombre = $this->getRequest()->getPost("nombre");
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+
+            if($this->getRequest()->has('crearEspecialidad')){
+                $oEspecialidad = new stdClass();
+                $oEspecialidad->sNombre = $sNombre;
+                $oEspecialidad->sDescripcion = $sDescripcion;
+                $oEspecialidad = Factory::getEspecialidadInstance($oEspecialidad);
+
+                $accion = "agregarEspecialidad";
+                $mensaje = "Se agrego la especialidad al sistema";
             }
-            $this->getResponse()->setBody($this->getTemplate()->pparse('listaEspecialidad', false));
+            
+            if($this->getRequest()->has('modificarEspecialidad')){
+                $iEspecialidadId = $this->getRequest()->getPost("iEspecialidadId");
+                $oEspecialidad = AdminController::getInstance()->obtenerEspecialidadById($iEspecialidadId);
+                $oEspecialidad->setNombre($sNombre);
+                $oEspecialidad->setDescripcion($sDescripcion);
+
+                $accion = "modificarEspecialidad";
+                $mensaje = "La especialidad se modifico exitosamente";
+            }
+
+            if(AdminController::getInstance()->verificarExisteEspecialidad($oEspecialidad)){
+                $this->getJsonHelper()->setMessage("Ya existe una especialidad con ese nombre.");
+                $this->getJsonHelper()->setSuccess(false);
+            }else{
+                AdminController::getInstance()->guardarEspecialidad($oEspecialidad);
+                $this->getJsonHelper()->setMessage($mensaje);
+                $this->getJsonHelper()->setValor($accion, $mensaje);
+                $this->getJsonHelper()->setSuccess(true);
+            }
+                                           
         }catch(Exception $e){
-            print_r($e);
+            $this->getJsonHelper()->setSuccess(false);
         }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }

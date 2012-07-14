@@ -63,13 +63,16 @@ class Categoria {
 	public function getNombre(){
 		return $this->sNombre;
 	}
-	/**
-	 * @return string $sDescripcion
-	 */
-	public function getDescripcion(){
-		return $this->sDescripcion;
-	}
- /**
+        
+    public function getDescripcion($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
+    }
+
+    /**
      * @return array|null Archivo
      */
     public function getArchivos()
@@ -80,4 +83,3 @@ class Categoria {
         return $this->aArchivos;
     }
 }
-?>

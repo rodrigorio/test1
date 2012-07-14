@@ -113,6 +113,167 @@ class PersonasControllerAdmin extends PageControllerAbstract
             $this->eliminarPersona();
             return;
         }
+
+        if($this->getRequest()->has('ampliarPersona')){
+            $this->ampliarPersona();
+            return;
+        }
+    }
+
+    private function ampliarPersona()
+    {
+        $iPersonaId = $this->getRequest()->getParam('iPersonaId');
+        if(empty($iPersonaId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "popUpContent", "FichaPersonaBlock");
+
+            $oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($iPersonaId);
+
+            $iPaisId = "";
+            $iProvinciaId = "";
+            $iCiudadId = "";
+            $sUbicacion = "";
+            if(null != $oDiscapacitado->getCiudad()){
+                $iCiudadId = $oDiscapacitado->getCiudad()->getId();
+                $sUbicacion .= $oDiscapacitado->getCiudad()->getNombre();
+                if(null != $oDiscapacitado->getCiudad()->getProvincia()){
+                    $iProvinciaId = $oDiscapacitado->getCiudad()->getProvincia()->getId();
+                    $sUbicacion .= " ".$oDiscapacitado->getCiudad()->getProvincia()->getNombre();
+                    if(null != $oDiscapacitado->getCiudad()->getProvincia()->getPais()){
+                        $iPaisId = $oDiscapacitado->getCiudad()->getProvincia()->getPais()->getId();
+                        $sUbicacion .= " ".$oDiscapacitado->getCiudad()->getProvincia()->getPais()->getNombre();
+                    }
+                }
+            }
+
+            $sDomicilio = $oDiscapacitado->getDomicilio();
+            $sTelefono = $oDiscapacitado->getTelefono();
+            $sNombreApellidoPadre = $oDiscapacitado->getNombreApellidoPadre();
+            $sNombreApellidoMadre = $oDiscapacitado->getNombreApellidoMadre();
+            $sOcupacionPadre = $oDiscapacitado->getOcupacionPadre(true);
+            $sOcupacionMadre = $oDiscapacitado->getOcupacionMadre(true);
+            $sNombreHermanos = $oDiscapacitado->getNombreHermanos(true);
+
+            if(null !== $oDiscapacitado->getInstitucion()){
+                $iInstitucionId = $oDiscapacitado->getInstitucion()->getId();
+                $sInstitucion = $oDiscapacitado->getInstitucion()->getNombre();
+                $this->getTemplate()->set_var("iInstitucionId",$iInstitucionId);
+                $this->getTemplate()->set_var("sNombreInstitucion",$sInstitucion);
+            }else{
+                $this->getTemplate()->set_var("InstitucionBlock", "");
+            }
+
+            //foto de perfil actual
+            $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+            if(null != $oDiscapacitado->getFotoPerfil()){
+                $oFoto = $oDiscapacitado->getFotoPerfil();
+                $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+            }else{
+                $pathFotoServidorMediumSize=$pathFotoServidorBigSize=$this->getUploadHelper()->getDirectorioUploadFotos().$oDiscapacitado->getNombreAvatar(true);
+            }
+            $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
+            $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
+
+            $this->getTemplate()->set_var("iPersonaId", $iPersonaId);
+
+            $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+            $sDocumento = $aTiposDocumentos[$oDiscapacitado->getTipoDocumento()]." ".$oDiscapacitado->getNumeroDocumento();
+
+            $sSexo = ($oDiscapacitado->getSexo() == 'm')?"Masculino":"Femenino";
+
+            $sFechaNacimiento = Utils::fechaFormateada($oDiscapacitado->getFechaNacimiento(), "d/m/Y");
+            $sNacimientoPadre = Utils::fechaFormateada($oDiscapacitado->getFechaNacimientoPadre(), "d/m/Y");
+            $sNacimientoMadre = Utils::fechaFormateada($oDiscapacitado->getFechaNacimientoMadre(),"d/m/Y");
+
+            //los textarea si estan vacios le pongo un guion para que quede bien la vista
+            if(empty($sOcupacionPadre)){$sOcupacionPadre = " - ";}
+            if(empty($sOcupacionMadre)){$sOcupacionMadre = " - ";}
+            if(empty($sNombreHermanos)){$sNombreHermanos = " - ";}
+
+            $this->getTemplate()->set_var("sNombre", $oDiscapacitado->getNombre());
+            $this->getTemplate()->set_var("sDocumento", $sDocumento);
+            $this->getTemplate()->set_var("sSexo",$sSexo);
+            $this->getTemplate()->set_var("sFechaNacimiento",$sFechaNacimiento);
+            $this->getTemplate()->set_var("sUbicacion",$sUbicacion);
+            $this->getTemplate()->set_var("sTelefono",$sTelefono);
+            $this->getTemplate()->set_var("sDomicilio",$sDomicilio);
+
+            $this->getTemplate()->set_var("sNombreApellidoPadre",$sNombreApellidoPadre);
+            $this->getTemplate()->set_var("sOcupacionPadre",$sOcupacionPadre);
+            $this->getTemplate()->set_var("sNacimientoPadre",$sNacimientoPadre);
+            $this->getTemplate()->set_var("sNombreApellidoMadre",$sNombreApellidoMadre);
+            $this->getTemplate()->set_var("sOcupacionMadre",$sOcupacionMadre);
+            $this->getTemplate()->set_var("sNacimientoMadre",$sNacimientoMadre);
+            $this->getTemplate()->set_var("sNombreHermanos",$sNombreHermanos);
+
+            //listado de integrantes asociados a la persona
+            $aUsuarios = SeguimientosController::getInstance()->obtenerUsuariosAsociadosPersona($iPersonaId);
+
+            if(count($aUsuarios) > 0){
+                $this->getTemplate()->set_var("IntegranteNoRecords", "");
+
+                foreach($aUsuarios as $oUsuario){
+
+                    //foto de perfil actual
+                    $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                    if(null != $oUsuario->getFotoPerfil()){
+                        $oFoto = $oUsuario->getFotoPerfil();
+                        $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                        $this->getTemplate()->set_var("hrefFotoPerfilIntegrante", $pathFotoServidorBigSize);
+                    }else{
+                        $this->getTemplate()->set_var("hrefFotoPerfilIntegrante", $scrAvatarAutor);
+                    }
+                    $this->getTemplate()->set_var("scrAvatarIntegrante", $scrAvatarAutor);
+
+                    $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                    $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
+                    $this->getTemplate()->set_var("sEmail", $oUsuario->getEmail());
+
+                    if(null !== $oUsuario->getTelefono()){
+                        $this->getTemplate()->set_var("sTelefono", $oUsuario->getTelefono());
+                    }else{
+                        $this->getTemplate()->set_var("sTelefono", " - ");
+                    }
+
+                    if(null !== $oUsuario->getCelular()){
+                        $this->getTemplate()->set_var("sCelular", $oUsuario->getCelular());
+                    }else{
+                        $this->getTemplate()->set_var("sCelular", " - ");
+                    }
+
+                    if(null !== $oUsuario->getFax()){
+                        $this->getTemplate()->set_var("sFax", $oUsuario->getFax());
+                    }else{
+                        $this->getTemplate()->set_var("sFax", " - ");
+                    }
+
+                    if(null !== $oUsuario->getCurriculumVitae()){
+                        $hrefDescargarCv = "";
+                        $oArchivo = $oUsuario->getCurriculumVitae();
+                        $hrefDescargarCv = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
+                        $this->getTemplate()->set_var("hrefDescargarCv", $hrefDescargarCv);
+                        $this->getTemplate()->parse("CvBlock");
+                    }else{
+                        $this->getTemplate()->set_var("CvBlock", "");
+                    }
+
+                    $this->getTemplate()->parse("IntegranteBlock", true);
+                }
+            }else{
+                $this->getTemplate()->set_var("IntegranteBlock", "");
+            }
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }            
     }
 
     private function eliminarPersona()
