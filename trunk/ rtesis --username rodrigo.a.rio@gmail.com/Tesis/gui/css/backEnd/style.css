@@ -58,7 +58,7 @@ body, select, input, textarea { color:#666; }
 .male3{margin-left:20px} .mari3{margin-right:20px} .mato3{margin-top:20px} .mabo3{margin-bottom:20px !important}
 .ma0{margin:0 !important} .male0{margin-left:0 !important} .mari0{margin-right:0 !important} .mato0{margin-top:0 !important} .mabo0{margin-bottom:0 !important}
 
-.di_bl{display:block} .di_no{display:none !important} .di_in{display:inline}
+.di_bl{display:block} .di_no{display:none !important} .di_in{display:inline} .di_inbl{display:inline-block !important}
 .cl_bo{clear:both} .cl_le{clear:left !important} .cl_ri{clear:right !important}
 .teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center}
 .tetr_ca{text-transform:capitalize}

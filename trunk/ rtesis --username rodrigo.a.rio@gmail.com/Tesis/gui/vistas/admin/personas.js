@@ -124,6 +124,68 @@ function borrarDiscapacitado(personaId){
     }
 }
 
+function ampliarPersona(iPersonaId){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Ficha Persona ID: '+iPersonaId+'"></div>').appendTo('body');
+
+    dialog.load(
+        "admin/personas-procesar",
+        {
+            ampliarPersona:"1",
+            iPersonaId:iPersonaId
+        },
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:600,
+                resizable:false,
+                draggable:true,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsAdmin();
+            $("a[rel^='prettyPhoto']").prettyPhoto();
+        }
+    );
+}
+
+function ampliarInstitucion(iInstitucionId){
+
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Ficha Institucion ID: '+iInstitucionId+'"></div>').appendTo('body');
+
+    dialog.load(
+        "admin/instituciones-procesar",
+        {
+            ampliarInstitucion:"1",
+            iInstitucionId:iInstitucionId
+        },
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:700,
+                resizable:false,
+                draggable:true,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsAdmin();
+            $("a[rel^='prettyPhoto']").prettyPhoto();
+        }
+    );
+}
+
 $(document).ready(function(){
     $("a[rel^='prettyPhoto']").prettyPhoto();
 
@@ -140,5 +202,16 @@ $(document).ready(function(){
     $(".borrarDiscapacitado").click(function(){
         var personaId = $(this).attr("rel");
         borrarDiscapacitado(personaId);
+    });
+
+    $(".ampliarInstitucion").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        ampliarInstitucion(iInstitucionId);
+        return false;
+    });
+
+    $(".ampliarPersona").live('click', function(){
+        var iPersonaId = $(this).attr("rel");
+        ampliarPersona(iPersonaId);        
     });
 });

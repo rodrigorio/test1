@@ -19,92 +19,76 @@
 </script>
 <!--EndJsContent-->
 
-<!--BeginWidgetsContent-->
-<div class="widget increase" id="new-visitors">
-    <a href="#" class="close-widget" title="Hide Widget" rel="tooltip">x</a>
-    <span>increase</span>
-    <p><strong>+35,18<sup>%</sup></strong> +2489 new visitors</p>
-</div>
-<div class="widget decrease" id="new-orders">
-    <a href="#" class="close-widget" title="Hide Widget" rel="tooltip">x</a>
-    <span>decrease</span>
-    <p><strong>-12,50<sup>%</sup></strong> -311 new orders</p>
-</div>
-<!--EndWidgetsContent-->
-
-<!--BeginMainContent-->
-<article class="full-block clearfix"> 
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
 <header>
-    <h2>Administrador BackEnd del Sistema</h2>
+    <h2>Administrar especialidades integrantes comunidad</h2>
 </header>
 <section>
-    <h3>Administrar especialidades</h3>
+    <h3>Especialidades que los integrantes pueden seleccionar al editar su perfil</h3>
 </section>
+<!--EndHeaderBlock-->
 
-<!--BeginCargarEspecialidadBlock-->
-<div class="sidetab default-sidetab" id="sidetab2">
-    <h3></h3>
-    <form action="admin/procesar-especialidad" method="post" name="nueva-especialidad" >
-        <fieldset>
-                <legend>Nueva especialidad.</legend>
-                <dl>
-                    <dt>
-                        <label>Nombre</label>
-                    </dt>
-                    <dd>
-                        <input type="hidden" name="id" value="{iEspecialidadId}">
-                        <input type="text" class="small" name="nombre" value="{sNombre}">
-                        <p>Nombre de la especialidad.</p>
-                    </dd>
-                    <dt>
-                        <label>Descripcion</label>
-                    </dt>
-                    <dd>
-                        <!-- Use class .wysiwyg for jQuery jWYSIWYG initiation -->
-                        <textarea name="descripcion" rows="5" cols="40" class="wysiwyg large">{sDescripcion}</textarea>
-                        <p>Breve descripcion.</p>
-                    </dd>
-                </dl>
-        </fieldset>
-        <button type="submit">Submit</button> or <a href="javascript: reset();">Cancel</a>
-    </form>
-</div>
-<!--EndCargarEspecialidadBlock-->
+<!--BeginFormEspecialidadBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formEspecialidad" name="formEspecialidad" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <dt>
+        <label for="nombre">Nombre</label>
+    </dt>
+    <dd>
+        <input type="text" class="small" name="nombre" id="nombre" maxlength="50" value="{sNombre}">
+        <p>Nombre de la especialidad.</p>
+    </dd>
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 medium maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <!--BeginSubmitCrearEspecialidadBlock-->
+    <button id="crearEspecialidad" name="crearEspecialidad" type="submit">Crear Especialidad</button>
+    <!--EndSubmitCrearEspecialidadBlock-->
+
+    <!--BeginSubmitModificarEspecialidadBlock-->
+    <button id="modificarEspecialidad" name="modificarEspecialidad" type="submit">Modificar Especialidad</button>
+    <input type="hidden" name="iEspecialidadId" id="iEspecialidadId" value="{iEspecialidadId}">
+    <!--EndSubmitModificarEspecialidadBlock-->
+
+    <div style="display:none"  id='msg_form_especialidad' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormEspecialidadBlock-->
 
 <!--BeginListadoEspecialidadesBlock-->
-<div class="col2" id="especialidades">
-<form name="editar" action="admin/editar-especialidad" method="post">
-  	<input type="hidden" name="iEspecialidadId" id="iEspecialidadId">
-</form>
-<table class="datatable">
-    <thead>
-        <tr>
-        <th>&nbsp;</th>
-        <th>Nombre</th>
-        <th>Descripcion</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
-        </tr>
-    </thead>
-    <tbody>
-    <!--BeginListaEspecialidadesBlock-->
-        <tr class="{odd}">
-        	<td>
-        	<input type="checkbox">
-        	</td>
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginEspecialidadesBlock-->
+        <tr class="{iEspecialidadId}">
             <td>{sNombre}</td>
-            <td>{sDescripcion}</td>
-            <td><span class="i bs edit" onclick="editarEspecialidad({iEspecialidadId});"></span></td>
-            <td><span class="i bs delete" onclick="verificarUsoEspecialidad({iEspecialidadId});"></span></td>
+            <td class="medium">{sDescripcion}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Especialidad" href="{hrefEditarEspecialidad}"><span class="i bs edit ihover"></span></a>
+                <span title="eliminar especialidad" rel="{iEspecialidadId}" class="i bs delete ihover borrarEspecialidad"></span>
+            </td>
         </tr>
-    <!--EndListaEspecialidadesBlock-->
-    <!--BeginNoRecordsListaEspecialidadesBlock-->
-	    <tr>
-	       	<td colspan="5">{sNoRecords}</td>
-	    </tr>
-    <!--EndNoRecordsListaEspecialidadesBlock-->
-    </tbody>
-</table>
-</div>
+        <!--EndEspecialidadesBlock-->
+        <!--BeginNoRecordsEspecialidadesBlock-->
+        <tr>
+            <td colspan="3">No hay especialidades cargadas</td>
+        </tr>
+        <!--EndNoRecordsEspecialidadesBlock-->
+        </tbody>
+    </table>
+</section>
 <!--EndListadoEspecialidadesBlock-->
-<!--EndMainContent-->

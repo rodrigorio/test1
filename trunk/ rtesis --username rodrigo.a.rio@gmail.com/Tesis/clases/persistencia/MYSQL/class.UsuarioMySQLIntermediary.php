@@ -1243,7 +1243,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     	try{
             $db = $this->conn;
 
-            $nombreUsuario = $this->escInt($numeroDocumento);
+            $numeroDocumento = $this->escStr($numeroDocumento);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe

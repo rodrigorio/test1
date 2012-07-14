@@ -370,7 +370,7 @@ function aprobarSolicitud(iInstitucionId, iUsuarioId){
 
 $(document).ready(function(){
     
-    $(".borrarInstitucion").click(function(){
+    $(".borrarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
         borrarInstitucion(iInstitucionId);
     });

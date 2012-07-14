@@ -1,10 +1,5 @@
 <?php
 
-/**
- *  Action Controller Categoria
- *
- * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.*
- */
 class CategoriaControllerAdmin extends PageControllerAbstract
 {
     private function setFrameTemplate(){

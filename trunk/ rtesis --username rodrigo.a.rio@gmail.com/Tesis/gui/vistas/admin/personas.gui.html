@@ -24,10 +24,10 @@
 <!--BeginHeaderBlock-->
 <article class="full-block clearfix">
 <header>
-    <h2>Moderar entidades sistema</h2>
+    <h2>Administrar Personas</h2>
 </header>
 <section>
-    <h3>Aprobar-Rechazar modificaciones en discapacitados</h3>
+    <h3>Listado de las personas cargadas en el sistema a las que se les realiza seguimientos</h3>
 </section>
 <!--EndHeaderBlock-->
 
@@ -54,7 +54,10 @@
                 <td>{sNombreDiscapacitado}</td>
                 <td>{sDocumento}</td>
                 <td>{sNombreUsuarioAsignado}</td>
-                <td class="teal_ce"><span rel="{iPersonaId}" class="i bs delete ihover borrarDiscapacitado"></span></td>
+                <td class="teal_ce">
+                    <span title="Ampliar" rel="{iPersonaId}" class="i mi expand ihover ampliarPersona mari"></span>
+                    <span rel="{iPersonaId}" class="i bs delete ihover borrarDiscapacitado"></span>
+                </td>
             </tr>
         <!--EndPersonasBlock-->
         <!--BeginNoRecordsPersonasBlock-->
@@ -242,3 +245,114 @@
     </table>
 </section>
 <!--EndListadoModeracionesBlock-->
+
+<!--BeginFichaPersonaBlock-->
+<article class="full-block pa2 clearfix mabo0">
+    <header>
+        <h2>Informaci&oacute;n B&aacute;sica</h2>
+    </header>
+    <section class="di_bl mabo2">
+        <div class="teal_le mabo2">
+
+            <!--BeginFotoPerfilActualBlock-->
+            <div id="fotoPerfilActualCont" class="teal_le mabo2">
+                <div class="image-frame left">
+                    <img src="{scrFotoPerfilActual}" />
+                    <ul class="image-actions">
+                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--EndFotoPerfilActualBlock-->
+
+            <p>
+                <span class="fowe_bo teta_up">nombre:</span> {sNombre}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">documento:</span> {sDocumento}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">sexo:</span> {sSexo}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">fecha nacimiento:</span> {sFechaNacimiento}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">tel&eacute;fono:</span> {sTelefono}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">ubicaci&oacute;n:</span> {sUbicacion}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">domicilio:</span> {sDomicilio}
+            </p>
+        </div>        
+    </section>
+
+    <header>
+        <h2>Informaci&oacute;n Adicional</h2>
+    </header>    
+    <section class="di_bl mabo2">
+        
+        <div class="teal_le mabo3">
+            
+            <p>
+                <span class="fowe_bo teta_up">nombre padre:</span> {sNombreApellidoPadre}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">nacimiento padre:</span> {sNacimientoPadre}
+            </p>
+            <div class="fowe_bo teta_up mabo">ocupaci&oacute;n padre</div>
+            <div class="baco2 pa mabo2">{sOcupacionPadre}</div>
+
+            <p>
+                <span class="fowe_bo teta_up">nombre madre:</span> {sNombreApellidoMadre}
+            </p>
+            <p>
+                <span class="fowe_bo teta_up">nacimiento madre:</span> {sNacimientoMadre}
+            </p>
+            <div class="fowe_bo teta_up mabo">ocupaci&oacute;n madre</div>
+            <div class="baco2 pa mabo2">{sOcupacionMadre}</div>
+
+            <div class="fowe_bo teta_up mabo">hermanos</div>
+            <div class="baco2 pa mabo2">{sNombreHermanos}</div>
+
+            <!--BeginInstitucionBlock-->
+            <p>
+                <span class="fowe_bo teta_up">institucion:</span>
+                <a title="Ampliar" rel="{iInstitucionId}" class="ampliarInstitucion">{sNombreInstitucion}</a>
+            </p>
+            <!--EndInstitucionBlock-->
+        </div>
+    </section>
+
+    <header>
+        <h2>Integrantes siguiendo a esta persona</h2>
+    </header>
+
+    <section>
+        <div class="teal_le mabo3">
+            <!--BeginIntegranteBlock-->
+            <div class="pa mari2 mabo2 baco2 fl_le">
+                <a href="{hrefFotoPerfilIntegrante}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                    <img src="{scrAvatarIntegrante}" />
+                </a>
+                <span class="txt_imp2 mari">{sNombreUsuario}</span>
+                <br clear="all">
+                <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
+                <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefono}</span><br>
+                <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelular}</span><br>
+                <span class="co1 fte2">Fax: {sFax}</span><br>
+                <!--BeginCvBlock-->
+                <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCv}">Descargar</a></span>
+                <!--EndCvBlock-->
+            </div>
+            <!--EndIntegranteBlock-->
+
+            <!--BeginIntegranteNoRecords-->
+            <div class="teal_ce fowe_bo">No hay integrantes de la comunidad siguiendo a esta persona</div>
+            <!--EndIntegranteNoRecords-->
+        </div>
+    </section>
+</article>
+<!--EndFichaPersonaBlock-->
