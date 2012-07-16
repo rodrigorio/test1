@@ -19,10 +19,6 @@ class Archivo
     private $iOrden = "";
     private $sTitulo;
     private $sTipo;
-    private $bModerado;
-    private $bActivo;
-    private $bPublico;
-    private $bActivoComentarios;
 
     /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Provincia
@@ -77,9 +73,13 @@ class Archivo
         $this->sDescripcion = $sDescripcion;
         return $this;
     }
-    public function getDescripcion()
+    public function getDescripcion($nl2br = false)
     {
-        return $this->sDescripcion;
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
     }
 
     public function setTipoMime($sTipoMime)
@@ -107,9 +107,13 @@ class Archivo
         $this->sFechaAlta = $sFechaAlta;
         return $this;
     }
-    public function getFechaAlta()
-    {
-        return $this->sFechaAlta;
+
+    public function getFecha($format = false){
+        if($format){
+            return Utils::fechaFormateada($this->sFechaAlta);
+        }else{
+            return $this->sFechaAlta;
+        }
     }
 
     public function setOrden($iOrden)
@@ -156,37 +160,5 @@ class Archivo
     public function getTipo()
     {
         return $this->sTipo;
-    }
-
-    public function isModerado($flag = null){
-        if(null !== $flag){
-            $this->bModerado = $flag ? true : false;
-        }else{
-            return $this->bModerado;
-        }
-    }
-
-    public function isActivo($flag = null){
-        if(null !== $flag){
-            $this->bActivo = $flag ? true : false;
-        }else{
-            return $this->bActivo;
-        }
-    }
-
-    public function isPublico($flag = null){
-        if(null !== $flag){
-            $this->bPublico = $flag ? true : false;
-        }else{
-            return $this->bPublico;
-        }
-    }
-
-    public function isActivoComentarios($flag = null){
-        if(null !== $flag){
-            $this->bActivoComentarios = $flag ? true : false;
-        }else{
-            return $this->bActivoComentarios;
-        }
-    }  
+    } 
 }

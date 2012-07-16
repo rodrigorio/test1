@@ -328,5 +328,104 @@ class RutasModuloComunidad
                                 ),
                                 'comunidad/reviews/%d-%s');
         $router->addRoute('comunidadPublicacionesVerReview', $route);
+
+
+        /////////CATALOGO DESCARGAS
+        $route = new RegexRoute('comunidad/descargas',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "index"
+                                ));
+        $router->addRoute('comunidadSoftwareIndex', $route);
+        $route = new RegexRoute('comunidad/descargas/mis-aplicaciones',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "misAplicaciones"
+                                ));
+        $router->addRoute('comunidadSoftwareMisAplicaciones', $route);
+        $route = new RegexRoute('comunidad/descargas/form-nueva-aplicacion',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "crearSoftwareForm"
+                                ));
+        $router->addRoute('comunidadSoftwareCrearSoftwareForm', $route);
+        $route = new RegexRoute('comunidad/descargas/form-modificar-aplicacion',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "modificarSoftwareForm"
+                                ));
+        $router->addRoute('comunidadSoftwareModificarSoftwareForm', $route);
+        $route = new RegexRoute('comunidad/descargas/guardar-aplicacion',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "guardarSoftware"
+                                ));
+        $router->addRoute('comunidadSoftwareGuardarSoftware', $route);
+        $route = new RegexRoute('comunidad/descargas/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "procesar"
+                                ));
+        $router->addRoute('comunidadSoftwareProcesar', $route);
+        $route = new RegexRoute('comunidad/descargas/galeria-fotos',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "galeriaFotos"
+                                ));
+        $router->addRoute('comunidadSoftwareGaleriaFotos', $route);
+        $route = new RegexRoute('comunidad/descargas/galeria-fotos/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "fotosProcesar"
+                                ));
+        $router->addRoute('comunidadSoftwareFotosProcesar', $route);
+        $route = new RegexRoute('comunidad/descargas/galeria-fotos/form',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "formFoto"
+                                ));
+        $router->addRoute('comunidadSoftwareFormFoto', $route);
+        $route = new RegexRoute('comunidad/descargas/galeria-archivos',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "galeriaArchivos"
+                                ));
+        $router->addRoute('comunidadSoftwareGaleriaArchivos', $route);
+        $route = new RegexRoute('comunidad/descargas/galeria-archivos/procesar',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "archivosProcesar"
+                                ));
+        $router->addRoute('comunidadSoftwareArchivosProcesar', $route);
+        $route = new RegexRoute('comunidad/descargas/galeria-archivos/form',
+                                array(
+                                    'module' => "comunidad",
+                                    'controller' => "software",
+                                    'action'     => "formArchivo"
+                                ));
+        $router->addRoute('comunidadSoftwareFormArchivo', $route);
+        $route = new RegexRoute('comunidad/descargas/(\d+)-(.+)',
+                                array(
+                                    'module' => 'comunidad',
+                                    'controller' => 'software',
+                                    'action'     => 'verSoftware'
+                                ),
+                                array(
+                                    1 => 'iSoftwareId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                'comunidad/descargas/%d-%s');
+        $router->addRoute('comunidadSoftwareVerAplicacion', $route);
     }
 }

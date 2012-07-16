@@ -52,6 +52,7 @@ class ComentarioMySQLIntermediary extends ComentarioIntermediary
             switch($sObjetoAsociado){
                 case "Publicacion": $sSQL .= "publicaciones_id = ".$iIdItem.", "; break;
                 case "Review": $sSQL .= "reviews_id = ".$iIdItem.", "; break;
+                case "Software": $sSQL .= "software_id = ".$iIdItem.", "; break;
             }
 
             $iUsuarioId = $oComentario->getUsuario()->getId();
@@ -137,7 +138,10 @@ class ComentarioMySQLIntermediary extends ComentarioIntermediary
             }
             if(isset($filtro['c.publicaciones_id']) && $filtro['c.publicaciones_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('c.publicaciones_id', $filtro['c.publicaciones_id'], MYSQL_TYPE_INT);
-            }                    
+            }
+            if(isset($filtro['c.software_id']) && $filtro['c.software_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('c.software_id', $filtro['c.software_id'], MYSQL_TYPE_INT);
+            }
             
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 

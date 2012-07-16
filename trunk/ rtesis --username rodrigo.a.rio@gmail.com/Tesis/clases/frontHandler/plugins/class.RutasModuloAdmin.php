@@ -132,14 +132,9 @@ class RutasModuloAdmin
                                         'action'     => 'verificarUsoDeCategoria'
                                 ));
         $router->addRoute('adminCategoriaVerificarUsoDeCategoria', $route);
-        $route = new RegexRoute('admin/buscar-categoria',
-                                array(
-                                        'module' => 'admin',
-                                        'controller' => 'categoria',
-                                        'action'     => 'buscarCategoria'
-                                ));
-        $router->addRoute('adminCategoriaBuscar', $route);
-        $router->addRoute('adminProcesarModeracion', $route);
+
+
+        //personas
         $route = new RegexRoute('admin/personas-moderacion',
                                 array(
                                         'module' => 'admin',
@@ -318,5 +313,36 @@ class RutasModuloAdmin
                                     'action'     => 'listarModeraciones'
                                 ));
         $router->addRoute('adminPublicacionesModerar', $route);
+
+
+        //software
+        $route = new RegexRoute('admin/software',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'software',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminSoftwareIndex', $route);
+        $route = new RegexRoute('admin/software-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'software',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminSoftwareProcesar', $route);
+        $route = new RegexRoute('admin/software-form',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'software',
+                                    'action'     => 'form'
+                                ));
+        $router->addRoute('adminSoftwareForm', $route);
+        $route = new RegexRoute('admin/software-moderacion',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'software',
+                                    'action'     => 'listarModeraciones'
+                                ));
+        $router->addRoute('adminSoftwareModerar', $route);
     }
 }

@@ -267,4 +267,9 @@ class Factory
         $oSolicitud = new Solicitud($obj);
         return $oSolicitud;
     }
+    
+    public static function &getSoftwareInstance(stdClass $obj){
+        $oSoftware = new Software($obj);
+        return $oSoftware;
+    }
 }

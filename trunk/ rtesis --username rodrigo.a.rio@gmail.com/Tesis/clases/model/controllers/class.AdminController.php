@@ -105,14 +105,32 @@ class AdminController
         }
     }
 
-    public function obtenerCategoria($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public function obtenerCategoria($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            return $oCategoriaIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            return $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             throw new Exception($e);
         }
     }
+
+    public function obtenerCategoriaById($iCategoriaId)
+    {
+        try{
+            $filtro = array('c.id' => $iCategoriaId);
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aCategorias = $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aCategorias){
+                return $aCategorias[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
     public function guardarCategoria($oCategoria){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
@@ -121,7 +139,8 @@ class AdminController
             throw new Exception($e);
         }
     }
-     public function eliminarCategoria($oCategoria){
+
+    public function eliminarCategoria($oCategoria){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->borrar($oCategoria);
@@ -129,10 +148,18 @@ class AdminController
             throw new Exception($e);
         }
     }
-     public function categoriaUsadaPorUsuario($oCategoria){
+
+    public function verificarExisteCategoria($oCategoria)
+    {
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            return $oCategoriaIntermediary->especialidadUsadaPorUsuario($oCategoria);
+
+            $filtro = array('c.nombre' => $oCategoria->getNombre());
+            if(null !== $oCategoria->getId()){
+                $filtro['no_c.id'] = $oCategoria->getId();
+            }
+
+            return $oCategoriaIntermediary->existe($filtro);
         }catch(Exception $e){
             throw new Exception($e);
         }

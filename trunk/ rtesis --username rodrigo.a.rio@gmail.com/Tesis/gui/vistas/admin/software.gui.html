@@ -1,0 +1,643 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.query.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/publicaciones.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+    <header>
+        <h2>Administrar Publicaciones</h2>
+    </header>
+    <section>
+        <h3>Administrador de publicaciones y reviews de la comunidad SGPAPD</h3>
+    </section>
+</article>
+<!--EndHeaderBlock-->
+
+<!--BeginHeaderModeracionesBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Moderar publicaciones sistema</h2>
+</header>
+<section>
+    <h3>Aprobar-Rechazar publicaciones y reviews marcados como visibles al público en general</h3>
+</section>
+<!--EndHeaderModeracionesBlock-->
+
+<!--BeginListadoPublicacionesBlock-->
+<form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
+    <fieldset>
+        <legend>Filtrar B&uacute;squeda</legend>
+        <div class="mabo2 clearfix">
+            <label for="filtroTitulo">T&iacute;tulo</label> <input type="text" id="filtroTitulo" name="filtroTitulo" class="mari2">
+            <label for="filtroApellidoAutor">Apellido Autor</label> <input type="text" id="filtroApellidoAutor" name="filtroApellidoAutor">
+        </div>
+        <div class="mabo3 clearfix">
+            <label readonly="readonly" for="filtroFechaDesde">Fecha desde</label> <input type="text" id="filtroFechaDesde" name="filtroFechaDesde" class="mari2">
+            <label readonly="readonly" for="filtroFechaHasta">Fecha hasta</label> <input type="text" id="filtroFechaHasta" name="filtroFechaHasta">
+        </div>
+        <div class="mabo3">
+            <button id="BuscarPublicaciones" name="BuscarPublicaciones" type="submit">Buscar Publicaciones</button>
+            <button class="blue" id="limpiarFiltro">Limpiar Filtro</button>
+        </div>
+    </fieldset>
+    <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
+    <input type="hidden" value="" name="sOrder" id="sOrder" />
+</form>
+
+<section id="listadoPublicaciones">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id="listadoPublicacionesResult">
+            <!--BeginGrillaPublicacionesBlock-->
+            <div class="mabo">
+                Cantidad publicaciones filtro actual: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th class="iveal">Nombre autor {orderByAutor}</th>
+                        <th class="iveal">T&iacute;tulo Publicaci&oacute;n {orderByTitulo}</th>
+                        <th class="iveal">Fecha {orderByFecha}</th>
+                        <th class="iveal">Estado {orderByActivo}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginPublicacionBlock-->
+                    <tr class="{iPublicacionId}">
+                        <td>                            
+                            <img src="{scrAvatarAutor}" class="pari" />
+                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>                            
+                        </td>
+                        <td class="teal_le">
+                            {sTitulo}
+                        </td>
+                        <td>
+                            {sFecha}
+                        </td>
+                        <td>
+                            <select class="cambiarEstadoPublicacion" name="estadoPublicacion_{iPublicacionId}" id="estadoPublicacion_{iPublicacionId}" rel="{sTipo}_{iPublicacionId}">
+                                <option value="1" {sSelectedPublicacionActivo}>Activa</option>
+                                <option value="0" {sSelectedPublicacionDesactivado}>Desactivada</option>
+                            </select>
+                        </td>
+                        <td class="teal_ce">
+                            <span title="Ampliar" rel="{sTipo}_{iPublicacionId}" class="i mi expand ihover ampliarPublicacion mari"></span>
+                            <span title="Editar" rel="{sTipo}_{iPublicacionId}" class="i bs edit ihover editarPublicacion mari"></span>
+                            <span title="Eliminar" rel="{sTipo}_{iPublicacionId}" class="i bs delete ihover borrarPublicacion"></span>
+                        </td>
+                    </tr>
+                <!--EndPublicacionBlock-->
+                <!--BeginNoRecordsPublicacionesBlock-->
+                    <tr>
+                        <td colspan="6">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsPublicacionesBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaPublicacionesBlock-->
+        </div>
+</section>
+<!--EndListadoPublicacionesBlock-->
+
+<!--BeginListadoModeracionBlock-->
+<section id="listadoModeraciones">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div id="listadoModeracionesResult">
+
+            <!--BeginGrillaModeracionesBlock-->
+            <div class="mabo">
+                Cantidad publicaciones por moderar: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th class="iveal small">Nombre autor</th>
+                        <th class="iveal big">T&iacute;tulo Publicaci&oacute;n</th>
+                        <th class="iveal">Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginPublicacionModerarBlock-->
+                    <tr class="{iPublicacionId}">
+                        <td class="desplegable teal_le pale2" rel="{iPublicacionId}">
+                            <img src="{scrAvatarAutor}" class="pari" />
+                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>
+                        </td>
+                        <td class="teal_le desplegable" rel="{iPublicacionId}">
+                            {sTitulo}
+                        </td>
+                        <td class="desplegable" rel="{iPublicacionId}">
+                            {sFecha}
+                        </td>
+                        <td class="teal_ce">
+                            <span title="Ampliar" rel="{sTipo}_{iPublicacionId}" class="i mi expand ihover ampliarPublicacion mari"></span>
+                        </td>
+                    </tr>
+                    <tr class="{iPublicacionId}">
+                        <td id="desplegable_{iPublicacionId}" class="pa0" colspan="4" style="display:none;">
+                            <article class="nested clearrm mabo0">
+                                <header>
+                                    <h2>Historial moderaciones publicaci&oacute;n Id: {iPublicacionId}</h2>
+                                </header>
+                                <section>
+                                    <table>
+                                        <!--BeginModeracionHistorialPublicacionBlock-->
+                                        <tr>
+                                            <td class="small">{sFechaModeracion}</td>
+                                            <td class="small"><strong>{sEstadoModeracion}</strong></td>
+                                            <td>{sMensaje}</td>
+                                        </tr>
+                                        <!--EndModeracionHistorialPublicacionBlock-->
+                                    </table>
+                                </section>
+                                <section class="teal_le">
+                                    <h3 class="teta_up mabo2">Moderar</h3>
+                                    <form>
+                                        <fieldset>
+                                            <legend>Estado Pendiente</legend>
+                                                <dl>
+                                                    <dt class="radio">
+                                                        <label for="aprobar_{iPublicacionId}">Aprobar</label>
+                                                    </dt>
+                                                    <dd>
+                                                        <input type="radio" id="aprobar_{iPublicacionId}" name="estado_{iPublicacionId}" value="{sEstadoAprobarValue}">
+                                                    </dd>
+                                                    <dt class="radio">
+                                                        <label for="rechazar_{iPublicacionId}">Rechazar</label>
+                                                    </dt>
+                                                    <dd>
+                                                        <input type="radio" id="rechazar_{iPublicacionId}" name="estado_{iPublicacionId}" value="{sEstadoRechazarValue}">
+                                                    </dd>
+                                                </dl>
+                                        </fieldset>
+                                        
+                                        <dt>
+                                            <label for="mensaje_{iPublicacionId}">Mensaje</label>
+                                        </dt>
+                                        <dd>
+                                            <textarea class="mihe1 medium maxlength" id="mensaje_{iPublicacionId}" rows="0" cols="0" name="mensaje_{iPublicacionId}" title="Mensaje Moderaci&oacute;n"></textarea>
+                                        </dd>
+                                       
+                                        <button rel="{iPublicacionId}" class="moderarSubmit mabo2" type="button">Moderar publicaci&oacute;n</button>
+                                        <input type="hidden" id="moderacionId_{iPublicacionId}" name="moderacionId_{iPublicacionId}" value="{iModeracionId}">
+
+                                        <div style="display:none"  id='msg_form_moderacion_{iPublicacionId}' class="notification">                                            
+                                            <p class="msg"></p>
+                                        </div>
+                                    </form>
+                                </section>
+                            </article>
+                        </td>
+                    </tr>
+                <!--EndPublicacionModerarBlock-->
+                <!--BeginNoRecordsModeracionesBlock-->
+                    <tr>
+                        <td colspan="4">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsModeracionesBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaModeracionesBlock-->
+        </div>
+</section>
+<!--EndListadoModeracionBlock-->
+
+<!--BeginFormularioPublicacionBlock-->
+<h1 class="teta_up mabo2">Modificar publicaci&oacute;n</h1>
+<form id="formPublicacion" name="formPublicacion" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
+        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcionBreve">Descripcion Breve</label>
+    </dt>
+    <dd>
+        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
+        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+    </dd>
+    
+    <dt>
+        <label for="activo">Visible?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivo} value="1">S&iacute;</option>
+            <option {sSelectedDesactivado} value="0">No</option>
+        </select>
+        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+    </dd>
+
+    <dt>
+        <label for="publico">Alcance Privacidad?</label>
+    </dt>
+    <dd>
+        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedPublico} value="1">El mundo</option>
+            <option {sSelectedComunidad} value="0">Solo comunidad</option>
+        </select>
+        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+    </dd>
+
+    <dt>
+        <label for="activoComentarios">Activar Comentarios?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+            <option {sSelectedDesactivadoComentarios} value="0">No</option>
+        </select>
+        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Contenido Publicaci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="keywords">Palabras Clave</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+    </dd>
+   
+    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
+    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
+
+    <div style="display:none"  id='msg_form_publicacion' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioPublicacionBlock-->
+
+<!--BeginFormularioReviewBlock-->
+<div class="mabo3">
+    <h1 class="teta_up mabo">Modificar review</h1>
+    <span class="fost_it">Los reviews tienen como objetivo lograr aportes a la comunidad en forma de cr&iacute;ticas constructivas</span>
+</div>
+<form id="formReview" name="formReview" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="itemType">Acerca de?</label>
+    </dt>
+    <dd>
+        <select class="small" name="itemType" id="itemType" title="Review acerca de?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedProduct} value="product">Un Producto</option>
+            <option {sSelectedBusiness} value="business">Un Negocio o Empresa</option>
+            <option {sSelectedEvent} value="event">Un Evento</option>
+            <option {sSelectedPerson} value="person">Una Persona</option>
+            <option {sSelectedPlace} value="place">Un Lugar</option>
+            <option {sSelectedWebsite} value="website">Un Sitio Web</option>
+            <option {sSelectedUrl} value="url">Un Link &oacute; Enlace</option>
+        </select>
+        <p>Este campo opcional provee informaci&oacute;n acerca del item sobre el que se hace el review.</p>
+    </dd>
+
+    <div id="itemEventSummaryFormLine" style="display:none;">
+        <dt>
+            <label for="itemEventSummary">Resumen Evento</label>
+        </dt>
+        <dd>
+            <input class="large" type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
+            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>            
+        </dd>
+    </div>
+    
+    <dt>
+        <label for="item">Nombre Item</label>
+    </dt>
+    <dd>
+        <input class="large" type="text" name="item" id="item" title="Nombre del Item al que hace referencia el review" maxlength="255" value="{sItemName}" />
+        <p>
+            El review debe tener al menos el nombre del item al que se refiere el art&iacute;culo / revisi&oacute;n.<br>
+            Por ejemplo, si el review es acerca de un lugar debe ingresar el nombre del sitio.<br>
+            Si fuera un art&iacute;culo acerca de una persona debe ingresar aqui el nombre de la misma, etc.
+        </p>
+    </dd>
+    
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
+        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcionBreve">Descripcion Breve</label>
+    </dt>
+    <dd>
+        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
+        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+    </dd>
+
+    <dt>
+        <label for="activo">Visible?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivo} value="1">S&iacute;</option>
+            <option {sSelectedDesactivado} value="0">No</option>
+        </select>
+        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+    </dd>
+
+    <dt>
+        <label for="publico">Alcance Privacidad?</label>
+    </dt>
+    <dd>
+        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedPublico} value="1">El mundo</option>
+            <option {sSelectedComunidad} value="0">Solo comunidad</option>
+        </select>
+        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+    </dd>
+
+    <dt>
+        <label for="activoComentarios">Activar Comentarios?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+            <option {sSelectedDesactivadoComentarios} value="0">No</option>
+        </select>
+        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Contenido Publicaci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="rating">Valuaci&oacute;n</label>
+    </dt>
+    <dd>
+        <select class="small" name="rating" id="rating" title="Valuaci&oacute;n del Item al cual se le hace el Review">
+            <option value="">Seleccionar</option>
+            <option value="0" {sSelected_0} >0</option>
+            <option value="0.5" {sSelected_05} >0.5</option>
+            <option value="1" {sSelected_1} >1</option>
+            <option value="1.5" {sSelected_15} >1.5</option>
+            <option value="2" {sSelected_2} >2</option>
+            <option value="2.5" {sSelected_25} >2.5</option>
+            <option value="3" {sSelected_3} >3</option>
+            <option value="3.5" {sSelected_35} >3.5</option>
+            <option value="4" {sSelected_4} >4</option>
+            <option value="4.5" {sSelected_45} >4.5</option>
+            <option value="5" {sSelected_5}>5</option>
+        </select>
+        <p>
+            Puede valorar el Item del Review.<br>
+            Si por ejemplo el review es acerca de un nuevo portal web puede valorarlo con este campo.
+        </p>
+    </dd>
+
+    <dt>
+        <label for="itemUrl">Link</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
+        <p>
+            En lo posible adjuntar al review una Url http://www.ejemplo.com asociada al item del art&iacute;culo.<br>
+            Por ejemplo, se podr&iacute;a brindar el link a la cuenta de twitter si es un review acerca de un profesional.
+        </p>
+    </dd>
+
+    <dt>
+        <label for="fuenteOriginal">Fuente Original</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="fuenteOriginal" id="fuenteOriginal" title="Referencia autor original o fuente" maxlength="500" value="{sFuenteOriginal}" />
+        <p>Si Ud. no es el Autor del art&iacute;culo, utilice este campo para referenciar la fuente original de donde se extrajo.</p>
+    </dd>
+
+    <dt>
+        <label for="keywords">Palabras Clave</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+    </dd>
+
+    <button class="mabo" id="modificarReview" name="modificarReview" type="submit">Modificar Review</button>
+    <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
+
+    <div style="display:none"  id='msg_form_review' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormularioReviewBlock-->
+
+<!--BeginFichaPublicacionBlock-->
+<article class="full-block pa2 clearfix mabo0">
+    <header>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Publicaci&oacute;n" class="default-tab" href="#tab1">Publicaci&oacute;n</a></li>
+                <li><a rel="tooltip" title="Comentarios" href="#tab2">Comentarios</a></li>
+                <li><a rel="tooltip" title="Adjuntos" href="#tab3">Adjuntos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="tab default-tab" id="tab1">
+            <h3>Publicaci&oacute;n</h3>
+
+            <div class="teal_le mabo2">
+                <p>
+                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Activa?:</span> {sActiva}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Alance Privacidad:</span> {sPrivacidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">Activo Comentarios:</span> {sActivoComentarios}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
+                </p>
+                
+                <div class="fowe_bo teta_up mabo">descripcion breve</div>
+                <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
+
+                <div class="fowe_bo teta_up mabo">descripcion</div>
+                <div class="baco2 pa mabo2">{sDescripcion}</div>
+
+                <p>
+                    <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="tab" id="tab2">
+            <h3>Comentarios</h3>
+            {comentarios}
+        </div>
+
+        <div class="tab" id="tab3">
+            <h3>Adjuntos</h3>
+            {galeriaAdjuntos}
+        </div>
+    </section>
+</article>
+<!--EndFichaPublicacionBlock-->
+
+<!--BeginFichaReviewBlock-->
+<article class="full-block pa2 clearfix mabo0">
+    <header>
+        <nav>
+            <ul class="tab-switch">
+                <li><a rel="tooltip" title="Review" class="default-tab" href="#tab1">Review</a></li>
+                <li><a rel="tooltip" title="Comentarios" href="#tab2">Comentarios</a></li>
+                <li><a rel="tooltip" title="Adjuntos" href="#tab3">Adjuntos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="tab default-tab" id="tab1">
+            <h3>Review</h3>
+
+            <div class="teal_le mabo2">
+                <p>
+                    <span class="fowe_bo teta_up">nombre item:</span> {sItemName}
+                </p>
+
+                <!--BeginRatingBlock-->
+                <div class="mabo2 ov_au veal_mi">
+                    <div class="fl_le teta_up fowe_bo mari">valoraci&oacute;n:</div>
+                        <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
+                        <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
+                        <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
+                        <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
+                        <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
+                        <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
+                        <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
+                        <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
+                        <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
+                        <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
+                        <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
+                </div>
+                <!--EndRatingBlock-->
+
+                <!--BeginItemTypeBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">Acerca de un/a:</span> {sItemType}
+                </p>
+                <!--EndItemTypeBlock-->
+
+                <!--BeginItemEventSummaryBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">detalles evento:</span> {sItemEventSummary}
+                </p>
+                <!--EndItemEventSummaryBlock-->
+
+                <!--BeginItemUrlBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">link:</span> <a href="{hrefItemUrl}">{sItemUrl}</a>
+                </p>
+                <!--EndItemUrlBlock-->
+
+                <!--BeginFuenteOriginalBlock-->
+                <p>
+                    <span class="fowe_bo teta_up">fuente original:</span> <a href="{hrefFuenteUriginal}">{sFuenteOriginal}</a>
+                </p>
+                <!--EndFuenteOriginalBlock-->
+                
+                <p>
+                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">activa?:</span> {sActiva}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">alance Privacidad:</span> {sPrivacidad}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">activo Comentarios:</span> {sActivoComentarios}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
+                </p>
+
+                <div class="fowe_bo teta_up mabo">descripcion breve</div>
+                <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
+
+                <div class="fowe_bo teta_up mabo">descripcion</div>
+                <div class="baco2 pa mabo2">{sDescripcion}</div>
+
+                <p>
+                    <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="tab" id="tab2">
+            <h3>Comentarios</h3>
+            {comentarios}
+        </div>
+
+        <div class="tab" id="tab3">
+            <h3>Adjuntos</h3>
+            {galeriaAdjuntos}
+        </div>
+    </section>
+</article>
+<!--EndFichaReviewBlock-->
+

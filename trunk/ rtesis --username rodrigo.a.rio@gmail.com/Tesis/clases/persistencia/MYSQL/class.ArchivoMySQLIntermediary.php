@@ -101,11 +101,6 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
         try{
             $db = $this->conn;
 
-            $moderado = $oArchivo->isModerado() ? "1" : "0";
-            $activo = $oArchivo->isActivo() ? "1" : "0";
-            $publico = $oArchivo->isPublico() ? "1" : "0";
-            $activoComentarios = $oArchivo->isActivoComentarios() ? "1" : "0";
-
             $iOrden = ($oArchivo->getOrden() == "" || $oArchivo->getOrden() == '0') ? "null" : $oArchivo->getOrden();
 
             $sSQL = " update archivos " .
@@ -117,11 +112,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                     " fechaAlta = '".$oArchivo->getFechaAlta()."', ".
                     " orden = ".$iOrden.", " .
                     " titulo = ".$this->escStr($oArchivo->getTitulo()).", " .
-                    " tipo = ".$this->escStr($oArchivo->getTipo()).", " .
-                    " moderado = ".$this->escInt($moderado).", " .
-                    " activo = ".$this->escInt($activo).", " .
-                    " publico = ".$this->escInt($publico).", " .
-                    " activoComentarios = ".$this->escInt($activoComentarios).
+                    " tipo = ".$this->escStr($oArchivo->getTipo())." ".
                     " WHERE id = ".$this->escInt($oArchivo->getId());
 
             $db->execSQL($sSQL);
@@ -148,20 +139,15 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             $db = $this->conn;
             $iIdItem = $this->escInt($iIdItem);
 
-            $moderado = $oArchivo->isModerado() ? "1" : "0";
-            $activo = $oArchivo->isActivo() ? "1" : "0";
-            $publico = $oArchivo->isPublico() ? "1" : "0";
-            $activoComentarios = $oArchivo->isActivoComentarios() ? "1" : "0";
-
             $sSQL = " INSERT INTO archivos SET ";
 
             switch($sObjetoAsociado){
                 case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                case "Software": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "SeguimientoSCC": $sSQL .= "seguimientos_id = ".$iIdItem.", "; break;
                 case "SeguimientoPersonalizado": $sSQL .= "seguimientos_id = ".$iIdItem.", "; break;
                 case "Usuario": $sSQL .= "usuarios_id = ".$iIdItem.", "; break;
-                case "Categoria": $sSQL .= "categorias_id = ".$iIdItem.", "; break;
             }
 
             //orden y fecha quedan con valores por defecto en la insercion.
@@ -172,11 +158,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             " tipoMime = ".$this->escStr($oArchivo->getTipoMime()).", " .
             " tamanio = ".$this->escInt($oArchivo->getTamanio()).", " .
             " titulo = ".$this->escStr($oArchivo->getTitulo()).", " .
-            " tipo = ".$this->escStr($oArchivo->getTipo()).", " .
-            " moderado = ".$this->escInt($moderado).", " .
-            " activo = ".$this->escInt($activo).", " .
-            " publico = ".$this->escInt($publico).", " .
-            " activoComentarios = ".$this->escInt($activoComentarios)." ";
+            " tipo = ".$this->escStr($oArchivo->getTipo())." ".
 
             $db->execSQL($sSQL);
 
@@ -208,11 +190,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                         a.fechaAlta as sFechaAlta,
                         a.orden as iOrden,
                         a.titulo as sTitulo,
-                        a.tipo as sTipo,
-                        a.moderado as bModerado,
-                        a.activo as bActivo,
-                        a.publico as bPublico,
-                        a.activoComentarios as bActivoComentarios
+                        a.tipo as sTipo
                     FROM
                         archivos a ";
 
@@ -232,9 +210,6 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             }
             if(isset($filtro['a.usuarios_id']) && $filtro['a.usuarios_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('a.usuarios_id', $filtro['a.usuarios_id'], MYSQL_TYPE_INT);
-            }
-            if(isset($filtro['a.categorias_id']) && $filtro['a.categorias_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('a.categorias_id', $filtro['a.categorias_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['a.nombreServidor']) && $filtro['a.nombreServidor']!=""){
                 $WHERE[] = $this->crearFiltroSimple('a.nombreServidor', $filtro['a.nombreServidor']);
@@ -267,10 +242,6 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                 $oArchivo->iOrden               = $oObj->iOrden;
                 $oArchivo->sTitulo              = $oObj->sTitulo;
                 $oArchivo->sTipo                = $oObj->sTipo;
-                $oArchivo->bModerado            = ($oObj->bModerado == '1')?true:false; 
-                $oArchivo->bActivo              = ($oObj->bActivo == '1')?true:false; 
-                $oArchivo->bPublico             = ($oObj->bPublico == '1')?true:false; 
-                $oArchivo->bActivoComentarios   = ($oObj->bActivoComentarios == '1')?true:false;
 
                 $aArchivos[] = Factory::getArchivoInstance($oArchivo);
             }
@@ -294,9 +265,10 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                         JOIN fichas_abstractas fa ON a.fichas_abstractas_id = fa.id
                         LEFT JOIN publicaciones p ON fa.id = p.id
                         LEFT JOIN reviews r ON fa.id = r.id
+                        LEFT JOIN software s ON fa.id = s.id
                       WHERE
                         a.id = ".$this->escInt($iArchivoId)." AND
-                        (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId).")";
+                        (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId)." OR s.usuarios_id = ".$this->escInt($iUsuarioId).")";
 
             $db->query($sSQL);
 

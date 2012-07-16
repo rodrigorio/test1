@@ -8,6 +8,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
 
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
@@ -30,14 +31,52 @@
 <!--EndHeaderBlock-->
 
 <!--BeginFormCategoriaBlock-->
-<h1 class="teta_up">{sTituloForm}</h1>
+<h1 class="teta_up mabo2">{sTituloForm}</h1>
+
+<!--BeginEditarFotoBlock-->
+<div id="formFotoCont" class="mabo2">
+    <div id="contFotoActual">
+        <!--BeginFotoActualFormBlock-->
+        <div id="fotoActual" class="mabo3">
+            <h2 class="mabo3">Foto Actual</h2>
+            <a href="{hrefFotoActualAmpliada}" rel="prettyPhoto">
+                <img src="{scrFotoActual}" />
+            </a>
+        </div>
+        <!--EndFotoActualFormBlock-->
+    </div>
+
+    <div class="mabo3">
+        <h2 class="mabo3">Suba un archivo desde el equipo</h2>
+
+        <button id="fotoUpload" name="fotoUpload" class="btn01">Click para seleccionar</button>
+    </div>
+
+    <ul>
+        <li>
+            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
+        </li>
+        <li>
+            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+        </li>
+        <li>
+            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
+        </li>
+    </ul>
+
+    <div style="display:none"  id='msg_form_foto' class="notification">
+        <p class="msg"></p>
+    </div>
+</div>
+<!--EndEditarFotoBlock-->
+
 <form id="formCategoria" name="formCategoria" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <dt>
         <label for="nombre">Nombre</label>
     </dt>
     <dd>
-        <input type="text" class="small" name="nombre" id="nombre" value="{sNombre}">
+        <input type="text" class="small" name="nombre" id="nombre" maxlength="50" value="{sNombre}">
     </dd>
     <dt>
         <label for="descripcion">Descripci&oacute;n</label>
@@ -76,9 +115,9 @@
         <!--BeginCategoriasBlock-->
         <tr class="{odd}">
             <td>{sNombre}</td>
-            <td>{sDescripcion}</td>
-            <td>
-                <a rel="tooltip" original-title="Editar Categoria" href="{hrefEditarCategoria}"><span class="i bs edit ihover"></span></a>
+            <td class="medium">{sDescripcion}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Categoria" href="{hrefEditarCategoria}"><span class="i bs edit ihover"></span></a>
                 <span title="eliminar categoria" rel="{iCategoriaId}" class="i bs delete ihover borrarCategoria"></span>
             </td>
         </tr>

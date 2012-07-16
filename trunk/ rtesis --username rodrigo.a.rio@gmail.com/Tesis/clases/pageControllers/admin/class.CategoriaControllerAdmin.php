@@ -28,6 +28,11 @@ class CategoriaControllerAdmin extends PageControllerAbstract
     }
 
     public function index(){
+        $this->listarCategorias();
+    }
+
+    public function listarCategorias()
+    {
         try{
             $this->setFrameTemplate()
                  ->setHeadTag();
@@ -37,38 +42,28 @@ class CategoriaControllerAdmin extends PageControllerAbstract
 
             $this->printMsgTop();
 
-            $this->getTemplate()->set_var("CargarCategoriaBlock","");
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "WidgetsContent");
-            //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "MainContent");
-            $filtro = array();
-           	$iRecordPerPage	= 5;
-	    	$iPage			= $this->getRequest()->getPost("iPage");
-		   	$iPage			= strlen($iPage) ? $iPage : 1;
-		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-			$iMinLimit		= ($iPage-1) * $iItemsForPage;
-			$sOrderBy		= null;	
-			$sOrder			= null;
-			$iRecordsTotal	= 0;
-            $vCategoria = AdminController::getInstance()->obtenerCategoria($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "ListadoCategoriasBlock");
+
+            $iRecordsTotal = 0;
+            $vCategoria = AdminController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
             if(count($vCategoria)>0){
-            	$i=0;
-	            foreach ($vCategoria as $oCategoria){
-	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-	                $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-	                $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
-	                $this->getTemplate()->parse("ListaCategoriasBlock", true);
-	                $i++;
-	            }
-                $this->getTemplate()->set_var("NoRecordsListaCategoriasBlock", "");
+                foreach ($vCategoria as $oCategoria){
+
+                    $hrefEditarCategoria = $this->getUrlFromRoute("adminCategoriaEditarCategoria", true)."?id=".$oCategoria->getId();
+
+                    $this->getTemplate()->set_var("$hrefEditarCategoria", $hrefEditarCategoria);
+
+                    $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
+                    $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
+                    $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+                    $this->getTemplate()->parse("CategoriasBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsCategoriasBlock", "");
             }else{
-                $this->getTemplate()->set_var("ListaCategoriasBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "noRecords", "NoRecordsListaCategoriasBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-	            $this->getTemplate()->parse("noRecords", false);
+                $this->getTemplate()->set_var("CategoriasBlock", "");
             }
+            
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
@@ -76,7 +71,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
     }
     
     public function nuevaCategoria(){
-         try{
+        try{
             $this->setFrameTemplate()
                  ->setHeadTag();
 
@@ -84,167 +79,243 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
 
             $this->printMsgTop();
-            
-            $this->getTemplate()->set_var("ListadoCategoriasBlock","");
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "WidgetsContent");
-            //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "MainContent");
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
+
+            $this->getTemplate()->set_var("sTituloForm", "Crear nueva categoria");
+            $this->getTemplate()->set_var("SubmitModificarCategoriaBlock", "");
+            $this->getTemplate()->set_var("EditarFotoBlock", "");
+
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
-            print_r($e);
+            throw new Exception($e);
         }
     }
     
-    public function editarCategoria(){
-         try{
+    public function editarCategoria()
+    {
+        try{
+            $iCategoriaId = $this->getRequest()->getParam('id');
+
+            if(empty($iCategoriaId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
             $this->setFrameTemplate()
                  ->setHeadTag();
 
             IndexControllerAdmin::setCabecera($this->getTemplate());
             IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
-            
+
             $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
+
+            $this->getTemplate()->set_var("sTituloForm", "Modificar categoría");
+            $this->getTemplate()->set_var("SubmitCrearCategoriaBlock", "");
+
+            $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+
+            $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
+            $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
+            $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+
+            //editar foto categoria
+            if(null !== $oCategoria->getFoto()){
+                $oFoto = $oCategoria->getFoto();
+
+                $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
+                $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+
+                $this->getTemplate()->set_var("scrFotoActual", $pathFotoServidorMediumSize);
+                $this->getTemplate()->set_var("hrefFotoActualAmpliada", $pathFotoServidorBigSize);
+
+                $this->getTemplate()->parse("FotoActualFormBlock");
+            }else{
+                $this->getTemplate()->unset_blocks("FotoActualFormBlock");
+            }
+
+            $this->getUploadHelper()->setTiposValidosFotos();
+
+            $this->getTemplate()->set_var("sTiposPermitidosFoto", $this->getUploadHelper()->getStringTiposValidos());
+            $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
+            $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
             
-            $this->getTemplate()->set_var("ListadoCategoriasBlock","");
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "WidgetsContent");
-            //contenido ppal home
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "MainContent");
-            
-            if($this->getRequest()->getPost("iCategoriaId")!=""){
-                $filtro = array("c.id"=>$this->getRequest()->getPost("iCategoriaId"));
-                $vCategoria = AdminController::getInstance()->obtenerCategoria($filtro);
-                foreach ($vCategoria as $oCategoria){
-	                $this->getTemplate()->set_var("iCategoriaId",     $oCategoria->getId());
-	                $this->getTemplate()->set_var("sNombre",     $oCategoria->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
+    public function verificarUsoDeCategoria()
+    {
+        $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
+        $sNombre = $this->getRequest()->getParam('sNombre');
+
+        if(null === $iCategoriaId){
+            $oCategoria = new stdClass();
+            $oCategoria->sNombre = $sNombre;
+            $oCategoria = Factory::getCategoriaInstance($oCategoria);
+        }else{
+            $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            //no lo guardo es solo para la comprobacion
+            $oCategoria->setNombre($sNombre);
+        }
+
+        $dataResult = '0';
+        if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
+            $dataResult = '1';
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
+    }
+    
+    public function eliminarCategoria()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
+        if(empty($iCategoriaId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            try{
+                $result = AdminController::getInstance()->eliminarCategoria($iCategoriaId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "La categoría fue eliminada del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "No se pudo eliminar la categoría del sistema. Compruebe que no haya ningún software asociado.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
+    public function procesarCategoria()
+    {
+        if($this->getRequest()->has('procesarFoto')){
+            $this->procesarFoto();
+            return;
+        }
+        
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sNombre = $this->getRequest()->getPost("nombre");
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+
+            if($this->getRequest()->has('crearCategoria')){
+                $oCategoria = new stdClass();
+                $oCategoria->sNombre = $sNombre;
+                $oCategoria->sDescripcion = $sDescripcion;
+                $oCategoria = Factory::getCategoriaInstance($oCategoria);
+
+                $accion = "agregarCategoria";
+                $mensaje = "Se agrego la categoria al sistema";
+            }
+
+            if($this->getRequest()->has('modificarCategoria')){
+                $iCategoriaId = $this->getRequest()->getPost("iCategoriaId");
+                $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+                $oCategoria->setNombre($sNombre);
+                $oCategoria->setDescripcion($sDescripcion);
+
+                $accion = "modificarCategoria";
+                $mensaje = "La categoría se modifico exitosamente";
+            }
+
+            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
+                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
+                $this->getJsonHelper()->setSuccess(false);
+            }else{
+                AdminController::getInstance()->guardarCategoria($oCategoria);
+                $this->getJsonHelper()->setMessage($mensaje);
+                $this->getJsonHelper()->setValor($accion, $mensaje);
+                $this->getJsonHelper()->setSuccess(true);
+            }
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function procesarFoto()
+    {
+        try{
+            $iCategoriaId = $this->getRequest()->getPost('iCategoriaId');
+            if(empty($iCategoriaId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $nombreInputFile = 'fotoUpload';
+
+            $this->getUploadHelper()->setTiposValidosFotos();
+
+            if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
+                
+                $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+                $idItem = $oCategoria->getId();
+
+                //un array con los datos de las fotos
+                $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($idItem, $nombreInputFile);
+                $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+
+                try{
+                    AdminController::getInstance()->guardarFotoCategoria($aNombreArchivos, $pathServidor, $oCategoria);
+
+                    $oFoto = $oCategoria->getFoto();
+
+                    $this->restartTemplate();
+                    $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "contFotoActual", "FotoActualFormBlock");
+
+                    $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
+                    $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
+                    $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
+                    $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
+
+                    $respuesta = "1; ".$this->getTemplate()->pparse('contFotoActual', false);
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                }catch(Exception $e){
+                    $respuesta = "0; Error al guardar en base de datos";
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    return;
                 }
             }
-                
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function verificarUsoDeCategoria() {
-    	try{
-			$this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "listaCategoria", "ListadoCategoriasBlock");
-            $filtroEliminar = array("e.id"=>$this->getRequest()->getParam("id") );
-            $vCategoria = AdminController::getInstance()->obtenerCategoria($filtroEliminar);
-            $res = false;
-			if(count($vCategoria)>0){
-            	$oCategoria = $vCategoria[0];
-            	$res = AdminController::getInstance()->categoriaUsadaPorUsuario($oCategoria);
-			}
-			echo $res;
-    	}catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function eliminarCategoria(){
-		try{
-			$this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "listaCategoria", "ListadoCategoriasBlock");
-            $filtroEliminar = array("c.id"=>$this->getRequest()->getPost("id"));
-            $vCategoria = AdminController::getInstance()->obtenerCategoria($filtroEliminar);
-            if(count($vCategoria)>0){
-            	$oCategoria = $vCategoria[0];
-	            $res = AdminController::getInstance()->eliminarCategoria($oCategoria);
-	            if($res){
-		            $filtro			 = array();
-		           	$iRecordPerPage	= 5;
-			    	$iPage			= $this->getRequest()->getPost("iPage");
-				   	$iPage			= strlen($iPage) ? $iPage : 1;
-				  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-					$iMinLimit		= ($iPage-1) * $iItemsForPage;
-					$sOrderBy		= null;	
-					$sOrder			= null;
-					$iRecordsTotal	= 0;
-		            $vCategoria 	= AdminController::getInstance()->obtenerCategoria($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
-		            if(count($vCategoria)>0){
-		            	$i=0;
-			            foreach ($vCategoria as $oCategoria){
-			            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-			                $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-			                $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-			                $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
-			                $this->getTemplate()->parse("ListaCategoriasBlock", true);
-			                $i++;
-			            }
-		                $this->getTemplate()->set_var("NoRecordsListaCategoriasBlock", "");
-		            }else{
-		                $this->getTemplate()->set_var("ListaCategoriasBlock", "");
-		                $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "noRecords", "NoRecordsListaCategoriasBlock");
-		                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-			            $this->getTemplate()->parse("noRecords", false);
-		            }
-	            }
-            }
-            $this->getResponse()->setBody($this->getTemplate()->pparse('listaCategoria', false));
-        }catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-    public function procesarCategoria(){
-        try{
-            $sNombre        = $this->getRequest()->getPost("nombre");
-            $sDescripcion   = $this->getRequest()->getPost("descripcion");
-            if($sNombre == "" && $sDescripcion==""){
-                $this->index();
-                return;
-            }
-            if($this->getRequest()->getPost("id")!=""){
-                $filtro = array("c.id"=>$this->getRequest()->getPost("id"));
-                $oCategoria = AdminController::getInstance()->obtenerCategoria($filtro);
-                $oCategoria = $oCategoria[0];
-            }else{
-                $oCategoria = Factory::getCategoriaInstance(new stdClass());
-            }
-			$oCategoria->setDescripcion($sDescripcion);
-            $oCategoria->setNombre($sNombre);
-            $r = AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->index();
-        }catch(Exception $e){
-            print_r($e);
-        }
-    }
-    
-  	public function buscarCategoria(){
-		try{
-			$this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "listaCategoria", "ListadoCategoriasBlock");
-            $filtro = array("c.nombre"=>$this->getRequest()->getPost("nombre"));
-           	$iRecordPerPage	= 5;
-	    	$iPage			= $this->getRequest()->getPost("iPage");
-		   	$iPage			= strlen($iPage) ? $iPage : 1;
-		  	$iItemsForPage	= $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-			$iMinLimit		= ($iPage-1) * $iItemsForPage;
-			$sOrderBy		= null;	
-			$sOrder			= null;
-			$iRecordsTotal	= 0;
-            $vCategoria = AdminController::getInstance()->buscar($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
-            if(count($vCategoria)>0){
-            	$i=0;
-	            foreach ($vCategoria as $oCategoria){
-	            	$this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-	                $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-	                $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-	                $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
-	                $this->getTemplate()->parse("ListaCategoriasBlock", true);
-	                $i++;
-	            }
-                $this->getTemplate()->set_var("NoRecordsListaCategoriasBlock", "");
-            }else{
-                $this->getTemplate()->set_var("listaCategoria", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "noRecords", "NoRecordsListaCategoriasBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron registros.");
-	            $this->getTemplate()->parse("noRecords", false);
-            }
-            $this->getResponse()->setBody($this->getTemplate()->pparse('listaCategoria', false));
-        }catch(Exception $e){
-            print_r($e);
+            $respuesta = "0; Error al procesar el archivo";
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+            return;
         }
     }
 }
