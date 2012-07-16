@@ -59,7 +59,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
                     $sDescripcion = (null === $oEspecialidad->getDescripcion())?" - ":$oEspecialidad->getDescripcion();
                     $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
 
-                    $this->getTemplate()->parse("EspecialidadesBlock", true);
+                    $this->getTemplate()->parse("CategoriasBlock", true);
                 }
                 $this->getTemplate()->set_var("NoRecordsEspecialidadesBlock", "");
             }else{

@@ -167,12 +167,17 @@ class PersistenceFactory {
         }
     }
     
-      public static function getCicloIntermediary(IMYSQL $conn)
+    public static function getCicloIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return (CicloMySQLIntermediary::getInstance($conn));
         }
     }
-    
-    
+
+    public static function getSoftwareIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (SoftwareMySQLIntermediary::getInstance($conn));
+        }
+    }
 }

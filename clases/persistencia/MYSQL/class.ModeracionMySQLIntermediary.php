@@ -49,6 +49,7 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
             switch($sObjetoAsociado){
                 case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                case "Software": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "Institucion": $sSQL .= "instituciones_id = ".$iIdItem.", "; break;
             }
 

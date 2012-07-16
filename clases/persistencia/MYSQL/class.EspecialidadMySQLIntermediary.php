@@ -162,26 +162,4 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
     }
 
     public function actualizarCampoArray($objects, $cambios){}
-
-    public function especialidadUsadaPorUsuario($oEspecialidad){
-    	try{
-	    	$db = $this->conn;
-	    	
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-            			u.id as iId
-                	FROM
-                		usuarios u
-            		WHERE u.especialidades_id=".$db->escape($oEspecialidad->getId(),false,MYSQL_TYPE_INT)."";
-            $db->query($sSQL);
-            
-            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-			if(empty($iRecordsTotal)){ 
-				return false; 
-			}
-			return true;
-	    }catch(Exception $e){
-        	throw new Exception($e->getMessage(), 0);
-        }	
-    }
 }

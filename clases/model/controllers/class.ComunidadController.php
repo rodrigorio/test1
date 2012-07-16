@@ -850,13 +850,13 @@ class ComunidadController
     /**
      * @return array|null
      */
-    public function obtenerArchivosCategoria($iCategoriaId)
+    public function obtenerSoftwareCategoria($iCategoriaId)
     {
         try{
-            $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
-            $filtro = array('a.categoria_id' => $iCategoriaId);
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            $filtro = array('s.categoria_id' => $iCategoriaId);
             $iRecordsTotal = 0;
-            return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            return $oSoftwareIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
