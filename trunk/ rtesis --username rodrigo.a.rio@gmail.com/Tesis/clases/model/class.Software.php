@@ -16,9 +16,15 @@ class Software extends FichaAbstract
     private $aComentarios;
     
     /**
-     * No esta en la base de datos pero sirve para obtener el dato luego de la primera vez que se calcula
+     * No esta en la base de datos pero sirve para obtener el dato luego de la primera vez que se calcula.
+     * -1 indica que no hay valoraciones desde los comentarios
      */
-    private $fRating = 0;
+    private $fRating = -1;
+
+    /**
+     * Es un flag necesario para determinar si el software tiene valoracion.
+     */
+    private $bRatingCalculado = false;
 
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -133,19 +139,41 @@ class Software extends FichaAbstract
     }
 
     /**
-     * Redondea a 1 solo decimal
+     * Redondea a 1 solo decimal.
+     *
+     * Solo si al menos un comentario emitio valoracion modifica el valor del rating para la instancia.
      */
     public function getRating()
     {
-        if(null !== $this->fRating){ return $this->fRating; }
+        if(!$this->bRatingCalculado){
+            $fPromedio = 0;
+            $iCont = 0;
+            $aComentarios = $this->getComentarios();
+            foreach($aComentarios as $oComentario){
+                if($oComentario->emitioValoracion()){
+                    $fPromedio += $oComentario->getValoracion();
+                    $iCont++;
+                }
+            }
 
-        $aComentarios = $this->getComentarios();
-        foreach($aComentarios as $oComentario){
-            $this->fRating += $oComentario->getValoracion();
+            $fPromedio = round(($fPromedio / $iCont), 1);
+
+            //si al menos un comentario emitio valoracion guardo el rating calculado, sino queda el -1
+            if($iCont > 0){
+                $this->fRating = $fPromedio;
+            }
+
+            $this->bRatingCalculado = true;
         }
 
-        $this->fRating = round(($this->fRating / count($aComentarios)), 1);
         return $this->fRating;
+    }
+
+    /**
+     * Devuelve true si el software tiene valoracion
+     */
+    public function tieneValoracion(){
+        return($this->getRating() >= 0)?true:false;
     }
 
     public function setComentarios($aComentarios)

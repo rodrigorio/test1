@@ -131,9 +131,11 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
 
             $publico = $oSoftware->isPublico()?"1":"0";
             $activoComentarios = $oSoftware->isActivoComentarios()?"1":"0";
+            $iCategoriaId = $oSoftware->getCategoria()->getId();
              
             $sSQL = " update software set ".
                     " publico = ".$publico.", ".
+                    " categorias_id = ".$db->escape($iCategoriaId, false, MYSQL_TYPE_INT).", ".
                     " activoComentarios = ".$activoComentarios.", ".
                     " descripcionBreve = ".$db->escape($oSoftware->getDescripcionBreve(), true).", ".
                     " enlaces = ".$db->escape($oSoftware->getEnlaces(), true)." ".
@@ -259,6 +261,8 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
                           s.descripcionBreve as sDescripcionBreve,
                           s.enlaces AS sEnlaces,
 
+                          p.apellido,
+
                           m.iModeracionId,
                           m.sModeracionEstado,
                           m.sModeracionMensaje,
@@ -267,6 +271,8 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
                         fichas_abstractas f
                     JOIN
                         software s ON s.id = f.id
+                    JOIN
+                        personas p ON p.id = s.usuarios_id
                     LEFT JOIN
                         (SELECT
                             m.id AS iModeracionId, m.fichas_abstractas_id, m.estado AS sModeracionEstado, m.mensaje AS sModeracionMensaje, m.fecha AS dModeracionFecha
@@ -286,7 +292,10 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
             }
             if(isset($filtro['s.publico']) && $filtro['s.publico'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('s.publico', $filtro['s.publico']);
-            }            
+            }
+            if(isset($filtro['p.apellido']) && $filtro['p.apellido'] != ""){
+                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
+            }
             if(isset($filtro['f.titulo']) && $filtro['f.titulo'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('f.titulo', $filtro['f.titulo']);
             }

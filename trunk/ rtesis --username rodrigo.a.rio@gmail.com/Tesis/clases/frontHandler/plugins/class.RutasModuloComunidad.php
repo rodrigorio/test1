@@ -338,6 +338,10 @@ class RutasModuloComunidad
                                     'action'     => "index"
                                 ));
         $router->addRoute('comunidadSoftwareIndex', $route);
+        
+        //ACA FALTA AGREGAR UNO QUE SEA URL AMIGABLE CON NOMBRE DE CATEGORIA
+        //'comunidad/descargas/12-nombre-categoria/' MUESTRA TODO EL SOFTWARE PARA ESA CATEGORIA
+
         $route = new RegexRoute('comunidad/descargas/mis-aplicaciones',
                                 array(
                                     'module' => "comunidad",
@@ -415,6 +419,11 @@ class RutasModuloComunidad
                                     'action'     => "formArchivo"
                                 ));
         $router->addRoute('comunidadSoftwareFormArchivo', $route);
+
+
+        //A ESTO HAY QUE AGREGARLE EL NOMBRE DE LA CATEGORIA COMO SUBCARPETA DE DESCARGAS
+        //'comunidad/descargas/nombre-categoria/23-titulo-software'
+
         $route = new RegexRoute('comunidad/descargas/(\d+)-(.+)',
                                 array(
                                     'module' => 'comunidad',
@@ -422,8 +431,9 @@ class RutasModuloComunidad
                                     'action'     => 'verSoftware'
                                 ),
                                 array(
-                                    1 => 'iSoftwareId',
-                                    2 => 'sTituloUrlized'
+                                    1 => 'sNombreCategoria',
+                                    2 => 'iSoftwareId',
+                                    3 => 'sTituloUrlized'
                                 ),
                                 'comunidad/descargas/%d-%s');
         $router->addRoute('comunidadSoftwareVerAplicacion', $route);
