@@ -91,6 +91,9 @@ class IndexControllerAdmin extends PageControllerAbstract
         //publicaciones
         $template->set_var("sHrefPublicacionesListar", $request->getBaseTagUrl()."admin/publicaciones");
 
+        //software
+        $template->set_var("sHrefSoftwareListar", $request->getBaseTagUrl()."admin/software");
+
         //personas
         $template->set_var("sHrefDiscapacitadosListar", $request->getBaseTagUrl()."admin/personas");
 
