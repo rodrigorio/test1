@@ -132,11 +132,11 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
         }
     }
             
-    public function borrar($oCategoria)
+    public function borrar($iCategoriaId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from categorias where id = ".$db->escape($oCategoria->getId(), false, MYSQL_TYPE_INT));
+            $db->execSQL("delete from categorias where id = ".$db->escape($iCategoriaId, false, MYSQL_TYPE_INT));
             $db->commit();
             return true;
         }catch(Exception $e){

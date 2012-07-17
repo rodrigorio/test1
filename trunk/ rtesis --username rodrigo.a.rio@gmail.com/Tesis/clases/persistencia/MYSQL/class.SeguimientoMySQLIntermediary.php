@@ -65,11 +65,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           a.fechaAlta as sArchivoFechaAlta,
                           a.orden as iArchivoOrden,
                           a.titulo as sArchivoTitulo,
-                          a.tipo as sArchivoTipo,
-                          a.moderado as bArchivoModerado,
-                          a.activo as bArchivoActivo,
-                          a.publico as bArchivoPublico,
-                          a.activoComentarios as bArchivoActivoComentarios,
+                          a.tipo as sArchivoTipo
                           
                           p.nombre
                     FROM
@@ -160,10 +156,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $oAntecedentes->iOrden = $oObj->iArchivoOrden;
                     $oAntecedentes->sTitulo = $oObj->sArchivoTitulo;
                     $oAntecedentes->sTipo = $oObj->sArchivoTipo;
-                    $oAntecedentes->bModerado = ($oObj->bArchivoModerado == '1')?true:false;
-                    $oAntecedentes->bActivo = ($oObj->bArchivoActivo == '1')?true:false;
-                    $oAntecedentes->bPublico = ($oObj->bArchivoPublico == '1')?true:false;
-                    $oAntecedentes->bActivoComentarios = ($oObj->bArchivoActivoComentarios == '1')?true:false;
                     $oSeguimiento->oAntecedentes = Factory::getArchivoInstance($oAntecedentes);
                 }
 
@@ -235,11 +227,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           a.fechaAlta as sArchivoFechaAlta,
                           a.orden as iArchivoOrden,
                           a.titulo as sArchivoTitulo,
-                          a.tipo as sArchivoTipo,
-                          a.moderado as bArchivoModerado,
-                          a.activo as bArchivoActivo,
-                          a.publico as bArchivoPublico,
-                          a.activoComentarios as bArchivoActivoComentarios
+                          a.tipo as sArchivoTipo
                     FROM
                         seguimientos s
                     LEFT JOIN
@@ -294,10 +282,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $oAntecedentes->iOrden = $oObj->iArchivoOrden;
                     $oAntecedentes->sTitulo = $oObj->sArchivoTitulo;
                     $oAntecedentes->sTipo = $oObj->sArchivoTipo;
-                    $oAntecedentes->bModerado = ($oObj->bArchivoModerado == '1')?true:false; 
-                    $oAntecedentes->bActivo = ($oObj->bArchivoActivo == '1')?true:false;
-                    $oAntecedentes->bPublico = ($oObj->bArchivoPublico == '1')?true:false;
-                    $oAntecedentes->bActivoComentarios = ($oObj->bArchivoActivoComentarios == '1')?true:false;
                     $oSeguimiento->oAntecedentes = Factory::getArchivoInstance($oAntecedentes);
                 }
                 

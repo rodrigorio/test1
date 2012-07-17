@@ -188,11 +188,36 @@ function uploaderFoto(iCategoriaId){
                     $('#msg_form_foto').addClass("error2").fadeIn('slow');
                 }else{
                     $('#msg_form_foto .msg').html(lang['exito procesar archivo']);
-                    $('#contFotoActual').html(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
+                    $('#contFotoActual').html(html).show();
+                    $("a[rel^='prettyPhoto']").prettyPhoto();
+                    $('.image-frame').hover(
+                        function() { $(this).find('.image-actions').css('display', 'none').fadeIn('fast').css('display', 'block'); }, // Show actions menu
+                        function() { $(this).find('.image-actions').fadeOut(100); } // Hide actions menu
+                    );
                     $('#msg_form_foto').addClass("success").fadeIn('slow');
                 }
                 return;
+            }
+        });
+    }
+}
+
+function borrarFoto(iCategoriaId){
+    if(confirm("Se borrara la foto de la categoria, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"admin/procesar-categoria",
+            data:{
+                iCategoriaId:iCategoriaId,
+                borrarFoto:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#contFotoActual").hide("slow", function(){
+                        $("#contFotoActual").html("");
+                    });
+                }
             }
         });
     }
@@ -213,5 +238,11 @@ $(document).ready(function(){
 
     if($("#fotoUpload").length){
         uploaderFoto($("#iCategoriaId").val());
-    }    
+    }
+
+    $("#fotoBorrar").live('click', function(){
+        var iCategoriaId = $(this).attr("rel");
+        borrarFoto(iCategoriaId);
+        return false; 
+    });
 });

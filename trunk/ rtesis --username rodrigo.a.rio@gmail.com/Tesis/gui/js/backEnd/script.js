@@ -147,8 +147,8 @@ function bindEventsAdmin()
 
     // Image actions
     $('.image-frame').hover(
-            function() { $(this).find('.image-actions').css('display', 'none').fadeIn('fast').css('display', 'block'); }, // Show actions menu
-            function() { $(this).find('.image-actions').fadeOut(100); } // Hide actions menu
+        function() { $(this).find('.image-actions').css('display', 'none').fadeIn('fast').css('display', 'block'); }, // Show actions menu
+        function() { $(this).find('.image-actions').fadeOut(100); } // Hide actions menu
     );
 
     // Content box tabs

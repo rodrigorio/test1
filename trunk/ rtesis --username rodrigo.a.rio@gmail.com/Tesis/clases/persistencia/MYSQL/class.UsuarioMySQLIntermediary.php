@@ -130,8 +130,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
                         a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
                         a.titulo as sCvTitulo, a.tipo as sCvTipo,
-                        a.moderado as bCvModerado, a.activo as bCvActivo,
-                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios,
 
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
@@ -240,10 +238,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oCurriculumVitae->iOrden = $oObj->iCvOrden;
                     $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
                     $oCurriculumVitae->sTipo = $oObj->sCvTipo;
-                    $oCurriculumVitae->bModerado = ($oObj->bCvModerado == '1')?true:false;
-                    $oCurriculumVitae->bActivo = ($oObj->bCvActivo == '1')?true:false;
-                    $oCurriculumVitae->bPublico = ($oObj->bCvPublico == '1')?true:false;
-                    $oCurriculumVitae->bActivoComentarios = ($oObj->bCvActivoComentarios == '1')?true:false;
                     $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
                 }
 
@@ -305,8 +299,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
                         a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
                         a.titulo as sCvTitulo, a.tipo as sCvTipo,
-                        a.moderado as bCvModerado, a.activo as bCvActivo,
-                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios,
 
                         pe.descripcion as sPerfilDescripcion
                     FROM
@@ -425,10 +417,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oCurriculumVitae->iOrden = $oObj->iCvOrden;
                     $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
                     $oCurriculumVitae->sTipo = $oObj->sCvTipo;
-                    $oCurriculumVitae->bModerado = ($oObj->bCvModerado == '1')?true:false;
-                    $oCurriculumVitae->bActivo = ($oObj->bCvActivo == '1')?true:false;
-                    $oCurriculumVitae->bPublico = ($oObj->bCvPublico == '1')?true:false;
-                    $oCurriculumVitae->bActivoComentarios = ($oObj->bCvActivoComentarios == '1')?true:false;
                     $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
                 }
 
@@ -476,9 +464,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
                         a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
                         a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
-                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
-                        a.moderado as bCvModerado, a.activo as bCvActivo,
-                        a.publico as bCvPublico, a.activoComentarios as bCvActivoComentarios
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
                         LEFT JOIN fotos f ON f.personas_id = u.id
@@ -557,10 +543,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     $oCurriculumVitae->iOrden = $oObj->iCvOrden;
                     $oCurriculumVitae->sTitulo = $oObj->sCvTitulo;
                     $oCurriculumVitae->sTipo = $oObj->sCvTipo;
-                    $oCurriculumVitae->bModerado = ($oObj->bCvModerado == '1')?true:false;
-                    $oCurriculumVitae->bActivo = ($oObj->bCvActivo == '1')?true:false;
-                    $oCurriculumVitae->bPublico = ($oObj->bCvPublico == '1')?true:false;
-                    $oCurriculumVitae->bActivoComentarios = ($oObj->bCvActivoComentarios == '1')?true:false;
                     $oUsuario->oCurriculumVitae = Factory::getArchivoInstance($oCurriculumVitae);
                 }
 
