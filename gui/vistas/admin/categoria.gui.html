@@ -9,6 +9,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
 
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
@@ -31,45 +32,50 @@
 <!--EndHeaderBlock-->
 
 <!--BeginFormCategoriaBlock-->
-<h1 class="teta_up mabo2">{sTituloForm}</h1>
-
 <!--BeginEditarFotoBlock-->
-<div id="formFotoCont" class="mabo2">
-    <div id="contFotoActual">
-        <!--BeginFotoActualFormBlock-->
-        <div id="fotoActual" class="mabo3">
-            <h2 class="mabo3">Foto Actual</h2>
-            <a href="{hrefFotoActualAmpliada}" rel="prettyPhoto">
+<article>
+    <h1 class="teta_up mabo3">Editar Foto</h1>
+    <div id="formFotoCont" class="mabo3 pale3">
+        <div id="contFotoActual">
+            <!--BeginFotoActualFormBlock-->
+            <div id="fotoActual" class="image-frame left mabo3">
                 <img src="{scrFotoActual}" />
-            </a>
+                <ul class="image-actions">
+                    <li class="view"><a href="{hrefFotoActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
+                    <li class="delete"><a id="fotoBorrar" href="#" rel="{iCategoriaId}">Borrar</a></li>
+                </ul>
+            </div>
+            <!--EndFotoActualFormBlock-->
         </div>
-        <!--EndFotoActualFormBlock-->
+
+        <br clear="all" />
+
+        <div class="mabo3">
+            <h2 class="mabo3">Suba un archivo desde el equipo</h2>
+
+            <button id="fotoUpload" name="fotoUpload" class="btn01">Click para seleccionar</button>
+        </div>
+
+        <ul>
+            <li>
+                <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
+            </li>
+            <li>
+                <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
+            </li>
+            <li>
+                <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
+            </li>
+        </ul>
+
+        <div style="display:none"  id='msg_form_foto' class="notification">
+            <p class="msg"></p>
+        </div>
     </div>
-
-    <div class="mabo3">
-        <h2 class="mabo3">Suba un archivo desde el equipo</h2>
-
-        <button id="fotoUpload" name="fotoUpload" class="btn01">Click para seleccionar</button>
-    </div>
-
-    <ul>
-        <li>
-            <span class="fte2 txt_imp2">Tipos permitidos:</span> {sTiposPermitidosFoto}
-        </li>
-        <li>
-            <span class="fte2 txt_imp2">Tama&ntilde;o M&aacute;ximo:</span> {iTamanioMaximo} Kb.
-        </li>
-        <li>
-            <span class="fte2 txt_imp2">Cuidado:</span> El archivo reemplazar&aacute; la foto actual si ya posee una.
-        </li>
-    </ul>
-
-    <div style="display:none"  id='msg_form_foto' class="notification">
-        <p class="msg"></p>
-    </div>
-</div>
+</article>
 <!--EndEditarFotoBlock-->
 
+<h1 class="teta_up mabo3">{sTituloForm}</h1>
 <form id="formCategoria" name="formCategoria" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <dt>
@@ -82,7 +88,7 @@
         <label for="descripcion">Descripci&oacute;n</label>
     </dt>
     <dd>
-        <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 large maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
+        <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 medium maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
     </dd>
     
     <!--BeginSubmitCrearCategoriaBlock-->
@@ -113,7 +119,7 @@
         </thead>
         <tbody>
         <!--BeginCategoriasBlock-->
-        <tr class="{odd}">
+        <tr class="{iCategoriaId}">
             <td>{sNombre}</td>
             <td class="medium">{sDescripcion}</td>
             <td class="teal_ce">

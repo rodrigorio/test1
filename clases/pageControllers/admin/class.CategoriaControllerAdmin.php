@@ -52,11 +52,13 @@ class CategoriaControllerAdmin extends PageControllerAbstract
 
                     $hrefEditarCategoria = $this->getUrlFromRoute("adminCategoriaEditarCategoria", true)."?id=".$oCategoria->getId();
 
-                    $this->getTemplate()->set_var("$hrefEditarCategoria", $hrefEditarCategoria);
+                    $this->getTemplate()->set_var("hrefEditarCategoria", $hrefEditarCategoria);
+
+                    $sDescripcion = (null === $oCategoria->getDescripcion())?" - ":$oCategoria->getDescripcion();
 
                     $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
                     $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-                    $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
                     $this->getTemplate()->parse("CategoriasBlock", true);
                 }
                 $this->getTemplate()->set_var("NoRecordsCategoriasBlock", "");
@@ -157,22 +159,26 @@ class CategoriaControllerAdmin extends PageControllerAbstract
         $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
         $sNombre = $this->getRequest()->getParam('sNombre');
 
-        if(null === $iCategoriaId){
-            $oCategoria = new stdClass();
-            $oCategoria->sNombre = $sNombre;
-            $oCategoria = Factory::getCategoriaInstance($oCategoria);
-        }else{
-            $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
-            //no lo guardo es solo para la comprobacion
-            $oCategoria->setNombre($sNombre);
-        }
+        try{
+            if(null === $iCategoriaId){
+                $oCategoria = new stdClass();
+                $oCategoria->sNombre = $sNombre;
+                $oCategoria = Factory::getCategoriaInstance($oCategoria);
+            }else{
+                $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+                //no lo guardo es solo para la comprobacion
+                $oCategoria->setNombre($sNombre);
+            }
 
-        $dataResult = '0';
-        if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-            $dataResult = '1';
-        }
+            $dataResult = '0';
+            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
+                $dataResult = '1';
+            }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
+        }catch(Exception $e){
+            print_r($e);
+        }
     }
     
     public function eliminarCategoria()
@@ -223,8 +229,14 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             $this->procesarFoto();
             return;
         }
-        
+
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        
+        if($this->getRequest()->has('borrarFoto')){
+            $this->borrarFoto();
+            return;
+        }
 
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
@@ -280,13 +292,14 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             $nombreInputFile = 'fotoUpload';
 
             $this->getUploadHelper()->setTiposValidosFotos();
+            $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
 
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
                 
                 $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
                 $idItem = $oCategoria->getId();
 
-                //un array con los datos de las fotos
+                //un array con los datos de las fotos                
                 $aNombreArchivos = $this->getUploadHelper()->generarFotosSistema($idItem, $nombreInputFile);
                 $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
 
@@ -301,8 +314,9 @@ class CategoriaControllerAdmin extends PageControllerAbstract
                     $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
                     $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
-                    $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
-                    $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("scrFotoActual", $pathFotoServidorMediumSize);
+                    $this->getTemplate()->set_var("hrefFotoActualAmpliada", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("iCategoriaId", $iCategoriaId);
 
                     $respuesta = "1; ".$this->getTemplate()->pparse('contFotoActual', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
@@ -313,9 +327,35 @@ class CategoriaControllerAdmin extends PageControllerAbstract
                 }
             }
         }catch(Exception $e){
+            echo $e->getMessage();
+            return;
+            
             $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }
+    }
+
+    private function borrarFoto()
+    {
+        $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
+
+        if(empty($iCategoriaId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
+            $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+
+            AdminController::getInstance()->borrarFotoCategoria($oCategoria, $pathServidor);
+            $this->getJsonHelper()->setSuccess(true);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 }

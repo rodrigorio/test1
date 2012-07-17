@@ -140,10 +140,10 @@ class AdminController
         }
     }
 
-    public function eliminarCategoria($oCategoria){
+    public function eliminarCategoria($iCategoriaId){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            return $oCategoriaIntermediary->borrar($oCategoria);
+            return $oCategoriaIntermediary->borrar($iCategoriaId);
         }catch(Exception $e){
             throw new Exception($e);
         }
@@ -162,6 +162,63 @@ class AdminController
             return $oCategoriaIntermediary->existe($filtro);
         }catch(Exception $e){
             throw new Exception($e);
+        }
+    }
+
+    public function guardarFotoCategoria($aNombreArchivos, $pathServidor, $oCategoria)
+    {
+    	try{
+            //creo el objeto Foto y lo guardo.
+            $oFoto = new stdClass();
+            $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
+            $oFoto->sNombreMediumSize = $aNombreArchivos['nombreFotoMediana'];
+            $oFoto->sNombreSmallSize = $aNombreArchivos['nombreFotoChica'];
+
+            $oFoto = Factory::getFotoInstance($oFoto);
+
+            $oFoto->setOrden(0);
+            $oFoto->setTitulo('Foto Categoria');
+            $oFoto->setDescripcion('');
+            $oFoto->setTipoPerfil();
+
+            if(null !== $oCategoria->getFoto())
+            {
+                $this->borrarFotoCategoria($oCategoria, $pathServidor);
+            }
+
+            //asociarlo al objeto
+            $oCategoria->setFoto($oFoto);
+
+            $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
+            return $oFotoIntermediary->guardarFotoCategoria($oCategoria);
+
+        }catch(Exception $e){
+            //si hubo error borro los archivos en disco
+            foreach($aNombreArchivos as $nombreServidorArchivo){
+                $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
+                if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
+                    unlink($pathServidorArchivo);
+                }
+            }
+            $oCategoria->setFoto(null);
+
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function borrarFotoCategoria($oCategoria, $pathServidor)
+    {
+    	try{
+            if(null === $oCategoria->getFoto()){
+                throw new Exception("La categoria no posee una foto");
+            }
+
+            IndexController::getInstance()->borrarFoto($oCategoria->getFoto(), $pathServidor);
+
+            $oCategoria->setFoto(null);
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
         }
     }
 

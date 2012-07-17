@@ -34,6 +34,16 @@ class FotoMySQLIntermediary extends FotoIntermediary
         }        
     }
 
+    public function guardarFotoCategoria(Categoria $oCategoria)
+    {
+        if(null !== $oCategoria->getFoto()->getId()){
+            return $this->actualizar($oCategoria->getFoto());
+        }else{
+            $iId = $oCategoria->getId();
+            return $this->insertarAsociado($oCategoria->getFoto(), $iId, get_class($oCategoria));
+        }
+    }
+
     /**
      * En el peor de los casos se guarda 1 foto sola, esto es por si se usa alguna libreria javascript
      * en la que se pueden subir muchas fotos al mismo tiempo
