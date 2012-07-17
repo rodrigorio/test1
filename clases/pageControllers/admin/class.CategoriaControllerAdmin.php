@@ -46,7 +46,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "ListadoCategoriasBlock");
 
             $iRecordsTotal = 0;
-            $vCategoria = AdminController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $vCategoria = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
             if(count($vCategoria)>0){
                 foreach ($vCategoria as $oCategoria){
 
@@ -118,7 +118,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->set_var("sTituloForm", "Modificar categoría");
             $this->getTemplate()->set_var("SubmitCrearCategoriaBlock", "");
 
-            $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
 
             $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
             $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
@@ -165,7 +165,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
                 $oCategoria->sNombre = $sNombre;
                 $oCategoria = Factory::getCategoriaInstance($oCategoria);
             }else{
-                $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+                $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
                 //no lo guardo es solo para la comprobacion
                 $oCategoria->setNombre($sNombre);
             }
@@ -256,7 +256,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
 
             if($this->getRequest()->has('modificarCategoria')){
                 $iCategoriaId = $this->getRequest()->getPost("iCategoriaId");
-                $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+                $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
                 $oCategoria->setNombre($sNombre);
                 $oCategoria->setDescripcion($sDescripcion);
 
@@ -296,7 +296,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
 
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
                 
-                $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+                $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
                 $idItem = $oCategoria->getId();
 
                 //un array con los datos de las fotos                
@@ -348,7 +348,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
         try{
             $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-            $oCategoria = AdminController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
 
             AdminController::getInstance()->borrarFotoCategoria($oCategoria, $pathServidor);
             $this->getJsonHelper()->setSuccess(true);

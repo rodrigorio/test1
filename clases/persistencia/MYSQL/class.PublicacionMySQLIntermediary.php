@@ -642,6 +642,8 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
     /**
      * La relacion con videos archivos y fotos es de la clase abstracta
      * asi que me alcanza con utilizar la tabla fichas_abstractas
+     *
+     * por ahora este metodo puede ser utilizado por cualquier clase que herede de FichaAbstract
      */
     public function obtenerCantidadElementosAdjuntos($iFichaId)
     {

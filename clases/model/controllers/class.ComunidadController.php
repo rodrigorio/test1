@@ -704,7 +704,7 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }        
     }
-    
+
     public function getReviewById($iReviewId)
     {
     	try{
@@ -720,6 +720,23 @@ class ComunidadController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    public function getSoftwareById($iSoftwareId)
+    {
+    	try{
+            $filtro = array('f.id' => $iSoftwareId);
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aSoftware = $oSoftwareIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aSoftware){
+                return $aSoftware[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     public function getFotoDestacadaFicha($iFichaId)
@@ -861,6 +878,32 @@ class ComunidadController
             throw new Exception($e);
             return false;
         }          
+    }
+
+    public function obtenerCategoria($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            return $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function obtenerCategoriaById($iCategoriaId)
+    {
+        try{
+            $filtro = array('c.id' => $iCategoriaId);
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aCategorias = $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aCategorias){
+                return $aCategorias[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
     }
     
     /**

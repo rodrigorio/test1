@@ -5,7 +5,11 @@ class Comentario
     private $iId;
     private $dFecha;
     private $sDescripcion;
-    private $fValoracion = 0;
+    
+    /**
+     * -1 quiere decir que no se emitio valoracion en el comentario
+     */
+    private $fValoracion = -1;
     private $iUsuarioId;
     private $oUsuario;    
 
@@ -58,9 +62,17 @@ class Comentario
     {
         return nl2br($this->sDescripcion);
     }
+    
     public function getValoracion()
     {
-        return $this->fValoracion;
+        return round($this->fValoracion, 1);
+    }
+
+    /**
+     * Devuelve true si el comentario tiene valoracion, false caso contrario
+     */
+    public function emitioValoracion(){
+        return ($this->fValoracion >= 0)?true:false;
     }
 
     public function getUsuario(){

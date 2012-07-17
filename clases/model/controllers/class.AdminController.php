@@ -104,32 +104,6 @@ class AdminController
             throw new Exception($e);
         }
     }
-
-    public function obtenerCategoria($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-        try{
-            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            return $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
-        }catch(Exception $e){
-            throw new Exception($e);
-        }
-    }
-
-    public function obtenerCategoriaById($iCategoriaId)
-    {
-        try{
-            $filtro = array('c.id' => $iCategoriaId);
-            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            $iRecordsTotal = 0;
-            $aCategorias = $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
-            if(null !== $aCategorias){
-                return $aCategorias[0];
-            }else{
-                return null;
-            }
-        }catch(Exception $e){
-            throw new Exception($e);
-        }
-    }
     
     public function guardarCategoria($oCategoria){
         try{
@@ -510,6 +484,29 @@ class AdminController
 
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function buscarSoftwareComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function buscarSoftwareModeracion($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $filtro["publico"] = "1";
+            $filtro["m.sModeracionEstado"] = "pendiente";
+
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
             throw new Exception($e);
         }
