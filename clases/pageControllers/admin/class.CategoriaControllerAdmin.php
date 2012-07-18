@@ -248,6 +248,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
                 $oCategoria = new stdClass();
                 $oCategoria->sNombre = $sNombre;
                 $oCategoria->sDescripcion = $sDescripcion;
+                $oCategoria->sUrlToken = $this->getInflectorHelper()->urlize($sNombre);
                 $oCategoria = Factory::getCategoriaInstance($oCategoria);
 
                 $accion = "agregarCategoria";
@@ -258,6 +259,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
                 $iCategoriaId = $this->getRequest()->getPost("iCategoriaId");
                 $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
                 $oCategoria->setNombre($sNombre);
+                $oCategoria->setUrlToken($this->getInflectorHelper()->urlize($sNombre));
                 $oCategoria->setDescripcion($sDescripcion);
 
                 $accion = "modificarCategoria";

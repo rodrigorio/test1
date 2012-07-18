@@ -340,7 +340,7 @@ class RutasModuloComunidad
         $router->addRoute('comunidadSoftwareIndex', $route);
         
         //ACA FALTA AGREGAR UNO QUE SEA URL AMIGABLE CON NOMBRE DE CATEGORIA
-        //'comunidad/descargas/12-nombre-categoria/' MUESTRA TODO EL SOFTWARE PARA ESA CATEGORIA
+        //'comunidad/descargas/nombre-categoria/' MUESTRA TODO EL SOFTWARE PARA ESA CATEGORIA
 
         $route = new RegexRoute('comunidad/descargas/mis-aplicaciones',
                                 array(
@@ -431,7 +431,7 @@ class RutasModuloComunidad
                                     'action'     => 'verSoftware'
                                 ),
                                 array(
-                                    1 => 'sNombreCategoria',
+                                    1 => 'sUrlToken',
                                     2 => 'iSoftwareId',
                                     3 => 'sTituloUrlized'
                                 ),
