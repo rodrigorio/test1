@@ -30,6 +30,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 
             $sSQL = " INSERT INTO categorias SET ".
                     " nombre = ".$db->escape($oCategoria->getNombre(),true).",".
+                    " urlToken = ".$db->escape($oCategoria->getUrlToken(),true).",".
                     " descripcion = ".$db->escape($oCategoria->getDescripcion(),true)." ";
                     			 
             $db->execSQL($sSQL);
@@ -48,6 +49,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
 
             $sSQL = " UPDATE categorias SET ".
                     " nombre = ".$db->escape($oCategoria->getNombre(),true).", " .
+                    " urlToken = ".$db->escape($oCategoria->getUrlToken(),true).",".
                     " descripcion = ".$db->escape($oCategoria->getDescripcion(),true)." " .
                     " WHERE id = ".$db->escape($oCategoria->getId(),false,MYSQL_TYPE_INT)." ";
 
@@ -81,7 +83,8 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        c.id as iId, c.nombre as sNombre, c.descripcion as sDescripcion, 
+                        c.id as iId, c.nombre as sNombre, c.descripcion as sDescripcion,
+                        c.urlToken as sUrlToken,
 
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
@@ -107,6 +110,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
             	$oCategoria 		= new stdClass();
             	$oCategoria->iId 	= $oObj->iId;
             	$oCategoria->sNombre = $oObj->sNombre;
+                $oCategoria->sUrlToken = $oObj->sUrlToken;
             	$oCategoria->sDescripcion = $oObj->sDescripcion;
 
                 if(null !== $oObj->iFotoId){
