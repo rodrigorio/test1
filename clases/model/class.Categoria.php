@@ -4,6 +4,7 @@ class Categoria{
     private $iId;
     private $sNombre;
     private $sDescripcion;
+    private $sUrlToken;
 
     /**
      * objeto Foto
@@ -106,5 +107,13 @@ class Categoria{
         }
 
         return $medium ? $this->oFoto->getNombreMediumSize() : $this->oFoto->getNombreSmallSize();
+    }
+
+    public function setUrlToken($sUrlTaken){
+        $this->sUrlToken = $sUrlTaken;
+    }
+
+    public function getUrlToken(){
+        return $this->sUrlToken;
     }
 }
