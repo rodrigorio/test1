@@ -272,4 +272,20 @@ class Factory
         $oSoftware = new Software($obj);
         return $oSoftware;
     }
+    /**
+     * @param stdClass $obj
+     * @return Variable|null
+     */
+    public static function &getVariableInstance(stdClass $obj){
+        $oVariable = new Variable($obj);
+        return $oVariable;
+    }
+   /**
+     * @param stdClass $obj
+     * @return Unidad|null
+     */
+    public static function &getUnidadInstance(stdClass $obj){
+        $oUnidad = new Unidad($obj);
+        return $oUnidad;
+    }
 }
