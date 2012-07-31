@@ -55,7 +55,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             	$oVariable->sDescripcion	= $oObj->sDescripcion;
             	$oCiudad->oUnidad    = SeguimientoController::getInstance()->getUnidadById($oObj->iUnidadId);
             	$oVariable->dFechaHora	= $oObj->dFechaHora;
-            	$aVariables[]		= Factory::getCiudadInstance($oVariable);
+            	$aVariables[]		= Factory::getVariableInstance($oVariable);
             }
             return $aVariables;
         }catch(Exception $e){

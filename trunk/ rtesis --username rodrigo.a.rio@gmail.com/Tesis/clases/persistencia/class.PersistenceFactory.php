@@ -180,4 +180,16 @@ class PersistenceFactory {
             return (SoftwareMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getUnidadIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (UnidadMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getVariableIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (VariableMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
