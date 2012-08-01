@@ -25,10 +25,10 @@
 <!--BeginHeaderBlock-->
 <article class="full-block clearfix">
     <header>
-        <h2>Administrar Publicaciones</h2>
+        <h2>Administrar Software</h2>
     </header>
     <section>
-        <h3>Administrador de publicaciones y reviews de la comunidad SGPAPD</h3>
+        <h3>Administrador de aplicaciones del catalogo de descargas de la comunidad</h3>
     </section>
 </article>
 <!--EndHeaderBlock-->
@@ -36,27 +36,34 @@
 <!--BeginHeaderModeracionesBlock-->
 <article class="full-block clearfix">
 <header>
-    <h2>Moderar publicaciones sistema</h2>
+    <h2>Moderar software sistema</h2>
 </header>
 <section>
-    <h3>Aprobar-Rechazar publicaciones y reviews marcados como visibles al público en general</h3>
+    <h3>Aprobar-Rechazar aplicaciones marcadas como visibles al público en general</h3>
 </section>
 <!--EndHeaderModeracionesBlock-->
 
-<!--BeginListadoPublicacionesBlock-->
-<form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
+<!--BeginListadoSoftwareBlock-->
+<form id="formFiltrarSoftware" name="formFiltrarSoftware" action="" method="post">
     <fieldset>
         <legend>Filtrar B&uacute;squeda</legend>
         <div class="mabo2 clearfix">
             <label for="filtroTitulo">T&iacute;tulo</label> <input type="text" id="filtroTitulo" name="filtroTitulo" class="mari2">
             <label for="filtroApellidoAutor">Apellido Autor</label> <input type="text" id="filtroApellidoAutor" name="filtroApellidoAutor">
+            <label for="filtroCategoria">Categor&iacute;a</label>
+                <select name="filtroCategoria" id="filtroCategoria" class="mari2">
+                    <option value="">Elegir categor&iacute;a</option>
+                    <!--BeginOptionFiltroCategoriaBlock-->
+                    <option value="{iCategoriaId}">{sFiltroCategoria}</option>
+                    <!--EndOptionFiltroCategoriaBlock-->
+                </select>
         </div>
         <div class="mabo3 clearfix">
             <label readonly="readonly" for="filtroFechaDesde">Fecha desde</label> <input type="text" id="filtroFechaDesde" name="filtroFechaDesde" class="mari2">
             <label readonly="readonly" for="filtroFechaHasta">Fecha hasta</label> <input type="text" id="filtroFechaHasta" name="filtroFechaHasta">
         </div>
         <div class="mabo3">
-            <button id="BuscarPublicaciones" name="BuscarPublicaciones" type="submit">Buscar Publicaciones</button>
+            <button id="BuscarSoftware" name="BuscarSoftware" type="submit">Buscar Software</button>
             <button class="blue" id="limpiarFiltro">Limpiar Filtro</button>
         </div>
     </fieldset>
@@ -64,12 +71,12 @@
     <input type="hidden" value="" name="sOrder" id="sOrder" />
 </form>
 
-<section id="listadoPublicaciones">
+<section id="listadoSoftware">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <div id="listadoPublicacionesResult">
-            <!--BeginGrillaPublicacionesBlock-->
+        <div id="listadoSoftwareResult">
+            <!--BeginGrillaSoftwareBlock-->
             <div class="mabo">
-                Cantidad publicaciones filtro actual: <strong>{iRecordsTotal}</strong>
+                Cantidad aplicaciones filtro actual: <strong>{iRecordsTotal}</strong>
             </div>
             <table class="mabo2">
                 <thead>
@@ -82,8 +89,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                <!--BeginPublicacionBlock-->
-                    <tr class="{iPublicacionId}">
+                <!--BeginSoftwareBlock-->
+                    <tr class="{iSoftwareId}">
                         <td>                            
                             <img src="{scrAvatarAutor}" class="pari" />
                             <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>                            
@@ -95,30 +102,30 @@
                             {sFecha}
                         </td>
                         <td>
-                            <select class="cambiarEstadoPublicacion" name="estadoPublicacion_{iPublicacionId}" id="estadoPublicacion_{iPublicacionId}" rel="{sTipo}_{iPublicacionId}">
-                                <option value="1" {sSelectedPublicacionActivo}>Activa</option>
-                                <option value="0" {sSelectedPublicacionDesactivado}>Desactivada</option>
+                            <select class="cambiarEstadoSoftware" name="estadoSoftware_{iSoftwareId}" id="estadoSoftware_{iSoftwareId}" rel="{iSoftwareId}">
+                                <option value="1" {sSelectedSoftwareActivo}>Activo</option>
+                                <option value="0" {sSelectedSoftwareDesactivado}>Desactivado</option>
                             </select>
                         </td>
                         <td class="teal_ce">
-                            <span title="Ampliar" rel="{sTipo}_{iPublicacionId}" class="i mi expand ihover ampliarPublicacion mari"></span>
-                            <span title="Editar" rel="{sTipo}_{iPublicacionId}" class="i bs edit ihover editarPublicacion mari"></span>
-                            <span title="Eliminar" rel="{sTipo}_{iPublicacionId}" class="i bs delete ihover borrarPublicacion"></span>
+                            <span title="Ampliar" rel="{iSoftwareId}" class="i mi expand ihover ampliarSoftware mari"></span>
+                            <span title="Editar" rel="{iSoftwareId}" class="i bs edit ihover editarSoftware mari"></span>
+                            <span title="Eliminar" rel="{iSoftwareId}" class="i bs delete ihover borrarSoftware"></span>
                         </td>
                     </tr>
-                <!--EndPublicacionBlock-->
-                <!--BeginNoRecordsPublicacionesBlock-->
+                <!--EndSoftwareBlock-->
+                <!--BeginNoRecordsSoftwareBlock-->
                     <tr>
-                        <td colspan="6">{sNoRecords}</td>
+                        <td colspan="5">{sNoRecords}</td>
                     </tr>
-                <!--EndNoRecordsPublicacionesBlock-->
+                <!--EndNoRecordsSoftwareBlock-->
                 </tbody>
             </table>
             {paginacion}
-            <!--EndGrillaPublicacionesBlock-->
+            <!--EndGrillaSoftwareBlock-->
         </div>
 </section>
-<!--EndListadoPublicacionesBlock-->
+<!--EndListadoSoftwareBlock-->
 
 <!--BeginListadoModeracionBlock-->
 <section id="listadoModeraciones">
@@ -127,49 +134,49 @@
 
             <!--BeginGrillaModeracionesBlock-->
             <div class="mabo">
-                Cantidad publicaciones por moderar: <strong>{iRecordsTotal}</strong>
+                Cantidad aplicaciones por moderar: <strong>{iRecordsTotal}</strong>
             </div>
             <table class="mabo2">
                 <thead>
                     <tr>
                         <th class="iveal small">Nombre autor</th>
-                        <th class="iveal big">T&iacute;tulo Publicaci&oacute;n</th>
+                        <th class="iveal big">T&iacute;tulo Software</th>
                         <th class="iveal">Fecha</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                <!--BeginPublicacionModerarBlock-->
-                    <tr class="{iPublicacionId}">
-                        <td class="desplegable teal_le pale2" rel="{iPublicacionId}">
+                <!--BeginSoftwareModerarBlock-->
+                    <tr class="{iSoftwareId}">
+                        <td class="desplegable teal_le pale2" rel="{iSoftwareId}">
                             <img src="{scrAvatarAutor}" class="pari" />
                             <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>
                         </td>
-                        <td class="teal_le desplegable" rel="{iPublicacionId}">
+                        <td class="teal_le desplegable" rel="{iSoftwareId}">
                             {sTitulo}
                         </td>
-                        <td class="desplegable" rel="{iPublicacionId}">
+                        <td class="desplegable" rel="{iSoftwareId}">
                             {sFecha}
                         </td>
                         <td class="teal_ce">
-                            <span title="Ampliar" rel="{sTipo}_{iPublicacionId}" class="i mi expand ihover ampliarPublicacion mari"></span>
+                            <span title="Ampliar" rel="{iSoftwareId}" class="i mi expand ihover ampliarSoftware mari"></span>
                         </td>
                     </tr>
-                    <tr class="{iPublicacionId}">
-                        <td id="desplegable_{iPublicacionId}" class="pa0" colspan="4" style="display:none;">
+                    <tr class="{iSoftwareId}">
+                        <td id="desplegable_{iSoftwareId}" class="pa0" colspan="4" style="display:none;">
                             <article class="nested clearrm mabo0">
                                 <header>
-                                    <h2>Historial moderaciones publicaci&oacute;n Id: {iPublicacionId}</h2>
+                                    <h2>Historial moderaciones aplicaci&oacute;n Id: {iSoftwareId}</h2>
                                 </header>
                                 <section>
                                     <table>
-                                        <!--BeginModeracionHistorialPublicacionBlock-->
+                                        <!--BeginModeracionHistorialSoftwareBlock-->
                                         <tr>
                                             <td class="small">{sFechaModeracion}</td>
                                             <td class="small"><strong>{sEstadoModeracion}</strong></td>
                                             <td>{sMensaje}</td>
                                         </tr>
-                                        <!--EndModeracionHistorialPublicacionBlock-->
+                                        <!--EndModeracionHistorialSoftwareBlock-->
                                     </table>
                                 </section>
                                 <section class="teal_le">
@@ -179,31 +186,31 @@
                                             <legend>Estado Pendiente</legend>
                                                 <dl>
                                                     <dt class="radio">
-                                                        <label for="aprobar_{iPublicacionId}">Aprobar</label>
+                                                        <label for="aprobar_{iSoftwareId}">Aprobar</label>
                                                     </dt>
                                                     <dd>
-                                                        <input type="radio" id="aprobar_{iPublicacionId}" name="estado_{iPublicacionId}" value="{sEstadoAprobarValue}">
+                                                        <input type="radio" id="aprobar_{iSoftwareId}" name="estado_{iSoftwareId}" value="{sEstadoAprobarValue}">
                                                     </dd>
                                                     <dt class="radio">
-                                                        <label for="rechazar_{iPublicacionId}">Rechazar</label>
+                                                        <label for="rechazar_{iSoftwareId}">Rechazar</label>
                                                     </dt>
                                                     <dd>
-                                                        <input type="radio" id="rechazar_{iPublicacionId}" name="estado_{iPublicacionId}" value="{sEstadoRechazarValue}">
+                                                        <input type="radio" id="rechazar_{iSoftwareId}" name="estado_{iSoftwareId}" value="{sEstadoRechazarValue}">
                                                     </dd>
                                                 </dl>
                                         </fieldset>
                                         
                                         <dt>
-                                            <label for="mensaje_{iPublicacionId}">Mensaje</label>
+                                            <label for="mensaje_{iSoftwareId}">Mensaje</label>
                                         </dt>
                                         <dd>
-                                            <textarea class="mihe1 medium maxlength" id="mensaje_{iPublicacionId}" rows="0" cols="0" name="mensaje_{iPublicacionId}" title="Mensaje Moderaci&oacute;n"></textarea>
+                                            <textarea class="mihe1 medium maxlength" id="mensaje_{iSoftwareId}" rows="0" cols="0" name="mensaje_{iSoftwareId}" title="Mensaje Moderaci&oacute;n"></textarea>
                                         </dd>
                                        
-                                        <button rel="{iPublicacionId}" class="moderarSubmit mabo2" type="button">Moderar publicaci&oacute;n</button>
-                                        <input type="hidden" id="moderacionId_{iPublicacionId}" name="moderacionId_{iPublicacionId}" value="{iModeracionId}">
+                                        <button rel="{iSoftwareId}" class="moderarSubmit mabo2" type="button">Moderar aplicaci&oacute;n</button>
+                                        <input type="hidden" id="moderacionId_{iSoftwareId}" name="moderacionId_{iSoftwareId}" value="{iSoftwareId}">
 
-                                        <div style="display:none"  id='msg_form_moderacion_{iPublicacionId}' class="notification">                                            
+                                        <div style="display:none"  id='msg_form_moderacion_{iSoftwareId}' class="notification">
                                             <p class="msg"></p>
                                         </div>
                                     </form>
@@ -211,7 +218,7 @@
                             </article>
                         </td>
                     </tr>
-                <!--EndPublicacionModerarBlock-->
+                <!--EndSoftwareModerarBlock-->
                 <!--BeginNoRecordsModeracionesBlock-->
                     <tr>
                         <td colspan="4">{sNoRecords}</td>
@@ -225,9 +232,9 @@
 </section>
 <!--EndListadoModeracionBlock-->
 
-<!--BeginFormularioPublicacionBlock-->
-<h1 class="teta_up mabo2">Modificar publicaci&oacute;n</h1>
-<form id="formPublicacion" name="formPublicacion" action="" method="post">
+<!--BeginFormularioSoftwareBlock-->
+<h1 class="teta_up mabo2">Modificar Software</h1>
+<form id="formSoftware" name="formSoftware" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     
     <dt>
@@ -235,14 +242,14 @@
     </dt>
     <dd>
         <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
-        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+        <p>El T&iacute;tulo que lleva el software en el cat&aacute;logo de la comunidad</p>
     </dd>
 
     <dt>
         <label for="descripcionBreve">Descripcion Breve</label>
     </dt>
     <dd>
-        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
+        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada para el Software" maxlength="100" value="{sDescripcionBreve}">
         <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
     </dd>
     
@@ -250,12 +257,12 @@
         <label for="activo">Visible?</label>
     </dt>
     <dd>
-        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+        <select class="small" name="activo" id="activo" title="Software Visible?">
             <option value="">Seleccionar</option>
             <option {sSelectedActivo} value="1">S&iacute;</option>
             <option {sSelectedDesactivado} value="0">No</option>
         </select>
-        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+        <p>Ning&uacute;n otro integrante podra ver el software excepto el que lo creo.</p>
     </dd>
 
     <dt>
@@ -267,7 +274,7 @@
             <option {sSelectedPublico} value="1">El mundo</option>
             <option {sSelectedComunidad} value="0">Solo comunidad</option>
         </select>
-        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+        <p>El software puede ser visto solo por la comunidad o puede ser abierto al p&uacute;blico en general</p>
     </dd>
 
     <dt>
@@ -283,196 +290,31 @@
     </dd>
 
     <dt>
-        <label for="descripcion">Contenido Publicaci&oacute;n</label>
+        <label for="descripcion">Descripci&oacute;n Completa Software</label>
     </dt>
     <dd>
-        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n completa software">{sDescripcion}</textarea>
+        <p>Caracter&iacute;sticas, prestaciones, requerimientos, etc.</p>
     </dd>
 
     <dt>
-        <label for="keywords">Palabras Clave</label>
+        <label for="enlaces">Enlaces</label>
     </dt>
     <dd>
-        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+        <label for="">Agregar Link</label>
+        <input class="large" type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
+        <p>Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
     </dd>
    
-    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
-    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
+    <button class="mabo" id="modificarSoftware" name="modificarSoftware" type="submit">Modificar Software</button>
+    <input type="hidden" value="{iSoftwareId}" name="softwareIdForm" id="softwareIdForm" />
 
-    <div style="display:none"  id='msg_form_publicacion' class="notification">
+    <div style="display:none"  id='msg_form_software' class="notification">
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
 </form>
-<!--EndFormularioPublicacionBlock-->
-
-<!--BeginFormularioReviewBlock-->
-<div class="mabo3">
-    <h1 class="teta_up mabo">Modificar review</h1>
-    <span class="fost_it">Los reviews tienen como objetivo lograr aportes a la comunidad en forma de cr&iacute;ticas constructivas</span>
-</div>
-<form id="formReview" name="formReview" action="" method="post">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-
-    <dt>
-        <label for="itemType">Acerca de?</label>
-    </dt>
-    <dd>
-        <select class="small" name="itemType" id="itemType" title="Review acerca de?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedProduct} value="product">Un Producto</option>
-            <option {sSelectedBusiness} value="business">Un Negocio o Empresa</option>
-            <option {sSelectedEvent} value="event">Un Evento</option>
-            <option {sSelectedPerson} value="person">Una Persona</option>
-            <option {sSelectedPlace} value="place">Un Lugar</option>
-            <option {sSelectedWebsite} value="website">Un Sitio Web</option>
-            <option {sSelectedUrl} value="url">Un Link &oacute; Enlace</option>
-        </select>
-        <p>Este campo opcional provee informaci&oacute;n acerca del item sobre el que se hace el review.</p>
-    </dd>
-
-    <div id="itemEventSummaryFormLine" style="display:none;">
-        <dt>
-            <label for="itemEventSummary">Resumen Evento</label>
-        </dt>
-        <dd>
-            <input class="large" type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
-            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>            
-        </dd>
-    </div>
-    
-    <dt>
-        <label for="item">Nombre Item</label>
-    </dt>
-    <dd>
-        <input class="large" type="text" name="item" id="item" title="Nombre del Item al que hace referencia el review" maxlength="255" value="{sItemName}" />
-        <p>
-            El review debe tener al menos el nombre del item al que se refiere el art&iacute;culo / revisi&oacute;n.<br>
-            Por ejemplo, si el review es acerca de un lugar debe ingresar el nombre del sitio.<br>
-            Si fuera un art&iacute;culo acerca de una persona debe ingresar aqui el nombre de la misma, etc.
-        </p>
-    </dd>
-    
-    <dt>
-        <label for="titulo">T&iacute;tulo</label>
-    </dt>
-    <dd>
-        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
-        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
-    </dd>
-
-    <dt>
-        <label for="descripcionBreve">Descripcion Breve</label>
-    </dt>
-    <dd>
-        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
-        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-    </dd>
-
-    <dt>
-        <label for="activo">Visible?</label>
-    </dt>
-    <dd>
-        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedActivo} value="1">S&iacute;</option>
-            <option {sSelectedDesactivado} value="0">No</option>
-        </select>
-        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
-    </dd>
-
-    <dt>
-        <label for="publico">Alcance Privacidad?</label>
-    </dt>
-    <dd>
-        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedPublico} value="1">El mundo</option>
-            <option {sSelectedComunidad} value="0">Solo comunidad</option>
-        </select>
-        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
-    </dd>
-
-    <dt>
-        <label for="activoComentarios">Activar Comentarios?</label>
-    </dt>
-    <dd>
-        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
-            <option {sSelectedDesactivadoComentarios} value="0">No</option>
-        </select>
-        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
-    </dd>
-
-    <dt>
-        <label for="descripcion">Contenido Publicaci&oacute;n</label>
-    </dt>
-    <dd>
-        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
-    </dd>
-
-    <dt>
-        <label for="rating">Valuaci&oacute;n</label>
-    </dt>
-    <dd>
-        <select class="small" name="rating" id="rating" title="Valuaci&oacute;n del Item al cual se le hace el Review">
-            <option value="">Seleccionar</option>
-            <option value="0" {sSelected_0} >0</option>
-            <option value="0.5" {sSelected_05} >0.5</option>
-            <option value="1" {sSelected_1} >1</option>
-            <option value="1.5" {sSelected_15} >1.5</option>
-            <option value="2" {sSelected_2} >2</option>
-            <option value="2.5" {sSelected_25} >2.5</option>
-            <option value="3" {sSelected_3} >3</option>
-            <option value="3.5" {sSelected_35} >3.5</option>
-            <option value="4" {sSelected_4} >4</option>
-            <option value="4.5" {sSelected_45} >4.5</option>
-            <option value="5" {sSelected_5}>5</option>
-        </select>
-        <p>
-            Puede valorar el Item del Review.<br>
-            Si por ejemplo el review es acerca de un nuevo portal web puede valorarlo con este campo.
-        </p>
-    </dd>
-
-    <dt>
-        <label for="itemUrl">Link</label>
-    </dt>
-    <dd>
-        <input class="medium" type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
-        <p>
-            En lo posible adjuntar al review una Url http://www.ejemplo.com asociada al item del art&iacute;culo.<br>
-            Por ejemplo, se podr&iacute;a brindar el link a la cuenta de twitter si es un review acerca de un profesional.
-        </p>
-    </dd>
-
-    <dt>
-        <label for="fuenteOriginal">Fuente Original</label>
-    </dt>
-    <dd>
-        <input class="medium" type="text" name="fuenteOriginal" id="fuenteOriginal" title="Referencia autor original o fuente" maxlength="500" value="{sFuenteOriginal}" />
-        <p>Si Ud. no es el Autor del art&iacute;culo, utilice este campo para referenciar la fuente original de donde se extrajo.</p>
-    </dd>
-
-    <dt>
-        <label for="keywords">Palabras Clave</label>
-    </dt>
-    <dd>
-        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
-    </dd>
-
-    <button class="mabo" id="modificarReview" name="modificarReview" type="submit">Modificar Review</button>
-    <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
-
-    <div style="display:none"  id='msg_form_review' class="notification">
-        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-        <p class="msg"></p>
-    </div>
-</form>
-<!--EndFormularioReviewBlock-->
+<!--EndFormularioSoftwareBlock-->
 
 <!--BeginFichaPublicacionBlock-->
 <article class="full-block pa2 clearfix mabo0">
