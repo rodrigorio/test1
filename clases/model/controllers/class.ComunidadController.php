@@ -739,6 +739,16 @@ class ComunidadController
         }
     }
 
+    public function guardarSoftware($oSoftware){
+    	try{
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            $oSoftwareIntermediary->guardar($oSoftware);
+            $this->procesarModeracionFicha($oSoftware);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function getFotoDestacadaFicha($iFichaId)
     {
         try{
