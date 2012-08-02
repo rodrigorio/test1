@@ -427,10 +427,10 @@ function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
             objType:tipo
         },
         beforeSend: function(){
-            setWaitingStatus('listadoMisPublicaciones', true);
+            setWaitingStatus('listadoPublicaciones', true);
         },
         success: function(data){
-            setWaitingStatus('listadoMisPublicaciones', false);
+            setWaitingStatus('listadoPublicaciones', false);
         }
     });
 }

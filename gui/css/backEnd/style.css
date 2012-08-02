@@ -1135,6 +1135,7 @@ p .destacado{font-weight:bold;}
 
 /* para ubicar en posiciones absolutas */
 .topRight{top:5px; right:5px}
+.bottomRight{bottom:5px; right:5px}
 
 
 

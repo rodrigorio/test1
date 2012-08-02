@@ -1,5 +1,5 @@
 //validacion y submit
-var validateFormPublicacion = {
+var validateFormSoftware = {
     errorElement: "span",
     validClass: "valid-side-note",
     errorClass: "invalid-side-note",
@@ -16,36 +16,35 @@ var validateFormPublicacion = {
     },
     rules:{
         titulo:{required:true},
+        categoria:{required:true},
         descripcionBreve:{required:true},
-        descripcion:{required:true},
-        keywords:{required:true},
         activo:{required:true},
         publico:{required:true},
-        activoComentarios:{required:true}
+        activoComentarios:{required:true},
+        descripcion:{required:true}        
     },
     messages:{
         titulo: mensajeValidacion("requerido"),
+        categoria: mensajeValidacion("requerido"),
         descripcionBreve: mensajeValidacion("requerido"),
         descripcion: mensajeValidacion("requerido"),
-        keywords: mensajeValidacion("requerido"),
         activo: mensajeValidacion("requerido"),
         publico: mensajeValidacion("requerido"),
         activoComentarios: mensajeValidacion("requerido")
     }
 };
 
-var optionsAjaxFormPublicacion = {
+var optionsAjaxFormSoftware = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'admin/publicaciones-procesar',
+    url: 'admin/software-procesar',
     beforeSerialize:function(){
+        if($("#formSoftware").valid() == true){
 
-        if($("#formPublicacion").valid() == true){
-
-            $('#msg_form_publicacion').hide();
-            $('#msg_form_publicacion').removeClass("success").removeClass("error2");
-            $('#msg_form_publicacion .msg').html("");
-            setWaitingStatus('formPublicacion', true);
+            $('#msg_form_software').hide();
+            $('#msg_form_software').removeClass("success").removeClass("error2");
+            $('#msg_form_software .msg').html("");
+            setWaitingStatus('formSoftware', true);
 
         }else{
             return false;
@@ -53,135 +52,29 @@ var optionsAjaxFormPublicacion = {
     },
 
     success:function(data){
-        setWaitingStatus('formPublicacion', false);
+        setWaitingStatus('formSoftware', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_publicacion .msg').html(lang['error procesar']);
+                $('#msg_form_software .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_publicacion .msg').html(data.mensaje);
+                $('#msg_form_software .msg').html(data.mensaje);
             }
-            $('#msg_form_publicacion').addClass("error2").fadeIn('slow');
+            $('#msg_form_software').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_publicacion .msg').html(lang['exito procesar']);
+                $('#msg_form_software .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_publicacion .msg').html(data.mensaje);
-            }            
-            $('#msg_form_publicacion').addClass("success").fadeIn('slow');
+                $('#msg_form_software .msg').html(data.mensaje);
+            }
+            $('#msg_form_software').addClass("success").fadeIn('slow');
         }
     }
 };
 
-//validacion y submit
-var validateFormReview = {
-    errorElement: "span",
-    validClass: "valid-side-note",
-    errorClass: "invalid-side-note",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    highlight: function(element, errorClass, validClass){
-        $(element).addClass("invalid");
-    },
-    unhighlight: function(element, errorClass, validClass){
-        $(element).removeClass("invalid");
-    },
-    rules:{
-        itemEventSummary:{required:function(element){
-                            return $("#itemType option:selected").val() == "event";
-                         }},
-        item:{required:true},
-        titulo:{required:true},
-        descripcionBreve:{required:true},
-        descripcion:{required:true},
-        keywords:{required:true},
-        activo:{required:true},
-        publico:{required:true},
-        activoComentarios:{required:true},
-        itemUrl:{url:true},
-        fuenteOriginal:{url:true}
-    },
-    messages:{
-        itemEventSummary: mensajeValidacion("requerido"),
-        item: mensajeValidacion("requerido"),
-        titulo: mensajeValidacion("requerido"),
-        descripcionBreve: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido"),
-        keywords: mensajeValidacion("requerido"),
-        activo: mensajeValidacion("requerido"),
-        publico: mensajeValidacion("requerido"),
-        activoComentarios: mensajeValidacion("requerido"),
-        itemUrl: mensajeValidacion("url"),
-        fuenteOriginal: mensajeValidacion("url")
-    }
-};
-
-var optionsAjaxFormReview = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url: 'admin/publicaciones-procesar',
-    beforeSerialize:function(){
-        if($("#formReview").valid() == true){
-
-            $('#msg_form_review').hide();
-            $('#msg_form_review').removeClass("success").removeClass("error2");
-            $('#msg_form_review .msg').html("");
-            setWaitingStatus('formReview', true);
-
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formReview', false);
-
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_review .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_review .msg').html(data.mensaje);
-            }
-            $('#msg_form_review').addClass("error2").fadeIn('slow');
-        }else{
-            if(data.mensaje == undefined){
-                $('#msg_form_review .msg').html(lang['exito procesar']);
-            }else{
-                $('#msg_form_review .msg').html(data.mensaje);
-            }
-            $('#msg_form_review').addClass("success").fadeIn('slow');
-        }
-    }
-};
-
-function bindEventsPublicacionForm(){
-    $("#formPublicacion").validate(validateFormPublicacion);
-    $("#formPublicacion").ajaxForm(optionsAjaxFormPublicacion);
-}
-
-function bindEventsReviewForm(){
-    $("#formReview").validate(validateFormReview);
-    $("#formReview").ajaxForm(optionsAjaxFormReview);
-    selectItemTypeReviewEvent();
-}
-
-function selectItemTypeReviewEvent(){
-    //el item event summary es visible solo si elige evento en el select de itemType
-    if( $("#itemType option:selected").val() == "event" ){
-        $("#itemEventSummaryFormLine").show();
-    }
-
-    $("#itemType").change(function(){
-        if( $("#itemType option:selected").val() == "event" ){
-            $("#itemEventSummaryFormLine").show();
-        }else{
-            $("#itemEventSummaryFormLine").hide();
-            $("#itemEventSummaryFormLine").val("");
-        }
-    });
+function bindEventsSoftwareForm(){
+    $("#formSoftware").validate(validateFormSoftware);
+    $("#formSoftware").ajaxForm(optionsAjaxFormSoftware);
 }
 
 var validateFormFoto = {
@@ -213,7 +106,7 @@ var validateFormFoto = {
 var optionsAjaxFormFoto = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'admin/publicaciones-procesar?guardarFoto=1',
+    url: 'admin/software-procesar?guardarFoto=1',
     beforeSerialize:function(){
         if($("#formFoto").valid() == true){
             $('#msg_form_foto').hide();
@@ -242,94 +135,6 @@ var optionsAjaxFormFoto = {
                 $('#msg_form_foto .msg').html(data.mensaje);
             }
             $('#msg_form_foto').addClass("success").fadeIn('slow');
-        }
-    }
-};
-
-var validateFormAgregarVideo = {
-    errorElement: "span",
-    validClass: "valid-side-note",
-    errorClass: "invalid-side-note",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    highlight: function(element, errorClass, validClass){
-        $(element).addClass("invalid");
-    },
-    unhighlight: function(element, errorClass, validClass){
-        $(element).removeClass("invalid");
-    },
-    rules:{
-        codigo:{required:true, url:true}
-    },
-    messages:{
-        codigo:{
-            required: mensajeValidacion("requerido"),
-            url: mensajeValidacion("url")
-        }
-    }
-};
-
-var validateFormEditarVideo = {
-    errorElement: "span",
-    validClass: "valid-side-note",
-    errorClass: "invalid-side-note",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    highlight: function(element, errorClass, validClass){
-        $(element).addClass("invalid");
-    },
-    unhighlight: function(element, errorClass, validClass){
-        $(element).removeClass("invalid");
-    },
-    rules:{
-        orden:{digits:true, range:[1, 9999]}
-    },
-    messages:{
-        orden:{
-            digits:mensajeValidacion("digitos"),
-            range:"El numero de orden debe ser un numero positivo mayor a 1."
-        }
-    }
-};
-
-var optionsAjaxFormEditarVideo = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url: 'admin/publicaciones-procesar?guardarVideo=1',
-    beforeSerialize:function(){
-        if($("#formEditarVideo").valid() == true){
-            $('#msg_form_editar_video').hide();
-            $('#msg_form_editar_video').removeClass("success").removeClass("error2");
-            $('#msg_form_editar_video .msg').html("");
-            setWaitingStatus('formEditarVideo', true);
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formEditarVideo', false);
-
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_editar_video .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_editar_video .msg').html(data.mensaje);
-            }
-            $('#msg_form_editar_video').addClass("error2").fadeIn('slow');
-        }else{
-            if(data.mensaje == undefined){
-                $('#msg_form_editar_video .msg').html(lang['exito procesar']);
-            }else{
-                $('#msg_form_editar_video .msg').html(data.mensaje);
-            }
-            $('#msg_form_editar_video').addClass("success").fadeIn('slow');
         }
     }
 };
@@ -406,31 +211,20 @@ function bindEventsArchivoForm(){
     $("#formArchivo").ajaxForm(optionsAjaxFormArchivo);
 }
 
-function bindEventsAgregarVideoForm(){
-    $("#formAgregarVideo").validate(validateFormAgregarVideo);
-    $("#formAgregarVideo").ajaxForm(optionsAjaxFormAgregarVideo);
-}
-
-function bindEventsEditarVideoForm(){
-    $("#formEditarVideo").validate(validateFormEditarVideo);
-    $("#formEditarVideo").ajaxForm(optionsAjaxFormEditarVideo);
-}
-
-function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
+function cambiarEstadoSoftware(iSoftwareId, valor){
     $.ajax({
         type: "POST",
-        url: "admin/publicaciones-procesar",
+        url: "admin/software-procesar",
         data:{
-            iPublicacionId:iPublicacionId,
-            estadoPublicacion:valor,
-            cambiarEstado:"1",
-            objType:tipo
+            iSoftwareId:iSoftwareId,
+            estadoSoftware:valor,
+            cambiarEstado:"1"
         },
         beforeSend: function(){
-            setWaitingStatus('listadoMisPublicaciones', true);
+            setWaitingStatus('listadoSoftware', true);
         },
         success: function(data){
-            setWaitingStatus('listadoMisPublicaciones', false);
+            setWaitingStatus('listadoSoftware', false);
         }
     });
 }
@@ -438,20 +232,19 @@ function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
 /**
  * Tipo es Publicacion/Review
  */
-function editarPublicacion(iPublicacionId, tipo){
+function editarSoftware(iSoftwareId){
 
     var dialog = $("#dialog");
     if ($("#dialog").length != 0){
         dialog.hide("slow");
         dialog.remove();
     }
-    dialog = $('<div id="dialog" title="Modificar '+tipo+'"></div>').appendTo('body');
+    dialog = $('<div id="dialog" title="Modificar Software"></div>').appendTo('body');
 
     dialog.load(
-        "admin/publicaciones-form",
+        "admin/software-form",
         {
-            iPublicacionId:iPublicacionId,
-            objType:tipo
+            iSoftwareId:iSoftwareId
         },
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -463,11 +256,7 @@ function editarPublicacion(iPublicacionId, tipo){
                 closeOnEscape:true
             });
 
-            if(tipo == "publicacion"){
-                bindEventsPublicacionForm();
-            }else{
-                bindEventsReviewForm();
-            }
+            bindEventsSoftwareForm();
         }
     );
 }
@@ -475,21 +264,20 @@ function editarPublicacion(iPublicacionId, tipo){
 /**
  * Tipo es Publicacion/Review
  */
-function ampliarPublicacion(iPublicacionId, tipo){
+function ampliarSoftware(iSoftwareId){
 
     var dialog = $("#dialog");
     if ($("#dialog").length != 0){
         dialog.hide("slow");
         dialog.remove();
     }
-    dialog = $('<div id="dialog" title="Ficha '+tipo+' ID: '+iPublicacionId+'"></div>').appendTo('body');
+    dialog = $('<div id="dialog" title="Ficha Software ID: '+iSoftwareId+'"></div>').appendTo('body');
 
     dialog.load(
-        "admin/publicaciones-procesar",
+        "admin/software-procesar",
         {
-            ampliarPublicacion:"1",
-            iPublicacionId:iPublicacionId,
-            objType:tipo
+            ampliarSoftware:"1",
+            iSoftwareId:iSoftwareId
         },
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
@@ -517,7 +305,7 @@ function editarFoto(iFotoId){
     dialog = $('<div class="zin2" id="dialog2" title="Editar Foto"></div>').appendTo('body');
 
     dialog.load(
-        "admin/publicaciones-procesar",
+        "admin/software-procesar",
         {
             iFotoId:iFotoId,
             formFoto:"1"
@@ -537,36 +325,6 @@ function editarFoto(iFotoId){
     );
 }
 
-function editarVideo(iEmbedVideoId){
-
-    var dialog = $("#dialog2");
-    if ($("#dialog2").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div class="zin2" id="dialog" title="Editar Video"></div>').appendTo('body');
-
-    dialog.load(
-        "admin/publicaciones-procesar",
-        {
-            iEmbedVideoId:iEmbedVideoId,
-            formVideo:"1"
-        },
-        function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:700,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
-            bindEventsEditarVideoForm();
-        }
-    );
-}
-
 function editarArchivo(iArchivoId){
 
     var dialog = $("#dialog2");
@@ -577,7 +335,7 @@ function editarArchivo(iArchivoId){
     dialog = $('<div class="zin2" id="dialog" title="Editar Archivo"></div>').appendTo('body');
 
     dialog.load(
-        "admin/publicaciones-procesar",
+        "admin/software-procesar",
         {
             iArchivoId:iArchivoId,
             formArchivo:"1"
@@ -597,34 +355,36 @@ function editarArchivo(iArchivoId){
     );
 }
 
-function masPublicaciones(){
+function masSoftware(){
 
     var filtroTitulo = $('#filtroTitulo').val();
     var filtroApellidoAutor = $('#filtroApellidoAutor').val();
     var filtroFechaDesde = $('#filtroFechaDesde').val();
     var filtroFechaHasta = $('#filtroFechaHasta').val();
+    var filtroCategoria = $('#filtroCategoria').val();
 
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
 
     $.ajax({
         type:"POST",
-        url:"admin/publicaciones-procesar",
+        url:"admin/software-procesar",
         data:{
-            masPublicaciones:"1",
+            masSoftware:"1",
             filtroTitulo: filtroTitulo,
             filtroApellidoAutor: filtroApellidoAutor,
             filtroFechaDesde: filtroFechaDesde,
             filtroFechaHasta: filtroFechaHasta,
+            filtroCategoria: filtroCategoria,
             sOrderBy: sOrderBy,
             sOrder: sOrder
         },
         beforeSend: function(){
-            setWaitingStatus('listadoPublicaciones', true);
+            setWaitingStatus('listadoSoftware', true);
         },
         success:function(data){
-            setWaitingStatus('listadoPublicaciones', false);
-            $("#listadoPublicacionesResult").html(data);
+            setWaitingStatus('listadoSoftware', false);
+            $("#listadoSoftwareResult").html(data);
         }
     });
 }
@@ -633,7 +393,7 @@ function masModeraciones(){
 
     $.ajax({
         type:"POST",
-        url:"admin/publicaciones-procesar",
+        url:"admin/software-procesar",
         data:{
             masModeraciones:"1"
         },
@@ -647,28 +407,27 @@ function masModeraciones(){
     });
 }
 
-function borrarPublicacion(iPublicacionId, tipo){
-    if(confirm("Se borrara la publicacion del sistema de manera permanente, desea continuar?")){
+function borrarPublicacion(iSoftwareId){
+    if(confirm("Se borrara la aplicacion del sistema de manera permanente, desea continuar?")){
         $.ajax({
             type:"post",
             dataType: 'jsonp',
-            url:"admin/publicaciones-procesar",
+            url:"admin/software-procesar",
             data:{
-                iPublicacionId:iPublicacionId,
-                objType:tipo,
-                borrarPublicacion:"1"
+                iSoftwareId:iSoftwareId,
+                borrarSoftware:"1"
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
                     //remuevo la fila y la ficha
-                    $("."+iPublicacionId).remove();
+                    $("."+iSoftwareId).remove();
                 }
 
                 var dialog = $("#dialog");
                 if($("#dialog").length){
-                    dialog.attr("title", "Borrar Publicación");
+                    dialog.attr("title", "Borrar Software");
                 }else{
-                    dialog = $('<div id="dialog" title="Borrar Publicación"></div>').appendTo('body');
+                    dialog = $('<div id="dialog" title="Borrar Software"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
 
@@ -691,11 +450,11 @@ function borrarPublicacion(iPublicacionId, tipo){
 }
 
 function borrarComentario(iComentarioId){
-    if(confirm("Se borrara el comentario de la publicación, desea continuar?")){
+    if(confirm("Se borrara el comentario de la aplicacion, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/publicaciones-procesar",
+            url:"admin/software-procesar",
             data:{
                 iComentarioId:iComentarioId,
                 eliminarComentario:"1"
@@ -712,11 +471,11 @@ function borrarComentario(iComentarioId){
 }
 
 function borrarFoto(iFotoId){
-    if(confirm("Se borrara la foto de la publicación, desea continuar?")){
+    if(confirm("Se borrara la foto de la aplicacion, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/publicaciones-procesar",
+            url:"admin/software-procesar",
             data:{
                 iFotoId:iFotoId,
                 eliminarFoto:"1"
@@ -732,33 +491,12 @@ function borrarFoto(iFotoId){
     }
 }
 
-function borrarVideo(iEmbedVideoId){
-    if(confirm("Se borrara el video de la publicación, desea continuar?")){
-        $.ajax({
-            type:"post",
-            dataType:"jsonp",
-            url:"admin/publicaciones-procesar",
-            data:{
-                iEmbedVideoId:iEmbedVideoId,
-                eliminarVideo:"1"
-            },
-            success:function(data){
-                if(data.success != undefined && data.success == 1){
-                    $("#video_"+iEmbedVideoId).hide("slow", function(){
-                        $("#video_"+iEmbedVideoId).remove();
-                    });
-                }
-            }
-        });
-    }
-}
-
 function borrarArchivo(iArchivoId){
-    if(confirm("Se borrara el archivo de la publicación, desea continuar?")){
+    if(confirm("Se borrara el archivo de la aplicacion, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:"jsonp",
-            url:"admin/publicaciones-procesar",
+            url:"admin/software-procesar",
             data:{
                 iArchivoId:iArchivoId,
                 eliminarArchivo:"1"
@@ -802,52 +540,44 @@ $(document).ready(function(){
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
 
-    $("#BuscarPublicaciones").live('click', function(){
-        masPublicaciones();
+    $("#buscarSoftware").live('click', function(){
+        masSoftware();
         return false;
     });
 
     $("#limpiarFiltro").live('click',function(){
-        $('#formFiltrarPublicaciones').each(function(){
+        $('#formFiltrarSoftware').each(function(){
           this.reset();
         });
         return false;
     });
 
-    $(".editarPublicacion").live('click', function(){
-        var rel = $(this).attr("rel").split('_');
-        var tipo = rel[0];
-        var iPublicacionId = rel[1];
-        editarPublicacion(iPublicacionId, tipo);
+    $(".editarSoftware").live('click', function(){
+        var iSoftwareId = $(this).attr("rel");
+        editarPublicacion(iSoftwareId);
         return false;
     });
 
     $(".ampliarPublicacion").live('click', function(){
-        var rel = $(this).attr("rel").split('_');
-        var tipo = rel[0];
-        var iPublicacionId = rel[1];
-        ampliarPublicacion(iPublicacionId, tipo);
+        var iSoftwareId = $(this).attr("rel");
+        ampliarSoftware(iSoftwareId);
         return false;
     });
 
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
-        masPublicaciones();
+        masSoftware();
     });
 
-    $(".cambiarEstadoPublicacion").live("change", function(){
-        var rel = $(this).attr("rel").split('_');
-        var tipo = rel[0];
-        var iPublicacionId = rel[1];
-        cambiarEstadoPublicacion(iPublicacionId, $("#estadoPublicacion_"+iPublicacionId+" option:selected").val(), tipo);
+    $(".cambiarEstadoSoftware").live("change", function(){
+        var iSoftwareId = $(this).attr("rel");
+        cambiarEstadoSoftware(iSoftwareId, $("#estadoSoftware_"+iSoftwareId+" option:selected").val());
     });
 
-    $(".borrarPublicacion").live('click', function(){
-        var rel = $(this).attr("rel").split('_');
-        var tipo = rel[0];
-        var iPublicacionId = rel[1];
-        borrarPublicacion(iPublicacionId, tipo);
+    $(".borrarSoftware").live('click', function(){
+        var iSoftwareId = $(this).attr("rel");
+        borrarSoftware(iSoftwareId);
     });
 
     $(".borrarComentario").live('click', function(){
@@ -855,7 +585,7 @@ $(document).ready(function(){
         borrarComentario(iComentarioId);
     });
 
-    var iPublicacionId = $("#iItemIdForm").val();
+    var iSoftwareId = $("#iItemIdForm").val();
     var sTipoItemForm = $("#sTipoItemForm").val();
 
     $(".borrarFoto").live('click', function(){
@@ -867,18 +597,6 @@ $(document).ready(function(){
     $(".editarFoto").live('click', function(){
         var iFotoId = $(this).attr("rel");
         editarFoto(iFotoId);
-        return false;
-    });
-
-    $(".editarVideo").live('click', function(){
-        var iEmbedVideoId = $(this).attr("rel");
-        editarVideo(iEmbedVideoId);
-        return false;
-    });
-
-    $(".borrarVideo").live('click', function(){
-        var iEmbedVideoId = $(this).attr("rel");
-        borrarVideo(iEmbedVideoId);
         return false;
     });
 
@@ -933,16 +651,16 @@ $(document).ready(function(){
     $('.moderarSubmit').live('click', function()
     {
         var mensajeValidacion = "Todos los campos son obligatorios";
-        var iPublicacionId = $(this).attr('rel');
-        var cartel = $('#msg_form_moderacion_'+iPublicacionId);
-        var mensajeCont = $('#msg_form_moderacion_'+iPublicacionId+" .msg");
+        var iSoftwareId = $(this).attr('rel');
+        var cartel = $('#msg_form_moderacion_'+iSoftwareId);
+        var mensajeCont = $('#msg_form_moderacion_'+iSoftwareId+" .msg");
 
         cartel.hide();
         cartel.removeClass("correcto").removeClass("error2");
         mensajeCont.html("");
         
-        if(!$('#aprobar_'+iPublicacionId).is(':checked') &&
-           !$('#rechazar_'+iPublicacionId).is(':checked')){
+        if(!$('#aprobar_'+iSoftwareId).is(':checked') &&
+           !$('#rechazar_'+iSoftwareId).is(':checked')){
 
             mensajeCont.html(mensajeValidacion);
             cartel.addClass("error").fadeIn('slow');
@@ -950,7 +668,7 @@ $(document).ready(function(){
         }
 
         
-        if($('#mensaje_'+iPublicacionId).val() == ""){
+        if($('#mensaje_'+iSoftwareId).val() == ""){
 
             mensajeCont.html(mensajeValidacion);
             cartel.addClass("error").fadeIn('slow');
@@ -958,20 +676,20 @@ $(document).ready(function(){
         }
         
         var estado;
-        if($('#aprobar_'+iPublicacionId).is(':checked')){
-            estado = $('#aprobar_'+iPublicacionId).val();
+        if($('#aprobar_'+iSoftwareId).is(':checked')){
+            estado = $('#aprobar_'+iSoftwareId).val();
         }else{
-            estado = $('#rechazar_'+iPublicacionId).val();
+            estado = $('#rechazar_'+iSoftwareId).val();
         }
 
         $.ajax({
             type: "POST",
-            url: "admin/publicaciones-procesar",
+            url: "admin/software-procesar",
             data:{
-                iModeracionId: function(){return $('#moderacionId_'+iPublicacionId).val(); },
-                moderarPublicacion: "1",
+                iModeracionId: function(){return $('#moderacionId_'+iSoftwareId).val(); },
+                moderarSoftware: "1",
                 estado: estado,
-                mensaje: function(){return $('#mensaje_'+iPublicacionId).val(); }
+                mensaje: function(){return $('#mensaje_'+iSoftwareId).val(); }
             },
             beforeSend: function(){
                 setWaitingStatus('listadoModeraciones', true);
@@ -980,16 +698,16 @@ $(document).ready(function(){
                 setWaitingStatus('listadoModeraciones', false);
 
                 if(data.success != undefined && data.success == 1){
-                    $("."+iPublicacionId).hide("slow", function(){
-                        $("."+iPublicacionId).remove();
+                    $("."+iSoftwareId).hide("slow", function(){
+                        $("."+iSoftwareId).remove();
                     });
                 }
 
                 var dialog = $("#dialog");
                 if($("#dialog").length){
-                    dialog.attr("title", "Moderar Publicación ID: "+iPublicacionId);
+                    dialog.attr("title", "Moderar Aplicacion ID: "+iSoftwareId);
                 }else{
-                    dialog = $('<div id="dialog" title="Moderar Publicación ID: '+iPublicacionId+'"></div>').appendTo('body');
+                    dialog = $('<div id="dialog" title="Moderar Aplicacion ID: '+iSoftwareId+'"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
 
