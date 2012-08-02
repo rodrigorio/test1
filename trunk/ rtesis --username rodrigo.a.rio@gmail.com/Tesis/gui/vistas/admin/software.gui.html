@@ -63,7 +63,7 @@
             <label readonly="readonly" for="filtroFechaHasta">Fecha hasta</label> <input type="text" id="filtroFechaHasta" name="filtroFechaHasta">
         </div>
         <div class="mabo3">
-            <button id="BuscarSoftware" name="BuscarSoftware" type="submit">Buscar Software</button>
+            <button id="buscarSoftware" name="buscarSoftware" type="submit">Buscar Software</button>
             <button class="blue" id="limpiarFiltro">Limpiar Filtro</button>
         </div>
     </fieldset>
@@ -246,6 +246,18 @@
     </dd>
 
     <dt>
+        <label for="categoria">Categor&iacute;a</label>
+    </dt>
+    <dd>
+        <select name="categoria" id="categoria" title="Eliga categor&iacute;a para la aplicaci&oacute;n"class="medium">
+            <option value="">Elegir categor&iacute;a:</option>
+            <!--BeginOptionFiltroCategoriaBlock-->
+            <option value="{iCategoriaId}">{sFiltroCategoria}</option>
+            <!--EndOptionFiltroCategoriaBlock-->
+        </select>
+    </dd>
+
+    <dt>
         <label for="descripcionBreve">Descripcion Breve</label>
     </dt>
     <dd>
@@ -301,8 +313,12 @@
         <label for="enlaces">Enlaces</label>
     </dt>
     <dd>
+        <div class="mabo2 po_re">
+            <textarea class="mihe2 large" rows="0" cols="0" id="enlaces" name="enlaces" title="Enlaces Descarga Directa">{sEnlaces}</textarea>
+            <a class="po_ab bottomRight fte2" href="#">limpiar</a>
+        </div>
         <label for="">Agregar Link</label>
-        <input class="large" type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
+        <input class="large" type="text" name="enlace" id="enlace" title="enlace URL Link" maxlength="500" value="" />
         <p>Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
     </dd>
    
@@ -316,12 +332,12 @@
 </form>
 <!--EndFormularioSoftwareBlock-->
 
-<!--BeginFichaPublicacionBlock-->
+<!--BeginFichaSoftwareBlock-->
 <article class="full-block pa2 clearfix mabo0">
     <header>
         <nav>
             <ul class="tab-switch">
-                <li><a rel="tooltip" title="Publicaci&oacute;n" class="default-tab" href="#tab1">Publicaci&oacute;n</a></li>
+                <li><a rel="tooltip" title="Software" class="default-tab" href="#tab1">Aplicaci&oacute;n</a></li>
                 <li><a rel="tooltip" title="Comentarios" href="#tab2">Comentarios</a></li>
                 <li><a rel="tooltip" title="Adjuntos" href="#tab3">Adjuntos</a></li>
             </ul>
@@ -330,73 +346,9 @@
 
     <section>
         <div class="tab default-tab" id="tab1">
-            <h3>Publicaci&oacute;n</h3>
+            <h3>Aplicaci&oacute;n</h3>
 
             <div class="teal_le mabo2">
-                <p>
-                    <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">Activa?:</span> {sActiva}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">Alance Privacidad:</span> {sPrivacidad}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">Activo Comentarios:</span> {sActivoComentarios}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">autor:</span> {sAutor}
-                </p>
-                <p>
-                    <span class="fowe_bo teta_up">fecha:</span> {sFecha}
-                </p>
-                
-                <div class="fowe_bo teta_up mabo">descripcion breve</div>
-                <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
-
-                <div class="fowe_bo teta_up mabo">descripcion</div>
-                <div class="baco2 pa mabo2">{sDescripcion}</div>
-
-                <p>
-                    <span class="fowe_bo teta_up">permalink:</span> <a href="{sPermalink}" target="_blank">{sPermalink}</a>
-                </p>
-            </div>
-        </div>
-
-        <div class="tab" id="tab2">
-            <h3>Comentarios</h3>
-            {comentarios}
-        </div>
-
-        <div class="tab" id="tab3">
-            <h3>Adjuntos</h3>
-            {galeriaAdjuntos}
-        </div>
-    </section>
-</article>
-<!--EndFichaPublicacionBlock-->
-
-<!--BeginFichaReviewBlock-->
-<article class="full-block pa2 clearfix mabo0">
-    <header>
-        <nav>
-            <ul class="tab-switch">
-                <li><a rel="tooltip" title="Review" class="default-tab" href="#tab1">Review</a></li>
-                <li><a rel="tooltip" title="Comentarios" href="#tab2">Comentarios</a></li>
-                <li><a rel="tooltip" title="Adjuntos" href="#tab3">Adjuntos</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section>
-        <div class="tab default-tab" id="tab1">
-            <h3>Review</h3>
-
-            <div class="teal_le mabo2">
-                <p>
-                    <span class="fowe_bo teta_up">nombre item:</span> {sItemName}
-                </p>
 
                 <!--BeginRatingBlock-->
                 <div class="mabo2 ov_au veal_mi">
@@ -414,33 +366,12 @@
                         <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
                 </div>
                 <!--EndRatingBlock-->
-
-                <!--BeginItemTypeBlock-->
-                <p>
-                    <span class="fowe_bo teta_up">Acerca de un/a:</span> {sItemType}
-                </p>
-                <!--EndItemTypeBlock-->
-
-                <!--BeginItemEventSummaryBlock-->
-                <p>
-                    <span class="fowe_bo teta_up">detalles evento:</span> {sItemEventSummary}
-                </p>
-                <!--EndItemEventSummaryBlock-->
-
-                <!--BeginItemUrlBlock-->
-                <p>
-                    <span class="fowe_bo teta_up">link:</span> <a href="{hrefItemUrl}">{sItemUrl}</a>
-                </p>
-                <!--EndItemUrlBlock-->
-
-                <!--BeginFuenteOriginalBlock-->
-                <p>
-                    <span class="fowe_bo teta_up">fuente original:</span> <a href="{hrefFuenteUriginal}">{sFuenteOriginal}</a>
-                </p>
-                <!--EndFuenteOriginalBlock-->
                 
                 <p>
                     <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
+                </p>
+                <p>
+                    <span class="fowe_bo teta_up">categor&iacute;a:</span> {sCategoria}
                 </p>
                 <p>
                     <span class="fowe_bo teta_up">activa?:</span> {sActiva}
@@ -481,5 +412,5 @@
         </div>
     </section>
 </article>
-<!--EndFichaReviewBlock-->
+<!--EndFichaSoftwareBlock-->
 
