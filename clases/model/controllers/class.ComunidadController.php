@@ -883,7 +883,7 @@ class ComunidadController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             $filtro = array('s.categoria_id' => $iCategoriaId);
             $iRecordsTotal = 0;
-            return $oSoftwareIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
             return false;
@@ -893,7 +893,7 @@ class ComunidadController
     public function obtenerCategoria($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            return $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            return $oCategoriaIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             throw new Exception($e);
         }

@@ -79,30 +79,67 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->printMsgTop();
 
         //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
+        $this->getTemplate()->set_var("tituloSeccion", "Catálogo descargas comunidad");
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoPublicacionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerMainCont", "ListadoPublicacionesBlock");
+
+        $this->getTemplate()->set_var("CategoriaActualBlock", "");
+        $this->getTemplate()->set_var("ListadoCategoriasInitCollapsed", "");
+
+        $this->listarCategorias();
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aFichas = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-        if(count($aFichas) > 0){
+        //lo separo en un metodo privado porque lo reutilizo en el listado por categoria
+        $this->listarFichas($aSoftware, $paramsPaginador);
 
-            foreach($aFichas as $oFicha){
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
 
-                $oUsuario = $oFicha->getUsuario();
+    /**
+     * crea listado de categorias en el top del listado de fichas de software
+     */
+    private function listarCategorias()
+    {
+        $aCategorias = ComunidadController::getInstance()->obtenerCategoria();
+        foreach($aCategorias as $oCategoria){
+            $hrefSofwareCategoria = 'comunidad/descargas/'.$oCategoria->getUrlToken();
+            
+            if(null === $oCategoria->getFoto()){
+                $urlFotoCategoria = $this->getUploadHelper()->getDirectorioImagenesSitio().$oCategoria->getNombreAvatar();
+            }else{
+                $this->getDownloadHelper()->utilizarDirectorioUploadSitio("comunidad");
+                $urlFotoCategoria = $this->getUploadHelper()->getDirectorioImagenesSitio().$oCategoria->getNombreAvatar();
+            }
+            
+            $this->getTemplate()->set_var("sDescripcionCategoria", $oCategoria->getDescripcion(true));
+            $this->getTemplate()->set_var("hrefSoftwareCategoria", $hrefSofwareCategoria);
+            $this->getTemplate()->set_var("sNombreCategoria", $oCategoria->getNombre());
+            $this->getTemplate()->set_var("urlFotoCategoria", $urlFotoCategoria);
+                      
+            $this->getTemplate()->parse("ThumbCategoriaBlock", true);
+        }
+    }
+
+    private function listarFichas($aSoftware, $paramsPaginador)
+    {
+        if(count($aSoftware) > 0){
+
+            foreach($aSoftware as $oSoftware){
+
+                $oUsuario = $oSoftware->getUsuario();
                 $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                 $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
-                $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"Publicación":"Review";
-
+                
                 $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                 $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
+                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
                 $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
 
                 /*
@@ -123,7 +160,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
-            
+
             $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
 
             $params[] = "masPublicaciones=1";
@@ -134,8 +171,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sNoRecords", "No hay publicaciones cargados en la comunidad");
             $this->getTemplate()->parse("noRecords", false);
         }
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     private function thumbDestacadoFicha($oFicha)
