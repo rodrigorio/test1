@@ -3,13 +3,9 @@
 /**
  * @author Matias Velilla
  */
-class PublicacionesControllerComunidad extends PageControllerAbstract
-{
-    //el de fecha se hace automatico en la funcion initFiltrosForm
-    private $filtrosFormConfig = array('filtroTitulo' => 'f.titulo',
-                                       'filtroApellidoAutor' => 'ap.apellido',
-                                       'filtroFechaDesde' => 'fechaDesde',
-                                       'filtroFechaHasta' => 'fechaHasta');
+class SoftwareControllerComunidad extends PageControllerAbstract
+{    
+    private $filtrosFormConfig = array('filtroTitulo' => 'f.titulo');
 
     private $orderByConfig = array('titulo' => array('variableTemplate' => 'orderByTitulo',
                                                      'orderBy' => 'f.titulo',
@@ -17,8 +13,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                                    'fecha' => array('variableTemplate' => 'orderByFecha',
                                                     'orderBy' => 'f.fecha',
                                                     'order' => 'desc'),
-                                   'tipo' => array('variableTemplate' => 'orderByTipo',
-                                                   'orderBy' => 'sObjType',
+                                   'categoria' => array('variableTemplate' => 'orderByCategoria',
+                                                   'orderBy' => 's.categorias_id',
                                                    'order' => 'desc'),
                                    'activo' => array('variableTemplate' => 'orderByActivo',
                                                    'orderBy' => 'f.activo',
@@ -46,19 +42,18 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "jsContent", "JsContent");
 
         return $this;
     }
 
     private function setMenuDerecha()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
 
-        $this->getTemplate()->set_var("hrefListadoPublicaciones", $this->getUrlFromRoute("comunidadPublicacionesIndex", true));
-        $this->getTemplate()->set_var("hrefMisPublicaciones", $this->getUrlFromRoute("comunidadPublicacionesMisPublicaciones", true));
-        $this->getTemplate()->set_var("hrefCrearPublicacion", $this->getUrlFromRoute("comunidadPublicacionesCrearPublicacionForm", true));
-        $this->getTemplate()->set_var("hrefCrearReview", $this->getUrlFromRoute("comunidadPublicacionesCrearReviewForm", true));
+        $this->getTemplate()->set_var("hrefListadoSoftware", $this->getUrlFromRoute("comunidadSoftwareIndex", true));
+        $this->getTemplate()->set_var("hrefMisAplicaciones", $this->getUrlFromRoute("comunidadSoftwareMisAplicaciones", true));
+        $this->getTemplate()->set_var("hrefCrearSoftware", $this->getUrlFromRoute("comunidadSoftwareCrearSoftwareForm", true));
 
         return $this;
     }
@@ -68,15 +63,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     }
   
     /**
-     * Lista todas las publicaciones de integrantes para la comunidad.
-     * Son fichas miniatura una abajo de la otra paginadas y con posibilidad de filtros.
-     *
-     * @todo
-     *      - que si es moderador o administrador aparezca.
-     *      - que si ponen el mouse arriba del autor aparezca algunos datos basicos y mail
-     *      - la foto destacada o la primer foto de la galeria de fotos en el contenido
-     *      - los ultimos 3 comentarios si la publicacion tiene
-     *      - la url a la vista completa de la publicacion ampliada.
+     * Lista todas las categorias.
+     * listado de todos los programas paginados ordenados por fecha de mayor a menor.
+     * filtro por titulo.
      */
     private function listar()
     {

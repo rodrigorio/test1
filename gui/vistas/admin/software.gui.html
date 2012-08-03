@@ -252,7 +252,7 @@
         <select name="categoria" id="categoria" title="Eliga categor&iacute;a para la aplicaci&oacute;n"class="medium">
             <option value="">Elegir categor&iacute;a:</option>
             <!--BeginOptionFiltroCategoriaBlock-->
-            <option value="{iCategoriaId}">{sFiltroCategoria}</option>
+            <option value="{iCategoriaId}" {sSelectedCategoria}>{sFiltroCategoria}</option>
             <!--EndOptionFiltroCategoriaBlock-->
         </select>
     </dd>
@@ -314,7 +314,7 @@
     </dt>
     <dd>
         <div class="mabo2 po_re">
-            <textarea class="mihe2 large" rows="0" cols="0" id="enlaces" name="enlaces" title="Enlaces Descarga Directa">{sEnlaces}</textarea>
+            <textarea readonly="readonly" class="mihe2 large" rows="0" cols="0" id="enlaces" name="enlaces" title="Enlaces Descarga Directa">{sEnlaces}</textarea>
             <a class="po_ab bottomRight fte2" href="#">limpiar</a>
         </div>
         <label for="">Agregar Link</label>
@@ -350,9 +350,8 @@
 
             <div class="teal_le mabo2">
 
-                <!--BeginRatingBlock-->
                 <div class="mabo2 ov_au veal_mi">
-                    <div class="fl_le teta_up fowe_bo mari">valoraci&oacute;n:</div>
+                    <div class="fl_le teta_up fowe_bo mari">Rating actual:</div>
                         <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
                         <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
                         <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
@@ -364,8 +363,9 @@
                         <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
                         <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
                         <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
+
+                        <!--BeginSinValoracionBlock-->Sin valoraciones<!--EndSinValoracionBlock-->
                 </div>
-                <!--EndRatingBlock-->
                 
                 <p>
                     <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}

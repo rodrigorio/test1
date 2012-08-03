@@ -12,90 +12,111 @@
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
-   .script("{pathUrlBase}"+"gui/vistas/comunidad/publicaciones.js");
+   .script("{pathUrlBase}"+"gui/vistas/comunidad/software.js");
 </script>
 <!--EndJsContent-->
 
 <!--BeginPageRightInnerContBlock-->
 <ul class="m_vert menu02">
     <li>
-        <a id="publicacionesComunidad" href="{hrefListadoPublicaciones}">
-            Publicaciones Comunidad
+        <a id="softwareComunidad" href="{hrefListadoSoftware}">
+            Aplicaciones Comunidad
         </a>
     </li>
     <li>
-        <a id="misPublicaciones" href="{hrefMisPublicaciones}">
-            Mis Publicaciones
+        <a id="misPublicaciones" href="{hrefMisAplicaciones}">
+            Mis Aplicaciones
         </a>
     </li>
     <li>
-        <a id="crearPublicacion" href="{hrefCrearPublicacion}">
-            Crear Publicacion
-        </a>
-    </li>
-    <li>
-        <a id="crearReview" href="{hrefCrearReview}">
-            Crear Review
+        <a id="crearPublicacion" href="{hrefCrearSoftware}">
+            Agregar Aplicaci&oacute;n
         </a>
     </li>
 </ul>
 <!--EndPageRightInnerContBlock-->
 
-<!--BeginListadoPublicacionesBlock-->
+<!--BeginListadoSoftwareBlock-->
 <div class="ficha01 grupo mabo2">
     <div class="encabezado">
         <div class="izq">
             <div class="icono"><span class="i32 bs search32"></span></div>
-            <span class="titulo">Buscar Publicaciones</span><br>
+            <span class="titulo">Buscar Aplicaciones</span><br>
             <span class="subtitulo">filtrar los resultados del listado</span>
         </div>
         <div class="der"></div>
     </div>
     <div class="contenido">
-        <form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
-            <div class="fl_le mari2 mabo2">
+        <form id="formFiltrarSoftware" name="formFiltrarSoftware" action="" method="post">
+            <div class="fl_le mari2">
                <span class="fowe_bo">T&iacute;tulo</span>
                <input type="text" name="filtroTitulo" id="filtroTitulo"/>
             </div>
-            <div class="fl_le mari2 mabo2">
-               <span class="fowe_bo">Apellido Autor</span>
-               <input type="text" name="filtroApellidoAutor" id="filtroApellidoAutor"/>
+            <div class="fl_le">
+                <label for="BuscarSoftware" class="button buttonConfirm mari">
+                    <button id="BuscarSoftware" type="button" name="BuscarSoftware" class="btn01">
+                        Buscar
+                    </button>
+                </label>
+                <label for="limpiarFiltro" class="button mari3">
+                    <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
+                        Limpiar
+                    </button>
+                </label>
             </div>
-            <div class="fl_le mari2 mabo2">
-               <span class="fowe_bo">Fecha desde</span>
-               <input readonly="readonly" type="text" name="filtroFechaDesde" id="filtroFechaDesde"/>
-            </div>
-            <div class="fl_le mari2 mabo2">
-               <span class="fowe_bo">Fecha hasta</span>
-               <input readonly="readonly" type="text" name="filtroFechaHasta" id="filtroFechaHasta"/>
-            </div>
-
-            <br clear="all" />
-
-            <label for="BuscarPublicaciones" class="button buttonConfirm mari">
-                <button id="BuscarPublicaciones" type="button" name="BuscarPublicaciones" class="btn01">
-                    Buscar Publicaciones
-                </button>
-            </label>
-            <label for="limpiarFiltro" class="button mari3">
-                <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
-                    Limpiar Filtro
-                </button>
-            </label>
+            <input type="hidden" value="{iCategoriaIdFiltro}" name="iCategoriaIdFiltro" id="categariaIdFiltro" />
         </form>
     </div>
 </div>
-<div id="listadoPublicaciones" class="grupo">
+
+<!--BeginCategoriaActualBlock-->
+<div class="pa mabo2 baco4 grupo">
+    <div class="fl_le mari2">
+        <a rel="prettyPhoto" title="{sDescripcionCategoria}" href="{hrefFotoCategoria}" class="th_fto_m thumb01">
+            <i title="{sNombreCategoria}" style="background-image:url('{urlFotoCategoria}')"></i>
+        </a>
+    </div>
+    <span class="txt_imp2 mari">{sNombreCategoria}</span>
+    <br clear="all">
+    <p>{sDescripcionCategoria}</p>
+</div>
+<!--EndCategoriaActualBlock-->
+
+<div class="slide slide01 mabo2 grupo baco3">
+    
+    <!--BeginListadoCategoriasInitExpanded-->
+    <div class="slideExpanded iveal"><span class="i mi ihover"></span>Categor&iacute;as en cat&aacute;logo</div>
+    <div id="listadoCategorias" class="contenido pa2">
+    <!--EndListadoCategoriasInitExpanded-->
+
+    <!--BeginListadoCategoriasInitCollapsed-->
+    <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Categor&iacute;as en cat&aacute;logo</div>
+    <div id="listadoCategorias" class="contenido pa2" style="display:none">
+    <!--EndListadoCategoriasInitCollapsed-->
+
+        <!--BeginThumbCategoria-->
+        <div class="fl_le mari2">
+            <a title="{sDescripcionCategoria}" href="{hrefSoftwareCategoria}" class="th_fto_m thumb01">
+                <i title="{sNombreCategoria}" style="background-image:url('{urlFotoCategoria}')"></i>
+            </a>
+        </div>
+        <span class="txt_imp2 mari">{sNombreCategoria}</span>
+        <!--EndThumbCategoria-->
+
+    </div>
+</div>
+
+<div id="listadoSoftware" class="grupo">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <div id="listadoPublicacionesResult">
-        <!--BeginFichasPublicacionesBlock-->
+    <div id="listadoSoftwareResult">
+        <!--BeginFichasSoftwareBlock-->
         
-            <!--BeginPublicacionBlock-->
+            <!--BeginSoftwareBlock-->
             <div class="ficha03 grupo mabo2">
                 <div class="encabezado">
                     <div class="der">
-                        <span class="fost_it">{sTipoPublicacion}</span> |
-                        <a href="{hrefAmpliarPublicacion}">Ver Completo</a>
+                        <span class="fost_it">{sNombreCategoria}</span> |
+                        <a href="{hrefAmpliarSoftware}">Ver Completo</a>
                     </div>
                     <div class="izq">
                         <div class="icono">
@@ -103,7 +124,22 @@
                                 <i style="background-image:url('{scrAvatarAutor}')"></i>
                             </div>
                         </div>
-                        <div class="titulo">{sTitulo}</div>
+                        <div class="titulo">
+                            <!--BeginRatingBlock-->
+                                <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
+                                <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
+                                <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
+                                <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
+                                <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
+                                <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
+                                <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
+                                <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
+                                <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
+                                <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
+                                <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
+                            <!--EndRatingBlock-->
+                             {sTitulo}
+                        </div>
                         <div class="subtitulo">{sAutor} - {sFecha}</div>
                     </div>
                 </div>
@@ -116,22 +152,22 @@
                 
                 {comentarios}
             </div>
-            <!--EndPublicacionBlock-->
+            <!--EndSoftwareBlock-->
 
-            <!--BeginNoRecordsPublicacionesBlock-->
+            <!--BeginNoRecordsSoftwareBlock-->
             <div class="teal_ce fowe_bo">{sNoRecords}</div>
-            <!--EndNoRecordsPublicacionesBlock-->
+            <!--EndNoRecordsSoftwareBlock-->
             
             {paginacion}
-        <!--EndFichasPublicacionesBlock-->
+        <!--EndFichasSoftwareBlock-->
     </div>
 </div>
-<!--EndListadoPublicacionesBlock-->
+<!--EndListadoSoftwareBlock-->
 
-<!--BeginFormularioPublicacionBlock-->
+<!--BeginFormularioSoftwareBlock-->
 <div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
-    <form id="formPublicacion" name="formPublicacion" action="" method="post">
+    <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
+    <form id="formSoftware" name="formSoftware" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
        
         <div class="form_line msg_titulo">
@@ -141,11 +177,26 @@
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Aplicaci&oacute;n" maxlength="255" value="{sTitulo}" />
                 </div>
             </div>
-            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+            <p>El T&iacute;tulo que llevar&aacute; el software en el cat&aacute;logo de la comunidad</p>
         </div>
+        
+        <div class="form_line msg_categoria">
+            <label for="categoria">
+                <span class="marca_obligatorio">&#8226;</span>
+                Categor&iacute;a?
+            </label>
+            <div class="cl_le"></div>
+            <select class="medium" name="categoria" id="categoria" title="Categor&iacute;a">
+                <option value="">Elegir categor&iacute;a</option>
+                <!--BeginOptionCategoriaBlock-->
+                <option value="{iCategoriaId}" {sSelectedCategoria}>{sCategoria}</option>
+                <!--EndOptionCategoriaBlock-->
+            </select>            
+        </div>
+        
         <div class="form_line msg_descripcionBreve">
             <label for="descripcionBreve">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -153,22 +204,23 @@
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
+                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Aplicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
                 </div>
             </div>
             <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-        </div>    
+        </div>
+        
         <div class="form_line msg_activo">
             <label for="activo">
                 Visible?
             </label>
             <div class="cl_le"></div>
-            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+            <select class="small" name="activo" id="activo" title="Aplicaci&oacute;n Visible?">
                 <option value="">Seleccionar</option>                
                 <option {sSelectedActivo} value="1">S&iacute;</option>
                 <option {sSelectedDesactivado} value="0">No</option>
             </select>
-            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+            <p>Ning&uacute;n otro integrante podra ver la aplicaci&oacute;n en el cat&aacute;logo. Puede ocultar la aplicaci&oacute;n mientras la edita.</p>
         </div>
         <div class="form_line msg_publico">
             <label for="publico">
@@ -180,7 +232,7 @@
                 <option {sSelectedPublico} value="1">El mundo</option>
                 <option {sSelectedComunidad} value="0">Solo comunidad</option>
             </select>
-            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+            <p>La aplicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
         </div>
         <div class="form_line msg_activoComentarios">
             <label for="activoComentarios">
@@ -197,350 +249,152 @@
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
-                Contenido Publicaci&oacute;n
+                Descripci&oacute;n Completa Software
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n completa Software">{sDescripcion}</textarea>
                 </div>
+                <p>En lo posible redactar las caracter&iacute;sticas, prestaciones, requerimientos, etc.</p>
             </div>
-        </div>        
-        <div class="form_line msg_keywords">
-
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-                </div>
-            </div>
-            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
         </div>
-        
-        <!--BeginSubmitCrearPublicacionBlock-->
-        <div class="fl_le iveal mabo2">
-            <label for="crearPublicacion" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearPublicacion" type="submit" name="crearPublicacion" class="btn01">
-                    Crear Publicaci&oacute;n
-                </button>
-            </label>
-        </div>
-        <!--EndSubmitCrearPublicacionBlock-->
-
-        <!--BeginSubmitModificarPublicacionBlock-->
-        <div class="fl_le iveal mabo2">
-            <label for="modificarPublicacion" class="button buttonConfirm buttonLarge">
-                <button id="modificarPublicacion" type="submit" name="modificarPublicacion" class="btn01">
-                    Modificar Publicacion
-                </button>
-            </label>
-        </div>
-        <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
-        <!--EndSubmitModificarPublicacionBlock-->
-
-        <div style="display:none;" id='msg_form_publicacion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-        
-    </form>
-</div>
-<!--EndFormularioPublicacionBlock-->
-
-<!--BeginFormularioReviewBlock-->
-<div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
-    <form id="formReview" name="formReview" action="" method="post">
-        <div class="mabo3">
-            <h2 class="mabo">{sTituloForm}</h2>
-            <span class="fost_it">Los reviews tienen como objetivo lograr aportes a la comunidad en forma de cr&iacute;ticas constructivas</span>
-        </div>
-        
-        <div class="form_line msg_itemType">
-            <label for="itemType">
-                Acerca de?
-            </label>
-            <div class="cl_le"></div>
-            <select class="medium" name="itemType" id="itemType" title="Review acerca de?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedProduct} value="product">Un Producto</option>
-                <option {sSelectedBusiness} value="business">Un Negocio o Empresa</option>
-                <option {sSelectedEvent} value="event">Un Evento</option>
-                <option {sSelectedPerson} value="person">Una Persona</option>
-                <option {sSelectedPlace} value="place">Un Lugar</option>
-                <option {sSelectedWebsite} value="website">Un Sitio Web</option>
-                <option {sSelectedUrl} value="url">Un Link &oacute; Enlace</option>
-            </select>
-            <p>Este campo opcional provee informaci&oacute;n acerca del item sobre el que se hace el review.</p>
-        </div>
-
-        <div id="itemEventSummaryFormLine" class="form_line msg_itemEventSummary" style="display:none;">
-            <label for="itemEventSummary">
-                <span class="marca_obligatorio">&#8226;</span>
-                Resumen Evento
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
-                </div>
-            </div>            
-            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>
-        </div>
-
-        <div class="form_line msg_item">
-            <label for="item">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nombre Item
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="item" id="item" title="Nombre del Item al que hace referencia el review" maxlength="255" value="{sItemName}" />
-                </div>
-            </div>
-            <p>
-                El review debe tener al menos el nombre del item al que se refiere el art&iacute;culo / revisi&oacute;n.<br>
-                Por ejemplo, si el review es acerca de un lugar debe ingresar el nombre del sitio.<br>
-                Si fuera un art&iacute;culo acerca de una persona debe ingresar aqui el nombre de la misma, etc.
-            </p>
-        </div>
-
-        <div class="form_line msg_titulo">
-            <label for="titulo">
-                <span class="marca_obligatorio">&#8226;</span>
-                T&iacute;tulo
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
-                </div>
-            </div>
-            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
-        </div>
-
-        <div class="form_line msg_descripcionBreve">
-            <label for="descripcionBreve">
-                <span class="marca_obligatorio">&#8226;</span>
-                Descripcion Breve
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
-                </div>
-            </div>
-            <p>Resumen del contenido de la publicaci&oacute;n en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-        </div>
-        <div class="form_line msg_activo">
-            <label for="activo">
-                Visible?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedActivo} value="1">S&iacute;</option>
-                <option {sSelectedDesactivado} value="0">No</option>
-            </select>
-            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
-        </div>
-        <div class="form_line msg_publico">
-            <label for="publico">
-                Alcance Privacidad?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedPublico} value="1">El mundo</option>
-                <option {sSelectedComunidad} value="0">Solo comunidad</option>
-            </select>
-            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
-        </div>
-        <div class="form_line msg_activoComentarios">
-            <label for="activoComentarios">
-                Activar Comentarios?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
-                <option {sSelectedDesactivadoComentarios} value="0">No</option>
-            </select>
-            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
-        </div>
-        <div class="form_line msg_descripcion">
-            <label for="descripcion">
-                <span class="marca_obligatorio">&#8226;</span>
-                Contenido Publicaci&oacute;n
+        <div class="form_line msg_enlaces">
+            <label for="enlaces">
+                Enlaces
             </label>
             <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                <div class="mabo2 po_re">
+                    <div class="inner_fwrap">
+                        <textarea readonly="readonly" class="mihe2" rows="0" cols="0" id="enlaces" name="enlaces" title="Enlaces Descarga Directa">{sEnlaces}</textarea>
+                    </div>
+                    <a class="po_ab bottomRight fte2" href="#">limpiar</a>
                 </div>
+                <label for="">Agregar Link</label>
+                <input class="large" type="text" name="enlace" id="enlace" title="enlace URL Link" maxlength="500" value="" />
+                <p>Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
             </div>
         </div>
-        <div class="form_line msg_rating">
-            <label for="rating">
-                Valuaci&oacute;n
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="rating" id="rating" title="Valuaci&oacute;n del Item al cual se le hace el Review">
-                <option value="">Seleccionar</option>
-                <option value="0" {sSelected_0} >0</option>
-                <option value="0.5" {sSelected_05} >0.5</option>
-                <option value="1" {sSelected_1} >1</option>
-                <option value="1.5" {sSelected_15} >1.5</option>
-                <option value="2" {sSelected_2} >2</option>
-                <option value="2.5" {sSelected_25} >2.5</option>
-                <option value="3" {sSelected_3} >3</option>
-                <option value="3.5" {sSelected_35} >3.5</option>
-                <option value="4" {sSelected_4} >4</option>
-                <option value="4.5" {sSelected_45} >4.5</option>
-                <option value="5" {sSelected_5}>5</option>
-            </select>
-            <p>
-                Puede valorar el Item del Review.<br>
-                Si por ejemplo el review es acerca de un nuevo portal web puede valorarlo con este campo.
-            </p>
-        </div>
-        <div class="form_line msg_itemUrl">
-            <label for="itemUrl">
-                Link 
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="itemUrl" id="itemUrl" title="Item URL Link" maxlength="500" value="{sItemUrl}" />
-                </div>
-            </div>
-            <p>
-                En lo posible adjuntar al review una Url http://www.ejemplo.com asociada al item del art&iacute;culo.<br>
-                Por ejemplo, se podr&iacute;a brindar el link a la cuenta de twitter si es un review acerca de un profesional.
-            </p>
-        </div>
-        <div class="form_line msg_fuenteOriginal">
-            <label for="fuenteOriginal">
-                Fuente Original
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="fuenteOriginal" id="fuenteOriginal" title="Referencia autor original o fuente" maxlength="500" value="{sFuenteOriginal}" />
-                </div>
-            </div>
-            <p>Si Ud. no es el Autor del art&iacute;culo, utilice este campo para referenciar la fuente original de donde se extrajo.</p>
-        </div>
-        <div class="form_line msg_keywords">
-            <label for="keywords">
-                <span class="marca_obligatorio">&#8226;</span>
-                Palabras Clave
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-                </div>
-            </div>
-            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
-        </div>
-
-        <!--BeginSubmitCrearReviewBlock-->
+        
+        <!--BeginSubmitCrearSoftwareBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="crearReview" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearReview" type="submit" name="crearReview" class="btn01">
-                    Crear Review
+            <label for="crearSoftware" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearSoftware" type="submit" name="crearSoftware" class="btn01">
+                    Crear Aplicaci&oacute;n
                 </button>
             </label>
         </div>
-        <!--EndSubmitCrearReviewBlock-->
+        <!--EndSubmitCrearSoftwareBlock-->
 
-        <!--BeginSubmitModificarReviewBlock-->
+        <!--BeginSubmitModificarSoftwareBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="modificarReview" class="button buttonConfirm buttonLarge mari3">
-                <button id="modificarReview" type="submit" name="modificarReview" class="btn01">
-                    Modificar Review
+            <label for="modificarSoftware" class="button buttonConfirm buttonLarge">
+                <button id="modificarSoftware" type="submit" name="modificarSoftware" class="btn01">
+                    Modificar Aplicaci&oacute;n
                 </button>
             </label>
         </div>
-        <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
-        <!--EndSubmitModificarReviewBlock-->
+        <input type="hidden" value="{iSoftwareIdForm}" name="softwareIdForm" id="softwareIdForm" />
+        <!--EndSubmitModificarSoftwareBlock-->
 
-        <div style="display:none;" id='msg_form_review' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-
+        <div style="display:none;" id='msg_form_software' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+        
     </form>
 </div>
-<!--EndFormularioReviewBlock-->
+<!--EndFormularioSoftwareBlock-->
 
-<!--BeginListadoMisPublicacionesBlock-->
-<div id="listadoMisPublicaciones" class="grupo">
+<!--BeginListadoMisAplicacionesBlock-->
+<div id="listadoMisAplicaciones" class="grupo">
     <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
     <input type="hidden" value="" name="sOrder" id="sOrder" />
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <div id="listadoMisPublicacionesResult">
-        <!--BeginGrillaMisPublicacionesBlock-->
+        <!--BeginGrillaMisAplicacionesBlock-->
         <table class="table01 wi100p mabo2">
             <tr class="encabezado">
                <td class="big iveal">T&iacute;tulo {orderByTitulo}</td>
                <td class="small iveal">Fecha {orderByFecha}</td>
-               <td class="small iveal">Tipo {orderByTipo}</td>
+               <td class="small iveal">Categor&iacute;a {orderByCategoria}</td>
                <td class="small iveal">Activo {orderByActivo}</td>
                <td class="medium"></td>
             </tr>
-            <!--BeginMiPublicacionBlock-->
-            <tr class="{iPublicacionId}">
-                <td class="desplegable" rel="{iPublicacionId}">{sTitulo}</td>
-                <td class="desplegable" rel="{iPublicacionId}">{sFecha}</td>
-                <td class="desplegable teta_ca" rel="{iPublicacionId}">{sTipo}</td>
+            <!--BeginMiAplicacionBlock-->
+            <tr class="{iSoftwareId}">
+                <td class="desplegable" rel="{iSoftwareId}">{sTitulo}</td>
+                <td class="desplegable" rel="{iSoftwareId}">{sFecha}</td>
+                <td class="desplegable teta_ca" rel="{iSoftwareId}">{sCategoria}</td>
                 <td>
-                    <select class="cambiarEstadoPublicacion" name="estadoPublicacion_{iPublicacionId}" id="estadoPublicacion_{iPublicacionId}" rel="{sTipo}_{iPublicacionId}">
-                        <option value="1" {sSelectedPublicacionActivo}>Activa</option>
-                        <option value="0" {sSelectedPublicacionDesactivado}>Desactivada</option>
+                    <select class="cambiarEstadoSoftware" name="estadoSoftware_{iSoftwareId}" id="estadoSoftware_{iSoftwareId}" rel="{iSoftwareId}">
+                        <option value="1" {sSelectedSoftwareActivo}>Activa</option>
+                        <option value="0" {sSelectedSoftwareDesactivado}>Desactivada</option>
                     </select>
                 </td>
                 <td class="teal_ce">
-                    <a class="di_inbl" href="{hrefAmpliarPublicacion}" title="Ampliar Publicaci&oacute;n"><span class="i mi expand ihover"></span></a>
-                    <span title="Editar" rel="{sTipo}_{iPublicacionId}" class="i bs edit ihover editarPublicacion"></span>
-                    <a class="di_inbl" href="{hrefGaleriaFotos}?objType={sTipo}&iPublicacionId={iPublicacionId}" title="Fotos"><span class="i bs photoSingle ihover"></span></a>
-                    <a class="di_inbl" href="{hrefGaleriaVideos}?objType={sTipo}&iPublicacionId={iPublicacionId}" title="Videos"><span class="i bs movie ihover"></span></a>
-                    <a class="di_inbl" href="{hrefGaleriaArchivos}?objType={sTipo}&iPublicacionId={iPublicacionId}" title="Archivos"><span class="i mi documentBlank ihover"></span></a>
-                    <span title="Eliminar" rel="{sTipo}_{iPublicacionId}" class="i bs delete ihover borrarPublicacion"></span>
+                    <a class="di_inbl" href="{hrefAmpliarSoftware}" title="Ampliar Aplicaci&oacute;n"><span class="i mi expand ihover"></span></a>
+                    <span title="Editar" rel="{iSoftwareId}" class="i bs edit ihover editarSoftware"></span>
+                    <a class="di_inbl" href="{hrefGaleriaFotos}?iSoftwareId={iSoftwareId}" title="Fotos"><span class="i bs photoSingle ihover"></span></a>
+                    <a class="di_inbl" href="{hrefGaleriaArchivos}?iSoftwareId={iSoftwareId}" title="Archivos"><span class="i mi upload ihover"></span></a>
+                    <span title="Eliminar" rel="{iSoftwareId}" class="i bs delete ihover borrarSoftware"></span>
                 </td>
             </tr>
-            <tr class="{iPublicacionId} ba_no">
-                <td id="desplegable_{iPublicacionId}" class="pa0 bobo_no" colspan="5" style="display:none;">
+            <tr class="{iSoftwareId} ba_no">
+                <td id="desplegable_{iSoftwareId}" class="pa0 bobo_no" colspan="5" style="display:none;">
                     <div class="anexoFicha grupo">
                         <div class="titulo grupo">
                             <div class="fte3 fl_le">Detalles</div>
-                            <span rel="{iPublicacionId}" class="i bs close ihover fl_ri"></span>
+                            <span rel="{iSoftwareId}" class="i bs close ihover fl_ri"></span>
                         </div>
                         <br clear="all">
-                        {sMensajePublicacion}
+                        {sMensajeSoftware}
                         <div class="fl_le lihe2">
                            Alcance Privacidad: <span class="fowe_bo">{sPublico}</span><br>
                            Activo Comentarios: <span class="fowe_bo">{sActivoComentarios}</span><br>
-                           Cantidad Fotos: <span class="fowe_bo">{iCantidadFotos}</span><br>
-                           Cantidad Videos: <span class="fowe_bo">{iCantidadVideos}</span><br>
-                           Cantidad Archivos: <span class="fowe_bo">{iCantidadArchivos}</span>
+                           Cantidad Fotos: <span class="fowe_bo">{iCantidadFotos}</span><br>                           
+                           Cantidad Archivos: <span class="fowe_bo">{iCantidadArchivos}</span><br>
+                           <div class="fl_le mari">Rating Actual:</div>
+                                <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
+                                <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
+                                <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
+                                <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
+                                <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
+                                <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
+                                <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
+                                <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
+                                <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
+                                <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
+                                <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
+
+                                <!--BeginSinValoracionBlock-->Sin valoraciones<!--EndSinValoracionBlock-->
                         </div>
                     </div>
                 </td>
             </tr>
-            <!--EndMiPublicacionBlock-->
+            <!--EndMiAplicacionBlock-->
 
-            <!--BeginNoRecordsMisPublicacionesBlock-->
+            <!--BeginNoRecordsMisAplicacionesBlock-->
             <tr>
                 <td colspan="5">{sNoRecords}</td>
             </tr>           
-            <!--EndNoRecordsMisPublicacionesBlock-->
+            <!--EndNoRecordsMisAplicacionesBlock-->
         </table>
         {paginacion}            
-        <!--EndGrillaMisPublicacionesBlock-->
+        <!--EndGrillaMisAplicacionesBlock-->
     </div>
 </div>
-<!--EndListadoMisPublicacionesBlock-->
+<!--EndListadoMisAplicacionesBlock-->
 
-<!--BeginUltimasPublicacionesBlock-->
+<!--BeginUltimasAplicacionesBlock-->
 <div class="mabo3"></div>
 <div class="ficha05 bora">
-    <div class="titulo"><span class="i mi publish"></span> Ultimas publicaciones en comunidad</div>
-    <!--BeginPublicacionRowBlock-->
+    <div class="titulo"><span class="i mi publish"></span> Ultimas aplicaciones en cat&aacute;logo de descargas</div>
+    <!--BeginAplicacionRowBlock-->
     <div class="mabo2">
-        <a href="{hrefAmpliarPublicacion}">{sTitulo}</a> <span class="fost_it fte2 pale">por {sAutor}</span>
+        <a href="{hrefAmpliarSoftware}">{sTitulo}</a> <span class="fost_it fte2 pale">en {sCategoria}</span>
     </div>
-    <!--EndPublicacionRowBlock-->
+    <!--EndAplicacionRowBlock-->
 </div>
-<!--EndUltimasPublicacionesBlock-->
+<!--EndUltimasAplicacionesBlock-->
 
-<!--BeginPublicacionAmpliadaBlock-->
+<!--BeginAplicacionAmpliadaBlock-->
 <div class="ficha03 grupo">
     <div class="encabezado">
         <div class="der">
@@ -561,48 +415,8 @@
         </div>
     </div>
     <div class="contenido mabo3">
-        <p>{sDescripcion}</p>
-    </div>
-    
-    {galeriaAdjuntos}
-
-    <ul class="fl_ri mabo2 mato iveal cl_bo">
-        <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
-    </ul>
-</div>
-<div id="comentarios">
-    {comentarios}
-</div>
-<!--EndPublicacionAmpliadaBlock-->
-
-<!--BeginReviewAmpliadaBlock-->
-<div class="ficha03 grupo">
-    <div class="encabezado">
-        <div class="der">
-            <ul class="m_horiz">
-                <li><a href="{hrefShareFacebook}" class="i sc facebook"></a></li>
-                <li><a href="{hrefShareTwitter}" class="i sc twitter"></a></li>
-                <li class="mari0"><a href="{hrefShareRss}" class="i bs rss ihover"></a>
-            </ul>
-        </div>
-        <div class="izq">
-            <div class="icono">
-                <div class="th_fto_s">
-                    <i style="background-image:url('{scrAvatarAutor}')"></i>
-                </div>
-            </div>
-            <div class="titulo">{sTitulo}</div>
-            <div class="subtitulo">{sFecha}</div>
-        </div>
-    </div>
-    <div class="bobo1 pa2">
-        <div class="mabo2">
-            <span class="fte3">{sItemName}</span> - Review por <span class="fost_it">{sAutor}</span><br>
-        </div>
-
-        <!--BeginRatingBlock-->
-        <div class="mabo2 grupo">
-            <div class="fl_le mari">Valoraci&oacute;n del autor:</div>
+        <div class="mabo2 ov_au veal_mi">
+            <div class="fl_le teta_up fowe_bo mari">Rating actual:</div>
                 <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
                 <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
                 <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
@@ -614,44 +428,22 @@
                 <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
                 <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
                 <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
-        </div>
-        <!--EndRatingBlock-->
 
-        <!--BeginItemTypeBlock-->
-        <div class="mabo2">
-            Acerca de un/a <span class="fost_it fowe_bo">{sItemType}</span>
+                <!--BeginSinValoracionBlock-->Sin valoraciones<!--EndSinValoracionBlock-->
         </div>
-        <!--EndItemTypeBlock-->
-       
-        <!--BeginItemEventSummaryBlock-->
-        <div class="mabo2">
-            Detalles evento: <span class="fost_it">{sItemEventSummary}</span><br>
-        </div>
-        <!--EndItemEventSummaryBlock-->
-
-        <!--BeginItemUrlBlock-->
-        <div class="mabo2">
-            Link: <span class="fost_it"><a href="{hrefItemUrl}">{sItemUrl}</a></span><br>
-        </div>
-        <!--EndItemUrlBlock-->
-
-        <!--BeginFuenteOriginalBlock-->
-        <div class="mabo2">
-            Fuente Original: <span class="fost_it"><a href="{hrefFuenteUriginal}">{sFuenteOriginal}</a></span><br>
-        </div>
-        <!--EndFuenteOriginalBlock-->
-    </div>
-    <div class="contenido mabo3">
         <p>{sDescripcion}</p>
     </div>
 
-    {galeriaAdjuntos}
+    <!--BeginEnlacesBlock-->
+    <div class="contenido mabo3">
+        Enlaces en descarga directa<br>
+        <p>{sEnlaces}</p>
+    </div>
+    <!--EndEnlacesBlock-->
 
-    <ul class="fl_ri mabo2 mato iveal cl_bo">
-        <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
-    </ul>
+    {galeriaAdjuntos}
 </div>
 <div id="comentarios">
     {comentarios}
 </div>
-<!--EndReviewAmpliadaBlock-->
+<!--EndAplicacionAmpliadaBlock-->
