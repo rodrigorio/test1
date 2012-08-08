@@ -557,7 +557,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
                
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
         
         if(count($aFichas) > 0){
 
