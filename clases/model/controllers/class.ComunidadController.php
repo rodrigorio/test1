@@ -950,7 +950,7 @@ class ComunidadController
     /**
      * Guarda todos los archivos vinculados a una ficha en tiempo de ejecucion.
      *
-     * @param FichaAbstract $oFicha puede ser tanto una publicacion o un review
+     * @param FichaAbstract $oFicha puede ser tanto una publicacion o un review o software
      * @param string $pathServidor directorio donde estan guardados los archivos
      */
     public function guardarArchivoFicha($oFicha, $pathServidor)
@@ -1024,6 +1024,21 @@ class ComunidadController
             
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Agrega el filtro del usuario que esta logueado
+     */
+    public function buscarSoftwareUsuario($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $filtro["s.usuarios_id"] = $oUsuario->getId();
+
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
             throw new Exception($e->getMessage());
         }

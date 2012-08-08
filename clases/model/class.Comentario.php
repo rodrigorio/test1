@@ -7,9 +7,9 @@ class Comentario
     private $sDescripcion;
     
     /**
-     * -1 quiere decir que no se emitio valoracion en el comentario
+     * 0 quiere decir que no se emitio valoracion en el comentario
      */
-    private $fValoracion = -1;
+    private $fValoracion = 0;
     private $iUsuarioId;
     private $oUsuario;    
 
@@ -72,7 +72,7 @@ class Comentario
      * Devuelve true si el comentario tiene valoracion, false caso contrario
      */
     public function emitioValoracion(){
-        return ($this->fValoracion >= 0)?true:false;
+        return ($this->fValoracion > 0)?true:false;
     }
 
     public function getUsuario(){

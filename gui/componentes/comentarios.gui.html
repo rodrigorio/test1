@@ -14,22 +14,23 @@
     <!--EndComentarioBlock-->
 
     <!--BeginComentarioValoracionBlock-->
-    <div id="{comentarioId}" class="ficha03 pa0 mabo2 grupo">
-        <div class="header mabo2 grupo">
-            <!--BeginValoracion0Block--><span class="fl_le mari valoracion val0"></span><!--EndValoracion0Block-->
-            <!--BeginValoracion0_2Block--><span class="fl_le mari valoracion val0_2"></span><!--EndValoracion0_2Block-->
-            <!--BeginValoracion1Block--><span class="fl_le mari valoracion val1"></span><!--EndValoracion1Block-->
-            <!--BeginValoracion1_2Block--><span class="fl_le mari valoracion val1_2"></span><!--EndValoracion1_2Block-->
-            <!--BeginValoracion2Block--><span class="fl_le mari valoracion val2"></span><!--EndValoracion2Block-->
-            <!--BeginValoracion2_2Block--><span class="fl_le mari valoracion val2_2"></span><!--EndValoracion2_2Block-->
-            <!--BeginValoracion3Block--><span class="fl_le mari valoracion val3"></span><!--EndValoracion3Block-->
-            <!--BeginValoracion3_2Block--><span class="fl_le mari valoracion val3_2"></span><!--EndValoracion3_2Block-->
-            <!--BeginValoracion4Block--><span class="fl_le mari valoracion val4"></span><!--EndValoracion4Block-->
-            <!--BeginValoracion4_2Block--><span class="fl_le mari valoracion val4_2"></span><!--EndValoracion4_2Block-->
-            <!--BeginValoracion5Block--><span class="fl_le mari valoracion val5"></span><!--EndValoracion5Block-->
-            <span class="txt_imp2">{sNombreUsuario}</span> - {dFechaComentario}
+    <div class="pa male3 mabo2 baco4 grupo">
+        <div class="th_fto_s thumb03 fl_le mari2">
+            <i style="background-image:url('{scrAvatarAutor}')"></i>
         </div>
-        <p>{sComentario}</p>
+        <span class="txt_imp2 mari">{sNombreUsuario}</span> {sComentario} <br>
+        <span class="co1 fte2">{dFechaComentario}</span> 
+        <!--BeginValoracion0Block--><span class="fl_le mari valoracion val0"></span><!--EndValoracion0Block-->
+        <!--BeginValoracion0_2Block--><span class="fl_le mari valoracion val0_2"></span><!--EndValoracion0_2Block-->
+        <!--BeginValoracion1Block--><span class="fl_le mari valoracion val1"></span><!--EndValoracion1Block-->
+        <!--BeginValoracion1_2Block--><span class="fl_le mari valoracion val1_2"></span><!--EndValoracion1_2Block-->
+        <!--BeginValoracion2Block--><span class="fl_le mari valoracion val2"></span><!--EndValoracion2Block-->
+        <!--BeginValoracion2_2Block--><span class="fl_le mari valoracion val2_2"></span><!--EndValoracion2_2Block-->
+        <!--BeginValoracion3Block--><span class="fl_le mari valoracion val3"></span><!--EndValoracion3Block-->
+        <!--BeginValoracion3_2Block--><span class="fl_le mari valoracion val3_2"></span><!--EndValoracion3_2Block-->
+        <!--BeginValoracion4Block--><span class="fl_le mari valoracion val4"></span><!--EndValoracion4Block-->
+        <!--BeginValoracion4_2Block--><span class="fl_le mari valoracion val4_2"></span><!--EndValoracion4_2Block-->
+        <!--BeginValoracion5Block--><span class="fl_le mari valoracion val5"></span><!--EndValoracion5Block-->
     </div>
     <!--EndComentarioValoracionBlock-->
 <!--EndComentariosBlock-->
@@ -67,6 +68,7 @@
                 Agregar Comentario
             </button>
         </label>
+        <input type="hidden" value="" name="valoracion" id="valoracion" />
 
         <div style="display:none;" id='msg_form_comentar' class="msg_form iveal cl_le mato3"><span class="bs i"></span> <span class="msg"></span></div>
     </form>

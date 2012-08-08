@@ -91,7 +91,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         //lo separo en un metodo privado porque lo reutilizo en el listado por categoria
         $this->listarFichas($aSoftware, $paramsPaginador);
@@ -124,60 +124,83 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }
     }
 
-    private function listarFichas($aSoftware, $paramsPaginador)
+    private function listarFichas($aSoftware, $paramsPaginador, $filtroSql = array())
     {
         if(count($aSoftware) > 0){
 
             foreach($aSoftware as $oSoftware){
 
                 $oUsuario = $oSoftware->getUsuario();
+                $oCategoria = $oSoftware->getCategoria();
                 $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                 $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
                 
+                $this->getTemplate()->set_var("sNombreCategoria", $oCategoria->getNombre());
                 $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
-                $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
+                $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
-                $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
-                $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
+                $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
+                $this->getTemplate()->set_var("sDescripcionBreve", $oSoftware->getDescripcionBreve());
 
-                /*
-                 * la url de publicacion ampliada es diferente segun el tipo
-                 *
-                 * http://domain.com/comunidad/publicaciones/32-Nombre de la publicacion
-                 * http://domain.com/comunidad/reviews/32-Nombre del review
-                 */
-                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
-                if(get_class($oFicha) == 'Publicacion'){
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                if($oSoftware->tieneValoracion()){
+                    $fRating = $oSoftware->getRating();
+
+                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                               'Valoracion4_2Block', 'Valoracion5Block');
+                    
+                    switch($fRating){
+                        case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                        case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                        case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                        case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                        case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                        case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                        case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                        case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                        case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                        case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                        case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                        default: $valoracionBloque = 'Valoracion0Block'; break;
+                    }
+
+                    //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+
+                    $this->getTemplate()->parse("RatingBlock");
                 }else{
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                    $this->getTemplate()->set_var("RatingBlock", "");
                 }
 
-                $this->thumbDestacadoFicha($oFicha);
-                $this->comentariosFicha($oFicha);
+                //'comunidad/descargas/nombre-categoria/23-titulo-software'
+                $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
+                $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oCategoria->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
 
-                $this->getTemplate()->parse("PublicacionBlock", true);
+                $this->thumbDestacadoFicha($oSoftware);
+                $this->comentariosFicha($oSoftware);
+
+                $this->getTemplate()->parse("SoftwareBlock", true);
             }
 
-            $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
+            $this->getTemplate()->set_var("NoRecordsSoftwareBlock", "");
 
-            $params[] = "masPublicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $params);
+            $paramsPaginador[] = "masAplicaciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/descargas/procesar", "listadoSoftwareResult", $paramsPaginador);
         }else{
-            $this->getTemplate()->set_var("PublicacionBlock", "");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "noRecords", "NoRecordsPublicacionesBlock");
-            $this->getTemplate()->set_var("sNoRecords", "No hay publicaciones cargados en la comunidad");
+            $this->getTemplate()->set_var("SoftwareBlock", "");
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "noRecords", "NoRecordsSoftwareBlock");
+            $this->getTemplate()->set_var("sNoRecords", "No hay aplicaciones.");
             $this->getTemplate()->parse("noRecords", false);
         }
     }
 
-    private function thumbDestacadoFicha($oFicha)
+    private function thumbDestacadoFicha($oSoftware)
     {
-        //thumb destacado. (muestro foto o video con menor numero de orden)
         $thumbDestacado = "";
-        $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oFicha->getId());
+        $oFoto = ComunidadController::getInstance()->getFotoDestacadaFicha($oSoftware->getId());
         if(null !== $oFoto){
             //agrego thumbnail foto
             $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbFoto", "ThumbnailFotoSingleBlock");
@@ -189,33 +212,20 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
 
             $thumbDestacado = $this->getTemplate()->pparse("thumbFoto");
-        }else{
-            $oEmbedVideo = ComunidadController::getInstance()->getEmbedVideoDestacadoFicha($oFicha->getId());
-            if(null !== $oEmbedVideo){
-                //agrego thumbnail video
-                $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "thumbVideo", "ThumbnailVideoSingleBlock");
-                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
-                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
-                $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
-                $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                $thumbDestacado = $this->getTemplate()->pparse("thumbVideo");
-            }
         }
         $this->getTemplate()->set_var("thumbDestacado", $thumbDestacado);        
     }
 
-    private function comentariosFicha($oFicha)
+    private function comentariosFicha($oSoftware)
     {
         $comentarios = "";
         
-        if($oFicha->isActivoComentarios()){            
-            $aComentarios = $oFicha->getComentarios();
+        if($oSoftware->isActivoComentarios()){
+            $aComentarios = $oSoftware->getComentarios();
             $iCantidad = count($aComentarios);
             if($iCantidad > 0){
                 $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "listaComentarios", "ComentariosBlock");
-                $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
+                $this->getTemplate()->set_var("ComentarioBlock", "");
                 $this->getTemplate()->set_var("totalComentarios", $iCantidad);
 
                 //solo muestro los ultimos 3
@@ -232,7 +242,35 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
                     $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
 
-                    $this->getTemplate()->parse("ComentarioBlock", true);
+                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                               'Valoracion4_2Block', 'Valoracion5Block');
+                    
+                    if($oComentario->emitioValoracion()){
+                        $fRating = $oComentario->getValoracion();
+
+                        switch($fRating){
+                            case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                            case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                            case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                            case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                            case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                            case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                            case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                            case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                            case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                            case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                            case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                            default: $valoracionBloque = 'Valoracion0Block'; break;
+                        }
+
+                        //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                        $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                    }
+                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+
+                    $this->getTemplate()->parse("ComentarioValoracionBlock", true);
                 }
 
                 $comentarios = $this->getTemplate()->pparse("listaComentarios");
@@ -245,7 +283,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->delete_parsed_blocks("ComentariosBlock");
     }
 
-    public function misPublicaciones()
+    public function misAplicaciones()
     {
         try{
 
@@ -259,101 +297,94 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+            $this->getTemplate()->set_var("tituloSeccion", "Mis Aplicaciones");
 
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ListadoMisPublicacionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerMainCont", "ListadoMisAplicacionesBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
             $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
             $iRecordsTotal = 0;
-            $aFichas = ComunidadController::getInstance()->buscarPublicacionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            $aSoftware = ComunidadController::getInstance()->buscarSoftwareUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-            if(count($aFichas) > 0){
+            if(count($aSoftware) > 0){
 
-                $this->getTemplate()->set_var("NoRecordsMisPublicacionesBlock", "");
+                $this->getTemplate()->set_var("NoRecordsMisAplicacionesBlock", "");
 
-                foreach($aFichas as $oFicha){
+                foreach($aSoftware as $oSoftware){
 
-                    $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
-                    if(get_class($oFicha) == 'Publicacion'){
-                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
-                    }else{
-                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
-                    }
+                    //'comunidad/descargas/nombre-categoria/23-titulo-software'
+                    $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->$oCategoria->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
                     
-                    $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
-                    $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
-                    $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
+                    $hrefEditarFotos = "comunidad/descargas/galeria-fotos";
+                    $hrefEditarArchivos = "comunidad/descargas/galeria-archivos";
 
-                    $bPublico = $oFicha->isPublico();
+                    $bPublico = $oSoftware->isPublico();
                     $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
-                    $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
-                    $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
+                    $sActivoComentarios = ($oSoftware->isActivoComentarios())?"Sí":"No";
 
-                    $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());                    
+                    $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
                     $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
-                    $this->getTemplate()->set_var("hrefGaleriaVideos", $hrefEditarVideos);
                     $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);
 
-                    if($oFicha->isActivo()){
-                        $this->getTemplate()->set_var("sSelectedPublicacionActivo", "selected='selected'");
+                    if($oSoftware->isActivo()){
+                        $this->getTemplate()->set_var("sSelectedSoftwareActivo", "selected='selected'");
                     }else{
-                        $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "selected='selected'");
+                        $this->getTemplate()->set_var("sSelectedSoftwareDesactivado", "selected='selected'");
                     }
 
-                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
-                    $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                    $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
+                    $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
                     $this->getTemplate()->set_var("sPublico", $sPublico);
 
                     //si esta marcada como publica muestro cartel segun moderacion
                     if($bPublico){
-                        if($oFicha->getModeracion()->isPendiente()){
+                        if($oSoftware->getModeracion()->isPendiente()){
                             $cartelModeracion = "MsgFichaInfoBlock";
                             $tituloModeracion = "Moderación Pendiente";
-                            $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
+                            $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
                         }
 
-                        if($oFicha->getModeracion()->isRechazado()){
+                        if($oSoftware->getModeracion()->isRechazado()){
                             $cartelModeracion = "MsgFichaErrorBlock";
                             $tituloModeracion = "Publicación Rechazada";
                             $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
                         }
 
-                        if($oFicha->getModeracion()->isAprobado()){
+                        if($oSoftware->getModeracion()->isAprobado()){
                             $cartelModeracion = "MsgFichaCorrectoBlock";
-                            $tituloModeracion = "Publicación Moderada";
-                            $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
+                            $tituloModeracion = "Aplicación Moderada";
+                            $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
                         }
 
-                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", $cartelModeracion);
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftware", $cartelModeracion);
                         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                         $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                        $this->getTemplate()->parse("sMensajePublicacion", false);
+                        $this->getTemplate()->parse("sMensajeSoftware", false);
                     }
 
                     $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
 
                     //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
-                    list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
+                    list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
                     $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
-                    $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
                     $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
-                    $this->getTemplate()->parse("MiPublicacionBlock", true);
+                    $this->getTemplate()->parse("MiAplicacionBlock", true);
 
                     $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
                     $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
-                    $this->getTemplate()->set_var("sMensajePublicacion","");
+                    $this->getTemplate()->set_var("sMensajeSoftware","");
                 }
                 
-                $params[] = "masMisPublicaciones=1";
-                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoMisPublicacionesResult", $params);
+                $params[] = "masMisAplicaciones=1";
+                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/descargas/procesar", "listadoMisAplicacionesResult", $params);
                 
             }else{
-                $this->getTemplate()->set_var("MiPublicacionBlock", "");
-                $this->getTemplate()->set_var("sNoRecords", "Todavía no hay publicaciones creadas.");
+                $this->getTemplate()->set_var("MiAplicacionBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "Todavía no hay aplicaciones creadas.");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -370,57 +401,47 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             throw new Exception("", 404);
         }
 
-        if($this->getRequest()->has('masPublicaciones')){
-            $this->masPublicaciones();
+        if($this->getRequest()->has('masAplicaciones')){
+            $this->masAplicaciones();
             return;
         }
 
-        if($this->getRequest()->has('masMisPublicaciones')){
-            $this->masMisPublicaciones();
+        if($this->getRequest()->has('masMisAplicaciones')){
+            $this->masMisAplicaciones();
             return;
         }
         
         if($this->getRequest()->has('cambiarEstado')){
-            $this->cambiarEstadoPublicacion();
+            $this->cambiarEstadoSoftware();
             return;
         }
 
-        if($this->getRequest()->has('borrarPublicacion')){
-            $this->borrarPublicacion();
+        if($this->getRequest()->has('borrarSoftware')){
+            $this->borrarSoftware();
             return;
         }
 
         if($this->getRequest()->has('comentar')){
-            $this->agregarComentarioPublicacion();
+            $this->agregarComentarioSoftware();
             return;
         }
     }
 
-    private function agregarComentarioPublicacion()
+    private function agregarComentarioSoftware()
     {
-        $iPublicacionId = $this->getRequest()->getPost('iPublicacionId');
-        $objType = $this->getRequest()->getPost('objType');
-
-        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+        $iSoftwareId = $this->getRequest()->getPost('iSoftwareId');
+        
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
 
-            switch($objType)
+            if(!$oSoftware->isActivoComentarios())
             {
-                case "Publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "Review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
-
-            if(!$oFicha->isActivoComentarios())
-            {
-                $this->getJsonHelper()->setMessage("Se desactivaron los comentarios para esta publicacion");
+                $this->getJsonHelper()->setMessage("Se desactivaron los comentarios para esta aplicacion");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
@@ -430,16 +451,20 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $oComentario = new stdClass();
             $oComentario = Factory::getComentarioInstance($oComentario);
 
-            $oComentario->setDescripcion($this->getRequest()->getPost("comentario"));           
-            $oComentario->setUsuario($oUsuario);
+            $oComentario->setDescripcion($this->getRequest()->getPost("comentario"));
 
-            $oFicha->addComentario($oComentario);
+            $fValoracion = $this->getRequest()->getPost("valoracion");
+            if(!empty($fValoracion)){
+                $oComentario->setValoracion($fValoracion);
+            }
 
-            ComunidadController::getInstance()->guardarComentariosFicha($oFicha);
+            $oSoftware->addComentario($oComentario);
+
+            ComunidadController::getInstance()->guardarComentariosFicha($oSoftware);
            
             //devuelvo la ficha del nuevo comentario
             $this->restartTemplate();
-            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "ajaxComentario", "ComentarioBlock");
+            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "ajaxComentario", "ComentarioValoracionBlock");
 
             $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
@@ -449,6 +474,34 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
             $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
             $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+
+            $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                       'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                       'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                       'Valoracion4_2Block', 'Valoracion5Block');
+
+            if($oComentario->emitioValoracion()){
+                $fRating = $oComentario->getValoracion();
+
+                switch($fRating){
+                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                    default: $valoracionBloque = 'Valoracion0Block'; break;
+                }
+
+                //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+            }
+            $this->getTemplate()->unset_blocks($bloquesValoracion);
                         
             $this->getJsonHelper()->setMessage("El comentario se agrego satisfactoriamente");
             $this->getJsonHelper()->setValor('html', $this->getTemplate()->pparse('ajaxComentario', false));
@@ -461,54 +514,44 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();            
     }
     
-    private function borrarPublicacion()
+    private function borrarSoftware()
     {        
-        $iPublicacionId = $this->getRequest()->getPost('iPublicacionId');
-        $objType = $this->getRequest()->getPost('objType');
-        
-        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+        $iSoftwareId = $this->getRequest()->getPost('iSoftwareId');
+
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para borrar esta publicacion", 401);
+            if($oSoftware->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para borrar esta aplicacion", 401);
             }              
 
             $pathServidorFotos = $this->getUploadHelper()->getDirectorioUploadFotos(true);
             $pathServidorArchivos = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
             //polimorfico
-            $result = ComunidadController::getInstance()->borrarPublicacion($oFicha, $pathServidorFotos, $pathServidorArchivos);
+            $result = ComunidadController::getInstance()->borrarPublicacion($oSoftware, $pathServidorFotos, $pathServidorArchivos);
 
             $this->restartTemplate();
 
             if($result){
-                $msg = "La publicación fue eliminada del sistema";
+                $msg = "La aplicación fue eliminada del sistema";
                 $bloque = 'MsgCorrectoBlockI32';
                 $this->getJsonHelper()->setSuccess(true);
             }else{
-                $msg = "Ocurrio un error, no se ha eliminado la publicación del sistema";
+                $msg = "Ocurrio un error, no se ha eliminado la aplicación del sistema";
                 $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);
             }
 
         }catch(Exception $e){
-            $msg = "Ocurrio un error, no se ha eliminado la publicación del sistema";
+            $msg = "Ocurrio un error, no se ha eliminado la aplicación del sistema";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
         }
@@ -520,432 +563,196 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
-    private function masPublicaciones()
+    private function masAplicaciones()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "ajaxFichasPublicacionesBlock", "FichasPublicacionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "ajaxFichasSoftwareBlock", "FichasSoftwareBlock");
 
         $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-        if(count($aFichas) > 0){
+        $this->listarFichas($aSoftware, $paramsPaginador, $filtroSql);
 
-            $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
-
-            foreach($aFichas as $oFicha){
-
-                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
-                if(get_class($oFicha) == 'Publicacion'){
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
-                }else{
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
-                }
-
-                $oUsuario = $oFicha->getUsuario();
-                $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
-
-                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
-                $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"Publicación":"Review";
-
-                $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
-                $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
-                $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
-                $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
-                $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
-
-                $this->thumbDestacadoFicha($oFicha);
-                $this->comentariosFicha($oFicha);
-
-                $this->getTemplate()->parse("PublicacionBlock", true);
-            }
-
-            $paramsPaginador[] = "masPublicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $paramsPaginador);
-        }else{
-            $this->getTemplate()->set_var("PublicacionBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No se encontraron resultados");
-        }
-
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxFichasPublicacionesBlock', false));
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxFichasSoftwareBlock', false));
     }
 
-    private function masMisPublicaciones()
+    private function masMisAplicaciones()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "ajaxGrillaPublicacionesBlock", "GrillaMisPublicacionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "ajaxGrillaMisAplicacionesBlock", "GrillaMisAplicacionesBlock");
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
                
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aSoftware = ComunidadController::getInstance()->buscarSoftwareUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
         
-        if(count($aFichas) > 0){
+        if(count($aSoftware) > 0){
 
-            $this->getTemplate()->set_var("NoRecordsMisPublicacionesBlock", "");
+            $this->getTemplate()->set_var("NoRecordsMisAplicacionesBlock", "");
 
-            foreach($aFichas as $oFicha){
+            foreach($aSoftware as $oSoftware){
 
-                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
-                if(get_class($oFicha) == 'Publicacion'){
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
-                }else{
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
-                }
+                $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
+                $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->$oCategoria->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
                 
-                $hrefEditarFotos = "comunidad/publicaciones/galeria-fotos";
-                $hrefEditarVideos = "comunidad/publicaciones/galeria-videos";
-                $hrefEditarArchivos = "comunidad/publicaciones/galeria-archivos";
+                $hrefEditarFotos = "comunidad/descargas/galeria-fotos";
+                $hrefEditarArchivos = "comunidad/descargas/galeria-archivos";
 
-                $bPublico = $oFicha->isPublico();
+                $bPublico = $oSoftware->isPublico();
                 $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
-                $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
-                $sActivoComentarios = ($oFicha->isActivoComentarios())?"Sí":"No";
+                $sActivoComentarios = ($oSoftware->isActivoComentarios())?"Sí":"No";
 
-                $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
+                $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
                 $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
-                $this->getTemplate()->set_var("hrefGaleriaVideos", $hrefEditarVideos);
                 $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);
 
-                if($oFicha->isActivo()){
-                    $this->getTemplate()->set_var("sSelectedPublicacionActivo", "selected='selected'");
+                if($oSoftware->isActivo()){
+                    $this->getTemplate()->set_var("sSelectedSoftwareActivo", "selected='selected'");
                 }else{
-                    $this->getTemplate()->set_var("sSelectedPublicacionDesactivado", "selected='selected'");
+                    $this->getTemplate()->set_var("sSelectedSoftwareDesactivado", "selected='selected'");
                 }
 
-                $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
-                $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
+                $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+                $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
+                $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
                 $this->getTemplate()->set_var("sPublico", $sPublico);
 
                 //si esta marcada como publica muestro cartel segun moderacion
                 if($bPublico){
-                    if($oFicha->getModeracion()->isPendiente()){
+                    if($oSoftware->getModeracion()->isPendiente()){
                         $cartelModeracion = "MsgFichaInfoBlock";
                         $tituloModeracion = "Moderación Pendiente";
-                        $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
+                        $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
                     }
 
-                    if($oFicha->getModeracion()->isRechazado()){
+                    if($oSoftware->getModeracion()->isRechazado()){
                         $cartelModeracion = "MsgFichaErrorBlock";
                         $tituloModeracion = "Publicación Rechazada";
                         $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
                     }
 
-                    if($oFicha->getModeracion()->isAprobado()){
+                    if($oSoftware->getModeracion()->isAprobado()){
                         $cartelModeracion = "MsgFichaCorrectoBlock";
-                        $tituloModeracion = "Publicación Moderada";
-                        $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
+                        $tituloModeracion = "Aplicación Moderada";
+                        $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
                     }
 
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", $cartelModeracion);
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftware", $cartelModeracion);
                     $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                     $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                    $this->getTemplate()->parse("sMensajePublicacion", false);
+                    $this->getTemplate()->parse("sMensajeSoftware", false);
                 }
 
                 $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
 
                 //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
-                list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
+                list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
                 $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
-                $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
                 $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
-                $this->getTemplate()->parse("MiPublicacionBlock", true);
+                $this->getTemplate()->parse("MiAplicacionBlock", true);
 
-                //limpio para la publicacion que sigue
                 $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
                 $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
-                $this->getTemplate()->set_var("sMensajePublicacion","");
+                $this->getTemplate()->set_var("sMensajeSoftware","");
             }
 
-            $paramsPaginador[] = "masMisPublicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoMisPublicacionesResult", $paramsPaginador);
+            $params[] = "masMisAplicaciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/descargas/procesar", "listadoMisAplicacionesResult", $params);
+
         }else{
-            $this->getTemplate()->set_var("MiPublicacionBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "Todavía no hay publicaciones creadas.");
+            $this->getTemplate()->set_var("MiAplicacionBlock", "");
+            $this->getTemplate()->set_var("sNoRecords", "Todavía no hay aplicaciones creadas.");
         }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaPublicacionesBlock', false));
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaMisAplicacionesBlock', false));
     }
 
-    private function cambiarEstadoPublicacion()
+    private function cambiarEstadoSoftware()
     {
-        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-        $estadoPublicacion = $this->getRequest()->getParam('estadoPublicacion');
-        $objType = $this->getRequest()->getParam('objType');
+        $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
+        $estadoSoftware = $this->getRequest()->getParam('estadoSoftware');
 
-        if(empty($iPublicacionId) || !$this->getRequest()->has('estadoPublicacion') ||
-            !$this->getRequest()->has('objType')){
+        if(empty($iSoftwareId) || !$this->getRequest()->has('estadoSoftware')){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $bActivo = ($estadoPublicacion == "1") ? true : false;
-        switch($objType)
-        {
-            case "publicacion":
-                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+        $bActivo = ($estadoSoftware == "1") ? true : false;
 
-                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-                $iUsuarioId = $perfil->getUsuario()->getId();
-                if($oFicha->getUsuarioId() != $iUsuarioId){
-                    throw new Exception("No tiene permiso para modificar esta publicacion", 401);
-                }
+        $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
 
-                $oFicha->isActivo($bActivo);
-                ComunidadController::getInstance()->guardarPublicacion($oFicha);
-                break;
-            case "review":
-                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSoftware->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para modificar esta aplicacion", 401);
+        }
 
-                $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-                $iUsuarioId = $perfil->getUsuario()->getId();
-                if($oFicha->getUsuarioId() != $iUsuarioId){
-                    throw new Exception("No tiene permiso para modificar esta publicacion", 401);
-                }
-
-                $oFicha->isActivo($bActivo);
-                ComunidadController::getInstance()->guardarReview($oFicha);
-                break;
-        }       
+        $oSoftware->isActivo($bActivo);
+        ComunidadController::getInstance()->guardarSoftware($oSoftware);
     }
 
-    public function crearPublicacionForm()
+    public function crearSoftwareForm()
     {
-        $this->mostrarFormularioPublicacionPopUp();
+        $this->mostrarFormularioSoftwarePopUp();
     }
     
-    public function modificarPublicacionForm()
+    public function modificarSoftwareForm()
     {
-        $this->mostrarFormularioPublicacionPopUp();               
+        $this->mostrarFormularioSoftwarePopUp();
     }
 
-    private function mostrarFormularioPublicacionPopUp()
-    {
-        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "popUpContent", "FormularioPublicacionBlock");
-
-        //AGREGAR PUBLICACION
-        if($this->getRequest()->getActionName() == "crearPublicacionForm"){
-                        
-            $this->getTemplate()->unset_blocks("SubmitModificarPublicacionBlock");
-
-            $sTituloForm = "Agregar una nueva publicación";
-
-            //valores por defecto en el agregar
-            $oPublicacion = null;
-            $iPublicacionIdForm = "";
-            $sTitulo = "";
-            $sDescripcionBreve = "";
-            $bActivoComentarios = true;
-            $bActivo = true;
-            $bPublico = false;
-            $sDescripcion = "";
-            $sKeywords = "";
-
-        //MODIFICAR PUBLICACION
-        }else{            
-            $iPublicacionIdForm = $this->getRequest()->getParam('publicacionId');
-            if(empty($iPublicacionIdForm)){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-
-            $sTituloForm = "Modificar publicación";
-
-            $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionIdForm);
-
-            $this->getTemplate()->unset_blocks("SubmitCrearPublicacionBlock");
-
-            $this->getTemplate()->set_var("iPublicacionIdForm", $iPublicacionIdForm);
-
-            $sTitulo = $oPublicacion->getTitulo();
-            $sDescripcionBreve = $oPublicacion->getDescripcionBreve();
-            $bActivoComentarios = $oPublicacion->isActivoComentarios();
-            $bActivo = $oPublicacion->isActivo();
-            $bPublico = $oPublicacion->isPublico();
-            $sDescripcion = $oPublicacion->getDescripcion();
-            $sKeywords = $oPublicacion->getKeywords();
-        }
-
-        if($bActivo){
-            $this->getTemplate()->set_var("sSelectedActivo", "selected='selected'");
-        }else{
-            $this->getTemplate()->set_var("sSelectedDesactivado", "selected='selected'");
-        }
-
-        if($bPublico){
-            $this->getTemplate()->set_var("sSelectedPublico", "selected='selected'");
-        }else{
-            $this->getTemplate()->set_var("sSelectedComunidad", "selected='selected'");
-        }
-        
-        if($bActivoComentarios){
-            $this->getTemplate()->set_var("sSelectedActivoComentarios", "selected='selected'");
-        }else{
-            $this->getTemplate()->set_var("sSelectedDesactivadoComentarios", "selected='selected'");
-        }
-
-        $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-        $this->getTemplate()->set_var("sTitulo", $sTitulo);
-        $this->getTemplate()->set_var("sDescripcionBreve", $sDescripcionBreve);
-        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-        $this->getTemplate()->set_var("sKeywords", $sKeywords);
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-    }
-
-    public function guardarPublicacion()
-    {        
-        if(!$this->getAjaxHelper()->isAjaxContext()){
-            throw new Exception("", 404);
-        }
-        
-        if($this->getRequest()->has('crearPublicacion')){
-            $this->crearPublicacion();
-            return;
-        }
-
-        if($this->getRequest()->has('modificarPublicacion')){
-            $this->modificarPublicacion();
-            return;
-        }
-    }
-
-    private function crearPublicacion()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $oPublicacion = new stdClass();
-
-            $oPublicacion->sTitulo = $this->getRequest()->getPost("titulo");
-            $oPublicacion->sDescripcionBreve = $this->getRequest()->getPost("descripcionBreve");
-            $oPublicacion->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
-            $oPublicacion->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
-            $oPublicacion->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
-            $oPublicacion->sDescripcion = $this->getRequest()->getPost("descripcion");
-            $oPublicacion->sKeywords = $this->getRequest()->getPost("keywords");            
-            $oPublicacion->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-
-            $oPublicacion = Factory::getPublicacionInstance($oPublicacion);
-
-            ComunidadController::getInstance()->guardarPublicacion($oPublicacion);
-
-            $this->getJsonHelper()->setValor("agregarPublicacion", "1");
-            $this->getJsonHelper()->setMessage("La publicación se ha creado con éxito. Puede agregar fotos, archivos y videos desde 'Mis Publicaciones'");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    private function modificarPublicacion()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $iPublicacionIdForm = $this->getRequest()->getPost('publicacionIdForm');
-            $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionIdForm);
-
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oPublicacion->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para modificar esta publicacion", 401);
-            }
-
-            $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
-            $bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
-            $bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
-
-            $oPublicacion->setTitulo($this->getRequest()->getPost("titulo"));
-            $oPublicacion->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
-            $oPublicacion->setDescripcion($this->getRequest()->getPost("descripcion"));
-            $oPublicacion->setKeywords($this->getRequest()->getPost("keywords"));
-            $oPublicacion->isActivo($bActivo);
-            $oPublicacion->isPublico($bPublico);
-            $oPublicacion->isActivoComentarios($bActivoComentarios);
-            
-            ComunidadController::getInstance()->guardarPublicacion($oPublicacion);
-            $this->getJsonHelper()->setMessage("La publicación se ha modificado con éxito");
-            $this->getJsonHelper()->setValor("modificarPersona", "1");
-            $this->getJsonHelper()->setSuccess(true);
-            
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    public function crearReviewForm()
-    {
-        $this->mostrarFormularioReviewPopUp();
-    }
-
-    public function modificarReviewForm()
-    {
-        $this->mostrarFormularioReviewPopUp();
-    }
-
-    private function mostrarFormularioReviewPopUp()
+    private function mostrarFormularioSoftwarePopUp()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "popUpContent", "FormularioReviewBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "popUpContent", "FormularioSoftwareBlock");
 
-        //AGREGAR REVIEW
-        if($this->getRequest()->getActionName() == "crearReviewForm"){
+        //AGREGAR SOFTWARE
+        if($this->getRequest()->getActionName() == "crearSoftwareForm"){
            
-            $this->getTemplate()->unset_blocks("SubmitModificarReviewBlock");
+            $this->getTemplate()->unset_blocks("SubmitModificarSoftwareBlock");
 
-            $sTituloForm = "Agregar un nuevo Review";
+            $sTituloForm = "Agregar una nueva aplicación";
 
             //valores por defecto en el agregar
-            $oReview = null;
-            $iReviewIdForm = "";
+            $oSoftware = null;
+            $iSoftwareIdForm = "";
+            $iCategoriaId = "";
             $sTitulo = "";
             $sDescripcionBreve = "";
             $bActivoComentarios = true;
             $bActivo = true;
             $bPublico = false;
             $sDescripcion = "";
-            $sKeywords = "";
-            $sItemType = "";
-            $sItemName = "";
-            $sItemEventSummary = "";
-            $sItemUrl = "";
-            $fRating = "";
-            $sFuenteOriginal = "";
+            $sEnlaces = "";
 
-        //MODIFICAR REVIEW
+        //MODIFICAR SOFTWARE
         }else{
-            $iReviewIdForm = $this->getRequest()->getParam('publicacionId');
-            if(empty($iReviewIdForm)){
+            
+            $iSoftwareIdForm = $this->getRequest()->getParam('softwareId');
+            if(empty($iSoftwareIdForm)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $sTituloForm = "Modificar Review";
+            $sTituloForm = "Modificar aplicación";
 
-            $oReview = ComunidadController::getInstance()->getReviewById($iReviewIdForm);
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareIdForm);
             
-            $this->getTemplate()->unset_blocks("SubmitCrearReviewBlock");
+            $this->getTemplate()->unset_blocks("SubmitCrearSoftwareBlock");
 
-            $this->getTemplate()->set_var("iReviewIdForm", $iReviewIdForm);
+            $this->getTemplate()->set_var("iSoftwareIdForm", $iSoftwareIdForm);
 
-            $sTitulo = $oReview->getTitulo();
-            $sDescripcionBreve = $oReview->getDescripcionBreve();
-            $bActivoComentarios = $oReview->isActivoComentarios();
-            $bActivo = $oReview->isActivo();
-            $bPublico = $oReview->isPublico();
-            $sDescripcion = $oReview->getDescripcion();
-            $sKeywords = $oReview->getKeywords();
+            $sTitulo = $oSoftware->getTitulo();
+            $sDescripcionBreve = $oSoftware->getDescripcionBreve();
+            $bActivoComentarios = $oSoftware->isActivoComentarios();
+            $bActivo = $oSoftware->isActivo();
+            $bPublico = $oSoftware->isPublico();
+            $sDescripcion = $oSoftware->getDescripcion();
+            $iCategoriaId = $oSoftware->getCategoria()->getId();
+            $sEnlaces = $oSoftware->getEnlaces();
 
             $sItemType = $oReview->getItemType();
             $sItemName = $oReview->getItemName();
@@ -972,132 +779,69 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }else{
             $this->getTemplate()->set_var("sSelectedDesactivadoComentarios", "selected='selected'");
         }
+        
+        $aCategorias = ComunidadController::getInstance()->obtenerCategoria();
+        foreach ($aCategorias as $oCategoria){
+            $value = $oCategoria->getId();
+            $text = $oCategoria->getNombre();
+            $this->getTemplate()->set_var("iCategoriaId", $value);
+            $this->getTemplate()->set_var("sCategoria", $text);
+            if($iCategoriaId == $value){
+                $this->getTemplate()->set_var("sSelectedCategoria", "selected='selected'");
+            }
+            $this->getTemplate()->parse("OptionCategoriaBlock", true);
+            $this->getTemplate()->set_var("sSelectedCategoria", "");
+        }
 
         $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
         $this->getTemplate()->set_var("sTitulo", $sTitulo);
         $this->getTemplate()->set_var("sDescripcionBreve", $sDescripcionBreve);
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-        $this->getTemplate()->set_var("sKeywords", $sKeywords);
-        
-        switch($sItemType){
-            case "product": 
-                $this->getTemplate()->set_var("sSelectedProduct", "selected='selected'");
-                break;
-            case "business":
-                $this->getTemplate()->set_var("sSelectedBusiness", "selected='selected'");
-                break;
-            case "event":
-                $this->getTemplate()->set_var("sSelectedEvent", "selected='selected'");
-                break;
-            case "person":
-                $this->getTemplate()->set_var("sSelectedPerson", "selected='selected'");
-                break;
-            case "place":
-                $this->getTemplate()->set_var("sSelectedPlace", "selected='selected'");
-                break;
-            case "website":
-                $this->getTemplate()->set_var("sSelectedWebsite", "selected='selected'");
-                break;
-            case "url":
-                $this->getTemplate()->set_var("sSelectedUrl", "selected='selected'");
-                break;            
-        }
-        
-        switch($fRating){
-            case ($fRating >= 0 && $fRating < 0.5): 
-                $this->getTemplate()->set_var("sSelected_0", "selected='selected'");
-                break;
-            case ($fRating >= 0.5 && $fRating < 1):
-                $this->getTemplate()->set_var("sSelected_05", "selected='selected'");
-                break;
-            case ($fRating >= 1 && $fRating < 1.5):
-                $this->getTemplate()->set_var("sSelected_1", "selected='selected'");
-                break;
-            case ($fRating >= 1.5 && $fRating < 2):
-                $this->getTemplate()->set_var("sSelected_15", "selected='selected'");
-                break;
-            case ($fRating >= 2 && $fRating < 2.5):
-                $this->getTemplate()->set_var("sSelected_2", "selected='selected'");
-                break;
-            case ($fRating >= 2.5 && $fRating < 3):
-                $this->getTemplate()->set_var("sSelected_25", "selected='selected'");
-                break;
-            case ($fRating >= 3 && $fRating < 3.5):
-                $this->getTemplate()->set_var("sSelected_3", "selected='selected'");
-                break;
-            case ($fRating >= 3.5 && $fRating < 4):
-                $this->getTemplate()->set_var("sSelected_35", "selected='selected'");
-                break;
-            case ($fRating >= 4 && $fRating < 4.5):
-                $this->getTemplate()->set_var("sSelected_4", "selected='selected'");
-                break;
-            case ($fRating >= 4.5 && $fRating < 5):
-                $this->getTemplate()->set_var("sSelected_45", "selected='selected'");
-                break;
-            case ($fRating >= 5):
-                $this->getTemplate()->set_var("sSelected_5", "selected='selected'");
-                break;
-        }
-
-        $this->getTemplate()->set_var("sItemEventSummary", $sItemEventSummary);
-        $this->getTemplate()->set_var("sItemName", $sItemName);
-        $this->getTemplate()->set_var("sItemUrl", $sItemUrl);
-        $this->getTemplate()->set_var("sFuenteOriginal", $sFuenteOriginal);
-              
+        $this->getTemplate()->set_var("sEnlaces", $sEnlaces);
+                              
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
 
-    public function guardarReview()
+    public function guardarSoftware()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
 
-        if($this->getRequest()->has('crearReview')){
-            $this->crearReview();
+        if($this->getRequest()->has('crearSoftware')){
+            $this->crearSoftware();
             return;
         }
 
-        if($this->getRequest()->has('modificarReview')){
-            $this->modificarReview();
+        if($this->getRequest()->has('modificarSoftware')){
+            $this->modificarSoftware();
             return;
         }        
     }
 
-    private function crearReview()
+    private function crearSoftware()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $oReview = new stdClass();
+            $oSoftware = new stdClass();
 
-            $oReview->sTitulo = $this->getRequest()->getPost("titulo");
-            $oReview->sDescripcionBreve = $this->getRequest()->getPost("descripcionBreve");
-            $oReview->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
-            $oReview->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
-            $oReview->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
-            $oReview->sDescripcion = $this->getRequest()->getPost("descripcion");
-            $oReview->sKeywords = $this->getRequest()->getPost("keywords");
-            $oReview->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-
-            //porque 0 en realidad es un valor real (valoracion 0 para el review)
-            //por eso hay que tener cuidado de que si no se utilizo el campo en el form asignarle null al atributo de la clase.
-            $fRating = $this->getRequest()->getPost("rating");
-            if(empty($fRating)){ $fRating = null; }
-
-            $oReview->sItemType = $this->getRequest()->getPost("itemType");
-            $oReview->sItemName = $this->getRequest()->getPost("item");
-            $oReview->sItemEventSummary = $this->getRequest()->getPost("itemEventSummary");
-            $oReview->sItemUrl = $this->getRequest()->getPost("itemUrl");
-            $oReview->fRating = $fRating;
-            $oReview->sFuenteOriginal = $this->getRequest()->getPost("fuenteOriginal");
+            $oSoftware->sTitulo = $this->getRequest()->getPost("titulo");
+            $oSoftware->sDescripcionBreve = $this->getRequest()->getPost("descripcionBreve");
+            $oSoftware->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
+            $oSoftware->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
+            $oSoftware->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
+            $oSoftware->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oSoftware->sEnlaces = $this->getRequest()->getPost("enlaces");
+            $oSoftware->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $oSoftware->oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($this->getRequest()->getPost("categoria"));
                     
-            $oReview = Factory::getReviewInstance($oReview);
+            $oSoftware = Factory::getSoftwareInstance($oSoftware);
 
-            ComunidadController::getInstance()->guardarReview($oReview);
+            ComunidadController::getInstance()->guardarSoftware($oSoftware);
 
-            $this->getJsonHelper()->setValor("agregarReview", "1");
-            $this->getJsonHelper()->setMessage("El Review se ha creado con éxito. Puede agregar fotos, archivos y videos desde 'Mis Publicaciones'");
+            $this->getJsonHelper()->setValor("agregarSoftware", "1");
+            $this->getJsonHelper()->setMessage("La aplicación se ha creado con éxito. Puede agregar fotos y los archivos adjuntos del software desde 'Mis Aplicaciones'");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1107,45 +851,38 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
-    private function modificarReview()
+    private function modificarSoftware()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $iReviewIdForm = $this->getRequest()->getPost('reviewIdForm');
-            $oReview = ComunidadController::getInstance()->getReviewById($iReviewIdForm);
+            $iSoftwareIdForm = $this->getRequest()->getPost('softwareIdForm');
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareIdForm);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oReview->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para modificar esta publicacion", 401);
+            if($oSoftware->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar esta aplicacion", 401);
             }
 
             $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
             $bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
 
-            $oReview->setTitulo($this->getRequest()->getPost("titulo"));
-            $oReview->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
-            $oReview->setDescripcion($this->getRequest()->getPost("descripcion"));
-            $oReview->setKeywords($this->getRequest()->getPost("keywords"));
-            $oReview->isActivo($bActivo);
-            $oReview->isPublico($bPublico);
-            $oReview->isActivoComentarios($bActivoComentarios);
+            $oSoftware->setTitulo($this->getRequest()->getPost("titulo"));
+            $oSoftware->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
+            $oSoftware->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oSoftware->setEnlaces($this->getRequest()->getPost("enlaces"));
+            $oSoftware->isActivo($bActivo);
+            $oSoftware->isPublico($bPublico);
+            $oSoftware->isActivoComentarios($bActivoComentarios);
 
-            $fRating = $this->getRequest()->getPost("rating");
-            if(empty($fRating)){ $fRating = null; }
+            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($this->getRequest()->getPost("categoria"));
+            $oSoftware->setCategoria($oCategoria);
 
-            $oReview->setItemType($this->getRequest()->getPost("itemType"));
-            $oReview->setItemName($this->getRequest()->getPost("item"));
-            $oReview->setItemEventSummary($this->getRequest()->getPost("itemEventSummary"));
-            $oReview->setItemUrl($this->getRequest()->getPost("itemUrl"));
-            $oReview->setRating($fRating);
-            $oReview->setFuenteOriginal($this->getRequest()->getPost("fuenteOriginal"));
-
-            ComunidadController::getInstance()->guardarReview($oReview);
-            $this->getJsonHelper()->setMessage("El review se ha modificado con éxito");
-            $this->getJsonHelper()->setValor("modificarReview", "1");
+            ComunidadController::getInstance()->guardarSoftware($oSoftware);
+            $this->getJsonHelper()->setMessage("La aplicacion se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarSoftware", "1");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -1174,126 +911,44 @@ class SoftwareControllerComunidad extends PageControllerAbstract
      * en formato url devuelve que son distintos entonces quiere decir que el link de la url amigable cambio.
      * Por lo que se tiene que hacer una redireccion y recargar la pagina con el link nuevo.
      *
-     * por ejemplo si el titulo de una publicacion era "novedades de enero" y el ID era 20
-     * el link es www.dominio.com/comunidad/publicaciones/20-novedades-de-enero
-     * si luego el titulo cambia a "novedades para este verano" el link que empieza a circular es
-     * www.dominio.com/comunidad/publicaciones/20-novedades-para-este-verano.
-     * Si alguien guardo el link viejo se compara en este metodo y se redirecciona a la url nueva
-     * con el header de redireccion.
+     * se agrega la misma validacion para el nombre de la categoria
      *
      */
-    public function verPublicacion()
+    public function verSoftware()
     {
         try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+            $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
             $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
-
+            $sUrlToken = $this->getRequest()->getParam('sUrlToken');
+            
             //validacion 1.
-            if(empty($iPublicacionId))
+            if(empty($iSoftwareId))
             {
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
             //validacion 2.
-            $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-            if(null === $oPublicacion)
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
+            if(null === $oSoftware)
             {
                 $this->redireccion404();
                 return;
             }
 
             //validacion 3.
-            if(!$oPublicacion->isActivo()){
+            if(!$oSoftware->isActivo()){
                 $this->getRedirectorHelper()->setCode(307);
-                $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
+                $url = $this->getUrlFromRoute("comunidadSoftwareIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
 
             //validacion 4.
-            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oPublicacion->getTitulo());
+            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
+            $sUrlTokenActual = $oSoftware->getCategoria()->getUrlToken();
 
-            if($sTituloUrlized != $sTituloUrlizedActual){
+            if( ($sTituloUrlized != $sTituloUrlizedActual) || ($sUrlToken != $sUrlTokenActual) ){
                 $this->getRedirectorHelper()->setCode(301);
-                $url = 'comunidad/publicaciones/'.$oPublicacion->getId()."-".$sTituloUrlizedActual;
-                $this->getRedirectorHelper()->gotoUrl($url);
-            }
-            
-            $this->setFrameTemplate()
-                 ->setHeadTag()
-                 ->setMenuDerecha();
-
-            IndexControllerComunidad::setCabecera($this->getTemplate());
-            IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-            $this->printMsgTop();
-
-            //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "PublicacionAmpliadaBlock");
-
-            $oUsuarioAutor = $oPublicacion->getUsuario();
-            $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuarioAutor->getNombreAvatar();
-
-            $sNombreAutor = $oUsuarioAutor->getApellido()." ".$oUsuarioAutor->getNombre();
-            $sTipoPublicacion = "Publicacion";
-
-            $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
-            $this->getTemplate()->set_var("sTitulo", $oPublicacion->getTitulo());
-            $this->getTemplate()->set_var("sFecha", $oPublicacion->getFecha());
-            $this->getTemplate()->set_var("sAutor", $sNombreAutor);
-            $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
-            $this->getTemplate()->set_var("sDescripcionBreve", $oPublicacion->getDescripcionBreve());
-            $this->getTemplate()->set_var("sDescripcion", $oPublicacion->getDescripcion(true));
-
-            $this->agregarGaleriaAdjuntosFicha($oPublicacion);
-
-            if($oPublicacion->isActivoComentarios()){
-                $this->listarComentariosFicha($oPublicacion);
-
-                $this->getTemplate()->set_var("iItemIdForm", $oPublicacion->getId());
-                $this->getTemplate()->set_var("sTipoItemForm", get_class($oPublicacion));
-            }
-            
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-            
-        }catch(Exception $e){
-            throw new Exception($e->getMessage());
-        }            
-    }
-
-    public function verReview()
-    {
-        try{
-            $iReviewId = $this->getRequest()->getParam('iReviewId');
-            $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
-
-            //validacion 1.
-            if(empty($iReviewId))
-            {
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-
-            //validacion 2.
-            $oReview = ComunidadController::getInstance()->getReviewById($iReviewId);
-            if(null === $oReview)
-            {
-                $this->redireccion404();
-                return;
-            }
-
-            //validacion 3.
-            if(!$oReview->isActivo()){
-                $this->getRedirectorHelper()->setCode(307);
-                $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
-                $this->getRedirectorHelper()->gotoUrl($url);
-            }
-
-            //validacion 4.
-            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oReview->getTitulo());
-
-            if($sTituloUrlized != $sTituloUrlizedActual){
-                $this->getRedirectorHelper()->setCode(301);
-                $url = 'comunidad/reviews/'.$oReview->getId()."-".$sTituloUrlizedActual;
+                $url = 'comunidad/descargas/'.$sUrlTokenActual.'/'.$oSoftware->getId()."-".$sTituloUrlizedActual;
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
 
@@ -1307,73 +962,30 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ReviewAmpliadaBlock");
+            $this->getTemplate()->set_var("tituloSeccion", "Descargas Comunidad");
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerMainCont", "AplicacionAmpliadaBlock");
 
-            $oUsuarioAutor = $oReview->getUsuario();
+            $oUsuarioAutor = $oSoftware->getUsuario();
             $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuarioAutor->getNombreAvatar();
 
             $sNombreAutor = $oUsuarioAutor->getApellido()." ".$oUsuarioAutor->getNombre();
-            $sTipoPublicacion = "Review";
 
             $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
-            $this->getTemplate()->set_var("sTitulo", $oReview->getTitulo());
-            $this->getTemplate()->set_var("sFecha", $oReview->getFecha());
+            $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+            $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
+            $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
             $this->getTemplate()->set_var("sAutor", $sNombreAutor);
-            $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
-            $this->getTemplate()->set_var("sDescripcionBreve", $oReview->getDescripcionBreve());
-            $this->getTemplate()->set_var("sDescripcion", $oReview->getDescripcion(true));
+            $this->getTemplate()->set_var("sDescripcionBreve", $oSoftware->getDescripcionBreve());
+            $this->getTemplate()->set_var("sDescripcion", $oSoftware->getDescripcion(true));
 
-            //detalles review
-            $this->getTemplate()->set_var("sItemName", $oReview->getItemName());
-            
-            if(null !== $oReview->getItemType()){
-                $sItemType = "";
+            $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                       'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                       'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                       'Valoracion4_2Block', 'Valoracion5Block');
+            if($oSoftware->tieneValoracion()){
+                $this->getTemplate()->set_var("SinValoracionBlock", "");
 
-                switch($oReview->getItemType()){
-                    case "product":
-                        $sItemType = "producto"; break;
-                    case "business":
-                        $sItemType = "negocio"; break;
-                    case "event":
-                        $sItemType = "evento"; break;
-                    case "person":
-                        $sItemType = "persona"; break;
-                    case "place":
-                        $sItemType = "lugar"; break;
-                    case "website":
-                        $sItemType = "sitio web"; break;
-                    case "url":
-                        $sItemType = "link"; break;
-                }
-
-                $this->getTemplate()->set_var("sItemType", $sItemType);
-                $this->getTemplate()->parse("ItemTypeBlock");
-            }else{
-                $this->getTemplate()->set_var("ItemTypeBlock", "");
-            }
-            
-            if(null !== $oReview->getItemEventSummary()){
-                $this->getTemplate()->set_var("sItemEventSummary", $oReview->getItemEventSummary());
-                $this->getTemplate()->parse("ItemEventSummaryBlock");
-            }else{
-                $this->getTemplate()->set_var("ItemEventSummaryBlock", "");
-            }
-
-            if(null !== $oReview->getItemUrl()){
-                $this->getTemplate()->set_var("hrefItemUrl", $oReview->getItemUrl());
-                $this->getTemplate()->set_var("sItemUrl", $oReview->getItemUrl());
-                $this->getTemplate()->parse("ItemUrlBlock");
-            }else{
-                $this->getTemplate()->set_var("ItemUrlBlock", "");
-            }
-
-            if(null !== $oReview->getRating()){
-                $fRating = $oReview->getRating();
-                $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                           'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                           'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                           'Valoracion4_2Block', 'Valoracion5Block');
+                $fRating = $oSoftware->getRating();
                 switch($fRating){
                     case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
                     case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
@@ -1391,28 +1003,26 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
                 //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
                 $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                $this->getTemplate()->unset_blocks($bloquesValoracion);
-
+                $this->getTemplate()->unset_blocks($bloquesValoracion);                
                 $this->getTemplate()->parse("RatingBlock");
             }else{
-                $this->getTemplate()->set_var("RatingBlock", "");
+                $this->getTemplate()->unset_blocks($bloquesValoracion);
             }
 
-            if(null !== $oReview->getFuenteOriginal()){
-                $this->getTemplate()->set_var("hrefFuenteUriginal", $oReview->getFuenteOriginal());
-                $this->getTemplate()->set_var("sFuenteOriginal", $oReview->getFuenteOriginal());
-                $this->getTemplate()->parse("FuenteOriginalBlock");
+            if(null !== $oSoftware->getEnlaces()){
+                $this->getTemplate()->set_var("sEnlaces", $oSoftware->getEnlaces(true));
+                $this->getTemplate()->parse("EnlacesBlock");
             }else{
-                $this->getTemplate()->set_var("FuenteOriginalBlock", "");
+                $this->getTemplate()->set_var("EnlacesBlock", "");
             }
+            
+            $this->agregarGaleriaAdjuntosFicha($oSoftware);
 
-            $this->agregarGaleriaAdjuntosFicha($oReview);
+            if($oSoftware->isActivoComentarios()){
+                $this->listarComentariosFicha($oSoftware);
 
-            if($oReview->isActivoComentarios()){
-                $this->listarComentariosFicha($oReview);
-
-                $this->getTemplate()->set_var("iItemIdForm", $oReview->getId());
-                $this->getTemplate()->set_var("sTipoItemForm", get_class($oReview));
+                $this->getTemplate()->set_var("iItemIdForm", $oSoftware->getId());
+                $this->getTemplate()->set_var("sTipoItemForm", get_class($oSoftware));
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -1426,7 +1036,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
     {
         list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oFicha->getId());
 
-        if($cantFotos > 0 || $cantVideos > 0 || $cantArchivos > 0){
+        if($cantFotos > 0 || $cantArchivos > 0){
 
             $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
 
@@ -1435,6 +1045,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("MenuGaleriaAdjuntos", "");
             $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
             $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
+            $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
             $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
             $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
             $this->getTemplate()->set_var("RowArchivoEditBlock", "");
@@ -1456,26 +1067,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
             }else{
                 $this->getTemplate()->set_var("GaleriaAdjuntosFotosBlock", "");
-            }
-
-            if($cantVideos > 0)
-            {
-                $aEmbedVideos = $oFicha->getEmbedVideos();
-
-                foreach($aEmbedVideos as $oEmbedVideo){
-
-                    $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                    $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
-
-                    $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                    $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
-                    $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
-                    $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                    $this->getTemplate()->parse("ThumbnailVideoBlock", true);
-                }
-
-            }else{
-                $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
             }
 
             if($cantArchivos > 0)
@@ -1533,13 +1124,12 @@ class SoftwareControllerComunidad extends PageControllerAbstract
     {
         try{
             $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "NuevoComentarioBlock");
-            $this->getTemplate()->set_var("PuntuarBlock", "");
 
             $aComentarios = $oFicha->getComentarios();
 
             if(count($aComentarios)>0){
                 $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "ComentariosBlock", true);
-                $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
+                $this->getTemplate()->set_var("ComentarioBlock", "");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
@@ -1554,7 +1144,40 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
                     $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
 
-                    $this->getTemplate()->parse("ComentarioBlock", true);
+                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                               'Valoracion4_2Block', 'Valoracion5Block');
+
+                    //tiene valoracion el comentario?
+                    if($oComentario->emitioValoracion()){
+
+                        $this->getTemplate()->set_var("NoValoracionBlock", "");
+
+                        $fValoracion = $oComentario->getValoracion();
+
+                        switch($fValoracion){
+                            case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                            case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                            case ($fValoracion >= 1 && $fValoracion < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                            case ($fValoracion >= 1.5 && $fValoracion < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                            case ($fValoracion >= 2 && $fValoracion < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                            case ($fValoracion >= 2.5 && $fValoracion < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                            case ($fValoracion >= 3 && $fValoracion < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                            case ($fValoracion >= 3.5 && $fValoracion < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                            case ($fValoracion >= 4 && $fValoracion < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                            case ($fValoracion >= 4.5 && $fValoracion < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                            case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                            default: $valoracionBloque = 'Valoracion0Block'; break;
+                        }
+                    }else{
+                        $valoracionBloque = "";
+                    }
+
+                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+
+                    $this->getTemplate()->parse("ComentarioValoracionBlock", true);
                 }
             }
         }catch(Exception $e){
@@ -1569,13 +1192,13 @@ class SoftwareControllerComunidad extends PageControllerAbstract
     {
         try{
             
-            $tituloMensajeError = "No se ha encontrado la publicación solicitada.";
+            $tituloMensajeError = "No se ha encontrado la aplicación solicitada.";
             $ficha = "MsgFichaInfoBlock";
 
             $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
 
             $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
-            $this->getTemplate()->set_var("sTituloVista", "La publicacion no existe");
+            $this->getTemplate()->set_var("sTituloVista", "La aplicación no existe o fue eliminada");
             $this->getTemplate()->set_var("sMetaDescription", "");
             $this->getTemplate()->set_var("sMetaKeywords", "");
 
@@ -1600,7 +1223,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombreOpcion", "Volver a la página anterior");
             $this->getTemplate()->parse("OpcionMenuLastOpt");
 
-            //listado con las ultimas 10 publicaciones para que siga navegando el usuario.
+            //listado con las ultimas 10 aplicaciones para que siga navegando el usuario.
             $iRecordsTotal = 0;
             $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = 1, $iItemsForPage = 10);
             if(count($aFichas) > 0){
@@ -1912,278 +1535,11 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();        
     }
 
-    public function galeriaVideos()
-    {
-        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-        $objType = $this->getRequest()->getParam('objType');
-
-        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $this->setFrameTemplate()
-             ->setHeadTag()
-             ->setMenuDerecha();
-
-        IndexControllerComunidad::setCabecera($this->getTemplate());
-        IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-        $this->printMsgTop();
-
-        switch($objType)
-        {
-            case "publicacion":
-                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                break;
-            case "review":
-                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                break;
-        }
-
-        //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
-        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaVideosBlock");
-
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
-        $this->getTemplate()->set_var("sTipoItem", $objType);
-        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
-
-        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
-        $this->getTemplate()->set_var("sTipoItemForm", $objType);
-
-        $iRecordsTotal = 0;
-        $aEmbedVideos = $oFicha->getEmbedVideos();
-
-        if(count($aEmbedVideos) > 0){
-
-            foreach($aEmbedVideos as $oEmbedVideo){
-
-                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
-
-                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
-                $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
-                $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
-
-                $this->getTemplate()->parse("ThumbnailVideoEditBlock", true);
-            }
-
-            $this->getTemplate()->set_var("NoRecordsVideosBlock", "");
-        }else{
-            $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No hay videos cargados para la publicación");
-        }
-
-        //aca despues hay que usar el parametros max videos publicacion
-        if(count($aEmbedVideos) >= 12){
-            $this->getTemplate()->set_var("FormularioCrearEmbedVideoBlock", "");
-        }else{
-            $this->getTemplate()->set_var("MensajeLimiteEmbedVideosBlock", "");
-            $this->getTemplate()->set_var("sServidoresPermitidos", $this->getEmbedVideoHelper()->getStringServidoresValidos());
-        }
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
-    }
-
-    public function videosProcesar()
-    {
-        if(!$this->getAjaxHelper()->isAjaxContext()){
-            throw new Exception("", 404);
-        }
-        
-        if($this->getRequest()->has('agregarVideo')){
-            $this->agregarVideoPublicacion();
-            return;
-        }
-
-        if($this->getRequest()->has('guardarVideo')){
-            $this->guardarVideo();
-            return;
-        }
-
-        if($this->getRequest()->has('eliminarVideo')){
-            $this->eliminarVideo();
-            return;
-        }
-    }
-
-    private function agregarVideoPublicacion()
-    {
-        try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-            $objType = $this->getRequest()->getParam('objType');
-
-            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-            
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
-
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para agregar videos a esta publicación", 401);
-            }
-
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            if(!$this->getEmbedVideoHelper()->canBeParsed($this->getRequest()->getPost('codigo'))){
-                $this->getJsonHelper()->setMessage("No se encontro un video para insertar desde la url ingresada. (o el servidor no es soportado)");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;                
-            }
-            
-            try{
-                $oEmbedVideo = new stdClass();               
-                $oEmbedVideo = Factory::getEmbedVideoInstance($oEmbedVideo);
-                $oEmbedVideo->setCodigo($this->getRequest()->getPost('codigo'));
-
-                $servidorOrigen = $this->getEmbedVideoHelper()->getServidor($oEmbedVideo);
-                $oEmbedVideo->setOrigen($servidorOrigen);
-
-                $oFicha->addEmbedVideo($oEmbedVideo);
-
-                ComunidadController::getInstance()->guardarEmbedVideosFicha($oFicha);
-
-                $this->restartTemplate();
-
-                //creo el thumbnail para agregar a la galeria
-                $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxThumbnailVideo", "ThumbnailVideoEditBlock");
-
-                $urlFotoThumbnail = $this->getEmbedVideoHelper()->getEmbedVideoThumbnail($oEmbedVideo);
-                $hrefAmpliarVideo = $this->getUrlFromRoute("indexIndexVideoAmpliar", true)."?id=".$oEmbedVideo->getId()."&v=".$oEmbedVideo->getUrlKey();
-
-                $this->getTemplate()->set_var("hrefAmpliarVideo", $hrefAmpliarVideo);
-                $this->getTemplate()->set_var("urlFoto", $urlFotoThumbnail);
-                $this->getTemplate()->set_var("tituloVideo", $oEmbedVideo->getTitulo());
-                $this->getTemplate()->set_var("descripcionVideo", $oEmbedVideo->getDescripcion());
-                $this->getTemplate()->set_var("iEmbedVideoId", $oEmbedVideo->getId());
-
-                $this->getJsonHelper()->setMessage("El video fue agregado con éxito en la publicación");
-                $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxThumbnailVideo', false));
-                $this->getJsonHelper()->setSuccess(true);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                                                
-            }catch(Exception $e){
-                $this->getJsonHelper()->setMessage("Error al guardar en base de datos.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setMessage("Error al procesar el video");
-            $this->getJsonHelper()->setSuccess(false);
-            $this->getJsonHelper()->sendJsonAjaxResponse();
-            return;
-        }
-    }
-
-    public function formVideo()
-    {
-        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "popUpContent", "FormularioVideoBlock");
-
-        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
-        if(empty($iEmbedVideoId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
-
-        $this->getTemplate()->set_var("iEmbedVideoId", $iEmbedVideoId);
-
-        $sTitulo = $oEmbedVideo->getTitulo();
-        $sDescripcion = $oEmbedVideo->getDescripcion();
-        $iOrden = $oEmbedVideo->getOrden();
-
-        $this->getTemplate()->set_var("sTitulo", $sTitulo);
-        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-        $this->getTemplate()->set_var("iOrden", $iOrden);
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-    }
-
-    private function guardarVideo()
-    {        
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $iEmbedVideoId = $this->getRequest()->getPost('iEmbedVideoId');
-
-            if(empty($iEmbedVideoId)){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-
-            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
-            if(!$bVideoUsuario){
-                throw new Exception("No tiene permiso para editar este video", 401);
-            }
-
-            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
-
-            $oEmbedVideo->setOrden($this->getRequest()->getPost("orden"));
-            $oEmbedVideo->setDescripcion($this->getRequest()->getPost("descripcion"));
-            $oEmbedVideo->setTitulo($this->getRequest()->getPost("titulo"));
-
-            IndexController::getInstance()->guardarEmbedVideo($oEmbedVideo);
-
-            $this->getJsonHelper()->setMessage("El video se ha modificado con éxito");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();                
-    }
-
-    private function eliminarVideo()
-    {        
-        $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
-
-        if(empty($iEmbedVideoId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $this->getJsonHelper()->initJsonAjaxResponse();
-        try{
-
-            $bVideoUsuario = ComunidadController::getInstance()->isEmbedVideoPublicacionUsuario($iEmbedVideoId);
-            if(!$bVideoUsuario){
-                throw new Exception("No tiene permiso para editar este video", 401);
-            }
-
-            $oEmbedVideo = IndexController::getInstance()->getEmbedVideoById($iEmbedVideoId);
-
-            IndexController::getInstance()->borrarEmbedVideo($oEmbedVideo);
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();                
-    }
-
     public function galeriaArchivos()
     {
-        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-        $objType = $this->getRequest()->getParam('objType');
+        $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
 
-        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+        if(empty($iSoftwareId){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
@@ -2196,26 +1552,16 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
         $this->printMsgTop();
 
-        switch($objType)
-        {
-            case "publicacion":
-                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                break;
-            case "review":
-                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                break;
-        }
+        $oFicha = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
+        break;
 
         //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
         $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaArchivosBlock");
 
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
-        $this->getTemplate()->set_var("sTipoItem", $objType);
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Aplicaciones");
         $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
-
         $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
-        $this->getTemplate()->set_var("sTipoItemForm", $objType);
+        $this->getTemplate()->set_var("sTipoItemForm", get_class($oFicha));
 
         $iRecordsTotal = 0;
         $aArchivos = $oFicha->getArchivos();
@@ -2245,7 +1591,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("NoRecordsArchivosBlock", "");
         }else{
             $this->getTemplate()->set_var("RowArchivoEditBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No hay archivos cargados para la publicación");
+            $this->getTemplate()->set_var("sNoRecords", "No hay archivos cargados para la aplicación");
         }
 
         //aca despues hay que usar el parametros max fotos publicacion
@@ -2269,7 +1615,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
     public function archivosProcesar()
     {
         if($this->getRequest()->has('agregarArchivo')){
-            $this->agregarArchivoPublicacion();
+            $this->agregarArchivoSoftware();
             return;
         }
 
@@ -2289,30 +1635,22 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }
     }
 
-    private function agregarArchivoPublicacion()
+    private function agregarArchivoSoftware()
     {
         try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-            $objType = $this->getRequest()->getParam('objType');
+            $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
 
-            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            if(empty($iSoftwareId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
+            $oFicha = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
+            break;
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
             if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para agregar archivos a esta publicación", 401);
+                throw new Exception("No tiene permiso para agregar archivos a esta aplicación", 401);
             }
 
             $nombreInputFile = 'archivoGaleria';
@@ -2323,7 +1661,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
                 $idItem = $oFicha->getId();
 
-                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'publicacion', $nombreInputFile);
+                list($nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo) = $this->getUploadHelper()->generarArchivoSistema($idItem, 'software', $nombreInputFile);
                 $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
 
                 try{
@@ -2347,7 +1685,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->restartTemplate();
 
                     //creo el thumbnail para agregar a la galeria
-                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxRowFoto", "RowArchivoEditBlock");
+                    $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "ajaxRowArchivo", "RowArchivoEditBlock");
                     
                     $nombreArchivo = $oArchivo->getTitulo();
                     if(empty($nombreArchivo)){
@@ -2362,7 +1700,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("hrefDescargar", $hrefDescargar);
                     $this->getTemplate()->set_var("iArchivoId", $oArchivo->getId());
                     
-                    $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxRowFoto', false);
+                    $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxRowArchivo', false);
                     
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){

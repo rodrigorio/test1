@@ -140,7 +140,7 @@
                             <!--EndRatingBlock-->
                              {sTitulo}
                         </div>
-                        <div class="subtitulo">{sAutor} - {sFecha}</div>
+                        <div class="subtitulo">publicado por <strong>{sAutor}</strong> - {sFecha}</div>
                     </div>
                 </div>
                 <div class="contenido">
@@ -307,7 +307,7 @@
     <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
     <input type="hidden" value="" name="sOrder" id="sOrder" />
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <div id="listadoMisPublicacionesResult">
+    <div id="listadoMisAplicacionesResult">
         <!--BeginGrillaMisAplicacionesBlock-->
         <table class="table01 wi100p mabo2">
             <tr class="encabezado">
@@ -410,7 +410,7 @@
                     <i style="background-image:url('{scrAvatarAutor}')"></i>
                 </div>
             </div>
-            <div class="titulo">{sTitulo}</div>
+            <div class="titulo">{sTitulo} | <span class="fost_it fte2">{sCategoria}</span></div>
             <div class="subtitulo">{sAutor} - {sFecha}</div>
         </div>
     </div>
