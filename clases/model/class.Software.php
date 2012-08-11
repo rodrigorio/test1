@@ -116,7 +116,7 @@ class Software extends FichaAbstract
 
     public function getUsuarioId()
     {
-        return $this->iCategoriaId;
+        return $this->iUsuarioId;
     }
     
     public function getDescripcionBreve(){

@@ -1030,6 +1030,19 @@ class ComunidadController
     }
 
     /**
+     * Se diferencia de buscar publicaciones visitantes porque no arregla los filtros de moderacion y de publico
+     */
+    public function buscarSoftwareComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro["f.activo"] = "1";
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
      * Agrega el filtro del usuario que esta logueado
      */
     public function buscarSoftwareUsuario($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
