@@ -1225,27 +1225,20 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
             //listado con las ultimas 10 aplicaciones para que siga navegando el usuario.
             $iRecordsTotal = 0;
-            $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = 1, $iItemsForPage = 10);
-            if(count($aFichas) > 0){
+            $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = 1, $iItemsForPage = 10);
+            if(count($aSoftware) > 0){
 
-                $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "centerPageContent", "UltimasPublicacionesBlock", true);
+                $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "centerPageContent", "UltimasAplicacionesBlock", true);
 
-                foreach($aFichas as $oFicha){
+                foreach($aSoftware as $oSoftware){
 
-                    $oUsuario = $oFicha->getUsuario();
-                    $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
 
-                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
-                    $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                    $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->getCategoria()->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
 
-                    $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
-                    if(get_class($oFicha) == 'Publicacion'){
-                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
-                    }else{
-                        $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
-                    }
-
-                    $this->getTemplate()->parse("PublicacionRowBlock", true);
+                    $this->getTemplate()->parse("AplicacionRowBlock", true);
                 }
             }
 
@@ -1257,10 +1250,9 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
     public function galeriaFotos()
     {
-        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-        $objType = $this->getRequest()->getParam('objType');
+        $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
 
-        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
@@ -1273,18 +1265,10 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
         $this->printMsgTop();
 
-        switch($objType)
-        {
-            case "publicacion":
-                $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                break;
-            case "review":
-                $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                break;
-        }
+        $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
        
         //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
+        $this->getTemplate()->set_var("tituloSeccion", "Mis Aplicaciones");
         $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaFotosBlock");
 
         $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
@@ -1292,7 +1276,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
         
         $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
-        $this->getTemplate()->set_var("sTipoItemForm", $objType);
+        $this->getTemplate()->set_var("sTipoItemForm", get_class($oFicha));
         
         $iRecordsTotal = 0;
         $aFotos = $oFicha->getFotos();
@@ -1317,7 +1301,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("NoRecordsFotosBlock", "");
         }else{         
             $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No hay fotos cargadas para la publicación");
+            $this->getTemplate()->set_var("sNoRecords", "No hay fotos cargadas para la aplicación");
         }
 
         //aca despues hay que usar el parametros max fotos publicacion
@@ -1335,13 +1319,10 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
-    /**
-     * Tiene que validar que la publicacion sea efectivamente una que haya creado el usuario que esta en sesion.
-     */
     public function fotosProcesar()
     {
         if($this->getRequest()->has('agregarFoto')){
-            $this->agregarFotoPublicacion();
+            $this->agregarFotoSoftware();
             return;
         }    
         
@@ -1361,30 +1342,21 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }
     }
 
-    private function agregarFotoPublicacion()
+    private function agregarFotoSoftware()
     {
         try{
-            $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
-            $objType = $this->getRequest()->getParam('objType');
+            $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
 
-            if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            if(empty($iSoftwareId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            switch($objType)
-            {
-                case "publicacion":
-                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-                    break;
-                case "review":
-                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
-                    break;
-            }
+            $oFicha = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
             
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
             if($oFicha->getUsuarioId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para agregar fotos a esta publicación", 401);
+                throw new Exception("No tiene permiso para agregar fotos a esta aplicación", 401);
             }
                         
             $nombreInputFile = 'fotoGaleria';
@@ -1429,11 +1401,11 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
-                    //OJO QUE SI TIENE UN ';' EL HTML Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
-                    $respuesta = "1; ".$this->getTemplate()->pparse('ajaxThumbnailFoto', false);
+                    //OJO QUE SI TIENE UN ';' EL HTML QUE DEVUELVO Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
+                    $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxThumbnailFoto', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
-                    $respuesta = "0; Error al guardar en base de datos";
+                    $respuesta = "0;; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                     return;
                 }
@@ -1539,7 +1511,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
     {
         $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
 
-        if(empty($iSoftwareId){
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
@@ -1553,7 +1525,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->printMsgTop();
 
         $oFicha = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
-        break;
 
         //titulo seccion
         $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaArchivosBlock");
@@ -1594,7 +1565,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sNoRecords", "No hay archivos cargados para la aplicación");
         }
 
-        //aca despues hay que usar el parametros max fotos publicacion
+        //aca despues hay que usar el parametros max fotos 
         if(count($aArchivos) >= 12){
             $this->getTemplate()->set_var("FormularioCrearArchivoBlock", "");
         }else{
@@ -1609,9 +1580,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
-    /**
-     * Tiene que validar que la publicacion sea efectivamente una que haya creado el usuario que esta en sesion.
-     */
     public function archivosProcesar()
     {
         if($this->getRequest()->has('agregarArchivo')){
@@ -1645,7 +1613,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             }
 
             $oFicha = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
-            break;
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();

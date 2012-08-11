@@ -259,9 +259,10 @@ class FotoMySQLIntermediary extends FotoIntermediary
                         JOIN fichas_abstractas fa ON f.fichas_abstractas_id = fa.id
                         LEFT JOIN publicaciones p ON fa.id = p.id
                         LEFT JOIN reviews r ON fa.id = r.id
+                        LEFT JOIN software s ON fa.id = s.id
                       WHERE
                         f.id = ".$this->escInt($iFotoId)." AND
-                        (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId).")";
+                        (p.usuarios_id = ".$this->escInt($iUsuarioId)." OR r.usuarios_id = ".$this->escInt($iUsuarioId)." OR s.usuarios_id = ".$this->escInt($iUsuarioId).")";
 
             $db->query($sSQL);
 
