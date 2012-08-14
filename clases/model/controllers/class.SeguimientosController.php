@@ -763,4 +763,30 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }         
     }
+    /**
+     * Obtener Unidades
+     *
+     */
+   public function getUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+      {
+    	try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Obtener Variables
+     *
+     */
+   public function getVariables($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+      {
+    	try{
+            $oVariableIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }
