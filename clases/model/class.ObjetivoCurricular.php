@@ -41,8 +41,8 @@ class ObjetivoCurricular extends ObjetivoAbstract{
     /**
      *  @return int $iId
      */
-    public function getId(){
-        return $this->iId ;
+    public function getAreaId(){
+        return $this->iAreaId;
     }
     
 }

@@ -15,7 +15,7 @@ class ObjetivoPersonalizado extends ObjetivoAbstract{
 	private $iObjetivoEjeId;
 	
    /**
-     *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Categoria
+     *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase 
      * @param stdClass $oParams
      */
     public function __construct(stdClass $oParams = null){
