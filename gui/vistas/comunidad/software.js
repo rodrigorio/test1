@@ -69,8 +69,11 @@ var optionsAjaxFormSoftware = {
             if(data.agregarSoftware != undefined){
                 //el submit fue para agregar una nueva publicacion. limpio el form
                 $('#formSoftware').each(function(){
-                  this.reset();
+                  this.reset()
                 });
+
+                $("#enlaces").html("");
+                $("#enlacesHtml").html("");
             }
             $('#msg_form_software').addClass("correcto").fadeIn('slow');
         }
@@ -253,6 +256,10 @@ function bindEventsComentarForm(iSoftwareId){
                 $('#msg_form_comentar').addClass("correcto").fadeIn('slow');
 
                 $("#comentario").val("");
+                $("#valoracion").val("");
+                $("#puntuar").hide("slow", function(){
+                    $("#puntuar").remove();
+                });
                 $("#comentarios").append(data.html);
             }
         }
@@ -265,6 +272,35 @@ function bindEventsComentarForm(iSoftwareId){
 function bindEventsSoftwareForm(){
     $("#formSoftware").validate(validateFormSoftware);
     $("#formSoftware").ajaxForm(optionsAjaxFormSoftware);
+
+    //agregar y limpiar enlaces
+    $("#limpiarEnlaces").click(function(){
+        $("#enlaces").html("");
+        $("#enlacesHtml").html("");
+        return false;
+    });
+
+    $("#enlace").click(function(){ $(this).removeClass('error'); });
+    $("#agregarEnlace").click(function(){
+
+        $('#enlace').removeClass('error');
+        var url = $('#enlace').val();
+
+        if(url == $('#enlace').attr('title')){
+            return false;
+        }
+
+        if(/^([a-z]([a-z]|\d|\+|-|\.)*):(\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?((\[(|(v[\da-f]{1,}\.(([a-z]|\d|-|\.|_|~)|[!\$&'\(\)\*\+,;=]|:)+))\])|((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=])*)(:\d*)?)(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*|(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)){0})(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url)){
+            var contenidoActual = $("#enlaces").html();
+            var contenidoActualHtml = $("#enlacesHtml").html();
+            var nuevoEnlace = "<a target='_blank' href='" + url + "'>" + url + "</a><br>";
+            $("#enlaces").html(contenidoActual + nuevoEnlace);
+            $("#enlacesHtml").html(contenidoActualHtml + nuevoEnlace);
+            $('#enlace').val('');
+        }else{
+            $('#enlace').addClass('error');
+        }        
+    });
 }
 
 function bindEventsFotoForm(){
@@ -510,7 +546,7 @@ function uploaderFotoGaleria(iSoftwareId){
                     
                     $('#Thumbnails').append(html);
                     $("a[rel^='prettyPhoto']").prettyPhoto();
-                    if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
+                    if($('#msgNoRecord').length){$('#msgNoRecord').hide();}
                 }
                 return;
             }
@@ -562,7 +598,7 @@ function uploaderArchivoGaleria(iSoftwareId){
                     $('#msg_form_archivoGaleria').addClass("correcto").fadeIn('slow');
                     
                     $('#Rows').append(html);
-                    if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
+                    if($('#msgNoRecord').length){$('#msgNoRecord').hide();}
                 }
                 return;
             }

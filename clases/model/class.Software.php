@@ -102,14 +102,14 @@ class Software extends FichaAbstract
         return $this->oUsuario;
     }
 
-    public function getUsuarioId()
+    public function getCategoriaId()
     {
-        return $this->iUsuarioId;
+        return $this->iCategoriaId;
     }
 
     public function getCategoria(){
     	if($this->oCategoria == null && !empty($this->iCategoriaId)){
-            $this->oCategoria = ComunidadController::getInstance()->getCategoriaById($this->iCategoriaId);
+            $this->oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($this->iCategoriaId);
     	}
         return $this->oCategoria;
     }
@@ -149,15 +149,17 @@ class Software extends FichaAbstract
             $fPromedio = 0;
             $iCont = 0;
             $aComentarios = $this->getComentarios();
-            foreach($aComentarios as $oComentario){
-                if($oComentario->emitioValoracion()){
-                    $fPromedio += $oComentario->getValoracion();
-                    $iCont++;
+            if(null !== $aComentarios){
+                foreach($aComentarios as $oComentario){
+                    if($oComentario->emitioValoracion()){
+                        $fPromedio += $oComentario->getValoracion();
+                        $iCont++;
+                    }
                 }
+
+                $fPromedio = round(($fPromedio / $iCont), 1);
             }
-
-            $fPromedio = round(($fPromedio / $iCont), 1);
-
+           
             //si al menos un comentario emitio valoracion guardo el rating calculado, sino queda el -1
             if($iCont > 0){
                 $this->fRating = $fPromedio;

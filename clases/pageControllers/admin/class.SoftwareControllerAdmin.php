@@ -461,7 +461,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
                     $this->getTemplate()->set_var("iComentarioId", $oComentario->getId());
 
                     $this->getTemplate()->parse("ComentarioValoracionBlock", true);

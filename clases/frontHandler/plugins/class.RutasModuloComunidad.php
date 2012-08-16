@@ -339,8 +339,18 @@ class RutasModuloComunidad
                                 ));
         $router->addRoute('comunidadSoftwareIndex', $route);
         
-        //ACA FALTA AGREGAR UNO QUE SEA URL AMIGABLE CON NOMBRE DE CATEGORIA
         //'comunidad/descargas/nombre-categoria/' MUESTRA TODO EL SOFTWARE PARA ESA CATEGORIA
+        $route = new RegexRoute('comunidad/descargas/(\S+)',
+                                array(
+                                    'module' => 'comunidad',
+                                    'controller' => 'software',
+                                    'action'     => 'listarCategoria'
+                                ),
+                                array(
+                                    1 => 'sUrlToken'
+                                ),
+                                'comunidad/descargas/%d-%s');
+        $router->addRoute('comunidadSoftwareListarCategoria', $route);
 
         $route = new RegexRoute('comunidad/descargas/mis-aplicaciones',
                                 array(
@@ -420,11 +430,8 @@ class RutasModuloComunidad
                                 ));
         $router->addRoute('comunidadSoftwareFormArchivo', $route);
 
-
-        //A ESTO HAY QUE AGREGARLE EL NOMBRE DE LA CATEGORIA COMO SUBCARPETA DE DESCARGAS
         //'comunidad/descargas/nombre-categoria/23-titulo-software'
-
-        $route = new RegexRoute('comunidad/descargas/(\d+)-(.+)',
+        $route = new RegexRoute('comunidad/descargas/(\S+)\/(\d+)-(.+)',
                                 array(
                                     'module' => 'comunidad',
                                     'controller' => 'software',
@@ -435,7 +442,7 @@ class RutasModuloComunidad
                                     2 => 'iSoftwareId',
                                     3 => 'sTituloUrlized'
                                 ),
-                                'comunidad/descargas/%d-%s');
+                                '');
         $router->addRoute('comunidadSoftwareVerAplicacion', $route);
     }
 }

@@ -29,7 +29,7 @@
         </a>
     </li>
     <li>
-        <a id="crearSoftware" href="{hrefCrearSoftware}">
+        <a id="crearSoftware" href="javascript:;">
             Agregar Aplicaci&oacute;n
         </a>
     </li>
@@ -37,7 +37,7 @@
 <!--EndPageRightInnerContBlock-->
 
 <!--BeginListadoSoftwareBlock-->
-<div class="ficha01 grupo mabo2">
+<div class="ficha01">
     <div class="encabezado">
         <div class="izq">
             <div class="icono"><span class="i32 bs search32"></span></div>
@@ -68,6 +68,7 @@
         </form>
     </div>
 </div>
+<br clear="left" />
 
 <!--BeginCategoriaActualBlock-->
 <div class="pa mabo2 baco4 grupo">
@@ -77,12 +78,12 @@
         </a>
     </div>
     <span class="txt_imp2 mari">{sNombreCategoria}</span>
-    <br clear="all">
+    <br>
     <p>{sDescripcionCategoria}</p>
 </div>
 <!--EndCategoriaActualBlock-->
 
-<div class="slide slide01 mabo2 grupo baco3">
+<div class="slide slide02 mabo2 grupo">
     
     <!--BeginListadoCategoriasInitExpanded-->
     <div class="slideExpanded iveal"><span class="i mi ihover"></span>Categor&iacute;as en cat&aacute;logo</div>
@@ -95,12 +96,12 @@
     <!--EndListadoCategoriasInitCollapsed-->
 
         <!--BeginThumbCategoriaBlock-->
-        <div class="fl_le mari2">
-            <a title="{sDescripcionCategoria}" href="{hrefSoftwareCategoria}" class="th_fto_m thumb01">
-                <i title="{sNombreCategoria}" style="background-image:url('{urlFotoCategoria}')"></i>
-            </a>
-        </div>
-        <span class="txt_imp2 mari">{sNombreCategoria}</span>
+        <div class="fl_le mari2 mabo2">
+            <a title="{sDescripcionCategoria}" href="{hrefSoftwareCategoria}" class="th_fto_m thumb01 mabo">
+                <i style="background-image:url('{urlFotoCategoria}')"></i>
+            </a><br>
+            <span class="txt_imp2 mari">{sNombreCategoria}</span>
+        </div>        
         <!--EndThumbCategoriaBlock-->
 
     </div>
@@ -254,26 +255,26 @@
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
                     <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n completa Software">{sDescripcion}</textarea>
-                </div>
-                <p>En lo posible redactar las caracter&iacute;sticas, prestaciones, requerimientos, etc.</p>
+                </div>                
             </div>
+            <p>En lo posible redactar las caracter&iacute;sticas, prestaciones, requerimientos, etc.</p>
         </div>
         <div class="form_line msg_enlaces">
             <label for="enlaces">
                 Enlaces
             </label>
-            <div class="fwrap mabo2">
-                <div class="mabo2 po_re">
-                    <div class="inner_fwrap">
-                        <textarea readonly="readonly" class="mihe2" rows="0" cols="0" id="enlaces" name="enlaces" title="Enlaces Descarga Directa">{sEnlaces}</textarea>
-                    </div>
-                    <a class="po_ab bottomRight fte2" href="#">limpiar</a>
+            <div class="pa2 mihe1 readonly" id="enlacesHtml" title="Enlaces Descarga Directa">{sEnlaces}</div>
+            <textarea class="mihe0 di_no" rows="0" cols="0" id="enlaces" name="enlaces">{sEnlaces}</textarea>
+            <p class="pabo">Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" id="enlace" class="inputTextLihe defVal" value="Agregar nuevo enlace. Incluya 'http', 'https', 'ftp', etc" maxlength="500" title="Agregar nuevo enlace. Incluya 'http', 'https', 'ftp', etc" />
+                    <span title="Generar enlace desde url" id="agregarEnlace" class="i bs linkAdd ihover"></span>
                 </div>
-                <label for="">Agregar Link</label>
-                <input class="large" type="text" name="enlace" id="enlace" title="enlace URL Link" maxlength="500" value="" />
-                <p>Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
             </div>
+            <a href="#" id="limpiarEnlaces" class="fl_ri fte2">limpiar enlaces</a>
         </div>
+        <br clear="all" />
         
         <!--BeginSubmitCrearSoftwareBlock-->
         <div class="fl_le iveal mabo2">
@@ -363,7 +364,7 @@
                                 <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
                                 <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
 
-                                <!--BeginSinValoracionBlock-->Sin valoraciones<!--EndSinValoracionBlock-->
+                                <!--BeginSinValoracionBlock--><span class="fowe_bo">Sin valoraciones</span><!--EndSinValoracionBlock-->
                         </div>
                     </div>
                 </td>
@@ -410,7 +411,7 @@
                     <i style="background-image:url('{scrAvatarAutor}')"></i>
                 </div>
             </div>
-            <div class="titulo">{sTitulo} | <span class="fost_it fte2">{sCategoria}</span></div>
+            <div class="titulo">{sTitulo} - <span class="fost_it fte2">{sCategoria}</span></div>
             <div class="subtitulo">{sAutor} - {sFecha}</div>
         </div>
     </div>
@@ -436,7 +437,7 @@
 
     <!--BeginEnlacesBlock-->
     <div class="contenido mabo3">
-        Enlaces en descarga directa<br>
+        <h3 class="teta_up">Enlaces en descarga directa</h3><br>
         <p>{sEnlaces}</p>
     </div>
     <!--EndEnlacesBlock-->

@@ -331,31 +331,39 @@ $(document).ready(function(){
     });
 
     // PUNTUAR PUBLICACIONES, ETC //
-    var txts_puntaje = new Array();
-    txts_puntaje['pun1'] = 'p\xe9simo';
-    txts_puntaje['pun2'] = 'malo';
-    txts_puntaje['pun3'] = 'normal';
-    txts_puntaje['pun4'] = 'muy bueno';
-    txts_puntaje['pun5'] = 'excelente';
+    if($("#puntaje").length){
+        var txts_puntaje = new Array();
+        txts_puntaje['pun1'] = 'p\xe9simo';
+        txts_puntaje['pun2'] = 'malo';
+        txts_puntaje['pun3'] = 'normal';
+        txts_puntaje['pun4'] = 'muy bueno';
+        txts_puntaje['pun5'] = 'excelente';
 
-    var puntaje = $("#puntaje");
-    var txt_puntaje = $("#txt_puntaje");
-    var valorPosicAnt = "pun0";
-    $("#puntaje div").mouseover(function(){
-        var valorPosic = $(this).attr("id"); /* El id del span coincide con la clase del CSS para asignar de una el valor ;) */
-        if(valorPosic != valorPosicAnt){
-            puntaje.addClass(valorPosic).removeClass(valorPosicAnt);
-            txt_puntaje.html(txts_puntaje[valorPosic]);
-            valorPosicAnt = valorPosic;
-        }
-    });
-    puntaje.mouseout(function(){
-        if(valorPosicAnt != "pun0"){ //si no marco ninguno vuelve a estado inicial
-            puntaje.addClass("pun0").removeClass(valorPosicAnt);
-            valorPosicAnt = "pun0";
-            txt_puntaje.html("");
-        }
-    });
+        var puntaje = $("#puntaje");
+        var txt_puntaje = $("#txt_puntaje");
+        var valorPosicAnt = "pun0";
+        $("#puntaje div").mouseover(function(){
+            puntaje.removeClass("hold");
+            $("#valoracion").val("");
+            var valorPosic = $(this).attr("id"); /* El id del span coincide con la clase del CSS para asignar de una el valor ;) */
+            if(valorPosic != valorPosicAnt){
+                puntaje.addClass(valorPosic).removeClass(valorPosicAnt);
+                txt_puntaje.html(txts_puntaje[valorPosic]);
+                valorPosicAnt = valorPosic;
+            }
+        });
+        puntaje.mouseout(function(){
+            if(valorPosicAnt != "pun0" && !$(this).hasClass('hold')){ //si no marco ninguno vuelve a estado inicial
+                puntaje.addClass("pun0").removeClass(valorPosicAnt);
+                valorPosicAnt = "pun0";
+                txt_puntaje.html("");
+            }
+        });
+        $("#puntaje div").click(function(){
+            $("#valoracion").val($(this).attr("rel"));
+            puntaje.addClass("hold");
+        });
+    }
     // FIN PUNTUAR PUBLICACIONES, ETC //
 
     //editar foto thumbail galerias

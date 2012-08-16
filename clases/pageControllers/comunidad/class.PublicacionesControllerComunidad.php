@@ -206,7 +206,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
                     $this->getTemplate()->parse("ComentarioBlock", true);
                 }
@@ -424,7 +424,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
             $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
             $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-            $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+            $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
                         
             $this->getJsonHelper()->setMessage("El comentario se agrego satisfactoriamente");
             $this->getJsonHelper()->setValor('html', $this->getTemplate()->pparse('ajaxComentario', false));
@@ -1528,7 +1528,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
                     $this->getTemplate()->parse("ComentarioBlock", true);
                 }
