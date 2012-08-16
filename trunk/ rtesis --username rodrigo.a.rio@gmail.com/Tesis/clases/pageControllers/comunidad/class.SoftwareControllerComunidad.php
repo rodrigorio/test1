@@ -81,7 +81,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         //titulo seccion
         $this->getTemplate()->set_var("tituloSeccion", "Catálogo descargas comunidad");
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerMainCont", "ListadoPublicacionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerMainCont", "ListadoSoftwareBlock");
 
         $this->getTemplate()->set_var("CategoriaActualBlock", "");
         $this->getTemplate()->set_var("ListadoCategoriasInitCollapsed", "");
@@ -94,9 +94,17 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         //lo separo en un metodo privado porque lo reutilizo en el listado por categoria
-        $this->listarFichas($aSoftware, $paramsPaginador);
+        $this->listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador = array());
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+    }
+
+    /**
+     * Todo el software para una categoria.
+     */
+    public function listarCategoria()
+    {
+
     }
 
     /**
@@ -104,27 +112,32 @@ class SoftwareControllerComunidad extends PageControllerAbstract
      */
     private function listarCategorias()
     {
-        $aCategorias = ComunidadController::getInstance()->obtenerCategoria();
-        foreach($aCategorias as $oCategoria){
-            $hrefSofwareCategoria = 'comunidad/descargas/'.$oCategoria->getUrlToken();
-            
-            if(null === $oCategoria->getFoto()){
-                $urlFotoCategoria = $this->getUploadHelper()->getDirectorioImagenesSitio().$oCategoria->getNombreAvatar();
-            }else{
-                $this->getDownloadHelper()->utilizarDirectorioUploadSitio("comunidad");
-                $urlFotoCategoria = $this->getUploadHelper()->getDirectorioImagenesSitio().$oCategoria->getNombreAvatar();
+        $iRecordsTotal = 0;
+        $aCategorias = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
+        
+        if(null !== $aCategorias){
+
+            foreach($aCategorias as $oCategoria){
+                $hrefSofwareCategoria = 'comunidad/descargas/'.$oCategoria->getUrlToken();
+
+                if(null === $oCategoria->getFoto()){
+                    $urlFotoCategoria = $this->getUploadHelper()->getDirectorioImagenesSitio().$oCategoria->getNombreAvatar(true);
+                }else{
+                    $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
+                    $urlFotoCategoria = $this->getUploadHelper()->getDirectorioUploadFotos().$oCategoria->getNombreAvatar(true);
+                }
+
+                $this->getTemplate()->set_var("sDescripcionCategoria", $oCategoria->getDescripcion());
+                $this->getTemplate()->set_var("hrefSoftwareCategoria", $hrefSofwareCategoria);
+                $this->getTemplate()->set_var("sNombreCategoria", $oCategoria->getNombre());
+                $this->getTemplate()->set_var("urlFotoCategoria", $urlFotoCategoria);
+
+                $this->getTemplate()->parse("ThumbCategoriaBlock", true);
             }
-            
-            $this->getTemplate()->set_var("sDescripcionCategoria", $oCategoria->getDescripcion(true));
-            $this->getTemplate()->set_var("hrefSoftwareCategoria", $hrefSofwareCategoria);
-            $this->getTemplate()->set_var("sNombreCategoria", $oCategoria->getNombre());
-            $this->getTemplate()->set_var("urlFotoCategoria", $urlFotoCategoria);
-                      
-            $this->getTemplate()->parse("ThumbCategoriaBlock", true);
         }
     }
 
-    private function listarFichas($aSoftware, $paramsPaginador, $filtroSql = array())
+    private function listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador, $filtroSql = array())
     {
         if(count($aSoftware) > 0){
 
@@ -132,6 +145,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
                 $oUsuario = $oSoftware->getUsuario();
                 $oCategoria = $oSoftware->getCategoria();
+                $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
                 $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                 $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
@@ -240,7 +254,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
                     $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
                                                'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
@@ -315,7 +329,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
                     //'comunidad/descargas/nombre-categoria/23-titulo-software'
                     $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
-                    $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->$oCategoria->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
+                    $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->getCategoria()->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
                     
                     $hrefEditarFotos = "comunidad/descargas/galeria-fotos";
                     $hrefEditarArchivos = "comunidad/descargas/galeria-archivos";
@@ -371,6 +385,37 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
                     $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
                     $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                               'Valoracion4_2Block', 'Valoracion5Block');
+                    if($oSoftware->tieneValoracion()){
+                        $this->getTemplate()->set_var("SinValoracionBlock", "");
+
+                        $fRating = $oSoftware->getRating();
+                        switch($fRating){
+                            case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                            case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                            case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                            case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                            case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                            case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                            case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                            case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                            case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                            case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                            case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                            default: $valoracionBloque = 'Valoracion0Block'; break;
+                        }
+
+                        //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                        $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                        $this->getTemplate()->unset_blocks($bloquesValoracion);
+                        $this->getTemplate()->parse("RatingBlock");
+                    }else{
+                        $this->getTemplate()->unset_blocks($bloquesValoracion);
+                    }
 
                     $this->getTemplate()->parse("MiAplicacionBlock", true);
 
@@ -451,6 +496,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $oComentario = new stdClass();
             $oComentario = Factory::getComentarioInstance($oComentario);
 
+            $oComentario->setUsuario($oUsuario);
             $oComentario->setDescripcion($this->getRequest()->getPost("comentario"));
 
             $fValoracion = $this->getRequest()->getPost("valoracion");
@@ -473,7 +519,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
             $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
             $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-            $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+            $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
             $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
                                        'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
@@ -574,7 +620,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $iRecordsTotal = 0;
         $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-        $this->listarFichas($aSoftware, $paramsPaginador, $filtroSql);
+        $this->listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador, $filtroSql);
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxFichasSoftwareBlock', false));
     }
@@ -652,6 +698,37 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                 list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
                 $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
                 $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
+                                           'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
+                                           'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
+                                           'Valoracion4_2Block', 'Valoracion5Block');
+                if($oSoftware->tieneValoracion()){
+                    $this->getTemplate()->set_var("SinValoracionBlock", "");
+
+                    $fRating = $oSoftware->getRating();
+                    switch($fRating){
+                        case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                        case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                        case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                        case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                        case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                        case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                        case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                        case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                        case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                        case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                        case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                        default: $valoracionBloque = 'Valoracion0Block'; break;
+                    }
+
+                    //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
+                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+                    $this->getTemplate()->parse("RatingBlock");
+                }else{
+                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+                }                
 
                 $this->getTemplate()->parse("MiAplicacionBlock", true);
 
@@ -779,8 +856,9 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }else{
             $this->getTemplate()->set_var("sSelectedDesactivadoComentarios", "selected='selected'");
         }
-        
-        $aCategorias = ComunidadController::getInstance()->obtenerCategoria();
+
+        $iRecordsTotal = 0;
+        $aCategorias = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);        
         foreach ($aCategorias as $oCategoria){
             $value = $oCategoria->getId();
             $text = $oCategoria->getNombre();
@@ -915,7 +993,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
      *
      */
     public function verSoftware()
-    {
+    {        
         try{
             $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
             $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
@@ -1142,17 +1220,16 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
-                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion());
+                    $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
                     $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
                                                'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
                                                'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
                                                'Valoracion4_2Block', 'Valoracion5Block');
+                    $this->getTemplate()->delete_parsed_blocks($bloquesValoracion);
 
                     //tiene valoracion el comentario?
                     if($oComentario->emitioValoracion()){
-
-                        $this->getTemplate()->set_var("NoValoracionBlock", "");
 
                         $fValoracion = $oComentario->getValoracion();
 
@@ -1170,13 +1247,11 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                             case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
                             default: $valoracionBloque = 'Valoracion0Block'; break;
                         }
-                    }else{
-                        $valoracionBloque = "";
+
+                        $bloquesValoracionAux = array_diff($bloquesValoracion, array($valoracionBloque));
                     }
-
-                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                    $this->getTemplate()->unset_blocks($bloquesValoracion);
-
+                    
+                    $this->getTemplate()->unset_blocks($bloquesValoracionAux);
                     $this->getTemplate()->parse("ComentarioValoracionBlock", true);
                 }
             }

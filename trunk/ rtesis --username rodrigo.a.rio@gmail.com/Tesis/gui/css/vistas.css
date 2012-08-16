@@ -386,6 +386,7 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .form_line .hint .i{background-position:-64px -272px}
 /* para cuando seleccionas un valor desde autocomplete al input se le agrega selected */
 .form_line .selected{font-weight:bold; background-color:#EEEFFF !important}
+input.error{max-width:none !important; font-weight:normal !important; color:white !important}
 
 .ficha01{background-color:#DEE3EA; font-family:Arial; padding:3px; border:1px solid #93B5F9; -moz-border-radius:3px 3px 0px 0px; -webkit-border-radius:3px 3px 0px 0px; border-radius:3px 3px 0px 0px}
 .ficha01 .encabezado, .ficha01 .contenido{padding:10px; overflow:auto}
@@ -428,6 +429,11 @@ form .error .i, .form_line .error .i{background-position:-96px -224px}
 .slide01 .slideExpanded, .slide01 .slideCollapsed{background-color:#FFF; font-size:1.7em; cursor:pointer;}
 .slide01 .slideExpanded .mi{background-position:-96px -224px}
 .slide01 .slideCollapsed .mi{background-position:-176px -224px}
+
+.slide02{border-bottom:1px solid #CCC; padding-top:20px; background-color:#E8EAFF}
+.slide02 .slideExpanded, .slide02 .slideCollapsed{background-color:#FFF; font-size:1.7em; cursor:pointer; border-top:1px solid #CCC; border-bottom:1px solid #CCC;}
+.slide02 .slideExpanded .mi{background-position:-96px -224px}
+.slide02 .slideCollapsed .mi{background-position:-176px -224px}
 
 .tabs01 .tabs{border-bottom:1px solid #898989}
 .tabs01 .toggleTabs li{background:#DDD; border:1px solid #BBB; border-bottom:0px !important; -moz-border-radius:2px 2px 0 0; -webkit-border-radius:2px 2px 0 0; border-radius:2px 2px 0 0;}
@@ -560,6 +566,7 @@ p .destacado{font-weight:bold;}
 .defVal:focus{color:#333} /* Para textareas e inputs con valores por defecto */
 
 .marca_obligatorio{color:red; font-size:12px; font-weight:bold;}
+.readonly{border:1px dashed #999 !important; background-color:#EEE !important;}
 
 .desplegable{cursor:pointer} /* filas desplegables */
 

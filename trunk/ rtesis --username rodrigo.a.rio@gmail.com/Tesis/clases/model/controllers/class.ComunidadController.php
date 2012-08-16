@@ -893,7 +893,7 @@ class ComunidadController
     public function obtenerCategoria($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
-            return $oCategoriaIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            return $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
             throw new Exception($e);
         }
@@ -1103,6 +1103,19 @@ class ComunidadController
         try{
             $oComentariosIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
             $filtro = array('c.reviews_id' => $iReviewId);
+            $iRecordsTotal = 0;
+            return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+
+    public function obtenerComentariosSoftware($iSoftwareId)
+    {
+        try{
+            $oComentariosIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
+            $filtro = array('c.software_id' => $iSoftwareId);
             $iRecordsTotal = 0;
             return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){

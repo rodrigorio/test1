@@ -58,9 +58,13 @@ class Comentario
     {
         return Utils::fechaFormateada($this->dFecha);
     }
-    public function getDescripcion()
+    public function getDescripcion($nl2br = false)
     {
-        return nl2br($this->sDescripcion);
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
     }
     
     public function getValoracion()
