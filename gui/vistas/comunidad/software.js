@@ -221,7 +221,7 @@ function bindEventsComentarForm(iSoftwareId){
 
     var optionsAjaxFormComentar = {
         dataType: 'jsonp',
-        resetForm: true,
+        resetForm: false,
         url: 'comunidad/descargas/procesar?comentar=1',
         data:{
             iSoftwareId:iSoftwareId
@@ -319,7 +319,7 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
         url: "comunidad/descargas/procesar",
         data:{
             iSoftwareId:iSoftwareId,
-            estadoPublicacion:valor,
+            estadoSoftware:valor,
             cambiarEstado:"1"
         },
         beforeSend: function(){
@@ -332,7 +332,7 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
 }
 
 function editarSoftware(iSoftwareId){
-
+    
     var dialog = $("#dialog");
     if ($("#dialog").length != 0){
         dialog.hide("slow");
@@ -413,6 +413,7 @@ function editarArchivo(iArchivoId){
 }
 
 function masMisAplicaciones(){
+    
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
 
@@ -420,7 +421,7 @@ function masMisAplicaciones(){
         type:"POST",
         url:"comunidad/descargas/procesar",
         data:{
-            masMisPublicaciones:"1",
+            masMisAplicaciones:"1",
             sOrderBy: sOrderBy,
             sOrder: sOrder
         },

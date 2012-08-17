@@ -5,7 +5,7 @@
  */
 class SoftwareControllerComunidad extends PageControllerAbstract
 {    
-    private $filtrosFormConfig = array('filtroTitulo' => 'f.titulo');
+    private $filtrosFormConfig = array('filtroTitulo' => 'f.titulo', 'filtroCategoria' => 's.categorias_id');
 
     private $orderByConfig = array('titulo' => array('variableTemplate' => 'orderByTitulo',
                                                      'orderBy' => 'f.titulo',
@@ -101,10 +101,21 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
     /**
      * Todo el software para una categoria.
+     *
+     * si la categoria no existe redirecciona al listado principal.
      */
     public function listarCategoria()
-    {
+    {        
+        $sUrlToken = $this->getRequest()->getParam('sUrlToken');
 
+        $oCategoria = ComunidadController::getInstance()->obtenerCategoriaByUrlToken($sUrlToken);
+        if(null === $oCategoria)
+        {            
+            //el plugin redireccion 404 va a ejecutar el metodo redireccion404 de este controlador
+            throw new Exception("", 404);
+        }
+
+        
     }
 
     /**
@@ -137,7 +148,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }
     }
 
-    private function listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador, $filtroSql = array())
+    private function listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador)
     {
         if(count($aSoftware) > 0){
 
@@ -220,7 +231,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
             $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
             $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-            $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+            $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
 
             $thumbDestacado = $this->getTemplate()->pparse("thumbFoto");
         }
@@ -414,8 +425,8 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
                     $this->getTemplate()->parse("MiAplicacionBlock", true);
 
-                    $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
-                    $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
+                    $this->getTemplate()->set_var("sSelectedSoftwareActivo","");
+                    $this->getTemplate()->set_var("sSelectedSoftwareDesactivado","");
                     $this->getTemplate()->set_var("sMensajeSoftware","");
                 }
                 
@@ -487,6 +498,15 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                 return;
             }
 
+            //no puede valorar 2 veces un mismo software
+            if(ComunidadController::getInstance()->usuarioEmitioValoracionSoftware($iSoftwareId))
+            {
+                $this->getJsonHelper()->setMessage("Puede valorar la aplicación solo una vez.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+            
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
             $oComentario = new stdClass();
             $oComentario = Factory::getComentarioInstance($oComentario);
@@ -610,134 +630,139 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aSoftware = ComunidadController::getInstance()->buscarSoftwareComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-        $this->listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador, $filtroSql);
+        $this->listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador);
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxFichasSoftwareBlock', false));
     }
 
     private function masMisAplicaciones()
-    {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "ajaxGrillaMisAplicacionesBlock", "GrillaMisAplicacionesBlock");
+    {        
+        try{
+            $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "ajaxGrillaMisAplicacionesBlock", "GrillaMisAplicacionesBlock");
 
-        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-        $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
-               
-        $iRecordsTotal = 0;
-        $aSoftware = ComunidadController::getInstance()->buscarSoftwareUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-        
-        if(count($aSoftware) > 0){
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
-            $this->getTemplate()->set_var("NoRecordsMisAplicacionesBlock", "");
+            $iRecordsTotal = 0;
+            $aSoftware = ComunidadController::getInstance()->buscarSoftwareUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-            foreach($aSoftware as $oSoftware){
+            if(count($aSoftware) > 0){
 
-                $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
-                $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->$oCategoria->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
-                
-                $hrefEditarFotos = "comunidad/descargas/galeria-fotos";
-                $hrefEditarArchivos = "comunidad/descargas/galeria-archivos";
+                $this->getTemplate()->set_var("NoRecordsMisAplicacionesBlock", "");
 
-                $bPublico = $oSoftware->isPublico();
-                $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
-                $sActivoComentarios = ($oSoftware->isActivoComentarios())?"Sí":"No";
+                foreach($aSoftware as $oSoftware){
 
-                $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
-                $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
-                $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);
+                    //'comunidad/descargas/nombre-categoria/23-titulo-software'
+                    $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("hrefAmpliarSoftware", $this->getRequest()->getBaseUrl().'/comunidad/descargas/'.$oSoftware->getCategoria()->getUrlToken().'/'.$oSoftware->getId()."-".$sTituloUrl);
 
-                if($oSoftware->isActivo()){
-                    $this->getTemplate()->set_var("sSelectedSoftwareActivo", "selected='selected'");
-                }else{
-                    $this->getTemplate()->set_var("sSelectedSoftwareDesactivado", "selected='selected'");
+                    $hrefEditarFotos = "comunidad/descargas/galeria-fotos";
+                    $hrefEditarArchivos = "comunidad/descargas/galeria-archivos";
+
+                    $bPublico = $oSoftware->isPublico();
+                    $sPublico = ($bPublico)?"El Mundo":"Solo Comunidad";
+                    $sActivoComentarios = ($oSoftware->isActivoComentarios())?"Sí":"No";
+
+                    $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
+                    $this->getTemplate()->set_var("hrefGaleriaFotos", $hrefEditarFotos);
+                    $this->getTemplate()->set_var("hrefGaleriaArchivos", $hrefEditarArchivos);
+
+                    if($oSoftware->isActivo()){
+                        $this->getTemplate()->set_var("sSelectedSoftwareActivo", "selected='selected'");
+                    }else{
+                        $this->getTemplate()->set_var("sSelectedSoftwareDesactivado", "selected='selected'");
+                    }
+
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
+                    $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
+                    $this->getTemplate()->set_var("sPublico", $sPublico);
+
+                    //si esta marcada como publica muestro cartel segun moderacion
+                    if($bPublico){
+                        if($oSoftware->getModeracion()->isPendiente()){
+                            $cartelModeracion = "MsgFichaInfoBlock";
+                            $tituloModeracion = "Moderación Pendiente";
+                            $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
+                        }
+
+                        if($oSoftware->getModeracion()->isRechazado()){
+                            $cartelModeracion = "MsgFichaErrorBlock";
+                            $tituloModeracion = "Publicación Rechazada";
+                            $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
+                        }
+
+                        if($oSoftware->getModeracion()->isAprobado()){
+                            $cartelModeracion = "MsgFichaCorrectoBlock";
+                            $tituloModeracion = "Aplicación Moderada";
+                            $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
+                        }
+
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftware", $cartelModeracion);
+                        $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
+                        $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                        $this->getTemplate()->parse("sMensajeSoftware", false);
+                    }
+
+                    $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
+
+                    //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
+                    list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
+                    $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
+                    $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                    $ratingActual = "";
+                    $ratingBloque = "";
+                    if($oSoftware->tieneValoracion()){
+                        $fRating = $oSoftware->getRating();
+
+                        switch($fRating){
+                            case ($fRating >= 0 && $fRating < 0.5): $ratingBloque = 'Rating0Block'; break;
+                            case ($fRating >= 0.5 && $fRating < 1): $ratingBloque = 'Rating0_2Block'; break;
+                            case ($fRating >= 1 && $fRating < 1.5): $ratingBloque = 'Rating1Block'; break;
+                            case ($fRating >= 1.5 && $fRating < 2): $ratingBloque = 'Rating1_2Block'; break;
+                            case ($fRating >= 2 && $fRating < 2.5): $ratingBloque = 'Rating2Block'; break;
+                            case ($fRating >= 2.5 && $fRating < 3): $ratingBloque = 'Rating2_2Block'; break;
+                            case ($fRating >= 3 && $fRating < 3.5): $ratingBloque = 'Rating3Block'; break;
+                            case ($fRating >= 3.5 && $fRating < 4): $ratingBloque = 'Rating3_2Block'; break;
+                            case ($fRating >= 4 && $fRating < 4.5): $ratingBloque = 'Rating4Block'; break;
+                            case ($fRating >= 4.5 && $fRating < 5): $ratingBloque = 'Rating4_2Block'; break;
+                            case ($fRating >= 5): $ratingBloque = 'Rating5Block'; break;
+                            default: $ratingBloque = 'Rating0Block'; break;
+                        }
+
+                        $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "ratingActual", $ratingBloque);
+
+                        $this->getTemplate()->set_var("fRating", $fRating);
+                        $this->getTemplate()->set_var("cantValoraciones", $oSoftware->getCantidadValoraciones());
+                        $ratingActual = $this->getTemplate()->pparse("ratingActual");
+                    }else{
+                        $ratingActual = "Sin Valoraciones";
+                    }
+                    $this->getTemplate()->set_var("ratingActual", $ratingActual);
+                    $this->getTemplate()->delete_parsed_blocks($ratingBloque);
+
+                    $this->getTemplate()->parse("MiAplicacionBlock", true);
+
+                    $this->getTemplate()->set_var("sSelectedSoftwareActivo","");
+                    $this->getTemplate()->set_var("sSelectedSoftwareDesactivado","");
+                    $this->getTemplate()->set_var("sMensajeSoftware","");
                 }
 
-                $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
-                $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
-                $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
-                $this->getTemplate()->set_var("sPublico", $sPublico);
+                $paramsPaginador[] = "masMisAplicaciones=1";
+                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/descargas/procesar", "listadoMisAplicacionesResult", $paramsPaginador);
 
-                //si esta marcada como publica muestro cartel segun moderacion
-                if($bPublico){
-                    if($oSoftware->getModeracion()->isPendiente()){
-                        $cartelModeracion = "MsgFichaInfoBlock";
-                        $tituloModeracion = "Moderación Pendiente";
-                        $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
-                    }
-
-                    if($oSoftware->getModeracion()->isRechazado()){
-                        $cartelModeracion = "MsgFichaErrorBlock";
-                        $tituloModeracion = "Publicación Rechazada";
-                        $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
-                    }
-
-                    if($oSoftware->getModeracion()->isAprobado()){
-                        $cartelModeracion = "MsgFichaCorrectoBlock";
-                        $tituloModeracion = "Aplicación Moderada";
-                        $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
-                    }
-
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftware", $cartelModeracion);
-                    $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
-                    $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                    $this->getTemplate()->parse("sMensajeSoftware", false);
-                }
-
-                $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
-
-                //lo hago asi porque sino es re pesado obtener todos los objetos solo para saber cantidad
-                list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
-                $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
-                $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
-
-                $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                           'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                           'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                           'Valoracion4_2Block', 'Valoracion5Block');
-                if($oSoftware->tieneValoracion()){
-                    $this->getTemplate()->set_var("SinValoracionBlock", "");
-
-                    $fRating = $oSoftware->getRating();
-                    switch($fRating){
-                        case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                        case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                        case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                        case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                        case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                        case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                        case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                        case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                        case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                        case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                        case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
-                        default: $valoracionBloque = 'Valoracion0Block'; break;
-                    }
-
-                    //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                    $this->getTemplate()->unset_blocks($bloquesValoracion);
-                    $this->getTemplate()->parse("RatingBlock");
-                }else{
-                    $this->getTemplate()->unset_blocks($bloquesValoracion);
-                }                
-
-                $this->getTemplate()->parse("MiAplicacionBlock", true);
-
-                $this->getTemplate()->set_var("sSelectedPublicacionActivo","");
-                $this->getTemplate()->set_var("sSelectedPublicacionDesactivado","");
-                $this->getTemplate()->set_var("sMensajeSoftware","");
+            }else{
+                $this->getTemplate()->set_var("MiAplicacionBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "No se encontraron aplicaciones");
             }
 
-            $params[] = "masMisAplicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/descargas/procesar", "listadoMisAplicacionesResult", $params);
-
-        }else{
-            $this->getTemplate()->set_var("MiAplicacionBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "Todavía no hay aplicaciones creadas.");
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaMisAplicacionesBlock', false));
+        }catch(Exception $e){
+            echo $e->getMessage();
         }
-
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaMisAplicacionesBlock', false));
     }
 
     private function cambiarEstadoSoftware()
@@ -774,7 +799,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
     }
 
     private function mostrarFormularioSoftwarePopUp()
-    {
+    {               
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
 
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "popUpContent", "FormularioSoftwareBlock");
@@ -801,7 +826,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         //MODIFICAR SOFTWARE
         }else{
             
-            $iSoftwareIdForm = $this->getRequest()->getParam('softwareId');
+            $iSoftwareIdForm = $this->getRequest()->getParam('iSoftwareId');
             if(empty($iSoftwareIdForm)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
@@ -822,13 +847,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $sDescripcion = $oSoftware->getDescripcion();
             $iCategoriaId = $oSoftware->getCategoria()->getId();
             $sEnlaces = $oSoftware->getEnlaces();
-
-            $sItemType = $oReview->getItemType();
-            $sItemName = $oReview->getItemName();
-            $sItemEventSummary = $oReview->getItemEventSummary();
-            $sItemUrl = $oReview->getItemUrl();
-            $fRating = $oReview->getRating();
-            $sFuenteOriginal = $oReview->getFuenteOriginal();
         }
 
         if($bActivo){
@@ -990,7 +1008,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
             $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
             $sUrlToken = $this->getRequest()->getParam('sUrlToken');
-            
+                        
             //validacion 1.
             if(empty($iSoftwareId))
             {
@@ -1001,8 +1019,9 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
             if(null === $oSoftware)
             {
-                $this->redireccion404();
-                return;
+                //ojo que si este metodo redireccion404 tiene catch, entonces esta excepcion la tiene que devolver entera.
+                //sino el plugin de redireccion 404 no levanta nada 
+                throw new Exception("", 404);
             }
 
             //validacion 3.
@@ -1096,7 +1115,8 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            //esto tiene que quedar asi porque si hay excepcion 404 se devuelve entero para q lo reconozca el plugin
+            throw $e;
         }                    
     }
 
@@ -1130,6 +1150,8 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
                     $this->getTemplate()->parse("ThumbnailFotoBlock", true);
                 }
 
@@ -1250,10 +1272,9 @@ class SoftwareControllerComunidad extends PageControllerAbstract
      * Agrega la funcionalidad de mostrar las ultimas publicaciones en la comunidad
      */
     public function redireccion404()
-    {
-        try{
-            
-            $tituloMensajeError = "No se ha encontrado la aplicación solicitada.";
+    {        
+        try{            
+            $tituloMensajeError = "No se ha encontrado la aplicación o categoría solicitada.";
             $ficha = "MsgFichaInfoBlock";
 
             $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
@@ -1326,18 +1347,16 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
         $this->printMsgTop();
 
-        $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+        $oFicha = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
        
         //titulo seccion
         $this->getTemplate()->set_var("tituloSeccion", "Mis Aplicaciones");
         $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaFotosBlock");
 
-        $this->getTemplate()->set_var("tituloSeccion", "Mis Publicaciones");
-        $this->getTemplate()->set_var("sTipoItem", $objType);
-        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
-        
-        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
         $this->getTemplate()->set_var("sTipoItemForm", get_class($oFicha));
+        $this->getTemplate()->set_var("sTipoItem", get_class($oFicha));
+        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
+        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());        
         
         $iRecordsTotal = 0;
         $aFotos = $oFicha->getFotos();
@@ -1353,7 +1372,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                 $this->getTemplate()->set_var("hrefFoto", $hrefFoto);
                 $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-                $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+                $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
                 $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
                 
                 $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
@@ -1459,7 +1478,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
                     $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
                     //OJO QUE SI TIENE UN ';' EL HTML QUE DEVUELVO Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
@@ -1591,9 +1610,10 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaArchivosBlock");
 
         $this->getTemplate()->set_var("tituloSeccion", "Mis Aplicaciones");
-        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
-        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
         $this->getTemplate()->set_var("sTipoItemForm", get_class($oFicha));
+        $this->getTemplate()->set_var("sTipoItem", get_class($oFicha));
+        $this->getTemplate()->set_var("iItemIdForm", $oFicha->getId());
+        $this->getTemplate()->set_var("sTituloItem", $oFicha->getTitulo());
 
         $iRecordsTotal = 0;
         $aArchivos = $oFicha->getArchivos();
@@ -1632,7 +1652,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         }else{
             $this->getTemplate()->set_var("MensajeLimiteArchivosBlock", "");
 
-            $this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getUploadHelper()->setTiposValidosCompresiones();
             $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
             $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
             $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
@@ -1683,7 +1703,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
             $nombreInputFile = 'archivoGaleria';
 
-            $this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getUploadHelper()->setTiposValidosCompresiones();
 
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
 
@@ -1701,11 +1721,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $oArchivo->iTamanio = $tamanioArchivo;
                     $oArchivo = Factory::getArchivoInstance($oArchivo);
                     $oArchivo->setTipoAdjunto();
-                    $oArchivo->isModerado(false);
-                    $oArchivo->isActivo(true);
-                    $oArchivo->isPublico(false);
-                    $oArchivo->isActivoComentarios(false);
-
                     $oFicha->addArchivo($oArchivo);
 
                     ComunidadController::getInstance()->guardarArchivoFicha($oFicha, $pathServidor);
@@ -1740,7 +1755,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             }
         }catch(Exception $e){
             
-            $respuesta = "0;; Error al procesar el archivo";
+            $respuesta = "0;; Error al procesar el archivo, revise que su archivo tenga una extension permitida.";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }

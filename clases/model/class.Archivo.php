@@ -108,7 +108,7 @@ class Archivo
         return $this;
     }
 
-    public function getFecha($format = false){
+    public function getFechaAlta($format = false){
         if($format){
             return Utils::fechaFormateada($this->sFechaAlta);
         }else{

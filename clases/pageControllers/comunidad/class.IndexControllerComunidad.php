@@ -94,7 +94,7 @@ class IndexControllerComunidad extends PageControllerAbstract
 
             $this->getTemplate()->set_var("hrefPublicacionesComunidad", $this->getUrlFromRoute("comunidadPublicacionesIndex", true));
             $this->getTemplate()->set_var("hrefInstitucionesComunidad", $this->getUrlFromRoute("comunidadInstitucionesIndex", true));
-            $this->getTemplate()->set_var("hrefCatalogoDescargasComunidad", "");
+            $this->getTemplate()->set_var("hrefCatalogoDescargasComunidad", $this->getUrlFromRoute("comunidadSoftwareIndex", true));
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));            
          }catch(Exception $e){

@@ -145,6 +145,7 @@ class FotoMySQLIntermediary extends FotoIntermediary
             switch($sObjetoAsociado){
                 case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                case "Software": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
                 case "SeguimientoSCC": $sSQL .= "seguimientos_id = ".$iIdItem.", "; break;
                 case "SeguimientoPersonalizado": $sSQL .= "seguimientos_id = ".$iIdItem.", "; break;
                 case "Discapacitado": $sSQL .= "personas_id = ".$iIdItem.", "; break;
