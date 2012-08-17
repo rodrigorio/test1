@@ -896,12 +896,11 @@ class ComunidadController
     {
         try{
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
-            $filtro = array('s.categoria_id' => $iCategoriaId);
+            $filtro = array('s.categorias_id' => $iCategoriaId);
             $iRecordsTotal = 0;
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
-            return false;
         }          
     }
 
