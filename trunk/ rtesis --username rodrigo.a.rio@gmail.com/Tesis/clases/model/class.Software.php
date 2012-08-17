@@ -26,6 +26,11 @@ class Software extends FichaAbstract
      */
     private $bRatingCalculado = false;
 
+    /**
+     * cantidad de comentarios que emitieron valoracion
+     */
+    private $iCantidadValoraciones = 0;
+
     public function __construct(stdClass $oParams = null){
         parent::__construct();
         $vArray = get_object_vars($oParams);
@@ -157,18 +162,24 @@ class Software extends FichaAbstract
                     }
                 }
 
-                $fPromedio = round(($fPromedio / $iCont), 1);
+                if($iCont > 0){ $fPromedio = round(($fPromedio / $iCont), 1); }
             }
            
             //si al menos un comentario emitio valoracion guardo el rating calculado, sino queda el -1
             if($iCont > 0){
                 $this->fRating = $fPromedio;
+                $this->iCantidadValoraciones = $iCont;
             }
 
             $this->bRatingCalculado = true;
         }
 
         return $this->fRating;
+    }
+
+    public function getCantidadValoraciones()
+    {
+        return $this->iCantidadValoraciones;
     }
 
     /**

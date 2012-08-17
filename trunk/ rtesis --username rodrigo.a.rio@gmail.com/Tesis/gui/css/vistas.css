@@ -283,7 +283,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .thumbEditMenu{position:absolute; right:0px; bottom:-25px; padding-top:10px; width:150px}
 
 /*** OTROS ***/
-.valoracion{width:69px; height:14px; margin-top:2px}
+.valoracion{width:69px; height:14px; margin-bottom:-2px; display:inline-block}
 .puntaje{width:82px; height:16px; margin-top:1px}
 .puntaje div{float:left; width:16px; height:16px}
 .m_horiz li{float:left; margin-right:5px;}
@@ -551,7 +551,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .table01 .disabled{background-color:#EEE}
 
 /*** VARIOS ***/
-.fte2{font-size:0.8em}
+.fte2{font-size:0.8em !important}
 .fte3{font-size:1.7em} /* Puede utilizarse en lineas de 36px */
 .fte4{font-size:2.8em; line-height:36px}
 /* mas grande que esto imposible.. max size para casos especiales tipo 404 etc. se sigue respetando multiplos de 18px q equivale a un renglon */

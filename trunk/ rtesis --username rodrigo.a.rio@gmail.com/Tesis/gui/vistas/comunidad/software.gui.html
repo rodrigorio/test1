@@ -126,22 +126,12 @@
                             </div>
                         </div>
                         <div class="titulo">
-                            <!--BeginRatingBlock-->
-                                <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
-                                <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
-                                <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
-                                <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
-                                <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
-                                <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
-                                <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
-                                <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
-                                <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
-                                <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
-                                <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
-                            <!--EndRatingBlock-->
-                             {sTitulo}
+                            {sTitulo}
                         </div>
-                        <div class="subtitulo">publicado por <strong>{sAutor}</strong> - {sFecha}</div>
+                        <div class="subtitulo">
+                            <div>publicado por <strong>{sAutor}</strong> - {sFecha}</div>
+                            {ratingActual}
+                        </div>
                     </div>
                 </div>
                 <div class="contenido">
@@ -351,20 +341,7 @@
                            Activo Comentarios: <span class="fowe_bo">{sActivoComentarios}</span><br>
                            Cantidad Fotos: <span class="fowe_bo">{iCantidadFotos}</span><br>                           
                            Cantidad Archivos: <span class="fowe_bo">{iCantidadArchivos}</span><br>
-                           <div class="fl_le mari">Rating Actual:</div>
-                                <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
-                                <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
-                                <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
-                                <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
-                                <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
-                                <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
-                                <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
-                                <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
-                                <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
-                                <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
-                                <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
-
-                                <!--BeginSinValoracionBlock--><span class="fowe_bo">Sin valoraciones</span><!--EndSinValoracionBlock-->
+                           Rating Actual: {ratingActual}
                         </div>
                     </div>
                 </td>
@@ -417,20 +394,7 @@
     </div>
     <div class="contenido mabo3">
         <div class="mabo2 ov_au veal_mi">
-            <div class="fl_le teta_up fowe_bo mari">Rating actual:</div>
-                <!--BeginValoracion0Block--><span class="fl_le valoracion val0"></span><!--EndValoracion0Block-->
-                <!--BeginValoracion0_2Block--><span class="fl_le valoracion val0_2"></span><!--EndValoracion0_2Block-->
-                <!--BeginValoracion1Block--><span class="fl_le valoracion val1"></span><!--EndValoracion1Block-->
-                <!--BeginValoracion1_2Block--><span class="fl_le valoracion val1_2"></span><!--EndValoracion1_2Block-->
-                <!--BeginValoracion2Block--><span class="fl_le valoracion val2"></span><!--EndValoracion2Block-->
-                <!--BeginValoracion2_2Block--><span class="fl_le valoracion val2_2"></span><!--EndValoracion2_2Block-->
-                <!--BeginValoracion3Block--><span class="fl_le valoracion val3"></span><!--EndValoracion3Block-->
-                <!--BeginValoracion3_2Block--><span class="fl_le valoracion val3_2"></span><!--EndValoracion3_2Block-->
-                <!--BeginValoracion4Block--><span class="fl_le valoracion val4"></span><!--EndValoracion4Block-->
-                <!--BeginValoracion4_2Block--><span class="fl_le valoracion val4_2"></span><!--EndValoracion4_2Block-->
-                <!--BeginValoracion5Block--><span class="fl_le valoracion val5"></span><!--EndValoracion5Block-->
-
-                <!--BeginSinValoracionBlock-->Sin valoraciones<!--EndSinValoracionBlock-->
+            <div class="fl_le teta_up fowe_bo mari">Rating actual:</div> {ratingActual}
         </div>
         <p>{sDescripcion}</p>
     </div>

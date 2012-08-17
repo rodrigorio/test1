@@ -595,34 +595,32 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             }
 
             if(null !== $oReview->getRating()){
-                $fRating = $oReview->getRating();
-                $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                           'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                           'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                           'Valoracion4_2Block', 'Valoracion5Block');
-                switch($fRating){
-                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+
+                $fValoracion = $oReview->getRating();
+
+                switch($fValoracion){
+                    case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                    case ($fValoracion >= 1 && $fValoracion < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                    case ($fValoracion >= 1.5 && $fValoracion < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                    case ($fValoracion >= 2 && $fValoracion < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                    case ($fValoracion >= 2.5 && $fValoracion < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                    case ($fValoracion >= 3 && $fValoracion < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                    case ($fValoracion >= 3.5 && $fValoracion < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                    case ($fValoracion >= 4 && $fValoracion < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                    case ($fValoracion >= 4.5 && $fValoracion < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                    case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
                     default: $valoracionBloque = 'Valoracion0Block'; break;
                 }
 
-                //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                $this->getTemplate()->unset_blocks($bloquesValoracion);
-
+                $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);
+                $valoracion = $this->getTemplate()->pparse("valoracion");                
+                $this->getTemplate()->set_var("valoracion", $valoracion);
                 $this->getTemplate()->parse("RatingBlock");
             }else{
                 $this->getTemplate()->set_var("RatingBlock", "");
             }
+            
 
             if(null !== $oReview->getFuenteOriginal()){
                 $this->getTemplate()->set_var("hrefFuenteUriginal", $oReview->getFuenteOriginal());
@@ -762,7 +760,6 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
             if(count($aComentarios)>0){
                 $this->getTemplate()->load_file_section("gui/componentes/backEnd/comentarios.gui.html", "comentarios", "ComentariosBlock");
-                $this->getTemplate()->set_var("ComentarioValoracionBlock", "");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){

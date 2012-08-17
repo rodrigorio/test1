@@ -1144,7 +1144,7 @@ p .destacado{font-weight:bold;}
 /**********************************************************************/
 
 /*** ICONOS ***/
-.valoracion{width:69px; height:14px}
+.valoracion{width:69px; height:14px; margin-bottom:-2px; display:inline-block}
 .valoracion, .puntaje{background-image:url("../../images/iconos/puntajes_bn.png"); background-repeat:no-repeat}
 .puntaje{cursor:pointer}
 /* val = valoraciones, pun = form puntuar */
