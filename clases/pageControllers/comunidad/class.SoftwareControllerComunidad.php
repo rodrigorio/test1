@@ -157,37 +157,34 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
                 $this->getTemplate()->set_var("sDescripcionBreve", $oSoftware->getDescripcionBreve());
 
+                $ratingActual = "";
+                $ratingBloque = "";
                 if($oSoftware->tieneValoracion()){
                     $fRating = $oSoftware->getRating();
-
-                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                               'Valoracion4_2Block', 'Valoracion5Block');
                     
                     switch($fRating){
-                        case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                        case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                        case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                        case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                        case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                        case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                        case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                        case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                        case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                        case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                        case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
-                        default: $valoracionBloque = 'Valoracion0Block'; break;
+                        case ($fRating >= 0 && $fRating < 0.5): $ratingBloque = 'Rating0Block'; break;
+                        case ($fRating >= 0.5 && $fRating < 1): $ratingBloque = 'Rating0_2Block'; break;
+                        case ($fRating >= 1 && $fRating < 1.5): $ratingBloque = 'Rating1Block'; break;
+                        case ($fRating >= 1.5 && $fRating < 2): $ratingBloque = 'Rating1_2Block'; break;
+                        case ($fRating >= 2 && $fRating < 2.5): $ratingBloque = 'Rating2Block'; break;
+                        case ($fRating >= 2.5 && $fRating < 3): $ratingBloque = 'Rating2_2Block'; break;
+                        case ($fRating >= 3 && $fRating < 3.5): $ratingBloque = 'Rating3Block'; break;
+                        case ($fRating >= 3.5 && $fRating < 4): $ratingBloque = 'Rating3_2Block'; break;
+                        case ($fRating >= 4 && $fRating < 4.5): $ratingBloque = 'Rating4Block'; break;
+                        case ($fRating >= 4.5 && $fRating < 5): $ratingBloque = 'Rating4_2Block'; break;
+                        case ($fRating >= 5): $ratingBloque = 'Rating5Block'; break;
+                        default: $ratingBloque = 'Rating0Block'; break;
                     }
 
-                    //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+                    $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "ratingActual", $ratingBloque);
 
-                    $this->getTemplate()->parse("RatingBlock");
-                }else{
-                    $this->getTemplate()->set_var("RatingBlock", "");
+                    $this->getTemplate()->set_var("fRating", $fRating);
+                    $this->getTemplate()->set_var("cantValoraciones", $oSoftware->getCantidadValoraciones());
+                    $ratingActual = $this->getTemplate()->pparse("ratingActual");
                 }
+                $this->getTemplate()->set_var("ratingActual", $ratingActual);
+                $this->getTemplate()->delete_parsed_blocks($ratingBloque);
 
                 //'comunidad/descargas/nombre-categoria/23-titulo-software'
                 $sTituloUrl = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
@@ -239,7 +236,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $iCantidad = count($aComentarios);
             if($iCantidad > 0){
                 $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "listaComentarios", "ComentariosBlock");
-                $this->getTemplate()->set_var("ComentarioBlock", "");
                 $this->getTemplate()->set_var("totalComentarios", $iCantidad);
 
                 //solo muestro los ultimos 3
@@ -256,35 +252,34 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
                     $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
-                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                               'Valoracion4_2Block', 'Valoracion5Block');
-                    
+                    $valoracion = "";
+                    $valoracionBloque = "";
                     if($oComentario->emitioValoracion()){
-                        $fRating = $oComentario->getValoracion();
 
-                        switch($fRating){
-                            case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                            case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                            case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                            case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                            case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                            case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                            case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                            case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                            case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                            case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                            case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                        $fValoracion = $oComentario->getValoracion();
+
+                        switch($fValoracion){
+                            case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                            case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                            case ($fValoracion >= 1 && $fValoracion < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                            case ($fValoracion >= 1.5 && $fValoracion < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                            case ($fValoracion >= 2 && $fValoracion < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                            case ($fValoracion >= 2.5 && $fValoracion < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                            case ($fValoracion >= 3 && $fValoracion < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                            case ($fValoracion >= 3.5 && $fValoracion < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                            case ($fValoracion >= 4 && $fValoracion < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                            case ($fValoracion >= 4.5 && $fValoracion < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                            case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
                             default: $valoracionBloque = 'Valoracion0Block'; break;
                         }
 
-                        //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                        $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                        $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);
+                        $valoracion = $this->getTemplate()->pparse("valoracion");
                     }
-                    $this->getTemplate()->unset_blocks($bloquesValoracion);
 
-                    $this->getTemplate()->parse("ComentarioValoracionBlock", true);
+                    $this->getTemplate()->set_var("valoracion", $valoracion);
+                    $this->getTemplate()->parse("ComentarioBlock", true);
+                    $this->getTemplate()->delete_parsed_blocks($valoracionBloque);                    
                 }
 
                 $comentarios = $this->getTemplate()->pparse("listaComentarios");
@@ -386,36 +381,36 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
                     $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
-                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                               'Valoracion4_2Block', 'Valoracion5Block');
+                    $ratingActual = "";
+                    $ratingBloque = "";
                     if($oSoftware->tieneValoracion()){
-                        $this->getTemplate()->set_var("SinValoracionBlock", "");
-
                         $fRating = $oSoftware->getRating();
+
                         switch($fRating){
-                            case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                            case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                            case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                            case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                            case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                            case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                            case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                            case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                            case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                            case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                            case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
-                            default: $valoracionBloque = 'Valoracion0Block'; break;
+                            case ($fRating >= 0 && $fRating < 0.5): $ratingBloque = 'Rating0Block'; break;
+                            case ($fRating >= 0.5 && $fRating < 1): $ratingBloque = 'Rating0_2Block'; break;
+                            case ($fRating >= 1 && $fRating < 1.5): $ratingBloque = 'Rating1Block'; break;
+                            case ($fRating >= 1.5 && $fRating < 2): $ratingBloque = 'Rating1_2Block'; break;
+                            case ($fRating >= 2 && $fRating < 2.5): $ratingBloque = 'Rating2Block'; break;
+                            case ($fRating >= 2.5 && $fRating < 3): $ratingBloque = 'Rating2_2Block'; break;
+                            case ($fRating >= 3 && $fRating < 3.5): $ratingBloque = 'Rating3Block'; break;
+                            case ($fRating >= 3.5 && $fRating < 4): $ratingBloque = 'Rating3_2Block'; break;
+                            case ($fRating >= 4 && $fRating < 4.5): $ratingBloque = 'Rating4Block'; break;
+                            case ($fRating >= 4.5 && $fRating < 5): $ratingBloque = 'Rating4_2Block'; break;
+                            case ($fRating >= 5): $ratingBloque = 'Rating5Block'; break;
+                            default: $ratingBloque = 'Rating0Block'; break;
                         }
 
-                        //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                        $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                        $this->getTemplate()->unset_blocks($bloquesValoracion);
-                        $this->getTemplate()->parse("RatingBlock");
+                        $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "ratingActual", $ratingBloque);
+
+                        $this->getTemplate()->set_var("fRating", $fRating);
+                        $this->getTemplate()->set_var("cantValoraciones", $oSoftware->getCantidadValoraciones());
+                        $ratingActual = $this->getTemplate()->pparse("ratingActual");
                     }else{
-                        $this->getTemplate()->unset_blocks($bloquesValoracion);
+                        $ratingActual = "Sin Valoraciones";
                     }
+                    $this->getTemplate()->set_var("ratingActual", $ratingActual);
+                    $this->getTemplate()->delete_parsed_blocks($ratingBloque);
 
                     $this->getTemplate()->parse("MiAplicacionBlock", true);
 
@@ -510,7 +505,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
            
             //devuelvo la ficha del nuevo comentario
             $this->restartTemplate();
-            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "ajaxComentario", "ComentarioValoracionBlock");
+            $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "ajaxComentario", "ComentarioBlock");
 
             $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
@@ -521,34 +516,31 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
             $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
 
-            $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                       'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                       'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                       'Valoracion4_2Block', 'Valoracion5Block');
-
+            $valoracion = "";
             if($oComentario->emitioValoracion()){
-                $fRating = $oComentario->getValoracion();
 
-                switch($fRating){
-                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
+                $fValoracion = $oComentario->getValoracion();
+
+                switch($fValoracion){
+                    case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
+                    case ($fValoracion >= 1 && $fValoracion < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
+                    case ($fValoracion >= 1.5 && $fValoracion < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
+                    case ($fValoracion >= 2 && $fValoracion < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
+                    case ($fValoracion >= 2.5 && $fValoracion < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
+                    case ($fValoracion >= 3 && $fValoracion < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
+                    case ($fValoracion >= 3.5 && $fValoracion < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
+                    case ($fValoracion >= 4 && $fValoracion < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
+                    case ($fValoracion >= 4.5 && $fValoracion < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
+                    case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
                     default: $valoracionBloque = 'Valoracion0Block'; break;
                 }
 
-                //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
+                $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);
+                $valoracion = $this->getTemplate()->pparse("valoracion");
             }
-            $this->getTemplate()->unset_blocks($bloquesValoracion);
-                        
+            $this->getTemplate()->set_var("valoracion", $valoracion);
+                                    
             $this->getJsonHelper()->setMessage("El comentario se agrego satisfactoriamente");
             $this->getJsonHelper()->setValor('html', $this->getTemplate()->pparse('ajaxComentario', false));
             $this->getJsonHelper()->setSuccess(true);
@@ -1056,36 +1048,34 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sDescripcionBreve", $oSoftware->getDescripcionBreve());
             $this->getTemplate()->set_var("sDescripcion", $oSoftware->getDescripcion(true));
 
-            $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                       'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                       'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                       'Valoracion4_2Block', 'Valoracion5Block');
-            if($oSoftware->tieneValoracion()){
-                $this->getTemplate()->set_var("SinValoracionBlock", "");
+            $ratingActual = "";
+            if($oSoftware->tieneValoracion()){                
+                $fRating = $oSoftware->getRating();                
 
-                $fRating = $oSoftware->getRating();
                 switch($fRating){
-                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
-                    default: $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fRating >= 0 && $fRating < 0.5): $ratingBloque = 'Rating0Block'; break;
+                    case ($fRating >= 0.5 && $fRating < 1): $ratingBloque = 'Rating0_2Block'; break;
+                    case ($fRating >= 1 && $fRating < 1.5): $ratingBloque = 'Rating1Block'; break;
+                    case ($fRating >= 1.5 && $fRating < 2): $ratingBloque = 'Rating1_2Block'; break;
+                    case ($fRating >= 2 && $fRating < 2.5): $ratingBloque = 'Rating2Block'; break;
+                    case ($fRating >= 2.5 && $fRating < 3): $ratingBloque = 'Rating2_2Block'; break;
+                    case ($fRating >= 3 && $fRating < 3.5): $ratingBloque = 'Rating3Block'; break;
+                    case ($fRating >= 3.5 && $fRating < 4): $ratingBloque = 'Rating3_2Block'; break;
+                    case ($fRating >= 4 && $fRating < 4.5): $ratingBloque = 'Rating4Block'; break;
+                    case ($fRating >= 4.5 && $fRating < 5): $ratingBloque = 'Rating4_2Block'; break;
+                    case ($fRating >= 5): $ratingBloque = 'Rating5Block'; break;
+                    default: $ratingBloque = 'Rating0Block'; break;
                 }
 
-                //elimino el bloque que tengo que dejar y llamo a la funcion de Template para elimine el resto de los bloques
-                $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                $this->getTemplate()->unset_blocks($bloquesValoracion);                
-                $this->getTemplate()->parse("RatingBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "ratingActual", $ratingBloque);
+               
+                $this->getTemplate()->set_var("fRating", $fRating);
+                $this->getTemplate()->set_var("cantValoraciones", $oSoftware->getCantidadValoraciones());                
+                $ratingActual = $this->getTemplate()->pparse("ratingActual");
             }else{
-                $this->getTemplate()->unset_blocks($bloquesValoracion);
-            }
+                $ratingActual = "Sin Valoraciones";
+            }            
+            $this->getTemplate()->set_var("ratingActual", $ratingActual);
 
             if(null !== $oSoftware->getEnlaces()){
                 $this->getTemplate()->set_var("sEnlaces", $oSoftware->getEnlaces(true));
@@ -1207,7 +1197,6 @@ class SoftwareControllerComunidad extends PageControllerAbstract
 
             if(count($aComentarios)>0){
                 $this->getTemplate()->load_file_section("gui/componentes/comentarios.gui.html", "comentarios", "ComentariosBlock", true);
-                $this->getTemplate()->set_var("ComentarioBlock", "");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
@@ -1221,14 +1210,9 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
                     $this->getTemplate()->set_var("dFechaComentario", $oComentario->getFecha());
                     $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
-
-                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                               'Valoracion4_2Block', 'Valoracion5Block');
-                    $this->getTemplate()->delete_parsed_blocks($bloquesValoracion);
-
-                    //tiene valoracion el comentario?
+                 
+                    $valoracion = "";
+                    $valoracionBloque = "";
                     if($oComentario->emitioValoracion()){
 
                         $fValoracion = $oComentario->getValoracion();
@@ -1248,11 +1232,13 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                             default: $valoracionBloque = 'Valoracion0Block'; break;
                         }
 
-                        $bloquesValoracionAux = array_diff($bloquesValoracion, array($valoracionBloque));
+                        $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);
+                        $valoracion = $this->getTemplate()->pparse("valoracion");
                     }
                     
-                    $this->getTemplate()->unset_blocks($bloquesValoracionAux);
-                    $this->getTemplate()->parse("ComentarioValoracionBlock", true);
+                    $this->getTemplate()->set_var("valoracion", $valoracion);
+                    $this->getTemplate()->parse("ComentarioBlock", true);                                                           
+                    $this->getTemplate()->delete_parsed_blocks($valoracionBloque);
                 }
             }
         }catch(Exception $e){
