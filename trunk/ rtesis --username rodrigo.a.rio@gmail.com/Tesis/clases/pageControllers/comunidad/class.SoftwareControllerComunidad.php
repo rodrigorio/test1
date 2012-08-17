@@ -115,7 +115,47 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             throw new Exception("", 404);
         }
 
+        $this->setFrameTemplate()
+             ->setHeadTag()
+             ->setMenuDerecha();
+
+        IndexControllerComunidad::setCabecera($this->getTemplate());
+        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+
+        $this->printMsgTop();
+
+        //titulo seccion
+        $this->getTemplate()->set_var("tituloSeccion", "Catálogo descargas comunidad");
+
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerMainCont", "ListadoSoftwareBlock");        
+        $this->getTemplate()->set_var("ListadoCategoriasInitExpanded", "");
         
+        $this->getTemplate()->set_var("iCategoriaIdFiltro", $oCategoria->getId());
+
+        //bloque categoria actual
+        if(null === $oCategoria->getFoto()){
+            $urlFotoCategoria = $this->getUploadHelper()->getDirectorioImagenesSitio().$oCategoria->getNombreAvatar(true);
+        }else{
+            $this->getUploadHelper()->utilizarDirectorioUploadSitio('comunidad');
+            $urlFotoCategoria = $this->getUploadHelper()->getDirectorioUploadFotos().$oCategoria->getNombreAvatar(true);
+        }
+        $this->getTemplate()->set_var("sDescripcionCategoria", $oCategoria->getDescripcion(true));
+        $this->getTemplate()->set_var("sNombreCategoria", $oCategoria->getNombre());
+        $this->getTemplate()->set_var("urlFotoCategoria", $urlFotoCategoria);
+        $this->getTemplate()->parse("CategoriaActualBlock");
+
+        $this->listarCategorias();
+
+        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+        //en este metodo alcanza con esto porque en principio no hay filtros
+        $aSoftware = ComunidadController::getInstance()->obtenerSoftwareCategoria($oCategoria->getId());
+        $iRecordsTotal = count($aSoftware);
+
+        $paramsPaginador[] = "filtroCategoria=".$oCategoria->getId();
+        $this->listarFichas($aSoftware, $iItemsForPage, $iPage, $iRecordsTotal, $paramsPaginador);
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
 
     /**
