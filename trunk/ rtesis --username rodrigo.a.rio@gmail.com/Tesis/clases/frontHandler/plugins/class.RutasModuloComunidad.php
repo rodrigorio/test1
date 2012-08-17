@@ -349,7 +349,7 @@ class RutasModuloComunidad
                                 array(
                                     1 => 'sUrlToken'
                                 ),
-                                'comunidad/descargas/%d-%s');
+                                '');
         $router->addRoute('comunidadSoftwareListarCategoria', $route);
 
         $route = new RegexRoute('comunidad/descargas/mis-aplicaciones',

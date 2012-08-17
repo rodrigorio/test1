@@ -749,6 +749,21 @@ class ComunidadController
         }
     }
 
+    /**
+     * Devuelve true si el usuario ya emitio una valoracino para la aplicacion
+     */
+    public function usuarioEmitioValoracionSoftware($iSoftwareId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->usuarioEmitioValoracion($iSoftwareId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }        
+    }
+
     public function getFotoDestacadaFicha($iFichaId)
     {
         try{
@@ -915,6 +930,23 @@ class ComunidadController
             throw new Exception($e);
         }
     }
+
+    public function obtenerCategoriaByUrlToken($sUrlToken)
+    {
+        try{
+            $filtro = array('c.urlToken' => $sUrlToken);
+            $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aCategorias = $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aCategorias){
+                return $aCategorias[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }        
+    }
     
     /**
      * Guarda todas las fotos vinculadas a una ficha en tiempo de ejecucion.
@@ -963,7 +995,7 @@ class ComunidadController
             $aArchivos = $oFicha->getArchivos();
             if(count($aArchivos) > 0){
                 foreach($aArchivos as $oArchivo){
-                    $pathServidorArchivo = $pathServidorArchivos.$oArchivo->getNombreServidor();
+                    $pathServidorArchivo = $pathServidor.$oArchivo->getNombreServidor();
                     if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                         unlink($pathServidorArchivo);
                     }

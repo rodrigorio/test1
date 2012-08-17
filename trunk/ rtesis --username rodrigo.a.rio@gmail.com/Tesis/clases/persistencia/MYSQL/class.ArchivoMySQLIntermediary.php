@@ -158,7 +158,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
             " tipoMime = ".$this->escStr($oArchivo->getTipoMime()).", " .
             " tamanio = ".$this->escInt($oArchivo->getTamanio()).", " .
             " titulo = ".$this->escStr($oArchivo->getTitulo()).", " .
-            " tipo = ".$this->escStr($oArchivo->getTipo())." ".
+            " tipo = ".$this->escStr($oArchivo->getTipo())." ";
 
             $db->execSQL($sSQL);
 

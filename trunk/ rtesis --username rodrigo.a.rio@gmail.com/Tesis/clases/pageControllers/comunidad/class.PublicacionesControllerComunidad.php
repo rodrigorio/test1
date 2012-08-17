@@ -162,7 +162,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
             $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
             $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-            $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+            $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
 
             $thumbDestacado = $this->getTemplate()->pparse("thumbFoto");
         }else{
@@ -1173,8 +1173,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
             if(null === $oPublicacion)
             {
-                $this->redireccion404();
-                return;
+                throw new Exception("", 404);
             }
 
             //validacion 3.
@@ -1232,7 +1231,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
             
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            //esto tiene que quedar asi porque si hay excepcion 404 se devuelve entero para q lo reconozca el plugin
+            throw $e;
         }            
     }
 
@@ -1252,8 +1252,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oReview = ComunidadController::getInstance()->getReviewById($iReviewId);
             if(null === $oReview)
             {
-                $this->redireccion404();
-                return;
+                throw new Exception("", 404);
             }
 
             //validacion 3.
@@ -1388,7 +1387,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            //esto tiene que quedar asi porque si hay excepcion 404 se devuelve entero para q lo reconozca el plugin
+            throw $e;
         }                    
     }
 
@@ -1421,6 +1421,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
+                    $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
                     $this->getTemplate()->parse("ThumbnailFotoBlock", true);
                 }
 
@@ -1654,7 +1656,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                 $this->getTemplate()->set_var("hrefFoto", $hrefFoto);
                 $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-                $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+                $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
                 $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
                 
                 $this->getTemplate()->parse("ThumbnailFotoEditBlock", true);
@@ -1772,7 +1774,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("urlFoto", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFoto", $pathFotoServidorBigSize);
                     $this->getTemplate()->set_var("tituloFoto", $oFoto->getTitulo());
-                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion());
+                    $this->getTemplate()->set_var("descripcionFoto", $oFoto->getDescripcion(true));
                     $this->getTemplate()->set_var("iFotoId", $oFoto->getId());
 
                     //OJO QUE SI TIENE UN ';' EL HTML Y HAGO UN SPLIT EN EL JS SE ROMPE TODO !!
@@ -2223,7 +2225,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         }else{
             $this->getTemplate()->set_var("MensajeLimiteArchivosBlock", "");
 
-            $this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getUploadHelper()->setTiposValidosCompresiones();
             $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
             $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
             $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
@@ -2286,7 +2288,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $nombreInputFile = 'archivoGaleria';
 
-            $this->getUploadHelper()->setTiposValidosDocumentos();
+            $this->getUploadHelper()->setTiposValidosCompresiones();
 
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
 

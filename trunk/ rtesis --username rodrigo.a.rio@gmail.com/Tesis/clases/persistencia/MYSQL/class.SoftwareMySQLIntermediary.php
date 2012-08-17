@@ -322,7 +322,7 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -412,6 +412,37 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-        
+
+    /**
+     * Devuelve true si el usuario emitio una valoracion para la aplicacion
+     */
+    public function usuarioEmitioValoracion($iSoftwareId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        comentarios c
+                      WHERE
+                        c.software_id = ".$this->escInt($iSoftwareId)." AND
+                        c.usuarios_id = ".$this->escInt($iUsuarioId)." AND 
+                        c.valoracion > 0";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
     public function actualizarCampoArray($objects, $cambios){}  
 }
