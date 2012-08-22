@@ -29,23 +29,52 @@ function mapaSimple(id){
  */
 function mapaSeleccionCoordenadas(id)
 {
-    //si ya estan seteo el center y el marcador actual
-    var latitud = rel[0];
-    var longitud = rel[1];
+    var latitudElement = $("#latitud");
+    var longitudElement = $("#longitud");
 
-    var latlng = new google.maps.LatLng(latitud, longitud);
+    var marker = null;
+    var latlng = null;
+    var zoom = 8;
+
+    //si ya estan seteo el center y el marcador actual
+    if(latitudElement.val() != "" && longitudElement.val() != ""){
+        latlng = new google.maps.LatLng(latitudElement.val(), longitudElement.val());
+        marker = new google.maps.Marker({ position: latlng });
+    }else{
+        //sudamerica
+        latlng = new google.maps.LatLng("-35.317366", "-56.702636");
+        zoom = 3;
+    }
 
     var myOptions = {
-        zoom: 8,
+        zoom: zoom,
         center: latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
     var map = new google.maps.Map(document.getElementById(id), myOptions);
 
-    var marker = new google.maps.Marker({
-      position: latlng
-    });
+    if(marker != null){
+        marker.setMap(map);
+    }
 
-    marker.setMap(map);    
+    //agrego el evento al mapa que extrae las coordenadas
+    google.maps.event.addListener(map, 'click', function(event){
+
+        //borro la marca anterior si existia
+        if(marker != null){ marker.setMap(null); }
+
+        //agrego la nueva marca
+        marker = new google.maps.Marker({
+            position:event.latLng,
+            map:map
+        });
+
+        //centro el mapa en la nueva marca
+        map.setCenter(event.latLng);
+
+        //copio las coordenadas en los inputs del form
+        latitudElement.val(event.latLng.lat());
+        longitudElement.val(event.latLng.lng());
+    });
 }

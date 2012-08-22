@@ -160,6 +160,11 @@ function bindEventsInstitucionForm(){
     });
 
     $("textarea.maxlength").maxlength();
+
+    if($("#mapaSeleccionarCoordenadas").length){
+        //automaticamente rellena los inputs con name 'latitud' y 'longitud'
+        mapaSeleccionCoordenadas("mapaSeleccionarCoordenadas");
+    }
 }
 
 function editarInstitucion(iInstitucionId){

@@ -397,8 +397,15 @@
         <textarea rows="0" cols="0" id="actividadesMes" name="actividadesMes" class="mihe2 large maxlength" title="Actividades del mes">{sActividadesMes}</textarea>
     </dd>
 
-    <input type="hidden" name="latitud" id="latitud" value="{sLatitud}" >
-    <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >
+    <dt>
+        <label>Ubicaci&oacute;n</label>
+    </dt>
+    <dd>
+        <div id="mapaSeleccionarCoordenadas" class="mapa01 mihe2"></div>
+        <p>Haga click en el mapa para modificar la ubicaci&oacute;n</p>
+        <input type="hidden" name="latitud" id="latitud" value="{sLatitud}" >
+        <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >
+    </dd>
 
     <div style="display:none"  id='msg_form_institucion' class="notification mabo2"><p class="msg"></p></div>
     
