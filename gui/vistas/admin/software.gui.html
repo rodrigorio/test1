@@ -18,7 +18,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
-   .script("{pathUrlBase}"+"gui/vistas/admin/publicaciones.js");
+   .script("{pathUrlBase}"+"gui/vistas/admin/software.js");
 </script>
 <!--EndJsContent-->
 
@@ -82,7 +82,7 @@
                 <thead>
                     <tr>
                         <th class="iveal">Nombre autor {orderByAutor}</th>
-                        <th class="iveal">T&iacute;tulo Publicaci&oacute;n {orderByTitulo}</th>
+                        <th class="iveal">T&iacute;tulo Aplicaci&oacute;n {orderByTitulo}</th>
                         <th class="iveal">Fecha {orderByFecha}</th>
                         <th class="iveal">Estado {orderByActivo}</th>
                         <th></th>
@@ -208,7 +208,7 @@
                                         </dd>
                                        
                                         <button rel="{iSoftwareId}" class="moderarSubmit mabo2" type="button">Moderar aplicaci&oacute;n</button>
-                                        <input type="hidden" id="moderacionId_{iSoftwareId}" name="moderacionId_{iSoftwareId}" value="{iSoftwareId}">
+                                        <input type="hidden" id="moderacionId_{iSoftwareId}" name="moderacionId_{iSoftwareId}" value="{iModeracionId}">
 
                                         <div style="display:none"  id='msg_form_moderacion_{iSoftwareId}' class="notification">
                                             <p class="msg"></p>
@@ -251,9 +251,9 @@
     <dd>
         <select name="categoria" id="categoria" title="Eliga categor&iacute;a para la aplicaci&oacute;n"class="medium">
             <option value="">Elegir categor&iacute;a:</option>
-            <!--BeginOptionFiltroCategoriaBlock-->
-            <option value="{iCategoriaId}" {sSelectedCategoria}>{sFiltroCategoria}</option>
-            <!--EndOptionFiltroCategoriaBlock-->
+            <!--BeginOptionCategoriaBlock-->
+            <option value="{iCategoriaId}" {sSelectedCategoria}>{sCategoria}</option>
+            <!--EndOptionCategoriaBlock-->
         </select>
     </dd>
 
@@ -313,22 +313,24 @@
         <label for="enlaces">Enlaces</label>
     </dt>
     <dd>
-        <div class="mabo2 po_re">
-            <textarea readonly="readonly" class="mihe2 large" rows="0" cols="0" id="enlaces" name="enlaces" title="Enlaces Descarga Directa">{sEnlaces}</textarea>
-            <a class="po_ab bottomRight fte2" href="#">limpiar</a>
+        <div class="pa2 mihe1 readonly" id="enlacesHtml" title="Enlaces Descarga Directa">{sEnlaces}</div>
+        <textarea class="mihe0 di_no" rows="0" cols="0" id="enlaces" name="enlaces">{sEnlaces}</textarea>
+        <p class="pabo">Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
+        <input rel="tooltip" type="text" id="enlace" class="large" maxlength="500" original-title="Agregar nuevo enlace. Incluya 'http', 'https', 'ftp', etc" />
+        <span title="Generar enlace desde url" id="agregarEnlace" class="i bs linkAdd ihover"></span>
+        <a href="#" id="limpiarEnlaces" class="fl_ri fte2">limpiar enlaces</a>
+        <div class="cl_bo">
+            <p>Agregar nuevo enlace. Incluya 'http', 'https', 'ftp', etc"</p>
         </div>
-        <label for="">Agregar Link</label>
-        <input class="large" type="text" name="enlace" id="enlace" title="enlace URL Link" maxlength="500" value="" />
-        <p>Si el software esta alojado en un servidor de descarga directa o similar puede adjuntar los enlaces.</p>
     </dd>
-   
-    <button class="mabo" id="modificarSoftware" name="modificarSoftware" type="submit">Modificar Software</button>
-    <input type="hidden" value="{iSoftwareId}" name="softwareIdForm" id="softwareIdForm" />
 
-    <div style="display:none"  id='msg_form_software' class="notification">
+    <div style="display:none"  id='msg_form_software' class="notification mabo2">
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
+   
+    <button id="modificarSoftware" name="modificarSoftware" type="submit">Modificar Software</button>
+    <input type="hidden" value="{iSoftwareId}" name="softwareIdForm" id="softwareIdForm" />
 </form>
 <!--EndFormularioSoftwareBlock-->
 
@@ -349,11 +351,9 @@
             <h3>Aplicaci&oacute;n</h3>
 
             <div class="teal_le mabo2">
-
-                <div class="mabo2 ov_au veal_mi">
-                    <div class="fl_le teta_up fowe_bo mari">Rating actual:</div> {ratingActual}
-                </div>
-                
+                <p>
+                    <span class="fowe_bo teta_up">rating actual:</span> {ratingActual}
+                </p>
                 <p>
                     <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
                 </p>

@@ -639,6 +639,7 @@ class ComunidadController
     {        
         try{
             $classPerfil = SessionAutentificacion::getInstance()->getClassPerfilAutentificado();
+
             if($classPerfil == "Administrador" || $classPerfil == "Moderador"){
                 if(null === $oFicha->getModeracion()){
                     $oModeracion = new stdClass();
@@ -651,7 +652,7 @@ class ComunidadController
                     $oModeracionIntermediary->guardarModeracionEntidad($oFicha);
                 }
                 return;
-            }
+            }           
 
             if($oFicha->isPublico()){
                 if((null === $oFicha->getModeracion()) ||

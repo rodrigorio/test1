@@ -9,7 +9,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                                        'filtroFechaHasta' => 'fechaHasta');
 
     private $orderByConfig = array('autor' => array('variableTemplate' => 'orderByAutor',
-                                                    'orderBy' => 'ap.apellido',
+                                                    'orderBy' => 'p.apellido',
                                                     'order' => 'desc'),
                                    'titulo' => array('variableTemplate' => 'orderByTitulo',
                                                      'orderBy' => 'f.titulo',
@@ -65,7 +65,8 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "mainContent", "ListadoSoftwareBlock");
 
             //select filtro categoria
-            $aCategorias = ComunidadController::getInstance()->obtenerCategoria();
+            $iRecordsTotal = 0;
+            $aCategorias = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
             foreach ($aCategorias as $oCategoria){
                 $value = $oCategoria->getId();
                 $text = $oCategoria->getNombre();
@@ -91,7 +92,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
                     $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
                                         
-                    $this->getTemplate()->set_var("iSoftwareId", $oFicha->getId());
+                    $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
                     $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
                     
                     if($oSoftware->isActivo()){
@@ -102,8 +103,8 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
-                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());                    
-                    $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
 
                     $this->getTemplate()->parse("SoftwareBlock", true);
                     $this->getTemplate()->set_var("sSelectedSoftwareActivo", "");
@@ -144,11 +145,11 @@ class SoftwareControllerAdmin extends PageControllerAbstract
         }
 
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "popUpContent", "FormularioPublicacionBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "popUpContent", "FormularioSoftwareBlock");
 
         $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
 
-        $this->getTemplate()->set_var("iSoftwareIdForm", $iSoftwareId);
+        $this->getTemplate()->set_var("iSoftwareId", $iSoftwareId);
 
         $sTitulo = $oSoftware->getTitulo();
         $sDescripcionBreve = $oSoftware->getDescripcionBreve();
@@ -178,7 +179,8 @@ class SoftwareControllerAdmin extends PageControllerAbstract
         }
 
         //select categoria
-        $aCategorias = ComunidadController::getInstance()->obtenerCategoria();
+        $iRecordsTotal = 0;
+        $aCategorias = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
         foreach ($aCategorias as $oCategoria){
             $value = $oCategoria->getId();
             $text = $oCategoria->getNombre();
@@ -378,44 +380,42 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->set_var("sEnlaces", $oSoftware->getEnlaces(true));
             $this->getTemplate()->set_var("sPermalink", $sPermalink);
 
-            $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                       'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                       'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                       'Valoracion4_2Block', 'Valoracion5Block');
-
+            $ratingActual = "";
+            $ratingBloque = "";
             if($oSoftware->tieneValoracion()){
-
-                $this->getTemplate()->set_var("NoRatingBlock", "");
-
                 $fRating = $oSoftware->getRating();
 
                 switch($fRating){
-                    case ($fRating >= 0 && $fRating < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                    case ($fRating >= 0.5 && $fRating < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
-                    case ($fRating >= 1 && $fRating < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
-                    case ($fRating >= 1.5 && $fRating < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
-                    case ($fRating >= 2 && $fRating < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
-                    case ($fRating >= 2.5 && $fRating < 3): $valoracionBloque = 'Valoracion2_2Block'; break;
-                    case ($fRating >= 3 && $fRating < 3.5): $valoracionBloque = 'Valoracion3Block'; break;
-                    case ($fRating >= 3.5 && $fRating < 4): $valoracionBloque = 'Valoracion3_2Block'; break;
-                    case ($fRating >= 4 && $fRating < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
-                    case ($fRating >= 4.5 && $fRating < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
-                    case ($fRating >= 5): $valoracionBloque = 'Valoracion5Block'; break;
-                    default: $valoracionBloque = 'Valoracion0Block'; break;
+                    case ($fRating >= 0 && $fRating < 0.5): $ratingBloque = 'Rating0Block'; break;
+                    case ($fRating >= 0.5 && $fRating < 1): $ratingBloque = 'Rating0_2Block'; break;
+                    case ($fRating >= 1 && $fRating < 1.5): $ratingBloque = 'Rating1Block'; break;
+                    case ($fRating >= 1.5 && $fRating < 2): $ratingBloque = 'Rating1_2Block'; break;
+                    case ($fRating >= 2 && $fRating < 2.5): $ratingBloque = 'Rating2Block'; break;
+                    case ($fRating >= 2.5 && $fRating < 3): $ratingBloque = 'Rating2_2Block'; break;
+                    case ($fRating >= 3 && $fRating < 3.5): $ratingBloque = 'Rating3Block'; break;
+                    case ($fRating >= 3.5 && $fRating < 4): $ratingBloque = 'Rating3_2Block'; break;
+                    case ($fRating >= 4 && $fRating < 4.5): $ratingBloque = 'Rating4Block'; break;
+                    case ($fRating >= 4.5 && $fRating < 5): $ratingBloque = 'Rating4_2Block'; break;
+                    case ($fRating >= 5): $ratingBloque = 'Rating5Block'; break;
+                    default: $ratingBloque = 'Rating0Block'; break;
                 }
+
+                $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "ratingActual", $ratingBloque);
+
+                $this->getTemplate()->set_var("fRating", $fRating);
+                $this->getTemplate()->set_var("cantValoraciones", $oSoftware->getCantidadValoraciones());
+                $ratingActual = $this->getTemplate()->pparse("ratingActual");
             }else{
-                $valoracionBloque = "";
+                $ratingActual = "Sin valoraciones";
             }
-            
-            $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-            $this->getTemplate()->unset_blocks($bloquesValoracion);
+            $this->getTemplate()->set_var("ratingActual", $ratingActual);
+            $this->getTemplate()->delete_parsed_blocks($ratingBloque);
 
             //comentarios asociados
             $aComentarios = $oSoftware->getComentarios();
 
             if(count($aComentarios)>0){
                 $this->getTemplate()->load_file_section("gui/componentes/backEnd/comentarios.gui.html", "comentarios", "ComentariosBlock");
-                $this->getTemplate()->set_var("ComentarioBlock", "");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
@@ -423,18 +423,12 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                     $oUsuario = $oComentario->getUsuario();
                     $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
-                    $bloquesValoracion = array('Valoracion0Block', 'Valoracion0_2Block', 'Valoracion1Block',
-                                               'Valoracion1_2Block', 'Valoracion2Block', 'Valoracion2_2Block',
-                                               'Valoracion3Block', 'Valoracion3_2Block', 'Valoracion4Block',
-                                               'Valoracion4_2Block', 'Valoracion5Block');
-                    
-                    //tiene valoracion el comentario?                    
+                    $valoracion = "";
+                    $valoracionBloque = "";
                     if($oComentario->emitioValoracion()){
 
-                        $this->getTemplate()->set_var("NoValoracionBlock", "");
-
                         $fValoracion = $oComentario->getValoracion();
-                        
+
                         switch($fValoracion){
                             case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
                             case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
@@ -449,12 +443,13 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                             case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
                             default: $valoracionBloque = 'Valoracion0Block'; break;
                         }
-                    }else{
-                        $valoracionBloque = "";
+
+                        $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);
+                        $valoracion = $this->getTemplate()->pparse("valoracion");
                     }
 
-                    $bloquesValoracion = array_diff($bloquesValoracion, array($valoracionBloque));
-                    $this->getTemplate()->unset_blocks($bloquesValoracion);
+                    $this->getTemplate()->set_var("valoracion", $valoracion);
+                    $this->getTemplate()->delete_parsed_blocks($valoracionBloque);
 
                     $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
 
@@ -464,7 +459,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sComentario", $oComentario->getDescripcion(true));
                     $this->getTemplate()->set_var("iComentarioId", $oComentario->getId());
 
-                    $this->getTemplate()->parse("ComentarioValoracionBlock", true);
+                    $this->getTemplate()->parse("ComentarioBlock", true);
                 }
             }else{
                 $this->getTemplate()->set_var("comentarios", "La aplicación no tiene comentarios");
@@ -478,7 +473,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
 
                 //videos ya se que no voy a tener en software
-                $this->getTemplate()->set_var("ThumbnailVideoEditBlock", "");
+                $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
 
                 if($cantFotos > 0){
 
@@ -575,18 +570,18 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             $iSoftwareIdForm = $this->getRequest()->getPost('softwareIdForm');
 
-            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareIdForm);
 
             $bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
             $bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
 
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($this->getRequest()->getPost("categoriaIdForm"));
+            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($this->getRequest()->getPost("categoria"));
 
             $oSoftware->setTitulo($this->getRequest()->getPost("titulo"));
             $oSoftware->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
             $oSoftware->setDescripcion($this->getRequest()->getPost("descripcion"));
-            $oSoftware->setEnlaces($this->getRequest()->getPost("keywords"));
+            $oSoftware->setEnlaces($this->getRequest()->getPost("enlaces"));
             $oSoftware->isActivo($bActivo);
             $oSoftware->isPublico($bPublico);
             $oSoftware->isActivoComentarios($bActivoComentarios);
@@ -621,12 +616,13 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             if(count($aSoftware) > 0){
 
                 foreach($aSoftware as $oSoftware){
+
                     $oUsuario = $oSoftware->getUsuario();
                     $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                     $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
 
-                    $this->getTemplate()->set_var("iSoftwareId", $oFicha->getId());
+                    $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
                     $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
 
                     if($oSoftware->isActivo()){
@@ -637,8 +633,8 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
-                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
-                    $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
+                    $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
 
                     $this->getTemplate()->parse("SoftwareBlock", true);
                     $this->getTemplate()->set_var("sSelectedSoftwareActivo", "");
@@ -650,14 +646,14 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             }else{
                 $this->getTemplate()->set_var("SoftwareBlock", "");
                 $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "noRecords", "NoRecordsSoftwareBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron aplicaciones");
+                $this->getTemplate()->set_var("sNoRecords", "No hay aplicaciones");
                 $this->getTemplate()->parse("noRecords", false);
             }
 
             $paramsPaginador[] = "masSoftware=1";
             $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/software-procesar", "listadoSoftwareResult", $paramsPaginador);
 
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaSoftwareBlock', false));
         }catch(Exception $e){
             print_r($e);
         }
@@ -683,7 +679,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     {
         $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
 
-        if(empty($iPublicacionId)){
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 

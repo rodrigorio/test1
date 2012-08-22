@@ -410,7 +410,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                         if($oSoftware->getModeracion()->isRechazado()){
                             $cartelModeracion = "MsgFichaErrorBlock";
                             $tituloModeracion = "Publicación Rechazada";
-                            $mensajeModeracion = "Causa: ".$oFicha->getModeracion()->getMensaje(true);
+                            $mensajeModeracion = "Causa: ".$oSoftware->getModeracion()->getMensaje(true);
                         }
 
                         if($oSoftware->getModeracion()->isAprobado()){

@@ -1180,6 +1180,8 @@ a .i{margin-right:4px; float:left}
 /* para iconos dentro de inputs lineheight */
 .inner_fwrap .i{position:absolute; top:2px; right:2px;}
 
+.readonly{border:1px dashed #999 !important; background-color:#EEE !important;}
+
 /* redes sociales */
 .sc{background:url("../../images/iconos/social.png") no-repeat scroll} /* imagen, que para ie6 cambia se usa gif */
 .delicious{background-position:0px -34px} .delicious:hover{background-position:0px -87px}

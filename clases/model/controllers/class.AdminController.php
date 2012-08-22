@@ -489,6 +489,9 @@ class AdminController
         }
     }
 
+    /**
+     * varia del de comunidad porque aca aparece todo si o si.
+     */
     public function buscarSoftwareComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{

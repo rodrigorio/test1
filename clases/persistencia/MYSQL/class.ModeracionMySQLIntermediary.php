@@ -79,7 +79,7 @@ class ModeracionMySQLIntermediary extends ModeracionIntermediary
             " estado = ".$this->escStr($oModeracion->getEstado()).", " .
             " mensaje = ".$this->escStr($oModeracion->getMensaje())." " .
             " WHERE id = ".$this->escInt($oModeracion->getId())." ";
-            
+
             $db->execSQL($sSQL);
             $db->commit();
 
