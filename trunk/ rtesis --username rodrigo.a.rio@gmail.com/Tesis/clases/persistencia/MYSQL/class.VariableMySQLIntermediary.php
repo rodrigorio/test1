@@ -10,8 +10,6 @@ class VariableMySQLIntermediary extends VariableIntermediary
 	protected function __construct( $conn) {
 		parent::__construct($conn);
 	}
-
-
 	/**
 	 * Singleton
 	 *
@@ -93,7 +91,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
 			        " descripcion =".$db->escape($oVariable->getDescripcion(),true).", ".
 			        " unidad_id =".$db->escape($oVariable->getUnidad()->getId(),false,MYSQL_TYPE_INT).",".
 			        " fechaHora =".$db->escape($oVariable->getFechaHora(),true)." ".
-					" where id =".$db->escape($oVariable->getId(),false,MYSQL_TYPE_INT)." " ;	 
+					" where id =".$db->escape($oVariable->getId(),false,MYSQL_TYPE_INT)." ";	 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 

@@ -11,13 +11,14 @@
  */
 class ObjetivoCurricular extends ObjetivoAbstract{
 	
-	 private $iAreaId;
+	 private $oArea;
     
     /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Categoria
      * @param stdClass $oParams
      */
     public function __construct(stdClass $oParams = null){
+    	    parent::__construct();
             $vArray = get_object_vars($oParams);
             $vThisVars = get_class_vars(__CLASS__);
             if(is_array($vArray)){
@@ -35,14 +36,14 @@ class ObjetivoCurricular extends ObjetivoAbstract{
 	/**
      *  @param int $iAreaId
      */
-    public function setAreaId($iAreaId){
-        $this->iAreaId = (int)$iAreaId;
+    public function setAreaId($oArea){
+        $this->oArea = $oArea;
     }
     /**
      *  @return int $iId
      */
-    public function getAreaId(){
-        return $this->iAreaId;
+    public function getArea(){
+        return $this->oArea;
     }
     
 }
