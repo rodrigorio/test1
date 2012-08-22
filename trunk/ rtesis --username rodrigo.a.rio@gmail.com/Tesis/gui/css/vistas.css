@@ -167,6 +167,9 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important}
 
 .he400{height:400px !important; }
+
+
+
 /****************************************/
 /* TEMPLATES */
 /****************************************/
@@ -311,6 +314,9 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .paginacion a:hover{border:1px #000 solid; text-decoration:none;}
 .paginacion .activo{background-color:#666; color:#FFF; border-color:#666}
 .paginacion .activo span{font-weight:bold; text-transform:capitalize;}
+
+
+
 /****************************************/
 /* SKINS (ASPECTO VISUAL) */
 /****************************************/
@@ -549,6 +555,9 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .table01 .encabezado td, .table01 .encabezado th{color:#555571; text-transform:uppercase; font-weight:bold}
 .table01 .encabezado:hover{background-color:#FFF !important}
 .table01 .disabled{background-color:#EEE}
+
+/*** MAPAS ***/
+.mapa01{border:2px solid #93B5F9}
 
 /*** VARIOS ***/
 .fte2{font-size:0.8em !important}
