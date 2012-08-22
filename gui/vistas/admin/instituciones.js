@@ -218,6 +218,10 @@ function ampliarInstitucion(iInstitucionId){
 
             bindEventsAdmin();
             $("a[rel^='prettyPhoto']").prettyPhoto();
+
+            if($("#mapaInstitucion").length){
+                mapaSimple("mapaInstitucion");
+            }
         }
     );
 }
@@ -513,6 +517,5 @@ $(document).ready(function(){
                 });
             }
         });
-    });
-    
-});
+    });    
+}); //document ready

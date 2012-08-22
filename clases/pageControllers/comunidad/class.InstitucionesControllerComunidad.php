@@ -691,6 +691,9 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
 
             if(null === $oInstitucion->getLatitud() && null === $oInstitucion->getLongitud()){
                 $this->getTemplate()->set_var("MapaInstitucionBlock", "");                
+            }else{
+                $this->getTemplate()->set_var("sLatitud", $oInstitucion->getLatitud());
+                $this->getTemplate()->set_var("sLongitud", $oInstitucion->getLongitud());
             }
 
             //listado de integrantes asociados a la institucion
