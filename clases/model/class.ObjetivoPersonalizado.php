@@ -12,14 +12,15 @@
 class ObjetivoPersonalizado extends ObjetivoAbstract{
 	
 	
-	private $iObjetivoEjeId;
+	private $oObjetivoEje;
 	
    /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase 
      * @param stdClass $oParams
      */
     public function __construct(stdClass $oParams = null){
-            $vArray = get_object_vars($oParams);
+        parent::__construct();
+    	$vArray = get_object_vars($oParams);
             $vThisVars = get_class_vars(__CLASS__);
             if(is_array($vArray)){
                     foreach($vArray as $varName => $value){
@@ -35,14 +36,14 @@ class ObjetivoPersonalizado extends ObjetivoAbstract{
     /**
      *  @param int $iObjetivoEjeId
      */
-    public function setObjetivoEjeId($iObjetivoEjeId){
-        $this->iObjetivoEjeId = (int)$iObjetivoEjeId;
+    public function setObjetivoEje($oObjetivoEje){
+        $this->oObjetivoEje = $oObjetivoEje;
     }
     /**
-     *  @return int $iId
+     *  
      */
-    public function getObjetivoEjeId(){
-        return $this->iObjetivoEjeId ;
+    public function getObjetivoEje(){
+        return $this->oObjetivoEje;
     }
     
 }
