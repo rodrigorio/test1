@@ -65,7 +65,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           a.fechaAlta as sArchivoFechaAlta,
                           a.orden as iArchivoOrden,
                           a.titulo as sArchivoTitulo,
-                          a.tipo as sArchivoTipo
+                          a.tipo as sArchivoTipo,
                           
                           p.nombre
                     FROM
@@ -122,7 +122,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-
+            
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
