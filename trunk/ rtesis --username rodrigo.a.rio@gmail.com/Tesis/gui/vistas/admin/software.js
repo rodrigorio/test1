@@ -50,7 +50,6 @@ var optionsAjaxFormSoftware = {
             return false;
         }
     },
-
     success:function(data){
         setWaitingStatus('formSoftware', false);
 
@@ -75,6 +74,35 @@ var optionsAjaxFormSoftware = {
 function bindEventsSoftwareForm(){
     $("#formSoftware").validate(validateFormSoftware);
     $("#formSoftware").ajaxForm(optionsAjaxFormSoftware);
+
+    //agregar y limpiar enlaces
+    $("#limpiarEnlaces").click(function(){
+        $("#enlaces").html("");
+        $("#enlacesHtml").html("");
+        return false;
+    });
+
+    $("#enlace").click(function(){ $(this).removeClass('error'); });
+    $("#agregarEnlace").click(function(){
+
+        $('#enlace').removeClass('error2');
+        var url = $('#enlace').val();
+
+        if(url == $('#enlace').attr('title')){
+            return false;
+        }
+
+        if(/^([a-z]([a-z]|\d|\+|-|\.)*):(\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?((\[(|(v[\da-f]{1,}\.(([a-z]|\d|-|\.|_|~)|[!\$&'\(\)\*\+,;=]|:)+))\])|((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=])*)(:\d*)?)(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*|(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)){0})(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url)){
+            var contenidoActual = $("#enlaces").html();
+            var contenidoActualHtml = $("#enlacesHtml").html();
+            var nuevoEnlace = "<a target='_blank' href='" + url + "'>" + url + "</a><br>";
+            $("#enlaces").html(contenidoActual + nuevoEnlace);
+            $("#enlacesHtml").html(contenidoActualHtml + nuevoEnlace);
+            $('#enlace').val('');
+        }else{
+            $('#enlace').addClass('error');
+        }
+    });
 }
 
 var validateFormFoto = {
@@ -168,7 +196,7 @@ var validateFormArchivo = {
 var optionsAjaxFormArchivo = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'admin/publicaciones-procesar?guardarArchivo=1',
+    url: 'admin/software-procesar?guardarArchivo=1',
     beforeSerialize:function(){
         if($("#formArchivo").valid() == true){
             $('#msg_form_archivo').hide();
@@ -229,9 +257,6 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
     });
 }
 
-/**
- * Tipo es Publicacion/Review
- */
 function editarSoftware(iSoftwareId){
 
     var dialog = $("#dialog");
@@ -249,7 +274,7 @@ function editarSoftware(iSoftwareId){
         function(responseText, textStatus, XMLHttpRequest){
             dialog.dialog({
                 position:['center', '20'],
-                width:700,
+                width:800,
                 resizable:false,
                 draggable:true,
                 modal:false,
@@ -261,9 +286,6 @@ function editarSoftware(iSoftwareId){
     );
 }
 
-/**
- * Tipo es Publicacion/Review
- */
 function ampliarSoftware(iSoftwareId){
 
     var dialog = $("#dialog");
@@ -407,7 +429,7 @@ function masModeraciones(){
     });
 }
 
-function borrarPublicacion(iSoftwareId){
+function borrarSoftware(iSoftwareId){
     if(confirm("Se borrara la aplicacion del sistema de manera permanente, desea continuar?")){
         $.ajax({
             type:"post",
@@ -419,7 +441,6 @@ function borrarPublicacion(iSoftwareId){
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    //remuevo la fila y la ficha
                     $("."+iSoftwareId).remove();
                 }
 
@@ -554,11 +575,11 @@ $(document).ready(function(){
 
     $(".editarSoftware").live('click', function(){
         var iSoftwareId = $(this).attr("rel");
-        editarPublicacion(iSoftwareId);
+        editarSoftware(iSoftwareId);
         return false;
     });
 
-    $(".ampliarPublicacion").live('click', function(){
+    $(".ampliarSoftware").live('click', function(){
         var iSoftwareId = $(this).attr("rel");
         ampliarSoftware(iSoftwareId);
         return false;
@@ -669,7 +690,6 @@ $(document).ready(function(){
 
         
         if($('#mensaje_'+iSoftwareId).val() == ""){
-
             mensajeCont.html(mensajeValidacion);
             cartel.addClass("error").fadeIn('slow');
             return false;
