@@ -113,15 +113,13 @@ var optionsAjaxFormInstitucion = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'admin/instituciones-procesar',
-    beforeSerialize:function(){
-
+    
+    beforeSerialize:function($form, options){
         if($("#formInstitucion").valid() == true){
-
             $('#msg_form_institucion').hide();
             $('#msg_form_institucion').removeClass("success").removeClass("error2");
             $('#msg_form_institucion .msg').html("");
             setWaitingStatus('formInstitucion', true);
-
         }else{
             return false;
         }
@@ -162,7 +160,6 @@ function bindEventsInstitucionForm(){
     $("textarea.maxlength").maxlength();
 
     if($("#mapaSeleccionarCoordenadas").length){
-        //automaticamente rellena los inputs con name 'latitud' y 'longitud'
         mapaSeleccionCoordenadas("mapaSeleccionarCoordenadas");
     }
 }

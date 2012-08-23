@@ -110,8 +110,8 @@ var optionsAjaxFormInstitucion = {
     dataType: 'jsonp',
     resetForm: false,
     url:"comunidad/guardar-institucion",
-
-    beforeSerialize: function($form, options){
+    
+    beforeSerialize:function($form, options){
         if($("#formInstitucion").valid() == true){
             $('#msg_form_institucion').hide();
             $('#msg_form_institucion').removeClass("correcto").removeClass("error");
