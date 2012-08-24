@@ -140,7 +140,6 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
 .po_re{position:relative !important}
 .po_ab{position:absolute !important}
-.co{color:#333 !important} .co1{color:#999 !important}
 .veal_mi{vertical-align:middle !important}
 .mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
 .miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
@@ -525,6 +524,11 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu05 ul{display:none;}
 .menu05 li.selected ul{display:block;}
 
+/* otro modulo index */
+.menu06 a{color:#CCCEEE; font-weight:bold; text-decoration:none}
+.menu06 a:hover{color:#FFF}
+.menu06 li{border-top:1px solid #CCC; color:#949494; padding:7px 0px 7px 5px; text-indent:0;}
+
 /* fotos */
 .thumb01{padding:5px; background-color:#FFF; border:1px solid #CCC; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
 .thumb01:hover{border:1px solid #333; text-decoration:none}
@@ -559,13 +563,18 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 /*** MAPAS ***/
 .mapa01{border:2px solid #93B5F9}
 
-/*** VARIOS ***/
+/*** FUENTES ***/
 .fte2{font-size:0.8em !important}
 .fte3{font-size:1.7em} /* Puede utilizarse en lineas de 36px */
 .fte4{font-size:2.8em; line-height:36px}
 /* mas grande que esto imposible.. max size para casos especiales tipo 404 etc. se sigue respetando multiplos de 18px q equivale a un renglon */
 .fte5{font-size:6em; line-height:72px;}
+/* colores */
+.co{color:#333 !important} .co1{color:#999 !important}
+.co2{color:#FFF !important}
 
+
+/*** VARIOS ***/
 .txt_cuidado{color:#F00}
 .txt_imp{font-weight:bold; text-transform:capitalize}
 .txt_imp2{font-weight:bold; text-transform:uppercase}

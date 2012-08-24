@@ -70,6 +70,52 @@ class IndexControllerIndex extends PageControllerAbstract
         $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
         $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
         $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
+
+        //ultimas 5 publicaciones
+        $iRecordsTotal = 0;
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesVisitantes($filtro = null, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = 1, $iItemsForPage = 5);
+        if(count($aFichas) > 0){
+            $template->set_var("UltimasPublicacionesNoRecordsBlock", "");
+            foreach($aFichas as $oFicha){
+                $oUsuario = $oFicha->getUsuario();
+                $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
+
+                $template->set_var("sTitulo", $oFicha->getTitulo());
+                $template->set_var("sAutor", $sNombreUsuario);
+
+                $oInflectorHelper = new InflectorHelper();
+                $sTituloUrl = $oInflectorHelper->urlize($oFicha->getTitulo());
+                if(get_class($oFicha) == 'Publicacion'){
+                    $template->set_var("hrefAmpliarPublicacion", $template->getRequest()->getBaseUrl().'/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                }else{
+                    $template->set_var("hrefAmpliarPublicacion", $template->getRequest()->getBaseUrl().'/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                }
+
+                $template->parse("PublicacionRowBlock", true);
+            }
+        }else{
+            $template->set_var("UltimasPublicacionesBlock", "");
+        }
+        
+        //ultimas 5 instituciones
+        $iRecordsTotal = 0;
+        $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesVisitantes($filtro = null, $iRecordsTotal, $sOrderBy = 'i.id', $sOrder = 'desc', $iMinLimit = 1, $iItemsForPage = 5);
+        if(count($aInstituciones) > 0){
+            $template->set_var("UltimasInstitucionesNoRecordsBlock", "");
+            foreach($aInstituciones as $oInstitucion){
+
+                $template->set_var("sTipoInstitucion", $oInstitucion->getNombreTipoInstitucion());
+                $template->set_var("sNombre", $oInstitucion->getNombre());
+
+                $oInflectorHelper = new InflectorHelper();
+                $sTituloUrl = $oInflectorHelper->urlize($oInstitucion->getNombre());
+                $template->set_var("hrefAmpliarInstitucion", $template->getRequest()->getBaseUrl().'/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
+
+                $template->parse("InstitucionRowBlock", true);
+            }
+        }else{
+            $template->set_var("UltimasInstitucionesBlock", "");
+        }
     }
 
     public function index(){
