@@ -1060,6 +1060,18 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+    
+    public function buscarPublicacionesVisitantes($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro["f.activo"] = "1";
+            $filtro["publico"] = "1";
+            $filtro["m.sModeracionEstado"] = "aprobado";
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 
     /**
      * Se diferencia de buscar publicaciones visitantes porque no arregla los filtros de moderacion y de publico
@@ -1097,6 +1109,16 @@ class ComunidadController
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
             $filtro["i.usuario_id"] = $oUsuario->getId();
 
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+    public function buscarInstitucionesVisitantes($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro["m.sModeracionEstado"] = "aprobado";
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
