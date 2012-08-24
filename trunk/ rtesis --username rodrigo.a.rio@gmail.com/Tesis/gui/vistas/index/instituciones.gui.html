@@ -1,0 +1,562 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">    
+$LAB
+.script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+.script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+.script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+.script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+.script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+.script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+.script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+.script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+.script("{pathUrlBase}"+"gui/js/googleMaps.js")
+.script("{pathUrlBase}"+"gui/js/vistas.js")
+.script("{pathUrlBase}"+"gui/vistas/comunidad/instituciones.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginPageRightInnerContBlock-->
+<ul class="m_vert menu02">
+    <li>
+        <a id="institucionesComunidad" href="{hrefListadoInstituciones}">
+            Instituciones Comunidad
+        </a>
+    </li>
+    <li>
+        <a id="misInstituciones" href="{hrefMisInstituciones}">
+            Mis Instituciones
+        </a>
+    </li>
+    <li>
+        <a id="crearInstitucion" href="{hrefNuevaInstitucion}">
+            Crear Instituci&oacute;n
+        </a>
+    </li>
+</ul>
+<!--EndPageRightInnerContBlock-->
+
+<!--BeginListadoInstitucionesBlock-->
+<div class="ficha01 grupo mabo2">
+    <div class="encabezado">
+        <div class="izq">
+            <div class="icono"><span class="i32 bs search32"></span></div>
+            <span class="titulo">Buscar Instituciones</span><br>
+            <span class="subtitulo">filtrar los resultados del listado</span>
+        </div>
+        <div class="der"></div>
+    </div>
+    <div class="contenido">
+        <form id="formFiltrarInstituciones" name="formFiltrarInstituciones" action="" method="post">
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Nombre</span>
+               <input type="text" name="filtroNombre" id="filtroNombre"/>
+            </div>
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Tipo de institucion</span>
+               <select name="filtroTipoInstitucion" id="filtroTipoInstitucion" >
+                    <option value="">Selecciones un tipo</option>
+                    <!--BeginListaTipoDeInstitucionesBlock-->
+                    <option value="{iInstitucionTiposId}">{sInstitucionTiposNombre}</option>
+                    <!--EndListaTipoDeInstitucionesBlock-->
+               </select>
+            </div>
+
+            <br clear="all" />
+
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Pais</span>
+               <select name="filtroPais" id="filtroPais">
+                    <option value="">Elija Pais:</option>
+                    <!--BeginListaPaisesBlock-->
+                    <option value="{iPaisId}">{sPaisNombre}</option>
+                    <!--EndListaPaisesBlock-->
+               </select>
+            </div>
+            <div class="fl_le mari2 mabo2">
+                <span class="fowe_bo">Provincia</span>
+               <select name="filtroProvincia" id="filtroProvincia">
+                    <option value="">Elija Provincia:</option>
+                    <!--BeginListaProvinciasBlock-->
+                    <option value="{iProvinciaId}">{sProvinciaNombre}</option>
+                    <!--EndListaProvinciasBlock-->
+               </select>
+            </div>
+            <div class="fl_le mari2 mabo2">
+               <span class="fowe_bo">Ciudad</span>
+               <select name="filtroCiudad" id="filtroCiudad">
+                    <option value="">Elija Ciudad:</option>
+                    <!--BeginListaCiudadesBlock-->
+                    <option value="{iCiudadId}">{sCiudadNombre}</option>
+                    <!--EndListaCiudadesBlock-->
+               </select>
+            </div>
+            
+            <br clear="all" />
+
+            <label for="BuscarInstituciones" class="button buttonConfirm mari">
+                <button id="BuscarInstituciones" type="button" name="BuscarInstituciones" class="btn01">
+                    Buscar Instituciones
+                </button>
+            </label>
+            <label for="limpiarFiltro" class="button mari3">
+                <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
+                    Limpiar Filtro
+                </button>
+            </label>
+        </form>
+    </div>
+</div>
+
+<div id="listadoInstituciones" class="grupo po_re">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <div id="listadoInstitucionesResult">
+        <!--BeginFichasInstitucionesBlock-->
+
+            <!--BeginInstitucionBlock-->
+            <div class="ficha03 grupo mabo2">
+                <div class="encabezado">
+                    <div class="der">
+                        <span class="fost_it">{sTipoInstitucion}</span> |
+                        <a href="{hrefAmpliarInstitucion}">Ver Completo</a>
+                    </div>
+                    <div class="izq">
+                        <div class="titulo">{sNombre}</div>
+                        <div class="subtitulo">{sUbicacion}</div>
+                    </div>
+                </div>
+                <div class="contenido">
+                    <div class="fowe_bo fost_it mabo2">Descripci&oacute;n</div>
+                    <p class="mabo0">{sDescripcion}</p>
+                </div>
+            </div>
+            <!--EndInstitucionBlock-->
+
+            <!--BeginNoRecordsInstitucionesBlock-->
+            <div class="teal_ce fowe_bo">{sNoRecords}</div>
+            <!--EndNoRecordsInstitucionesBlock-->
+
+            {paginacion}
+        <!--EndFichasInstitucionesBlock-->
+    </div>
+</div>
+<!--EndListadoInstitucionesBlock-->
+
+<!--BeginListadoMisInstitucionesBlock-->
+<div id="listadoMisInstituciones" class="grupo po_re">
+    <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
+    <input type="hidden" value="" name="sOrder" id="sOrder" />
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <div id="listadoMisInstitucionesResult">
+        
+        <!--BeginGrillaMisInstitucionesBlock-->
+        <table class="table01 wi100p mabo2">
+            <tr class="encabezado">
+               <td class="big iveal">Nombre {orderByNombre}</td>
+               <td class="medium iveal">Tipo Instituci&oacute;n {orderByTipoInstitucion}</td>
+               <td class="medium iveal">Cargo</td>
+               <td class="medium"></td>
+            </tr>
+            <!--BeginMiInstitucionBlock-->
+            <tr class="{iInstitucionId}">
+                <td class="desplegable" rel="{iInstitucionId}">{sNombre}</td>
+                <td class="desplegable" rel="{iInstitucionId}">{sNombreTipoInstitucion}</td>
+                <td class="desplegable" rel="{iInstitucionId}">{sCargo}</td>
+                <td class="teal_ce">
+                    <a class="di_inbl" href="{hrefAmpliarInstitucion}" title="Ampliar Instituci&oacute;n"><span class="i mi expand ihover"></span></a>
+                    <a class="di_inbl" href="{hrefEditarInstitucion}" title="Editar"><span class="i bs edit ihover"></span></a>
+                    <span title="Eliminar" rel="{iInstitucionId}" class="i bs delete ihover borrarInstitucion"></span>
+                </td>
+            </tr>
+            <tr class="{iInstitucionId} ba_no">
+                <td id="desplegable_{iInstitucionId}" class="pa0 bobo_no" colspan="4" style="display:none;">
+                    <div class="anexoFicha grupo">
+                        <div class="titulo grupo">
+                            <div class="fte3 fl_le">Detalles</div>
+                            <span rel="{iInstitucionId}" class="i bs close ihover fl_ri"></span>
+                        </div>
+                        <br clear="all">
+                        {sMensajeInstitucion}
+                    </div>
+                </td>
+            </tr>
+            <!--EndMiInstitucionBlock-->
+
+            <!--BeginNoRecordsMisInstitucionesBlock-->
+            <tr>
+                <td colspan="4">{sNoRecords}</td>
+            </tr>
+            <!--EndNoRecordsMisInstitucionesBlock-->
+        </table>
+        {paginacion}
+        <!--EndGrillaMisInstitucionesBlock-->
+    </div>
+</div>
+<!--EndListadoMisInstitucionesBlock-->
+
+<!--BeginFichaInstitucionBlock-->
+<div class="ficha03 grupo mabo3">
+    <div class="encabezado">
+        
+        <!--BeginSolicitarInstitucionBlock-->
+        <div id="solicitarInstitucionCont" class="der">
+            <a rel="{iInstitucionId}" class="solicitarInstitucion" href="">Solicitar la administraci&oacute;n de esta instituci&oacute;n</a>
+        </div>
+        <!--EndSolicitarInstitucionBlock-->
+        <!--BeginSolicitudEnviadaInstitucionBlock-->
+        <div class="der">
+            Solicitud de administraci&oacute;n enviada.
+        </div>
+        <!--EndSolicitudEnviadaInstitucionBlock-->
+        
+        <div class="izq">
+            <div class="titulo">{sNombre}</div>
+            <div class="subtitulo">{sTipo} - {sUbicacion}</div>
+        </div>
+    </div>
+    
+    <div class="contenido row">
+        <p>{sDescripcion}</p>
+    </div>
+    
+    <div class="contenido">
+        <span class="teta_up fowe_bo">Actividades del mes</span><br>
+        <p>{sActividadesMes}</p>
+
+        <span class="teta_up fowe_bo">Autoridades</span><br>
+        <p>{sAutoridades}</p>
+
+        <span class="teta_up fowe_bo">Sedes</span><br>
+        <p>{sSedes}</p>
+
+        <span class="teta_up fowe_bo">Horarios de atenci&oacute;n: </span> {sHorariosAtencion}<br>
+        <span class="teta_up fowe_bo">Email: </span> <a href="mailto:{sEmail}">{sEmail}</a><br>
+        <span class="teta_up fowe_bo">Tel&eacute;fono: </span> {sTelefono}<br>
+
+        <!--BeginSitioWebBlock-->
+        <span class="teta_up fowe_bo">Sitio Web: </span> <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a><br>
+        <!--EndSitioWebBlock-->
+        
+        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>        
+    </div>
+
+    <!--BeginMapaInstitucionBlock-->
+    <div rel="{sLatitud}_{sLongitud}" id="mapaInstitucion" class="mapa01 mihe2 mabo2"></div>
+    <!--EndMapaInstitucionBlock-->    
+
+    <ul class="fl_ri mabo2 mato iveal cl_bo">
+        <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Instituci&oacute;n</a></li>
+    </ul>
+</div>
+
+<div id="integrantesInstitucion">
+    <div class="pabo bobo1 mabo2">
+        <span class="mari2 fost_it">Integrantes de la comunidad asociados a la instituci&oacute;n</span>
+    </div>
+    
+    <!--BeginIntegranteBlock-->
+    <div class="pa mari2 mabo2 baco4 fl_le grupo">
+        <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+            <i style="background-image:url('{scrAvatarAutor}')"></i>
+        </a>
+        <span class="txt_imp2 mari">{sNombreUsuario}</span>
+        <br clear="all">
+        <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
+
+        <!--BeginTelefonoBlock-->
+        <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefono}</span><br>
+        <!--EndTelefonoBlock-->
+
+        <!--BeginCelularBlock-->
+        <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelular}</span><br>
+        <!--EndCelularBlock-->
+
+        <!--BeginFaxBlock-->
+        <span class="co1 fte2">Fax: {sFax}</span><br>
+        <!--EndFaxBlock-->
+
+        <!--BeginCvBlock-->
+        <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCv}">Descargar</a></span>
+        <!--EndCvBlock-->
+    </div>
+    <!--EndIntegranteBlock-->
+    
+    <!--BeginIntegranteNoRecords-->
+    <div class="teal_ce fowe_bo">No hay integrantes de la comunidad asociados a esta instituci&oacute;n</div>
+    <!--EndIntegranteNoRecords-->
+</div>
+<!--EndFichaInstitucionBlock-->
+
+<!--BeginFormularioBlock-->
+<div class='ficha04 bora grupo' style="width:640px;">
+    <div class="titulo iveal"><span class="i32 mc bank32"></span></div>
+    
+    <form id="formInstitucion" name="formInstitucion" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <h2 class="mabo3">{sTituloForm}</h2>
+        
+        <div class="form_line msg_nombre">
+            <label for="nombre">
+                <span class="marca_obligatorio">&#8226;</span>
+                Nombre
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="nombre" id="nombre" title="Nombre de la instituci&oacute;n" maxlength="80" value="{sNombre}" />
+                </div>
+            </div>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="defVal co maxlength textareaAutoGrow" title="Breve descripcion de la instituci&oacute;n">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_tipo">
+            <label for="tipo">
+                <span class="marca_obligatorio">&#8226;</span>
+                Tipo de instituci&oacute;n
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select name="tipo" id="tipo" >
+                        <option value="">Elija tipo instituci&oacute;n:</option>
+                    	<!--BeginOptionSelectTipoInstitucion-->
+                    	<option value="{iTipoInstitucionValue}" {sSelectedTipoInstitucion}>{sTipoInstitucion}</option>
+                    	<!--EndOptionSelectTipoInstitucion-->
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form_line msg_cargo">
+            <label for="cargo">
+                <span class="marca_obligatorio">&#8226;</span>
+                Cargo instituci&oacute;n
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="cargo" id="cargo" title="Cargo que ocupa en la instituci&oacute;n" maxlength="50" value="{sCargo}" />
+                </div>
+            </div>
+            <p>Describa el cargo que ud. ocupa en la instituci&oacute;n</p>
+        </div>
+        
+        <div class="form_line msg_personaJuridica">
+            <label for="personeriaJuridica">
+                Personer&iacute;a Jur&iacute;dica
+            </label>            
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="personeriaJuridica" id="personeriaJuridica" title="Personer&iacute;a Jur&iacute;dica" maxlength="100" value="{sPersoneriaJuridica}" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="form_line msg_direccion">
+            <label for="direccion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Direcci&oacute;n
+            </label>          
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="direccion" id="direccion" title="Direcci&oacute;n" maxlength="60" value="{sDireccion}" />
+                </div>
+            </div>
+            <p>Ingrese la direcci&oacute;n de la casa central. Puede especificar otras ubicaciones en 'sedes'</p>
+        </div>
+
+        <div id="selectsUbicacion" class="grupo">
+            <div class="form_line msg_pais">
+                <label for="pais">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Pa&iacute;s
+                </label>
+                <div class="cl_le"></div>
+                <select style="width:250px" name="pais" id="pais" title="Pais">
+                    <option value="">Elija Pa&iacute;s:</option>
+                    <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
+                </select>
+            </div>
+
+            <div class="form_line msg_provincia">
+                <label for="provincia">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Provincia
+                </label>
+                <div class="cl_le"></div>
+                <select style="width:250px" name="provincia" id="provincia" title="Provincia">
+                    <option value="">Elija Provincia:</option>
+                    <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
+                </select>
+            </div>
+
+            <div class="form_line msg_ciudad">
+                <label for="ciudad">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Ciudad
+                </label>
+                <div class="cl_le"></div>
+                <select style="width:250px" name="ciudad" id="ciudad" title="Ciudad">
+                    <option value="">Elija Ciudad:</option>
+                    <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
+                </select>
+            </div>
+        </div>
+
+        <div class="form_line msg_email">
+            <label for="email">
+                <span class="marca_obligatorio">&#8226;</span>
+                Email de contacto
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="email" id="email" title="Email de la instituci&oacute;n" maxlength="50" value="{sEmail}" />
+                </div>
+            </div>
+        </div>
+        
+         <div class="form_line msg_telefono">
+            <label for="telefono">
+                <span class="marca_obligatorio">&#8226;</span>
+                Tel&eacute;fono de contacto
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="telefono" id="telefono" title="Tel&eacute;fono de contacto" maxlength="50" value="{sTelefono}" />
+                </div>
+            </div>
+         </div>
+
+         <div class="form_line msg_sitioWeb">
+            <label for="sitioWeb">
+                Sitio Web
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="sitioWeb" id="sitioWeb" title="Sitio web" maxlength="60" value="{sSitioWeb}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_horariosAtencion">
+            <label for="horariosAtencion">
+                Horarios de atenci&oacute;n
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="horariosAtencion" id="horariosAtencion" title="Horarios de atenci&oacute;n" maxlength="80" value="{sHorariosAtencion}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_sedes">
+            <label for="sedes">
+                Sedes instituci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="sedes" name="sedes" class="defVal co maxlength textareaAutoGrow" title="Sedes instituci&oacute;n">{sSedes}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form_line msg_autoridades">
+            <label for="autoridades">
+                Autoridades
+            </label>            
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="autoridades" name="autoridades" class="defVal co maxlength textareaAutoGrow" title="Autoridades">{sAutoridades}</textarea>                    
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_activadesMes">
+            <label for="actividadesMes">
+                Actividades del mes
+            </label>                        
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="actividadesMes" name="actividadesMes" class="defVal co maxlength textareaAutoGrow" title="Actividades del mes">{sActividadesMes}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form_line msg_activadesMes mabo2">
+            <label>Ubicaci&oacute;n</label>                        
+            <div id="mapaSeleccionarCoordenadas" class="mapa01 mihe2"></div>
+            <p>Haga click en el mapa para modificar la ubicaci&oacute;n</p>
+            <input type="hidden" name="latitud" id="latitud" value="{sLatitud}" >
+            <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >            
+        </div>
+
+        <!--BeginSubmitCrearInstitucionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearInstitucion" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearInstitucion" type="submit" name="crearInstitucion" class="btn01">
+                    Crear Instituci&oacute;n
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearInstitucionBlock-->
+
+        <!--BeginSubmitModificarInstitucionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarInstitucion" class="button buttonConfirm buttonLarge mari3">
+                <button id="modificarInstitucion" type="submit" name="modificarInstitucion" class="btn01">
+                    Modificar Instituci&oacute;n
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iInstitucionId}" name="institucionId" id="institucionId" />
+        <!--EndSubmitModificarInstitucionBlock-->
+
+        <div style="display:none;" id='msg_form_institucion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioBlock-->
+
+<!--BeginFormularioSolicitarInstitucionBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mc bank32"></span></div>
+    <form id="formSolicitarInstitucion" name="formSolicitarInstitucion" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <h2 class="mabo">Solicitud para administraci&oacute;n de contenido</h2>
+        <div class="mabo3 fost_it">La solicitud quedara pendiente de moderaci&oacute;n. Si es aprobada, la instituci&oacute;n aparecer&aacute; en su listado 'mis instituciones'.</div>
+
+        <div class="form_line msg_mensaje">
+            <label for="mensaje">
+                Mensaje
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2 maxlength" rows="0" cols="0" id="mensaje" name="mensaje" title="Mensaje Solicitud"></textarea>
+                </div>
+            </div>
+            <p>Ingrese un breve texto explicando las razones por las que desea ser el administrador de esta instituci&oacute;n</p>
+        </div>
+
+        <div class="fl_le iveal mabo2">
+            <label for="solicitarInstitucion" class="button buttonConfirm buttonLarge mari3">
+                <button id="solicituarInstitucion" type="submit" name="solicituarInstitucion" class="btn01">
+                    Enviar Solicitud
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iInstitucionId}" name="iInstitucionIdForm" id="iInstitucionIdForm" />
+
+        <div style="display:none;" id='msg_form_solicitarInstitucion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndFormularioSolicitarInstitucionBlock-->

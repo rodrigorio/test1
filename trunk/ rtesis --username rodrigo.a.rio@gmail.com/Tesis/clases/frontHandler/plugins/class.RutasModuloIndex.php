@@ -89,7 +89,6 @@ class RutasModuloIndex
                                     'action'     => 'video'
                                 ));
         $router->addRoute('indexIndexVideoAmpliar', $route);
-
         $route = new RegexRoute('provinciasByPais',
                                 array(
                                     'module' => "index",
@@ -104,5 +103,73 @@ class RutasModuloIndex
                                     'action' => "ciudadesByProvincia"
                                 ));
         $router->addRoute('ciudadesByProvincia', $route);
+
+        //INSTITUCIONES
+        $route = new RegexRoute('instituciones',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "instituciones",
+                                        'action'     => "index"
+                                ));
+        $router->addRoute('indexInstitucionesIndex', $route);
+        $route = new RegexRoute('instituciones/(\d+)-(.+)',
+                                array(
+                                    'module' => 'index',
+                                    'controller' => 'instituciones',
+                                    'action'     => 'ampliarInstitucion'
+                                ),
+                                array(
+                                    1 => 'iInstitucionId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                '');
+        $router->addRoute('indexInstitucionesAmpliarInstitucion', $route);
+        $route = new RegexRoute('instituciones/procesar',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "instituciones",
+                                        'action'     => "procesar"
+                                ));
+        $router->addRoute('indexInstitucionesProcesar', $route);
+
+        //PUBLICACIONES
+        $route = new RegexRoute('publicaciones',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "publicaciones",
+                                        'action'     => "index"
+                                ));
+        $router->addRoute('indexPublicacionesIndex', $route);
+        $route = new RegexRoute('publicaciones/(\d+)-(.+)',
+                                array(
+                                    'module' => 'index',
+                                    'controller' => 'publicaciones',
+                                    'action'     => 'verPublicacion'
+                                ),
+                                array(
+                                    1 => 'iPublicacionId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                '');
+        $router->addRoute('indexPublicacionesVerPublicacion', $route);
+        $route = new RegexRoute('reviews/(\d+)-(.+)',
+                                array(
+                                    'module' => 'index',
+                                    'controller' => 'publicaciones',
+                                    'action'     => 'verReview'
+                                ),
+                                array(
+                                    1 => 'iReviewId',
+                                    2 => 'sTituloUrlized'
+                                ),
+                                '');
+        $router->addRoute('indexPublicacionesVerReview', $route);
+        $route = new RegexRoute('publicaciones/procesar',
+                                array(
+                                    'module' => "index",
+                                    'controller' => "publicaciones",
+                                    'action'     => "procesar"
+                                ));
+        $router->addRoute('indexPublicacionesProcesar', $route);
     }   
 }
