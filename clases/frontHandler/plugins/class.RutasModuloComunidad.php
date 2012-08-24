@@ -113,7 +113,7 @@ class RutasModuloComunidad
                                     1 => 'iInstitucionId',
                                     2 => 'sTituloUrlized'
                                 ),
-                                'comunidad/instituciones/%d-%s');
+                                '');
         $router->addRoute('comunidadInstitucionesAmpliarInstitucion', $route);        
         $route = new RegexRoute('comunidad/masInstituciones',
                                 array(
@@ -314,7 +314,7 @@ class RutasModuloComunidad
                                     1 => 'iPublicacionId',
                                     2 => 'sTituloUrlized'
                                 ),
-                                'comunidad/publicaciones/%d-%s');
+                                '');
         $router->addRoute('comunidadPublicacionesVerPublicacion', $route);
         $route = new RegexRoute('comunidad/reviews/(\d+)-(.+)',
                                 array(
@@ -326,7 +326,7 @@ class RutasModuloComunidad
                                     1 => 'iReviewId',
                                     2 => 'sTituloUrlized'
                                 ),
-                                'comunidad/reviews/%d-%s');
+                                '');
         $router->addRoute('comunidadPublicacionesVerReview', $route);
 
 
