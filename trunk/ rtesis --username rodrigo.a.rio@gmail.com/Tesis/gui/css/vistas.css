@@ -397,9 +397,9 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .ficha01 .encabezado, .ficha01 .contenido{padding:10px; overflow:auto}
 .ficha01 .encabezado{background-color:#FFF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha01 .encabezado .izq{float:left; position:relative}
-.ficha01 .encabezado .izq .icono{float:left; margin-right:10px}
-.ficha01 .encabezado .izq .titulo{font-size:1.7em}
-.ficha01 .encabezado .izq .subtitulo{font-size:0.8em}
+.ficha01 .encabezado .icono{float:left; margin-right:10px}
+.ficha01 .encabezado .titulo{font-size:1.7em}
+.ficha01 .encabezado .subtitulo{font-size:0.8em}
 .ficha01 .encabezado .der{float:right; position:relative}
 .ficha01 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF}
 

@@ -551,13 +551,8 @@
             </ul>
         </div>
         <div class="izq">
-            <div class="icono">
-                <div class="th_fto_s">
-                    <i style="background-image:url('{scrAvatarAutor}')"></i>
-                </div>
-            </div>
             <div class="titulo">{sTitulo}</div>
-            <div class="subtitulo">{sAutor} - {sFecha}</div>
+            <div class="subtitulo">{sFecha}</div>
         </div>
     </div>
     <div class="contenido mabo3">
@@ -566,9 +561,37 @@
     
     {galeriaAdjuntos}
 
-    <ul class="fl_ri mabo2 mato iveal cl_bo">
-        <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
-    </ul>
+    <div class="cl_bo mabo2 mato grupo">
+        <div class="fl_le">
+            <div class="pa mari2 baco4">
+                <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+                    <i style="background-image:url('{scrAvatarAutor}')"></i>
+                </a>
+                <span class="fost_it">por</span> <span class="txt_imp2 mari fost_it">{sAutor}</span>
+                <br clear="all">
+                <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
+
+                <!--BeginTelefonoBlock-->
+                <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefono}</span><br>
+                <!--EndTelefonoBlock-->
+
+                <!--BeginCelularBlock-->
+                <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelular}</span><br>
+                <!--EndCelularBlock-->
+
+                <!--BeginFaxBlock-->
+                <span class="co1 fte2">Fax: {sFax}</span><br>
+                <!--EndFaxBlock-->
+
+                <!--BeginCvBlock-->
+                <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCv}">Descargar</a></span>
+                <!--EndCvBlock-->
+            </div>
+        </div>
+        <ul class="fl_ri iveal">
+            <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
+        </ul>
+    </div>
 </div>
 <div id="comentarios">
     {comentarios}
@@ -586,18 +609,13 @@
             </ul>
         </div>
         <div class="izq">
-            <div class="icono">
-                <div class="th_fto_s">
-                    <i style="background-image:url('{scrAvatarAutor}')"></i>
-                </div>
-            </div>
             <div class="titulo">{sTitulo}</div>
             <div class="subtitulo">{sFecha}</div>
         </div>
     </div>
     <div class="bobo1 pa2">
         <div class="mabo2">
-            <span class="fte3">{sItemName}</span> - Review por <span class="fost_it">{sAutor}</span><br>
+            <span class="fte3">{sItemName}</span><br>
         </div>
 
         <!--BeginRatingBlock-->
@@ -636,9 +654,37 @@
 
     {galeriaAdjuntos}
 
-    <ul class="fl_ri mabo2 mato iveal cl_bo">
-        <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
-    </ul>
+    <div class="cl_bo mabo2 mato grupo">
+        <div class="fl_le">
+            <div class="pa mari2 baco4">
+                <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+                    <i style="background-image:url('{scrAvatarAutor}')"></i>
+                </a>
+                <span class="fost_it">por</span> <span class="txt_imp2 mari fost_it">{sAutor}</span>
+                <br clear="all">
+                <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
+
+                <!--BeginTelefonoBlock-->
+                <span class="co1 fte2">Tel&eacute;fono Contacto: {sTelefono}</span><br>
+                <!--EndTelefonoBlock-->
+
+                <!--BeginCelularBlock-->
+                <span class="co1 fte2">Tel&eacute;fono M&oacute;vil: {sCelular}</span><br>
+                <!--EndCelularBlock-->
+
+                <!--BeginFaxBlock-->
+                <span class="co1 fte2">Fax: {sFax}</span><br>
+                <!--EndFaxBlock-->
+
+                <!--BeginCvBlock-->
+                <span class="co1 fte2">Curriculum: <a href="{hrefDescargarCv}">Descargar</a></span>
+                <!--EndCvBlock-->
+            </div>
+        </div>
+        <ul class="fl_ri iveal">
+            <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
+        </ul>
+    </div>
 </div>
 <div id="comentarios">
     {comentarios}
