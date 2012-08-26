@@ -2,7 +2,7 @@
 /**
  * @author Rodrigo A. Rio
  */
-class InstitucionesControllerComunidad extends PageControllerAbstract
+class InstitucionesControllerIndex extends PageControllerAbstract
 {
     private $filtrosFormConfig = array('filtroNombre' => 'i.nombre',
                                        'filtroTipoInstitucion' => 'i.tipoInstitucion_id',

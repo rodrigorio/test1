@@ -54,6 +54,8 @@ class IndexControllerIndex extends PageControllerAbstract
     static function setFooter(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
+
+        $template->load_file_section("gui/vistas/index/home.gui.html", "footerContent", "FooterContent");
         
         //redes sociales
         $template->set_var("hrefDelicious", '#');
@@ -63,13 +65,6 @@ class IndexControllerIndex extends PageControllerAbstract
         $template->set_var("hrefMyspace", '#');
         $template->set_var("hrefReddit", '#');
         $template->set_var("hrefTwitter", '#');
-
-        //menu footer
-        $template->set_var("hrefOpcionInicio", $request->getBaseUrl().'/');
-        $template->set_var("hrefOpcionAcceder", $request->getBaseUrl().'/login');
-        $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
-        $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
-        $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
 
         //ultimas 5 publicaciones
         $iRecordsTotal = 0;
@@ -86,9 +81,9 @@ class IndexControllerIndex extends PageControllerAbstract
                 $oInflectorHelper = new InflectorHelper();
                 $sTituloUrl = $oInflectorHelper->urlize($oFicha->getTitulo());
                 if(get_class($oFicha) == 'Publicacion'){
-                    $template->set_var("hrefAmpliarPublicacion", $template->getRequest()->getBaseUrl().'/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                    $template->set_var("hrefAmpliarPublicacion", $request->getBaseUrl().'/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
                 }else{
-                    $template->set_var("hrefAmpliarPublicacion", $template->getRequest()->getBaseUrl().'/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                    $template->set_var("hrefAmpliarPublicacion", $request->getBaseUrl().'/reviews/'.$oFicha->getId()."-".$sTituloUrl);
                 }
 
                 $template->parse("PublicacionRowBlock", true);
@@ -109,13 +104,20 @@ class IndexControllerIndex extends PageControllerAbstract
 
                 $oInflectorHelper = new InflectorHelper();
                 $sTituloUrl = $oInflectorHelper->urlize($oInstitucion->getNombre());
-                $template->set_var("hrefAmpliarInstitucion", $template->getRequest()->getBaseUrl().'/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
+                $template->set_var("hrefAmpliarInstitucion", $request->getBaseUrl().'/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
 
                 $template->parse("InstitucionRowBlock", true);
             }
         }else{
             $template->set_var("UltimasInstitucionesBlock", "");
         }
+
+        //menu footer sub
+        $template->set_var("hrefOpcionInicio", $request->getBaseUrl().'/');
+        $template->set_var("hrefOpcionAcceder", $request->getBaseUrl().'/login');
+        $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
+        $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
+        $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
     }
 
     public function index(){
