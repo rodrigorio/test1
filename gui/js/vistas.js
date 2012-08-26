@@ -72,9 +72,11 @@ function mensajeValidacion(template, value)
  *
  * Ejemplo: rules:{ nombreUsuario: "required ignorarDefault" }
  */
-jQuery.validator.addMethod("ignorarDefault", function(value, element){
-    return element.title != value;
-});
+if(jQuery.validator != null){
+    jQuery.validator.addMethod("ignorarDefault", function(value, element){
+        return element.title != value;
+    });
+}
 
 // DATEPICKER EN ESP //
 
@@ -145,14 +147,14 @@ function ocultarElemento(object){
  * @param show boolean
  */
 function setWaitingStatus(contenedorId, show)
-{
+{    
     var contenedor = $("#" + contenedorId);
     var ajaxLoading = $("#" + contenedorId + " #ajax_loading");
 
     if(show){
         contenedor.addClass("ajaxdelay");
         //si es que existe, tambien muestro el gif de waiting
-        if(ajaxLoading.length){        
+        if(ajaxLoading.length){
             revelarElemento(ajaxLoading);
         }
     }else{
@@ -216,6 +218,21 @@ function verificarValorDefecto(elementId)
         campo.attr("value", "");
         campo.html("");
     }
+}
+
+/**
+ * Lo mismo pero no toca los inputs devuelve boolean
+ *
+ * @return true si el campo posee valor por defecto
+ */
+function verificarValorDefectoBool(elementId)
+{
+    var campo = $("#" + elementId);
+    if(campo.attr("title") == campo.attr("value") || campo.attr("title") == campo.html()){
+        return true;
+    }
+
+    return false;
 }
 
 function paginar(iPage ,toUrl, div, params){

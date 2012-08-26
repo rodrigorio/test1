@@ -9,19 +9,7 @@ class InstitucionesControllerIndex extends PageControllerAbstract
                                        'filtroPais' => 'pa.id',
                                        'filtroProvincia' => 'pr.id',
                                        'filtroCiudad' => 'i.ciudades_id');
-
-    private $orderByConfig = array('nombre' => array('variableTemplate' => 'orderByNombre',
-                                                     'orderBy' => 'i.nombre',
-                                                     'order' => 'desc'),
-                                   'tipo' => array('variableTemplate' => 'orderByTipoInstitucion',
-                                                   'orderBy' => 'it.nombre',
-                                                   'order' => 'desc'));
-       
-    private function setFrameTemplate(){
-        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
-        return $this;
-    }
-    
+           
     /**
      * Setea el Head para las vistas de Instituciones
      */
@@ -40,462 +28,33 @@ class InstitucionesControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
         //js de home
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "jsContent", "JsContent");
 
         return $this;
     }
 
-    private function setMenuDerecha()
-    {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-        
-        $this->getTemplate()->set_var("hrefListadoInstituciones", $this->getUrlFromRoute("comunidadInstitucionesIndex", true));
-        $this->getTemplate()->set_var("hrefMisInstituciones", $this->getUrlFromRoute("comunidadInstitucionesMisInstituciones", true));
-        $this->getTemplate()->set_var("hrefNuevaInstitucion", $this->getUrlFromRoute("comunidadInstitucionesNueva", true));
-
-        return $this;
-    }
-
-    /**
-     * Establece descripcion de Instituciones y el menu con 2 opciones,
-     * estado de Instituciones enviadas y formulario para enviar nueva Institucion
-     */
     public function index()
     {
-        $this->listadoInstituciones();
+        $this->listar();
     }
 
-    public function procesar()
+    public function listar()
     {
-        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
-        if(!$this->getAjaxHelper()->isAjaxContext()){
-            throw new Exception("", 404);
-        }
-
-        if($this->getRequest()->has('borrarInstitucion')){
-            $this->borrarInstitucion();
-            return;
-        }
-        
-        if($this->getRequest()->has('solicitarInstitucionForm')){
-            $this->solicitarInstitucionForm();
-            return;
-        }
-
-        if($this->getRequest()->has('solicitarInstitucionProcesar')){
-            $this->solicitarInstitucionProcesar();
-            return;
-        }
-    }
-
-    private function solicitarInstitucionProcesar()
-    {
-        $iInstitucionId = $this->getRequest()->getParam('iInstitucionIdForm');
-        if(empty($iInstitucionId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $this->getJsonHelper()->initJsonAjaxResponse();
-        try{
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iUsuarioId = $perfil->getUsuario()->getId();
-            
-            if(ComunidadController::getInstance()->existeSolicitudInstitucion($iInstitucionId, $iUsuarioId))
-            {
-                $this->getJsonHelper()->setMessage("Ya hay una solicitud pendiente de moderación");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
-
-            $oSolicitud = new stdClass();
-            $oSolicitud->oUsuario = $perfil->getUsuario();
-            $oSolicitud->sMensaje = $this->getRequest()->getPost('mensaje');
-            $oSolicitud = Factory::getSolicitudInstance($oSolicitud);
-
-            $oInstitucion->addSolicitud($oSolicitud);
-            ComunidadController::getInstance()->guardarSolicitudesInstitucion($oInstitucion);
-            $this->getJsonHelper()->setSuccess(true);
-            $this->getJsonHelper()->sendJsonAjaxResponse();
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setMessage("Hubo un error al tratar de procesar la solicitud");
-            $this->getJsonHelper()->setSuccess(false);
-            $this->getJsonHelper()->sendJsonAjaxResponse();
-        }       
-    }
-
-    private function solicitarInstitucionForm()
-    {
-        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "popUpContent", "FormularioSolicitarInstitucionBlock");
-
-        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
-        if(empty($iInstitucionId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
-
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
-    }
-
-    private function borrarInstitucion()
-    {
-        $iInstitucionId = $this->getRequest()->getPost('iInstitucionId');
-
-        if(empty($iInstitucionId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-        
-        $this->getJsonHelper()->initJsonAjaxResponse();
-        try{
-
-            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
-
-            //si la institucion no la creo el usuario entonces no muestro la vista.
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iUsuarioId = $perfil->getUsuario()->getId();
-            if(null === $oInstitucion->getUsuario() || $oInstitucion->getUsuario()->getId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para borrar esta institucion", 401);
-            }
-
-            $result = ComunidadController::getInstance()->borrarInstitucion($iInstitucionId);
-
-            $this->restartTemplate();
-
-            if($result){
-                $msg = "La institución fue eliminada del sistema";
-                $bloque = 'MsgCorrectoBlockI32';
-                $this->getJsonHelper()->setSuccess(true);
-            }else{
-                $msg = "Ocurrio un error, no se ha eliminado la institución del sistema";
-                $bloque = 'MsgErrorBlockI32';
-                $this->getJsonHelper()->setSuccess(false);
-            }
-
-        }catch(Exception $e){
-            $msg = "Ocurrio un error, no se ha eliminado la institución del sistema";
-            $bloque = 'MsgErrorBlockI32';
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
-        $this->getTemplate()->set_var("sMensaje", $msg);
-        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
-    }
-
-    /**
-     * Procesa el envio desde un formulario de Institucion.
-     */
-    public function guardar()
-    {
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
-
-        if($this->getRequest()->has('crearInstitucion')){
-            $this->crearInstitucionProcesar();
-            return;
-        }
-
-        if($this->getRequest()->has('modificarInstitucion')){
-            $this->modificarInstitucionProcesar();
-            return;
-        }
-    }
-
-    private function crearInstitucionProcesar()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $oUsuario = $perfil->getUsuario();
-
-            $oInstitucion = new stdClass();
-            
-            $oInstitucion->sNombre = $this->getRequest()->getPost('nombre');
-            $oInstitucion->sDescripcion	= $this->getRequest()->getPost('descripcion');
-            $oInstitucion->iTipoInstitucion = $this->getRequest()->getPost('tipo');
-            $oInstitucion->sCargo = $this->getRequest()->getPost('cargo');
-            $oInstitucion->sPersoneriaJuridica = $this->getRequest()->getPost('personeriaJuridica');
-            $oInstitucion->sDireccion = $this->getRequest()->getPost('direccion');
-            $oCiudad = ComunidadController::getInstance()->getCiudadById($this->getRequest()->getPost('ciudad'));
-            $oInstitucion->oCiudad = $oCiudad;
-            $oInstitucion->iCiudadId = $this->getRequest()->getPost('ciudad');
-            $oInstitucion->sTelefono = $this->getRequest()->getPost('telefono');
-            $oInstitucion->sSitioWeb = $this->getRequest()->getPost('sitioWeb');
-            $oInstitucion->sEmail = $this->getRequest()->getPost('email');
-            $oInstitucion->sHorariosAtencion = $this->getRequest()->getPost('horariosAtencion');
-            $oInstitucion->sSedes = $this->getRequest()->getPost('sedes');
-            $oInstitucion->sAutoridades	= $this->getRequest()->getPost('autoridades');
-            $oInstitucion->sActividadesMes = $this->getRequest()->getPost('actividadesMes');
-            $oInstitucion->sLatitud = $this->getRequest()->getPost('latitud');
-            $oInstitucion->sLongitud = $this->getRequest()->getPost('longitud');
-            $oInstitucion->oUsuario = $oUsuario;
-            $oInstitucion = Factory::getInstitucionInstance($oInstitucion);
-
-            ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
-
-            $this->getJsonHelper()->setValor("agregarInstitucion", "1");
-            $this->getJsonHelper()->setMessage("La institucion se creo exitosamente en el sistema");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    private function modificarInstitucionProcesar()
-    {
-        try{                        
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $iInstitucionId = $this->getRequest()->getPost('institucionId');
-            if(empty($iInstitucionId)){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-
-            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
-
-            //si la institucion no la creo el usuario entonces no muestro la vista.
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iUsuarioId = $perfil->getUsuario()->getId();
-            if(null === $oInstitucion->getUsuario() || $oInstitucion->getUsuario()->getId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para modificar esta institucion", 401);
-            }
-
-            $oInstitucion->setNombre($this->getRequest()->getPost('nombre'));
-            $oInstitucion->setDescripcion($this->getRequest()->getPost('descripcion'));
-            $oInstitucion->setTipoInstitucion( $this->getRequest()->getPost('tipo'));
-            $oInstitucion->setCargo($this->getRequest()->getPost('cargo'));
-            $oInstitucion->setPersoneriaJuridica($this->getRequest()->getPost('personeriaJuridica'));
-            $oInstitucion->setDireccion($this->getRequest()->getPost('direccion'));
-            $oCiudad = ComunidadController::getInstance()->getCiudadById($this->getRequest()->getPost('ciudad'));
-            $oInstitucion->setCiudad($oCiudad);
-            $oInstitucion->setTelefono($this->getRequest()->getPost('telefono'));
-            $oInstitucion->setSitioWeb($this->getRequest()->getPost('sitioWeb'));
-            $oInstitucion->setAutoridades($this->getRequest()->getPost('autoridades'));
-            $oInstitucion->setEmail($this->getRequest()->getPost('email'));
-            $oInstitucion->setSedes($this->getRequest()->getPost('sedes'));
-            $oInstitucion->setHorariosAtencion($this->getRequest()->getPost('horariosAtencion'));
-            $oInstitucion->setActividadesMes($this->getRequest()->getPost('actividadesMes'));
-            $oInstitucion->setLatitud($this->getRequest()->getPost('latitud'));
-            $oInstitucion->setLongitud( $this->getRequest()->getPost('longitud'));
-                       
-            ComunidadController::getInstance()->guardarInstitucion($oInstitucion);
-
-            $this->getJsonHelper()->setValor("modificarInstitucion", "1");
-            $this->getJsonHelper()->setMessage("La institucion se modifico exitosamente");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();            
-    }
-    
-    public function nuevaInstitucion()
-    {
-        $this->formularioInstitucion();
-    }
-
-    public function editarInstitucion()
-    {
-        $this->formularioInstitucion();
-    }
-
-    private function formularioInstitucion()
-    {
-        $this->setFrameTemplate()
-             ->setHeadTag()
-             ->setMenuDerecha();
-
-        IndexControllerComunidad::setCabecera($this->getTemplate());
-        IndexControllerComunidad::setCenterHeader($this->getTemplate());
+        $this->getTemplate()->load_file("gui/templates/index/frame01-02.gui.html", "frame");
+        $this->setHeadTag();
 
         $this->printMsgTop();
         
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-        $this->getTemplate()->set_var("tituloSeccion", "Instituciones Comunidad");
+        //titulo seccion
+        $this->getTemplate()->set_var("sNombreSeccionTopPage", "Instituciones");
 
-        //AGREGAR INSTITUCION
-        if($this->getRequest()->getActionName() == "nuevaInstitucion"){
+        $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "columnaIzquierdaContent", "ListadoInstitucionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "columnaDerechaContent", "BuscarInstitucionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
-            $this->getTemplate()->unset_blocks("SubmitModificarInstitucionBlock");
-
-            $sTituloForm = "Agregar una nueva institución";
-
-            //valores por defecto en el agregar
-            $oInstitucion = null;
-            $sNombre = "";
-            $sDescripcion = "";
-            $iTipoInstitucion = "";
-            $sCargo = "";
-            $sPersoneriaJuridica = "";
-            $sDireccion = "";
-            $iPaisId = "";
-            $iProvinciaId = "";
-            $iCiudadId = "";
-            $sEmail = "";
-            $sTelefono = "";
-            $sSitioWeb = "";
-            $sHorariosAtencion = "";
-            $sSedes = "";
-            $sAutoridades = "";
-            $sActividadesMes = "";
-            $sLatitud = "";
-            $sLongitud = "";
-
-        //MODIFICAR INSTITUCION
-        }else{
-
-            $iInstitucionId = $this->getRequest()->getParam('institucionId');
-            if(empty($iInstitucionId)){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-
-            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
-
-            //si la institucion no la creo el usuario entonces no muestro la vista.
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $iUsuarioId = $perfil->getUsuario()->getId();
-            if(null === $oInstitucion->getUsuario() || $oInstitucion->getUsuario()->getId() != $iUsuarioId){
-                throw new Exception("No tiene permiso para modificar esta institucion", 401);
-            }
-             
-            $this->getTemplate()->unset_blocks("SubmitCrearInstitucionBlock");
-
-            $sTituloForm = "Modificar Institución";
-
-            $sNombre = $oInstitucion->getNombre();
-            $sDescripcion = $oInstitucion->getDescripcion();
-            $iTipoInstitucion = $oInstitucion->getTipoInstitucionId();
-            $sCargo = $oInstitucion->getCargo();
-            $sPersoneriaJuridica = $oInstitucion->getPersoneriaJuridica();
-            $sDireccion = $oInstitucion->getDireccion();
-            $sEmail = $oInstitucion->getEmail();
-            $sTelefono = $oInstitucion->getTelefono();
-            $sSitioWeb = $oInstitucion->getSitioWeb();
-            $sHorariosAtencion = $oInstitucion->getHorariosAtencion();
-            $sSedes = $oInstitucion->getSedes();
-            $sAutoridades = $oInstitucion->getAutoridades();
-            $sActividadesMes = $oInstitucion->getActividadesMes();
-            $sLatitud = $oInstitucion->getLatitud();
-            $sLongitud = $oInstitucion->getLongitud();
-
-            $iPaisId = "";
-            $iProvinciaId = "";
-            $iCiudadId = "";
-            if(null != $oInstitucion->getCiudad()){
-                $iCiudadId = $oInstitucion->getCiudad()->getId();
-                if(null != $oInstitucion->getCiudad()->getProvincia()){
-                $iProvinciaId = $oInstitucion->getCiudad()->getProvincia()->getId();
-                    if(null != $oInstitucion->getCiudad()->getProvincia()->getPais()){
-                        $iPaisId = $oInstitucion->getCiudad()->getProvincia()->getPais()->getId();
-                    }
-                }
-            }
-
-            $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
-        }
-        
-        $arrayPaises = array();
-        $iRecordsTotalPais = 0;
-        $listaPaises = ComunidadController::getInstance()->listaPaises($arrayPaises, $iRecordsTotalPais, null,  null,  null,  null);
-        foreach ($listaPaises as $oPais){
-            if($iPaisId == $oPais->getId()){
-                $this->getTemplate()->set_var("sPaisSelect", "selected='selected'");
-            }else{
-                $this->getTemplate()->set_var("sPaisSelect", "");
-            }
-            $this->getTemplate()->set_var("iPaisId", $oPais->getId());
-            $this->getTemplate()->set_var("sPaisNombre", $oPais->getNombre());
-            $this->getTemplate()->parse("ListaPaisesBlock", true);
-        }
-
-        if(!empty($iPaisId)){
-            $listaProvincias = ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
-            foreach ($listaProvincias as $oProvincia){
-                if($iProvinciaId == $oProvincia->getId()){
-                    $this->getTemplate()->set_var("sProvinciaSelect", "selected='selected'");
-                }else{
-                    $this->getTemplate()->set_var("sProvinciaSelect", "");
-                }
-                $this->getTemplate()->set_var("iProvinciaId", $oProvincia->getId());
-                $this->getTemplate()->set_var("sProvinciaNombre", $oProvincia->getNombre());
-                $this->getTemplate()->parse("ListaProvinciasBlock", true);
-            }
-        }
-        
-        if(!empty($iProvinciaId)){
-            $listaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);            
-            foreach($listaCiudades as $oCiudad){
-                if($iCiudadId == $oCiudad->getId()){
-                    $this->getTemplate()->set_var("sCiudadSelect", "selected='selected'");
-                }else{
-                    $this->getTemplate()->set_var("sCiudadSelect", "");
-                }
-                $this->getTemplate()->set_var("iCiudadId", $oCiudad->getId());
-                $this->getTemplate()->set_var("sCiudadNombre", $oCiudad->getNombre());
-                $this->getTemplate()->parse("ListaCiudadesBlock", true);
-            }
-        }
-
-        $iRecordsTotal = 0;
-        $aTipoInstitucion = ComunidadController::getInstance()->listaTiposDeInstitucion($filtro = array(), $iRecordsTotal, null, null, null, null);
-        foreach ($aTipoInstitucion as $oTipoInstitucion){
-            if($oTipoInstitucion->iId == $iTipoInstitucion){
-                $this->getTemplate()->set_var("sSelectedTipoInstitucion", "selected='selected'");
-            }else{
-                $this->getTemplate()->set_var("sSelectedTipoInstitucion", "");
-            }
-            $this->getTemplate()->set_var("iTipoInstitucionValue", $oTipoInstitucion->iId);
-            $this->getTemplate()->set_var("sTipoInstitucion", $oTipoInstitucion->sNombre);
-            $this->getTemplate()->parse("OptionSelectTipoInstitucion", true);
-        }
-
-        $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-        $this->getTemplate()->set_var("sNombre", $sNombre);
-        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-        $this->getTemplate()->set_var("sCargo", $sCargo);
-        $this->getTemplate()->set_var("sPersoneriaJuridica", $sPersoneriaJuridica);
-        $this->getTemplate()->set_var("sDireccion", $sDireccion);
-        $this->getTemplate()->set_var("sEmail", $sEmail);
-        $this->getTemplate()->set_var("sTelefono", $sTelefono);
-        $this->getTemplate()->set_var("sSitioWeb", $sSitioWeb);
-        $this->getTemplate()->set_var("sHorariosAtencion", $sHorariosAtencion);
-        $this->getTemplate()->set_var("sSedes", $sSedes);
-        $this->getTemplate()->set_var("sAutoridades", $sAutoridades);
-        $this->getTemplate()->set_var("sActividadesMes", $sActividadesMes);
-        $this->getTemplate()->set_var("sLatitud", $sLatitud);
-        $this->getTemplate()->set_var("sLongitud", $sLongitud);
-        	
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-    }
-
-    public function listadoInstituciones()
-    {
-        $this->setFrameTemplate()
-             ->setHeadTag()
-             ->setMenuDerecha();
-
-        IndexControllerComunidad::setCabecera($this->getTemplate());
-        IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-        $this->printMsgTop();
-
-        $this->getTemplate()->set_var("tituloSeccion", "Instituciones Comunidad");
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "ListadoInstitucionesBlock");
+        IndexControllerIndex::setFooter($this->getTemplate());
 
         ///////////// ARMO LOS SELECTS DEL FORMULARIO DEL FILTRO
-
         $iRecordsTotalPais = 0;
         $listaPaises = ComunidadController::getInstance()->listaPaises($filtro = array(), $iRecordsTotalPais, null,  null,  null,  null);
         foreach($listaPaises as $oPais){
@@ -514,7 +73,7 @@ class InstitucionesControllerIndex extends PageControllerAbstract
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesComunidad($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesVisitantes($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         if(count($aInstituciones) > 0){
 
@@ -529,43 +88,39 @@ class InstitucionesControllerIndex extends PageControllerAbstract
                 $this->getTemplate()->set_var("sUbicacion", $sUbicacion);
                 $this->getTemplate()->set_var("sDescripcion", $oInstitucion->getDescripcion(true));
 
-                /*
-                 * la url de publicacion ampliada es diferente segun el tipo
-                 *
-                 * http://domain.com/comunidad/instituciones/32-Nombre de la institucion
-                 */
                 $sTituloUrl = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
-                $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
+                $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
 
                 $this->getTemplate()->parse("InstitucionBlock", true);                                
             }
 
             $this->getTemplate()->set_var("NoRecordsInstitucionesBlock", "");
 
-            $params = array();
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/masInstituciones", "listadoInstitucionesResult", $params);
+            $params[] = "masInstituciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "instituciones/procesar", "listadoInstitucionesResult", $params);
         }else{
             $this->getTemplate()->set_var("InstitucionBlock", "");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "noRecords", "NoRecordsInstitucionesBlock");
-            $this->getTemplate()->set_var("sNoRecords", "No hay instituciones cargadas en la comunidad");
-            $this->getTemplate()->parse("noRecords", false);
+            $this->getTemplate()->set_var("sNoRecords", "Por el momento no hay instituciones disponibles");
+            $this->getTemplate()->parse("NoRecordsInstitucionesBlock");
         }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
 
-    public function masInstituciones()
+    private function masInstituciones()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "ajaxFichasInstitucionesBlock", "FichasInstitucionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "ajaxFichasInstitucionesBlock", "FichasInstitucionesBlock");
 
         $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesVisitantes($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         if(count($aInstituciones) > 0){
+
+            $this->getTemplate()->set_var("NoRecordsInstitucionesBlock", "");
 
             foreach($aInstituciones as $oInstitucion){
 
@@ -578,28 +133,33 @@ class InstitucionesControllerIndex extends PageControllerAbstract
                 $this->getTemplate()->set_var("sUbicacion", $sUbicacion);
                 $this->getTemplate()->set_var("sDescripcion", $oInstitucion->getDescripcion(true));
 
-                /*
-                 * la url de publicacion ampliada es diferente segun el tipo
-                 *
-                 * http://domain.com/comunidad/instituciones/32-Nombre de la institucion
-                 */
                 $sTituloUrl = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
-                $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
+                $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
 
                 $this->getTemplate()->parse("InstitucionBlock", true);
             }
 
-            $this->getTemplate()->set_var("NoRecordsInstitucionesBlock", "");
-
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/masInstituciones", "listadoInstitucionesResult", $paramsPaginador);
+            $paramsPaginador[] = "masInstituciones=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "instituciones/procesar", "listadoInstitucionesResult", $paramsPaginador);
         }else{
             $this->getTemplate()->set_var("InstitucionBlock", "");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "noRecords", "NoRecordsInstitucionesBlock");
-            $this->getTemplate()->set_var("sNoRecords", "No se encontraron instituciones");
-            $this->getTemplate()->parse("noRecords", false);
+            $this->getTemplate()->set_var("sNoRecords", "No se encontraron resultados");
         }
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxFichasInstitucionesBlock', false));
+    }
+
+    public function procesar()
+    {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('masInstituciones')){
+            $this->masInstituciones();
+            return;
+        }     
     }
 
     public function ampliarInstitucion()
@@ -764,191 +324,5 @@ class InstitucionesControllerIndex extends PageControllerAbstract
         }catch(Exception $e){
             throw new Exception($e);
         }
-     }
-     
-    /**
-     * Devuelve las instituciones para el autocomplete de la busqueda de instituciones
-     */
-    public function buscarInstituciones(){
-
-        //si accedio a traves de la url muestra pagina 404
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $iRecordsTotal = 0;
-            $sOrderBy=$sOrder=$iIniLimit=$iRecordCount=null;
-            $filtro = array("i.nombre" => $this->getRequest()->get('str'));
-            $vInstituciones = ComunidadController::getInstance()->obtenerInstituciones($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
-            $vResult = array();
-            if(count($vInstituciones)>0){
-                foreach($vInstituciones as $oInstitucion){
-                    $obj = new stdClass();
-                    $obj->id = $oInstitucion->getId();
-                    $obj->nombre = $oInstitucion->getNombre();
-                    $vResult[] = $obj;
-                }
-            }
-            //agrega una url para que el js redireccione
-            $this->getJsonHelper()->setSuccess(true)->setValor("instituciones", $vResult);
-         }catch(Exception $e){
-            print_r($e);
-        }
-
-        //setea headers y body en el response con los valores codificados
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    public function misInstituciones()
-    {
-        try{
-            $this->setFrameTemplate()
-                 ->setHeadTag()
-                 ->setMenuDerecha();
-
-            IndexControllerComunidad::setCabecera($this->getTemplate());
-            IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-            $this->printMsgTop();
-
-            $this->getTemplate()->set_var("tituloSeccion", "Mis Instituciones");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "ListadoMisInstitucionesBlock");
-
-            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
-
-            $iRecordsTotal = 0;
-            $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-
-            if(count($aInstituciones) > 0){
-
-                $this->getTemplate()->set_var("NoRecordsMisInstitucionesBlock", "");
-
-                foreach($aInstituciones as $oInstitucion){
-
-                    /*
-                     * la url de publicacion ampliada es diferente segun el tipo
-                     *
-                     * http://domain.com/comunidad/instituciones/32-Nombre de la institucion
-                     */
-                    $sTituloUrl = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
-                    $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
-
-                    $this->getTemplate()->set_var("hrefEditarInstitucion", $this->getUrlFromRoute("comunidadInstitucionesEditarInstitucion", true)."?institucionId=".$oInstitucion->getId());
-
-                    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
-                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
-                    $this->getTemplate()->set_var("sNombreTipoInstitucion", $oInstitucion->getNombreTipoInstitucion());
-                    $this->getTemplate()->set_var("sCargo", $oInstitucion->getCargo());
-
-                    if($oInstitucion->getModeracion()->isPendiente()){
-                        $cartelModeracion = "MsgFichaInfoBlock";
-                        $tituloModeracion = "Moderación Pendiente";
-                        $mensajeModeracion = "La institución solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
-                    }
-
-                    if($oInstitucion->getModeracion()->isRechazado()){
-                        $cartelModeracion = "MsgFichaErrorBlock";
-                        $tituloModeracion = "Institución Rechazada";
-                        $mensajeModeracion = "La Institución no sera visible fuera de la comunidad de profesionales. Causa: ".$oInstitucion->getModeracion()->getMensaje(true);
-                    }
-
-                    if($oInstitucion->getModeracion()->isAprobado()){
-                        $cartelModeracion = "MsgFichaCorrectoBlock";
-                        $tituloModeracion = "Institución Aprobada";
-                        $mensajeModeracion = "La institución es visible para cualquier visitante fuera de la comunidad de profesionales, su contenido fue aprobado.";
-                    }
-
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucion", $cartelModeracion);
-                    $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
-                    $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                    $this->getTemplate()->parse("sMensajeInstitucion", false);
-
-                    $this->getTemplate()->parse("MiInstitucionBlock", true);
-
-                    $this->getTemplate()->set_var("sMensajeInstitucion","");
-                }
-
-                $params = array();
-                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/instituciones/mas-mis-instituciones", "listadoMisInstitucionesResult", $params);
-
-            }else{
-                $this->getTemplate()->set_var("MiInstitucionBlock", "");
-                $this->getTemplate()->set_var("sNoRecords", "Todavía no hay instituciones creadas.");
-            }
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-        }catch(Exception $e){
-            echo $e->getMessage();
-            throw new Exception($e->getMessage());
-        }
-    }
-
-    public function masMisInstituciones()
-    {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "ajaxGrillaInstitucionesBlock", "GrillaMisInstitucionesBlock");
-
-        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-        $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
-
-        $iRecordsTotal = 0;
-        $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesUsuario($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-
-        if(count($aInstituciones) > 0){
-
-            $this->getTemplate()->set_var("NoRecordsMisInstitucionesBlock", "");
-
-            foreach($aInstituciones as $oInstitucion){
-
-                /*
-                 * la url de publicacion ampliada es diferente segun el tipo
-                 *
-                 * http://domain.com/comunidad/instituciones/32-Nombre de la institucion
-                 */
-                $sTituloUrl = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
-                $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
-
-                $this->getTemplate()->set_var("hrefEditarInstitucion", $this->getUrlFromRoute("comunidadInstitucionesEditarInstitucion", true)."?institucionId=".$oInstitucion->getId());
-
-                $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
-                $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
-                $this->getTemplate()->set_var("sNombreTipoInstitucion", $oInstitucion->getNombreTipoInstitucion());
-                $this->getTemplate()->set_var("sCargo", $oInstitucion->getCargo());
-
-                if($oInstitucion->getModeracion()->isPendiente()){
-                    $cartelModeracion = "MsgFichaInfoBlock";
-                    $tituloModeracion = "Moderación Pendiente";
-                    $mensajeModeracion = "La institución solo será visible por usuarios del sistema mientras se encuentre pendiente de moderación.";
-                }
-
-                if($oInstitucion->getModeracion()->isRechazado()){
-                    $cartelModeracion = "MsgFichaErrorBlock";
-                    $tituloModeracion = "Institución Rechazada";
-                    $mensajeModeracion = "La Institución no sera visible fuera de la comunidad de profesionales. Causa: ".$oInstitucion->getModeracion()->getMensaje(true);
-                }
-
-                if($oInstitucion->getModeracion()->isAprobado()){
-                    $cartelModeracion = "MsgFichaCorrectoBlock";
-                    $tituloModeracion = "Institución Aprobada";
-                    $mensajeModeracion = "La institución es visible para cualquier visitante fuera de la comunidad de profesionales, su contenido fue aprobado.";
-                }
-
-                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucion", $cartelModeracion);
-                $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
-                $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                $this->getTemplate()->parse("sMensajeInstitucion", false);
-
-                $this->getTemplate()->parse("MiInstitucionBlock", true);
-
-                $this->getTemplate()->set_var("sMensajeInstitucion","");
-            }
-
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/instituciones/mas-mis-instituciones", "listadoMisInstitucionesResult", $paramsPaginador = array());
-        }else{
-            $this->getTemplate()->set_var("MiInstitucionBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No se encontraron instituciones.");
-        }
-
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaInstitucionesBlock', false));
-    }
+     }    
 }

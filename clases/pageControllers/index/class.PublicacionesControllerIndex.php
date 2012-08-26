@@ -146,27 +146,20 @@ class PublicacionesControllerIndex extends PageControllerAbstract
 
     private function masPublicaciones()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "ajaxFichasPublicacionesBlock", "FichasPublicacionesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "ajaxFichasPublicacionesBlock", "FichasPublicacionesBlock");
 
         $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
         $iRecordsTotal = 0;
-        $aFichas = ComunidadController::getInstance()->buscarPublicacionesComunidad($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $aFichas = ComunidadController::getInstance()->buscarPublicacionesVisitantes($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         if(count($aFichas) > 0){
 
             $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
 
             foreach($aFichas as $oFicha){
-
-                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
-                if(get_class($oFicha) == 'Publicacion'){
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
-                }else{
-                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/comunidad/reviews/'.$oFicha->getId()."-".$sTituloUrl);
-                }
 
                 $oUsuario = $oFicha->getUsuario();
                 $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
@@ -178,17 +171,22 @@ class PublicacionesControllerIndex extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                 $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);                
+                $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
                 $this->getTemplate()->set_var("sDescripcionBreve", $oFicha->getDescripcionBreve());
 
-                $this->thumbDestacadoFicha($oFicha);
-                $this->comentariosFicha($oFicha);
+                $sTituloUrl = $this->getInflectorHelper()->urlize($oFicha->getTitulo());
+                if(get_class($oFicha) == 'Publicacion'){
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/publicaciones/'.$oFicha->getId()."-".$sTituloUrl);
+                }else{
+                    $this->getTemplate()->set_var("hrefAmpliarPublicacion", $this->getRequest()->getBaseUrl().'/reviews/'.$oFicha->getId()."-".$sTituloUrl);
+                }
 
+                $this->thumbDestacadoFicha($oFicha);
                 $this->getTemplate()->parse("PublicacionBlock", true);
             }
 
             $paramsPaginador[] = "masPublicaciones=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "comunidad/publicaciones/procesar", "listadoPublicacionesResult", $paramsPaginador);
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "publicaciones/procesar", "listadoPublicacionesResult", $paramsPaginador);
         }else{
             $this->getTemplate()->set_var("PublicacionBlock", "");
             $this->getTemplate()->set_var("sNoRecords", "No se encontraron resultados");

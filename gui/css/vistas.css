@@ -412,7 +412,7 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .ficha03 .encabezado{background-color:#EFEFEF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha03 .encabezado .izq{position:relative; z-index:1;}
 .ficha03 .encabezado .izq .icono{float:left; margin-right:10px}
-.ficha03 .encabezado .izq .titulo{font-size:1.7em; text-transform:uppercase}
+.ficha03 .encabezado .izq .titulo{font-size:1.7em; text-transform:uppercase; line-height:22px}
 .ficha03 .encabezado .izq .subtitulo{font-size:0.8em}
 .ficha03 .encabezado .der{float:right; position:relative; margin-left:20px; z-index:2}
 .ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF; margin-bottom:10px; border-bottom:1px solid #CCC}
@@ -565,7 +565,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 
 /*** FUENTES ***/
 .fte2{font-size:0.8em !important}
-.fte3{font-size:1.7em} /* Puede utilizarse en lineas de 36px */
+.fte3{font-size:1.7em; line-height:22px} /* Puede utilizarse en lineas de 36px */
 .fte4{font-size:2.8em; line-height:36px}
 /* mas grande que esto imposible.. max size para casos especiales tipo 404 etc. se sigue respetando multiplos de 18px q equivale a un renglon */
 .fte5{font-size:6em; line-height:72px;}
