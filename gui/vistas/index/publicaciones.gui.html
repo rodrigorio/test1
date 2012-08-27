@@ -130,7 +130,13 @@
                 </div>
             </div>
             <div class="titulo">{sTitulo}</div>
-            <div class="subtitulo">{sAutor} - {sFecha}</div>
+            <div class="subtitulo">
+                <span class="fost_it">por</span> <strong>{sAutor}</strong>
+                <!--BeginEmailAutorBlock-->
+                | <a href="mailto:{sEmail}">{sEmail}</a>
+                <!--EndEmailAutorBlock-->
+                - {sFecha}
+            </div>
         </div>
     </div>
     <div class="contenido mabo3">
@@ -142,9 +148,6 @@
     <ul class="fl_ri mabo2 mato iveal cl_bo">
         <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
     </ul>
-</div>
-<div id="comentarios">
-    {comentarios}
 </div>
 <!--EndPublicacionAmpliadaBlock-->
 
@@ -212,8 +215,5 @@
     <ul class="fl_ri mabo2 mato iveal cl_bo">
         <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Publicaci&oacute;n</a></li>
     </ul>
-</div>
-<div id="comentarios">
-    {comentarios}
 </div>
 <!--EndReviewAmpliadaBlock-->
