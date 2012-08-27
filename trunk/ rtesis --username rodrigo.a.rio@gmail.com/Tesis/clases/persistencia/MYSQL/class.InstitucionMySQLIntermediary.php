@@ -352,6 +352,11 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             if(isset($filtro['m.sModeracionEstado']) && $filtro['m.sModeracionEstado'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('m.sModeracionEstado', $filtro['m.sModeracionEstado']);
             }
+            
+            //lo hago asi porque es un and que no se puede ser por filtro automatico
+            if(isset($filtro['latLng'])){
+                $WHERE[] = " (i.latitud <> '' AND i.longitud <> '') ";
+            }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 

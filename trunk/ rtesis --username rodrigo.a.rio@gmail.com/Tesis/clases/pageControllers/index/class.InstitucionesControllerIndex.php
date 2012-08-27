@@ -159,7 +159,57 @@ class InstitucionesControllerIndex extends PageControllerAbstract
         if($this->getRequest()->has('masInstituciones')){
             $this->masInstituciones();
             return;
-        }     
+        }   
+        
+        if($this->getRequest()->has('obtenerMarcas')){
+            $this->obtenerMarcas();
+            return;
+        }           
+    }
+
+    /**
+     * Devuelve un json de instituciones con latitud, longitud, y nubesita para el mapa.
+     */
+    public function obtenerMarcas()
+    {
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
+            $filtroSql['latLng'] = "latLng";
+
+            $iRecordsTotal = 0;            
+            $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesVisitantes($filtroSql, $iRecordsTotal, null, null, null, null);
+
+            $aResult = array();
+            if(count($aInstituciones)>0){
+                foreach($aInstituciones as $oInstitucion){
+                    $obj = new stdClass();
+                    $obj->latitud = $oInstitucion->getLatitud();
+                    $obj->longitud = $oInstitucion->getLongitud();
+                    $obj->title = $oInstitucion->getNombre();
+
+                    $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "ajaxInfoWindowMapaBlock", "InfoWindowMapaBlock");
+
+                    $sTituloUrl = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
+                    $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
+                    $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
+                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
+
+                    $obj->info = $this->getTemplate()->pparse('ajaxInfoWindowMapaBlock', false);
+                    $aResult[] = $obj;
+
+                    $this->getTemplate()->delete_parsed_blocks("InfoWindowMapaBlock");
+                }
+            }
+
+            $this->getJsonHelper()->setValor("marcas", $aResult);
+         }catch(Exception $e){
+            print_r($e);
+        }
+
+        //setea headers y body en el response con los valores codificados
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     public function ampliarInstitucion()
