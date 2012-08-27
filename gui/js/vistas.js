@@ -149,7 +149,7 @@ function ocultarElemento(object){
 function setWaitingStatus(contenedorId, show)
 {    
     var contenedor = $("#" + contenedorId);
-    var ajaxLoading = $("#" + contenedorId + " #ajax_loading");
+    var ajaxLoading = $("#" + contenedorId + " .ajax_wait30");
 
     if(show){
         contenedor.addClass("ajaxdelay");

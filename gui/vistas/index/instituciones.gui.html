@@ -11,7 +11,7 @@ $LAB
 .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
 .script("{pathUrlBase}"+"gui/js/googleMaps.js")
 .script("{pathUrlBase}"+"gui/js/vistas.js")
-.script("{pathUrlBase}"+"gui/vistas/comunidad/instituciones.js");
+.script("{pathUrlBase}"+"gui/vistas/index/instituciones.js");
 </script>
 <!--EndJsContent-->
 
@@ -92,8 +92,28 @@ $LAB
 <!--EndBuscarInstitucionesBlock-->
 
 <!--BeginListadoInstitucionesBlock-->
+<ul class="m_horiz mabo3 grupo">
+    <li>
+        <a class="button mostrarInstitucionesFicha" href="javascript:;">
+            <span class="i mi list"></span>
+            <span class="buttonText">Listar Fichas</span>
+        </a>
+    </li>
+    <li class="mari0">
+        <a class="button mostrarInstitucionesMapa" href="javascript:;">
+            <span class="i mi map"></span>
+            <span class="buttonText">Ver Mapa</span>
+        </a>
+    </li>
+</ul>
+
+<div id="contenedorMapaInstituciones" class="po_re di_no">
+    <div class="ajax_wait30 di_no"></div>
+    <div id="mapaInstituciones" class="he500 mapa01"></div>
+</div>
+
 <div id="listadoInstituciones" class="grupo po_re">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <div class="ajax_wait30 di_no"></div>
     <div id="listadoInstitucionesResult">
         <!--BeginFichasInstitucionesBlock-->
 
@@ -202,3 +222,8 @@ $LAB
     <!--EndIntegranteNoRecords-->
 </div>
 <!--EndFichaInstitucionBlock-->
+
+<!--BeginInfoWindowMapaBlock-->
+<span class="fowe_bo">{sNombre}</span> - <span class="fost_it">{sTipo}</span><br>
+<a href="{hrefAmpliarInstitucion}" target="_blank">Ver Ampliada</a>
+<!--EndInfoWindowMapaBlock-->

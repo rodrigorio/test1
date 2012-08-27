@@ -62,168 +62,14 @@ function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
     });
 }
 
-var validateFormInstitucion = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
-    },
-    highlight: function(element){},
-    unhighlight: function(element){},
-    rules:{
-        nombre:{required:true},
-        descripcion:{required:true},
-        tipo:{required:true},
-        cargo:{required:true},
-        direccion:{required:true},
-        pais:{required:true},
-        provincia:{required:true},
-        ciudad:{required:true},
-        email:{required:true, email:true},
-        telefono:{required:true},
-        sitioWeb:{url:true}        
-    },
-    messages:{
-        nombre: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido"),
-        tipo: mensajeValidacion("requerido"),
-        cargo: mensajeValidacion("requerido"),
-        direccion: mensajeValidacion("requerido"),
-        pais: mensajeValidacion("requerido"),
-        provincia: mensajeValidacion("requerido"),
-        ciudad: mensajeValidacion("requerido"),
-        email:{
-            required: mensajeValidacion("requerido"),
-            email: mensajeValidacion("email")
-        },
-        telefono: mensajeValidacion("requerido"),
-        sitioWeb:mensajeValidacion("url")
-    }
-};
-
-var optionsAjaxFormInstitucion = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url:"comunidad/guardar-institucion",
-    
-    beforeSerialize:function($form, options){
-        if($("#formInstitucion").valid() == true){
-            $('#msg_form_institucion').hide();
-            $('#msg_form_institucion').removeClass("correcto").removeClass("error");
-            $('#msg_form_institucion .msg').html("");
-
-            verificarValorDefecto("descripcion");
-            verificarValorDefecto("sedes");
-            verificarValorDefecto("autoridades");
-            verificarValorDefecto("actividadesMes");
-            
-            setWaitingStatus('formInstitucion', true);
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formInstitucion', false);
-
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_institucion .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_institucion .msg').html(data.mensaje);
-            }
-            $('#msg_form_institucion').addClass("error").fadeIn('slow');
-        }else{
-            if(data.mensaje == undefined){
-                $('#msg_form_institucion .msg').html(lang['exito procesar']);
-            }else{
-                $('#msg_form_institucion .msg').html(data.mensaje);
-            }
-            $('#msg_form_institucion').addClass("correcto").fadeIn('slow');
-        }
-
-        if(data.agregarInstitucion != undefined){
-            //limpio el form
-            $('#formInstitucion').each(function(){
-                this.reset();
-            });
-        }
-    }
-};
-
-var validateFormSolicitarInstitucion = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
-    },
-    highlight: function(element){},
-    unhighlight: function(element){},
-    rules:{
-        mensaje:{required:true}
-    },
-    messages:{
-        mensaje: mensajeValidacion("requerido")
-    }
-};
-
-var optionsAjaxFormSolicitarInstitucion = {
-    dataType: 'jsonp',
-    resetForm: true,
-    url: 'comunidad/instituciones/procesar',
-    data:{
-        solicitarInstitucionProcesar:"1"
-    },
-    beforeSerialize:function(){
-        if($("#formSolicitarInstitucion").valid() == true){
-            $('#msg_form_solicitarInstitucion').hide();
-            $('#msg_form_solicitarInstitucion').removeClass("correcto").removeClass("error");
-            $('#msg_form_solicitarInstitucion .msg').html("");
-            setWaitingStatus('formSolicitarInstitucion', true);
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formSolicitarInstitucion', false);
-
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_solicitarInstitucion .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_solicitarInstitucion .msg').html(data.mensaje);
-            }
-            $('#msg_form_solicitarInstitucion').addClass("error").fadeIn('slow');
-        }else{
-            $('#solicitarInstitucionCont').html("Solicitud de administración enviada.");
-
-            $("#dialog").hide("slow", function(){
-                $("#dialog").remove();
-            });
-        }
-    }
-};
-
-function bindEventsFormSolicitarInstitucion()
-{
-    $("#formSolicitarInstitucion").validate(validateFormSolicitarInstitucion);
-    $("#formSolicitarInstitucion").ajaxForm(optionsAjaxFormSolicitarInstitucion);
-    
-    $("textarea.maxlength").maxlength();
-}
-
 function masInstituciones(){
+
+    if(!$("#contenedorMapaInstituciones").hasClass("di_no")){
+        ocultarElemento($("#contenedorMapaInstituciones"));
+    }
+    if(!$("#listadoInstituciones").hasClass("di_bl")){
+        revelarElemento($("#listadoInstituciones"));
+    }
 
     var filtroNombre = $('#filtroNombre').val();
     var filtroTipoInstitucion = $('#filtroTipoInstitucion option:selected').val();
@@ -231,10 +77,13 @@ function masInstituciones(){
     var filtroProvincia = $('#filtroProvincia option:selected').val();
     var filtroCiudad = $('#filtroCiudad option:selected').val();
 
+    if(verificarValorDefectoBool("filtroNombre")){ filtroNombre = ""; }
+
     $.ajax({
         type:"POST",
-        url:"comunidad/masInstituciones",
+        url:"instituciones/procesar",
         data:{
+            masInstituciones:"1",
             filtroNombre: filtroNombre,
             filtroTipoInstitucion: filtroTipoInstitucion,
             filtroPais: filtroPais,
@@ -251,98 +100,47 @@ function masInstituciones(){
     });
 }
 
-function masMisInstituciones(){
-    var sOrderBy = $('#sOrderBy').val();
-    var sOrder = $('#sOrder').val();
+function cargarMarcasMapaInstituciones()
+{
+    if(!$("#listadoInstituciones").hasClass("di_no")){
+        ocultarElemento($("#listadoInstituciones"));
+    }
+    if(!$("#contenedorMapaInstituciones").hasClass("di_bl")){
+        revelarElemento($("#contenedorMapaInstituciones"));
+    }
+
+    iniciarMapaMarcasMultiples('mapaInstituciones');
+
+    var filtroNombre = $('#filtroNombre').val();
+    var filtroTipoInstitucion = $('#filtroTipoInstitucion option:selected').val();
+    var filtroPais = $('#filtroPais option:selected').val();
+    var filtroProvincia = $('#filtroProvincia option:selected').val();
+    var filtroCiudad = $('#filtroCiudad option:selected').val();
+
+    if(verificarValorDefectoBool("filtroNombre")){ filtroNombre = ""; }
 
     $.ajax({
-        type:"POST",
-        url:"comunidad/instituciones/mas-mis-instituciones",
+        dataType:'jsonp',
+        url:"instituciones/procesar",
         data:{
-            sOrderBy: sOrderBy,
-            sOrder: sOrder
+            obtenerMarcas:"1",
+            filtroNombre: filtroNombre,
+            filtroTipoInstitucion: filtroTipoInstitucion,
+            filtroPais: filtroPais,
+            filtroProvincia: filtroProvincia,
+            filtroCiudad: filtroCiudad
         },
         beforeSend: function(){
-            setWaitingStatus('listadoMisInstituciones', true);
+            setWaitingStatus('contenedorMapaInstituciones', true);
         },
         success:function(data){
-            setWaitingStatus('listadoMisInstituciones', false);
-            $("#listadoMisInstitucionesResult").html(data);
-        }
-    });
-}
-
-function borrarInstitucion(iInstitucionId){
-    if(confirm("Se borrara la institucion del sistema de manera permanente, desea continuar?")){
-        $.ajax({
-            type:"post",
-            dataType: 'jsonp',
-            url:"comunidad/instituciones/procesar",
-            data:{
-                iInstitucionId:iInstitucionId,
-                borrarInstitucion:"1"
-            },
-            success:function(data){
-                if(data.success != undefined && data.success == 1){
-                    $("."+iInstitucionId).hide("slow", function(){
-                        $("."+iInstitucionId).remove();
-                    });
-                }
-
-                var dialog = $("#dialog");
-                if($("#dialog").length){
-                    dialog.attr("title","Borrar Institución");
-                }else{
-                    dialog = $('<div id="dialog" title="Borrar Institución"></div>').appendTo('body');
-                }
-                dialog.html(data.html);
-
-                dialog.dialog({
-                    position:['center', 'center'],
-                    width:400,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true,
-                    buttons:{
-                        "Aceptar": function() {
-                            $(this).dialog( "close" );
-                        }
-                    }
-                });
-            }
-        });
-    }
-}
-
-function solicitarInstitucion(iInstitucionId){
-    $.ajax({
-        type:"post",
-        url:"comunidad/instituciones/procesar",
-        data:{
-            iInstitucionId:iInstitucionId,
-            solicitarInstitucionForm:"1"
-        },
-        success:function(data){
-
-            var dialog = $("#dialog");
-            if($("#dialog").length){
-                dialog.attr("title", "Solicitar Institución");
+            limpiarMarcas();
+            if(data.marcas.length < 1){
+                alert('No se encontraron instituciones. Considere modificar el filtro');
             }else{
-                dialog = $('<div id="dialog" title="Solicitar Institución"></div>').appendTo('body');
+                agregarMarcas(data.marcas);
             }
-            dialog.html(data);
-
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
-            bindEventsFormSolicitarInstitucion();           
+            setWaitingStatus('contenedorMapaInstituciones', false);            
         }
     });
 }
@@ -351,18 +149,6 @@ $(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
 
-    if($("#formInstitucion").length){
-        $("#formInstitucion").validate(validateFormInstitucion);
-        $("#formInstitucion").ajaxForm(optionsAjaxFormInstitucion);
-
-        $("#pais").change(function(){
-            listaProvinciasByPais($("#pais option:selected").val(), 'provincia', 'ciudad', 'selectsUbicacion');
-        });
-        $("#provincia").change(function(){
-            listaCiudadesByProvincia($("#provincia option:selected").val(), 'ciudad', 'selectsUbicacion');
-        });
-    }
-
     $("#filtroPais").change(function(){
         listaProvinciasByPais($("#filtroPais option:selected").val(), 'filtroProvincia', 'filtroCiudad', 'formFiltrarInstituciones');
     });
@@ -370,15 +156,22 @@ $(function(){
         listaCiudadesByProvincia($("#filtroProvincia option:selected").val(), 'filtroCiudad', 'formFiltrarInstituciones');
     });
 
-    $(".solicitarInstitucion").live('click', function(){
-        var iInstitucionId = $(this).attr("rel");
-        solicitarInstitucion(iInstitucionId);
+    $("#BuscarInstituciones").live('click', function(){
+        if(!$("#listadoInstituciones").hasClass("di_no")){
+            masInstituciones();
+        }else{
+            cargarMarcasMapaInstituciones();
+        }
         return false;
     });
 
-    //listado instituciones comunidad
-    $("#BuscarInstituciones").live('click', function(){
+    $(".mostrarInstitucionesFicha").live('click', function(){
         masInstituciones();
+        return false;
+    });
+
+    $(".mostrarInstitucionesMapa").live('click', function(){
+        cargarMarcasMapaInstituciones();
         return false;
     });
 
@@ -387,29 +180,11 @@ $(function(){
           this.reset();
         });
         return false;
-    });
-    ///////////////////////////////
-
-    //Listado Mis Instituciones
-    $(".borrarInstitucion").live('click', function(){
-        var iInstitucionId = $(this).attr("rel");
-        borrarInstitucion(iInstitucionId);
-    });
-
-    $(".orderLink").live('click', function(){
-        $('#sOrderBy').val($(this).attr('orderBy'));
-        $('#sOrder').val($(this).attr('order'));
-        masMisInstituciones();
     });    
 });
 
 $(window).load(function(){
     if($("#mapaInstitucion").length){
         mapaSimple("mapaInstitucion");
-    }
-
-    if($("#mapaSeleccionarCoordenadas").length){
-        //automaticamente rellena los inputs con name 'latitud' y 'longitud'
-        mapaSeleccionCoordenadas("mapaSeleccionarCoordenadas");
     }
 });

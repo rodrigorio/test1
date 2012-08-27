@@ -78,3 +78,55 @@ function mapaSeleccionCoordenadas(id)
         longitudElement.val(event.latLng.lng());
     });
 }
+
+////////////////////////////////////////////////////
+///////////// PARA MAPA CON MULTIPLES MARCAS
+////////////////////////////////////////////////////
+
+//globales
+var infoWindow = null;
+var mapMult = null;
+var markersArray = [];
+
+function iniciarMapaMarcasMultiples(id)
+{
+    var myOptions = {
+        zoom: 3,
+        center: new google.maps.LatLng("-35.317366", "-56.702636"),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    mapMult = new google.maps.Map(document.getElementById(id), myOptions);
+
+    infoWindow = new google.maps.InfoWindow({
+        content:"cargando..."
+    });
+}
+
+function limpiarMarcas()
+{
+    if(markersArray){
+        for(i in markersArray){
+            markersArray[i].setMap(null);
+        }
+    }
+}
+
+function agregarMarcas(marcas)
+{
+    $(marcas).each(function(index, marca){
+        var latlng = new google.maps.LatLng(marca.latitud, marca.longitud);
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: mapMult,
+            title: marca.title,
+            html: marca.info
+        });
+
+        markersArray.push(marker);
+
+        google.maps.event.addListener(marker, "click", function (){
+            infoWindow.setContent(this.html);
+            infoWindow.open(mapMult, this);
+        });
+    });
+}
