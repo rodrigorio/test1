@@ -203,13 +203,18 @@ class PublicacionesControllerIndex extends PageControllerAbstract
      *
      * VALIDACION 2.
      * Si el id existe pero cuando se hace el getById devuelve null quiere decir que la publicacion se elimino,
-     * entonces se redirecciona al listado de publicaciones con header 404
+     * entonces se redirecciona al listado de publicaciones con header 404.
+     * Si la publicacion existe pero no esta marcada como publica entonces la direccion tampoco existe.
      *
      * VALIDACION 3.
      * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada'
      * se redirecciona al listado de publicaciones con header de redireccion temporal.
      *
      * VALIDACION 4.
+     * Lo mismo que la validacion anterior pero la publicacion paso a tener como estado
+     * de moderacion 'rechazado'
+     *
+     * VALIDACION 5.
      * Si el id existe, se obtiene la publicacion y cuando se compara el titulo en formato url con el parametro del titulo
      * en formato url devuelve que son distintos entonces quiere decir que el link de la url amigable cambio.
      * Por lo que se tiene que hacer una redireccion y recargar la pagina con el link nuevo.
@@ -223,7 +228,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
      *
      */
     public function verPublicacion()
-    {
+    {        
         try{
             $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
             $sTituloUrlized = $this->getRequest()->getParam('sTituloUrlized');
@@ -236,15 +241,15 @@ class PublicacionesControllerIndex extends PageControllerAbstract
 
             //validacion 2.
             $oPublicacion = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
-            if(null === $oPublicacion)
+            if(null === $oPublicacion || !$oPublicacion->isPublico())
             {
                 throw new Exception("", 404);
             }
 
             //validacion 3.
-            if(!$oPublicacion->isActivo()){
+            if(!$oPublicacion->isActivo() || !$oPublicacion->getModeracion()->isAprobado()){
                 $this->getRedirectorHelper()->setCode(307);
-                $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
+                $url = $this->getUrlFromRoute("indexPublicacionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
 
@@ -253,22 +258,27 @@ class PublicacionesControllerIndex extends PageControllerAbstract
 
             if($sTituloUrlized != $sTituloUrlizedActual){
                 $this->getRedirectorHelper()->setCode(301);
-                $url = 'comunidad/publicaciones/'.$oPublicacion->getId()."-".$sTituloUrlizedActual;
+                $url = 'publicaciones/'.$oPublicacion->getId()."-".$sTituloUrlizedActual;
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
-            
-            $this->setFrameTemplate()
-                 ->setHeadTag()
-                 ->setMenuDerecha();
 
-            IndexControllerComunidad::setCabecera($this->getTemplate());
-            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+            //paso todas las validaciones muestro la vista
+
+            $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
+            $this->setHeadTag();
 
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "PublicacionAmpliadaBlock");
+            $this->getTemplate()->set_var("sNombreSeccionTopPage", "Publicaciones Comunidad");
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "columnaIzquierdaContent", "ListadoPublicacionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "columnaDerechaContent", "BuscarPublicacionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
+
+            IndexControllerIndex::setFooter($this->getTemplate());
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "centerPageContent", "PublicacionAmpliadaBlock");
 
             $oUsuarioAutor = $oPublicacion->getUsuario();
             $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuarioAutor->getNombreAvatar();
@@ -284,14 +294,16 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sDescripcionBreve", $oPublicacion->getDescripcionBreve());
             $this->getTemplate()->set_var("sDescripcion", $oPublicacion->getDescripcion(true));
 
-            $this->agregarGaleriaAdjuntosFicha($oPublicacion);
-
-            if($oPublicacion->isActivoComentarios()){
-                $this->listarComentariosFicha($oPublicacion);
-
-                $this->getTemplate()->set_var("iItemIdForm", $oPublicacion->getId());
-                $this->getTemplate()->set_var("sTipoItemForm", get_class($oPublicacion));
+            //si tiene el mail abierto al publico lo muestro
+            $aPrivacidad = $oUsuarioAutor->obtenerPrivacidad();
+            if($aPrivacidad['email'] == 'publico' && null !== $oUsuarioAutor->getEmail()){
+                $this->getTemplate()->set_var("sEmail", $oUsuarioAutor->getEmail());
+                $this->getTemplate()->parse("EmailAutorBlock");
+            }else{
+                $this->getTemplate()->set_var("EmailAutorBlock", "");
             }
+           
+            $this->agregarGaleriaAdjuntosFicha($oPublicacion);
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
             
