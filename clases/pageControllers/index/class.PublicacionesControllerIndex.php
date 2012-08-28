@@ -324,13 +324,13 @@ class PublicacionesControllerIndex extends PageControllerAbstract
 
             //validacion 2.
             $oReview = ComunidadController::getInstance()->getReviewById($iReviewId);
-            if(null === $oReview)
+            if(null === $oReview  || !$oReview->isPublico())
             {
                 throw new Exception("", 404);
             }
 
             //validacion 3.
-            if(!$oReview->isActivo()){
+            if(!$oReview->isActivo() || !$oReview->getModeracion()->isAprobado()){
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
@@ -338,26 +338,27 @@ class PublicacionesControllerIndex extends PageControllerAbstract
 
             //validacion 4.
             $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oReview->getTitulo());
-
             if($sTituloUrlized != $sTituloUrlizedActual){
                 $this->getRedirectorHelper()->setCode(301);
                 $url = 'comunidad/reviews/'.$oReview->getId()."-".$sTituloUrlizedActual;
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
 
-            $this->setFrameTemplate()
-                 ->setHeadTag()
-                 ->setMenuDerecha();
+            //paso todas las validaciones muestro la vista
 
-            IndexControllerComunidad::setCabecera($this->getTemplate());
-            IndexControllerComunidad::setCenterHeader($this->getTemplate());
+            $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
+            $this->setHeadTag();
 
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Publicaciones Comunidad");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "ReviewAmpliadaBlock");
+            $this->getTemplate()->set_var("sNombreSeccionTopPage", "Publicaciones Comunidad");
+            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+            IndexControllerIndex::setFooter($this->getTemplate());
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "centerPageContent", "ReviewAmpliadaBlock");
+            
             $oUsuarioAutor = $oReview->getUsuario();
             $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuarioAutor->getNombreAvatar();
 
@@ -371,6 +372,15 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
             $this->getTemplate()->set_var("sDescripcionBreve", $oReview->getDescripcionBreve());
             $this->getTemplate()->set_var("sDescripcion", $oReview->getDescripcion(true));
+
+            //si tiene el mail abierto al publico lo muestro
+            $aPrivacidad = $oUsuarioAutor->obtenerPrivacidad();
+            if($aPrivacidad['email'] == 'publico' && null !== $oUsuarioAutor->getEmail()){
+                $this->getTemplate()->set_var("sEmail", $oUsuarioAutor->getEmail());
+                $this->getTemplate()->parse("EmailAutorBlock");
+            }else{
+                $this->getTemplate()->set_var("EmailAutorBlock", "");
+            }
 
             //detalles review
             $this->getTemplate()->set_var("sItemName", $oReview->getItemName());
@@ -450,13 +460,6 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             }
 
             $this->agregarGaleriaAdjuntosFicha($oReview);
-
-            if($oReview->isActivoComentarios()){
-                $this->listarComentariosFicha($oReview);
-
-                $this->getTemplate()->set_var("iItemIdForm", $oReview->getId());
-                $this->getTemplate()->set_var("sTipoItemForm", get_class($oReview));
-            }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
