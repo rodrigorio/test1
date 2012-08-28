@@ -148,19 +148,7 @@ $LAB
 
 <!--BeginFichaInstitucionBlock-->
 <div class="ficha03 grupo mabo3">
-    <div class="encabezado">
-        
-        <!--BeginSolicitarInstitucionBlock-->
-        <div id="solicitarInstitucionCont" class="der">
-            <a rel="{iInstitucionId}" class="solicitarInstitucion" href="">Solicitar la administraci&oacute;n de esta instituci&oacute;n</a>
-        </div>
-        <!--EndSolicitarInstitucionBlock-->
-        <!--BeginSolicitudEnviadaInstitucionBlock-->
-        <div class="der">
-            Solicitud de administraci&oacute;n enviada.
-        </div>
-        <!--EndSolicitudEnviadaInstitucionBlock-->
-        
+    <div class="encabezado">               
         <div class="izq">
             <div class="titulo">{sNombre}</div>
             <div class="subtitulo">{sTipo} - {sUbicacion}</div>
@@ -172,14 +160,21 @@ $LAB
     </div>
     
     <div class="contenido">
+
+        <!--BeginActividadesMesBlock-->
         <span class="teta_up fowe_bo">Actividades del mes</span><br>
         <p>{sActividadesMes}</p>
+        <!--EndActividadesMesBlock-->
 
+        <!--BeginAutoridadesBlock-->
         <span class="teta_up fowe_bo">Autoridades</span><br>
         <p>{sAutoridades}</p>
+        <!--EndAutoridadesBlock-->
 
+        <!--BeginSedesBlock-->
         <span class="teta_up fowe_bo">Sedes</span><br>
         <p>{sSedes}</p>
+        <!--EndSedesBlock-->
 
         <span class="teta_up fowe_bo">Horarios de atenci&oacute;n: </span> {sHorariosAtencion}<br>
         <span class="teta_up fowe_bo">Email: </span> <a href="mailto:{sEmail}">{sEmail}</a><br>
@@ -199,27 +194,6 @@ $LAB
     <ul class="fl_ri mabo2 mato iveal cl_bo">
         <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Instituci&oacute;n</a></li>
     </ul>
-</div>
-
-<div id="integrantesInstitucion">
-    <div class="pabo bobo1 mabo2">
-        <span class="mari2 fost_it">Integrantes de la comunidad asociados a la instituci&oacute;n</span>
-    </div>
-    
-    <!--BeginIntegranteBlock-->
-    <div class="pa mari2 mabo2 baco4 fl_le grupo">
-        <a href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
-            <i style="background-image:url('{scrAvatarAutor}')"></i>
-        </a>
-        <span class="txt_imp2 mari">{sNombreUsuario}</span>
-        <br clear="all">
-        <span class="co1 fte2">Email: <a href="mailto:{sEmail}">{sEmail}</a></span><br>
-    </div>
-    <!--EndIntegranteBlock-->
-    
-    <!--BeginIntegranteNoRecords-->
-    <div class="teal_ce fowe_bo">No hay integrantes de la comunidad asociados a esta instituci&oacute;n</div>
-    <!--EndIntegranteNoRecords-->
 </div>
 <!--EndFichaInstitucionBlock-->
 

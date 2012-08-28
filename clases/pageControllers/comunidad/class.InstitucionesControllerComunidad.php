@@ -618,8 +618,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
             if(null === $oInstitucion)
             {
-                $this->redireccion404();
-                return;
+                throw new Exception("", 404);
             }
 
             //validacion 3.
@@ -762,7 +761,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
      }
      

@@ -228,51 +228,42 @@ class InstitucionesControllerIndex extends PageControllerAbstract
             $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
             if(null === $oInstitucion)
             {
-                $this->redireccion404();
-                return;
+                throw new Exception("", 404);
             }
 
             //validacion 3.
-            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
-
-            if($sTituloUrlized != $sTituloUrlizedActual){
-                $this->getRedirectorHelper()->setCode(301);
-                $url = 'comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrlizedActual;
+            if(!$oInstitucion->getModeracion()->isAprobado()){
+                $this->getRedirectorHelper()->setCode(307);
+                $url = $this->getUrlFromRoute("indexInstitucionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
 
-            $this->setFrameTemplate()
-                 ->setHeadTag()
-                 ->setMenuDerecha();
-
-            IndexControllerComunidad::setCabecera($this->getTemplate());
-            IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-            $this->printMsgTop();
-
-            //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Instituciones Comunidad");
-            $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerMainCont", "FichaInstitucionBlock");
-
-            $oUsuarioSesion = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-
-            if(null !== $oInstitucion->getUsuario())
-            {
-                $this->getTemplate()->set_var("SolicitarInstitucionBlock", "");
-                $this->getTemplate()->set_var("SolicitudEnviadaInstitucionBlock", "");
-            }else{
-                if(ComunidadController::getInstance()->existeSolicitudInstitucion($iInstitucionId, $oUsuarioSesion->getId()))
-                {
-                    $this->getTemplate()->set_var("SolicitarInstitucionBlock", "");
-                }else{
-                    $this->getTemplate()->set_var("SolicitudEnviadaInstitucionBlock", "");
-                }
+            //validacion 4.
+            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
+            if($sTituloUrlized != $sTituloUrlizedActual){
+                $this->getRedirectorHelper()->setCode(301);
+                $url = 'instituciones/'.$oInstitucion->getId()."-".$sTituloUrlizedActual;
+                $this->getRedirectorHelper()->gotoUrl($url);
             }
 
+            //paso todas las validaciones muestro la vista
+
+            $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
+            $this->setHeadTag();
+
+            $this->printMsgTop();
+           
+            //titulo seccion
+            $this->getTemplate()->set_var("sNombreSeccionTopPage", "Instituciones");
+            $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
+
+            IndexControllerIndex::setFooter($this->getTemplate());
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "centerPageContent", "FichaInstitucionBlock");
+            
             $sUbicacion = $oInstitucion->getCiudad()->getNombre()." ".
                           $oInstitucion->getCiudad()->getProvincia()->getNombre()." ".
                           $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre();
-
 
             $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
             $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());            
@@ -280,14 +271,25 @@ class InstitucionesControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sUbicacion", $sUbicacion);                       
             $this->getTemplate()->set_var("sDescripcion", $oInstitucion->getDescripcion(true));
 
-            $sActividadesMes = (null !== $oInstitucion->getActividadesMes(true))? $oInstitucion->getActividadesMes(true) : " - ";
-            $sAutoridades = (null !== $oInstitucion->getAutoridades(true))? $oInstitucion->getAutoridades(true) : " - ";
-            $sSedes = (null !== $oInstitucion->getSedes(true))? $oInstitucion->getSedes(true) : " - ";
-            $sHorariosAtencion = (null !== $oInstitucion->getHorariosAtencion())? $oInstitucion->getHorariosAtencion() : " - ";
-
-            $this->getTemplate()->set_var("sActividadesMes", $sActividadesMes);
-            $this->getTemplate()->set_var("sAutoridades", $sAutoridades);
-            $this->getTemplate()->set_var("sSedes", $sSedes);
+            if("" !== $oInstitucion->getActividadesMes(true)){
+                $this->getTemplate()->set_var("sActividadesMes", $oInstitucion->getActividadesMes(true));
+            }else{
+                $this->getTemplate()->set_var("ActividadesMesBlock", "");                
+            }
+            
+            if("" !== $oInstitucion->getAutoridades(true)){
+                $this->getTemplate()->set_var("sAutoridades", $oInstitucion->getAutoridades(true));
+            }else{
+                $this->getTemplate()->set_var("AutoridadesBlock", "");
+            }
+            
+            if("" !== $oInstitucion->getSedes(true)){
+                $this->getTemplate()->set_var("sSedes", $oInstitucion->getSedes(true));
+            }else{
+                $this->getTemplate()->set_var("SedesBlock", "");
+            }
+            
+            $sHorariosAtencion = (null !== $oInstitucion->getHorariosAtencion())? $oInstitucion->getHorariosAtencion() : " - ";                                   
             $this->getTemplate()->set_var("sHorariosAtencion", $sHorariosAtencion);
             $this->getTemplate()->set_var("sEmail", $oInstitucion->getEmail());
             $this->getTemplate()->set_var("sTelefono", $oInstitucion->getTelefono());            
@@ -306,73 +308,10 @@ class InstitucionesControllerIndex extends PageControllerAbstract
                 $this->getTemplate()->set_var("sLongitud", $oInstitucion->getLongitud());
             }
 
-            //listado de integrantes asociados a la institucion
-            $aUsuarios = ComunidadController::getInstance()->obtenerUsuariosAsociadosInstitucion($iInstitucionId);
-            
-            if(count($aUsuarios) > 0){
-                $this->getTemplate()->set_var("IntegranteNoRecords", "");
-                
-                foreach($aUsuarios as $oUsuario){
-
-                    //foto de perfil actual
-                    $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
-                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
-                    if(null != $oUsuario->getFotoPerfil()){
-                        $oFoto = $oUsuario->getFotoPerfil();
-                        $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
-                        $this->getTemplate()->set_var("hrefFotoPerfil", $pathFotoServidorBigSize);
-                    }else{
-                        $this->getTemplate()->set_var("hrefFotoPerfil", $scrAvatarAutor);
-                    }                                        
-                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
-
-                    $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
-                    $this->getTemplate()->set_var("sNombreUsuario", $sNombreUsuario);
-                    $this->getTemplate()->set_var("sEmail", $oUsuario->getEmail());
-
-                    $aPrivacidad = $oUsuario->obtenerPrivacidad();
-
-                    if($aPrivacidad['telefono'] == 'comunidad' && null !== $oUsuario->getTelefono()){
-                        $this->getTemplate()->set_var("sTelefono", $oUsuario->getTelefono());
-                        $this->getTemplate()->parse("TelefonoBlock");
-                    }else{
-                        $this->getTemplate()->set_var("TelefonoBlock", "");
-                    }
-
-                    if($aPrivacidad['celular'] == 'comunidad' && null !== $oUsuario->getCelular()){
-                        $this->getTemplate()->set_var("sCelular", $oUsuario->getCelular());
-                        $this->getTemplate()->parse("CelularBlock");                        
-                    }else{
-                        $this->getTemplate()->set_var("CelularBlock", "");
-                    }
-
-                    if($aPrivacidad['fax'] == 'comunidad' && null !== $oUsuario->getFax()){
-                        $this->getTemplate()->set_var("sFax", $oUsuario->getFax());
-                        $this->getTemplate()->parse("FaxBlock");                        
-                    }else{
-                        $this->getTemplate()->set_var("FaxBlock", "");
-                    }
-
-                    if($aPrivacidad['curriculum'] == 'comunidad' && null !== $oUsuario->getCurriculumVitae()){
-                        $hrefDescargarCv = "";
-                        $oArchivo = $oUsuario->getCurriculumVitae();
-                        $hrefDescargarCv = $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor();
-                        $this->getTemplate()->set_var("hrefDescargarCv", $hrefDescargarCv);
-                        $this->getTemplate()->parse("CvBlock");
-                    }else{
-                        $this->getTemplate()->set_var("CvBlock", "");
-                    }
-                    
-                    $this->getTemplate()->parse("IntegranteBlock", true);
-                }
-            }else{
-                $this->getTemplate()->set_var("IntegranteBlock", "");
-            }
-
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
      }    
 }
