@@ -1401,10 +1401,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $oArchivo->iTamanio = $tamanioArchivo;
                     $oArchivo = Factory::getArchivoInstance($oArchivo);
                     $oArchivo->setTipoAdjunto();
-                    $oArchivo->isModerado(false);
-                    $oArchivo->isActivo(true);
-                    $oArchivo->isPublico(false);
-                    $oArchivo->isActivoComentarios(false);
 
                     $oSeguimiento->addArchivo($oArchivo);
 

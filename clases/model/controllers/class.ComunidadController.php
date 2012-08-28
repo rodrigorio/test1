@@ -379,10 +379,6 @@ class ComunidadController
             $curriculumVitae = Factory::getArchivoInstance($oArchivo);
 
             $curriculumVitae->setTipoCurriculum();
-            $curriculumVitae->isModerado(false);
-            $curriculumVitae->isActivo(true);
-            $curriculumVitae->isPublico(false);
-            $curriculumVitae->isActivoComentarios(false);
             
             //si ya tenia cv el usuario borro el actual
             if(null !== $usuario->getCurriculumVitae())
