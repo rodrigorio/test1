@@ -1,0 +1,182 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/accionesPerfil.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+    <header>
+        <h2>Administracion Avanzada</h2>
+    </header>
+    <section>
+        <h3>Acciones del sistema vigentes segun tipo de perfil</h3>
+    </section>
+</article>
+<!--EndHeaderBlock-->
+
+<!--BeginListadoAccionesBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="admin/acciones-perfil-form" rel="tooltip" original-title="Crear una nueva acci&oacute;n en el sistema">Crear Nueva Acci&oacute;n</a>
+</div>
+<section id="listadoAcciones">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th>Modulo</th>
+                <th>Controlador</th>
+                <th>Accion</th>
+                <th>Perfil</th>
+                <th>Activa?</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginAccionesBlock-->
+            <tr class="{iAccionId}" class="{odd}">
+                <td>{sModulo}</td>
+                <td>{sControlador}</td>
+                <td>{sAccion}</td>
+                <td>{sPerfil}</td>
+                <td>
+                    <select class="cambiarEstadoAccion" name="estadoAccion_{iAccionId}" id="estadoAccion_{iAccionId}" rel="{iAccionId}">
+                        <option value="0" {sSelectedAccionDesactivada}>Desactivada</option>
+                        <option value="1" {sSelectedAccionActivada}>Activada</option>
+                    </select>
+                </td>
+                <td class="teal_ce">
+                    <a rel="tooltip" original-title="Editar Accion" href="{hrefEditarAccion}?editar=1&iAccionId={iAccionId}"><span class="i bs edit ihover"></span></a>
+                    <span rel="{iAccionId}" class="i bs delete ihover eliminarAccion"></span>
+                </td>
+            </tr>
+        <!--EndAccionesBlock-->
+        <!--BeginNoRecordsAccionesBlock-->
+            <tr>
+                <td colspan="6">{sNoRecords}</td>
+            </tr>
+        <!--EndNoRecordsAccionesBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoAccionesBlock-->
+
+<!--BeginFormularioBlock-->
+<div class="notification note">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p>Los campos <span class="fost_it">controlador</span> y <span class="fost_it">accion</span> deben ser ingresados en <strong>Camel Case con el primer caracter en minuscula</strong></p>
+</div>
+<h3 class="teta_up">{sTituloFormAccion} Acci&oacute;n</h3>
+<div style="display:none"  id='msg_form_accion' class="notification">
+    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+    <p class="msg"></p>
+</div>
+<form id="formAccion" name="formAccion" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <!--BeginCamposCrearAccionBlock-->
+        <dt>
+            <label for="modulo">Modulo</label>
+        </dt>
+        <dd>
+            <select name="modulo" id="modulo">
+                <option value="">Elegir modulo</option>
+                <option value="index" {sSelectedModuloIndex}>Index</option>
+                <option value="comunidad" {sSelectedModuloComunidad}>Comunidad</option>
+                <option value="seguimientos" {sSelectedModuloSeguimientos}>Seguimientos</option>
+                <option value="admin" {sSelectedModuloAdmin}>Admin</option>
+            </select>           
+        </dd>
+        <dt>
+            <label for="controlador">Controlador</label>
+        </dt>
+        <dd>
+            <input name="controlador" id="controlador" type="text" class="small" value="{sControlador}">
+            <p>
+                Cuidado, el nombre del controlador debe coincidir con el nombre de la clase<br>
+                Ejemplo: si "class.InstitucionesControllerComunidad.php" entonces deberia ingresar 'comunidad' en el campo.<br>
+                Si el controlador no existe en DB sera creado.<br>
+                El controlador se elimina cuando se elimine la ultima accion asociada.
+            </p>
+        </dd>
+        <!--EndCamposCrearAccionBlock-->
+
+        <!--BeginCamposModificarAccionBlock-->
+        <dt>
+            <label>Modulo</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="modulo" id="modulo" type="text" class="small readonly" value="{sModulo}">
+        </dd>
+        <dt>
+            <label>Controlador</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="controlador" id="controlador" type="text" class="small readonly" value="{sControlador}">
+        </dd>
+        <!--EndCamposModificarAccionBlock-->
+
+        <dt>
+            <label for="accion">Accion</label>
+        </dt>
+        <dd>
+            <input name="accion" id="accion" type="text" class="small" value="{sAccion}">
+            <p>
+                El nombre de la accion debe corresponder con el nombre de un metodo para la clase del controller.<br>
+                Se deben respetar mayusculas y minusculas.
+            </p>
+        </dd>
+        <dt>
+            <label for="perfil">Perfil</label>
+        </dt>
+        <dd>
+            <select name="perfil" id="perfil">
+                <option value="">Elegir Perfil</option>
+                <option value="1" {sSelectedPerfilAdministrador}>Administrador</option>
+                <option value="2" {sSelectedPerfilModerador}>Moderador</option>
+                <option value="3" {sSelectedPerfilIntegranteActivo}>Integrante Activo</option>
+                <option value="4" {sSelectedPerfilIntegranteInactivo}>Integrante Inactivo</option>
+                <option value="5" {sSelectedPerfilVisitante}>Visitante</option>
+            </select>
+            <p>
+                Los permisos se manejan por jerarquia:<br>
+                Si elige <strong>'moderador'</strong> la accion podra ejecutarla tanto <strong>administradores</strong> como <strong>moderadores</strong><br>
+                Si elige 'integrante activo' la accion sera permitida para administradores, moderadores e integrantes activos<br>
+                Asi sucesivamente, la misma regla aplica para integrante activo y visitante.
+            </p>
+        </dd>
+        <dt>
+            <label for="activo">Acci&oacute;n Activa?</label>
+        </dt>
+        <dd>
+            <select name="activo" id="activo">
+                <option value="0" {sSelectedAccionDesactivada}>Desactivada</option>
+                <option value="1" {sSelectedAccionActivada}>Activada</option>
+            </select>
+        </dd>
+       
+        <!--BeginSubmitCrearAccionBlock-->
+        <button id="crearAccion" name="crearAccion" type="submit">Crear Accion</button>
+        <!--EndSubmitCrearAccionBlock-->
+
+        <!--BeginSubmitModificarAccionBlock-->
+        <button id="modificarAccion" name="modificarAccion" type="submit">Modificar Accion</button>
+        <input type="hidden" value="{iAccionId}" name="iAccionId" id="iAccionId" />
+        <!--EndSubmitModificarAccionBlock-->
+</form>
+<!--EndFormularioBlock-->

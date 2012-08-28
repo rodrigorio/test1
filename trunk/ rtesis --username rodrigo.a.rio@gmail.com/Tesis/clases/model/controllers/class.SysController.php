@@ -32,11 +32,10 @@ class SysController
     }
 
     /**
-     * Devuelve un array con los parametros dinamicos correspondientes al controlador que posee el HttpRequest actual que se solicito.
+     * Devuelve un array con los parametros dinamicos correspondientes a un controlador del sistema
      *
      * @param string $controladorId Compuesto por "nombreModulo_nombreControlador"
-     * @return array con parametros dinamicos correspondientes al controlador actual del request que se este procesando.
-     * @TODO llamar a la factoria del sistema que construya un array con el nombre y los valores de los parametros correspondientes a controladorId
+     * @return array con parametros dinamicos correspondientes al controlador, por lo general el controlador actual del request que se este procesando.
      */
     public function obtenerParametrosControlador($controladorId)
     {

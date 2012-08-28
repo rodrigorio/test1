@@ -192,4 +192,10 @@ class PersistenceFactory {
             return (VariableMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getParametrosIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(ParametrosMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
