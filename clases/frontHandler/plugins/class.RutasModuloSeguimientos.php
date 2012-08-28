@@ -186,24 +186,21 @@ class RutasModuloSeguimientos
                                         'controller' => 'personas',
                                         'action'     => 'ver'
                                 ));
-        $router->addRoute('seguimientosPersonasVer', $route); 
-           
-          $route = new RegexRoute('seguimientos/editar-diagnostico',
+        $router->addRoute('seguimientosPersonasVer', $route);            
+        $route = new RegexRoute('seguimientos/editar-diagnostico',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
                                         'action'     => 'editarDiagnostico'
                                 ));
-        $router->addRoute('seguimientosEditarDiagnostico', $route);  
-           
+        $router->addRoute('seguimientosEditarDiagnostico', $route);             
         $route = new RegexRoute('seguimientos/procesar-diagnostico',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
                                         'action'     => 'procesarDiagnostico'
                                 ));
-        $router->addRoute('seguimientosProcesarDiagnostico', $route);  
-        
+        $router->addRoute('seguimientosProcesarDiagnostico', $route);          
         $route = new RegexRoute('seguimientos/listar-ciclos-por-niveles',
                                 array(
                                         'module' => 'seguimientos',

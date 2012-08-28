@@ -203,7 +203,7 @@ class RutasModuloAdmin
                                 ));
         $router->addRoute('adminInstitucionesForm', $route);
         
-       
+        //acciones perfil
         $route = new RegexRoute('admin/acciones-perfil',
                                 array(
                                         'module' => 'admin',
@@ -344,5 +344,28 @@ class RutasModuloAdmin
                                     'action'     => 'listarModeraciones'
                                 ));
         $router->addRoute('adminSoftwareModerar', $route);
+
+        //parametros sistema
+        $route = new RegexRoute('admin/parametros',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'parametros',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminParametrosIndex', $route);
+        $route = new RegexRoute('admin/parametros-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'parametros',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminParametrosProcesar', $route);
+        $route = new RegexRoute('admin/parametros-form',
+                                array(
+                                    'module' => 'admin',
+                                    'controller' => 'parametros',
+                                    'action'     => 'form'
+                                ));
+        $router->addRoute('adminParametrosForm', $route);
     }
 }
