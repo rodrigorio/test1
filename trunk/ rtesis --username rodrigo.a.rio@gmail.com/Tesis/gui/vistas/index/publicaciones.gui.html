@@ -173,7 +173,10 @@
     </div>
     <div class="bobo1 pa2">
         <div class="mabo2">
-            <span class="fte3">{sItemName}</span> - Review por <span class="fost_it">{sAutor}</span><br>
+            <span class="fte3">{sItemName}</span> - Review por <span class="fost_it">{sAutor}</span>
+            <!--BeginEmailAutorBlock-->
+             | <a href="mailto:{sEmail}">{sEmail}</a>
+            <!--EndEmailAutorBlock-->
         </div>
 
         <!--BeginRatingBlock-->
@@ -196,13 +199,13 @@
 
         <!--BeginItemUrlBlock-->
         <div class="mabo2">
-            Link: <span class="fost_it"><a href="{hrefItemUrl}">{sItemUrl}</a></span><br>
+            Link: <span class="fost_it"><a href="{hrefItemUrl}" target="_blank">{sItemUrl}</a></span><br>
         </div>
         <!--EndItemUrlBlock-->
 
         <!--BeginFuenteOriginalBlock-->
         <div class="mabo2">
-            Fuente Original: <span class="fost_it"><a href="{hrefFuenteUriginal}">{sFuenteOriginal}</a></span><br>
+            Fuente Original: <span class="fost_it"><a href="{hrefFuenteUriginal}" target="_blank">{sFuenteOriginal}</a></span><br>
         </div>
         <!--EndFuenteOriginalBlock-->
     </div>
