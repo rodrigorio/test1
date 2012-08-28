@@ -77,7 +77,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oObjetivo		= new stdClass();
             	$oObjetivo->iId 		= $oObj->iId;
             	$oObjetivo->sDescripcion	= $oObj->sDescripcion;
-            	$oObjetivo->oObjetivoEje 		= ComunidadController::getInstance()->getObjetivoEjeById($oObj->iObjetivoEjeid);            	$aObjetivos[]		= Factory::getObjetivoInstance($oObjetivo);
+            	$oObjetivo->oObjetivoEje 		= ComunidadController::getInstance()->getObjetivoEjeById($oObj->iObjetivoEjeid);            
+            	
+            	$aObjetivos[]		= Factory::getObjetivoInstance($oObjetivo);
+
             }
             return $aObjetivos;
         }catch(Exception $e){
