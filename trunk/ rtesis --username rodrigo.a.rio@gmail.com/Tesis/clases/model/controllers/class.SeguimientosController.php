@@ -410,10 +410,6 @@ class SeguimientosController
             $antecedentes = Factory::getArchivoInstance($oArchivo);
 
             $antecedentes->setTipoAntecedentes();
-            $antecedentes->isModerado(false);
-            $antecedentes->isActivo(true);
-            $antecedentes->isPublico(false);
-            $antecedentes->isActivoComentarios(false);
             
             //si ya tenia un archivo de antecedente el seguimiento borro el actual
             if(null !== $seguimiento->getArchivoAntecedentes()){
