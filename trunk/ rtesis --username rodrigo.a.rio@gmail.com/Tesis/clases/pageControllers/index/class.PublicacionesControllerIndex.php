@@ -271,9 +271,6 @@ class PublicacionesControllerIndex extends PageControllerAbstract
 
             //titulo seccion
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Publicaciones Comunidad");
-
-            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "columnaIzquierdaContent", "ListadoPublicacionesBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "columnaDerechaContent", "BuscarPublicacionesBlock");
             $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
             IndexControllerIndex::setFooter($this->getTemplate());
