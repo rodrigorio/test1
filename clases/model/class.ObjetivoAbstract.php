@@ -42,7 +42,7 @@ abstract class ObjetivoAbstract
         $this->fEvolucion = $fEvolucion;
     }
     /**
-     *  @param int $oObjetivoRelevancia
+     *  @param  $oObjetivoRelevancia
      *  
      */
     public function setObjetivoRelevancia($oObjetivoRelevancia){
@@ -73,7 +73,7 @@ abstract class ObjetivoAbstract
         return $this->dEvolucion;
     }
     /**
-     *  @return int $oObjetivoRelevancia
+     *  @return  $oObjetivoRelevancia
      */
     public function getObjetivoRelevancia(){
         return $this->oObjetivoRelevancia;

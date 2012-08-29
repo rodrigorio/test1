@@ -411,7 +411,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
 			 $db->execSQL($sSQL);
 
-			 // ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			 
 			 $diagnosticoSCCId = null;
 			 
              $sSQL =" update seguimientos_scc ".

@@ -26,4 +26,15 @@ class SeguimientoPersonalizado extends SeguimientoAbstract {
             }
         }
     }
+    public function getObjetivos(){
+        if($this->aObjetivos === null){
+            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizados($this->iId);
+        }
+        return $this->aObjetivos;
+    }
+   public function setObjetivos($aObjetivos)
+    {
+    	$this->aObjetivos = $aObjetivos;
+        return $this;
+    }
 }

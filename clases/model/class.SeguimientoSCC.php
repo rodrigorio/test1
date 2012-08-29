@@ -26,4 +26,21 @@ class SeguimientoSCC extends SeguimientoAbstract
             }
         }
     }
+    
+    public function getObjetivos(){
+        if($this->aObjetivos === null){
+            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosCurriculares($this->iId);
+        }
+        return $this->aObjetivos;
+    }  
+ public function setFotos($aFotos)
+    {
+        $this->aFotos = $aFotos;
+        return $this;
+    }  
+    public function setObjetivos($aObjetivos)
+    {
+    	$this->aObjetivos = $aObjetivos;
+        return $this;
+    }
 }
