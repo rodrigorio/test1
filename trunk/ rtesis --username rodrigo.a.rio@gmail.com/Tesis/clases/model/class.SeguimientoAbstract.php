@@ -25,6 +25,8 @@ abstract class SeguimientoAbstract
    protected $dFechaCreacion;
    protected $sEstado;
    
+   protected $aObjetivos = null;
+   
    /*
     * array objetos Foto
     */
@@ -229,4 +231,7 @@ abstract class SeguimientoAbstract
     	}
     	return $this->oDiagnostico;
     }
+    
+    abstract public function getObjetivos();
+    abstract public function setObjetivos();
 }

@@ -254,10 +254,15 @@ class Factory
         $oCiclo = new Ciclo($obj);
         return $oCiclo;
     }
-   /**
-     * @param stdClass $obj
-     * @return Area|null
-     */
+    public static function &getObjetivoCurricularInstance(stdClass $obj){
+        $oObjetivoCurricular = new ObjetivoCurricular($obj);
+        return $oObjetivoCurricular;
+    }
+    public static function &getObjetivoPersonalizadoInstance(stdClass $obj){
+        $oObjetivoPersonalizado = new ObjetivoPersonalizado($obj);
+        return $oObjetivoPersonalizado;
+    }
+  
     public static function &getModeracionInstance(stdClass $obj){
         $oModeracion = new Moderacion($obj);
         return $oModeracion;

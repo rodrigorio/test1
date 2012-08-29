@@ -779,8 +779,58 @@ class SeguimientosController
    public function getVariables($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
       {
     	try{
-            $oVariableIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Obtener Objetivos Personalizados
+     *
+     */
+   public function getObjetivosPersonalizados($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+      {
+    	try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->obtenerObjetivoPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+   /**
+     * Obtener Objetivos Curriculares
+     *
+     */
+   public function getObjetivosCurriculares($iSeguimientoId)
+      {
+    	try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->obtenerObjetivoCurricular($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Guardar Objetivos Curriculares
+     *
+     */
+   public function guardarObjetivoCurricular($oObjetivo){
+        try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->guardarObjetivoCurricular($oOjetivo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Guardar Objetivos Personalizados
+     *
+     */
+    public function guardarObjetivoPersonalizado($oObjetivo){
+        try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
