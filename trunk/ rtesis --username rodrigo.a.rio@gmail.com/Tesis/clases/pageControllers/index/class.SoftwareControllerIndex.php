@@ -24,7 +24,7 @@ class SoftwareControllerIndex extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/index/software.gui.html", "jsContent", "JsContent");
 
         return $this;
     }
