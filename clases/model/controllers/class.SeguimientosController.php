@@ -789,7 +789,7 @@ class SeguimientosController
      * Obtener Objetivos Personalizados
      *
      */
-   public function getObjetivosPersonalizados($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+   public function getObjetivosPersonalizados($iSeguimientoId)
       {
     	try{
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
