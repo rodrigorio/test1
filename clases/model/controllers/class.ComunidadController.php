@@ -901,6 +901,24 @@ class ComunidadController
         }          
     }
 
+    /**
+     * Solo software marcado como publico y moderado
+     */
+    public function obtenerSoftwareCategoriaVisitantes($iCategoriaId)
+    {
+        try{
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            $filtro = array('s.categorias_id' => $iCategoriaId);
+            $filtro["f.activo"] = "1";
+            $filtro["s.publico"] = "1";
+            $filtro["m.sModeracionEstado"] = "aprobado";
+            $iRecordsTotal = 0;
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
     public function obtenerCategoria($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
@@ -1096,7 +1114,19 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
-
+    
+    public function buscarSoftwareVisitantes($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro["f.activo"] = "1";
+            $filtro["s.publico"] = "1";
+            $filtro["m.sModeracionEstado"] = "aprobado";
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
     /**
      * Agrega el filtro del usuario que esta logueado
      */

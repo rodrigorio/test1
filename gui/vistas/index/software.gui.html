@@ -20,22 +20,22 @@
 <!--EndDescripcionSeccionBlock-->
 
 <!--BeginBuscarAplicacionesBlock-->
-<div class="ficha01 grupo mabo2">
+<div class="ficha01 grupo mabo3">
     <div class="encabezado">
         <div class="icono"><span class="i32 bs search32"></span></div>
         <span class="titulo">Buscar</span><br>
         <span class="subtitulo">filtrar los resultados del listado</span>
     </div>
     <div class="contenido">
-        <form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
+        <form id="formFiltrarSoftware" name="formFiltrarSoftware" action="" method="post">
             <div class="fwrap">
                 <div class="inner_fwrap">
                     <input type="text" id="filtroTitulo" name="filtroTitulo" class="defVal" value="T&iacute;tulo" title="T&iacute;tulo" />
                 </div>
             </div>
-            <label for="BuscarPublicaciones" class="button buttonConfirm mabo">
-                <button id="BuscarPublicaciones" type="button" name="BuscarPublicaciones" class="btn01">
-                    Buscar Publicaciones
+            <label for="BuscarSoftware" class="button buttonConfirm mabo">
+                <button id="BuscarSoftware" type="button" name="BuscarSoftware" class="btn01">
+                    Buscar Aplicaciones
                 </button>
             </label>
             <label for="limpiarFiltro" class="button">
@@ -43,16 +43,17 @@
                     Limpiar Filtro
                 </button>
             </label>
+            <input type="hidden" value="{iCategoriaIdFiltro}" name="filtroCategoria" id="filtroCategoria" />
         </form>
     </div>
 </div>
 
-<h2 class="mabo3">Categor&iacute;as</h2>
+<h2 class="mabo2 teal_ri">Categor&iacute;as</h2>
 
-<ul class="menu06">
+<ul class="menu07">
     <!--BeginCategoriaRowBlock-->
-    <li>
-        <a class="{categoriaActual}" title="{sDescripcionCategoria}" href="{hrefSoftwareCategoria}">{sNombreCategoria}</a>
+    <li class="teal_ri">
+        <a class="{categoriaActual}" title="{sDescripcionCategoria}" href="{hrefSoftwareCategoria}">{sNombreCategoria}</a> <
     </li>
     <!--EndCategoriaRowBlock-->
 </ul>

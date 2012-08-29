@@ -526,8 +526,11 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 
 /* otro modulo index */
 .menu06 a{color:#CCCEEE; font-weight:bold; text-decoration:none}
-.menu06 a:hover{color:#FFF}
+.menu06 a:hover, a.selected{color:#FFF}
 .menu06 li{border-top:1px solid #CCC; color:#949494; padding:7px 0px 7px 5px; text-indent:0;}
+.menu07 a{color:#999; font-weight:bold; text-decoration:none}
+.menu07 a:hover, a.selected{color:#333}
+.menu07 li{border-top:1px solid #CCC; color:#949494; padding:7px 0px 7px 5px; text-indent:0;}
 
 /* fotos */
 .thumb01{padding:5px; background-color:#FFF; border:1px solid #CCC; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
