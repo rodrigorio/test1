@@ -3,6 +3,8 @@ function masAplicaciones(){
     var filtroTitulo = $('#filtroTitulo').val();
     var filtroCategoria = $('#filtroCategoria').val();
 
+    if(verificarValorDefectoBool("filtroTitulo")){ filtroTitulo = ""; }
+
     $.ajax({
         type:"POST",
         url:"descargas/procesar",
