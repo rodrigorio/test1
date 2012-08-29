@@ -43,6 +43,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $template->set_var("hrefOpcionAcceder", $request->getBaseUrl().'/login');
         $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
         $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
+        $template->set_var("hrefOpcionDescargas", $request->getBaseUrl().'/descargas');
         $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
         $template->set_var("hrefOpcionGrupoTrabajo", $request->getBaseUrl().'/grupo-de-trabajo');
         $template->set_var("hrefOpcionContacto", $request->getBaseUrl().'/contacto');
@@ -117,6 +118,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $template->set_var("hrefOpcionAcceder", $request->getBaseUrl().'/login');
         $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
         $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
+        $template->set_var("hrefOpcionDescargas", $request->getBaseUrl().'/descargas');
         $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
     }
 

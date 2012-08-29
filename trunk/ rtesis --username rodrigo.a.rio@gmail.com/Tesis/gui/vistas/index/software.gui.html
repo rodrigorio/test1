@@ -1,0 +1,162 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/index/software.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginDescripcionSeccionBlock-->
+<div class="pato2">
+    Cat&aacute;logo de aplicaciones disponibles al p&uacute;blico en general.
+</div>
+<!--EndDescripcionSeccionBlock-->
+
+<!--BeginBuscarAplicacionesBlock-->
+<div class="ficha01 grupo mabo2">
+    <div class="encabezado">
+        <div class="icono"><span class="i32 bs search32"></span></div>
+        <span class="titulo">Buscar</span><br>
+        <span class="subtitulo">filtrar los resultados del listado</span>
+    </div>
+    <div class="contenido">
+        <form id="formFiltrarPublicaciones" name="formFiltrarPublicaciones" action="" method="post">
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" id="filtroTitulo" name="filtroTitulo" class="defVal" value="T&iacute;tulo" title="T&iacute;tulo" />
+                </div>
+            </div>
+            <label for="BuscarPublicaciones" class="button buttonConfirm mabo">
+                <button id="BuscarPublicaciones" type="button" name="BuscarPublicaciones" class="btn01">
+                    Buscar Publicaciones
+                </button>
+            </label>
+            <label for="limpiarFiltro" class="button">
+                <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
+                    Limpiar Filtro
+                </button>
+            </label>
+        </form>
+    </div>
+</div>
+
+<h2 class="mabo3">Categor&iacute;as</h2>
+
+<ul class="menu06">
+    <!--BeginCategoriaRowBlock-->
+    <li>
+        <a class="{categoriaActual}" title="{sDescripcionCategoria}" href="{hrefSoftwareCategoria}">{sNombreCategoria}</a>
+    </li>
+    <!--EndCategoriaRowBlock-->
+</ul>
+<!--EndBuscarAplicacionesBlock-->
+
+<!--BeginListadoSoftwareBlock-->
+<div id="listadoSoftware" class="grupo po_re">
+    <div class="ajax_wait30 di_no"></div>
+    <div id="listadoSoftwareResult">
+        <!--BeginFichasSoftwareBlock-->
+        
+            <!--BeginSoftwareBlock-->
+            <div class="ficha03 grupo mabo2">
+                <div class="encabezado">
+                    <div class="der">
+                        <span class="fost_it">{sNombreCategoria}</span> |
+                        <a href="{hrefAmpliarSoftware}">Ver Completo</a>
+                    </div>
+                    <div class="izq">
+                        <div class="icono">
+                            <div class="th_fto_s thumb03">
+                                <i style="background-image:url('{scrAvatarAutor}')"></i>
+                            </div>
+                        </div>
+                        <div class="titulo">
+                            {sTitulo}
+                        </div>
+                        <div class="subtitulo">
+                            <div>publicado por <strong>{sAutor}</strong> - {sFecha}</div>
+                            {ratingActual}
+                        </div>
+                    </div>
+                </div>
+                <div class="contenido">
+                    {thumbDestacado}
+                    
+                    <div class="fowe_bo fost_it mabo2">Resumen</div>
+                    <p class="mabo0">{sDescripcionBreve}</p>
+                </div>               
+            </div>
+            <!--EndSoftwareBlock-->
+
+            <!--BeginNoRecordsSoftwareBlock-->
+            <div class="teal_ce fowe_bo">{sNoRecords}</div>
+            <!--EndNoRecordsSoftwareBlock-->
+            
+            {paginacion}
+        <!--EndFichasSoftwareBlock-->
+    </div>
+</div>
+<!--EndListadoSoftwareBlock-->
+
+<!--BeginUltimasAplicacionesBlock-->
+<div class="mabo3"></div>
+<div class="ficha05 bora">
+    <div class="titulo"><span class="i mi download"></span> Ultimas aplicaciones en cat&aacute;logo de descargas</div>
+    <!--BeginAplicacionRowBlock-->
+    <div class="mabo2">
+        <a href="{hrefAmpliarSoftware}">{sTitulo}</a> <span class="fost_it fte2 pale">en {sCategoria}</span>
+    </div>
+    <!--EndAplicacionRowBlock-->
+</div>
+<!--EndUltimasAplicacionesBlock-->
+
+<!--BeginAplicacionAmpliadaBlock-->
+<div class="ficha03 grupo">
+    <div class="encabezado">
+        <div class="der">
+            <ul class="m_horiz">
+                <li><a href="{hrefShareFacebook}" class="i sc facebook"></a></li>
+                <li><a href="{hrefShareTwitter}" class="i sc twitter"></a></li>
+                <li class="mari0"><a href="{hrefShareRss}" class="i bs rss ihover"></a>
+            </ul>
+        </div>
+        <div class="izq">
+            <div class="icono">
+                <div class="th_fto_s">
+                    <i style="background-image:url('{scrAvatarAutor}')"></i>
+                </div>
+            </div>
+            <div class="titulo">{sTitulo} - <span class="fost_it fte2">{sCategoria}</span></div>
+            <div class="subtitulo">
+                <span class="fost_it">por</span> <strong>{sAutor}</strong>
+                <!--BeginEmailAutorBlock-->
+                | <a href="mailto:{sEmail}">{sEmail}</a>
+                <!--EndEmailAutorBlock-->
+                - {sFecha}                
+            </div>
+        </div>
+    </div>
+    <div class="contenido mabo3">
+        <div class="mabo2 ov_au veal_mi">
+            <div class="fl_le teta_up fowe_bo mari">Rating actual:</div> {ratingActual}
+        </div>
+        <p>{sDescripcion}</p>
+    </div>
+
+    <!--BeginEnlacesBlock-->
+    <div class="contenido mabo3">
+        <h3 class="teta_up">Enlaces en descarga directa</h3><br>
+        <p>{sEnlaces}</p>
+    </div>
+    <!--EndEnlacesBlock-->
+
+    {galeriaAdjuntos}
+</div>
+<!--EndAplicacionAmpliadaBlock-->
