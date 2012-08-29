@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Con este controlador se van a poder administrar las acciones del sistema
- * crearlas, activarlas/desactivarlas y asociarlas a los distintos perfiles del sistema
- */
-class AccionesPerfilControllerAdmin extends PageControllerAbstract
+class ParametrosControllerAdmin extends PageControllerAbstract
 {
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
@@ -26,16 +22,16 @@ class AccionesPerfilControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
         //js de home
-        $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "jsContent", "JsContent");
 
         return $this;
     }
 
     public function index(){
-        $this->listarAccionesSistema();
+        $this->listar();
     }
 
-    public function listarAccionesSistema()
+    public function listar()
     {
         try{
             $this->setFrameTemplate()
@@ -46,8 +42,8 @@ class AccionesPerfilControllerAdmin extends PageControllerAbstract
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "mainContent", "ListadoAccionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "mainContent", "ListadoAccionesBlock");
 
             $filtro = array();
             $iRecordPerPage = 5;

@@ -171,5 +171,45 @@ class RutasModuloIndex
                                     'action'     => "procesar"
                                 ));
         $router->addRoute('indexPublicacionesProcesar', $route);
+
+        //DESCARGAS
+        $route = new RegexRoute('descargas',
+                                array(
+                                        'module' => "index",
+                                        'controller' => "software",
+                                        'action'     => "index"
+                                ));
+        $router->addRoute('indexDescargasIndex', $route);
+        $route = new RegexRoute('descargas/(\S+)',
+                                array(
+                                    'module' => 'index',
+                                    'controller' => 'software',
+                                    'action'     => 'listarCategoria'
+                                ),
+                                array(
+                                    1 => 'sUrlToken'
+                                ),
+                                '');
+        $router->addRoute('indexSoftwareListarCategoria', $route);
+        $route = new RegexRoute('descargas/(\S+)\/(\d+)-(.+)',
+                                array(
+                                    'module' => 'index',
+                                    'controller' => 'software',
+                                    'action'     => 'verSoftware'
+                                ),
+                                array(
+                                    1 => 'sUrlToken',
+                                    2 => 'iSoftwareId',
+                                    3 => 'sTituloUrlized'
+                                ),
+                                '');
+        $router->addRoute('indexSoftwareVerAplicacion', $route);
+        $route = new RegexRoute('descargas/procesar',
+                                array(
+                                    'module' => "index",
+                                    'controller' => "software",
+                                    'action'     => "procesar"
+                                ));
+        $router->addRoute('indexSoftwareProcesar', $route);
     }   
 }
