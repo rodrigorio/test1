@@ -26,62 +26,69 @@
         <h2>Administracion Avanzada</h2>
     </header>
     <section>
-        <h3>Administrar valores parametricos sistema</h3>
+        <h3>Administrar valores param&eacute;tricos din&aacute;micos del sistema. (DB / Session)</h3>
     </section>
 </article>
 <!--EndHeaderBlock-->
 
-<!--BeginListadoAccionesBlock-->
+<!--BeginListadoParametrosBlock-->
 <div class="subHeader01 mabo3">
-    <a class="button-link blue" href="admin/acciones-perfil-form" rel="tooltip" original-title="Crear una nueva acci&oacute;n en el sistema">Crear Nueva Acci&oacute;n</a>
+    <a class="button-link blue" href="admin/parametros-form" rel="tooltip" original-title="Crear un nuevo parametro">Crear Nuevo Parametro</a>
 </div>
-<section id="listadoAcciones">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+<section id="listadoParametros">
+    <div class="ajax_wait30 di_no"></div>
     <table class="datatable">
         <thead>
             <tr>
-                <th>Modulo</th>
-                <th>Controlador</th>
-                <th>Accion</th>
-                <th>Perfil</th>
-                <th>Activa?</th>
+                <th>Grupo</th>
+                <th>Key</th>
+                <th>Tipo</th>
+                <th>Descripcion</th>
+                <th>Valor</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-        <!--BeginAccionesBlock-->
-            <tr class="{iAccionId}" class="{odd}">
-                <td>{sModulo}</td>
-                <td>{sControlador}</td>
-                <td>{sAccion}</td>
-                <td>{sPerfil}</td>
-                <td>
-                    <select class="cambiarEstadoAccion" name="estadoAccion_{iAccionId}" id="estadoAccion_{iAccionId}" rel="{iAccionId}">
-                        <option value="0" {sSelectedAccionDesactivada}>Desactivada</option>
-                        <option value="1" {sSelectedAccionActivada}>Activada</option>
-                    </select>
-                </td>
+        <!--BeginParametroBlock-->
+            <tr class="{iParametroId}">
+                <td>{sGrupo}</td>
+                <td>{sKey}</td>
+                <td>{sTipo}</td>
+                <td>{sDescripcion}</td>
+                <td>{sValor}</td>
                 <td class="teal_ce">
-                    <a rel="tooltip" original-title="Editar Accion" href="{hrefEditarAccion}?editar=1&iAccionId={iAccionId}"><span class="i bs edit ihover"></span></a>
-                    <span rel="{iAccionId}" class="i bs delete ihover eliminarAccion"></span>
+                    <span rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
+                    <span rel="{iParametroId}" class="i bs delete ihover eliminarParametro"></span>
                 </td>
             </tr>
-        <!--EndAccionesBlock-->
-        <!--BeginNoRecordsAccionesBlock-->
+        <!--EndParametroBlock-->
+        <!--BeginNoRecordsParametrosBlock-->
             <tr>
                 <td colspan="6">{sNoRecords}</td>
             </tr>
-        <!--EndNoRecordsAccionesBlock-->
+        <!--EndNoRecordsParametrosBlock-->
         </tbody>
     </table>
 </section>
-<!--EndListadoAccionesBlock-->
+<!--EndListadoParametrosBlock-->
 
 <!--BeginFormularioBlock-->
-<div class="notification note">
-    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p>Los campos <span class="fost_it">controlador</span> y <span class="fost_it">accion</span> deben ser ingresados en <strong>Camel Case con el primer caracter en minuscula</strong></p>
-</div>
+<article class="full-block clearfix">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <header>
+        <h2>{sTituloForm} Parametro Din&aacute;mico</h2>
+    </header>
+
+    <div style="display:none"  id='msg_form_parametro' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+    <input type="hidden" value="{iParametroId}" name="iParametroId" id="iParametroId" />
+
+    //los formularios aparte. uno para cada asociacion de parametro.
+    //en el modificar se agrega solo el que va.
+    //en el listado hay un UNION de las 3 tablas usuarios, controlador y sistema.
+
 <h3 class="teta_up">{sTituloFormAccion} Acci&oacute;n</h3>
 <div style="display:none"  id='msg_form_accion' class="notification">
     <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
