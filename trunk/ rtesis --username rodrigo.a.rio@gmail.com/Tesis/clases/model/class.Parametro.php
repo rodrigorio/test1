@@ -45,26 +45,41 @@ class Parametro
         return $this->iId;
     }
 
-    public function getEstado()
+    public function setDescripcion($sDescripcion)
     {
-        return $this->sEstado;
+        $this->sDescripcion = $sDescripcion;
+    }
+    public function getDescripcion()
+    {
+        return $this->sDescripcion;
     }
 
-    public function setEstadoPendiente()
+    public function setNamespace($sNamespace)
     {
-        $this->sEstado = self::ESTADO_PENDIENTE;
+        $this->sNamespace = $sNamespace;
+    }
+    public function getNamespace()
+    {
+        return $this->sNamespace;
+    }
+
+    public function getTipo()
+    {
+        return $this->sTipo;
+    }
+    public function setTipoNumerico()
+    {
+        $this->sTipo = self::TIPO_NUMERICO;
         return $this;
     }
-
-    public function setEstadoAprobado()
+    public function setTipoBooleano()
     {
-        $this->sEstado = self::ESTADO_APROBADO;
+        $this->sTipo = self::TIPO_BOOLEANO;
         return $this;
     }
-
-    public function setEstadoRechazado()
+    public function setTipoCadena()
     {
-        $this->sEstado = self::ESTADO_RECHAZADO;
+        $this->sTipo = self::TIPO_CADENA;
         return $this;
     }    
 }
