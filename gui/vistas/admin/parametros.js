@@ -1,4 +1,4 @@
-function eliminarAccion(iAccionId){
+function eliminarParametro(iParametroId){
     if(confirm("Se borrara la accion del sistema, desea continuar?")){
         $.ajax({
             type:"post",
