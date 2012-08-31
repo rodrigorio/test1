@@ -45,26 +45,32 @@
                 <th>Tipo</th>
                 <th>Descripcion</th>
                 <th>Valor</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
         <!--BeginParametroBlock-->
             <tr class="{iParametroId}">
                 <td>{sGrupo}</td>
-                <td>{sKey}</td>
+                <td class="po_re">
+                    {sKey}
+                    <div class="po_ab topRight">
+                        <span rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
+                    </div>
+                </td>
                 <td>{sTipo}</td>
                 <td>{sDescripcion}</td>
-                <td>{sValor}</td>
-                <td class="teal_ce">
-                    <span rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
-                    <span rel="{iParametroId}" class="i bs delete ihover eliminarParametro"></span>
+                <td class="po_re">
+                    {sValor}
+                    <div class="po_ab topRight">
+                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs edit ihover modificarValor"></span>
+                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs delete ihover eliminarAsociacion"></span>
+                    </div>
                 </td>
             </tr>
         <!--EndParametroBlock-->
         <!--BeginNoRecordsParametrosBlock-->
             <tr>
-                <td colspan="6">{sNoRecords}</td>
+                <td colspan="5">{sNoRecords}</td>
             </tr>
         <!--EndNoRecordsParametrosBlock-->
         </tbody>
@@ -72,63 +78,153 @@
 </section>
 <!--EndListadoParametrosBlock-->
 
-<!--BeginFormularioBlock-->
-<article class="full-block clearfix">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+<!--BeginFormularioParametroBlock-->
+<article class="full-block clearfix">    
     <header>
-        <h2>{sTituloForm} Parametro Din&aacute;mico</h2>
+        <h2>{sTituloForm} Par&aacute;metro Din&aacute;mico</h2>
     </header>
 
-    <div style="display:none"  id='msg_form_parametro' class="notification">
-        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-        <p class="msg"></p>
-    </div>
-    <input type="hidden" value="{iParametroId}" name="iParametroId" id="iParametroId" />
-
-    //los formularios aparte. uno para cada asociacion de parametro.
-    //en el modificar se agrega solo el que va.
-    //en el listado hay un UNION de las 3 tablas usuarios, controlador y sistema.
-
-<h3 class="teta_up">{sTituloFormAccion} Acci&oacute;n</h3>
-<div style="display:none"  id='msg_form_accion' class="notification">
-    <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-    <p class="msg"></p>
-</div>
-<form id="formAccion" name="formAccion" action="" method="post">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <!--BeginCamposCrearAccionBlock-->
+    <form id="formParametro" name="formParametro" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+        
         <dt>
-            <label for="modulo">Modulo</label>
+            <label for="namespace">Nombre (Key)</label>
         </dt>
         <dd>
-            <select name="modulo" id="modulo">
-                <option value="">Elegir modulo</option>
-                <option value="index" {sSelectedModuloIndex}>Index</option>
-                <option value="comunidad" {sSelectedModuloComunidad}>Comunidad</option>
-                <option value="seguimientos" {sSelectedModuloSeguimientos}>Seguimientos</option>
-                <option value="admin" {sSelectedModuloAdmin}>Admin</option>
-            </select>           
+            <input maxlength="60" name="namespace" id="namespace" type="text" class="small" value="{sNamespace}">
+        </dd>
+        <dt>
+            <label for="tipo">Tipo</label>
+        </dt>
+        <dd>
+            <select name="tipo" id="tipo">
+                <option value="">Tipo:</option>                
+                <option {sSelectedTipoBoolean} value="boolean">Booleano</option>
+                <option {sSelectedTipoNumeric} value="numeric">Num&eacute;rico</option>
+                <option {sSelectedTipoString} value="string">Cadena Caracteres</option>
+            </select>
+        </dd>
+        <dt>
+            <label for="descripcion">Descripci&oacute;n</label>
+        </dt>
+        <dd>
+            <input maxlength="255" name="descripcion" id="descripcion" type="text" class="large" value="{sDescripcion}">
+        </dd>
+
+        <div style="display:none"  id='msg_form_parametro' class="notification mabo2">
+            <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+            <p class="msg"></p>
+        </div>
+
+        <!--BeginSubmitCrearParametroBlock-->
+        <button id="crearParametro" name="crearParametro" type="submit">Crear Parametro</button>
+        <!--EndSubmitCrearParametroBlock-->
+        
+        <!--BeginSubmitModificarParametroBlock-->
+        <button id="modificarParametro" name="modificarParametro" type="submit">Modificar Parametro</button>
+        <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
+        <!--EndSubmitModificarParametroBlock-->
+    </form>
+</article>
+<!--EndFormularioParametroBlock-->
+
+<!--BeginFormularioParametroSistemaBlock-->
+<article class="full-block clearfix">
+    <header>
+        <h2>{sTituloForm} Asociaci&oacute;n Par&aacute;metro-Sistema</h2>
+    </header>
+
+    <form id="formParametroSistema" name="formParametroSistema" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+        
+        <!--BeginCrearAsociacionSistemaBlock-->
+        <dt>
+            <label for="parametro">Parametro</label>
+        </dt>
+        <dd>
+            <select name="parametro" id="parametro">
+                <option value="">Parametro:</option>
+                <!--BeginOptionParametroBlock-->
+                <option value="{iParametroId}">{sParametroNombre}</option>
+                <!--EndOptionParametroBlock-->
+            </select>
+        </dd>
+        <!--EndCrearAsociacionSistemaBlock-->
+
+        <!--BeginModificarAsociacionSistemaBlock-->
+        <dt>
+            <label>Parametro</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="parametro" id="parametro" type="text" class="small readonly" value="{sParametro}">
+        </dd>
+        <!--EndModificarAsociacionSistemaBlock-->
+
+        <dt>
+            <label for="valor">Valor</label>
+        </dt>
+        <dd>
+            <input maxlength="255" name="valor" id="valor" type="text" class="large" value="{sValor}">
+        </dd>
+
+        <div style="display:none"  id='msg_form_parametroSistema' class="notification mabo2">
+            <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+            <p class="msg"></p>
+        </div>
+
+        <!--BeginSubmitCrearAsociacionSistemaBlock-->
+        <button id="crearAsociacionSistema" name="crearAsociacionSistema" type="submit">Asociar Parametro Sistema</button>
+        <!--EndSubmitCrearAsociacionSistemaBlock-->
+
+        <!--BeginSubmitModificarAsociacionSistemaBlock-->
+        <button id="modificarAsociacionSistema" name="modificarAsociacionSistema" type="submit">Modificar Valor Parametro</button>
+        <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
+        <!--EndSubmitModificarAsociacionSistemaBlock-->
+        
+    </form>
+</article>
+<!--EndFormularioParametroSistemaBlock-->
+
+<!--BeginFormularioParametroControladorBlock-->
+<article class="full-block clearfix">
+    <header>
+        <h2>{sTituloForm} Asociaci&oacute;n Par&aacute;metro-Controlador</h2>
+    </header>
+
+    <form id="formParametroControlador" name="formParametroControlador" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+
+        <!--BeginCrearAsociacionControladorBlock-->
+        <dt>
+            <label for="parametro">Parametro</label>
+        </dt>
+        <dd>
+            <select name="parametro" id="parametro">
+                <option value="">Parametro:</option>
+                <!--BeginOptionParametroBlock-->
+                <option value="{iParametroId}">{sParametroNombre}</option>
+                <!--EndOptionParametroBlock-->
+            </select>
         </dd>
         <dt>
             <label for="controlador">Controlador</label>
         </dt>
         <dd>
-            <input name="controlador" id="controlador" type="text" class="small" value="{sControlador}">
-            <p>
-                Cuidado, el nombre del controlador debe coincidir con el nombre de la clase<br>
-                Ejemplo: si "class.InstitucionesControllerComunidad.php" entonces deberia ingresar 'comunidad' en el campo.<br>
-                Si el controlador no existe en DB sera creado.<br>
-                El controlador se elimina cuando se elimine la ultima accion asociada.
-            </p>
+            <select name="controlador" id="controlador">
+                <option value="">Controlador:</option>
+                <!--BeginOptionControladorBlock-->
+                <option value="{iControladorId}">{sControlador}</option>
+                <!--EndOptionControladorBlock-->
+            </select>
         </dd>
-        <!--EndCamposCrearAccionBlock-->
+        <!--EndCrearAsociacionControladorBlock-->
 
-        <!--BeginCamposModificarAccionBlock-->
+        <!--BeginModificarAsociacionControladorBlock-->
         <dt>
-            <label>Modulo</label>
+            <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="modulo" id="modulo" type="text" class="small readonly" value="{sModulo}">
+            <input readonly="readonly" name="parametro" id="parametro" type="text" class="small readonly" value="{sParametro}">
         </dd>
         <dt>
             <label>Controlador</label>
@@ -136,54 +232,106 @@
         <dd>
             <input readonly="readonly" name="controlador" id="controlador" type="text" class="small readonly" value="{sControlador}">
         </dd>
-        <!--EndCamposModificarAccionBlock-->
+        <!--EndModificarAsociacionControladorBlock-->
 
         <dt>
-            <label for="accion">Accion</label>
+            <label for="valor">Valor</label>
         </dt>
         <dd>
-            <input name="accion" id="accion" type="text" class="small" value="{sAccion}">
-            <p>
-                El nombre de la accion debe corresponder con el nombre de un metodo para la clase del controller.<br>
-                Se deben respetar mayusculas y minusculas.
-            </p>
+            <input maxlength="255" name="valor" id="valor" type="text" class="large" value="{sValor}">
         </dd>
-        <dt>
-            <label for="perfil">Perfil</label>
-        </dt>
-        <dd>
-            <select name="perfil" id="perfil">
-                <option value="">Elegir Perfil</option>
-                <option value="1" {sSelectedPerfilAdministrador}>Administrador</option>
-                <option value="2" {sSelectedPerfilModerador}>Moderador</option>
-                <option value="3" {sSelectedPerfilIntegranteActivo}>Integrante Activo</option>
-                <option value="4" {sSelectedPerfilIntegranteInactivo}>Integrante Inactivo</option>
-                <option value="5" {sSelectedPerfilVisitante}>Visitante</option>
-            </select>
-            <p>
-                Los permisos se manejan por jerarquia:<br>
-                Si elige <strong>'moderador'</strong> la accion podra ejecutarla tanto <strong>administradores</strong> como <strong>moderadores</strong><br>
-                Si elige 'integrante activo' la accion sera permitida para administradores, moderadores e integrantes activos<br>
-                Asi sucesivamente, la misma regla aplica para integrante activo y visitante.
-            </p>
-        </dd>
-        <dt>
-            <label for="activo">Acci&oacute;n Activa?</label>
-        </dt>
-        <dd>
-            <select name="activo" id="activo">
-                <option value="0" {sSelectedAccionDesactivada}>Desactivada</option>
-                <option value="1" {sSelectedAccionActivada}>Activada</option>
-            </select>
-        </dd>
-       
-        <!--BeginSubmitCrearAccionBlock-->
-        <button id="crearAccion" name="crearAccion" type="submit">Crear Accion</button>
-        <!--EndSubmitCrearAccionBlock-->
 
-        <!--BeginSubmitModificarAccionBlock-->
-        <button id="modificarAccion" name="modificarAccion" type="submit">Modificar Accion</button>
-        <input type="hidden" value="{iAccionId}" name="iAccionId" id="iAccionId" />
-        <!--EndSubmitModificarAccionBlock-->
-</form>
-<!--EndFormularioBlock-->
+        <div style="display:none"  id='msg_form_parametroControlador' class="notification mabo2">
+            <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+            <p class="msg"></p>
+        </div>
+
+        <!--BeginSubmitCrearAsociacionControladorBlock-->
+        <button id="crearAsociacionControlador" name="crearAsociacionControlador" type="submit">Asociar Parametro Controlador</button>
+        <!--EndSubmitCrearAsociacionControladorBlock-->
+
+        <!--BeginSubmitModificarAsociacionControladorBlock-->
+        <button id="modificarAsociacionControlador" name="modificarAsociacionControlador" type="submit">Modificar Valor Parametro</button>
+        <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
+        <input type="hidden" value="{iControladorId}" name="iControladorIdForm" id="iControladorIdForm" />
+        <!--EndSubmitModificarAsociacionControladorBlock-->
+    </form>
+</article>
+<!--EndFormularioParametroControladorBlock-->
+
+<!--BeginFormularioParametroUsuarioBlock-->
+<article class="full-block clearfix">
+    <header>
+        <h2>{sTituloForm} Asociaci&oacute;n Par&aacute;metro-Usuario</h2>
+    </header>
+
+    <form id="formParametroUsuario" name="formParametroUsuario" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+
+        <!--BeginCrearAsociacionUsuarioBlock-->
+        <dt>
+            <label for="parametro">Parametro</label>
+        </dt>
+        <dd>
+            <select name="parametro" id="parametro">
+                <option value="">Parametro:</option>
+                <!--BeginOptionParametroBlock-->
+                <option value="{iParametroId}">{sParametroNombre}</option>
+                <!--EndOptionParametroBlock-->
+            </select>
+        </dd>
+        <dt>
+            <label for="usuario">Usuario</label>
+        </dt>
+        <dd>
+            <div class="autoComplete">
+                <div class="innerAutoComplete">
+                    <div id='usuario_loading' class="i ajax_wait16 di_no"></div>
+                    <span rel="tooltip" original-title="Quitar usuario" id='usuario_clean' class='i bs close ihover di_no'></span>
+                    <input type="text" name="usuario" id="usuario" title="usuario" maxlength="60" value="" />
+                    <input type="hidden" name="usuarioId" id="usuarioId" value="" />
+                </div>
+            </div>
+            <p>Utilice el Apellido para buscar</p>
+        </dd>
+        <!--EndCrearAsociacionUsuarioBlock-->
+
+        <!--BeginModificarAsociacionUsuarioBlock-->
+        <dt>
+            <label>Parametro</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="parametro" id="parametro" type="text" class="small readonly" value="{sParametro}">
+        </dd>
+        <dt>
+            <label>Usuario</label>
+        </dt>
+        <dd>
+            <input readonly="readonly" name="usuario" id="usuario" type="text" class="small readonly" value="{sNombreUsuario}">
+        </dd>
+        <!--EndModificarAsociacionUsuarioBlock-->
+
+        <dt>
+            <label for="valor">Valor</label>
+        </dt>
+        <dd>
+            <input maxlength="255" name="valor" id="valor" type="text" class="large" value="{sValor}">
+        </dd>
+
+        <div style="display:none"  id='msg_form_parametroUsuario' class="notification mabo2">
+            <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+            <p class="msg"></p>
+        </div>
+
+        <!--BeginSubmitCrearAsociacionUsuarioBlock-->
+        <button id="crearAsociacionUsuario" name="crearAsociacionUsuario" type="submit">Asociar Parametro Usuario</button>
+        <!--EndSubmitCrearAsociacionUsuarioBlock-->
+
+        <!--BeginSubmitModificarAsociacionUsuarioBlock-->
+        <button id="modificarAsociacionUsuario" name="modificarAsociacionUsuario" type="submit">Modificar Valor Usuario</button>
+        <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
+        <input type="hidden" value="{iUsuarioId}" name="iUsuarioIdForm" id="iUsuarioIdForm" />
+        <!--EndSubmitModificarAsociacionUsuarioBlock-->
+    </form>
+</article>
+<!--EndFormularioParametroUsuarioBlock-->
