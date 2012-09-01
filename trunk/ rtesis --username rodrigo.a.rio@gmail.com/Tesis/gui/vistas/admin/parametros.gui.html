@@ -33,7 +33,20 @@
 
 <!--BeginListadoParametrosBlock-->
 <div class="subHeader01 mabo3">
-    <a class="button-link blue" href="admin/parametros-form" rel="tooltip" original-title="Crear un nuevo parametro">Crear Nuevo Parametro</a>
+    <ul>
+        <li>
+            <a class="button-link blue crearParametro" href="javascript:;" rel="tooltip" original-title="Crear un nuevo parametro din&aacute;mico">Crear Par&aacute;metro</a>
+        </li>
+        <li>
+            <a class="button-link blue asociarParametroSistema" href="javascript:;" rel="tooltip" original-title="Asociar par&aacute;metro en Sistema">Asociar Par&aacute;metro Sistema</a>
+        </li>
+        <li>
+            <a class="button-link blue asociarParametroControlador" href="javascript:;" rel="tooltip" original-title="Asociar par&aacute;metro a un Controlador">Asociar Par&aacute;metro Controlador</a>
+        </li>
+        <li>
+            <a class="button-link blue asociarParametroUsuario" href="javascript:;" rel="tooltip" original-title="Asociar par&aacute;metro a un Usuario">Asociar Par&aacute;metro Usuario</a>
+        </li>
+    </ul>
 </div>
 <section id="listadoParametros">
     <div class="ajax_wait30 di_no"></div>
@@ -50,7 +63,6 @@
         <tbody>
         <!--BeginParametroBlock-->
             <tr class="{iParametroId}">
-                <td>{sGrupo}</td>
                 <td class="po_re">
                     {sKey}
                     <div class="po_ab topRight">
@@ -60,12 +72,15 @@
                 </td>
                 <td>{sTipo}</td>
                 <td>{sDescripcion}</td>
+                <td>{sGrupo}</td>
                 <td class="po_re">
                     {sValor}
+                    <!--BeginEditAsociacionBlock-->
                     <div class="po_ab topRight">
-                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs edit ihover modificarValor"></span>
-                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs delete ihover eliminarAsociacion"></span>
+                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs edit ihover modificarValorParametro"></span>
+                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs delete ihover eliminarAsociacionParametro"></span>
                     </div>
+                    <!--EndEditAsociacionBlock-->
                 </td>
             </tr>
         <!--EndParametroBlock-->
