@@ -137,16 +137,46 @@ var optionsAjaxFormAccion = {
 };
 
 $(document).ready(function(){
-    $(".eliminarAccion").live("click", function(){
-        var iAccionId = $(this).attr("rel");
-        eliminarAccion(iAccionId);
+
+    $(".crearParametro").live('click', function(){
+        crearParametro();
+        return false;
+    });
+    
+    $(".asociarParametroSistema").live('click', function(){
+        asociarParametroSistema();
+        return false;
     });
 
-    $(".cambiarEstadoAccion").live("change", function(){
-        var iAccionId = $(this).attr("rel");
-        cambiarEstadoAccion(iAccionId, $("#estadoAccion_"+iAccionId+" option:selected").val());
+    $(".asociarParametroControlador").live('click', function(){
+        asociarParametroControlador();
+        return false;
+    });
+    
+    $(".asociarParametroUsuario").live('click', function(){
+        asociarParametroUsuario();
+        return false;
+    });
+    
+    $(".eliminarParametro").live("click", function(){
+        var iParametroId = $(this).attr("rel");
+        eliminarParametro(iParametroId);
     });
 
-    $("#formAccion").validate(validateFormAccion);
-    $("#formAccion").ajaxForm(optionsAjaxFormAccion);
+    $(".editarParametro").live("click", function(){
+        var iParametroId = $(this).attr("rel");
+        editarParametro(iParametroId);
+    });
+
+    $(".modificarValorParametro").live("click", function(){
+        //split rel
+        //switch tipo asociacion para saber q form mostrar, llamar con los dos parametros
+        modificarValorParametro(iParametroId, iGrupoId);
+    });
+
+    $(".eliminarAsociacionParametro").live("click", function(){
+        //split rel
+        //switch tipo asociacion para saber q form mostrar, llamar con los dos parametros         
+        eliminarAsociacionParametro(iParametroId, iGrupoId);
+    });
 });
