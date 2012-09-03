@@ -210,123 +210,76 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
         }
     }
 
-    public function guardar($oAccion)
+    public function guardar($oParametro)
     {
         try{
-            if($oAccion->getId() != null){
-                return $this->actualizar($oAccion);
+            if($oParametro->getId() != null){
+                return $this->actualizar($oParametro);
             }else{
-                return $this->insertar($oAccion);
+                return $this->insertar($oParametro);
             }
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-    public  function insertar($oAccion){
+    public  function insertar($oParametro)
+    {
         try{
             $db = $this->conn;
 
-            $db->begin_transaction();
-
-            //si el controlador no existe lo creo, sino capturo el id para agregarlo al registro de la accion
-            $sSQL = "SELECT id as iControladorId FROM controladores_pagina WHERE controlador = '".$oAccion->getModulo()."_".$oAccion->getControlador()."'";
-            $db->query($sSQL);
-
-            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($iRecordsTotal)){
-                //no existia el controlador. lo creo
-                $sSQL = "insert into controladores_pagina set controlador = '".$oAccion->getModulo()."_".$oAccion->getControlador()."'";
-                $db->execSQL($sSQL);
-                $iLastId = $db->insert_id();
-                $oAccion->setControladorId($iLastId);
-            }else{
-                $result = $db->oNextRecord();
-                $oAccion->setControladorId($result->iControladorId);
-            }
-
-            $activo = ($oAccion->isActivo())?"1":"0";
-            $sSQL =	" insert into acciones ".
-                    " set controladores_pagina_id = '".$oAccion->getControladorId()."', ".
-                    " accion = ".$db->escape($oAccion->getNombre(),true).", ".
-                    " grupo = ".$db->escape($oAccion->getGrupoPerfilId(),false,MYSQL_TYPE_INT).", ".
-                    " activo = ".$db->escape($activo, false, MYSQL_TYPE_INT)." ";
+            $sSQL = " INSERT INTO parametros ".
+                    " SET namespace = ".$this->escStr($oParametro->getNamespace()).", ".
+                    " descripcion = ".$this->escStr($oParametro->getDescripcion()).", ".
+                    " tipo = ".$this->escStr($oParametro->getTipo())." ";
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
 
-            $oAccion->setId($iLastId);
-
             $db->commit();
-
+            $oParametro->setId($iLastId);
             return true;
 
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
 
-    public  function actualizar($oAccion)
+    public  function actualizar($oParametro)
     {
         try{
             $db = $this->conn;
 
-            $activo = ($oAccion->isActivo())?"1":"0";
+            $sSQL = " UPDATE parametros ".
+                    " SET namespace = ".$this->escStr($oParametro->getNamespace()).", ".
+                    " descripcion = ".$this->escStr($oParametro->getDescripcion()).", ".
+                    " tipo = ".$this->escStr($oParametro->getTipo())." ".
+                    " WHERE id = '".$oParametro->getId()."' ";
 
-            //el controlador se mantiene. se actualiza solo la accion
-            $sSQL =	" update acciones ".
-                    " set ".
-                    " accion = ".$db->escape($oAccion->getNombre(),true).", ".
-                    " grupo = ".$db->escape($oAccion->getGrupoPerfilId(),false,MYSQL_TYPE_INT).", ".
-                    " activo = ".$db->escape($activo, false, MYSQL_TYPE_INT)." ".
-                    " where id = ".$db->escape($oAccion->getId(),false,MYSQL_TYPE_INT)." ";
+            $db->execSQL($sSQL);
+            $db->commit();
 
-             $db->execSQL($sSQL);
-             $db->commit();
-
-             return true;
+            return true;
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
 
-    public function borrar($oAccion)
+    public function borrar($iParametroId)
     {
         try{
             $db = $this->conn;
-
             $db->begin_transaction();
 
-            $iControladorId = $oAccion->getControladorId();
-
-            $db->execSQL("delete from acciones where id = '".$oAccion->getId()."'");
-
-            //si era la ultima accion del controlador lo borro. (checkear el borrado en cascada de parametros en db)
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        1 as existe
-                    FROM
-                        controladores_pagina cp
-                    JOIN
-                        acciones a ON cp.id = a.controladores_pagina_id
-                    WHERE cp.id = '".$iControladorId."'";
-
-            $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($foundRows)){
-                $db->execSQL("delete from controladores_pagina where id = '".$iControladorId."'");
-            }
+            $db->execSQL("delete from parametros where id = '".$iParametroId."'");
 
             $db->commit();
             return true;
+
         }catch(Exception $e){
-            $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
 
@@ -339,9 +292,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        acciones a
-                    JOIN
-                        controladores_pagina cp ON a.controladores_pagina_id = cp.id
+                        parametros p
                     WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);

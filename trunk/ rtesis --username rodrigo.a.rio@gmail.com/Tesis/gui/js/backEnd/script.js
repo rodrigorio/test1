@@ -17,14 +17,11 @@ function ocultarElemento(object){
 /**
  * Para setear un contenedor en estado de espera a un request ajax
  * Se pasa el id del contenedor y el estado: true->en espera, false->se finalizo el envio/devolucion
- *
- * @param contenedorId string
- * @param show boolean
  */
 function setWaitingStatus(contenedorId, show)
 {
     var contenedor = $("#" + contenedorId);
-    var ajaxLoading = $("#ajax_loading");
+    var ajaxLoading = $("#" + contenedorId + " .ajax_wait30");
 
     if(show){
         contenedor.addClass("ajaxdelay");

@@ -63,13 +63,13 @@
         </thead>
         <tbody>
         <!--BeginParametroBlock-->
-            <tr class="{iParametroId}">
+            <tr class="{iParametroId} {iGrupoId}">
                 <td class="teal_le pale">
                     <span title="Editar Par&aacute;metro" rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
                     <!--BeginEliminarParametroBlock-->
                     <span title="Eliminar Par&aacute;metro" rel="{iParametroId}" class="i bs delete ihover eliminarParametro"></span>
                     <!--EndEliminarParametroBlock-->
-                    <br>
+                    <br clear="all">
                     <strong>{sKey}</strong>
                 </td>
                 <td>{sTipo}</td>
@@ -77,10 +77,10 @@
                 <td class="teal_le">{tipoAsociacion}</td>
                 <td>{sGrupo}</td>
                 <td class="pa2">
-                    <!--BeginEditAsociacionBlock-->                    
+                    <!--BeginEditAsociacionBlock-->
                     <span title="Eliminar Asociaci&oacute;n Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri i bs delete ihover eliminarAsociacionParametro"></span>
                     <span title="Modificar Valor Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri mari i bs edit ihover modificarValorParametro"></span>
-                    <br>
+                    <div class="cl_bo mabo"></div>
                     <!--EndEditAsociacionBlock-->
                     {sValor}
                 </td>

@@ -644,4 +644,35 @@ class AdminController
             throw new Exception($e);
         }        
     }
+
+    public function existeParametro($oParametro)
+    {
+        try{
+            $filtro = array("p.namespace" => $oParametro->getNamespace());
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->existe($filtro);
+        }catch(Exception $e){
+           throw new Exception($e);
+        }                
+    }
+
+    public function guardarParametro($oParametro)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->guardar($oParametro);
+        }catch(Exception $e){
+            throw new Exception($e);
+        } 
+    }
+    
+    public function borrarParametro($oParametro)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->borrar($oParametro->getId());
+        }catch(Exception $e){
+            throw new Exception($e);
+        } 
+    }
 }
