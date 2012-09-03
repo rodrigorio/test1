@@ -64,6 +64,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
                     $tipoAsociacion = "-";
                     $sValor = "-";                    
                     $sGrupo = "-";
+                    $iGrupoId = "";
                     if(get_class($oParametro) !== 'Parametro'){
                         $this->getTemplate()->set_var("EliminarParametroBlock", "");
 
@@ -74,13 +75,12 @@ class ParametrosControllerAdmin extends PageControllerAbstract
                         if(get_class($oParametro) !== 'ParametroSistema'){
                             $iGrupoId = $oParametro->getGrupoId();
                             $sGrupo = $oParametro->getGrupo();
-                        }
-
-                        $this->getTemplate()->set_var("iGrupoId", $iGrupoId);
+                        }                        
                     }else{                        
                         $this->getTemplate()->set_var("EditAsociacionBlock", "");
                     }
-                    
+
+                    $this->getTemplate()->set_var("iGrupoId", $iGrupoId);
                     $this->getTemplate()->set_var("tipoAsociacion", $tipoAsociacion);
                     $this->getTemplate()->set_var("sGrupo", $sGrupo);
                     $this->getTemplate()->set_var("sValor", $sValor);
@@ -198,6 +198,168 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         }       
     }
 
+    private function formParametroSistema()
+    {
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
+
+            if($this->getRequest()->has('crearParametro')){
+                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
+
+                $sTituloForm = "Agregar";
+
+                $oParametro = null;
+                $iParametroId = "";
+                $sNamespace = "";
+                $sDescripcion = "";
+                $sTipo = "";
+
+            }else{
+
+                $iParametroId = $this->getRequest()->getParam('iParametroId');
+                if(empty($iParametroId)){
+                    throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+                }
+
+                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
+
+                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+
+                $sTituloForm = "Modificar";
+
+                $sNamespace = $oParametro->getNamespace();
+                $sDescripcion = $oParametro->getDescripcion();
+                $sTipo = $oParametro->getTipo();
+
+                $this->getTemplate()->set_var("iParametroId", $iParametroId);
+            }
+
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+
+            switch($sTipo){
+                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
+                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
+                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
+            }
+
+            $this->getTemplate()->set_var("sNamespace", $sNamespace);
+            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    private function formParametroControlador()
+    {
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
+
+            if($this->getRequest()->has('crearParametro')){
+                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
+
+                $sTituloForm = "Agregar";
+
+                $oParametro = null;
+                $iParametroId = "";
+                $sNamespace = "";
+                $sDescripcion = "";
+                $sTipo = "";
+
+            }else{
+
+                $iParametroId = $this->getRequest()->getParam('iParametroId');
+                if(empty($iParametroId)){
+                    throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+                }
+
+                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
+
+                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+
+                $sTituloForm = "Modificar";
+
+                $sNamespace = $oParametro->getNamespace();
+                $sDescripcion = $oParametro->getDescripcion();
+                $sTipo = $oParametro->getTipo();
+
+                $this->getTemplate()->set_var("iParametroId", $iParametroId);
+            }
+
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+
+            switch($sTipo){
+                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
+                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
+                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
+            }
+
+            $this->getTemplate()->set_var("sNamespace", $sNamespace);
+            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    private function formParametroUsuario()
+    {
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
+
+            if($this->getRequest()->has('crearParametro')){
+                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
+
+                $sTituloForm = "Agregar";
+
+                $oParametro = null;
+                $iParametroId = "";
+                $sNamespace = "";
+                $sDescripcion = "";
+                $sTipo = "";
+
+            }else{
+
+                $iParametroId = $this->getRequest()->getParam('iParametroId');
+                if(empty($iParametroId)){
+                    throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+                }
+
+                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
+
+                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+
+                $sTituloForm = "Modificar";
+
+                $sNamespace = $oParametro->getNamespace();
+                $sDescripcion = $oParametro->getDescripcion();
+                $sTipo = $oParametro->getTipo();
+
+                $this->getTemplate()->set_var("iParametroId", $iParametroId);
+            }
+
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+
+            switch($sTipo){
+                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
+                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
+                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
+            }
+
+            $this->getTemplate()->set_var("sNamespace", $sNamespace);
+            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
     private function formParametro()
     {
         try{
@@ -261,7 +423,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             $oParametro = new stdClass();
 
             $oParametro->sDescripcion = $this->getRequest()->getPost("descripcion");
-            $oParametro->sNamespace = $this->getRequest()->getPost("namespace");
+            $oParametro->sNamespace = strtoupper($this->getRequest()->getPost("namespace"));
 
             $oParametro = Factory::getParametroInstance($oParametro);
 
@@ -270,7 +432,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
                 case "boolean": $oParametro->setTipoBooleano(); break;
                 case "numeric": $oParametro->setTipoNumerico(); break;
             }
-           
+            
             if(AdminController::getInstance()->existeParametro($oParametro))
             {
                 $this->getJsonHelper()->setSuccess(false);
@@ -286,6 +448,84 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             echo $e->getMessage();
             $this->getJsonHelper()->setSuccess(false);
         }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+    
+    private function modificarParametro()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("modificarParametro", "1");
+
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+            $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+
+            //me fijo que no exista otro parametro con el mismo namespace
+            //solo verifico si el namespace del form es diferente al namespace actual
+            if($oParametro->getNamespace() !== $this->getRequest()->getPost("namespace")){
+                $oParametro->setNamespace(strtoupper($this->getRequest()->getPost("namespace")));
+                if(AdminController::getInstance()->existeParametro($oParametro))
+                {
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->setMessage("El parametro ya existe en el sistema.");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }                
+            }
+
+            $oParametro->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            switch($this->getRequest()->getPost("tipo")){
+                case "string": $oParametro->setTipoCadena(); break;
+                case "boolean": $oParametro->setTipoBooleano(); break;
+                case "numeric": $oParametro->setTipoNumerico(); break;
+            }
+           
+            AdminController::getInstance()->guardarParametro($oParametro);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+
+    private function eliminarParametro()
+    {
+        $iParametroId = $this->getRequest()->getParam('iParametroId');
+        if(empty($iParametroId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+            $result = AdminController::getInstance()->borrarParametro($oParametro);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "El parametro fue eliminado del sistema. Tenga en cuenta que puede haber una copia estatica en el plugin de parametros";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "No se pudo eliminar el parametro del sistema, compruebe que el parametro no tenga asociaciones creadas.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "No se pudo eliminar el parametro del sistema, compruebe que el parametro no tenga asociaciones creadas.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }

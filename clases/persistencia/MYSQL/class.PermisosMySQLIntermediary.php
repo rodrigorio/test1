@@ -240,7 +240,7 @@ class PermisosMySQLIntermediary extends PermisosIntermediary
                         FROM
                             acciones a
                         JOIN
-                            controladores_pagina cp ON a.controladores_pagina_id = cp.id 
+                            controladores_pagina cp ON a.controladores_pagina_id = cp.id
                         WHERE ".$this->crearCondicionSimple($filtro);
 
                 $db->query($sSQL);
