@@ -31,6 +31,10 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         $this->listar();
     }
 
+    /**
+     * Lista objetos del tipo Parametro (si aun no tiene asociaciones)
+     * unidos a objetos ParametroSistema ParametroControlador y ParametroUsuario.
+     */
     public function listar()
     {
         try{
@@ -43,52 +47,53 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             $this->printMsgTop();
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "mainContent", "ListadoAccionesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "mainContent", "ListadoParametrosBlock");
 
-            $filtro = array();
-            $iRecordPerPage = 5;
-            $iPage = $this->getRequest()->getPost("iPage");
-            $iPage = strlen($iPage) ? $iPage : 1;
-            $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-            $iMinLimit = ($iPage-1) * $iItemsForPage;
-            $sOrderBy = null;
-            $sOrder = null;
             $iRecordsTotal = 0;
+            $aParametros = AdminController::getInstance()->obtenerParametrosDinamicos($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
 
-            $aAcciones = AdminController::getInstance()->obtenerAccionesSistema($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
-            $hrefEditarAccion = "admin/acciones-perfil-form";
+            if(count($aParametros) > 0){
 
-            if(count($aAcciones) > 0){
-            	$i=0;
-                foreach($aAcciones as $oAccion){
+                foreach($aParametros as $oParametro){
 
-                    $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
+                    $this->getTemplate()->set_var("iParametroId", $oParametro->getId());
+                    $this->getTemplate()->set_var("sKey", $oParametro->getNamespace());
+                    $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                    $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
 
-                    $this->getTemplate()->set_var("sModulo", $oAccion->getModulo());
-                    $this->getTemplate()->set_var("sControlador", $oAccion->getControlador());
-                    $this->getTemplate()->set_var("sAccion", $oAccion->getNombre());
-                    $this->getTemplate()->set_var("sPerfil", $oAccion->getNombreGrupoPerfil());
-                    $this->getTemplate()->set_var("iAccionId", $oAccion->getId());
-                    $this->getTemplate()->set_var("hrefEditarAccion", $hrefEditarAccion);
+                    $tipoAsociacion = "-";
+                    $sValor = "-";                    
+                    $sGrupo = "-";
+                    if(get_class($oParametro) !== 'Parametro'){
+                        $this->getTemplate()->set_var("EliminarParametroBlock", "");
 
-                    if($oAccion->isActivo()){
-                        $this->getTemplate()->set_var("sSelectedAccionActivada", "selected='selected'");
-                    }else{
-                        $this->getTemplate()->set_var("sSelectedAccionDesactivada", "selected='selected'");
+                        $tipoAsociacion = get_class($oParametro);
+                        $sValor = $oParametro->getValor();
+
+                        $iGrupoId = "null";
+                        if(get_class($oParametro) !== 'ParametroSistema'){
+                            $iGrupoId = $oParametro->getGrupoId();
+                            $sGrupo = $oParametro->getGrupo();
+                        }
+
+                        $this->getTemplate()->set_var("iGrupoId", $iGrupoId);
+                    }else{                        
+                        $this->getTemplate()->set_var("EditAsociacionBlock", "");
                     }
+                    
+                    $this->getTemplate()->set_var("tipoAsociacion", $tipoAsociacion);
+                    $this->getTemplate()->set_var("sGrupo", $sGrupo);
+                    $this->getTemplate()->set_var("sValor", $sValor);
 
-                    $this->getTemplate()->parse("AccionesBlock", true);
-
-                    $this->getTemplate()->set_var("sSelectedAccionActivada","");
-                    $this->getTemplate()->set_var("sSelectedAccionDesactivada","");
-                    $i++;
+                    $this->getTemplate()->parse("ParametroBlock", true);
+                    $this->getTemplate()->delete_parsed_blocks("EditAsociacionBlock");
+                    $this->getTemplate()->delete_parsed_blocks("EliminarParametroBlock");
                 }
-                $this->getTemplate()->set_var("NoRecordsAccionesBlock", "");
+                
+                $this->getTemplate()->set_var("NoRecordsParametrosBlock", "");
             }else{
-                $this->getTemplate()->set_var("AccionesBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "noRecords", "NoRecordsAccionesBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No hay acciones cargadas en el sistema");
-                $this->getTemplate()->parse("noRecords", false);
+                $this->getTemplate()->set_var("ParametroBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "No se encontraron parametros dinamicos");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -104,219 +109,181 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             throw new Exception("", 404);
         }
 
-        if($this->getRequest()->has('eliminarAccion')){
-            $this->eliminarAccion();
+        if($this->getRequest()->has('eliminarParametro')){
+            $this->eliminarParametro();
             return;
         }
 
-        if($this->getRequest()->has('cambiarEstadoAccion')){
-            $this->cambiarEstadoAccion();
+        if($this->getRequest()->has('eliminarAsociacionSistema')){
+            $this->eliminarAsociacionSistema();
             return;
         }
 
-        if($this->getRequest()->has('crearAccion')){
-            $this->crearAccion();
+        if($this->getRequest()->has('eliminarAsociacionControlador')){
+            $this->eliminarAsociacionControlador();
             return;
         }
 
-        if($this->getRequest()->has('modificarAccion')){
-            $this->modificarAccion();
+        if($this->getRequest()->has('eliminarAsociacionUsuario')){
+            $this->eliminarAsociacionUsuario();
             return;
         }
-    }
-
-    private function cambiarEstadoAccion()
-    {
-        $iAccionId = $this->getRequest()->getParam('iAccionId');
-        $estadoAccion = $this->getRequest()->getParam('estadoAccion');
-
-        if(empty($iAccionId) || !$this->getRequest()->has('estadoAccion')){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        
+        if($this->getRequest()->has('crearParametro')){
+            $this->crearParametro();
+            return;
         }
 
-        $oAccion = AdminController::getInstance()->getAccionById($iAccionId);
-        $bActivo = ($estadoAccion == "1") ? true : false;
-        $oAccion->isActivo($bActivo);
-
-        AdminController::getInstance()->guardarAccion($oAccion);
-    }
-
-    private function eliminarAccion()
-    {
-        $iAccionId = $this->getRequest()->getParam('iAccionId');
-        if(empty($iAccionId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        if($this->getRequest()->has('modificarParametro')){
+            $this->modificarParametro();
+            return;
         }
 
-        $this->getJsonHelper()->initJsonAjaxResponse();
-        try{
-            $oAccion = AdminController::getInstance()->getAccionById($iAccionId);
-            $result = AdminController::getInstance()->borrarAccion($oAccion);
-
-            $this->restartTemplate();
-
-            if($result){
-                $msg = "La accion fue eliminada del sistema. Tenga en cuenta que los permisos en sesion que estan actualmente para los usuarios se actualizaran en los proximos minutos.";
-                $bloque = 'MsgCorrectoBlockI32';
-                $this->getJsonHelper()->setSuccess(true);
-            }else{
-                $msg = "Ocurrio un error, no se ha eliminado la accion del sistema";
-                $bloque = 'MsgErrorBlockI32';
-                $this->getJsonHelper()->setSuccess(false);
-            }
-
-        }catch(Exception $e){
-            $msg = "Ocurrio un error, no se ha eliminado la accion del sistema";
-            $bloque = 'MsgErrorBlockI32';
-            $this->getJsonHelper()->setSuccess(false);
+        if($this->getRequest()->has('asociarParametroSistema')){
+            $this->asociarParametroSistema();
+            return;
         }
 
-        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
-        $this->getTemplate()->set_var("sMensaje", $msg);
-        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+        if($this->getRequest()->has('asociarParametroControlador')){
+            $this->asociarParametroControlador();
+            return;
+        }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();
+        if($this->getRequest()->has('asociarParametroUsuario')){
+            $this->asociarParametroUsuario();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarValorParametroSistema')){
+            $this->modificarValorParametroSistema();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarValorParametroControlador')){
+            $this->modificarValorParametroControlador();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarValorParametroUsuario')){
+            $this->modificarValorParametroUsuario();
+            return;
+        }
     }
 
     public function form()
     {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('crearParametro') || $this->getRequest()->has('editarParametro')){
+            $this->formParametro();
+            return;
+        }
+
+        if($this->getRequest()->has('asociarParametroSistema') || $this->getRequest()->has('modificarValorParametroSistema')){
+            $this->formParametroSistema();
+            return;
+        }
+
+        if($this->getRequest()->has('asociarParametroControlador') || $this->getRequest()->has('modificarValorParametroControlador')){
+            $this->formParametroControlador();
+            return;
+        }
+
+        if($this->getRequest()->has('asociarParametroUsuario') || $this->getRequest()->has('modificarValorParametroUsuario')){
+            $this->formParametroUsuario();
+            return;
+        }       
+    }
+
+    private function formParametro()
+    {
         try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
 
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionAvanzadas");
-
-            $this->printMsgTop();
-
-            $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "mainContent", "FormularioBlock");
-
-            $editar = $this->getRequest()->getParam('editar');
-            if(empty($editar))
-            {
-                //agregar accion
-                $this->getTemplate()->unset_blocks("SubmitModificarAccionBlock");
-                $this->getTemplate()->unset_blocks("CamposModificarAccionBlock");
-
-                //valores por defecto
-                $oAccion = null;
-                $iAccionId = "";
-
-                $sModulo = "";
-                $sControlador = "";
-                $sNombre = "";
-                $sGrupoPerfil = "";
-                $bActivo = false;
+            if($this->getRequest()->has('crearParametro')){
+                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
 
                 $sTituloForm = "Agregar";
+
+                $oParametro = null;
+                $iParametroId = "";
+                $sNamespace = "";
+                $sDescripcion = "";
+                $sTipo = "";
+                
             }else{
-                $iAccionId = $this->getRequest()->getParam('iAccionId');
-                if(empty($iAccionId)){
+                
+                $iParametroId = $this->getRequest()->getParam('iParametroId');
+                if(empty($iParametroId)){
                     throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-                }
+                }                
+                
+                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
 
-                $this->getTemplate()->unset_blocks("SubmitCrearAccionBlock");
-                $this->getTemplate()->unset_blocks("CamposCrearAccionBlock");
-                $oAccion = AdminController::getInstance()->getAccionById($iAccionId);
-
-                $sModulo = $oAccion->getModulo();
-                $sControlador = $oAccion->getControlador();
-                $sNombre = $oAccion->getNombre();
-                $sGrupoPerfil = $oAccion->getNombreGrupoPerfil();
-                $bActivo = $oAccion->isActivo();
-
+                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+                
                 $sTituloForm = "Modificar";
-                $this->getTemplate()->set_var("iAccionId", $iAccionId);
-                $this->getTemplate()->set_var("sModulo", $sModulo);
+
+                $sNamespace = $oParametro->getNamespace();
+                $sDescripcion = $oParametro->getDescripcion();
+                $sTipo = $oParametro->getTipo();
+
+                $this->getTemplate()->set_var("iParametroId", $iParametroId);
+            }
+            
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+
+            switch($sTipo){
+                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
+                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
+                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
             }
 
-            $this->getTemplate()->set_var("sTituloFormAccion", $sTituloForm);
+            $this->getTemplate()->set_var("sNamespace", $sNamespace);
+            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
 
-            switch($sModulo){
-                case "index": $this->getTemplate()->set_var("sSelectedModuloIndex", "selected='selected'"); break;
-                case "comunidad": $this->getTemplate()->set_var("sSelectedModuloComunidad", "selected='selected'"); break;
-                case "seguimientos": $this->getTemplate()->set_var("sSelectedModuloSeguimientos", "selected='selected'"); break;
-                case "admin": $this->getTemplate()->set_var("sSelectedModuloAdmin", "selected='selected'"); break;
-            }
-
-            $this->getTemplate()->set_var("sControlador", $sControlador);
-            $this->getTemplate()->set_var("sAccion", $sNombre);
-
-            switch($sGrupoPerfil){
-                case 'Administrador': $this->getTemplate()->set_var("sSelectedPerfilAdministrador", "selected='selected'"); break;
-                case 'Moderador': $this->getTemplate()->set_var("sSelectedPerfilModerador", "selected='selected'"); break;
-                case 'Integrante Activo': $this->getTemplate()->set_var("sSelectedPerfilIntegranteActivo", "selected='selected'"); break;
-                case 'Integrante Inactivo': $this->getTemplate()->set_var("sSelectedPerfilIntegranteInactivo", "selected='selected'"); break;
-                case 'Visitante': $this->getTemplate()->set_var("sSelectedPerfilVisitante", "selected='selected'"); break;
-            }
-
-            if($bActivo){
-                $this->getTemplate()->set_var("sSelectedAccionActivada", "selected='selected'");
-            }else{
-                $this->getTemplate()->set_var("sSelectedAccionDesactivada", "selected='selected'");
-            }
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
         }
     }
 
-    public function crearAccion()
+    private function crearParametro()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $this->getJsonHelper()->setValor("crearAccion", "1");
+            $this->getJsonHelper()->setValor("crearParametro", "1");
 
-            $oAccion = new stdClass();
+            $oParametro = new stdClass();
 
-            $oAccion->sModulo = $this->getRequest()->getPost("modulo");
-            $oAccion->sControlador = $this->getRequest()->getPost("controlador");
-            $oAccion->sNombre = $this->getRequest()->getPost("accion");
-            $oAccion->iGrupoPerfilId = $this->getRequest()->getPost("perfil");
-            $oAccion->bActivo = ($this->getRequest()->getPost("activo") == "1") ? true : false;
+            $oParametro->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oParametro->sNamespace = $this->getRequest()->getPost("namespace");
 
-            $oAccion = Factory::getAccionInstance($oAccion);
+            $oParametro = Factory::getParametroInstance($oParametro);
 
-            if(AdminController::getInstance()->existeAccion($oAccion))
+            switch($this->getRequest()->getPost("tipo")){
+                case "string": $oParametro->setTipoCadena(); break;
+                case "boolean": $oParametro->setTipoBooleano(); break;
+                case "numeric": $oParametro->setTipoNumerico(); break;
+            }
+           
+            if(AdminController::getInstance()->existeParametro($oParametro))
             {
                 $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->setMessage("La accion ya existe en el sistema");
+                $this->getJsonHelper()->setMessage("El parametro ya existe en el sistema.");
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            AdminController::getInstance()->guardarAccion($oAccion);
+            AdminController::getInstance()->guardarParametro($oParametro);
 
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
             echo $e->getMessage();
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    public function modificarAccion()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $this->getJsonHelper()->setValor("modificarAccion", "1");
-
-            $iAccionId = $this->getRequest()->getPost('iAccionId');
-            $oAccion = AdminController::getInstance()->getAccionById($iAccionId);
-
-            $oAccion->setNombre($this->getRequest()->getPost("accion"));
-            $oAccion->setGrupoPerfilId($this->getRequest()->getPost("perfil"));
-            $activo = ($this->getRequest()->getPost("activo") == "1") ? true : false;
-            $oAccion->isActivo($activo);
-
-            $result = AdminController::getInstance()->guardarAccion($oAccion);
-
-            $this->getJsonHelper()->setSuccess($result);
-
-        }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
 

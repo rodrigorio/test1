@@ -1,64 +1,67 @@
-function eliminarParametro(iParametroId){
-    if(confirm("Se borrara la accion del sistema, desea continuar?")){
-        $.ajax({
-            type:"post",
-            dataType:'jsonp',
-            url:"admin/acciones-perfil-procesar",
-            data:{
-                iAccionId:iAccionId,
-                eliminarAccion:"1"
-            },
-            success:function(data){
-                if(data.success != undefined && data.success == 1){
-                    //remuevo la fila y la ficha de la persona que se aprobo.
-                    $("."+iAccionId).remove();
-                }
-
-                var dialog = $("#dialog");
-                if($("#dialog").length != 0){
-                    dialog.attr("title","Eliminar Accion");
-                }else{
-                    dialog = $('<div id="dialog" title="Eliminar Accion"></div>').appendTo('body');
-                }
-                dialog.html(data.html);
-
-                dialog.dialog({
-                    position:['center', 'center'],
-                    width:400,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true,
-                    buttons:{
-                        "Aceptar": function() {
-                            $(this).dialog( "close" );
-                        }
-                    }
-                });
-            }
-        });
+function crearParametro()
+{
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
     }
-}
+    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO"></div>').appendTo('body');
 
-function cambiarEstadoAccion(iAccionId, valor){
-    $.ajax({
-        type: "POST",
-        url: "admin/acciones-perfil-procesar",
-        data:{
-            iAccionId:iAccionId,
-            estadoAccion:valor,
-            cambiarEstadoAccion:"1"
+    dialog.load(
+        "admin/parametros-form",
+        {
+            crearParametro:"1"
         },
-        beforeSend: function(){
-            setWaitingStatus('listadoAcciones', true);
-        },
-        success:function(data){
-            setWaitingStatus('listadoAcciones', false);
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:800,
+                resizable:false,
+                draggable:true,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsFormParametro();
         }
-    });
+    );
 }
 
-var validateFormAccion = {
+function editarParametro(iParametroId)
+{
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO"></div>').appendTo('body');
+
+    dialog.load(
+        "admin/parametros-form",
+        {
+            editarParametro:"1",
+            iParametroId:iParametroId
+        },
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:800,
+                resizable:false,
+                draggable:true,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsFormParametro();
+        }
+    );    
+}
+
+jQuery.validator.addMethod("nowhitespace", function(value, element) {
+	return this.optional(element) || /^\S+$/i.test(value);
+}, "Sin espacios en blanco. Utilice guiones bajos.");
+
+var validateFormParametro = {
     errorElement: "span",
     validClass: "valid-side-note",
     errorClass: "invalid-side-note",
@@ -74,67 +77,67 @@ var validateFormAccion = {
         $(element).removeClass("invalid");
     },
     rules:{
-        modulo:{required:true},
-        controlador:{required:true},
-        accion:{required:true},
-        perfil:{required:true},
-        activo:{required:true}
+        namespace:{required:true, nowhitespace:true},
+        tipo:{required:true},
+        descripcion:{required:true}
     },
     messages:{
-        modulo: mensajeValidacion("requerido"),
-        controlador: mensajeValidacion("requerido"),
-        accion: mensajeValidacion("requerido"),
-        perfil: mensajeValidacion("requerido"),
-        activo: mensajeValidacion("requerido")
+        namespace:{required: mensajeValidacion("requerido")},
+        tipo: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido")
     }
 };
 
-var optionsAjaxFormAccion = {
+var optionsAjaxFormParametro = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'admin/acciones-perfil-procesar',
+    url: 'admin/parametros-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formAccion").valid() == true){            
-            $('#msg_form_accion').hide();
-            $('#msg_form_accion').removeClass("success").removeClass("error2");
-            $('#msg_form_accion .msg').html("");
-            setWaitingStatus('formAccion', true);
+        if($("#formParametro").valid() == true){
+            $('#msg_form_parametro').hide();
+            $('#msg_form_parametro').removeClass("success").removeClass("error2");
+            $('#msg_form_parametro .msg').html("");
+            setWaitingStatus('formParametro', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formAccion', false);
+        setWaitingStatus('formParametro', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_accion .msg').html(lang['error procesar']);
+                $('#msg_form_parametro .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_accion .msg').html(data.mensaje);
+                $('#msg_form_parametro .msg').html(data.mensaje);
             }
-            $('#msg_form_accion').addClass("error2").fadeIn('slow');
+            $('#msg_form_parametro').addClass("error2").fadeIn('slow');
         }else{
-            if(data.crearAccion != undefined){
-                //si el submit fue para agregar una nueva persona al sistema...
+            if(data.crearParametro != undefined){
                 if(data.mensaje == undefined){
-                    $('#msg_form_accion .msg').html("La accion fue agregada exitosamente al sistema");
+                    $('#msg_form_parametro .msg').html("El parametro fue agregado exitosamente.");
                 }else{
-                    $('#msg_form_accion .msg').html(data.mensaje);
+                    $('#msg_form_parametro .msg').html(data.mensaje);
                 }
             }else{
-                //el submit fue la modificacion de una persona
                 if(data.mensaje == undefined){
-                    $('#msg_form_accion .msg').html("La accion fue modificada exitosamente");
+                    $('#msg_form_parametro .msg').html("El parametro fue modificado exitosamente");
                 }else{
-                    $('#msg_form_accion .msg').html(data.mensaje);
-                }                
+                    $('#msg_form_parametro .msg').html(data.mensaje);
+                }
             }
-            $('#msg_form_accion').addClass("success").fadeIn('slow');
+            $('#msg_form_parametro').addClass("success").fadeIn('slow');
         }
     }
 };
+
+function bindEventsFormParametro()
+{
+    $("#formParametro").validate(validateFormParametro);
+    $("#formParametro").ajaxForm(optionsAjaxFormParametro);
+}
 
 $(document).ready(function(){
 
@@ -169,14 +172,42 @@ $(document).ready(function(){
     });
 
     $(".modificarValorParametro").live("click", function(){
-        //split rel
-        //switch tipo asociacion para saber q form mostrar, llamar con los dos parametros
-        modificarValorParametro(iParametroId, iGrupoId);
+        var rel = $(this).attr("rel").split('_');
+        
+        var tipoAsociacion = rel[0];
+        var iParametroId = rel[1];
+        var iGrupoId = rel[2];
+
+        switch(tipoAsociacion){
+            case 'ParametroSistema':
+                modificarValorParametroSistema(iParametroId);
+                break;
+            case 'ParametroControlador':
+                modificarValorParametroControlador(iParametroId, iGrupoId);
+                break;
+            case 'ParametroUsuario':
+                modificarValorParametroUsuario(iParametroId, iGrupoId);
+                break;
+        }      
     });
 
     $(".eliminarAsociacionParametro").live("click", function(){
-        //split rel
-        //switch tipo asociacion para saber q form mostrar, llamar con los dos parametros         
-        eliminarAsociacionParametro(iParametroId, iGrupoId);
+        var rel = $(this).attr("rel").split('_');
+
+        var tipoAsociacion = rel[0];
+        var iParametroId = rel[1];
+        var iGrupoId = rel[2];
+
+        switch(tipoAsociacion){
+            case 'ParametroSistema':
+                eliminarAsociacionParametroSistema(iParametroId);
+                break;
+            case 'ParametroControlador':
+                eliminarAsociacionParametroControlador(iParametroId, iGrupoId);
+                break;
+            case 'ParametroUsuario':
+                eliminarAsociacionParametroUsuario(iParametroId, iGrupoId);
+                break;
+        }              
     });
 });

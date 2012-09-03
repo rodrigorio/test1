@@ -293,4 +293,37 @@ class Factory
         $oUnidad = new Unidad($obj);
         return $oUnidad;
     }
+
+   /**
+     * @param stdClass $obj
+     * @return Parametro|null
+     */
+    public static function &getParametroInstance(stdClass $obj){
+        $oParametro = new Parametro($obj);
+        return $oParametro;
+    }
+   /**
+     * @param stdClass $obj
+     * @return ParametroControlador|null
+     */
+    public static function &getParametroControladorInstance(stdClass $obj){
+        $oParametroControlador = new ParametroControlador($obj);
+        return $oParametroControlador;
+    }
+   /**
+     * @param stdClass $obj
+     * @return ParametroSistema|null
+     */
+    public static function &getParametroSistemaInstance(stdClass $obj){
+        $oParametroSistema = new ParametroSistema($obj);
+        return $oParametroSistema;
+    }
+   /**
+     * @param stdClass $obj
+     * @return ParametroUsuario|null
+     */
+    public static function &getParametroUsuarioInstance(stdClass $obj){
+        $oParametroUsuario = new ParametroUsuario($obj);
+        return $oParametroUsuario;
+    }
 }

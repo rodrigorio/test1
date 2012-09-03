@@ -13,14 +13,14 @@ class Parametro
     const TIPO_BOOLEANO = "boolean";
     const TIPO_NUMERICO = "numeric";
     const TIPO_CADENA = "string";
-    
-    private $iId;
-    private $sDescripcion;
-    private $sTipo;   
+
+    protected $iId;
+    protected $sDescripcion;
+    protected $sTipo;
     /**
      * Key o Nombre
      */
-    private $sNamespace;
+    protected $sNamespace;
     
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
