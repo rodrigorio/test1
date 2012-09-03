@@ -617,4 +617,31 @@ class AdminController
             throw new Exception($e);
         }        
     }
+
+    public function obtenerParametrosDinamicos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }  
+    }
+
+    public function getParametroById($iParametroId)
+    {
+        try{
+            $filtro = array('p.id' => $iParametroId);
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aParametros = $oParametrosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aParametros){
+                return $aParametros[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }        
+    }
 }

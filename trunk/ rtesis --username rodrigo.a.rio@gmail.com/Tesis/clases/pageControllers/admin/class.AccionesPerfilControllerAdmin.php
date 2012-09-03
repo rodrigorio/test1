@@ -49,24 +49,12 @@ class AccionesPerfilControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "widgetsContent", "HeaderBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/accionesPerfil.gui.html", "mainContent", "ListadoAccionesBlock");
 
-            $filtro = array();
-            $iRecordPerPage = 5;
-            $iPage = $this->getRequest()->getPost("iPage");
-            $iPage = strlen($iPage) ? $iPage : 1;
-            $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
-            $iMinLimit = ($iPage-1) * $iItemsForPage;
-            $sOrderBy = null;
-            $sOrder = null;
             $iRecordsTotal = 0;
-
-            $aAcciones = AdminController::getInstance()->obtenerAccionesSistema($filtro,$iRecordsTotal,$sOrderBy,$sOrder,$iMinLimit,$iItemsForPage);
+            $aAcciones = AdminController::getInstance()->obtenerAccionesSistema($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
             $hrefEditarAccion = "admin/acciones-perfil-form";
 
             if(count($aAcciones) > 0){
-            	$i=0;
                 foreach($aAcciones as $oAccion){
-
-                    $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
 
                     $this->getTemplate()->set_var("sModulo", $oAccion->getModulo());
                     $this->getTemplate()->set_var("sControlador", $oAccion->getControlador());
@@ -85,7 +73,6 @@ class AccionesPerfilControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sSelectedAccionActivada","");
                     $this->getTemplate()->set_var("sSelectedAccionDesactivada","");
-                    $i++;
                 }
                 $this->getTemplate()->set_var("NoRecordsAccionesBlock", "");
             }else{

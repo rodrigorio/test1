@@ -33,7 +33,7 @@
 
 <!--BeginListadoParametrosBlock-->
 <div class="subHeader01 mabo3">
-    <ul>
+    <ul class="m_horiz ov_au mabo0 male0">
         <li>
             <a class="button-link blue crearParametro" href="javascript:;" rel="tooltip" original-title="Crear un nuevo parametro din&aacute;mico">Crear Par&aacute;metro</a>
         </li>
@@ -53,40 +53,47 @@
     <table class="datatable">
         <thead>
             <tr>
-                <th>Grupo</th>
                 <th>Key</th>
                 <th>Tipo</th>
                 <th>Descripcion</th>
+                <th>Asociaci&oacute;n</th>
+                <th>Grupo</th>
                 <th>Valor</th>
             </tr>
         </thead>
         <tbody>
         <!--BeginParametroBlock-->
             <tr class="{iParametroId}">
-                <td class="po_re">
-                    {sKey}
-                    <div class="po_ab topRight">
-                        <span rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
-                        <span rel="{iParametroId}" class="i bs delete ihover eliminarParametro"></span>
-                    </div>
+                <td class="teal_le pale">
+                    <span title="Editar Par&aacute;metro" rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
+                    <!--BeginEliminarParametroBlock-->
+                    <span title="Eliminar Par&aacute;metro" rel="{iParametroId}" class="i bs delete ihover eliminarParametro"></span>
+                    <!--EndEliminarParametroBlock-->
+                    <br>
+                    <strong>{sKey}</strong>
                 </td>
                 <td>{sTipo}</td>
-                <td>{sDescripcion}</td>
+                <td class="pa2">{sDescripcion}</td>
+                <td class="teal_le">{tipoAsociacion}</td>
                 <td>{sGrupo}</td>
-                <td class="po_re">
-                    {sValor}
-                    <!--BeginEditAsociacionBlock-->
-                    <div class="po_ab topRight">
-                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs edit ihover modificarValorParametro"></span>
-                        <span rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="i bs delete ihover eliminarAsociacionParametro"></span>
-                    </div>
+                <td class="pa2">
+                    <!--BeginEditAsociacionBlock-->                    
+                    <span title="Eliminar Asociaci&oacute;n Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri i bs delete ihover eliminarAsociacionParametro"></span>
+                    <span title="Modificar Valor Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri mari i bs edit ihover modificarValorParametro"></span>
+                    <br>
                     <!--EndEditAsociacionBlock-->
+                    {sValor}
                 </td>
             </tr>
         <!--EndParametroBlock-->
         <!--BeginNoRecordsParametrosBlock-->
-            <tr>
-                <td colspan="5">{sNoRecords}</td>
+            <tr>                
+                <td></td>
+                <td></td>
+                <td>{sNoRecords}</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <!--EndNoRecordsParametrosBlock-->
         </tbody>
@@ -107,7 +114,7 @@
             <label for="namespace">Nombre (Key)</label>
         </dt>
         <dd>
-            <input maxlength="60" name="namespace" id="namespace" type="text" class="small" value="{sNamespace}">
+            <input maxlength="60" name="namespace" id="namespace" type="text" class="medium" value="{sNamespace}">
         </dd>
         <dt>
             <label for="tipo">Tipo</label>

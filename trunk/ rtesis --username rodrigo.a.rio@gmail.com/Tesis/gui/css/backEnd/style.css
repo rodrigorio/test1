@@ -1139,7 +1139,9 @@ p .destacado{font-weight:bold;}
 
 .mapa01{border:2px solid #D9D9D9}
 
-
+ul{list-style:none;}
+.m_horiz li{float:left; margin-right:5px;}
+.m_vert li{margin-bottom:5px;}
 
 /**********************************************************************/
 /*********** ICONOS, (SON LOS MISMOS PARA TODO EL SISTEMA *************/

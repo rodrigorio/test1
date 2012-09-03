@@ -1,2 +1,2 @@
 <?php
-abstract class PermisosIntermediary extends Intermediary{}
+abstract class ParametrosIntermediary extends Intermediary{}

@@ -1,20 +1,18 @@
 <?php
 
-class PermisosMySQLIntermediary extends PermisosIntermediary
+class ParametrosMySQLIntermediary extends ParametrosIntermediary
 {    
     private static $instance = null;
-
 
     protected function __construct( $conn) {
             parent::__construct($conn);
     }
 
-
     /**
      * Singleton
      *
      * @param mixed $conn
-     * @return PermisosMySQLIntermediary
+     * @return ParametrosMySQLIntermediary
      */
     public static function &getInstance(IMYSQL $conn) {
             if (null === self::$instance){
@@ -24,56 +22,21 @@ class PermisosMySQLIntermediary extends PermisosIntermediary
     }
 
     /**
-     *  El array se arma con las tablas 'controladores_pagina', 'acciones', 'acciones_x_perfil' y 'perfiles'
-     *
-     *  En la tabla controladores aparecen los diferentes page controllers del sistema. La cadena tiene el formato "modulo_controlador"
-     *
-     *  En la tabla acciones se relacionan los controladores x accion y a cada accion se le asigna un grupo.
-     *
-     *  Los id de grupos posibles para las acciones son:
-     *      1)ADMIN 2)MODERADOR 3)INTEGANTE ACTIVO 4)INTEGANTE INACTIVO 5)VISITANTES
-     *
+     * Solo devuelve objetos Parametro de la tabla parametros, no busca en las tablas asociativas
+     * como el metodo buscar de esta misma clase.
      */
-    public function permisosPorPerfil($iIdPerfil){
-        try{
-            $db = $this->conn;
-
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        CONCAT_WS('_',cp.`controlador`,a.`accion`),
-                        a.`activo`
-                        from `perfiles` p
-                        join `acciones_x_perfil` ap ON ap.`perfiles_id` = p.`id`
-                        join `acciones` a on a.`grupo` =  ap.`grupo`
-                        join `controladores_pagina` cp on cp.`id` = a.`controladores_pagina_id`
-                        WHERE p.`id` = $iIdPerfil";
-
-            $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($foundRows)){ return null; }
-
-            return $db->getDBArrayQuery($sSQL);
-
-        }catch(Exception $e){
-
-            throw new Exception($e->getMessage(), 0);
-        }
-    }
-
     public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
             $db = $this->conn;
 
             $sSQL = "SELECT
-                        a.id AS iId,
-                        a.controladores_pagina_id AS iControladorId,
-                        cp.controlador AS moduloControlador,
-                        a.accion AS sNombre,
-                        a.grupo AS iGrupoPerfilId,
-                        a.activo AS bActivo
+                        p.id AS iId,
+                        p.descripcion AS sDescripcion,
+                        p.tipo AS sTipo,
+                        p.namespace AS sNamespace
                     FROM
-                        acciones a JOIN controladores_pagina cp ON cp.id = a.controladores_pagina_id ";
+                        parametros p ";
 
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
@@ -85,23 +48,162 @@ class PermisosMySQLIntermediary extends PermisosIntermediary
 
             if(empty($iRecordsTotal)){ return null; }
 
-            $aAcciones = array();
+            $aParametros = array();
             while($oObj = $db->oNextRecord()){
-                list($sModulo, $sControlador) = explode("_", $oObj->moduloControlador);
+                $oParametro = new stdClass();
+                $oParametro->iId = $oObj->iId;
+                $oParametro->sDescripcion = $oObj->sDescripcion;
+                $oParametro->sNamespace = $oObj->sNamespace;
 
-                $oAccion = new stdClass();
-                $oAccion->iId = $oObj->iId;
-                $oAccion->sModulo = $sModulo;
-                $oAccion->sControlador = $sControlador;
-                $oAccion->iControladorId = $oObj->iControladorId;
-                $oAccion->sNombre = $oObj->sNombre;
-                $oAccion->iGrupoPerfilId = $oObj->iGrupoPerfilId;
-                $oAccion->bActivo = ($oObj->bActivo == "1") ? true : false;
+                $oParametro = Factory::getParametroInstance($oParametro);
 
-                $aAcciones[] = Factory::getAccionInstance($oAccion);
+                switch($oObj->sTipo){
+                    case "string": $oParametro->setTipoCadena(); break;
+                    case "boolean": $oParametro->setTipoBooleano(); break;
+                    case "numeric": $oParametro->setTipoNumerico(); break;
+                }
+
+                $aParametros[] = $oParametro;                
+            }
+            
+            return $aParametros;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }                      
+    }
+
+    /**
+     * Este devuelve un array de objetos Parametros o que extienden a la clase Parametro
+     * (ParametrosSistema, ParametrosControlador, ParametrosUsuario)
+     *
+     * Como son varias tablas se hace una unificacion.
+     */
+    public function buscar($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT
+                        p.id AS iId,
+                        p.descripcion AS sDescripcion,
+                        p.tipo AS sTipo,
+                        p.namespace AS sNamespace,
+
+                        ps.valor AS sValorS,
+                        pc.valor AS sValorC, pc.controladores_pagina_id AS iGrupoIdC,
+                        pu.valor AS sValorU, pu.usuarios_id AS iGrupoIdU,
+
+                        cp.controlador AS sGrupoC,
+                        CONCAT(pe.nombre, ' ', pe.apellido) AS sGrupoU
+                    FROM
+                        parametros p
+                        LEFT JOIN parametros_sistema ps ON ps.parametros_id = p.id
+                        LEFT JOIN parametro_x_controlador_pagina pc ON pc.parametros_id = p.id
+                        LEFT JOIN controladores_pagina cp ON pc.controladores_pagina_id = cp.id
+                        LEFT JOIN parametro_x_usuario pu ON pu.parametros_id = p.id
+                        LEFT JOIN personas pe ON pu.usuarios_id = pe.id ";
+
+            if(!empty($filtro)){
+                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
-            return $aAcciones;
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aParametros = array();
+            while($oObj = $db->oNextRecord()){
+
+                //dependiendo el row puede ser Parametro/ParametroSistema/ParametroControlador/ParametroUsuario
+
+                //parametro sistema
+                if(null !== $oObj->sValorS){
+                    $oParametroSistema = new stdClass();
+                    $oParametroSistema->iId = $oObj->iId;
+                    $oParametroSistema->sDescripcion = $oObj->sDescripcion;
+                    $oParametroSistema->sNamespace = $oObj->sNamespace;
+                    $oParametroSistema->sValor = $oObj->sValorS;
+
+                    $oParametroSistema = Factory::getParametroSistemaInstance($oParametroSistema);
+                    
+                    switch($oObj->sTipo){
+                        case "string": $oParametroSistema->setTipoCadena(); break;
+                        case "boolean": $oParametroSistema->setTipoBooleano(); break;
+                        case "numeric": $oParametroSistema->setTipoNumerico(); break;                        
+                    }
+
+                     $aParametros[] = $oParametroSistema;
+                     continue;
+                }
+
+                //parametro controlador
+                if(null !== $oObj->sValorC){
+                    $oParametroControlador = new stdClass();
+                    $oParametroControlador->iId = $oObj->iId;
+                    $oParametroControlador->sDescripcion = $oObj->sDescripcion;
+                    $oParametroControlador->sNamespace = $oObj->sNamespace;
+                    $oParametroControlador->sValor = $oObj->sValorC;
+                    $oParametroControlador->iGrupoId = $oObj->iGrupoIdC;
+                    $oParametroControlador->sGrupo = $oObj->sGrupoC;
+
+                    $oParametroControlador = Factory::getParametroControladorInstance($oParametroControlador);
+
+                    switch($oObj->sTipo){
+                        case "string": $oParametroControlador->setTipoCadena(); break;
+                        case "boolean": $oParametroControlador->setTipoBooleano(); break;
+                        case "numeric": $oParametroControlador->setTipoNumerico(); break;
+                    }
+
+                     $aParametros[] = $oParametroControlador;
+                     continue;
+                }
+                
+                //parametro usuario
+                if(null !== $oObj->sValorU){
+                    $oParametroUsuario = new stdClass();
+                    $oParametroUsuario->iId = $oObj->iId;
+                    $oParametroUsuario->sDescripcion = $oObj->sDescripcion;
+                    $oParametroUsuario->sNamespace = $oObj->sNamespace;
+                    $oParametroUsuario->sValor = $oObj->sValorU;
+                    $oParametroUsuario->iGrupoId = $oObj->iGrupoIdU;
+                    $oParametroUsuario->sGrupo = $oObj->sGrupoU;
+
+                    $oParametroUsuario = Factory::getParametroUsuarioInstance($oParametroUsuario);
+
+                    switch($oObj->sTipo){
+                        case "string": $oParametroUsuario->setTipoCadena(); break;
+                        case "boolean": $oParametroUsuario->setTipoBooleano(); break;
+                        case "numeric": $oParametroUsuario->setTipoNumerico(); break;
+                    }
+
+                     $aParametros[] = $oParametroUsuario;
+                     continue;
+                }
+
+                //obj parametro simple sin asociar
+                if(null === $oObj->sValorU && null === $oObj->sValorC && null === $oObj->sValorS){
+                    $oParametro = new stdClass();
+                    $oParametro->iId = $oObj->iId;
+                    $oParametro->sDescripcion = $oObj->sDescripcion;
+                    $oParametro->sNamespace = $oObj->sNamespace;
+
+                    $oParametro = Factory::getParametroInstance($oParametro);
+
+                    switch($oObj->sTipo){
+                        case "string": $oParametro->setTipoCadena(); break;
+                        case "boolean": $oParametro->setTipoBooleano(); break;
+                        case "numeric": $oParametro->setTipoNumerico(); break;
+                    }
+
+                    $aParametros[] = $oParametro;
+                    continue;
+                }
+            }
+
+            return $aParametros;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
