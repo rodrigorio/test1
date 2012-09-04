@@ -598,12 +598,72 @@ class ParametrosControllerAdmin extends PageControllerAbstract
 
     private function asociarParametroControlador()
     {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("asociarParametroControlador", "1");
 
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+            $iControladorId = $this->getRequest()->getPost('iControladorIdForm');
+
+            if(AdminController::getInstance()->existeParametroControlador($iParametroId, $iControladorId))
+            {
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("El parametro ya esta asociado al controlador.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oParametroControlador = new stdClass();
+            $oParametroControlador->iId = $iParametroId;
+            $oParametroControlador->iGrupoId = $iControladorId;
+            $oParametroControlador->sValor = $this->getRequest()->getPost("valor");
+
+            $oParametroSistema = Factory::getParametroControladorInstance($oParametroControlador);
+
+            AdminController::getInstance()->guardarParametroControlador($oParametroControlador);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function asociarParametroUsuario()
     {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("asociarParametroUsuario", "1");
 
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+            $iUsuarioId = $this->getRequest()->getPost('iUsuarioIdForm');
+
+            if(AdminController::getInstance()->existeParametroUsuario($iParametroId, $iUsuarioId))
+            {
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("El parametro ya esta asociado al usuario.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oParametroUsuario = new stdClass();
+            $oParametroUsuario->iId = $iParametroId;
+            $oParametroUsuario->iGrupoId = $iUsuarioId;
+            $oParametroUsuario->sValor = $this->getRequest()->getPost("valor");
+
+            $oParametroUsuario = Factory::getParametroUsuarioInstance($oParametroUsuario);
+
+            AdminController::getInstance()->guardarParametroUsuario($oParametroUsuario);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
     private function modificarValorParametroSistema()
