@@ -618,6 +618,10 @@ class AdminController
         }        
     }
 
+    /**
+     * Este metodo devuelve un array con objetos del tipo Parametro ParametroSistema ParametroControlador y ParametroUsuario
+     * Todos implementan la interfaz de la clase Parametro.
+     */
     public function obtenerParametrosDinamicos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
@@ -628,6 +632,50 @@ class AdminController
         }  
     }
 
+    /**
+     * Este metodo devuelve unicamente objetos de la clase Parametro.
+     * No devuelve ningun parametro de las clases 'asociativas'
+     */
+    public function obtenerParametros($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
+    public function obtenerControladoresPagina($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oControladorPaginaIntermediary = PersistenceFactory::getControladorPaginaIntermediary($this->db);
+            return $oControladorPaginaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
+    public function getControladorPaginaById($iControladorId)
+    {
+        try{
+            $filtro = array('cp.id' => $iControladorId);
+            $oControladorPaginaIntermediary = PersistenceFactory::getControladorPaginaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aControladorPagina = $oControladorPaginaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aControladorPagina){
+                return $aControladorPagina[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }        
+    }
+
+    /**
+     * Devuelve unicamente una instancia de clase Parametro
+     */
     public function getParametroById($iParametroId)
     {
         try{
@@ -645,6 +693,66 @@ class AdminController
         }        
     }
 
+    /**
+     *  Devuelve un objeto de la clase ParametroSistema
+     */
+    public function getParametroSistema($iParametroId)
+    {
+        try{
+            $filtro = array('p.id' => $iParametroId, 'sistema' => 'sistema');
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aParametros){
+                return $aParametros[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }        
+    }
+
+    /**
+     *  Devuelve un objeto de la clase ParametroControlador
+     */
+    public function getParametroControlador($iParametroId, $iControladorId)
+    {
+        try{
+            $filtro = array('p.id' => $iParametroId, 'pc.controladores_pagina_id' => $iControladorId);
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aParametros){
+                return $aParametros[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    /**
+     *  Devuelve un objeto de la clase ParametroUsuario
+     */
+    public function getParametroUsuario($iParametroId, $iUsuarioId)
+    {
+        try{
+            $filtro = array('p.id' => $iParametroId, 'pu.usuarios_id' => $iUsuarioId);
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aParametros){
+                return $aParametros[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
     public function existeParametro($oParametro)
     {
         try{

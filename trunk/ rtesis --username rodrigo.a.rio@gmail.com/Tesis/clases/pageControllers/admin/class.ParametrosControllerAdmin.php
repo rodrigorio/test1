@@ -202,49 +202,52 @@ class ParametrosControllerAdmin extends PageControllerAbstract
     {
         try{
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroSistemaBlock");
 
-            if($this->getRequest()->has('crearParametro')){
-                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
+            if($this->getRequest()->has('asociarParametroSistema')){
+                $this->getTemplate()->unset_blocks("SubmitModificarAsociacionSistemaBlock");
+                $this->getTemplate()->unset_blocks("ModificarAsociacionSistemaBlock");
 
-                $sTituloForm = "Agregar";
+                $sTituloForm = "Crear";
 
                 $oParametro = null;
-                $iParametroId = "";
-                $sNamespace = "";
-                $sDescripcion = "";
-                $sTipo = "";
+                $sValor = "";
 
+                //select con parametros existentes
+                $iRecordsTotal = 0;
+                $aParametros = AdminController::getInstance()->obtenerParametros($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+                foreach($aParametros as $oParametro){
+                    $value = $oParametro->getId();
+                    $text = $oParametro->getNamespace();
+                    $this->getTemplate()->set_var("iParametroId", $value);
+                    $this->getTemplate()->set_var("sParametroNombre", $text);
+                    $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                    $this->getTemplate()->parse("OptionParametroBlock", true);
+                }
             }else{
-
                 $iParametroId = $this->getRequest()->getParam('iParametroId');
                 if(empty($iParametroId)){
                     throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
                 }
 
-                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
+                $this->getTemplate()->unset_blocks("SubmitCrearAsociacionSistemaBlock");
+                $this->getTemplate()->unset_blocks("CrearAsociacionSistemaBlock");
 
-                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+                $oParametro = AdminController::getInstance()->getParametroSistema($iParametroId);
 
                 $sTituloForm = "Modificar";
 
-                $sNamespace = $oParametro->getNamespace();
-                $sDescripcion = $oParametro->getDescripcion();
-                $sTipo = $oParametro->getTipo();
+                $sParametro = $oParametro->getNamespace();
+                $sValor = $oParametro->getValor();
 
+                $this->getTemplate()->set_var("sParametro", $sParametro);
                 $this->getTemplate()->set_var("iParametroId", $iParametroId);
+                $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
             }
 
             $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-
-            switch($sTipo){
-                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
-                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
-                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
-            }
-
-            $this->getTemplate()->set_var("sNamespace", $sNamespace);
-            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+            $this->getTemplate()->set_var("sValor", $sValor);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -256,49 +259,69 @@ class ParametrosControllerAdmin extends PageControllerAbstract
     {
         try{
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroControladorBlock");
 
-            if($this->getRequest()->has('crearParametro')){
-                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
+            if($this->getRequest()->has('asociarParametroControlador')){
+                $this->getTemplate()->unset_blocks("SubmitModificarAsociacionControladorBlock");
+                $this->getTemplate()->unset_blocks("ModificarAsociacionControladorBlock");
 
-                $sTituloForm = "Agregar";
+                $sTituloForm = "Crear";
 
                 $oParametro = null;
-                $iParametroId = "";
-                $sNamespace = "";
-                $sDescripcion = "";
-                $sTipo = "";
+                $oControlador = null;
+                $sValor = "";
 
+                //select con parametros existentes
+                $iRecordsTotal = 0;
+                $aParametros = AdminController::getInstance()->obtenerParametros($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+                foreach($aParametros as $oParametro){
+                    $value = $oParametro->getId();
+                    $text = $oParametro->getNamespace();
+                    $this->getTemplate()->set_var("iParametroId", $value);
+                    $this->getTemplate()->set_var("sParametroNombre", $text);
+                    $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                    $this->getTemplate()->parse("OptionParametroBlock", true);
+                }
+
+                //select con controladores de pagina existentes
+                $iRecordsTotal = 0;
+                $aControladoresPagina = AdminController::getInstance()->obtenerControladoresPagina($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+                foreach($aControladoresPagina as $oControladorPagina){
+                    $value = $oControladorPagina->getId();
+                    $text = $oControladorPagina->getKey();
+                    $this->getTemplate()->set_var("iControladorId", $value);
+                    $this->getTemplate()->set_var("sControlador", $text);
+                    $this->getTemplate()->parse("OptionControladorBlock", true);
+                }
             }else{
-
                 $iParametroId = $this->getRequest()->getParam('iParametroId');
-                if(empty($iParametroId)){
+                $iControladorId = $this->getRequest()->getParam('iControladorId');
+                if(empty($iParametroId) || empty($iControladorId)){
                     throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
                 }
 
-                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
+                $this->getTemplate()->unset_blocks("SubmitCrearAsociacionControladorBlock");
+                $this->getTemplate()->unset_blocks("CrearAsociacionControladorBlock");
 
-                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+                $oParametro = AdminController::getInstance()->getParametroControlador($iParametroId, $iControladorId);
+                $oControladorPagina = AdminController::getInstance()->getControladorPaginaById($iControladorId);
 
                 $sTituloForm = "Modificar";
 
-                $sNamespace = $oParametro->getNamespace();
-                $sDescripcion = $oParametro->getDescripcion();
-                $sTipo = $oParametro->getTipo();
+                $sParametro = $oParametro->getNamespace();
+                $sValor = $oParametro->getValor();
 
+                $this->getTemplate()->set_var("sParametro", $sParametro);
                 $this->getTemplate()->set_var("iParametroId", $iParametroId);
+                $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
+
+                $this->getTemplate()->set_var("sControlador", $oControladorPagina->getKey());
+                $this->getTemplate()->set_var("iControladorId", $oControladorPagina->getId());
             }
 
             $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-
-            switch($sTipo){
-                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
-                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
-                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
-            }
-
-            $this->getTemplate()->set_var("sNamespace", $sNamespace);
-            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+            $this->getTemplate()->set_var("sValor", $sValor);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -310,49 +333,58 @@ class ParametrosControllerAdmin extends PageControllerAbstract
     {
         try{
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroUsuarioBlock");
 
-            if($this->getRequest()->has('crearParametro')){
-                $this->getTemplate()->unset_blocks("SubmitModificarParametroBlock");
+            if($this->getRequest()->has('asociarParametroUsuario')){
+                $this->getTemplate()->unset_blocks("SubmitModificarAsociacionUsuarioBlock");
+                $this->getTemplate()->unset_blocks("ModificarAsociacionUsuarioBlock");
 
-                $sTituloForm = "Agregar";
+                $sTituloForm = "Crear";
 
                 $oParametro = null;
-                $iParametroId = "";
-                $sNamespace = "";
-                $sDescripcion = "";
-                $sTipo = "";
+                $oControlador = null;
+                $sValor = "";
 
+                //select con parametros existentes
+                $iRecordsTotal = 0;
+                $aParametros = AdminController::getInstance()->obtenerParametros($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+                foreach($aParametros as $oParametro){
+                    $value = $oParametro->getId();
+                    $text = $oParametro->getNamespace();
+                    $this->getTemplate()->set_var("iParametroId", $value);
+                    $this->getTemplate()->set_var("sParametroNombre", $text);
+                    $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                    $this->getTemplate()->parse("OptionParametroBlock", true);
+                }
             }else{
-
                 $iParametroId = $this->getRequest()->getParam('iParametroId');
-                if(empty($iParametroId)){
+                $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
+                if(empty($iParametroId) || empty($iUsuarioId)){
                     throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
                 }
 
-                $this->getTemplate()->unset_blocks("SubmitCrearParametroBlock");
+                $this->getTemplate()->unset_blocks("SubmitCrearAsociacionUsuarioBlock");
+                $this->getTemplate()->unset_blocks("CrearAsociacionUsuarioBlock");
 
-                $oParametro = AdminController::getInstance()->getParametroById($iParametroId);
+                $oParametro = AdminController::getInstance()->getParametroUsuario($iParametroId, $iUsuarioId);
+                $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
 
                 $sTituloForm = "Modificar";
 
-                $sNamespace = $oParametro->getNamespace();
-                $sDescripcion = $oParametro->getDescripcion();
-                $sTipo = $oParametro->getTipo();
+                $sParametro = $oParametro->getNamespace();
+                $sValor = $oParametro->getValor();
 
+                $this->getTemplate()->set_var("sParametro", $sParametro);
                 $this->getTemplate()->set_var("iParametroId", $iParametroId);
+                $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
+
+                $this->getTemplate()->set_var("sNombreUsuario", $oUsuario->getNombre()." ".$oUsuario->getApellido());
+                $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
             }
 
             $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-
-            switch($sTipo){
-                case "boolean": $this->getTemplate()->set_var("sSelectedTipoBoolean", "selected='selected'"); break;
-                case "numeric": $this->getTemplate()->set_var("sSelectedTipoNumeric", "selected='selected'"); break;
-                case "string": $this->getTemplate()->set_var("sSelectedTipoString", "selected='selected'"); break;
-            }
-
-            $this->getTemplate()->set_var("sNamespace", $sNamespace);
-            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+            $this->getTemplate()->set_var("sValor", $sValor);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -528,5 +560,50 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function asociarParametroSistema()
+    {
+        
+    }
+
+    private function asociarParametroControlador()
+    {
+
+    }
+
+    private function asociarParametroUsuario()
+    {
+
+    }
+    
+    private function modificarValorParametroSistema()
+    {
+
+    }  
+    
+    private function modificarValorParametroControlador()
+    {
+
+    }  
+    
+    private function modificarValorParametroUsuario()
+    {
+
+    }
+    
+    private function eliminarAsociacionSistema()
+    {
+
+    }
+    
+    private function eliminarAsociacionControlador()
+    {
+
+    }
+    
+    private function eliminarAsociacionUsuario()
+    {
+
     }
 }

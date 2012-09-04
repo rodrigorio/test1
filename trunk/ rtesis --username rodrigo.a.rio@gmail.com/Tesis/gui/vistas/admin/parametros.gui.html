@@ -165,10 +165,10 @@
             <label for="parametro">Parametro</label>
         </dt>
         <dd>
-            <select name="parametro" id="parametro">
+            <select class="medium" name="parametro" id="parametro">
                 <option value="">Parametro:</option>
                 <!--BeginOptionParametroBlock-->
-                <option value="{iParametroId}">{sParametroNombre}</option>
+                <option value="{iParametroId}">{sParametroNombre} - {sTipo}</option>
                 <!--EndOptionParametroBlock-->
             </select>
         </dd>
@@ -179,7 +179,9 @@
             <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="parametro" id="parametro" type="text" class="small readonly" value="{sParametro}">
+            <input readonly="readonly" name="parametro" id="parametro" type="text" class="medium readonly" value="{sParametro}">
+            <p>Tipo: {sTipo}</p>
+            <p>Descripcion: {sDescripcion}</p>
         </dd>
         <!--EndModificarAsociacionSistemaBlock-->
 
@@ -225,7 +227,7 @@
             <select name="parametro" id="parametro">
                 <option value="">Parametro:</option>
                 <!--BeginOptionParametroBlock-->
-                <option value="{iParametroId}">{sParametroNombre}</option>
+                <option value="{iParametroId}">{sParametroNombre} - {sTipo}</option>
                 <!--EndOptionParametroBlock-->
             </select>
         </dd>
@@ -247,13 +249,15 @@
             <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="parametro" id="parametro" type="text" class="small readonly" value="{sParametro}">
+            <input readonly="readonly" name="parametro" id="parametro" type="text" class="medium readonly" value="{sParametro}">
+            <p>Tipo: {sTipo}</p>
+            <p>Descripcion: {sDescripcion}</p>
         </dd>
         <dt>
             <label>Controlador</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="controlador" id="controlador" type="text" class="small readonly" value="{sControlador}">
+            <input readonly="readonly" name="controlador" id="controlador" type="text" class="medium readonly" value="{sControlador}">
         </dd>
         <!--EndModificarAsociacionControladorBlock-->
 
@@ -299,7 +303,7 @@
             <select name="parametro" id="parametro">
                 <option value="">Parametro:</option>
                 <!--BeginOptionParametroBlock-->
-                <option value="{iParametroId}">{sParametroNombre}</option>
+                <option value="{iParametroId}">{sParametroNombre} - {sTipo}</option>
                 <!--EndOptionParametroBlock-->
             </select>
         </dd>
@@ -324,13 +328,15 @@
             <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="parametro" id="parametro" type="text" class="small readonly" value="{sParametro}">
+            <input readonly="readonly" name="parametro" id="parametro" type="text" class="medium readonly" value="{sParametro}">
+            <p>Tipo: {sTipo}</p>
+            <p>Descripcion: {sDescripcion}</p>
         </dd>
         <dt>
             <label>Usuario</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="usuario" id="usuario" type="text" class="small readonly" value="{sNombreUsuario}">
+            <input readonly="readonly" name="usuario" id="usuario" type="text" class="medium readonly" value="{sNombreUsuario}">
         </dd>
         <!--EndModificarAsociacionUsuarioBlock-->
 

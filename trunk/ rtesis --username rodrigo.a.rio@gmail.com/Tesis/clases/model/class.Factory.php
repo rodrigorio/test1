@@ -326,4 +326,12 @@ class Factory
         $oParametroUsuario = new ParametroUsuario($obj);
         return $oParametroUsuario;
     }
+   /**
+     * @param stdClass $obj
+     * @return ControladorPagina|null
+     */
+    public static function &getControladorPaginaInstance(stdClass $obj){
+        $oControladorPagina = new ControladorPagina($obj);
+        return $oControladorPagina;
+    }
 }

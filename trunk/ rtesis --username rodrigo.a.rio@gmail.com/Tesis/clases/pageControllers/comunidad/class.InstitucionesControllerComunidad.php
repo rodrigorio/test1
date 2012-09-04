@@ -768,8 +768,8 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
     /**
      * Devuelve las instituciones para el autocomplete de la busqueda de instituciones
      */
-    public function buscarInstituciones(){
-
+    public function buscarInstituciones()
+    {
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
