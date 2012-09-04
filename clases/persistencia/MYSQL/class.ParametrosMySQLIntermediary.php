@@ -42,6 +42,12 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by p.namespace ";
+            }
+
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -104,10 +110,22 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
                         LEFT JOIN parametro_x_usuario pu ON pu.parametros_id = p.id
                         LEFT JOIN personas pe ON pu.usuarios_id = pe.id ";
 
-            if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+            if(isset($filtro['p.id']) && $filtro['p.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['pc.controladores_pagina_id']) && $filtro['pc.controladores_pagina_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('pc.controladores_pagina_id', $filtro['pc.controladores_pagina_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['pu.usuarios_id']) && $filtro['pu.usuarios_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('pu.usuarios_id', $filtro['pu.usuarios_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['sistema'])){
+                $WHERE[] = " ps.valor <> '' ";
             }
 
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");

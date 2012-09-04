@@ -235,6 +235,39 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->masUsuarios();
             return;
         }
+        
+        if($this->getRequest()->has('usuariosAutocomplete')){
+            $this->usuariosAutocomplete();
+            return;
+        }
+    }
+
+    private function usuariosAutocomplete()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $iRecordsTotal = 0;
+            $sOrderBy=$sOrder=$iIniLimit=$iRecordCount=null;
+            $filtro = array("p.apellido" => $this->getRequest()->get('str'));
+            $vUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtro, $iRecordsTotal,$sOrderBy,$sOrder,$iIniLimit,$iRecordCount);
+            $vResult = array();
+            if(count($vUsuarios)>0){
+                foreach($vUsuarios as $oUsuario){
+                    $obj = new stdClass();
+                    $obj->id = $oUsuario->getId();
+                    $obj->nombre = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                    $vResult[] = $obj;
+                }
+            }
+            //agrega una url para que el js redireccione
+            $this->getJsonHelper()->setSuccess(true)->setValor("usuarios", $vResult);
+         }catch(Exception $e){
+            print_r($e);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function masUsuarios()

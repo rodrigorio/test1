@@ -418,6 +418,79 @@ function bindEventsFormParametroControlador()
 
 function bindEventsFormParametroUsuario()
 {
+    //solo para crear la asociacion
+    if($("#crearAsociacionUsuario").length){
+        if($("#usuarioId").val() != ""){
+            $("#usuario").addClass("selected");
+            $("#usuario").attr("readonly", "readonly");
+            revelarElemento($('#usuario_clean'));
+        }
+        
+        //Para el autocomplete de usuarios
+        $("#usuario").autocomplete({
+            source:function(request, response){
+                $.ajax({
+                    url:"admin/usuarios-procesar",
+                    dataType:"jsonp",
+                    data:{
+                        usuariosAutocomplete:'1',
+                        limit:12,
+                        str:request.term
+                    },
+                    beforeSend: function(){
+                        revelarElemento($("#usuario_loading"));
+                    },
+                    success: function(data){
+                        ocultarElemento($("#usuario_loading"));
+                        response($.map(data.usuarios, function(usuarios){
+                            return{
+                                //lo que aparece en el input
+                                value:usuarios.nombre,
+                                //lo que aparece en la lista generada para elegir
+                                label:usuarios.nombre+' - ID: '+usuarios.id,
+                                //valor extra que se devuelve para completar el hidden
+                                id:usuarios.id
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 1,
+            select: function(event, ui){
+                if(ui.item){
+                    $("#usuarioId").val(ui.item.id);
+                }else{
+                    $("#usuarioId").val("");
+                }
+            },
+            close: function(){
+                if($("#usuarioId").val() != ""){
+                    $(this).addClass("selected");
+                    $(this).attr('readonly', 'readonly');
+                    revelarElemento($('#usuario_clean'));
+                }
+            }
+        });
+
+        //para borrar la institucion seleccionada con el autocomplete
+        $('#usuario_clean').click(function(){
+            $("#usuario").removeClass("selected");
+            $("#usuario").removeAttr("readonly");
+            $("#usuario").val("");
+            $("#usuarioId").val("");
+            ocultarElemento($(this));
+        });
+
+        $('#usuario').blur(function(){
+            if($("#usuarioId").val() == ""){
+                $("#usuario").val("");
+            }
+            if($("#usuario").val() == ""){
+                $("#usuarioId").val("");
+            }
+        });
+    }
+
     $("#formParametroUsuario").validate(validateFormParametroUsuario);
     $("#formParametroUsuario").ajaxForm(optionsAjaxFormParametroUsuario);
 }
