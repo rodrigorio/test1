@@ -192,14 +192,12 @@ var validateFormParametroSistema = {
         $(element).removeClass("invalid");
     },
     rules:{
-        namespace:{required:true, nowhitespace:true},
-        tipo:{required:true},
-        descripcion:{required:true}
+        iParametroIdForm:{required:true},
+        valor:{required:true}
     },
     messages:{
-        namespace:{required: mensajeValidacion("requerido")},
-        tipo: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        iParametroIdForm:mensajeValidacion("requerido"),
+        valor:mensajeValidacion("requerido")
     }
 };
 
@@ -209,43 +207,43 @@ var optionsAjaxFormParametroSistema = {
     url: 'admin/parametros-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formParametro").valid() == true){
-            $('#msg_form_parametro').hide();
-            $('#msg_form_parametro').removeClass("success").removeClass("error2");
-            $('#msg_form_parametro .msg').html("");
-            setWaitingStatus('formParametro', true);
+        if($("#formParametroSistema").valid() == true){
+            $('#msg_form_parametroSistema').hide();
+            $('#msg_form_parametroSistema').removeClass("success").removeClass("error2");
+            $('#msg_form_parametroSistema .msg').html("");
+            setWaitingStatus('formParametroSistema', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formParametro', false);
+        setWaitingStatus('formParametroSistema', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_parametro .msg').html(lang['error procesar']);
+                $('#msg_form_parametroSistema .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_parametro .msg').html(data.mensaje);
+                $('#msg_form_parametroSistema .msg').html(data.mensaje);
             }
-            $('#msg_form_parametro').addClass("error2").fadeIn('slow');
+            $('#msg_form_parametroSistema').addClass("error2").fadeIn('slow');
         }else{
-            if(data.crearParametro != undefined){
+            if(data.asociarParametroSistema != undefined){
                 if(data.mensaje == undefined){
-                    $('#msg_form_parametro .msg').html("El parametro fue agregado exitosamente.");
+                    $('#msg_form_parametroSistema .msg').html("El parametro fue asociado exitosamente al sistema.");
                 }else{
-                    $('#msg_form_parametro .msg').html(data.mensaje);
+                    $('#msg_form_parametroSistema .msg').html(data.mensaje);
                 }
                 //limpio el formulario
-                $('#formParametro').each(function(){ this.reset() });
+                $('#formParametroSistema').each(function(){ this.reset() });
             }else{
                 if(data.mensaje == undefined){
-                    $('#msg_form_parametro .msg').html("El parametro fue modificado exitosamente");
+                    $('#msg_form_parametroSistema .msg').html("El valor del parametro fue modificado exitosamente para el sistema");
                 }else{
-                    $('#msg_form_parametro .msg').html(data.mensaje);
+                    $('#msg_form_parametroSistema .msg').html(data.mensaje);
                 }
             }
-            $('#msg_form_parametro').addClass("success").fadeIn('slow');
+            $('#msg_form_parametroSistema').addClass("success").fadeIn('slow');
         }
     }
 };
@@ -266,14 +264,14 @@ var validateFormParametroControlador = {
         $(element).removeClass("invalid");
     },
     rules:{
-        namespace:{required:true, nowhitespace:true},
-        tipo:{required:true},
-        descripcion:{required:true}
+        iParametroIdForm:{required:true},
+        iControladorIdForm:{required:true},
+        valor:{required:true}
     },
     messages:{
-        namespace:{required: mensajeValidacion("requerido")},
-        tipo: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        iParametroIdForm:mensajeValidacion("requerido"),
+        iControladorIdForm:mensajeValidacion("requerido"),
+        valor:mensajeValidacion("requerido")
     }
 };
 
@@ -283,43 +281,43 @@ var optionsAjaxFormParametroControlador = {
     url: 'admin/parametros-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formParametro").valid() == true){
-            $('#msg_form_parametro').hide();
-            $('#msg_form_parametro').removeClass("success").removeClass("error2");
-            $('#msg_form_parametro .msg').html("");
-            setWaitingStatus('formParametro', true);
+        if($("#formParametroControlador").valid() == true){
+            $('#msg_form_parametroControlador').hide();
+            $('#msg_form_parametroControlador').removeClass("success").removeClass("error2");
+            $('#msg_form_parametroControlador .msg').html("");
+            setWaitingStatus('formParametroControlador', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formParametro', false);
+        setWaitingStatus('formParametroControlador', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_parametro .msg').html(lang['error procesar']);
+                $('#msg_form_parametroControlador .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_parametro .msg').html(data.mensaje);
+                $('#msg_form_parametroControlador .msg').html(data.mensaje);
             }
-            $('#msg_form_parametro').addClass("error2").fadeIn('slow');
+            $('#msg_form_parametroControlador').addClass("error2").fadeIn('slow');
         }else{
-            if(data.crearParametro != undefined){
+            if(data.asociarParametroControlador != undefined){
                 if(data.mensaje == undefined){
-                    $('#msg_form_parametro .msg').html("El parametro fue agregado exitosamente.");
+                    $('#msg_form_parametroControlador .msg').html("El parametro fue asociado al controlador exitosamente.");
                 }else{
-                    $('#msg_form_parametro .msg').html(data.mensaje);
+                    $('#msg_form_parametroControlador .msg').html(data.mensaje);
                 }
                 //limpio el formulario
-                $('#formParametro').each(function(){ this.reset() });
+                $('#formParametroControlador').each(function(){ this.reset() });
             }else{
                 if(data.mensaje == undefined){
-                    $('#msg_form_parametro .msg').html("El parametro fue modificado exitosamente");
+                    $('#msg_form_parametroControlador .msg').html("El valor del parametro para el controlador fue modificado exitosamente");
                 }else{
-                    $('#msg_form_parametro .msg').html(data.mensaje);
+                    $('#msg_form_parametroControlador .msg').html(data.mensaje);
                 }
             }
-            $('#msg_form_parametro').addClass("success").fadeIn('slow');
+            $('#msg_form_parametroControlador').addClass("success").fadeIn('slow');
         }
     }
 };
@@ -340,14 +338,14 @@ var validateFormParametroUsuario = {
         $(element).removeClass("invalid");
     },
     rules:{
-        namespace:{required:true, nowhitespace:true},
-        tipo:{required:true},
-        descripcion:{required:true}
+        iParametroIdForm:{required:true},
+        iUsuarioIdForm:{required:true},
+        valor:{required:true}
     },
     messages:{
-        namespace:{required: mensajeValidacion("requerido")},
-        tipo: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        iParametroIdForm:mensajeValidacion("requerido"),
+        iUsuarioIdForm:mensajeValidacion("requerido"),
+        valor:mensajeValidacion("requerido")
     }
 };
 
@@ -357,43 +355,45 @@ var optionsAjaxFormParametroUsuario = {
     url: 'admin/parametros-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formParametro").valid() == true){
-            $('#msg_form_parametro').hide();
-            $('#msg_form_parametro').removeClass("success").removeClass("error2");
-            $('#msg_form_parametro .msg').html("");
-            setWaitingStatus('formParametro', true);
+        if($("#formParametroUsuario").valid() == true){
+            $('#msg_form_parametroUsuario').hide();
+            $('#msg_form_parametroUsuario').removeClass("success").removeClass("error2");
+            $('#msg_form_parametroUsuario .msg').html("");
+            setWaitingStatus('formParametroUsuario', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formParametro', false);
+        setWaitingStatus('formParametroUsuario', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_parametro .msg').html(lang['error procesar']);
+                $('#msg_form_parametroUsuario .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_parametro .msg').html(data.mensaje);
+                $('#msg_form_parametroUsuario .msg').html(data.mensaje);
             }
-            $('#msg_form_parametro').addClass("error2").fadeIn('slow');
+            $('#msg_form_parametroUsuario').addClass("error2").fadeIn('slow');
         }else{
-            if(data.crearParametro != undefined){
+            if(data.asociarParametroUsuario != undefined){
                 if(data.mensaje == undefined){
-                    $('#msg_form_parametro .msg').html("El parametro fue agregado exitosamente.");
+                    $('#msg_form_parametroUsuario .msg').html("El parametro fue asociado al usuario exitosamente.");
                 }else{
-                    $('#msg_form_parametro .msg').html(data.mensaje);
+                    $('#msg_form_parametroUsuario .msg').html(data.mensaje);
                 }
+
                 //limpio el formulario
-                $('#formParametro').each(function(){ this.reset() });
+                $('#usuario_clean').click();
+                $('#formParametroUsuario').each(function(){ this.reset() });
             }else{
                 if(data.mensaje == undefined){
-                    $('#msg_form_parametro .msg').html("El parametro fue modificado exitosamente");
+                    $('#msg_form_parametroUsuario .msg').html("El valor del parametro para el usuario fue modificado exitosamente");
                 }else{
-                    $('#msg_form_parametro .msg').html(data.mensaje);
+                    $('#msg_form_parametroUsuario .msg').html(data.mensaje);
                 }
             }
-            $('#msg_form_parametro').addClass("success").fadeIn('slow');
+            $('#msg_form_parametroUsuario').addClass("success").fadeIn('slow');
         }
     }
 };

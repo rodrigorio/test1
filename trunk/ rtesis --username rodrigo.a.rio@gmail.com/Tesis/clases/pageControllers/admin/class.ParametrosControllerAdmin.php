@@ -139,32 +139,32 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             return;
         }
 
-        if($this->getRequest()->has('asociarParametroSistema')){
+        if($this->getRequest()->has('crearAsociacionSistema')){
             $this->asociarParametroSistema();
             return;
         }
 
-        if($this->getRequest()->has('asociarParametroControlador')){
+        if($this->getRequest()->has('crearAsociacionControlador')){
             $this->asociarParametroControlador();
             return;
         }
 
-        if($this->getRequest()->has('asociarParametroUsuario')){
+        if($this->getRequest()->has('crearAsociacionUsuario')){
             $this->asociarParametroUsuario();
             return;
         }
 
-        if($this->getRequest()->has('modificarValorParametroSistema')){
+        if($this->getRequest()->has('modificarAsociacionSistema')){
             $this->modificarValorParametroSistema();
             return;
         }
 
-        if($this->getRequest()->has('modificarValorParametroControlador')){
+        if($this->getRequest()->has('modificarAsociacionControlador')){
             $this->modificarValorParametroControlador();
             return;
         }
 
-        if($this->getRequest()->has('modificarValorParametroUsuario')){
+        if($this->getRequest()->has('modificarAsociacionUsuario')){
             $this->modificarValorParametroUsuario();
             return;
         }
@@ -564,7 +564,36 @@ class ParametrosControllerAdmin extends PageControllerAbstract
 
     private function asociarParametroSistema()
     {
-        
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("asociarParametroSistema", "1");
+
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+            
+            //me fijo que la asociacion del parametro al sistema no exista.                       
+            if(AdminController::getInstance()->existeParametroSistema($iParametroId))
+            {
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("El parametro ya esta asociado al sistema.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oParametroSistema = new stdClass();
+            $oParametroSistema->iId = $iParametroId;
+            $oParametroSistema->sValor = $this->getRequest()->getPost("valor");
+            
+            $oParametroSistema = Factory::getParametroSistemaInstance($oParametroSistema);
+            
+            AdminController::getInstance()->guardarParametroSistema($oParametroSistema);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();   
     }
 
     private function asociarParametroControlador()

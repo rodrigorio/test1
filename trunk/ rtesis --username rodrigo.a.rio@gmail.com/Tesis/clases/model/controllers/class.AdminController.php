@@ -672,7 +672,7 @@ class AdminController
             throw new Exception($e);
         }        
     }
-
+    
     /**
      * Devuelve unicamente una instancia de clase Parametro
      */
@@ -692,7 +692,6 @@ class AdminController
             throw new Exception($e);
         }        
     }
-
     /**
      *  Devuelve un objeto de la clase ParametroSistema
      */
@@ -712,7 +711,6 @@ class AdminController
             throw new Exception($e);
         }        
     }
-
     /**
      *  Devuelve un objeto de la clase ParametroControlador
      */
@@ -732,7 +730,6 @@ class AdminController
             throw new Exception($e);
         }
     }
-
     /**
      *  Devuelve un objeto de la clase ParametroUsuario
      */
@@ -751,8 +748,7 @@ class AdminController
         }catch(Exception $e){
             throw new Exception($e);
         }
-    }
-    
+    }    
     public function existeParametro($oParametro)
     {
         try{
@@ -763,7 +759,49 @@ class AdminController
            throw new Exception($e);
         }                
     }
-
+    /**
+     * Este metodo indica si un parametro se encuentra asociado al sistema o no.
+     */
+    public function existeParametroSistema($oParametroSistema)
+    {
+        try{
+            $filtro = array("ps.parametros_id" => $oParametroSistema->getId());
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->existeParametroSistema($filtro);
+        }catch(Exception $e){
+           throw new Exception($e);
+        }                
+    }
+    /**
+     * Este metodo indica si un parametro se encuentra asociado a un controlador o no.
+     */
+    public function existeParametroControlador($oParametroControlador)
+    {
+        try{
+            $filtro = array("pc.parametros_id" => $oParametroControlador->getId(),
+                            "pc.controladores_pagina_id" => $oParametroControlador->getGrupoId());
+            
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->existeParametroControlador($filtro);
+        }catch(Exception $e){
+           throw new Exception($e);
+        }
+    }
+    /**
+     * Este metodo indica si un parametro se encuentra asociado al usuario o no.
+     */
+    public function existeParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $filtro = array("pu.parametros_id" => $oParametroUsuario->getId(),
+                            "pu.usuarios_id" => $oParametroUsuario->getGrupoId());
+            
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->existeParametroUsuario($filtro);
+        }catch(Exception $e){
+           throw new Exception($e);
+        }
+    }
     public function guardarParametro($oParametro)
     {
         try{
@@ -772,8 +810,7 @@ class AdminController
         }catch(Exception $e){
             throw new Exception($e);
         } 
-    }
-    
+    }    
     public function borrarParametro($oParametro)
     {
         try{
@@ -782,5 +819,59 @@ class AdminController
         }catch(Exception $e){
             throw new Exception($e);
         } 
+    }
+    public function guardarParametroSistema($oParametroSistema)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->guardarParametroSistema($oParametroSistema);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }         
+    }
+    public function guardarParametroControlador($oParametroControlador)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->guardarParametroControlador($oParametroControlador);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    public function guardarParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->guardarParametroUsuario($oParametroUsuario);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    public function eliminarParametroSistema($oParametroSistema)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->borrarParametroSistema($oParametroSistema);
+        }catch(Exception $e){
+            throw new Exception($e);
+        } 
+    }
+    public function eliminarParametroControlador($oParametroControlador)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->borrarParametroControlador($oParametroControlador);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    public function eliminarParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->borrarParametroUsuario($oParametroUsuario);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
     }
 }
