@@ -75,7 +75,7 @@
                 <td>{sTipo}</td>
                 <td class="pa2">{sDescripcion}</td>
                 <td class="teal_le">{tipoAsociacion}</td>
-                <td>{sGrupo}</td>
+                <td><strong>{sGrupo}</strong></td>
                 <td class="pa2">
                     <!--BeginEditAsociacionBlock-->
                     <span title="Eliminar Asociaci&oacute;n Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri i bs delete ihover eliminarAsociacionParametro"></span>
@@ -165,7 +165,7 @@
             <label for="parametro">Parametro</label>
         </dt>
         <dd>
-            <select class="medium" name="parametro" id="parametro">
+            <select class="medium" name="iParametroIdForm" id="parametro">
                 <option value="">Parametro:</option>
                 <!--BeginOptionParametroBlock-->
                 <option value="{iParametroId}">{sParametroNombre} - {sTipo}</option>
@@ -179,7 +179,7 @@
             <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="parametro" id="parametro" type="text" class="medium readonly" value="{sParametro}">
+            <input readonly="readonly" id="parametro" type="text" class="medium readonly" value="{sParametro}">
             <p>Tipo: {sTipo}</p>
             <p>Descripcion: {sDescripcion}</p>
         </dd>
@@ -224,7 +224,7 @@
             <label for="parametro">Parametro</label>
         </dt>
         <dd>
-            <select name="parametro" id="parametro">
+            <select name="iParametroIdForm" id="parametro">
                 <option value="">Parametro:</option>
                 <!--BeginOptionParametroBlock-->
                 <option value="{iParametroId}">{sParametroNombre} - {sTipo}</option>
@@ -235,7 +235,7 @@
             <label for="controlador">Controlador</label>
         </dt>
         <dd>
-            <select name="controlador" id="controlador">
+            <select name="iControladorIdForm" id="controlador">
                 <option value="">Controlador:</option>
                 <!--BeginOptionControladorBlock-->
                 <option value="{iControladorId}">{sControlador}</option>
@@ -249,7 +249,7 @@
             <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="parametro" id="parametro" type="text" class="medium readonly" value="{sParametro}">
+            <input readonly="readonly" id="parametro" type="text" class="medium readonly" value="{sParametro}">
             <p>Tipo: {sTipo}</p>
             <p>Descripcion: {sDescripcion}</p>
         </dd>
@@ -257,7 +257,7 @@
             <label>Controlador</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="controlador" id="controlador" type="text" class="medium readonly" value="{sControlador}">
+            <input readonly="readonly" id="controlador" type="text" class="medium readonly" value="{sControlador}">
         </dd>
         <!--EndModificarAsociacionControladorBlock-->
 
@@ -300,7 +300,7 @@
             <label for="parametro">Parametro</label>
         </dt>
         <dd>
-            <select name="parametro" id="parametro">
+            <select name="iParametroIdForm" id="parametro">
                 <option value="">Parametro:</option>
                 <!--BeginOptionParametroBlock-->
                 <option value="{iParametroId}">{sParametroNombre} - {sTipo}</option>
@@ -315,7 +315,7 @@
                 <div class="innerAutoComplete">
                     <div id='usuario_loading' class="i ajax_wait16 di_no"></div>
                     <span rel="tooltip" original-title="Quitar usuario" id='usuario_clean' class='i bs close ihover di_no'></span>
-                    <input type="text" name="usuario" id="usuario" title="usuario" maxlength="60" value="" />
+                    <input type="text" name="iUsuarioIdForm" id="usuario" title="usuario" maxlength="60" value="" />
                     <input type="hidden" name="usuarioId" id="usuarioId" value="" />
                 </div>
             </div>
@@ -328,7 +328,7 @@
             <label>Parametro</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="parametro" id="parametro" type="text" class="medium readonly" value="{sParametro}">
+            <input readonly="readonly" id="parametro" type="text" class="medium readonly" value="{sParametro}">
             <p>Tipo: {sTipo}</p>
             <p>Descripcion: {sDescripcion}</p>
         </dd>
@@ -336,7 +336,7 @@
             <label>Usuario</label>
         </dt>
         <dd>
-            <input readonly="readonly" name="usuario" id="usuario" type="text" class="medium readonly" value="{sNombreUsuario}">
+            <input readonly="readonly" id="usuario" type="text" class="medium readonly" value="{sNombreUsuario}">
         </dd>
         <!--EndModificarAsociacionUsuarioBlock-->
 

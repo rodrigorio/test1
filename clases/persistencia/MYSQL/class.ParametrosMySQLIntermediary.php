@@ -327,5 +327,300 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
         }
     }
 
+    public function existeParametroSistema($filtro)
+    {
+        try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        parametros_sistema ps
+                    WHERE ".$this->crearCondicionSimple($filtro);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function existeParametroControlador($filtro)
+    {
+        try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        parametro_x_controlador_pagina pc
+                    WHERE ".$this->crearCondicionSimple($filtro);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function existeParametroUsuario($filtro)
+    {
+        try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        parametro_x_usuario pu
+                    WHERE ".$this->crearCondicionSimple($filtro);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function guardarParametroSistema($oParametroSistema)
+    {
+        try{
+            $filtro = array("ps.parametros_id" => $oParametroSistema->getId());
+            if($this->existeParemtroSistema($filtro)){
+                return $this->actualizarParametroSistema($oParametroSistema);
+            }else{
+                return $this->insertarParametroSistema($oParametroSistema);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function guardarParametroControlador($oParametroControlador)
+    {
+        try{
+            $filtro = array("pc.parametros_id" => $oParametroControlador->getId(),
+                            "pc.controladores_pagina_id" => $oParametroControlador->getGrupoId());
+            
+            if($this->existeParemtroControlador($filtro)){
+                return $this->actualizarParametroControlador($oParametroControlador);
+            }else{
+                return $this->insertarParametroControlador($oParametroControlador);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function guardarParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $filtro = array("pu.parametros_id" => $oParametroUsuario->getId(),
+                            "pu.usuarios_id" => $oParametroUsuario->getGrupoId());
+
+            if($this->existeParemtroUsuario($filtro)){
+                return $this->actualizarParametroUsuario($oParametroUsuario);
+            }else{
+                return $this->insertarParametroUsuario($oParametroUsuario);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function insertarParametroSistema($oParametroSistema)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " INSERT INTO parametros_sistema ".
+                    " SET parametros_id = ".$this->escInt($oParametroSistema->getId()).", ".
+                    " valor = ".$this->escStr($oParametroSistema->getValor())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    public function actualizarParametroSistema($oParametroSistema)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " UPDATE parametros_sistema ".
+                    " SET valor = ".$this->escStr($oParametroSistema->getValor())." ".
+                    " WHERE parametros_id = ".$this->escInt($oParametroSistema->getId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function insertarParametroControlador($oParametroControlador)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " INSERT INTO parametro_x_controlador_pagina ".
+                    " SET parametros_id = ".$this->escInt($oParametroControlador->getId()).", ".
+                    " controladores_pagina_id = ".$this->escInt($oParametroControlador->getGrupoId()).", ";
+                    " valor = ".$this->escStr($oParametroControlador->getValor())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    public function actualizarParametroControlador($oParametroControlador)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " UPDATE parametro_x_controlador_pagina ".
+                    " SET valor = ".$this->escStr($oParametroControlador->getValor())." ".
+                    " WHERE parametros_id = ".$this->escInt($oParametroControlador->getId())." ".
+                    " AND controladores_pagina_id = ".$this->escInt($oParametroControlador->getGrupoId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function insertarParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " INSERT INTO parametro_x_usuario ".
+                    " SET parametros_id = ".$this->escInt($oParametroUsuario->getId()).", ".
+                    " usuarios_id = ".$this->escInt($oParametroUsuario->getGrupoId()).", ";
+                    " valor = ".$this->escStr($oParametroUsuario->getValor())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    public function actualizarParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " UPDATE parametro_x_usuario ".
+                    " SET valor = ".$this->escStr($oParametroUsuario->getValor())." ".
+                    " WHERE parametros_id = ".$this->escInt($oParametroUsuario->getId())." ".
+                    " AND usuarios_id = ".$this->escInt($oParametroUsuario->getGrupoId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function borrarParametroSistema($oParametroSistema)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $db->execSQL("delete from parametros_sistema where parametros_id = '".$oParametroSistema->getId()."'");
+
+            $db->commit();
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    public function borrarParametroControlador($oParametroControlador)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $db->execSQL("delete from parametro_x_controlador_pagina 
+                          where parametros_id = '".$oParametroControlador->getId()."'
+                          and controladores_pagina_id = '".$oParametroControlador->getGrupoId()."'");
+
+            $db->commit();
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    public function borrarParametroUsuario($oParametroUsuario)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $db->execSQL("delete from parametro_x_usuario
+                          where parametros_id = '".$oParametroUsuario->getId()."'
+                          and usuarios_id = '".$oParametroUsuario->getGrupoId()."'");
+
+            $db->commit();
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+                        
     public function actualizarCampoArray($objects, $cambios){}
 }
