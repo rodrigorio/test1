@@ -762,10 +762,10 @@ class AdminController
     /**
      * Este metodo indica si un parametro se encuentra asociado al sistema o no.
      */
-    public function existeParametroSistema($oParametroSistema)
+    public function existeParametroSistema($iParametroId)
     {
         try{
-            $filtro = array("ps.parametros_id" => $oParametroSistema->getId());
+            $filtro = array("ps.parametros_id" => $iParametroId);
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existeParametroSistema($filtro);
         }catch(Exception $e){
@@ -775,11 +775,11 @@ class AdminController
     /**
      * Este metodo indica si un parametro se encuentra asociado a un controlador o no.
      */
-    public function existeParametroControlador($oParametroControlador)
+    public function existeParametroControlador($iParametroId, $iControladorId)
     {
         try{
-            $filtro = array("pc.parametros_id" => $oParametroControlador->getId(),
-                            "pc.controladores_pagina_id" => $oParametroControlador->getGrupoId());
+            $filtro = array("pc.parametros_id" => $iParametroId,
+                            "pc.controladores_pagina_id" => $iControladorId);
             
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existeParametroControlador($filtro);
@@ -790,11 +790,11 @@ class AdminController
     /**
      * Este metodo indica si un parametro se encuentra asociado al usuario o no.
      */
-    public function existeParametroUsuario($oParametroUsuario)
+    public function existeParametroUsuario($iParametroId, $iUsaurioId)
     {
         try{
-            $filtro = array("pu.parametros_id" => $oParametroUsuario->getId(),
-                            "pu.usuarios_id" => $oParametroUsuario->getGrupoId());
+            $filtro = array("pu.parametros_id" => $iParametroId,
+                            "pu.usuarios_id" => $iUsaurioId);
             
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existeParametroUsuario($filtro);
