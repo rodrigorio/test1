@@ -409,7 +409,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
     {
         try{
             $filtro = array("ps.parametros_id" => $oParametroSistema->getId());
-            if($this->existeParemtroSistema($filtro)){
+            if($this->existeParametroSistema($filtro)){
                 return $this->actualizarParametroSistema($oParametroSistema);
             }else{
                 return $this->insertarParametroSistema($oParametroSistema);
@@ -425,7 +425,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             $filtro = array("pc.parametros_id" => $oParametroControlador->getId(),
                             "pc.controladores_pagina_id" => $oParametroControlador->getGrupoId());
             
-            if($this->existeParemtroControlador($filtro)){
+            if($this->existeParametroControlador($filtro)){
                 return $this->actualizarParametroControlador($oParametroControlador);
             }else{
                 return $this->insertarParametroControlador($oParametroControlador);
@@ -441,7 +441,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             $filtro = array("pu.parametros_id" => $oParametroUsuario->getId(),
                             "pu.usuarios_id" => $oParametroUsuario->getGrupoId());
 
-            if($this->existeParemtroUsuario($filtro)){
+            if($this->existeParametroUsuario($filtro)){
                 return $this->actualizarParametroUsuario($oParametroUsuario);
             }else{
                 return $this->insertarParametroUsuario($oParametroUsuario);
@@ -497,7 +497,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
 
             $sSQL = " INSERT INTO parametro_x_controlador_pagina ".
                     " SET parametros_id = ".$this->escInt($oParametroControlador->getId()).", ".
-                    " controladores_pagina_id = ".$this->escInt($oParametroControlador->getGrupoId()).", ";
+                    " controladores_pagina_id = ".$this->escInt($oParametroControlador->getGrupoId()).", ".
                     " valor = ".$this->escStr($oParametroControlador->getValor())." ";
 
             $db->execSQL($sSQL);
@@ -538,7 +538,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
 
             $sSQL = " INSERT INTO parametro_x_usuario ".
                     " SET parametros_id = ".$this->escInt($oParametroUsuario->getId()).", ".
-                    " usuarios_id = ".$this->escInt($oParametroUsuario->getGrupoId()).", ";
+                    " usuarios_id = ".$this->escInt($oParametroUsuario->getGrupoId()).", ".
                     " valor = ".$this->escStr($oParametroUsuario->getValor())." ";
 
             $db->execSQL($sSQL);
