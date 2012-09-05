@@ -210,4 +210,11 @@ class PersistenceFactory {
             return(ControladorPaginaMySQLIntermediary::getInstance($conn));
         }
     }
+    
+    public static function getDenunciaIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(DenunciaMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
