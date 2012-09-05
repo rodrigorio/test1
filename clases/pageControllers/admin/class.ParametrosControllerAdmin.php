@@ -618,7 +618,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             $oParametroControlador->iGrupoId = $iControladorId;
             $oParametroControlador->sValor = $this->getRequest()->getPost("valor");
 
-            $oParametroSistema = Factory::getParametroControladorInstance($oParametroControlador);
+            $oParametroControlador = Factory::getParametroControladorInstance($oParametroControlador);
 
             AdminController::getInstance()->guardarParametroControlador($oParametroControlador);
 
@@ -638,7 +638,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->setValor("asociarParametroUsuario", "1");
 
             $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
-            $iUsuarioId = $this->getRequest()->getPost('iUsuarioIdForm');
+            $iUsuarioId = $this->getRequest()->getPost('usuarioId');
 
             if(AdminController::getInstance()->existeParametroUsuario($iParametroId, $iUsuarioId))
             {
@@ -668,31 +668,184 @@ class ParametrosControllerAdmin extends PageControllerAbstract
     
     private function modificarValorParametroSistema()
     {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("modificarParametroSistema", "1");
 
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+
+            $oParametroSistema = AdminController::getInstance()->getParametroSistema($iParametroId);
+            $oParametroSistema->setValor($this->getRequest()->getPost("valor"));
+
+            AdminController::getInstance()->guardarParametroSistema($oParametroSistema);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse(); 
     }  
     
     private function modificarValorParametroControlador()
     {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("modificarParametroControlador", "1");
 
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+            $iControladorId = $this->getRequest()->getPost('iControladorIdForm');
+
+            $oParametroControlador = AdminController::getInstance()->getParametroControlador($iParametroId, $iControladorId);
+            $oParametroControlador->setValor($this->getRequest()->getPost("valor"));
+
+            AdminController::getInstance()->guardarParametroControlador($oParametroControlador);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }  
     
     private function modificarValorParametroUsuario()
     {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $this->getJsonHelper()->setValor("modificarParametroUsuario", "1");
 
+            $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
+            $iUsuarioId = $this->getRequest()->getPost('iUsuarioIdForm');
+
+            $oParametroUsuario = AdminController::getInstance()->getParametroUsuario($iParametroId, $iUsuarioId);
+            $oParametroUsuario->setValor($this->getRequest()->getPost("valor"));
+
+            AdminController::getInstance()->guardarParametroUsuario($oParametroUsuario);
+
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
     private function eliminarAsociacionSistema()
     {
+        $iParametroId = $this->getRequest()->getParam('iParametroId');
+        if(empty($iParametroId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
 
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $oParametroSistema = AdminController::getInstance()->getParametroSistema($iParametroId);
+            $result = AdminController::getInstance()->eliminarParametroSistema($oParametroSistema);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "Se elimino la asociacion entre el parametro y el sistema. Tenga en cuenta que puede mantenerse en las variables de sesion por unos minutos.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "No se pudo eliminar la asociacion entre el parametro y el sistema.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "No se pudo eliminar la asociacion entre el parametro y el sistema.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
     private function eliminarAsociacionControlador()
     {
+        $iParametroId = $this->getRequest()->getParam('iParametroId');
+        $iControladorId = $this->getRequest()->getParam('iControladorId');
 
+        if(empty($iParametroId) || empty($iControladorId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $oParametroControlador = AdminController::getInstance()->getParametroControlador($iParametroId, $iControladorId);
+            $result = AdminController::getInstance()->eliminarParametroControlador($oParametroControlador);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "Se elimino la asociacion entre el parametro y el controlador. Tenga en cuenta que puede mantenerse en las variables de sesion por unos minutos.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "No se pudo eliminar la asociacion entre el parametro y el controlador.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "No se pudo eliminar la asociacion entre el parametro y el controlador.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
     private function eliminarAsociacionUsuario()
     {
+        $iParametroId = $this->getRequest()->getParam('iParametroId');
+        $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
 
+        if(empty($iParametroId) || empty($iUsuarioId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $oParametroUsuario = AdminController::getInstance()->getParametroUsuario($iParametroId, $iUsuarioId);
+            $result = AdminController::getInstance()->eliminarParametroUsuario($oParametroUsuario);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "Se elimino la asociacion entre el parametro y el usuario. Tenga en cuenta que puede mantenerse en las variables de sesion por unos minutos.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "No se pudo eliminar la asociacion entre el parametro y el usuario.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "No se pudo eliminar la asociacion entre el parametro y el usuario.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }

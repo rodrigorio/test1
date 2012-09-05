@@ -54,10 +54,10 @@
         <thead>
             <tr>
                 <th>Key</th>
-                <th>Tipo</th>
                 <th>Descripcion</th>
                 <th>Asociaci&oacute;n</th>
                 <th>Grupo</th>
+                <th>Tipo</th>
                 <th>Valor</th>
             </tr>
         </thead>
@@ -65,24 +65,24 @@
         <!--BeginParametroBlock-->
             <tr class="{iParametroId} {iGrupoId}">
                 <td class="teal_le pale">
+                    <strong>{sKey}</strong>
+                    <div class="cl_bo pato"></div>
                     <span title="Editar Par&aacute;metro" rel="{iParametroId}" class="i bs edit ihover editarParametro"></span>
                     <!--BeginEliminarParametroBlock-->
                     <span title="Eliminar Par&aacute;metro" rel="{iParametroId}" class="i bs delete ihover eliminarParametro"></span>
                     <!--EndEliminarParametroBlock-->
-                    <br clear="all">
-                    <strong>{sKey}</strong>
                 </td>
-                <td>{sTipo}</td>
                 <td class="pa2">{sDescripcion}</td>
                 <td class="teal_le">{tipoAsociacion}</td>
-                <td><strong>{sGrupo}</strong></td>
+                <td class="pa2"><strong>{sGrupo}</strong></td>
+                <td>{sTipo}</td>
                 <td class="pa2">
+                    {sValor}
                     <!--BeginEditAsociacionBlock-->
+                    <div class="cl_bo pato"></div>
                     <span title="Eliminar Asociaci&oacute;n Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri i bs delete ihover eliminarAsociacionParametro"></span>
                     <span title="Modificar Valor Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri mari i bs edit ihover modificarValorParametro"></span>
-                    <div class="cl_bo mabo"></div>
                     <!--EndEditAsociacionBlock-->
-                    {sValor}
                 </td>
             </tr>
         <!--EndParametroBlock-->
