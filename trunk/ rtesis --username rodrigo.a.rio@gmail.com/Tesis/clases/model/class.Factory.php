@@ -334,4 +334,13 @@ class Factory
         $oControladorPagina = new ControladorPagina($obj);
         return $oControladorPagina;
     }
+
+    /**
+     * @param stdClass $obj
+     * @return ControladorPagina|null
+     */
+    public static function &getDenunciaInstance(stdClass $obj){
+        $oDenuncia = new Denuncia($obj);
+        return $oDenuncia;
+    }
 }
