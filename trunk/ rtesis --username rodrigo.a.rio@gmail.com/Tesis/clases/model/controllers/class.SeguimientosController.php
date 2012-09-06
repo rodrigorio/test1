@@ -786,6 +786,56 @@ class SeguimientosController
         }
     }
     /**
+     * Guardar Variables
+     *
+     */
+    public function guardarVariables($oVariable){
+        try{
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return $oVariableIntermediary->guardar($oVariable);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Guardar Unidades
+     *
+     */
+    public function guardarUnidades($oUnidad){
+        try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->guardar($oUnidad);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Borrar Unidad
+     *
+     */
+    public function borrarUnidad($iUnidadId)
+    {
+    	try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->borrar($iUnidadId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Borrar Variable
+     *
+     */
+    public function borrarVariable($iVariableId)
+    {
+    	try{
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return $oVariableIntermediary->borrar($iVariableId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
      * Obtener Objetivos Personalizados
      *
      */
@@ -831,6 +881,19 @@ class SeguimientosController
         try{
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }  
+    /**
+     * Borrar Objetivo
+     *
+     */
+    public function borrarObjetivo($iObjetivoId)
+    {
+    	try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->borrar($iObjetivoId);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
