@@ -9,9 +9,9 @@ class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrat
     /**
      * Cantidad de segundos antes de que expiren los parametros dinamicos
      */
-    const SEGUNDOS_EXPIRACION_CONTROLADORES = 30; //600 = 10 minutos
-    const SEGUNDOS_EXPIRACION_SISTEMA = 30;
-    const SEGUNDOS_EXPIRACION_USUARIOS = 30;
+    const SEGUNDOS_EXPIRACION_CONTROLADORES = 400; //600 = 10 minutos
+    const SEGUNDOS_EXPIRACION_SISTEMA = 400;
+    const SEGUNDOS_EXPIRACION_USUARIOS = 400;
 
     /**
      * Nombre del controlador general para todo el sistema (corresponde con el contenido de los registros de la DB en tabla 'controladores_pagina')

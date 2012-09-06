@@ -20,7 +20,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
         $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
-
+        
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", $tituloVista);
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
