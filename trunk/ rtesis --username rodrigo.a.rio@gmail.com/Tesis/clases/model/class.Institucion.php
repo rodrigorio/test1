@@ -33,6 +33,11 @@ class Institucion {
         private  $oModeracion = null;
 
         /**
+         * Listado completo de las denuncias para la institucion si es que las tiene.
+         */
+        protected  $aDenuncias;
+
+        /**
          * array de objetos Solicitud de los integrantes que quieren administrar el contenido
          */
         private $aSolicitudes;
@@ -318,6 +323,14 @@ class Institucion {
         public function setModeracion($oModeracion)
         {
             $this->oModeracion = $oModeracion;
+        }
+
+        public function getDenuncias()
+        {
+            if($this->aDenuncias === null){
+                $this->aDenuncias = AdminController::getInstance()->obtenerDenunciasInstitucion($this->iId);
+            }
+            return $this->aDenuncias;
         }
 
         public function getSolicitudes()

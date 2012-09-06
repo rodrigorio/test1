@@ -1,19 +1,21 @@
 <?php
 
-class Moderacion
+class Denuncia
 {
    /**
     * Los valores tienen que corresponder con el enum de la tabla
     */
-    const ESTADO_RECHAZADO = "rechazado";
-    const ESTADO_APROBADO = "aprobado";
-    const ESTADO_PENDIENTE = "pendiente";
+    const RAZON_INFO_FALSA = "informacion_falsa";
+    const RAZON_CONTENIDO_INAPROPIADO = "contenido_inapropiado";
+    const RAZON_PROPIEDAD_INTELECTUAL = "propiedad_intelectual";
+    const RAZON_SPAM = "spam";
 
     private $iId;
     private $dFecha;
     private $sMensaje;
-    private $sEstado = self::ESTADO_PENDIENTE;
-
+    private $sRazon;
+    private $oUsuario;
+    
    /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase
      * @param stdClass $oParams
@@ -71,41 +73,57 @@ class Moderacion
         }
     }
 
-    public function getEstado()
+    public function getRazon()
     {
-        return $this->sEstado;
+        return $this->sRazon;
     }
 
-    public function setEstadoPendiente()
+    public function setRazonSpam()
     {
-        $this->sEstado = self::ESTADO_PENDIENTE;
+        $this->sRazon = self::RAZON_SPAM;
         return $this;
     }
 
-    public function setEstadoAprobado()
+    public function setRazonPropiedadIntelectual()
     {
-        $this->sEstado = self::ESTADO_APROBADO;
+        $this->sRazon = self::RAZON_PROPIEDAD_INTELECTUAL;
         return $this;
     }
 
-    public function setEstadoRechazado()
+    public function setRazonContenidoInapropiado()
     {
-        $this->sEstado = self::ESTADO_RECHAZADO;
+        $this->sRazon = self::RAZON_CONTENIDO_INAPROPIADO;
+        return $this;
+    }
+    
+    public function setRazonInformacionFalsa()
+    {
+        $this->sRazon = self::RAZON_INFO_FALSA;
         return $this;
     }
 
-    public function isAprobado()
-    {
-        return ($this->sEstado == self::ESTADO_APROBADO)?true:false;
+    public function getUsuario(){
+    	if($this->oUsuario == null && !empty($this->iUsuarioId)){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($this->iUsuarioId);
+    	}
+        return $this->oUsuario;
     }
 
-    public function isRechazado()
+    public function getUsuarioId()
     {
-        return ($this->sEstado == self::ESTADO_RECHAZADO)?true:false;
+        return $this->iUsuarioId;
     }
 
-    public function isPendiente()
+    public function setUsuarioId($iUsuarioId){
+        $this->iUsuarioId = $iUsuarioId;
+        if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        }
+    }
+
+    public function setUsuario($oUsuario)
     {
-        return ($this->sEstado == self::ESTADO_PENDIENTE)?true:false;
+        $this->oUsuario = $oUsuario;
+        return $this;
     }
 }
