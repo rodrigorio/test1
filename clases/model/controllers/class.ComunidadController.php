@@ -137,19 +137,21 @@ class ComunidadController
         }
     }
 
-    public function guardarInstitucion($oInstitucion){
+    public function guardarInstitucion($oInstitucion)
+    {
         try{
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             $oInstitucionIntermediary->guardar($oInstitucion);
 
-            //si se guarda con objeto usuario limpio las solicitudes de administracion de contenido pendientes.
+            //si se guarda con objeto usuario, limpio las solicitudes de administracion de contenido pendientes.
             if(null !== $oInstitucion->getUsuario()){
                 $oInstitucionIntermediary->limpiarSolicitudes($oInstitucion->getId());
             }
 
+            //si la institucion la guarda (desde el form de comunidad) un moderador o administrador se aprueba automaticamente.
             $classPerfil = SessionAutentificacion::getInstance()->getClassPerfilAutentificado();
             if($classPerfil == "Administrador" || $classPerfil == "Moderador"){
-                if(null === $oInstitucion->getModeracion()){
+                if((null === $oInstitucion->getModeracion()) || ($oInstitucion->getModeracion()->isRechazado())){
                     $oModeracion = new stdClass();
                     $oModeracion = Factory::getModeracionInstance($oModeracion);
                     $oModeracion->setEstadoAprobado();
@@ -161,7 +163,24 @@ class ComunidadController
                 }
                 return;
             }
-           
+
+            //si las moderaciones estan desactivadas para el controlador de pagina
+            //entonces no se crean nuevas entradas de moderacion pendiente.
+            $activarModeraciones = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('ACTIVAR_MODERACIONES');
+            if(!$activarModeraciones){
+                if((null === $oInstitucion->getModeracion()) || ($oInstitucion->getModeracion()->isRechazado())){
+                    $oModeracion = new stdClass();
+                    $oModeracion = Factory::getModeracionInstance($oModeracion);
+                    $oModeracion->setEstadoAprobado();
+                    $oModeracion->setMensaje("Aprobado automaticamente por moderaciones desactivadas.");
+                    $oInstitucion->setModeracion($oModeracion);
+
+                    $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                    $oModeracionIntermediary->guardarModeracionEntidad($oInstitucion);
+                }
+                return;
+            }
+
             if((null === $oInstitucion->getModeracion()) || (!$oInstitucion->getModeracion()->isPendiente()))
             {
                 //fecha se genera sola, mensaje vacio, estado pendiente por defecto.
@@ -597,7 +616,7 @@ class ComunidadController
      * @param stdClass $obj
      */
     public function guardarPublicacion($oPublicacion){
-    	try{
+    	try{            
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             $oPublicacionIntermediary->guardar($oPublicacion);
             $this->procesarModeracionFicha($oPublicacion);           
@@ -619,7 +638,8 @@ class ComunidadController
      * Si esta marcada como publica:
      *
      * - Si la ultima moderacion no existe o existe y el estado es diferente de 'pendiente'
-     * entonces creo una nueva entrada en el historial de moderaciones para la ficha.
+     * entonces creo una nueva entrada en el historial de moderaciones para la ficha en estado pendiente.
+     * Esto ultimo SI y SOLO SI estan las moderaciones activadas para el controlador.
      * 
      * - Si la ultima moderacion esta en estado pendiente no hago nada.
      * 
@@ -637,7 +657,7 @@ class ComunidadController
             $classPerfil = SessionAutentificacion::getInstance()->getClassPerfilAutentificado();
 
             if($classPerfil == "Administrador" || $classPerfil == "Moderador"){
-                if(null === $oFicha->getModeracion()){
+                if((null === $oFicha->getModeracion()) || ($oFicha->getModeracion()->isRechazado())){
                     $oModeracion = new stdClass();
                     $oModeracion = Factory::getModeracionInstance($oModeracion);
                     $oModeracion->setEstadoAprobado();
@@ -648,8 +668,23 @@ class ComunidadController
                     $oModeracionIntermediary->guardarModeracionEntidad($oFicha);
                 }
                 return;
-            }           
+            }
 
+            $activarModeraciones = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('ACTIVAR_MODERACIONES');
+            if($oFicha->isPublico() && !$activarModeraciones){
+                if((null === $oFicha->getModeracion()) || ($oFicha->getModeracion()->isRechazado())){                
+                    $oModeracion = new stdClass();
+                    $oModeracion = Factory::getModeracionInstance($oModeracion);
+                    $oModeracion->setEstadoAprobado();
+                    $oModeracion->setMensaje("Aprobada automaticamente por moderaciones desactivadas.");
+                    $oFicha->setModeracion($oModeracion);
+
+                    $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
+                    $oModeracionIntermediary->guardarModeracionEntidad($oFicha);
+                }
+                return;
+            }
+            
             if($oFicha->isPublico()){
                 if((null === $oFicha->getModeracion()) ||
                    (!$oFicha->getModeracion()->isPendiente()))
