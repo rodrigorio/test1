@@ -9,8 +9,9 @@ class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrat
     /**
      * Cantidad de segundos antes de que expiren los parametros dinamicos
      */
-    const SEGUNDOS_EXPIRACION_CONTROLADORES = 600; //600 = 10 minutos
-    const SEGUNDOS_EXPIRACION_SISTEMA = 600;
+    const SEGUNDOS_EXPIRACION_CONTROLADORES = 30; //600 = 10 minutos
+    const SEGUNDOS_EXPIRACION_SISTEMA = 30;
+    const SEGUNDOS_EXPIRACION_USUARIOS = 30;
 
     /**
      * Nombre del controlador general para todo el sistema (corresponde con el contenido de los registros de la DB en tabla 'controladores_pagina')
@@ -46,13 +47,28 @@ class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrat
         }
     }
 
+    private function getGrupoUsuarioParametro()
+    {
+        $grupoUsuario = "";
+        $iUsuarioId = "";
+
+        if(!Session::isDestroyed()){
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            if(!empty($iUsuarioId)){
+                $grupoUsuario = 'user-'.$iUsuarioId;
+            }
+        }
+
+        return array($grupoUsuario, $iUsuarioId);
+    }
+
     /**
      * En sistemas donde el usuario pueda setear sus parametros, aca hay que cargar tambien los valores de los parametros de usuario.
      */
     public function cargarParametrosDinamicos()
     {        
         $grupoControlador = $this->getGrupoControladorParametro();
-        //si existieran de usuario $grupoUsuario = $this->getGrupoUsuarioParametro y llamo a metodo de SysController que extraiga valores de parametro con relacion a la tabla usuarios =).
+        list($grupoUsuario, $iUsuarioId) = $this->getGrupoUsuarioParametro();
 
         if(!empty($grupoControlador) && !isset($this->parametrosDinamicos->{$grupoControlador}))
         {
@@ -64,9 +80,18 @@ class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrat
             }
         }
 
+        if(!empty($grupoUsuario) && !empty($iUsuarioId) && !isset($this->parametrosDinamicos->{$grupoUsuario}))
+        {
+            $array = SysController::getInstance()->obtenerParametrosUsuario($iUsuarioId);
+            if(!empty($array)){
+                $this->parametrosDinamicos->{$grupoUsuario} = $array;
+                $this->parametrosDinamicos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_USUARIOS, $grupoUsuario);
+            }
+        }
+
         if(!isset($this->parametrosDinamicos->sistema))
         {
-            $array = SysController::getInstance()->obtenerParametrosControlador(self::GRUPO_SISTEMA);
+            $array = SysController::getInstance()->obtenerParametrosSistema();
             if(!empty($array)){
                 $this->parametrosDinamicos->sistema = $array;
                 $this->parametrosDinamicos->setExpirationSeconds(self::SEGUNDOS_EXPIRACION_SISTEMA, self::GRUPO_SISTEMA);

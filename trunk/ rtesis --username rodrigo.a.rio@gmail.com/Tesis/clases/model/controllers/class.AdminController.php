@@ -698,7 +698,7 @@ class AdminController
     public function getParametroSistema($iParametroId)
     {
         try{
-            $filtro = array('p.id' => $iParametroId, 'sistema' => 'sistema');
+            $filtro = array('iId' => $iParametroId, 'sistema' => 'sistema');
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             $iRecordsTotal = 0;
             $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
@@ -717,7 +717,7 @@ class AdminController
     public function getParametroControlador($iParametroId, $iControladorId)
     {
         try{
-            $filtro = array('p.id' => $iParametroId, 'pc.controladores_pagina_id' => $iControladorId);
+            $filtro = array('iId' => $iParametroId, 'iControladorId' => $iControladorId);
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             $iRecordsTotal = 0;
             $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
@@ -736,7 +736,7 @@ class AdminController
     public function getParametroUsuario($iParametroId, $iUsuarioId)
     {
         try{
-            $filtro = array('p.id' => $iParametroId, 'pu.usuarios_id' => $iUsuarioId);
+            $filtro = array('iId' => $iParametroId, 'iUsuarioId' => $iUsuarioId);
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             $iRecordsTotal = 0;
             $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
@@ -772,6 +772,7 @@ class AdminController
            throw new Exception($e);
         }                
     }
+    
     /**
      * Este metodo indica si un parametro se encuentra asociado a un controlador o no.
      */
@@ -787,6 +788,7 @@ class AdminController
            throw new Exception($e);
         }
     }
+    
     /**
      * Este metodo indica si un parametro se encuentra asociado al usuario o no.
      */

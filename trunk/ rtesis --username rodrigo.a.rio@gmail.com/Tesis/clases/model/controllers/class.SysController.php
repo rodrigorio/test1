@@ -32,20 +32,36 @@ class SysController
     }
 
     /**
+     * Devuelve un array con los parametros dinamicos asociados al sistema
+     */
+    public function obtenerParametrosSistema()
+    {
+    	$oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+    	return $oParametrosIntermediary->obtenerArrayParametrosSistema();
+    }
+
+    /**
      * Devuelve un array con los parametros dinamicos correspondientes a un controlador del sistema
      *
-     * @param string $controladorId Compuesto por "nombreModulo_nombreControlador"
+     * @param string $grupoControlador Compuesto por "nombreModulo_nombreControlador" es el nombre del controlador
      * @return array con parametros dinamicos correspondientes al controlador, por lo general el controlador actual del request que se este procesando.
      */
-    public function obtenerParametrosControlador($controladorId)
+    public function obtenerParametrosControlador($grupoControlador)
     {
-        //123probando...
-        return array("NOMBRE_SITIO" => "Tesis",
-                     "SUBTITULO_SITIO" => "sistema de ....",
-                     "METATAG_TITLE" => "Titulo depende de Modulo-Controlador-Accion",
-                     "METATAG_DESCRIPTION" => "Ble ble bl eb lebleblebisadj aslid",
-                     "METATAG_KEYWORDS" => "una palabra, otra palabra, otra palabra mas",
-                     "FILE_NAME_LOGO_SITIO" => "logo.jpg");
+    	$oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+    	return $oParametrosIntermediary->obtenerArrayParametrosControlador($grupoControlador);
+    }
+
+    /**
+     * Devuelve un array con los parametros dinamicos correspondientes a un usuario del sistema
+     *
+     * @param integer $iUsuarioId el id del Usuario
+     * @return array con parametros dinamicos correspondientes al usuario, por lo general el usuario que esta logueado en session.
+     */
+    public function obtenerParametrosUsuario($iUsuarioId)
+    {
+    	$oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+    	return $oParametrosIntermediary->obtenerArrayParametrosUsuario($iUsuarioId);
     }
 
     /**
@@ -58,13 +74,7 @@ class SysController
     public function cargarPermisosPerfil($idPerfil)
     {
     	$oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
-    	$array = $oPermisosIntermediary->permisosPorPerfil($idPerfil);
-        
-        if($array == null){
-            echo "AGREGAR PERMISOS EN LA BASE DE DATOS, :D => RODRIGO!!!";
-        }else{
-            return $array;
-        }
+    	return $oPermisosIntermediary->permisosPorPerfil($idPerfil);       
     }
 
     /**
