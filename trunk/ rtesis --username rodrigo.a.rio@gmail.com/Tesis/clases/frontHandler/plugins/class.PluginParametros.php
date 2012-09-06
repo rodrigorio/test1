@@ -217,9 +217,11 @@ class PluginParametros extends PluginAbstract
         $grupoUsuario = "";
 
         if(!Session::isDestroyed()){
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            if(!empty($iUsuarioId)){
-                $grupoUsuario = 'user-'.$iUsuarioId;
+            if(null !== SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()){
+                $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+                if(!empty($iUsuarioId)){
+                    $grupoUsuario = 'user-'.$iUsuarioId;
+                }
             }
         }
 

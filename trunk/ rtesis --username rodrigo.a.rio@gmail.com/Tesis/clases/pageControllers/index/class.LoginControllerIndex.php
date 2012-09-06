@@ -152,7 +152,8 @@ class LoginControllerIndex extends PageControllerAbstract
                 
         $front = FrontController::getInstance();
         $parametros = $front->getPlugin('PluginParametros');
-        $tituloVista = $parametros->obtener('METATAG_TITLE');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+        $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
         $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
         $fileNameLogo = $parametros->obtener('FILE_NAME_LOGO_SITIO');
