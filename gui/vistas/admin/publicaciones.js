@@ -1010,4 +1010,33 @@ $(document).ready(function(){
         });
     });
     
+    $("#toggleModeraciones").click(function(){
+        var msg;
+        var valor;
+
+        if($(this).attr('checked')){
+            msg = "todas las publicaciones marcadas como visibles fuera de la comunidad deberán ser moderadas.";
+            valor = "1";
+        }else{
+            msg = "todas las publicaciones marcadas como visibles fuera de la comunidad se visualizarán sin ser moderadas.";
+            valor = "0";
+        }
+
+        if(confirm(msg)){
+            $.ajax({
+                type:"post",
+                url:"admin/publicaciones-procesar",
+                data:{
+                    sValor:valor,
+                    toggleModeraciones:"1"
+                },
+                beforeSend: function(){
+                    setWaitingStatus('subHeaderModeraciones', true);
+                },
+                success:function(data){
+                    setWaitingStatus('subHeaderModeraciones', false);
+                }
+            });
+        }        
+    });
 });

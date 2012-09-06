@@ -672,6 +672,23 @@ class AdminController
             throw new Exception($e);
         }        
     }
+
+    public function getControladorPaginaByNombre($sControlador)
+    {
+        try{
+            $filtro = array('cp.controlador' => $sControlador);
+            $oControladorPaginaIntermediary = PersistenceFactory::getControladorPaginaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aControladorPagina = $oControladorPaginaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aControladorPagina){
+                return $aControladorPagina[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
     
     /**
      * Devuelve unicamente una instancia de clase Parametro
@@ -718,6 +735,28 @@ class AdminController
     {
         try{
             $filtro = array('iId' => $iParametroId, 'iControladorId' => $iControladorId);
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aParametros){
+                return $aParametros[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    /**
+     *  Devuelve un objeto de la clase ParametroControlador a partir del
+     *  nombre del parametro y el nombre del controlador
+     *
+     *  ejemplo: getParametroControladorByNombre('NOMBRE_PARAMETRO', 'comunidad_publicaciones');
+     */
+    public function getParametroControladorByNombre($sNamespace, $sControlador)
+    {
+        try{
+            $filtro = array('sNamespace' => $sNamespace, 'sControlador' => $sControlador);
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             $iRecordsTotal = 0;
             $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);

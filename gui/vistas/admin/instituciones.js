@@ -519,5 +519,36 @@ $(document).ready(function(){
                 });
             }
         });
-    });    
-}); //document ready
+    });
+
+    $("#toggleModeraciones").click(function(){
+        var msg;
+        var valor;
+
+        if($(this).attr('checked')){
+            msg = "todas las instituciones deberán ser moderadas para ser visibles fuera de la comunidad.";
+            valor = "1";
+        }else{
+            msg = "todas las instituciones serán visibles fuera de la comunidad sin necesidad de ser moderadas.";
+            valor = "0";
+        }
+
+        if(confirm(msg)){
+            $.ajax({
+                type:"post",
+                url:"admin/instituciones-procesar",
+                data:{
+                    sValor:valor,
+                    toggleModeraciones:"1"
+                },
+                beforeSend: function(){
+                    setWaitingStatus('subHeaderModeraciones', true);
+                },
+                success:function(data){
+                    setWaitingStatus('subHeaderModeraciones', false);
+                }
+            });
+        }
+    });
+    
+}); 

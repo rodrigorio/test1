@@ -165,6 +165,12 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             if(isset($filtro['sistema'])){
                 $WHERE[] = " tipoAsociacion = 'sistema' ";
             }
+            if(isset($filtro['sNamespace']) && $filtro['sNamespace']!=""){
+                $WHERE[] = $this->crearFiltroSimple('sNamespace', $filtro['sNamespace']);
+            }
+            if(isset($filtro['sControlador']) && $filtro['sControlador']!=""){
+                $WHERE[] = " sGrupo = '".$filtro['sControlador']."' AND tipoAsociacion = 'controlador' ";
+            }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
             

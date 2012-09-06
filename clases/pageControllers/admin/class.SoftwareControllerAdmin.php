@@ -63,7 +63,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "widgetsContent", "HeaderBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "mainContent", "ListadoSoftwareBlock");
-
+            
             //select filtro categoria
             $iRecordsTotal = 0;
             $aCategorias = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
@@ -248,6 +248,11 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             return;
         }
 
+        if($this->getRequest()->has('toggleModeraciones')){
+            $this->toggleModeraciones();
+            return;
+        }
+
         //adjuntos en software ampliado
         if($this->getRequest()->has('eliminarArchivo')){
             $this->eliminarArchivo();
@@ -319,6 +324,24 @@ class SoftwareControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
         $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+
+    /**
+     * Modifica el valor booleano del parametro activar moderaciones
+     * para el controlador software del modulo comunidad
+     */
+    private function toggleModeraciones()
+    {
+        $sValor = $this->getRequest()->getParam('sValor');
+
+        //si o si tiene que ser boolean
+        if($sValor != '1' && $sValor != '0'){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oParametroControlador = AdminController::getInstance()->getParametroControladorByNombre('ACTIVAR_MODERACIONES', 'comunidad_software');
+        $oParametroControlador->setValor($sValor);
+        AdminController::getInstance()->guardarParametroControlador($oParametroControlador);
     }
 
     private function eliminarComentario()
@@ -889,6 +912,12 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "widgetsContent", "HeaderModeracionesBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "mainContent", "ListadoModeracionBlock");
+
+            //check activar/desactivar moderaciones
+            $oParametroControlador = AdminController::getInstance()->getParametroControladorByNombre('ACTIVAR_MODERACIONES', 'comunidad_software');
+            if($oParametroControlador->getValor()){
+                $this->getTemplate()->set_var("moderacionesChecked", "checked='checked'");
+            }
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 

@@ -355,6 +355,11 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->moderarPublicacion();
             return;
         }
+        
+        if($this->getRequest()->has('toggleModeraciones')){
+            $this->toggleModeraciones();
+            return;
+        }
 
         //adjuntos en publicacion ampliada 
         if($this->getRequest()->has('eliminarArchivo')){
@@ -439,6 +444,24 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
         $this->getJsonHelper()->sendJsonAjaxResponse();        
+    }
+
+    /**
+     * Modifica el valor booleano del parametro activar moderaciones
+     * para el controlador publicaciones del modulo comunidad
+     */
+    private function toggleModeraciones()
+    {
+        $sValor = $this->getRequest()->getParam('sValor');
+
+        //si o si tiene que ser boolean
+        if($sValor != '1' && $sValor != '0'){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oParametroControlador = AdminController::getInstance()->getParametroControladorByNombre('ACTIVAR_MODERACIONES', 'comunidad_publicaciones');
+        $oParametroControlador->setValor($sValor);
+        AdminController::getInstance()->guardarParametroControlador($oParametroControlador);
     }
 
     private function eliminarComentario()
@@ -1248,6 +1271,12 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "widgetsContent", "HeaderModeracionesBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "mainContent", "ListadoModeracionBlock");
 
+            //check activar/desactivar moderaciones
+            $oParametroControlador = AdminController::getInstance()->getParametroControladorByNombre('ACTIVAR_MODERACIONES', 'comunidad_publicaciones');
+            if($oParametroControlador->getValor()){
+                $this->getTemplate()->set_var("moderacionesChecked", "checked='checked'");
+            }
+            
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
             $iRecordsTotal = 0;

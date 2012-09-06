@@ -1028,7 +1028,7 @@ input.large, textarea.large { width:75%; }
 input.full, textarea.full { width:97%; }
 input[type=text], input[type=password], textarea, select { padding:6px; }
 input[type="radio"] { vertical-align:text-bottom; }
-input[type="checkbox"] { vertical-align:bottom; }
+input[type="checkbox"] { vertical-align:middle; }
 input[type="checkbox"], input[type="radio"] {
 	background:none;
 	border:none;

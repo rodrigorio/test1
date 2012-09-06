@@ -12,7 +12,7 @@ abstract class FichaAbstract
     protected  $dFecha;
     protected  $bActivo = true;
     protected  $sDescripcion;
-    
+        
    /**
     * array objetos Moderacion, el historial completo
     */
@@ -22,6 +22,11 @@ abstract class FichaAbstract
     * objeto Moderacion, estado de la ultima entrada en moderaciones, null si no tiene
     */
     protected  $oModeracion = null;
+
+    /**
+     * Listado completo de las denuncias para la ficha si es que las tiene.
+     */
+    protected  $aDenuncias;
  	 	
    /**
     * array objetos Foto
@@ -169,5 +174,13 @@ abstract class FichaAbstract
     public function setModeracion($oModeracion)
     {
         $this->oModeracion = $oModeracion;
+    }
+
+    public function getDenuncias()
+    {
+        if($this->aDenuncias === null){
+            $this->aDenuncias = AdminController::getInstance()->obtenerDenunciasFicha($this->iId);
+        }
+        return $this->aDenuncias;
     }
  }
