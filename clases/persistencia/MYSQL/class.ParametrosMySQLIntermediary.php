@@ -90,38 +90,80 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
         try{
             $db = $this->conn;
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT parametros_dinamicos.* FROM
+
+                    ((SELECT
                         p.id AS iId,
                         p.descripcion AS sDescripcion,
                         p.tipo AS sTipo,
                         p.namespace AS sNamespace,
-
-                        ps.valor AS sValorS,
-                        pc.valor AS sValorC, pc.controladores_pagina_id AS iGrupoIdC,
-                        pu.valor AS sValorU, pu.usuarios_id AS iGrupoIdU,
-
-                        cp.controlador AS sGrupoC,
-                        CONCAT(pe.nombre, ' ', pe.apellido) AS sGrupoU
-                    FROM
-                        parametros p
+                        NULL AS sValor,
+                        NULL AS iGrupoId,
+                        NULL AS sGrupo,
+                        NULL AS tipoAsociacion
+                        FROM parametros p
                         LEFT JOIN parametros_sistema ps ON ps.parametros_id = p.id
                         LEFT JOIN parametro_x_controlador_pagina pc ON pc.parametros_id = p.id
-                        LEFT JOIN controladores_pagina cp ON pc.controladores_pagina_id = cp.id
                         LEFT JOIN parametro_x_usuario pu ON pu.parametros_id = p.id
-                        LEFT JOIN personas pe ON pu.usuarios_id = pe.id ";
+                        WHERE ps.valor IS NULL AND pc.valor IS NULL AND pu.valor IS NULL)
+
+                    UNION
+
+                    (SELECT
+                        p.id AS iId,
+                        p.descripcion AS sDescripcion,
+                        p.tipo AS sTipo,
+                        p.namespace AS sNamespace,
+                        ps.valor AS sValor,
+                        NULL AS iGrupoId,
+                        NULL AS sGrupo,
+                        'sistema' AS tipoAsociacion
+                        FROM parametros p
+                        JOIN parametros_sistema ps ON ps.parametros_id = p.id)
+
+                    UNION
+
+                    (SELECT
+                        p.id AS iId,
+                        p.descripcion AS sDescripcion,
+                        p.tipo AS sTipo,
+                        p.namespace AS sNamespace,
+                        pc.valor AS sValor,
+                        pc.controladores_pagina_id AS iGrupoId,
+                        cp.controlador AS sGrupo,
+                        'controlador' AS tipoAsociacion
+                        FROM parametros p
+                        JOIN parametro_x_controlador_pagina pc ON pc.parametros_id = p.id 
+                        JOIN controladores_pagina cp ON cp.id = pc.controladores_pagina_id)
+
+                    UNION
+
+                    (SELECT
+                        p.id AS iId,
+                        p.descripcion AS sDescripcion,
+                        p.tipo AS sTipo,
+                        p.namespace AS sNamespace,
+                        pu.valor AS sValor,
+                        pu.usuarios_id AS iGrupoId,
+                        CONCAT(pe.nombre,' ',pe.apellido) AS sGrupo,
+                        'usuario' AS tipoAsociacion
+                        FROM parametros p
+                        JOIN parametro_x_usuario pu ON pu.parametros_id = p.id
+                        JOIN personas pe ON pe.id = pu.usuarios_id))
+                        AS parametros_dinamicos ";
 
             $WHERE = array();
-            if(isset($filtro['p.id']) && $filtro['p.id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
+            if(isset($filtro['iId']) && $filtro['iId']!=""){
+                $WHERE[] = $this->crearFiltroSimple('iId', $filtro['iId'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['pc.controladores_pagina_id']) && $filtro['pc.controladores_pagina_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('pc.controladores_pagina_id', $filtro['pc.controladores_pagina_id'], MYSQL_TYPE_INT);
+            if(isset($filtro['iControladorId']) && $filtro['iControladorId']!=""){
+                $WHERE[] = " iGrupoId = '".$filtro['iControladorId']."' AND tipoAsociacion = 'controlador' ";
             }
-            if(isset($filtro['pu.usuarios_id']) && $filtro['pu.usuarios_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('pu.usuarios_id', $filtro['pu.usuarios_id'], MYSQL_TYPE_INT);
+            if(isset($filtro['iUsuarioId']) && $filtro['iUsuarioId']!=""){
+                $WHERE[] = " iGrupoId = '".$filtro['iUsuarioId']."' AND tipoAsociacion = 'usuario' ";
             }
             if(isset($filtro['sistema'])){
-                $WHERE[] = " ps.valor <> '' ";
+                $WHERE[] = " tipoAsociacion = 'sistema' ";
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -138,12 +180,12 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
                 //dependiendo el row puede ser Parametro/ParametroSistema/ParametroControlador/ParametroUsuario
 
                 //parametro sistema
-                if(null !== $oObj->sValorS){
+                if($oObj->tipoAsociacion == 'sistema'){
                     $oParametroSistema = new stdClass();
                     $oParametroSistema->iId = $oObj->iId;
                     $oParametroSistema->sDescripcion = $oObj->sDescripcion;
                     $oParametroSistema->sNamespace = $oObj->sNamespace;
-                    $oParametroSistema->sValor = $oObj->sValorS;
+                    $oParametroSistema->sValor = $oObj->sValor;
 
                     $oParametroSistema = Factory::getParametroSistemaInstance($oParametroSistema);
                     
@@ -158,14 +200,14 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
                 }
 
                 //parametro controlador
-                if(null !== $oObj->sValorC){
+                if($oObj->tipoAsociacion == 'controlador'){
                     $oParametroControlador = new stdClass();
                     $oParametroControlador->iId = $oObj->iId;
                     $oParametroControlador->sDescripcion = $oObj->sDescripcion;
                     $oParametroControlador->sNamespace = $oObj->sNamespace;
-                    $oParametroControlador->sValor = $oObj->sValorC;
-                    $oParametroControlador->iGrupoId = $oObj->iGrupoIdC;
-                    $oParametroControlador->sGrupo = $oObj->sGrupoC;
+                    $oParametroControlador->sValor = $oObj->sValor;
+                    $oParametroControlador->iGrupoId = $oObj->iGrupoId;
+                    $oParametroControlador->sGrupo = $oObj->sGrupo;
 
                     $oParametroControlador = Factory::getParametroControladorInstance($oParametroControlador);
 
@@ -180,14 +222,14 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
                 }
                 
                 //parametro usuario
-                if(null !== $oObj->sValorU){
+                if($oObj->tipoAsociacion == 'usuario'){
                     $oParametroUsuario = new stdClass();
                     $oParametroUsuario->iId = $oObj->iId;
                     $oParametroUsuario->sDescripcion = $oObj->sDescripcion;
                     $oParametroUsuario->sNamespace = $oObj->sNamespace;
-                    $oParametroUsuario->sValor = $oObj->sValorU;
-                    $oParametroUsuario->iGrupoId = $oObj->iGrupoIdU;
-                    $oParametroUsuario->sGrupo = $oObj->sGrupoU;
+                    $oParametroUsuario->sValor = $oObj->sValor;
+                    $oParametroUsuario->iGrupoId = $oObj->iGrupoId;
+                    $oParametroUsuario->sGrupo = $oObj->sGrupo;
 
                     $oParametroUsuario = Factory::getParametroUsuarioInstance($oParametroUsuario);
 
@@ -202,7 +244,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
                 }
 
                 //obj parametro simple sin asociar
-                if(null === $oObj->sValorU && null === $oObj->sValorC && null === $oObj->sValorS){
+                if(null === $oObj->tipoAsociacion){
                     $oParametro = new stdClass();
                     $oParametro->iId = $oObj->iId;
                     $oParametro->sDescripcion = $oObj->sDescripcion;
@@ -618,6 +660,78 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             return true;
 
         }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function obtenerArrayParametrosSistema()
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        p.namespace, ps.valor
+                        from parametros p
+                        join parametros_sistema ps ON ps.parametros_id = p.id ";
+
+            $db->query($sSQL);
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+            return $db->getDBArrayQuery($sSQL);
+
+        }catch(Exception $e){
+
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public function obtenerArrayParametrosControlador($controlador)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        p.namespace, pc.valor
+                        from parametros p
+                        join parametro_x_controlador_pagina pc ON pc.parametros_id = p.id
+                        join controladores_pagina cp ON cp.id = pc.controladores_pagina_id
+                        where cp.controlador = ".$this->escStr($controlador)." ";
+
+            $db->query($sSQL);
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+            return $db->getDBArrayQuery($sSQL);
+
+        }catch(Exception $e){
+
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function obtenerArrayParametrosUsuario($iUsuarioId)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        p.namespace, pu.valor
+                        from parametros p
+                        join parametro_x_usuario pu ON pu.parametros_id = p.id
+                        where pu.usuarios_id = '".$iUsuarioId."' ";
+
+            $db->query($sSQL);
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ return null; }
+
+            return $db->getDBArrayQuery($sSQL);
+
+        }catch(Exception $e){
+
             throw new Exception($e->getMessage(), 0);
         }
     }

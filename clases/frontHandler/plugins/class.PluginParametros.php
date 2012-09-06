@@ -106,49 +106,13 @@ class PluginParametros extends PluginAbstract
         }
     }
 
-    /**
-     * El parametro esta tipeado para reforzar la idea del strategy. Solo objetos de la interfaz, no cualquier objeto.
-     * 
-     * @param PluginParametrosDinamicosStrategy $strategy
-     */
-    public function setParametrosDinamicosStrategy($strategy)
-    {
-        //en lugar de tipear el parametro por php hago la comprobacion yo para que sea una excepcion controlada por el sistema.
-        if (!($strategy instanceof PluginParametrosDinamicosStrategy)){
-            throw new Exception('Objeto "' . $strategy . '" no es una instancia de PluginParametrosDinamicosStrategy');
-        }
-
-        //quito la estrategia anterior si es que habia alguna y seteo la nueva
-        $this->parametrosDinamicosStrategy = null;
-        $this->parametrosDinamicosStrategy = $strategy;
-        return $this;
-    }
-
-    private function parametrosDinamicosCargados($flag)
-    {
-        $this->parametrosDinamicosCargados = (boolean) $flag;
-        return $this;
-    }
-
-    private function getGrupoControladorParametro()
-    {
-        $request = $this->getRequest();
-        $modulo = $request->getModuleName();
-        $controlador = $request->getControllerName();
-        if(empty($modulo)||empty($controlador)){
-            return "";
-        }else{
-            return $modulo.'_'.$controlador;
-        }
-    }
-
     private function agregarParametrosEstaticos()
     {
         $sistema = array(
                         'DATABASE_HOST' => 'localhost',
                         'DATABASE_DRIVER' => 'IMYSQL',
                         'DATABASE_USER' => 'root',
-                        'DATABASE_PASSWORD' => 'urbis9878',
+                        'DATABASE_PASSWORD' => '',
                         'DATABASE_NAME' => 'tesis',
                         'DATABASE_PORT' => '3306',
                         'DATABASE_AUTOCOMMIT' => '0',
@@ -212,6 +176,56 @@ class PluginParametros extends PluginAbstract
              ->adjuntarArray('index_publicaciones', $indexPublicaciones);
     }
 
+    /**
+     * El parametro esta tipeado para reforzar la idea del strategy. Solo objetos de la interfaz, no cualquier objeto.
+     * 
+     * @param PluginParametrosDinamicosStrategy $strategy
+     */
+    public function setParametrosDinamicosStrategy($strategy)
+    {
+        //en lugar de tipear el parametro por php hago la comprobacion yo para que sea una excepcion controlada por el sistema.
+        if (!($strategy instanceof PluginParametrosDinamicosStrategy)){
+            throw new Exception('Objeto "' . $strategy . '" no es una instancia de PluginParametrosDinamicosStrategy');
+        }
+
+        //quito la estrategia anterior si es que habia alguna y seteo la nueva
+        $this->parametrosDinamicosStrategy = null;
+        $this->parametrosDinamicosStrategy = $strategy;
+        return $this;
+    }
+
+    private function parametrosDinamicosCargados($flag)
+    {
+        $this->parametrosDinamicosCargados = (boolean) $flag;
+        return $this;
+    }
+
+    private function getGrupoControladorParametro()
+    {
+        $request = $this->getRequest();
+        $modulo = $request->getModuleName();
+        $controlador = $request->getControllerName();
+        if(empty($modulo)||empty($controlador)){
+            return "";
+        }else{
+            return $modulo.'_'.$controlador;
+        }
+    }
+
+    private function getGrupoUsuarioParametro()
+    {
+        $grupoUsuario = "";
+
+        if(!Session::isDestroyed()){
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            if(!empty($iUsuarioId)){
+                $grupoUsuario = 'user-'.$iUsuarioId;
+            }
+        }
+
+        return $grupoUsuario;
+    }
+
     private function adjuntarArray($grupo, $arrayParams)
     {
         if(!isset($this->parametrosEstaticos[$grupo])){
@@ -232,6 +246,7 @@ class PluginParametros extends PluginAbstract
      * Le hice un agregado por una cuestion de practicidad a la hora de usar parametros en los plugins
      * Si se utiliza el parametro soloSistema se buscaran parametros solamente en array de sistema.
      *
+     * @param string $key Es el namespace, el 'nombre' del parametro que puede estar asociado al sistema, usuario, etc.
      * @param boolean $soloSistema Poner en true si se necesitan parametros unicamente de sistema.
      */
     public function obtener($key, $soloSistema = false)
@@ -240,10 +255,13 @@ class PluginParametros extends PluginAbstract
         if(!$this->request->isDispatched() || $soloSistema){
             return $this->obtenerParametroSistema($key);
         }
-
-        //si hay que buscar tambien en parametros dinamicos... (en un sistema que haya parametro por entidad hay que crear los metodos)
-        //$valor = $this->obtenerParametroSitio($key) existe ? -> return valor
-        //$valor = $this->obtenerParametroUsuario($key) existe ? -> return valor
+        
+        //solo busca la key en el grupo de parametros de usuario si hay un usuario logueado
+        if(!Session::isDestroyed() && null !== SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()){
+            $valor = $this->obtenerParametroUsuario($key); // existe ? -> return valor
+            if(null !== $valor){ return $valor; }
+        }
+        
         $valor = $this->obtenerParametroControlador($key); // existe ? -> return valor
         if(null !== $valor){ return $valor; }
 
@@ -261,9 +279,20 @@ class PluginParametros extends PluginAbstract
         return $valor;
     }
 
-    //private function obtenerParametroUsuario($key){} //a referencia, metodos que podrian existir
-    //private function obtenerParametroPublicacion($key){} //para cargar valores de parametros para un id especifico de publicacion. el grupo seria publicacion-12312 y se calcularia dentro de la funcion
-    //private function obtenerParametroSitio($key){}
+    /**
+     * Los parametros de entidad como un usuario son siempre dinamicos.
+     * No tiene sentido guardar copias estaticas si hay Altas, Bajas y Modificaciones de la entidad
+     */
+    private function obtenerParametroUsuario($key)
+    {
+        $grupoUsuario = $this->getGrupoUsuarioParametro();
+        if($this->parametrosDinamicosCargados)
+        {
+            $valor = $this->parametrosDinamicosStrategy->obtenerParametroDinamico($grupoUsuario, $key);
+        }
+        return $valor;         
+    }
+    
     private function obtenerParametroControlador($key)
     {
         $grupoControlador = $this->getGrupoControladorParametro();

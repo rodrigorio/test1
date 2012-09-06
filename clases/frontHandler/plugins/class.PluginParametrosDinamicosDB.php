@@ -38,13 +38,29 @@ class PluginParametrosDinamicosDB implements PluginParametrosDinamicosStrategy
         }
     }
 
+    private function getGrupoUsuarioParametro()
+    {
+        $grupoUsuario = "";
+        $iUsuarioId = "";
+
+        if(!Session::isDestroyed()){
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            if(!empty($iUsuarioId)){
+                $grupoUsuario = 'user-'.$iUsuarioId;
+            }
+        }
+
+        return array($grupoUsuario, $iUsuarioId);
+    }
+
     /**
      * Carga todos los parametros dinamicos, los de entidad, los de controlador y los de sistema
      */
     public function cargarParametrosDinamicos()
     {
         $grupoControlador = $this->getGrupoControladorParametro();
-
+        list($grupoUsuario, $iUsuarioId) = $this->getGrupoUsuarioParametro();
+               
         if(!empty($grupoControlador))
         {
             $array = SysController::getInstance()->obtenerParametrosControlador($grupoControlador);
@@ -53,7 +69,15 @@ class PluginParametrosDinamicosDB implements PluginParametrosDinamicosStrategy
             }
         }
 
-        $array = SysController::getInstance()->obtenerParametrosControlador(self::GRUPO_SISTEMA);
+        if(!empty($grupoUsuario) && !empty($iUsuarioId))
+        {
+            $array = SysController::getInstance()->obtenerParametrosUsuario($iUsuarioId);
+            if(!empty($array)){
+                $this->parametrosDinamicos[$grupoUsuario] = $array;
+            }
+        }
+
+        $array = SysController::getInstance()->obtenerParametrosSistema();
         if(!empty($array)){
             $this->parametrosDinamicos[self::GRUPO_SISTEMA] = $array;
         }
