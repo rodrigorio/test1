@@ -112,10 +112,11 @@ class VariableMySQLIntermediary extends VariableIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-	public function borrar($oVariable) {
+    
+	public function borrar($iVariableId) {
 		try{
 			$db = $this->conn;
-			$db->execSQL("delete from variables where id=".$db->escape($oVariable->getId(),false,MYSQL_TYPE_INT));
+			$db->execSQL("delete from variables where id = '".$iVariableId."'");
 			$db->commit();
 
 		}catch(Exception $e){

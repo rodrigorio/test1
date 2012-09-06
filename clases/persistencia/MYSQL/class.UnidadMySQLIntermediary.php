@@ -102,10 +102,10 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
 			throw new Exception($e->getMessage(), 0);
 		}
     }
- 	public function borrar($oUnidad) {
+ 	public function borrar($iUnidadId) {
 		try{
 			$db = $this->conn;
-			$db->execSQL("delete from unidades where id=".$db->escape($oUnidad->getId(),false,MYSQL_TYPE_INT));
+			$db->execSQL("delete from unidades where id = '".$iUnidadId."'");
 			$db->commit();
 
 		}catch(Exception $e){
