@@ -44,9 +44,11 @@ class PluginParametrosDinamicosDB implements PluginParametrosDinamicosStrategy
         $iUsuarioId = "";
 
         if(!Session::isDestroyed()){
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            if(!empty($iUsuarioId)){
-                $grupoUsuario = 'user-'.$iUsuarioId;
+            if(null !== SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()){
+                $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+                if(!empty($iUsuarioId)){
+                    $grupoUsuario = 'user-'.$iUsuarioId;
+                }
             }
         }
 
