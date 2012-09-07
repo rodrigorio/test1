@@ -117,9 +117,12 @@ $LAB
             <!--BeginInstitucionBlock-->
             <div class="ficha03 grupo mabo2">
                 <div class="encabezado">
-                    <div class="der">
-                        <span class="fost_it">{sTipoInstitucion}</span> |
-                        <a href="{hrefAmpliarInstitucion}">Ver Completo</a>
+                    <div class="der iveal">
+                        <div class="mabo">
+                            <span class="fost_it">{sTipoInstitucion}</span> |
+                            <a href="{hrefAmpliarInstitucion}">Ver Completo</a>
+                        </div>
+                        <span rel="{iInstitucionId}" title="reportar instituci&oacute;n" class="fl_ri i mi moderate ihover reportarInstitucion"></span>
                     </div>
                     <div class="izq">
                         <div class="titulo">{sNombre}</div>
@@ -199,18 +202,21 @@ $LAB
 <!--BeginFichaInstitucionBlock-->
 <div class="ficha03 grupo mabo3">
     <div class="encabezado">
-        
-        <!--BeginSolicitarInstitucionBlock-->
-        <div id="solicitarInstitucionCont" class="der">
-            <a rel="{iInstitucionId}" class="solicitarInstitucion" href="">Solicitar la administraci&oacute;n de esta instituci&oacute;n</a>
+
+        <div class="der">            
+            <!--BeginSolicitarInstitucionBlock-->
+            <div id="solicitarInstitucionCont" class="mabo">
+                <a rel="{iInstitucionId}" class="solicitarInstitucion" href="">Solicitar la administraci&oacute;n de esta instituci&oacute;n</a>
+            </div>
+            <!--EndSolicitarInstitucionBlock-->
+            <!--BeginSolicitudEnviadaInstitucionBlock-->
+            <div class="mabo">
+                Solicitud de administraci&oacute;n enviada.
+            </div>
+            <!--EndSolicitudEnviadaInstitucionBlock-->
+            <span rel="{iInstitucionId}" title="reportar instituci&oacute;n" class="fl_ri i mi moderate ihover reportarInstitucion"></span>
         </div>
-        <!--EndSolicitarInstitucionBlock-->
-        <!--BeginSolicitudEnviadaInstitucionBlock-->
-        <div class="der">
-            Solicitud de administraci&oacute;n enviada.
-        </div>
-        <!--EndSolicitudEnviadaInstitucionBlock-->
-        
+
         <div class="izq">
             <div class="titulo">{sNombre}</div>
             <div class="subtitulo">{sTipo} - {sUbicacion}</div>

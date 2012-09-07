@@ -171,8 +171,22 @@ class RutasModuloComunidad
                                         'action'     => "guardar"
                                 ));
         $router->addRoute('comunidadInstitucionesGuardar', $route);
+        $route = new RegexRoute('comunidad/guardar-institucion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "guardar"
+                                ));
+        $router->addRoute('comunidadInstitucionesGuardar', $route);        
+        $route = new RegexRoute('comunidad/denunciar-institucion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "instituciones",
+                                        'action'     => "denunciar"
+                                ));
+        $router->addRoute('comunidadInstitucionesDenunciar', $route);
 
-
+        
         /////////PUBLICACIONES
         $route = new RegexRoute('comunidad/publicaciones',
                                 array(
@@ -328,6 +342,13 @@ class RutasModuloComunidad
                                 ),
                                 '');
         $router->addRoute('comunidadPublicacionesVerReview', $route);
+        $route = new RegexRoute('comunidad/denunciar-publicacion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "publicaciones",
+                                        'action'     => "denunciar"
+                                ));
+        $router->addRoute('comunidadPublicacionesDenunciar', $route);
 
 
         /////////CATALOGO DESCARGAS
@@ -444,5 +465,12 @@ class RutasModuloComunidad
                                 ),
                                 '');
         $router->addRoute('comunidadSoftwareVerAplicacion', $route);
+        $route = new RegexRoute('comunidad/denunciar-aplicacion',
+                                array(
+                                        'module' => "comunidad",
+                                        'controller' => "software",
+                                        'action'     => "denunciar"
+                                ));
+        $router->addRoute('comunidadSoftwareDenunciar', $route);
     }
 }

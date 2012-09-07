@@ -183,4 +183,13 @@ abstract class FichaAbstract
         }
         return $this->aDenuncias;
     }
+
+    public function setDenuncias($aDenuncias)
+    {
+        $this->aDenuncias = $aDenuncias;
+    }
+
+    public function addDenuncia($oDenuncia){
+        $this->aDenuncias[] = $oDenuncia;
+    }
  }

@@ -215,10 +215,79 @@ var optionsAjaxFormSolicitarInstitucion = {
     }
 };
 
+var validateFormDenunciarInstitucion = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        razon:{required:true},
+        mensaje:{required:true}
+    },
+    messages:{
+        razon: mensajeValidacion("requerido"),
+        mensaje: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormDenunciarInstitucion = {
+    dataType: 'jsonp',
+    resetForm: true,
+    url: 'comunidad/denunciar-institucion',
+    beforeSerialize:function(){
+        if($("#formDenunciar").valid() == true){
+            setWaitingStatus('formDenunciar', true);
+        }else{
+            return false;
+        }
+    },
+    success:function(data){
+        setWaitingStatus('formDenunciar', false);
+
+        var dialog = $("#dialog");
+        if($("#dialog").length){
+            dialog.attr("title", "Denunciar Institución");
+        }else{
+            dialog = $('<div id="dialog" title="Denunciar Institución"></div>').appendTo('body');
+        }
+        dialog.html(data.html);
+
+        dialog.dialog({
+            position:['center', 'center'],
+            width:400,
+            resizable:false,
+            draggable:false,
+            modal:false,
+            closeOnEscape:true,
+            buttons:{
+                "Aceptar": function() {
+                    $(this).dialog( "close" );
+                }
+            }
+        });
+    }
+};
+
 function bindEventsFormSolicitarInstitucion()
 {
     $("#formSolicitarInstitucion").validate(validateFormSolicitarInstitucion);
     $("#formSolicitarInstitucion").ajaxForm(optionsAjaxFormSolicitarInstitucion);
+    
+    $("textarea.maxlength").maxlength();
+}
+
+function bindEventsFormDenunciarInstitucion()
+{
+    $("#formDenunciar").validate(validateFormDenunciarInstitucion);
+    $("#formDenunciar").ajaxForm(optionsAjaxFormDenunciarInstitucion);
     
     $("textarea.maxlength").maxlength();
 }
@@ -347,6 +416,37 @@ function solicitarInstitucion(iInstitucionId){
     });
 }
 
+function reportarInstitucion(iInstitucionId){
+    $.ajax({
+        type:"post",
+        url:"comunidad/denunciar-institucion",
+        data:{
+            iInstitucionId:iInstitucionId
+        },
+        success:function(data){
+
+            var dialog = $("#dialog");
+            if($("#dialog").length){
+                dialog.attr("title", "Denunciar Institución");
+            }else{
+                dialog = $('<div id="dialog" title="Denunciar Institución"></div>').appendTo('body');
+            }
+            dialog.html(data);
+
+            dialog.dialog({
+                position:['center', 'center'],
+                width:500,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsFormDenunciarInstitucion();
+        }
+    });
+}
+
 $(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
@@ -373,6 +473,12 @@ $(function(){
     $(".solicitarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
         solicitarInstitucion(iInstitucionId);
+        return false;
+    });
+
+    $(".reportarInstitucion").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        reportarInstitucion(iInstitucionId);
         return false;
     });
 

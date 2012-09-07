@@ -525,6 +525,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                               $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre();
 
                 $this->getTemplate()->set_var("sTipoInstitucion", $oInstitucion->getNombreTipoInstitucion());
+                $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
                 $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
                 $this->getTemplate()->set_var("sUbicacion", $sUbicacion);
                 $this->getTemplate()->set_var("sDescripcion", $oInstitucion->getDescripcion(true));
@@ -574,6 +575,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                               $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre();
 
                 $this->getTemplate()->set_var("sTipoInstitucion", $oInstitucion->getNombreTipoInstitucion());
+                $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
                 $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
                 $this->getTemplate()->set_var("sUbicacion", $sUbicacion);
                 $this->getTemplate()->set_var("sDescripcion", $oInstitucion->getDescripcion(true));
@@ -949,5 +951,89 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         }
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaInstitucionesBlock', false));
+    }
+
+    public function denunciar()
+    {                
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+        
+        if($this->getRequest()->has('enviarDenuncia')){
+            $this->procesarDenuncia();
+            return;
+        }
+        
+        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
+        if(empty($iInstitucionId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+                
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/formularios.gui.html", "popUpContent", "FormularioDenunciarBlock");
+
+        //select razones denuncias
+        $aRazones = ComunidadController::getInstance()->obtenerRazonesDenuncia();
+        while($sRazon = current($aRazones)){
+            $this->getTemplate()->set_var("sRazonValue", key($aRazones));
+            $this->getTemplate()->set_var("sRazon", $sRazon);
+            $this->getTemplate()->parse("OptionRazonBlock", true);
+            next($aRazones);
+        }
+
+        $this->getTemplate()->set_var("iItemId", $iInstitucionId);
+        $this->getTemplate()->set_var("sTipoItem", "Institucion");
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function procesarDenuncia()
+    {
+        $iInstitucionId = $this->getRequest()->getParam('iItemIdFormDenuncia');
+        if(empty($iInstitucionId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $oUsuario = $perfil->getUsuario();
+
+        $oDenuncia = new stdClass();
+
+        $oDenuncia->sMensaje = $this->getRequest()->getPost('mensaje');
+        $oDenuncia->sRazon = $this->getRequest()->getPost('razon');
+        $oDenuncia->oUsuario = $oUsuario;
+
+        $oDenuncia = Factory::getDenunciaInstance($oDenuncia);
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            
+            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
+            $oInstitucion->addDenuncia($oDenuncia);           
+            $result = ComunidadController::getInstance()->guardarDenunciasInstitucion($oInstitucion);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "Su denuncia fue enviada con éxito.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se ha podido enviar su denuncia.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha podido enviar su denuncia.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();            
     }
 }

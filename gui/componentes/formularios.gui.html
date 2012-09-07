@@ -1,0 +1,47 @@
+<!--BeginFormularioDenunciarBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi moderate32"></span></div>
+    <form id="formDenunciar" name="formDenunciar" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+        <h2 class="mabo">Reportar a los moderadores de la comunidad</h2>
+        <div class="mabo3 fost_it">La entrada sera revisada, sin embargo puede ser deshabilitada automaticamente por acumulaci&oacute;n de denuncias.</div>
+
+        <div class="form_line msg_razon">
+            <label for="razon">
+                <span class="marca_obligatorio">&#8226;</span>
+                Raz&oacute;n de la denuncia
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select name="razon" id="razon" title="Seleccione la raz&oacute;n de su denuncia">
+                        <option value="">Elija raz&oacute;n:</option>
+                        <!--BeginOptionRazonBlock--><option value="{sRazonValue}">{sRazon}</option><!--EndOptionRazonBlock-->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_mensaje">
+            <label for="mensaje">
+                Mensaje
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2 maxlength" rows="0" cols="0" id="mensaje" name="mensaje" title="Mensaje Denuncia"></textarea>
+                </div>
+            </div>
+            <p>Ingrese un breve texto que ayude a los moderadores a entender por completo el problema</p>
+        </div>
+
+        <div class="fl_le iveal mabo2">
+            <label for="denunciar" class="button buttonConfirm buttonLarge mari3">
+                <button id="enviarDenuncia" type="submit" name="enviarDenuncia" class="btn01">
+                    Enviar Denuncia
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iItemId}" name="iItemIdFormDenuncia" id="iItemIdFormDenuncia" />
+        <input type="hidden" value="{sTipoItem}" name="sTipoItemFormDenuncia" id="sTipoItemFormDenuncia" />
+    </form>
+</div>
+<!--EndFormularioDenunciarBlock-->
