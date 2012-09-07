@@ -426,11 +426,8 @@ function reportarInstitucion(iInstitucionId){
         success:function(data){
 
             var dialog = $("#dialog");
-            if($("#dialog").length){
-                dialog.attr("title", "Denunciar Institución");
-            }else{
-                dialog = $('<div id="dialog" title="Denunciar Institución"></div>').appendTo('body');
-            }
+            if(dialog.length){ dialog.remove(); }
+            dialog = $('<div id="dialog" title="Denunciar Institución"></div>').appendTo('body');
             dialog.html(data);
 
             dialog.dialog({

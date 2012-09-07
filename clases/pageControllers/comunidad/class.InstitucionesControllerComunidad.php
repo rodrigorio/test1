@@ -994,23 +994,36 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $oUsuario = $perfil->getUsuario();
-
-        $oDenuncia = new stdClass();
-
-        $oDenuncia->sMensaje = $this->getRequest()->getPost('mensaje');
-        $oDenuncia->sRazon = $this->getRequest()->getPost('razon');
-        $oDenuncia->oUsuario = $oUsuario;
-
-        $oDenuncia = Factory::getDenunciaInstance($oDenuncia);
-
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
+
+            //no se puede denunciar 2 veces la misma institucion
+            if(ComunidadController::getInstance()->usuarioEnvioDenunciaInstitucion($iInstitucionId)){
+                $msg = "Su denuncia ya fue enviada. No puede denunciar dos veces la misma institución.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+                $this->getTemplate()->set_var("sMensaje", $msg);
+                $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $oUsuario = $perfil->getUsuario();
+            
+            $oDenuncia = new stdClass();
+
+            $oDenuncia->sMensaje = $this->getRequest()->getPost('mensaje');
+            $oDenuncia->sRazon = $this->getRequest()->getPost('razon');
+            $oDenuncia->oUsuario = $oUsuario;
+
+            $oDenuncia = Factory::getDenunciaInstance($oDenuncia);
             
             $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
             $oInstitucion->addDenuncia($oDenuncia);           
-            $result = ComunidadController::getInstance()->guardarDenunciasInstitucion($oInstitucion);
+            $result = ComunidadController::getInstance()->guardarDenuncias($oInstitucion);
 
             $this->restartTemplate();
 

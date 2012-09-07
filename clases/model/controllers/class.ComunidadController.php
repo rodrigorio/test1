@@ -1314,13 +1314,40 @@ class ComunidadController
         }
     }
 
-    public function guardarDenunciasInstitucion($oInstitucion)
+    /**
+     * @param $oObj tiene que soportar la interfaz de metodos de denuncias y los metodos basicos (getId, etc)
+     */
+    public function guardarDenuncias($oObj)
     {
     	try{
             $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
-            return $oDenunciaIntermediary->guardarDenunciasEntidad($oInstitucion);
+            return $oDenunciaIntermediary->guardarDenunciasEntidad($oObj);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    public function usuarioEnvioDenunciaInstitucion($iInstitucionId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            $filtro = array('d.instituciones_id' => $iInstitucionId, 'usuarios_id' => $iUsuarioId);
+            return $oDenunciaIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function usuarioEnvioDenunciaFicha($iFichaId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            $filtro = array('d.fichas_abstractas_id' => $iFichaId, 'usuarios_id' => $iUsuarioId);
+            return $oDenunciaIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
     }
 }

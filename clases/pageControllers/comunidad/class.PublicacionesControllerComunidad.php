@@ -109,6 +109,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
                 $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"Publicación":"Review";
 
+                $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
+                $this->getTemplate()->set_var("sTipoPublicacionClass", get_class($oFicha));
                 $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
@@ -525,6 +527,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
                 $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"Publicación":"Review";
 
+                $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
+                $this->getTemplate()->set_var("sTipoPublicacionClass", get_class($oFicha));
                 $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                 $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                 $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
@@ -1206,6 +1210,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerMainCont", "PublicacionAmpliadaBlock");
 
             $sTipoPublicacion = "Publicacion";
+            $this->getTemplate()->set_var("iPublicacionId", $oPublicacion->getId());
+            $this->getTemplate()->set_var("sTipoPublicacionClass", get_class($oPublicacion));
             $this->getTemplate()->set_var("sTitulo", $oPublicacion->getTitulo());
             $this->getTemplate()->set_var("sFecha", $oPublicacion->getFecha());
             $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
@@ -1281,6 +1287,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $sTipoPublicacion = "Review";
 
+            $this->getTemplate()->set_var("iPublicacionId", $oReview->getId());
+            $this->getTemplate()->set_var("sTipoPublicacionClass", get_class($oReview));
             $this->getTemplate()->set_var("sTitulo", $oReview->getTitulo());
             $this->getTemplate()->set_var("sFecha", $oReview->getFecha());
             $this->getTemplate()->set_var("sTipoPublicacion", $sTipoPublicacion);
@@ -2483,6 +2491,111 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
     public function denunciar()
     {
-        echo "entro denunciar publicaciones";
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('enviarDenuncia')){
+            $this->procesarDenuncia();
+            return;
+        }
+
+        $iPublicacionId = $this->getRequest()->getParam('iPublicacionId');
+        $objType = $this->getRequest()->getParam('objType');
+
+        if(empty($iPublicacionId) || !$this->getRequest()->has('objType')){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/componentes/formularios.gui.html", "popUpContent", "FormularioDenunciarBlock");
+
+        //select razones denuncias
+        $aRazones = ComunidadController::getInstance()->obtenerRazonesDenuncia();
+        while($sRazon = current($aRazones)){
+            $this->getTemplate()->set_var("sRazonValue", key($aRazones));
+            $this->getTemplate()->set_var("sRazon", $sRazon);
+            $this->getTemplate()->parse("OptionRazonBlock", true);
+            next($aRazones);
+        }
+
+        $this->getTemplate()->set_var("iItemId", $iPublicacionId);
+        $this->getTemplate()->set_var("sTipoItem", $objType);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+    }
+
+    private function procesarDenuncia()
+    {        
+        $iPublicacionId = $this->getRequest()->getParam('iItemIdFormDenuncia');
+        $objType = $this->getRequest()->getParam('sTipoItemFormDenuncia');
+
+        if(empty($iPublicacionId) || empty($objType)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //no se puede denunciar 2 veces la misma institucion
+            if(ComunidadController::getInstance()->usuarioEnvioDenunciaFicha($iPublicacionId)){
+                $msg = "Su denuncia ya fue enviada. No puede denunciar dos veces la misma publicación.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+                $this->getTemplate()->set_var("sMensaje", $msg);
+                $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $oUsuario = $perfil->getUsuario();
+
+            $oDenuncia = new stdClass();
+
+            $oDenuncia->sMensaje = $this->getRequest()->getPost('mensaje');
+            $oDenuncia->sRazon = $this->getRequest()->getPost('razon');
+            $oDenuncia->oUsuario = $oUsuario;
+
+            $oDenuncia = Factory::getDenunciaInstance($oDenuncia);
+
+            switch($objType)
+            {
+                case "Publicacion":
+                    $oFicha = ComunidadController::getInstance()->getPublicacionById($iPublicacionId);
+                    break;
+                case "Review":
+                    $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
+                    break;
+            }
+            
+            $oFicha->addDenuncia($oDenuncia);
+            $result = ComunidadController::getInstance()->guardarDenuncias($oFicha);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "Su denuncia fue enviada con éxito.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se ha podido enviar su denuncia.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha podido enviar su denuncia.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }
