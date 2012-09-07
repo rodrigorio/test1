@@ -473,6 +473,75 @@ function bindEventsComentarForm(iPublicacionId, sTipoItemForm){
     $("#formComentar").ajaxForm(optionsAjaxFormComentar);
 }
 
+var validateFormDenunciarPublicacion = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        razon:{required:true},
+        mensaje:{required:true}
+    },
+    messages:{
+        razon: mensajeValidacion("requerido"),
+        mensaje: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormDenunciarPublicacion = {
+    dataType: 'jsonp',
+    resetForm: true,
+    url: 'comunidad/denunciar-publicacion',
+    beforeSerialize:function(){
+        if($("#formDenunciar").valid() == true){
+            setWaitingStatus('formDenunciar', true);
+        }else{
+            return false;
+        }
+    },
+    success:function(data){
+        setWaitingStatus('formDenunciar', false);
+
+        var dialog = $("#dialog");
+        if($("#dialog").length){
+            dialog.attr("title", "Denunciar Aplicación");
+        }else{
+            dialog = $('<div id="dialog" title="Denunciar Aplicación"></div>').appendTo('body');
+        }
+        dialog.html(data.html);
+
+        dialog.dialog({
+            position:['center', 'center'],
+            width:400,
+            resizable:false,
+            draggable:false,
+            modal:false,
+            closeOnEscape:true,
+            buttons:{
+                "Aceptar": function() {
+                    $(this).dialog( "close" );
+                }
+            }
+        });
+    }
+};
+
+function bindEventsFormDenunciarPublicacion()
+{
+    $("#formDenunciar").validate(validateFormDenunciarPublicacion);
+    $("#formDenunciar").ajaxForm(optionsAjaxFormDenunciarPublicacion);
+
+    $("textarea.maxlength").maxlength();
+}
+
 function bindEventsPublicacionForm(){
     $("#formPublicacion").validate(validateFormPublicacion);
     $("#formPublicacion").ajaxForm(optionsAjaxFormPublicacion);
@@ -918,9 +987,46 @@ function borrarArchivo(iArchivoId){
     }
 }
 
+function reportarPublicacion(iPublicacionId, sTipoItemForm){
+    $.ajax({
+        type:"post",
+        url:"comunidad/denunciar-publicacion",
+        data:{
+            iPublicacionId:iPublicacionId,
+            objType: sTipoItemForm
+        },
+        success:function(data){
+
+            var dialog = $("#dialog");
+            if(dialog.length){ dialog.remove(); }
+            dialog = $('<div id="dialog" title="Denunciar Publicación"></div>').appendTo('body');
+            dialog.html(data);
+
+            dialog.dialog({
+                position:['center', 'center'],
+                width:500,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true
+            });
+
+            bindEventsFormDenunciarPublicacion();
+        }
+    });
+}
+
 $(document).ready(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
+    
+    $(".reportarPublicacion").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];  
+        reportarPublicacion(iPublicacionId, tipo);
+        return false;
+    });
 
     //Publicaciones Comunidad
     $("#filtroFechaDesde").datepicker();
