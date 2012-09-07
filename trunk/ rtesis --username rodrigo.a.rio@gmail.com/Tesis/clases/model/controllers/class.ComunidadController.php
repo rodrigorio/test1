@@ -1303,5 +1303,24 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
-  
+
+    public function obtenerRazonesDenuncia()
+    {
+    	try{
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            return $oDenunciaIntermediary->obtenerRazonesDenuncia();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function guardarDenunciasInstitucion($oInstitucion)
+    {
+    	try{
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            return $oDenunciaIntermediary->guardarDenunciasEntidad($oInstitucion);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
+    }
 }

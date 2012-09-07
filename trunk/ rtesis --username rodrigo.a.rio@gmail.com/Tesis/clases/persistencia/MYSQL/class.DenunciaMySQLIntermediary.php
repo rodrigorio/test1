@@ -5,7 +5,7 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
     private static $instance = null;
 
     protected function __construct( $conn) {
-            parent::__construct($conn);
+        parent::__construct($conn);
     }
 
     /**
@@ -22,29 +22,44 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
     }
 
     /**
-     * polimorfico para todas las entidades del sistema que son moderadas
-     * con la clase Moderacion
+     * Tienen que corresponder con el enum de la tabla denuncias
+     *
+     * el valor de las celdas es una descripcion para utilizar en vistas.
      */
-    public function guardarModeracionEntidad($oObj)
+    public function obtenerRazonesDenuncia()
     {
-        if(null !== $oObj->getModeracion()){
-            $oModeracion = $oObj->getModeracion();
-            if(null !== $oModeracion->getId()){
-                return $this->actualizar($oModeracion);
-            }else{
-                $iId = $oObj->getId();
-                return $this->insertarAsociado($oModeracion, $iId, get_class($oObj));
+        return array('informacion_falsa' => 'Información falsa',
+                     'contenido_inapropiado' => 'Contenido inapropiado',
+                     'propiedad_intelectual' => 'Propiedad Intelectual',
+                     'spam' => 'Spam o basura');
+    }
+
+    /**
+     * polimorfico para todas las entidades del sistema que pueden ser denunciadas
+     *
+     */
+    public function guardarDenunciasEntidad($oObj)
+    {
+        if(null !== $oObj->getDenuncias()){
+            foreach($oObj->getDenuncias() as $oDenuncia){
+                if(null !== $oDenuncia->getId()){
+                    return $this->actualizar($oDenuncia);
+                }else{
+                    $iId = $oObj->getId();
+                    return $this->insertarAsociado($oDenuncia, $iId, get_class($oObj));
+                }
             }
         }
     }
 
-    public function insertarAsociado($oModeracion, $iIdItem, $sObjetoAsociado)
+    public function insertarAsociado($oDenuncia, $iIdItem, $sObjetoAsociado)
     {
         try{
             $db = $this->conn;
             $iIdItem = $this->escInt($iIdItem);
+            $iUsuarioId = $this->escInt($oDenuncia->getUsuario()->getId());
 
-            $sSQL = " INSERT INTO moderaciones SET ";
+            $sSQL = " INSERT INTO denuncias SET ";
 
             switch($sObjetoAsociado){
                 case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
@@ -53,15 +68,16 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
                 case "Institucion": $sSQL .= "instituciones_id = ".$iIdItem.", "; break;
             }
 
-            $sSQL .= " estado = ".$this->escStr($oModeracion->getEstado()).", ".
-                     " mensaje = ".$this->escStr($oModeracion->getMensaje())." ";
+            $sSQL .= " mensaje = ".$this->escStr($oDenuncia->getMensaje()).", ".
+                     " usuarios_id = ".$iUsuarioId.", ".
+                     " razon = ".$this->escStr($oDenuncia->getRazon())." ";
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
             $db->commit();
 
-            $oModeracion->setId($iLastId);
-            $oModeracion->setFecha(date("Y/m/d"));
+            $oDenuncia->setId($iLastId);
+            $oDenuncia->setFecha(date("Y/m/d"));
 
             return true;
 
@@ -70,15 +86,15 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
         }
     }
 
-    public function actualizar($oModeracion)
+    public function actualizar($oDenuncia)
     {
         try{
             $db = $this->conn;
             
-            $sSQL = "UPDATE moderaciones SET ".
-            " estado = ".$this->escStr($oModeracion->getEstado()).", " .
-            " mensaje = ".$this->escStr($oModeracion->getMensaje())." " .
-            " WHERE id = ".$this->escInt($oModeracion->getId())." ";
+            $sSQL = "UPDATE denuncias SET ".
+            " razon = ".$this->escStr($oDenuncia->getRazon()).", ".
+            " mensaje = ".$this->escStr($oDenuncia->getMensaje())." ".
+            " WHERE id = ".$this->escInt($oDenuncia->getId())." ";
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -90,25 +106,61 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
         }
     }
 
-    public function guardar($oModeracion)
+    public function guardar($oDenuncia)
     {
         try{
-            if($oModeracion->getId() != null){
-                return $this->actualizar($oModeracion);
+            if($oDenuncia->getId() != null){
+                return $this->actualizar($oDenuncia);
             }else{
-                return $this->insertar($oModeracion);
+                return $this->insertar($oDenuncia);
             }
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-    public function borrar($iModeracionId)
+    public function borrar($iDenunciaId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from moderaciones where id = '".$iModeracionId."'");
+            $db->execSQL("delete from denuncias where id = '".$iDenunciaId."'");
             $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * polimorfico para todas las entidades del sistema que pueden ser denunciadas
+     * con este metodo se limpian todas las denuncias de una entidad.
+     */
+    public function borrarDenunciasEntidad($oObj)
+    {
+        try{
+            if(null !== $oObj->getDenuncias()){
+
+                $sObjetoAsociado = get_class($oObj);
+                $iIdItem = $oObj->getId();
+
+                $db = $this->conn;
+
+                $sSQL = "delete from denuncias where ";
+
+                switch($sObjetoAsociado){
+                    case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                    case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                    case "Software": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
+                    case "Institucion": $sSQL .= "instituciones_id = ".$iIdItem.", "; break;
+                }
+                
+                $db->execSQL($sSQL);
+                $db->commit();
+
+                $oObj->setDenuncias(null);
+            }
+
+            return true;
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -119,24 +171,24 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        m.id as iId,
-                        m.fecha as dFecha,
-                        m.mensaje as sMensaje,
-                        m.estado as sEstado
+                        d.id as iId,
+                        d.usuarios_id as iUsuarioId,
+                        d.fecha as dFecha,
+                        d.mensaje as sMensaje,
+                        d.razon as sRazon
                     FROM
-                        moderaciones m ";
+                        denuncias d ";
 
             $WHERE = array();
 
-            if(isset($filtro['m.id']) && $filtro['m.id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('m.id', $filtro['m.id'], MYSQL_TYPE_INT);
+            if(isset($filtro['d.id']) && $filtro['d.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('d.id', $filtro['d.id'], MYSQL_TYPE_INT);
             }
-
-            if(isset($filtro['m.fichas_abstractas_id']) && $filtro['m.fichas_abstractas_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('m.fichas_abstractas_id', $filtro['m.fichas_abstractas_id'], MYSQL_TYPE_INT);
+            if(isset($filtro['d.fichas_abstractas_id']) && $filtro['d.fichas_abstractas_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('d.fichas_abstractas_id', $filtro['d.fichas_abstractas_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['m.instituciones_id']) && $filtro['m.instituciones_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('m.instituciones_id', $filtro['m.instituciones_id'], MYSQL_TYPE_INT);
+            if(isset($filtro['d.instituciones_id']) && $filtro['d.instituciones_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('d.instituciones_id', $filtro['d.instituciones_id'], MYSQL_TYPE_INT);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -157,18 +209,19 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
 
             if(empty($iRecordsTotal)){ return null; }
 
-            $aModeraciones = array();
+            $aDenuncias = array();
             while($oObj = $db->oNextRecord()){
-                $oModeracion                   = new stdClass();
-                $oModeracion->iId              = $oObj->iId;
-                $oModeracion->dFecha           = $oObj->dFecha;
-                $oModeracion->sMensaje         = $oObj->sMensaje;
-                $oModeracion->sEstado          = $oObj->sEstado;
+                $oDenuncia = new stdClass();
+                $oDenuncia->iId = $oObj->iId;
+                $oDenuncia->dFecha = $oObj->dFecha;
+                $oDenuncia->sMensaje = $oObj->sMensaje;
+                $oDenuncia->sRazon = $oObj->sEstado;
+                $oDenuncia->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
 
-                $aModeraciones[] = Factory::getModeracionInstance($oModeracion);
+                $aDenuncias[] = Factory::getDenunciaInstance($oDenuncia);
             }
 
-            return $aModeraciones;
+            return $aDenuncias;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

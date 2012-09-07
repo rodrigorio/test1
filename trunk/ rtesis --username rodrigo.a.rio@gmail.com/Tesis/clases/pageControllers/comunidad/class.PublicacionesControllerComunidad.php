@@ -2480,4 +2480,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
+
+    public function denunciar()
+    {
+        echo "entro denunciar publicaciones";
+    }
 }
