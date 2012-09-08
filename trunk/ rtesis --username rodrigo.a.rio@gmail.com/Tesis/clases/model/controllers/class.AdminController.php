@@ -526,6 +526,30 @@ class AdminController
             throw new Exception($e);
         }
     }
+
+    public function  obtenerDenunciasInstitucion($iInstitucionId)
+    {
+        try{
+            $filtro["d.instituciones_id"] = $iInstitucionId;
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            return $oDenunciaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function buscarInstitucionesDenuncias($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            //genero el filtro con al menos 1 denuncia.
+            $filtro["minDenuncias"] = "1";
+
+            $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
+            return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
     
     public function buscarInstitucionesSolicitud($filtro = array(), &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {

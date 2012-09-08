@@ -78,6 +78,11 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("sHrefInstitucionesSolicitudes", $request->getBaseTagUrl()."admin/instituciones-solicitudes");
         $template->set_var("sHrefSoftwareModeracion", $request->getBaseTagUrl()."admin/software-moderacion");
 
+        //denuncias
+        $template->set_var("sHrefPublicacionesDenuncias", $request->getBaseTagUrl()."admin/publicaciones-denuncias");
+        $template->set_var("sHrefInstitucionesDenuncias", $request->getBaseTagUrl()."admin/instituciones-denuncias");
+        $template->set_var("sHrefSoftwareDenuncias", $request->getBaseTagUrl()."admin/software-denuncias");
+        
         //especialidades
         $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."admin/administrar-especialidad");
         $template->set_var("sHrefEspecialidadCargar", $request->getBaseTagUrl()."admin/nueva-especialidad");
