@@ -358,6 +358,20 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                 $WHERE[] = " (i.latitud <> '' AND i.longitud <> '') ";
             }
 
+            //con un minimo de denuncias. en el valor tengo la cantidad.
+            if(isset($filtro['minDenuncias']) && $filtro['minDenuncias'] != ""){
+                $WHERE[] = " i.id IN (SELECT d.instituciones_id FROM denuncias d WHERE d.instituciones_id IS NOT NULL
+                                      GROUP BY d.instituciones_id
+                                      HAVING COUNT(*) >= ".$filtro['minDenuncias'].") ";
+            }
+
+            //con un maximo de N de denuncias. en el valor tengo la cantidad.
+            if(isset($filtro['maxDenuncias']) && $filtro['maxDenuncias'] != ""){
+                $WHERE[] = " i.id NOT IN (SELECT d.instituciones_id FROM denuncias d WHERE d.instituciones_id IS NOT NULL
+                                      GROUP BY d.instituciones_id
+                                      HAVING COUNT(*) >= ".$filtro['maxDenuncias'].") ";
+            }
+
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if(isset($sOrderBy) && isset($sOrder)){

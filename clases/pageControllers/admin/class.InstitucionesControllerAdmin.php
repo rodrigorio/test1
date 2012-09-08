@@ -974,4 +974,97 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             print_r($e);
         }
     }
+
+    public function listarDenuncias()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionDenuncias");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "widgetsContent", "HeaderDenunciasBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "mainContent", "ListadoDenunciasBlock");
+
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+
+            $iRecordsTotal = 0;
+            $aInstituciones = AdminController::getInstance()->buscarInstitucionesDenuncias($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+
+            if(count($aInstituciones) > 0){
+
+                foreach($aInstituciones as $oInstitucion){
+
+                    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+
+                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
+                    $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
+                    $this->getTemplate()->set_var("sUbicacion", $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre());
+                    $this->getTemplate()->set_var("sEmail", $oInstitucion->getEmail());
+
+                    $aDenuncias = $oInstitucion->getDenuncias();
+                    
+                    foreach($aDenuncias as $oDenuncia){
+                        $oUsuario = $oDenuncia->getUsuario();
+                        $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                        $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+
+                        $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+                        $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                        $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                        $this->getTemplate()->set_var("sFechaDenuncia", $oDenuncia->getFecha(true));
+                        $this->getTemplate()->set_var("sRazonDenuncia", $oDenuncia->getRazon());
+
+                        $sMensaje = $oDenuncia->getMensaje(true);
+                        if(empty($sMensaje)){ $sMensaje = " - "; }
+                        $this->getTemplate()->set_var("sMensaje", $sMensaje);
+                        $this->getTemplate()->set_var("iDenunciaId", $oDenuncia->getId());
+
+                        $this->getTemplate()->parse("DenunciaHistorialInstitucionBlock", true);
+                    }
+
+                    $this->getTemplate()->parse("InstitucionDenunciaBlock", true);
+                    $this->getTemplate()->set_var("DenunciaHistorialInstitucionBlock", "");
+                }
+
+                $this->getTemplate()->set_var("NoRecordsDenunciasBlock", "");
+
+            }else{
+                $this->getTemplate()->set_var("InstitucionModerarBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "noRecords", "NoRecordsDenunciasBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay instituciones con denuncias");
+                $this->getTemplate()->parse("noRecords", false);
+            }
+
+            $params[] = "masDenuncias=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/instituciones-denuncias-procesar", "listadoDenunciasResult", $params);
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    public function procesarDenuncias()
+    {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('masDenuncias')){
+            $this->masDenuncias();
+            return;
+        }        
+    }
+
+    private function masDenuncias()
+    {
+        
+    }
 }

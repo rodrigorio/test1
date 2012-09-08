@@ -188,6 +188,20 @@ class RutasModuloAdmin
                                         'action'     => 'listarModeraciones'
                                 ));
         $router->addRoute('adminInstitucionesModerar', $route);
+        $route = new RegexRoute('admin/instituciones-denuncias',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'instituciones',
+                                        'action'     => 'listarDenuncias'
+                                ));
+        $router->addRoute('adminInstitucionesDenuncias', $route);
+        $route = new RegexRoute('admin/instituciones-denuncias-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'instituciones',
+                                        'action'     => 'procesarDenuncias'
+                                ));
+        $router->addRoute('adminInstitucionesProcesarDenuncias', $route);
         $route = new RegexRoute('admin/instituciones-solicitudes',
                                 array(
                                         'module' => 'admin',
@@ -313,6 +327,20 @@ class RutasModuloAdmin
                                     'action'     => 'listarModeraciones'
                                 ));
         $router->addRoute('adminPublicacionesModerar', $route);
+        $route = new RegexRoute('admin/publicaciones-denuncias',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'publicaciones',
+                                        'action'     => 'listarDenuncias'
+                                ));
+        $router->addRoute('adminPublicacionesDenuncias', $route);
+        $route = new RegexRoute('admin/publicaciones-denuncias-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'publicaciones',
+                                        'action'     => 'procesarDenuncias'
+                                ));
+        $router->addRoute('adminPublicacionesProcesarDenuncias', $route);
 
 
         //software
@@ -344,6 +372,20 @@ class RutasModuloAdmin
                                     'action'     => 'listarModeraciones'
                                 ));
         $router->addRoute('adminSoftwareModerar', $route);
+        $route = new RegexRoute('admin/software-denuncias',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'software',
+                                        'action'     => 'listarDenuncias'
+                                ));
+        $router->addRoute('adminSoftwareDenuncias', $route);
+        $route = new RegexRoute('admin/software-denuncias-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'software',
+                                        'action'     => 'procesarDenuncias'
+                                ));
+        $router->addRoute('adminSoftwareProcesarDenuncias', $route);
 
         //parametros sistema
         $route = new RegexRoute('admin/parametros',
