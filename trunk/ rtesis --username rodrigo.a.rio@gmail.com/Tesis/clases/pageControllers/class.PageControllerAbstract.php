@@ -50,8 +50,12 @@ class PageControllerAbstract implements PageControllerInterface
      * Instancia de EmbedVideoHelper
      */
     private $embedVideo = null;
+    /**
+     * Instancia de MailerHelper
+     */
+    private $mailer = null;
 
-    
+ 
     public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array())
     {
         $this->request = $request;
@@ -157,6 +161,15 @@ class PageControllerAbstract implements PageControllerInterface
             $this->embedVideo = new EmbedVideoHelper();
         }
         return $this->embedVideo;
+    }
+
+    protected final function getMailerHelper()
+    {
+        if(null === $this->mailer)
+        {
+            $this->mailer = new MailerHelper();
+        }
+        return $this->mailer;
     }
 
     protected final function getRequest()
