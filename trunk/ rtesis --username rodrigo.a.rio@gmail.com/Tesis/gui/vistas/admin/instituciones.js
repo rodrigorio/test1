@@ -230,7 +230,7 @@ function ampliarInstitucion(iInstitucionId){
 
 function borrarInstitucion(iInstitucionId){
 
-    if(confirm("Se borrara la persona del sistema, desea continuar?")){
+    if(confirm("Se borrara la institucion del sistema, desea continuar?")){
         $.ajax({
             type:"post",
             dataType: 'jsonp',
@@ -374,11 +374,135 @@ function aprobarSolicitud(iInstitucionId, iUsuarioId){
     });
 }
 
+//para las fichas de usuario ampliadas
+function borrarFotoPerfil(iUsuarioId){
+    if(confirm("Se borrara la foto de perfil del usuario, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",
+            url:"admin/usuarios-procesar",
+            data:{
+                iUsuarioId:iUsuarioId,
+                borrarFotoPerfil:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("#fotoPerfilActualCont").remove();
+                    $("#fotoPerfilActual_"+iUsuarioId).remove();
+                }
+            }
+        });
+    }
+}
+
+function limpiarDenunciasInstitucion(iInstitucionId){
+
+    if(confirm("Se limpiaran todas las denuncias realizadas por los integrantes de la comunidad, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"admin/instituciones-denuncias-procesar",
+            data:{
+                iInstitucionId:iInstitucionId,
+                limpiarDenuncias:"1"
+            },
+            beforeSend: function(){
+                setWaitingStatus('desplegable_'+iInstitucionId, true);
+            },
+            success:function(data){
+                setWaitingStatus('desplegable_'+iInstitucionId, false);
+                if(data.success != undefined && data.success == 1){
+                    $("."+iInstitucionId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Limpiar Denuncias");
+                }else{
+                    dialog = $('<div id="dialog" title="Limpiar Denuncias"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarInstitucionPorDenuncias(iInstitucionId){
+
+    if(confirm("Se borrara la institucion del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"admin/instituciones-denuncias-procesar",
+            data:{
+                iInstitucionId:iInstitucionId,
+                eliminar:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iInstitucionId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Institucion");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Institucion"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
     
     $(".borrarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
         borrarInstitucion(iInstitucionId);
+    });
+
+    /**
+     * Se borra asi porque en realidad dispara un evento que envia mail avisando al
+     * administrador de la institucion que se elimino la institucion.
+     * No es igual que el borrar institucion normal.
+     */
+    $(".borrarInstitucionPorDenuncias").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        borrarInstitucionPorDenuncias(iInstitucionId);
+    });
+
+    $(".limpiarDenunciasInstitucion").live('click', function(){
+        var iInstitucionId = $(this).attr("rel");
+        limpiarDenunciasInstitucion(iInstitucionId);
     });
 
     $(".editarInstitucion").live('click', function(){
@@ -438,6 +562,12 @@ $(document).ready(function(){
             }
         );
         return false;
+    });
+
+    $("#fotoPerfilBorrar").live('click', function(){
+        var iUsuarioId = $(this).attr("rel");
+        borrarFotoPerfil(iUsuarioId);
+        return false; //porq es un <a>
     });
 
     //estos formularios los valido a mano sin plugin porque se repiten por cada fila y hay problemas

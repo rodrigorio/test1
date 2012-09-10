@@ -147,10 +147,10 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
                 $sSQL = "delete from denuncias where ";
 
                 switch($sObjetoAsociado){
-                    case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
-                    case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
-                    case "Software": $sSQL .= "fichas_abstractas_id = ".$iIdItem.", "; break;
-                    case "Institucion": $sSQL .= "instituciones_id = ".$iIdItem.", "; break;
+                    case "Publicacion": $sSQL .= "fichas_abstractas_id = ".$iIdItem." "; break;
+                    case "Review": $sSQL .= "fichas_abstractas_id = ".$iIdItem." "; break;
+                    case "Software": $sSQL .= "fichas_abstractas_id = ".$iIdItem." "; break;
+                    case "Institucion": $sSQL .= "instituciones_id = ".$iIdItem." "; break;
                 }
                 
                 $db->execSQL($sSQL);
@@ -202,7 +202,7 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -215,7 +215,7 @@ class DenunciaMySQLIntermediary extends DenunciaIntermediary
                 $oDenuncia->iId = $oObj->iId;
                 $oDenuncia->dFecha = $oObj->dFecha;
                 $oDenuncia->sMensaje = $oObj->sMensaje;
-                $oDenuncia->sRazon = $oObj->sEstado;
+                $oDenuncia->sRazon = $oObj->sRazon;
                 $oDenuncia->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
 
                 $aDenuncias[] = Factory::getDenunciaInstance($oDenuncia);
