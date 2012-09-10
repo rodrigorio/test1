@@ -532,7 +532,8 @@ class AdminController
         try{
             $filtro["d.instituciones_id"] = $iInstitucionId;
             $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
-            return $oDenunciaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+            $iRecordsTotal = 0;
+            return $oDenunciaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
             throw new Exception($e);
         }
@@ -550,7 +551,26 @@ class AdminController
             throw new Exception($e);
         }
     }
-    
+
+    /**
+     *
+     * Este metodo es polimorfico, limpia las denuncias de cualquier entidad que puede ser denunciada
+     * dentro del sistema.
+     * 
+     * @param stdClass $oObj Un objeto que soporte la interfaz de entidad denunciada
+     *
+     */
+    public function limpiarDenuncias($oObj)
+    {
+        try{
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            return $oDenunciaIntermediary->borrarDenunciasEntidad($oObj);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+        
+    }
+      
     public function buscarInstitucionesSolicitud($filtro = array(), &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
