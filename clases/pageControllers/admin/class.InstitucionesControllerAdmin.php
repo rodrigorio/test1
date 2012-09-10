@@ -1093,6 +1093,8 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
                 //envio mail al usuario administrador
                 $sMailDestino = $oInstitucion->getUsuario()->getEmail();
 
+                $this->getTemplate()->load_file("gui/templates/index/frameMail01-01.gui.html", "frame");
+
                 //levanto template de mail
                 //seteo en el template el contenido del mail desde instituciones.gui de admin
                 //seteo las variables que hagan falta
