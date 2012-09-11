@@ -104,6 +104,14 @@ class RutasModuloIndex
                                 ));
         $router->addRoute('ciudadesByProvincia', $route);
 
+        $route = new RegexRoute('desactivar-notificaciones-mail',
+                                array(
+                                    'module' => "index",
+                                    'controller' => "index",
+                                    'action' => "desactivarNotificacionesMail"
+                                ));
+        $router->addRoute('desactivarNotificacionesMail', $route);
+
         //INSTITUCIONES
         $route = new RegexRoute('instituciones',
                                 array(

@@ -43,6 +43,8 @@ class Usuario extends PersonaAbstract
     private $sContraseniaNueva;
 
     private $bActivo;
+
+    private $sUrlTokenKey;
     
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -189,5 +191,15 @@ class Usuario extends PersonaAbstract
     public function setCurriculumVitae($oCurriculumVitae){
         $this->oCurriculumVitae = $oCurriculumVitae;
         return $this;
+    }
+
+    public function setUrlTokenKey($sUrlTokenKey)
+    {
+        $this->sUrlTokenKey = $sUrlTokenKey;
+    }
+
+    public function getUrlTokenKey()
+    {
+        return $this->sUrlTokenKey;
     }
 }
