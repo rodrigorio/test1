@@ -791,6 +791,7 @@ class AdminController
             throw new Exception($e);
         }
     }
+
     /**
      *  Devuelve un objeto de la clase ParametroControlador a partir del
      *  nombre del parametro y el nombre del controlador
@@ -813,6 +814,7 @@ class AdminController
             throw new Exception($e);
         }
     }
+
     /**
      *  Devuelve un objeto de la clase ParametroUsuario
      */
@@ -831,7 +833,31 @@ class AdminController
         }catch(Exception $e){
             throw new Exception($e);
         }
-    }    
+    }
+
+    /**
+     *  Devuelve un objeto de la clase ParametroUsuario a partir del
+     *  nombre del parametro y el id del usuario
+     *
+     *  ejemplo: getParametroUsuarioByNombre('NOMBRE_PARAMETRO', 63);
+     */
+    public function getParametroUsuarioByNombre($sNamespace, $iUsuarioId)
+    {
+        try{
+            $filtro = array('sNamespace' => $sNamespace, 'iUsuarioId' => $iUsuarioId);
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aParametros = $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aParametros){
+                return $aParametros[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
     public function existeParametro($oParametro)
     {
         try{

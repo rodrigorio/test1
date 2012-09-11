@@ -121,6 +121,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+                        u.urlTokenKey as sUrlTokenKey,
 
                         e.id as iEspecialidadId,
                         e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion,
@@ -162,6 +163,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre']!=""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
+            }
+            if(isset($filtro['u.urlTokenKey']) && $filtro['u.urlTokenKey']!=""){
+                $WHERE[] = $this->crearFiltroTexto('u.urlTokenKey', $filtro['u.urlTokenKey']);
             }
            
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -210,6 +214,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia     = $oObj->sContrasenia;
                 $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->sUrlTokenKey     = $oObj->sUrlTokenKey;
                 $oUsuario->sCargoInstitucion    = $oObj->sCargoInstitucion;
                 $oUsuario->sBiografia           = $oObj->sBiografia;
                 $oUsuario->sUniveridadCarrera   = $oObj->sUniveridadCarrera;
@@ -288,6 +293,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+                        u.urlTokenKey as sUrlTokenKey,
 
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
@@ -334,6 +340,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }
             if(isset($filtro['p.instituciones_id']) && $filtro['p.instituciones_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.instituciones_id', $filtro['p.instituciones_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['u.urlTokenKey']) && $filtro['u.urlTokenKey']!=""){
+                $WHERE[] = $this->crearFiltroTexto('u.urlTokenKey', $filtro['u.urlTokenKey']);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -385,6 +394,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia     = $oObj->sContrasenia;
                 $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->sUrlTokenKey     = $oObj->sUrlTokenKey;
                 $oUsuario->sCargoInstitucion    = $oObj->sCargoInstitucion;
                 $oUsuario->sBiografia           = $oObj->sBiografia;
                 $oUsuario->sUniveridadCarrera   = $oObj->sUniveridadCarrera;
@@ -454,6 +464,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
                         u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+                        u.urlTokenKey as sUrlTokenKey,
 
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
@@ -511,6 +522,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
                 $oUsuario->sContrasenia     = $oObj->sContrasenia;
                 $oUsuario->dFechaAlta       = $oObj->dFechaAlta;
+                $oUsuario->sUrlTokenKey     = $oObj->sUrlTokenKey;
                 $oUsuario->sCargoInstitucion    = $oObj->sCargoInstitucion;
                 $oUsuario->sBiografia           = $oObj->sBiografia;
                 $oUsuario->sUniveridadCarrera   = $oObj->sUniveridadCarrera;
@@ -585,124 +597,74 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     
     public function actualizarCampoArray($objects, $cambios){}
 
-    public function registrar(Usuario $oUsuario,$iUserId){
-    try{
-                    $db = $this->conn;
-                    $db->begin_transaction();
-            $filtro["u.nombre"] 		= $oUsuario->getNombreUsuario();
-                    if($this->existe($filtro)){
-                            return 10;
-                    }
-                    $filtro["p.numeroDocumento"]= $oUsuario->getNumeroDocumento();
-                    if($this->existe($filtro)){
-                            return 11;
-                    }
-                    $filtro["p.email"]= $oUsuario->getEmail();
-                    if($this->existe($filtro)){
-                            return 12;
-                    }
-                    $sSQL =	" update personas " .
-                " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-                " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-                " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
-                " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
-                " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE);
-                if($oUsuario->getEmail()){
-                    $sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
-                }
-                $sSQL .=" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
-                $db->execSQL($sSQL);
+    public function registrar(Usuario $oUsuario, $iUserId)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+            
+            $filtro["u.nombre"] = $oUsuario->getNombreUsuario();
 
-                $sSQL =" insert usuarios ".
-                " set id=  ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ".
-                " perfiles_id=".self::PERFIL_INTEGRANTE_INACTIVO.", ".
-                " nombre=".$db->escape($oUsuario->getNombreUsuario(),true).", ".
-                " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
-
-                 $db->execSQL($sSQL);
-                 $sSQL =" update usuario_x_invitado ".
-                        " SET estado = 'aceptada' ".
-                        " WHERE usuarios_id= ".$db->escape($iUserId,false,MYSQL_TYPE_INT)." ".
-                        " AND invitados_id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
-                     $db->execSQL($sSQL);
-                     $db->commit();
-            }catch(Exception $e){
-                    $db->rollback_transaction();
-                    throw new Exception($e->getMessage(), 0);
+            if($this->existe($filtro)){
+                return 10;
             }
-    }
-    
-	private function enviarEmail($orig, $dest, $asunto, $body){
-    	try{
-    		$mail = new PHPMailer();
-    		//Con PluginDir le indicamos a la clase phpmailer donde se 
-		  	//encuentra la clase smtp que como he comentado al principio de 
-		  	//este ejemplo va a estar en el subdirectorio includes
-			$mail->PluginDir = "../../system/";
 
-		  	//Con la propiedad Mailer le indicamos que vamos a usar un 
-		  	//servidor smtp
-		  	$mail->Mailer = "smtp";
-		  	
-		  	//Asignamos a Host el nombre de nuestro servidor smtp
-		  	$mail->Host = "smtp.hotpop.com";
+            $filtro["p.numeroDocumento"]= $oUsuario->getNumeroDocumento();
+            if($this->existe($filtro)){
+                return 11;
+            }
 
-		  	//Le indicamos que el servidor smtp requiere autenticaci�n
-		  	$mail->SMTPAuth = true;
-		
-		  	//Le decimos cual es nuestro nombre de usuario y password
-		  	$mail->Username = "rrio@HotPOP.com"; 
-		  	$mail->Password = "mipassword";
-		
-		  	//Indicamos cual es nuestra direcci�n de correo y el nombre que 
-		  	//queremos que vea el usuario que lee nuestro correo
-		 	$mail->From = $orig;
-		 	$mail->FromName = "Eduardo Garcia";
-		
-			//el valor por defecto 10 de Timeout es un poco escaso dado que voy a usar 
-			//una cuenta gratuita, por tanto lo pongo a 30  
-			$mail->Timeout=30;
-		
-	  		//Indicamos cual es la direcci�n de destino del correo
-			$mail->AddAddress($dest);
-			
-			//Asignamos asunto y cuerpo del mensaje
-			//El cuerpo del mensaje lo ponemos en formato html, haciendo 
-			//que se vea en negrita
-			$mail->Subject = $asunto;
-			$mail->Body = "<b>Mensaje de prueba </b><br/><p>$body</p>";
-		
-			//Definimos AltBody por si el destinatario del correo no admite email con formato html 
-			$mail->AltBody = "Mensaje de prueba mandado con phpmailer en formato solo texto";
-			
-			$mail->IsHTML(true);
-			//se envia el mensaje, si no ha habido problemas 
-			//la variable $exito tendra el valor true
-			$exito = $mail->Send();
-			
-			//Si el mensaje no ha podido ser enviado se realizaran 4 intentos mas como mucho 
-			//para intentar enviar el mensaje, cada intento se hara 5 segundos despues 
-			//del anterior, para ello se usa la funcion sleep	
-	  		$intentos=1; 
-			while ((!$exito) && ($intentos < 5)) {
-				sleep(5);
-		     	//echo $mail->ErrorInfo;
-		     	$exito = $mail->Send();
-		     	$intentos=$intentos+1;	
-	   		}
-		   if(!$exito) {
-				echo "Problemas enviando correo electr�nico a ".$valor;
-				echo "<br/>".$mail->ErrorInfo;	
-		   }else{
-				echo "Mensaje enviado correctamente";
-		   }
-    	}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
+            $filtro["p.email"]= $oUsuario->getEmail();
+            if($this->existe($filtro)){
+                return 12;
+            }
+
+            $sSQL = " update personas " .
+                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
+                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+                    " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
+                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
+                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
+                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE);
+
+            if($oUsuario->getEmail()){
+                $sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
+            }
+
+            $sSQL .=" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
+
+            $db->execSQL($sSQL);
+
+            $sUrlTokenKey = md5($time.$oUsuario->getNombre().$oUsuario->getApellido());
+            
+            $sSQL =" insert usuarios ".
+                   " set id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ".
+                   " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
+                   " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).", ".
+                   " urlTokenKey = '".$sUrlTokenKey."', ".
+                   " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
+
+            $db->execSQL($sSQL);
+
+            $sSQL =" update usuario_x_invitado ".
+                   " SET estado = 'aceptada' ".
+                   " WHERE usuarios_id= ".$db->escape($iUserId,false,MYSQL_TYPE_INT)." ".
+                   " AND invitados_id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
+
+            $db->execSQL($sSQL);
+
+            $db->execSQL("insert into privacidad set usuarios_id = ".$oUsuario->getId());
+
+            $db->commit();
+
+            $oUsuario->setUrlTokenKey($sUrlTokenKey);
+            
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
     }
-    
+        
     public function sendMail($orig, $dest, $asunto, $body){
     	  // Varios destinatarios
             $para  = $dest;
@@ -870,6 +832,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                    " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
                    " carreraFinalizada = ".$carreraFinalizada.", ".
                    " activo = ".$activo.", ".
+                   " urlTokenKey = ".$this->escStr($oUsuario->getUrlTokenKey()).", ".
                    " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ".
                    " WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
 
@@ -937,6 +900,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
 
+            $sUrlTokenKey = md5($time.$oUsuario->getNombre().$oUsuario->getApellido());
+            
             $db->begin_transaction();
             
             $sSQL = " insert into personas ".
@@ -976,6 +941,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " biografia = ".$this->escStr($oUsuario->getBiografia()).", ".
                     " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
                     " carreraFinalizada = ".$carreraFinalizada.", ".
+                    " urlTokenKey = '".$sUrlTokenKey."', ".
                     " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).",".
                     " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
 
@@ -986,6 +952,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->commit();
 
             $oUsuario->setId($iLastId);
+            $oUsuario->setUrlTokenKey($sUrlTokenKey);
                         
             return true;
 

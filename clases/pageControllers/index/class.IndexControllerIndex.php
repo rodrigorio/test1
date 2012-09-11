@@ -323,4 +323,16 @@ class IndexControllerIndex extends PageControllerAbstract
             throw new Exception($e->getMessage());
         }
     }
+
+    /**
+     * Este metodo desactiva las notificaciones por mail para un usuario de la comunidad.
+     *
+     * Esta accion se puede ejecutar sin que el usuario haya iniciado sesion.
+     *
+     * Se tiene que hacer aparte por cuestiones de seguridad.
+     */
+    public function desactivarNotificacionesMail()
+    {
+        echo "entro entro entro"; exit();
+    }
 }
