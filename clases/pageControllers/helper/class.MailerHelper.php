@@ -26,7 +26,7 @@ class MailerHelper
 
         $destination_name = utf8_encode(html_entity_decode($destination_name));
         $destination_name = "=?UTF-8?B?".base64_encode($destination_name)."?=\n";
-
+        
         $message_body = utf8_encode($message_body);
 
         $headers  = "From: $from_name <$from_address> \n";
