@@ -109,6 +109,61 @@
 </section>
 <!--EndListadoParametrosBlock-->
 
+<!--BeginListadoParametrosUsuarioBlock-->
+<div class="subHeader01 mabo3">
+    <ul class="m_horiz ov_au mabo0 male0">
+        <li>
+            <a class="button-link blue asociarParametroUsuarios" href="javascript:;" rel="tooltip" original-title="Asociar par&aacute;metro a los usuarios del sistema">Asociar par&aacute;metro usuarios</a>
+        </li>
+        <li>
+            <a class="button-link blue eliminarParametroUsuarios" href="javascript:;" rel="tooltip" original-title="Eliminar asociaci&oacute;n entre un par&aacute;metro y los usuarios">Eliminar par&aacute;metro usuarios</a>
+        </li>
+    </ul>
+</div>
+<section id="listadoParametros">
+    <div class="ajax_wait30 di_no"></div>
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Descripcion</th>
+                <th>Grupo</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginParametroBlock-->
+            <tr class="{iParametroId} {iGrupoId}">
+                <td class="teal_le pale">
+                    <strong>{sKey}</strong>
+                </td>
+                <td class="pa2">{sDescripcion}</td>
+                <td class="pa2"><strong>{sGrupo}</strong></td>
+                <td>{sTipo}</td>
+                <td class="pa2">
+                    {sValor}
+                    <!--BeginEditAsociacionBlock-->
+                    <div class="cl_bo pato"></div>                    
+                    <span title="Modificar Valor Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri mari i bs edit ihover modificarValorParametro"></span>
+                    <!--EndEditAsociacionBlock-->
+                </td>
+            </tr>
+        <!--EndParametroBlock-->
+        <!--BeginNoRecordsParametrosBlock-->
+            <tr>
+                <td></td>
+                <td>{sNoRecords}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        <!--EndNoRecordsParametrosBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoParametrosUsuarioBlock-->
+
 <!--BeginFormularioParametroBlock-->
 <article class="full-block clearfix">    
     <header>

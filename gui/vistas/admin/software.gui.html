@@ -236,6 +236,96 @@
 </section>
 <!--EndListadoModeracionBlock-->
 
+<!--BeginListadoDenunciasBlock-->
+<section id="listadoDenuncias">
+    <div class="ajax_wait30 di_no"></div>
+        <div id="listadoDenunciasResult">
+
+            <!--BeginGrillaDenunciasBlock-->
+            <div class="mabo">
+                Cantidad de aplicaciones denunciadas: <strong>{iRecordsTotal}</strong>
+            </div>
+            <table class="mabo2">
+                <thead>
+                    <tr>
+                        <th class="iveal small">Nombre autor</th>
+                        <th class="iveal big">T&iacute;tulo software</th>
+                        <th class="iveal">Categor&iacute;a</th>
+                        <th class="iveal">Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!--BeginSoftwareDenunciaBlock-->
+                    <tr class="{iSoftwareId}">
+                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
+                            <span rel="tooltip" class="iCantidad fl_le" original-title="La instituci&oacute;n tiene {iCantDenuncias} denuncias">{iCantDenuncias}</span> {sNombre}
+                        </td>
+                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
+                            {sTipo}
+                        </td>
+                        <td class="desplegable" rel="{iInstitucionId}">
+                            {sUbicacion}
+                        </td>
+                        <td class="desplegable" rel="{iInstitucionId}">
+                            <a href="mailto:{sEmail}">{sEmail}</a>
+                        </td>
+                        <td class="teal_ce">
+                            <span title="Ampliar" rel="{iInstitucionId}" class="i mi expand ihover ampliarInstitucion mari"></span>
+                            <span title="Editar" rel="{iInstitucionId}" class="i bs edit ihover editarInstitucion mari"></span>
+                        </td>
+                    </tr>
+                    <tr class="{iInstitucionId}">
+                        <td id="desplegable_{iInstitucionId}" class="pa0" colspan="5" style="display:none;">
+                            <article class="nested clearrm mabo0 po_re">
+                                <div class="ajax_wait30 di_no"></div>
+                                <header>
+                                    <h2>Denuncias instituci&oacute;n Id: {iInstitucionId}</h2>
+                                </header>
+                                <section>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th class="iveal">Usuario</th>
+                                                <th class="iveal">Fecha</th>
+                                                <th class="iveal">Raz&oacute;n</th>
+                                                <th class="iveal">Mensaje</th>
+                                            </tr>
+                                        </thead>
+                                        <!--BeginDenunciaHistorialInstitucionBlock-->
+                                        <tr>
+                                            <td>
+                                                <img src="{scrAvatarAutor}" class="pari" />
+                                                <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>
+                                            </td>
+                                            <td class="small">{sFechaDenuncia}</td>
+                                            <td class="small"><strong>{sRazonDenuncia}</strong></td>
+                                            <td class="teal_le">{sMensaje}</td>
+                                        </tr>
+                                        <!--EndDenunciaHistorialInstitucionBlock-->
+                                    </table>
+                                </section>
+                                <section class="teal_le">
+                                    <button class="blue limpiarDenunciasInstitucion" rel="{iInstitucionId}">Limpiar Denuncias</button>
+                                    <button rel="{iInstitucionId}" class="red borrarInstitucionPorDenuncias">Eliminar Instituci&oacute;n</button>
+                                </section>
+                            </article>
+                        </td>
+                    </tr>
+                <!--EndInstitucionDenunciaBlock-->
+                <!--BeginNoRecordsDenunciasBlock-->
+                    <tr>
+                        <td colspan="5">{sNoRecords}</td>
+                    </tr>
+                <!--EndNoRecordsDenunciasBlock-->
+                </tbody>
+            </table>
+            {paginacion}
+            <!--EndGrillaDenunciasBlock-->
+        </div>
+</section>
+<!--EndListadoDenunciasBlock-->
+
 <!--BeginFormularioSoftwareBlock-->
 <h1 class="teta_up mabo2">Modificar Software</h1>
 <form id="formSoftware" name="formSoftware" action="" method="post">

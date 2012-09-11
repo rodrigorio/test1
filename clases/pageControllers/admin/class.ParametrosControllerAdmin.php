@@ -102,6 +102,73 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         }
     }
 
+    public function listarParametrosUsuario()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionAvanzadas");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "widgetsContent", "HeaderUsuariosBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "mainContent", "ListadoParametrosUsuarioBlock");
+
+            $iRecordsTotal = 0;
+            $aParametros = AdminController::getInstance()->obtenerParametrosDinamicosUsuario($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+
+            if(count($aParametros) > 0){
+
+                foreach($aParametros as $oParametro){
+
+                    $this->getTemplate()->set_var("iParametroId", $oParametro->getId());
+                    $this->getTemplate()->set_var("sKey", $oParametro->getNamespace());
+                    $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                    $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
+
+                    $tipoAsociacion = "-";
+                    $sValor = "-";
+                    $sGrupo = "-";
+                    $iGrupoId = "";
+                    if(get_class($oParametro) !== 'Parametro'){
+                        $this->getTemplate()->set_var("EliminarParametroBlock", "");
+
+                        $tipoAsociacion = get_class($oParametro);
+                        $sValor = $oParametro->getValor();
+
+                        $iGrupoId = "null";
+                        if(get_class($oParametro) !== 'ParametroSistema'){
+                            $iGrupoId = $oParametro->getGrupoId();
+                            $sGrupo = $oParametro->getGrupo();
+                        }
+                    }else{
+                        $this->getTemplate()->set_var("EditAsociacionBlock", "");
+                    }
+
+                    $this->getTemplate()->set_var("iGrupoId", $iGrupoId);
+                    $this->getTemplate()->set_var("tipoAsociacion", $tipoAsociacion);
+                    $this->getTemplate()->set_var("sGrupo", $sGrupo);
+                    $this->getTemplate()->set_var("sValor", $sValor);
+
+                    $this->getTemplate()->parse("ParametroBlock", true);
+                    $this->getTemplate()->delete_parsed_blocks("EditAsociacionBlock");
+                    $this->getTemplate()->delete_parsed_blocks("EliminarParametroBlock");
+                }
+
+                $this->getTemplate()->set_var("NoRecordsParametrosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("ParametroBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "No se encontraron parametros dinamicos");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
     public function procesar()
     {
         //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
