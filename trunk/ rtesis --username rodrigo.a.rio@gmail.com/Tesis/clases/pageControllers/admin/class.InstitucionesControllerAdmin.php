@@ -1080,7 +1080,7 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
      * que la institucion fue eliminada del sistema por acumulacion de denuncias.
      */
     private function eliminarPorDenuncias()
-    {
+    {        
         $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
         if(empty($iInstitucionId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
@@ -1094,10 +1094,10 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
             {
                 //el usuario tiene activadas las notificaciones por mail?
                 //lo tengo que levantar asi porque NO es el usuario que inicio sesion.
-                $parametroUsuario = AdminController::getInstance()->getParametroUsuarioByNombre('NOTIFICACIONES_MAIL', $oInstitucion->getUsuario()->getId());
+                $oParametroUsuario = AdminController::getInstance()->getParametroUsuarioByNombre('NOTIFICACIONES_MAIL', $oInstitucion->getUsuario()->getId());
 
                 //porque es booleano
-                if($parametroUsuario->getValor()){
+                if($oParametroUsuario->getValor()){
 
                     $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
                     $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
@@ -1105,32 +1105,33 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
 
                     //envio mail al usuario administrador de la institucion
                     $sMailDestino = $oInstitucion->getUsuario()->getEmail();
-                    $hrefSitio = $this->getRequest()->getBaseTagUrl();
+                    $hrefSitio = htmlentities($this->getRequest()->getBaseTagUrl());
                     
                     //link externo para desactivar notificaciones de mail
-                    $hrefCancelarSuscripcion = $hrefSitio."desactivar-notificaciones-mail?id=".$oInstitucion->getUsuario()->getId()."&key=".$oInstitucion->getUsuario()->getUrlTokenKey();
+                    $hrefCancelarSuscripcion = htmlentities($hrefSitio."desactivar-notificaciones-mail?id=".$oInstitucion->getUsuario()->getId()."&key=".$oInstitucion->getUsuario()->getUrlTokenKey());
 
                     $this->getTemplate()->load_file("gui/templates/index/frameMail01-01.gui.html", "frameMail");
 
                     //head y footer mail.
                     $this->getTemplate()->set_var("hrefSitio", $hrefSitio);
-                    $this->getTemplate()->set_var("sNombreSitio", $nombreSitio);
+                    $this->getTemplate()->set_var("sNombreSitio", $nombreSitio." - Comunidad");
                     $this->getTemplate()->set_var("sEmailDestino", $sMailDestino);
                     $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
                     $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
                                         
                     $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeBlock");
 
-                    $this->getTemplate()->set_var("sTituloMensaje", "Institución eliminada de la comunidad.");
+                    $sTituloMensaje = htmlentities("Institución eliminada de la comunidad.");
+                    $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
 
                     $sNombreUsuario = $oInstitucion->getUsuario()->getNombre()." ".$oInstitucion->getUsuario()->getApellido();
                     $sNombreInstitucion = $oInstitucion->getNombre();
-                    $sMensaje = $sNombreUsuario." le informamos que la institución '".$sNombreInstitucion."' fue revisada y eliminada de la comunidad por uno de nuestros moderadores debido a acumulación de denuncias.";
+                    $sMensaje = htmlentities($sNombreUsuario." le informamos que la institución '".$sNombreInstitucion."' fue revisada y eliminada de la comunidad por uno de nuestros moderadores debido a acumulación de denuncias.");
                     
                     $this->getTemplate()->set_var("sMensaje", $sMensaje);
 
                     $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
-                    
+                                                           
                     $this->getMailerHelper()->sendMail($mailContacto, $nombreSitio." - Comunidad", $sMailDestino, $sNombreUsuario, "Institucion eliminada de la comunidad.", $sMensajeBody);
                 }
             }

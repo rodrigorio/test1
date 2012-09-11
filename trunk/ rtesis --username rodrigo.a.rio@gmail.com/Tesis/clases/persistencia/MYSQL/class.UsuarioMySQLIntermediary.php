@@ -579,8 +579,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         personas p 
                     JOIN 
                     	usuarios u ON p.id = u.id
-                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
-
+                    WHERE ".$this->crearCondicionSimple($filtro);
+            
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -654,6 +654,13 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->execSQL($sSQL);
 
             $db->execSQL("insert into privacidad set usuarios_id = ".$oUsuario->getId());
+
+            //asocio los parametros de usuario con los valores por defecto.
+            $sSQL = "INSERT INTO parametro_x_usuario(parametros_id, usuarios_id, valor)
+                     SELECT parametros_id, '".$oUsuario->getId()."', valorDefecto
+                     FROM parametros_usuario ";
+
+            $db->execSQL($sSQL);
 
             $db->commit();
 
@@ -948,6 +955,13 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->execSQL($sSQL);   
 
             $db->execSQL("insert into privacidad set usuarios_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT));
+
+            //asocio los parametros de usuario con los valores por defecto.
+            $sSQL = "INSERT INTO parametro_x_usuario(parametros_id, usuarios_id, valor)
+                     SELECT parametros_id, '".$iLastId."', valorDefecto
+                     FROM parametros_usuario ";
+
+            $db->execSQL($sSQL);
             
             $db->commit();
 

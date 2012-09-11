@@ -1071,6 +1071,17 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
+    
+    public function existeUsuarioUrlKey($iUsuarioId, $sUrlTokenKey)
+    {
+        try{
+            $filtro = array('u.id' => $iUsuarioId, 'u.urlTokenKey' => $sUrlTokenKey);
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function existeDocumentoUsuario($numeroDocumento)
     {

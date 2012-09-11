@@ -333,6 +333,58 @@ class IndexControllerIndex extends PageControllerAbstract
      */
     public function desactivarNotificacionesMail()
     {
-        echo "entro entro entro"; exit();
+        $iUsuarioId = $this->getRequest()->getParam('id');
+        $sUrlTokenKey = $this->getRequest()->getParam('key');
+
+        if(empty($iUsuarioId) || empty($sUrlTokenKey)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            if(ComunidadController::getInstance()->existeUsuarioUrlKey($iUsuarioId, $sUrlTokenKey))
+            {
+                $oParametroUsuario = AdminController::getInstance()->getParametroUsuarioByNombre('NOTIFICACIONES_MAIL', $iUsuarioId);
+                $oParametroUsuario->setValor('0');
+                AdminController::getInstance()->guardarParametroUsuario($oParametroUsuario);
+
+                $mensaje = "Se han desactivado las notificaciones con éxito";
+            }else{
+                $mensaje = "El usuario no existe.";
+            }
+        }catch(Exception $e){
+            $mensaje = "Ocurrio un error no se pudo cancelar la suscripción a notificaciones";
+        }
+        
+        $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
+
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+        $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
+        $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
+        $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "centerPageContent", "MsgFichaInfoBlock");
+        $this->getTemplate()->set_var("sTituloMsgFicha", "Suscripción a Notificaciones.");
+        $this->getTemplate()->set_var("sMsgFicha", $mensaje);
+
+        //Link a Inicio y pagina anterior
+        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "itemExtraMsgFicha", "MenuVertical02Block");
+        $this->getTemplate()->set_var("idOpcion", 'opt1');
+        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
+        $this->getTemplate()->set_var("sNombreOpcion", "Volver a inicio");
+        $this->getTemplate()->parse("OpcionesMenu", true);
+
+        $this->getTemplate()->set_var("idOpcion", 'opt1');
+        $this->getTemplate()->set_var("hrefOpcion", "javascript:history.go(-1)");
+        $this->getTemplate()->set_var("sNombreOpcion", "Volver a la página anterior");
+        $this->getTemplate()->parse("OpcionMenuLastOpt");
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 }
