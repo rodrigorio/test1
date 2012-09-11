@@ -311,6 +311,20 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
                 $WHERE[] = $this->crearFiltroSimple('m.sModeracionEstado', $filtro['m.sModeracionEstado']);
             }
 
+            //con un minimo de denuncias. en el valor tengo la cantidad.
+            if(isset($filtro['minDenuncias']) && $filtro['minDenuncias'] != ""){
+                $WHERE[] = " f.id IN (SELECT d.fichas_abstractas_id FROM denuncias d WHERE d.fichas_abstractas_id IS NOT NULL 
+                                      GROUP BY d.fichas_abstractas_id
+                                      HAVING COUNT(*) >= ".$filtro['minDenuncias'].") ";
+            }
+
+            //con un maximo de N de denuncias. en el valor tengo la cantidad.
+            if(isset($filtro['maxDenuncias']) && $filtro['maxDenuncias'] != ""){
+                $WHERE[] = " f.id NOT IN (SELECT d.fichas_abstractas_id FROM denuncias d WHERE d.fichas_abstractas_id IS NOT NULL
+                                      GROUP BY d.fichas_abstractas_id
+                                      HAVING COUNT(*) >= ".$filtro['maxDenuncias'].") ";
+            }
+
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if(isset($sOrderBy) && isset($sOrder)){

@@ -207,7 +207,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
      * Si la publicacion existe pero no esta marcada como publica entonces la direccion tampoco existe.
      *
      * VALIDACION 3.
-     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada'
+     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada' o suspendida por acumulacion de denuncias
      * se redirecciona al listado de publicaciones con header de redireccion temporal.
      *
      * VALIDACION 4.
@@ -247,7 +247,9 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             }
 
             //validacion 3.
-            if(!$oPublicacion->isActivo() || !$oPublicacion->getModeracion()->isAprobado()){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+            if(!$oPublicacion->isActivo() || !$oPublicacion->getModeracion()->isAprobado() || (count($oPublicacion->getDenuncias()) >= $iCantMaxDenuncias)){
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("indexPublicacionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
@@ -330,7 +332,9 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             }
 
             //validacion 3.
-            if(!$oReview->isActivo() || !$oReview->getModeracion()->isAprobado()){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+            if(!$oReview->isActivo() || !$oReview->getModeracion()->isAprobado() || (count($oReview->getDenuncias()) >= $iCantMaxDenuncias)){            
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);

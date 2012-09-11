@@ -1097,7 +1097,11 @@ class ComunidadController
      * Se diferencia de buscar publicaciones visitantes porque no arregla los filtros de moderacion y de publico
      */
     public function buscarPublicacionesComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-        try{
+        try{            
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;
             $filtro["f.activo"] = "1";
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
@@ -1123,6 +1127,10 @@ class ComunidadController
     
     public function buscarPublicacionesVisitantes($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;
             $filtro["f.activo"] = "1";
             $filtro["publico"] = "1";
             $filtro["m.sModeracionEstado"] = "aprobado";
@@ -1138,6 +1146,10 @@ class ComunidadController
      */
     public function buscarSoftwareComunidad($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;
             $filtro["f.activo"] = "1";
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
@@ -1163,6 +1175,10 @@ class ComunidadController
     
     public function buscarSoftwareVisitantes($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;
             $filtro["f.activo"] = "1";
             $filtro["s.publico"] = "1";
             $filtro["m.sModeracionEstado"] = "aprobado";
@@ -1190,6 +1206,10 @@ class ComunidadController
     
     public function buscarInstitucionesVisitantes($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;
             $filtro["m.sModeracionEstado"] = "aprobado";
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);

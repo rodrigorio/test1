@@ -624,8 +624,16 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             }
 
             //validacion 3.
-            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+            if(count($oInstitucion->getDenuncias()) >= $iCantMaxDenuncias){
+                $this->getRedirectorHelper()->setCode(307);
+                $url = $this->getUrlFromRoute("comunidadSoftwareIndex");
+                $this->getRedirectorHelper()->gotoUrl($url);
+            }
 
+            //validacion 4.
+            $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
             if($sTituloUrlized != $sTituloUrlizedActual){
                 $this->getRedirectorHelper()->setCode(301);
                 $url = 'comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrlizedActual;

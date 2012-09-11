@@ -539,6 +539,18 @@ class AdminController
         }
     }
 
+    public function  obtenerDenunciasFicha($iFichaId)
+    {
+        try{
+            $filtro["d.fichas_abstractas_id"] = $iFichaId;
+            $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oDenunciaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
     public function buscarInstitucionesDenuncias($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
@@ -663,17 +675,32 @@ class AdminController
     }
 
     /**
-     * Este metodo devuelve un array con objetos del tipo Parametro ParametroSistema ParametroControlador y ParametroUsuario
+     * Este metodo devuelve un array con objetos del tipo Parametro ParametroSistema y ParametroControlador
      * Todos implementan la interfaz de la clase Parametro.
      */
     public function obtenerParametrosDinamicos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
+            $filtro['sistema_controlador_parametro'] = "sistema_controlador_parametro";
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
             throw new Exception($e);
         }  
+    }
+
+    /**
+     * Este metodo devuelve un array con objetos del tipo ParametroUsuario que implementa la interfaz Parametro
+     */
+    public function obtenerParametrosDinamicosUsuario($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $filtro['usuario'] = "usuario";
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
     }
 
     /**
