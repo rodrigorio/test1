@@ -1032,7 +1032,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
      * entonces se redirecciona al listado de publicaciones con header 404
      *
      * VALIDACION 3.
-     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada'
+     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada' o suspendida por acumulacion de denuncias
      * se redirecciona al listado de publicaciones con header de redireccion temporal.
      *
      * VALIDACION 4.
@@ -1066,12 +1066,14 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             }
 
             //validacion 3.
-            if(!$oSoftware->isActivo()){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+            if(!$oSoftware->isActivo() || (count($oSoftware->getDenuncias()) >= $iCantMaxDenuncias)){
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("comunidadSoftwareIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
             }
-
+            
             //validacion 4.
             $sTituloUrlizedActual = $this->getInflectorHelper()->urlize($oSoftware->getTitulo());
             $sUrlTokenActual = $oSoftware->getCategoria()->getUrlToken();

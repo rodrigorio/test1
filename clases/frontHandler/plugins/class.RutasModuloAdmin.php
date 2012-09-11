@@ -395,6 +395,13 @@ class RutasModuloAdmin
                                         'action'     => 'index'
                                 ));
         $router->addRoute('adminParametrosIndex', $route);
+        $route = new RegexRoute('admin/parametros-usuario',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'parametros',
+                                        'action'     => 'listarParametrosUsuario'
+                                ));
+        $router->addRoute('adminParametrosListarParametrosUsuario', $route);
         $route = new RegexRoute('admin/parametros-procesar',
                                 array(
                                         'module' => 'admin',

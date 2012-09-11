@@ -1145,7 +1145,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
      * entonces se redirecciona al listado de publicaciones con header 404
      *
      * VALIDACION 3.
-     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada'
+     * Si el id existe y cuando se hace el getById la publicacion esta 'desactivada' o suspendida por acumulacion de denuncias
      * se redirecciona al listado de publicaciones con header de redireccion temporal.
      *
      * VALIDACION 4.
@@ -1181,7 +1181,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
 
             //validacion 3.
-            if(!$oPublicacion->isActivo()){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');            
+            if(!$oPublicacion->isActivo() || (count($oPublicacion->getDenuncias()) >= $iCantMaxDenuncias)){
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);
@@ -1257,7 +1259,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
 
             //validacion 3.
-            if(!$oReview->isActivo()){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+            if(!$oReview->isActivo() || (count($oReview->getDenuncias()) >= $iCantMaxDenuncias)){
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("comunidadPublicacionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);

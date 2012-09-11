@@ -232,7 +232,9 @@ class InstitucionesControllerIndex extends PageControllerAbstract
             }
 
             //validacion 3.
-            if(!$oInstitucion->getModeracion()->isAprobado()){
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+            if(!$oInstitucion->getModeracion()->isAprobado() || (count($oInstitucion->getDenuncias()) >= $iCantMaxDenuncias)){
                 $this->getRedirectorHelper()->setCode(307);
                 $url = $this->getUrlFromRoute("indexInstitucionesIndex");
                 $this->getRedirectorHelper()->gotoUrl($url);

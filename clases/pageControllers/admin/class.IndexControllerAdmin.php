@@ -108,6 +108,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         //avanzadas
         $template->set_var("sHrefAccionesPerfil", $request->getBaseTagUrl()."admin/acciones-perfil");
         $template->set_var("sHrefParametros", $request->getBaseTagUrl()."admin/parametros");
+        $template->set_var("sHrefParametrosUsuario", $request->getBaseTagUrl()."admin/parametros-usuario");
     }
 
     public function index(){
