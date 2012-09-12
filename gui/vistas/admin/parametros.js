@@ -339,12 +339,10 @@ var validateFormParametroUsuarios = {
     },
     rules:{
         iParametroIdForm:{required:true},
-        iUsuarioIdForm:{required:true},
         valor:{required:true}
     },
     messages:{
         iParametroIdForm:mensajeValidacion("requerido"),
-        iUsuarioIdForm:mensajeValidacion("requerido"),
         valor:mensajeValidacion("requerido")
     }
 };
@@ -355,45 +353,37 @@ var optionsAjaxFormParametroUsuarios = {
     url: 'admin/parametros-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formParametroUsuario").valid() == true){
-            $('#msg_form_parametroUsuario').hide();
-            $('#msg_form_parametroUsuario').removeClass("success").removeClass("error2");
-            $('#msg_form_parametroUsuario .msg').html("");
-            setWaitingStatus('formParametroUsuario', true);
+        if($("#formParametroUsuarios").valid() == true){
+            $('#msg_form_parametroUsuarios').hide();
+            $('#msg_form_parametroUsuarios').removeClass("success").removeClass("error2");
+            $('#msg_form_parametroUsuarios .msg').html("");
+            setWaitingStatus('formParametroUsuarios', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formParametroUsuario', false);
+        setWaitingStatus('formParametroUsuarios', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_parametroUsuario .msg').html(lang['error procesar']);
+                $('#msg_form_parametroUsuarios .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_parametroUsuario .msg').html(data.mensaje);
+                $('#msg_form_parametroUsuarios .msg').html(data.mensaje);
             }
-            $('#msg_form_parametroUsuario').addClass("error2").fadeIn('slow');
+            $('#msg_form_parametroUsuarios').addClass("error2").fadeIn('slow');
         }else{
-            if(data.asociarParametroUsuario != undefined){
-                if(data.mensaje == undefined){
-                    $('#msg_form_parametroUsuario .msg').html("El parametro fue asociado al usuario exitosamente.");
-                }else{
-                    $('#msg_form_parametroUsuario .msg').html(data.mensaje);
-                }
-
-                //limpio el formulario
-                $('#usuario_clean').click();
-                $('#formParametroUsuario').each(function(){ this.reset() });
+            if(data.mensaje == undefined){
+                $('#msg_form_parametroUsuarios .msg').html("El parametro fue asociado a todos los usuarios del sistema con éxito.");
             }else{
-                if(data.mensaje == undefined){
-                    $('#msg_form_parametroUsuario .msg').html("El valor del parametro para el usuario fue modificado exitosamente");
-                }else{
-                    $('#msg_form_parametroUsuario .msg').html(data.mensaje);
-                }
+                $('#msg_form_parametroUsuarios .msg').html(data.mensaje);
             }
-            $('#msg_form_parametroUsuario').addClass("success").fadeIn('slow');
+
+            //limpio el formulario
+            $('#formParametroUsuarios').each(function(){ this.reset() });
+            
+            $('#msg_form_parametroUsuarios').addClass("success").fadeIn('slow');
         }
     }
 };
@@ -431,45 +421,33 @@ var optionsAjaxFormModificarParametroUsuario = {
     url: 'admin/parametros-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formParametroUsuario").valid() == true){
-            $('#msg_form_parametroUsuario').hide();
-            $('#msg_form_parametroUsuario').removeClass("success").removeClass("error2");
-            $('#msg_form_parametroUsuario .msg').html("");
-            setWaitingStatus('formParametroUsuario', true);
+        if($("#formModificarParametroUsuario").valid() == true){
+            $('#msg_form_modificarParametroUsuario').hide();
+            $('#msg_form_modificarParametroUsuario').removeClass("success").removeClass("error2");
+            $('#msg_form_modificarParametroUsuario .msg').html("");
+            setWaitingStatus('formModificarParametroUsuario', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formParametroUsuario', false);
+        setWaitingStatus('formModificarParametroUsuario', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_parametroUsuario .msg').html(lang['error procesar']);
+                $('#msg_form_modificarParametroUsuario .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_parametroUsuario .msg').html(data.mensaje);
+                $('#msg_form_modificarParametroUsuario .msg').html(data.mensaje);
             }
-            $('#msg_form_parametroUsuario').addClass("error2").fadeIn('slow');
+            $('#msg_form_modificarParametroUsuario').addClass("error2").fadeIn('slow');
         }else{
-            if(data.asociarParametroUsuario != undefined){
-                if(data.mensaje == undefined){
-                    $('#msg_form_parametroUsuario .msg').html("El parametro fue asociado al usuario exitosamente.");
-                }else{
-                    $('#msg_form_parametroUsuario .msg').html(data.mensaje);
-                }
-
-                //limpio el formulario
-                $('#usuario_clean').click();
-                $('#formParametroUsuario').each(function(){ this.reset() });
+            if(data.mensaje == undefined){
+                $('#msg_form_modificarParametroUsuario .msg').html("El valor del parametro para el usuario fue modificado exitosamente");
             }else{
-                if(data.mensaje == undefined){
-                    $('#msg_form_parametroUsuario .msg').html("El valor del parametro para el usuario fue modificado exitosamente");
-                }else{
-                    $('#msg_form_parametroUsuario .msg').html(data.mensaje);
-                }
+                $('#msg_form_modificarParametroUsuario .msg').html(data.mensaje);
             }
-            $('#msg_form_parametroUsuario').addClass("success").fadeIn('slow');
+            $('#msg_form_modificarParametroUsuario').addClass("success").fadeIn('slow');
         }
     }
 };

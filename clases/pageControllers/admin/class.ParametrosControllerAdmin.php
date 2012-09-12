@@ -190,11 +190,6 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             $this->eliminarAsociacionControlador();
             return;
         }
-
-        if($this->getRequest()->has('eliminarAsociacionUsuario')){
-            $this->eliminarAsociacionUsuario();
-            return;
-        }
         
         if($this->getRequest()->has('crearParametro')){
             $this->crearParametro();
@@ -231,7 +226,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             return;
         }
 
-        if($this->getRequest()->has('modificarAsociacionUsuario')){
+        if($this->getRequest()->has('modificarParametroUsuario')){
             $this->modificarValorParametroUsuario();
             return;
         }
@@ -259,10 +254,15 @@ class ParametrosControllerAdmin extends PageControllerAbstract
             return;
         }
 
-        if($this->getRequest()->has('asociarParametroUsuario') || $this->getRequest()->has('modificarValorParametroUsuario')){
-            $this->formParametroUsuario();
+        if($this->getRequest()->has('modificarValorParametroUsuario')){
+            $this->formModificarParametroUsuario();
             return;
-        }       
+        }
+
+        if($this->getRequest()->has('asociarParametroUsuarios')){
+            $this->formAsociarParametroUsuarios();
+            return;
+        }
     }
 
     private function formParametroSistema()
@@ -396,62 +396,57 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         }
     }
 
-    private function formParametroUsuario()
+    private function formModificarParametroUsuario()
     {
         try{
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioParametroUsuarioBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioModificarParametroUsuarioBlock");
 
-            if($this->getRequest()->has('asociarParametroUsuario')){
-                $this->getTemplate()->unset_blocks("SubmitModificarAsociacionUsuarioBlock");
-                $this->getTemplate()->unset_blocks("ModificarAsociacionUsuarioBlock");
-
-                $sTituloForm = "Crear";
-
-                $oParametro = null;
-                $oControlador = null;
-                $sValor = "";
-
-                //select con parametros existentes
-                $iRecordsTotal = 0;
-                $aParametros = AdminController::getInstance()->obtenerParametros($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
-                foreach($aParametros as $oParametro){
-                    $value = $oParametro->getId();
-                    $text = $oParametro->getNamespace();
-                    $this->getTemplate()->set_var("iParametroId", $value);
-                    $this->getTemplate()->set_var("sParametroNombre", $text);
-                    $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
-                    $this->getTemplate()->parse("OptionParametroBlock", true);
-                }
-            }else{
-                $iParametroId = $this->getRequest()->getParam('iParametroId');
-                $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
-                if(empty($iParametroId) || empty($iUsuarioId)){
-                    throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-                }
-
-                $this->getTemplate()->unset_blocks("SubmitCrearAsociacionUsuarioBlock");
-                $this->getTemplate()->unset_blocks("CrearAsociacionUsuarioBlock");
-
-                $oParametro = AdminController::getInstance()->getParametroUsuario($iParametroId, $iUsuarioId);
-                $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
-
-                $sTituloForm = "Modificar";
-
-                $sParametro = $oParametro->getNamespace();
-                $sValor = $oParametro->getValor();
-
-                $this->getTemplate()->set_var("sParametro", $sParametro);
-                $this->getTemplate()->set_var("iParametroId", $iParametroId);
-                $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
-                $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
-
-                $this->getTemplate()->set_var("sNombreUsuario", $oUsuario->getNombre()." ".$oUsuario->getApellido());
-                $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+            $iParametroId = $this->getRequest()->getParam('iParametroId');
+            $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
+            if(empty($iParametroId) || empty($iUsuarioId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+            $oParametro = AdminController::getInstance()->getParametroUsuario($iParametroId, $iUsuarioId);
+            $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+
+            $sParametro = $oParametro->getNamespace();
+            $sValor = $oParametro->getValor();
+
+            $this->getTemplate()->set_var("sParametro", $sParametro);
+            $this->getTemplate()->set_var("iParametroId", $iParametroId);
+            $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+            $this->getTemplate()->set_var("sDescripcion", $oParametro->getDescripcion());
+
+            $this->getTemplate()->set_var("sNombreUsuario", $oUsuario->getNombre()." ".$oUsuario->getApellido());
+            $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+            
             $this->getTemplate()->set_var("sValor", $sValor);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    private function formAsociarParametroUsuarios()
+    {
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "FormularioAsociarParametroUsuariosBlock");
+
+            //select con parametros existentes
+            $iRecordsTotal = 0;
+            $aParametros = AdminController::getInstance()->obtenerParametros($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+            foreach($aParametros as $oParametro){
+                $value = $oParametro->getId();
+                $text = $oParametro->getNamespace();
+                $this->getTemplate()->set_var("iParametroId", $value);
+                $this->getTemplate()->set_var("sParametroNombre", $text);
+                $this->getTemplate()->set_var("sTipo", $oParametro->getTipo());
+                $this->getTemplate()->parse("OptionParametroBlock", true);
+            }
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -700,10 +695,8 @@ class ParametrosControllerAdmin extends PageControllerAbstract
 
     private function crearAsociacionParametroUsuarios()
     {
-        try{
+        try{            
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $this->getJsonHelper()->setValor("asociarParametroUsuarios", "1");
-
             $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
 
             if(AdminController::getInstance()->existeParametroUsuarios($iParametroId))
@@ -780,7 +773,6 @@ class ParametrosControllerAdmin extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $this->getJsonHelper()->setValor("modificarParametroUsuario", "1");
 
             $iParametroId = $this->getRequest()->getPost('iParametroIdForm');
             $iUsuarioId = $this->getRequest()->getPost('iUsuarioIdForm');
@@ -903,6 +895,43 @@ class ParametrosControllerAdmin extends PageControllerAbstract
 
         }catch(Exception $e){
             $msg = "No se pudo eliminar la asociacion entre el parametro y el usuario.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function eliminarAsociacionParametroUsuarios()
+    {
+        $iParametroId = $this->getRequest()->getParam('iParametroId');
+
+        if(empty($iParametroId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            $result = AdminController::getInstance()->eliminarAsociacionParametroUsuarios($iParametroId);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "Se elimino la asociacion entre el parametro y los usuarios del sistema. Tenga en cuenta que puede mantenerse en las variables de sesion por unos minutos.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "No se pudo eliminar la asociacion entre el parametro los usuarios del sistema.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "No se pudo eliminar la asociacion entre el parametro los usuarios del sistema.";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
         }

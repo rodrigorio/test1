@@ -1053,4 +1053,17 @@ class AdminController
             throw new Exception($e);
         }
     }
+
+    /**
+     *  Elimina la asociacion entre un parametro y todos los usuarios del sistema
+     */
+    public function eliminarAsociacionParametroUsuarios($iParametroId)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->eliminarAsociacionParametroUsuarios($iParametroId);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
 }
