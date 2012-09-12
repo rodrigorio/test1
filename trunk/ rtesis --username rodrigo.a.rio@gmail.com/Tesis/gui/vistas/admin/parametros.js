@@ -752,7 +752,6 @@ function eliminarParametroUsuarios(iParametroId){
             url:"admin/parametros-procesar",
             data:{
                 iParametroId:iParametroId,
-                iUsuarioId:iGrupoId,
                 eliminarAsociacionUsuarios:"1"
             },
             success:function(data){
@@ -786,6 +785,11 @@ function eliminarParametroUsuarios(iParametroId){
     }
 }
 
+function listarParametrosUsuarios()
+{
+    //popup lista de parametros asociados a los usuarios del sistema con boton de eliminar
+}
+
 $(document).ready(function(){
 
     $(".crearParametro").live('click', function(){
@@ -816,6 +820,14 @@ $(document).ready(function(){
     $(".editarParametro").live("click", function(){
         var iParametroId = $(this).attr("rel");
         editarParametro(iParametroId);
+    });
+    
+    $(".listarParametrosUsuarios").live("click", function(){
+        listarParametrosUsuarios();
+    });
+    $(".eliminarParametroUsuarios").live("click", function(){
+        var iParametroId = $(this).attr("rel");
+        eliminarParametroUsuarios(iParametroId);
     });
 
     $(".modificarValorParametro").live("click", function(){

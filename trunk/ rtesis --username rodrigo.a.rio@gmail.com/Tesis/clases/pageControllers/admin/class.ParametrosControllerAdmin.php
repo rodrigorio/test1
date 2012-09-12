@@ -169,6 +169,14 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         }
     }
 
+    /**
+     * Lista todos los parametros que actualmente estan asociados a todos los usuarios del sistema
+     */
+    public function listarParametrosAsociadosUsuarios()
+    {
+
+    }
+
     public function procesar()
     {
         //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
@@ -228,6 +236,16 @@ class ParametrosControllerAdmin extends PageControllerAbstract
 
         if($this->getRequest()->has('modificarParametroUsuario')){
             $this->modificarValorParametroUsuario();
+            return;
+        }
+
+        if($this->getRequest()->has('listarParametrosAsociadosUsuarios')){
+            $this->listarParametrosAsociadosUsuarios();
+            return;
+        }
+
+        if($this->getRequest()->has('eliminarAsociacionUsuarios')){
+            $this->eliminarAsociacionParametroUsuarios();
             return;
         }
     }
@@ -867,45 +885,6 @@ class ParametrosControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
-    private function eliminarAsociacionUsuario()
-    {
-        $iParametroId = $this->getRequest()->getParam('iParametroId');
-        $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
-
-        if(empty($iParametroId) || empty($iUsuarioId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $this->getJsonHelper()->initJsonAjaxResponse();
-        try{
-            $oParametroUsuario = AdminController::getInstance()->getParametroUsuario($iParametroId, $iUsuarioId);
-            $result = AdminController::getInstance()->eliminarParametroUsuario($oParametroUsuario);
-
-            $this->restartTemplate();
-
-            if($result){
-                $msg = "Se elimino la asociacion entre el parametro y el usuario. Tenga en cuenta que puede mantenerse en las variables de sesion por unos minutos.";
-                $bloque = 'MsgCorrectoBlockI32';
-                $this->getJsonHelper()->setSuccess(true);
-            }else{
-                $msg = "No se pudo eliminar la asociacion entre el parametro y el usuario.";
-                $bloque = 'MsgErrorBlockI32';
-                $this->getJsonHelper()->setSuccess(false);
-            }
-
-        }catch(Exception $e){
-            $msg = "No se pudo eliminar la asociacion entre el parametro y el usuario.";
-            $bloque = 'MsgErrorBlockI32';
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
-        $this->getTemplate()->set_var("sMensaje", $msg);
-        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
     private function eliminarAsociacionParametroUsuarios()
     {
         $iParametroId = $this->getRequest()->getParam('iParametroId');
