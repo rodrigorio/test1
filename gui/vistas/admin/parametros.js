@@ -756,14 +756,14 @@ function eliminarParametroUsuarios(iParametroId){
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("."+iParametroId+"."+iGrupoId).remove();
+                    $(".usuarios_"+iParametroId).remove();
                 }
 
                 var dialog = $("#dialog");
                 if($("#dialog").length != 0){
-                    dialog.attr("title","Eliminar asociacion parametro usuarios");
+                    dialog.attr("title","Eliminar parametro usuarios");
                 }else{
-                    dialog = $('<div id="dialog" title="Eliminar asociacion parametro usuarios"></div>').appendTo('body');
+                    dialog = $('<div id="dialog" title="Eliminar parametro usuarios"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
 
