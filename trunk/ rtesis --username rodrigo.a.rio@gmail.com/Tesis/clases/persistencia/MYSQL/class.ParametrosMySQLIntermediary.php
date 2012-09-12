@@ -282,6 +282,67 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
         }
     }
 
+    /**
+     * Devuelve todos los parametros que estan asociados a todos los usuarios del sistema
+     * son los que estan guardados en la tabla parametros_usuario
+     */
+    public function obtenerParametrosUsuarios($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT
+                        p.id AS iId, 
+                        p.descripcion AS sDescripcion,
+                        p.tipo AS sTipo,
+                        p.namespace AS sNamespace,
+                        pu.valorDefecto AS sValor
+                    FROM
+                        parametros p JOIN parametros_usuario pu ON p.id = pu.parametros_id ";
+
+            if(!empty($filtro)){
+                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            }
+
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by pu.parametros_id ";
+            }
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aParametrosUsuario = array();
+            while($oObj = $db->oNextRecord()){
+                $oParametroUsuario = new stdClass();
+
+                $oParametroUsuario->iId = $oObj->iId;
+                $oParametroUsuario->sDescripcion = $oObj->sDescripcion;
+                $oParametroUsuario->sNamespace = $oObj->sNamespace;
+                $oParametroUsuario->sValor = $oObj->sValor;
+
+                $oParametroUsuario = Factory::getParametroUsuarioInstance($oParametroUsuario);
+
+                switch($oObj->sTipo){
+                    case "string": $oParametroUsuario->setTipoCadena(); break;
+                    case "boolean": $oParametroUsuario->setTipoBooleano(); break;
+                    case "numeric": $oParametroUsuario->setTipoNumerico(); break;
+                }
+
+                $aParametrosUsuario[] = $oParametroUsuario;
+            }
+
+            return $aParametrosUsuario;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }   
+    }
+
     public function guardar($oParametro)
     {
         try{
