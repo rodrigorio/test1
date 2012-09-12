@@ -400,7 +400,9 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
                     $this->getTemplate()->set_var("sPublico", $sPublico);
 
+                    //los mensajes pueden ser por moderacion y por acumulacion de denuncias.
                     //si esta marcada como publica muestro cartel segun moderacion
+                    $sMensajesSoftware = "";
                     if($bPublico){
                         if($oSoftware->getModeracion()->isPendiente()){
                             $cartelModeracion = "MsgFichaInfoBlock";
@@ -420,11 +422,24 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                             $mensajeModeracion = "La aplicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
                         }
 
-                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftware", $cartelModeracion);
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftwareModeracion", $cartelModeracion);
                         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                         $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                        $this->getTemplate()->parse("sMensajeSoftware", false);
+                        $sMensajesSoftware = $this->getTemplate()->pparse("sMensajeSoftwareModeracion");
                     }
+
+                    //puede agregarse un mensaje por acumulacion de denuncias.
+                    $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+                    $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+                    if(count($oSoftware->getDenuncias()) >= $iCantMaxDenuncias){
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftwareDenuncias", "MsgFichaErrorBlock");
+                        $this->getTemplate()->set_var("sTituloMsgFicha", "Acumulación de denuncias");
+                        $this->getTemplate()->set_var("sMsgFicha", "La aplicación se ha quitado de los listados temporalmente por acumulación de denuncias.");
+                        $sMensajesSoftware .= $this->getTemplate()->pparse("sMensajeSoftwareDenuncias");
+                    }
+
+                    $this->getTemplate()->set_var("sMensajeSoftware", $sMensajesSoftware);
+
 
                     $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
 
