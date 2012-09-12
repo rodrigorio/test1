@@ -787,7 +787,29 @@ function eliminarParametroUsuarios(iParametroId){
 
 function listarParametrosUsuarios()
 {
-    //popup lista de parametros asociados a los usuarios del sistema con boton de eliminar
+    var dialog = $("#dialog");
+    if ($("#dialog").length != 0){
+        dialog.hide("slow");
+        dialog.remove();
+    }
+    dialog = $('<div id="dialog" title="Parámetros asociados a los usuarios del sistema"></div>').appendTo('body');
+
+    dialog.load(
+        "admin/parametros-procesar",
+        {
+            listarParametrosAsociadosUsuarios:"1"
+        },
+        function(responseText, textStatus, XMLHttpRequest){
+            dialog.dialog({
+                position:['center', '20'],
+                width:800,
+                resizable:false,
+                draggable:true,
+                modal:false,
+                closeOnEscape:true
+            });
+        }
+    );
 }
 
 $(document).ready(function(){

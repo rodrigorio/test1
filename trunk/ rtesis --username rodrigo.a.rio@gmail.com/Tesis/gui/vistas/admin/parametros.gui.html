@@ -164,6 +164,49 @@
 </section>
 <!--EndListadoParametrosUsuarioBlock-->
 
+<!--BeginListadoParametrosAsociadosUsuarioBlock-->
+<section id="listadoParametrosAsociadosUsuario">
+    <div class="ajax_wait30 di_no"></div>
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Descripci&oacute;n</th>
+                <th>Tipo</th>
+                <th>Valor por defecto</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginParametroBlock-->
+            <tr class="usuarios_{iParametroId}">
+                <td class="teal_le pale">
+                    <strong>{sKey}</strong>
+                </td>
+                <td class="pa2">{sDescripcion}</td>
+                <td>{sTipo}</td>
+                <td class="pa2">
+                    {sValor}                    
+                </td>
+                <td>
+                    <span title="Eliminar asociaci&oacute;n del par&aacute;metro con los usuarios del sistema" rel="{iParametroId}" class="fl_ri i bs delete ihover eliminarParametroUsuarios"></span>
+                </td>
+            </tr>
+        <!--EndParametroBlock-->
+        <!--BeginNoRecordsParametrosBlock-->
+            <tr>
+                <td></td>
+                <td>{sNoRecords}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        <!--EndNoRecordsParametrosBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoParametrosAsociadosUsuarioBlock-->
+
 <!--BeginFormularioParametroBlock-->
 <article class="full-block clearfix">    
     <header>
