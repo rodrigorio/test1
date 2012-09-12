@@ -1037,7 +1037,7 @@ class InstitucionesControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("NoRecordsDenunciasBlock", "");
 
             }else{
-                $this->getTemplate()->set_var("InstitucionModerarBlock", "");
+                $this->getTemplate()->set_var("InstitucionDenunciaBlock", "");
                 $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "noRecords", "NoRecordsDenunciasBlock");
                 $this->getTemplate()->set_var("sNoRecords", "No hay instituciones con denuncias");
                 $this->getTemplate()->parse("noRecords", false);

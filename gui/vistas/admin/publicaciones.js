@@ -795,7 +795,7 @@ function borrarFotoPerfil(iUsuarioId){
     }
 }
 
-function limpiarDenunciasPublicacion(iPublicacionId){
+function limpiarDenunciasPublicacion(iPublicacionId, tipo){
 
     if(confirm("Se limpiaran todas las denuncias realizadas por los integrantes de la comunidad, desea continuar?")){
         $.ajax({
@@ -804,6 +804,7 @@ function limpiarDenunciasPublicacion(iPublicacionId){
             url:"admin/publicaciones-denuncias-procesar",
             data:{
                 iPublicacionId:iPublicacionId,
+                objType:tipo,
                 limpiarDenuncias:"1"
             },
             beforeSend: function(){
@@ -841,7 +842,7 @@ function limpiarDenunciasPublicacion(iPublicacionId){
     }
 }
 
-function borrarPublicacionPorDenuncias(iPublicacionId){
+function borrarPublicacionPorDenuncias(iPublicacionId, tipo){
 
     if(confirm("Se borrara la publicación del sistema, desea continuar?")){
         $.ajax({
@@ -850,6 +851,7 @@ function borrarPublicacionPorDenuncias(iPublicacionId){
             url:"admin/publicaciones-denuncias-procesar",
             data:{
                 iPublicacionId:iPublicacionId,
+                objType:tipo,
                 eliminar:"1"
             },
             success:function(data){
@@ -903,13 +905,17 @@ $(document).ready(function(){
     });
 
     $(".borrarPublicacionPorDenuncias").live('click', function(){
-        var iPublicacionId = $(this).attr("rel");
-        borrarPublicacionPorDenuncias(iPublicacionId);
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];
+        borrarPublicacionPorDenuncias(iPublicacionId, tipo);
     });
 
     $(".limpiarDenunciasPublicacion").live('click', function(){
-        var iPublicacionId = $(this).attr("rel");
-        limpiarDenunciasPublicacion(iPublicacionId);
+        var rel = $(this).attr("rel").split('_');
+        var tipo = rel[0];
+        var iPublicacionId = rel[1];
+        limpiarDenunciasPublicacion(iPublicacionId, tipo);
     });
 
     $(".editarPublicacion").live('click', function(){
