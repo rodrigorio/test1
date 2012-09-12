@@ -170,11 +170,40 @@ class ParametrosControllerAdmin extends PageControllerAbstract
     }
 
     /**
-     * Lista todos los parametros que actualmente estan asociados a todos los usuarios del sistema
+     * Lista todos los parametros que actualmente estan asociados a todos los usuarios del sistema.
      */
     public function listarParametrosAsociadosUsuarios()
     {
-        
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/parametros.gui.html", "popUpContent", "ListadoParametrosAsociadosUsuarioBlock");
+
+            $iRecordsTotal = 0;
+            $aParametrosUsuario = AdminController::getInstance()->obtenerParametrosAsociadosUsuarios($filtro = array(), $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iMinLimit = null, $iItemsForPage = null);
+
+            if(count($aParametrosUsuario) > 0){
+
+                foreach($aParametrosUsuario as $oParametroUsuario){
+
+                    $this->getTemplate()->set_var("iParametroId", $oParametroUsuario->getId());
+                    $this->getTemplate()->set_var("sKey", $oParametroUsuario->getNamespace());
+                    $this->getTemplate()->set_var("sTipo", $oParametroUsuario->getTipo());
+                    $this->getTemplate()->set_var("sDescripcion", $oParametroUsuario->getDescripcion());
+                    $this->getTemplate()->set_var("sValor", $oParametroUsuario->getValor());
+
+                    $this->getTemplate()->parse("ParametroBlock", true);
+                }
+
+                $this->getTemplate()->set_var("NoRecordsParametrosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("ParametroBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "No hay parametros asociados a los usuarios del sistema.");
+            }
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            print_r($e);
+        }
     }
 
     public function procesar()

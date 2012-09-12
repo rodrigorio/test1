@@ -730,6 +730,24 @@ class AdminController
     }
 
     /**
+     * Este metodo devuelve un array con objetos ParametroUsuario que estan asociados
+     * a todos los usuarios del sistema.
+     * En su valor tienen el valor por defecto con el que se asocian cuando un nuevo usuario es creado.
+     *
+     * no tienen el id de ningun usuario en particular porque son los parametros para todos los usuarios.
+     * (devuelve los de la tabla parametros_usuario)
+     */
+    public function obtenerParametrosAsociadosUsuarios($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->obtenerParametrosUsuarios($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    /**
      * Este metodo devuelve unicamente objetos de la clase Parametro.
      * No devuelve ningun parametro de las clases 'asociativas'
      */
