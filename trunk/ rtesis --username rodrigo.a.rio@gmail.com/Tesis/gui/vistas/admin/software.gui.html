@@ -43,6 +43,16 @@
 </section>
 <!--EndHeaderModeracionesBlock-->
 
+<!--BeginHeaderDenunciasBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Moderar aplicaciones denunciadas por integrantes de la comunidad</h2>
+</header>
+<section>
+    <h3>Limpiar denuncias, borrar o editar aplicaciones que fueron reportadas por integrantes de la comunidad.</h3>
+</section>
+<!--EndHeaderDenunciasBlock-->
+
 <!--BeginListadoSoftwareBlock-->
 <form id="formFiltrarSoftware" name="formFiltrarSoftware" action="" method="post">
     <fieldset>
@@ -248,39 +258,41 @@
             <table class="mabo2">
                 <thead>
                     <tr>
-                        <th class="iveal small">Nombre autor</th>
                         <th class="iveal big">T&iacute;tulo software</th>
+                        <th class="iveal small">Nombre autor</th>                        
                         <th class="iveal">Categor&iacute;a</th>
-                        <th class="iveal">Fecha</th>
+                        <th class="iveal">Fecha creaci&oacute;n</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 <!--BeginSoftwareDenunciaBlock-->
                     <tr class="{iSoftwareId}">
-                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
-                            <span rel="tooltip" class="iCantidad fl_le" original-title="La instituci&oacute;n tiene {iCantDenuncias} denuncias">{iCantDenuncias}</span> {sNombre}
+                        <td class="pale teal_le desplegable" rel="{iSoftwareId}">
+                            <span rel="tooltip" class="iCantidad fl_le" original-title="La aplicaci&oacute;n tiene {iCantDenuncias} denuncias">{iCantDenuncias}</span>
+                            {sTitulo}
                         </td>
-                        <td class="pale teal_le desplegable" rel="{iInstitucionId}">
-                            {sTipo}
+                        <td class="pale teal_le desplegable" rel="{iSoftwareId}">
+                            <img src="{scrAvatarAutor}" class="pari" />
+                            <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="#">{sAutor}</a>
                         </td>
-                        <td class="desplegable" rel="{iInstitucionId}">
-                            {sUbicacion}
+                        <td class="pale teal_le desplegable" rel="{iSoftwareId}">
+                            {sCategoria}
                         </td>
-                        <td class="desplegable" rel="{iInstitucionId}">
-                            <a href="mailto:{sEmail}">{sEmail}</a>
+                        <td class="desplegable" rel="{iSoftwareId}">
+                            {sFecha}
                         </td>
                         <td class="teal_ce">
-                            <span title="Ampliar" rel="{iInstitucionId}" class="i mi expand ihover ampliarInstitucion mari"></span>
-                            <span title="Editar" rel="{iInstitucionId}" class="i bs edit ihover editarInstitucion mari"></span>
+                            <span title="Ampliar" rel="{iSoftwareId}" class="i mi expand ihover ampliarSoftware mari"></span>
+                            <span title="Editar" rel="{iSoftwareId}" class="i bs edit ihover editarSoftware mari"></span>
                         </td>
                     </tr>
-                    <tr class="{iInstitucionId}">
-                        <td id="desplegable_{iInstitucionId}" class="pa0" colspan="5" style="display:none;">
+                    <tr class="{iSoftwareId}">
+                        <td id="desplegable_{iSoftwareId}" class="pa0" colspan="5" style="display:none;">
                             <article class="nested clearrm mabo0 po_re">
                                 <div class="ajax_wait30 di_no"></div>
                                 <header>
-                                    <h2>Denuncias instituci&oacute;n Id: {iInstitucionId}</h2>
+                                    <h2>Denuncias aplicaci&oacute;n Id: {iSoftwareId}</h2>
                                 </header>
                                 <section>
                                     <table>
@@ -292,7 +304,7 @@
                                                 <th class="iveal">Mensaje</th>
                                             </tr>
                                         </thead>
-                                        <!--BeginDenunciaHistorialInstitucionBlock-->
+                                        <!--BeginDenunciaHistorialSoftwareBlock-->
                                         <tr>
                                             <td>
                                                 <img src="{scrAvatarAutor}" class="pari" />
@@ -302,17 +314,17 @@
                                             <td class="small"><strong>{sRazonDenuncia}</strong></td>
                                             <td class="teal_le">{sMensaje}</td>
                                         </tr>
-                                        <!--EndDenunciaHistorialInstitucionBlock-->
+                                        <!--EndDenunciaHistorialSoftwareBlock-->
                                     </table>
                                 </section>
                                 <section class="teal_le">
-                                    <button class="blue limpiarDenunciasInstitucion" rel="{iInstitucionId}">Limpiar Denuncias</button>
-                                    <button rel="{iInstitucionId}" class="red borrarInstitucionPorDenuncias">Eliminar Instituci&oacute;n</button>
+                                    <button class="blue limpiarDenunciasSoftware" rel="{iSoftwareId}">Limpiar Denuncias</button>
+                                    <button rel="{iSoftwareId}" class="red borrarSoftwarePorDenuncias">Eliminar Aplicaci&oacute;n</button>
                                 </section>
                             </article>
                         </td>
                     </tr>
-                <!--EndInstitucionDenunciaBlock-->
+                <!--EndSoftwareDenunciaBlock-->
                 <!--BeginNoRecordsDenunciasBlock-->
                     <tr>
                         <td colspan="5">{sNoRecords}</td>

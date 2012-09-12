@@ -116,7 +116,7 @@
             <a class="button-link blue asociarParametroUsuarios" href="javascript:;" rel="tooltip" original-title="Asociar par&aacute;metro a los usuarios del sistema">Asociar par&aacute;metro usuarios</a>
         </li>
         <li>
-            <a class="button-link blue eliminarParametroUsuarios" href="javascript:;" rel="tooltip" original-title="Eliminar asociaci&oacute;n entre un par&aacute;metro y los usuarios">Eliminar par&aacute;metro usuarios</a>
+            <a class="button-link blue eliminarParametroUsuarios" href="javascript:;" rel="tooltip" original-title="Eliminar asociaci&oacute;n entre un par&aacute;metro y los usuarios del sistema">Eliminar par&aacute;metro usuarios</a>
         </li>
     </ul>
 </div>
@@ -134,7 +134,7 @@
         </thead>
         <tbody>
         <!--BeginParametroBlock-->
-            <tr class="{iParametroId} {iGrupoId}">
+            <tr class="{iParametroId}">
                 <td class="teal_le pale">
                     <strong>{sKey}</strong>
                 </td>
@@ -349,16 +349,15 @@
 </article>
 <!--EndFormularioParametroControladorBlock-->
 
-<!--BeginFormularioParametroUsuarioBlock-->
+<!--BeginFormularioAsociarParametroUsuariosBlock-->
 <article class="full-block clearfix">
     <header>
-        <h2>{sTituloForm} Asociaci&oacute;n Par&aacute;metro-Usuario</h2>
+        <h2>Asociaciar Par&aacute;metro a todos los usuarios del sistema</h2>
     </header>
 
-    <form id="formParametroUsuario" name="formParametroUsuario" action="" method="post">
+    <form id="formParametroUsuarios" name="formParametroUsuarios" action="" method="post">
         <div class="ajax_wait30 di_no"></div>
 
-        <!--BeginCrearAsociacionUsuarioBlock-->
         <dt>
             <label for="parametro">Parametro</label>
         </dt>
@@ -371,22 +370,31 @@
             </select>
         </dd>
         <dt>
-            <label for="usuario">Usuario</label>
+            <label for="valor">Valor por defecto</label>
         </dt>
         <dd>
-            <div class="autoComplete">
-                <div class="innerAutoComplete">
-                    <div id='usuario_loading' class="i ajax_wait16 di_no"></div>
-                    <span rel="tooltip" original-title="Quitar usuario" id='usuario_clean' class='i bs close ihover di_no'></span>
-                    <input type="text" name="iUsuarioIdForm" id="usuario" title="usuario" maxlength="60" value="" />
-                    <input type="hidden" name="usuarioId" id="usuarioId" value="" />
-                </div>
-            </div>
-            <p>Utilice el Apellido para buscar</p>
+            <input maxlength="255" name="valor" id="valor" type="text" class="large" value="{sValor}">
         </dd>
-        <!--EndCrearAsociacionUsuarioBlock-->
 
-        <!--BeginModificarAsociacionUsuarioBlock-->
+        <div style="display:none"  id='msg_form_parametroUsuarios' class="notification mabo2">
+            <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+            <p class="msg"></p>
+        </div>
+
+        <button id="crearAsociacionParametroUsuarios" name="crearAsociacionParametroUsuarios" type="submit">Asociar Parametro Usuarios</button>
+    </form>
+</article>
+<!--EndFormularioAsociarParametroUsuariosBlock-->
+
+<!--BeginFormularioModificarParametroUsuarioBlock-->
+<article class="full-block clearfix">
+    <header>
+        <h2>Modificar valor Par&aacute;metro Usuario</h2>
+    </header>
+
+    <form id="formModificarParametroUsuario" name="formModificarParametroUsuario" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+
         <dt>
             <label>Parametro</label>
         </dt>
@@ -401,8 +409,6 @@
         <dd>
             <input readonly="readonly" id="usuario" type="text" class="medium readonly" value="{sNombreUsuario}">
         </dd>
-        <!--EndModificarAsociacionUsuarioBlock-->
-
         <dt>
             <label for="valor">Valor</label>
         </dt>
@@ -410,20 +416,14 @@
             <input maxlength="255" name="valor" id="valor" type="text" class="large" value="{sValor}">
         </dd>
 
-        <div style="display:none"  id='msg_form_parametroUsuario' class="notification mabo2">
+        <div style="display:none"  id='msg_form_modificarParametroUsuario' class="notification mabo2">
             <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
             <p class="msg"></p>
         </div>
 
-        <!--BeginSubmitCrearAsociacionUsuarioBlock-->
-        <button id="crearAsociacionUsuario" name="crearAsociacionUsuario" type="submit">Asociar Parametro Usuario</button>
-        <!--EndSubmitCrearAsociacionUsuarioBlock-->
-
-        <!--BeginSubmitModificarAsociacionUsuarioBlock-->
-        <button id="modificarAsociacionUsuario" name="modificarAsociacionUsuario" type="submit">Modificar Valor Usuario</button>
+        <button id="modificarParametroUsuario" name="modificarParametroUsuario" type="submit">Modificar Valor</button>
         <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
         <input type="hidden" value="{iUsuarioId}" name="iUsuarioIdForm" id="iUsuarioIdForm" />
-        <!--EndSubmitModificarAsociacionUsuarioBlock-->
     </form>
 </article>
-<!--EndFormularioParametroUsuarioBlock-->
+<!--EndFormularioModificarParametroUsuarioBlock-->

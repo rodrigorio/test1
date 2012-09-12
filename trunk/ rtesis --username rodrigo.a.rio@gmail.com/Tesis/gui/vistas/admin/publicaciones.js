@@ -795,6 +795,94 @@ function borrarFotoPerfil(iUsuarioId){
     }
 }
 
+function limpiarDenunciasPublicacion(iPublicacionId){
+
+    if(confirm("Se limpiaran todas las denuncias realizadas por los integrantes de la comunidad, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"admin/publicaciones-denuncias-procesar",
+            data:{
+                iPublicacionId:iPublicacionId,
+                limpiarDenuncias:"1"
+            },
+            beforeSend: function(){
+                setWaitingStatus('desplegable_'+iPublicacionId, true);
+            },
+            success:function(data){
+                setWaitingStatus('desplegable_'+iPublicacionId, false);
+                if(data.success != undefined && data.success == 1){
+                    $("."+iPublicacionId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Limpiar Denuncias");
+                }else{
+                    dialog = $('<div id="dialog" title="Limpiar Denuncias"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarPublicacionPorDenuncias(iPublicacionId){
+
+    if(confirm("Se borrara la publicación del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"admin/publicaciones-denuncias-procesar",
+            data:{
+                iPublicacionId:iPublicacionId,
+                eliminar:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iPublicacionId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Publicación");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Publicación"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
@@ -812,6 +900,16 @@ $(document).ready(function(){
           this.reset();
         });
         return false;
+    });
+
+    $(".borrarPublicacionPorDenuncias").live('click', function(){
+        var iPublicacionId = $(this).attr("rel");
+        borrarPublicacionPorDenuncias(iPublicacionId);
+    });
+
+    $(".limpiarDenunciasPublicacion").live('click', function(){
+        var iPublicacionId = $(this).attr("rel");
+        limpiarDenunciasPublicacion(iPublicacionId);
     });
 
     $(".editarPublicacion").live('click', function(){
