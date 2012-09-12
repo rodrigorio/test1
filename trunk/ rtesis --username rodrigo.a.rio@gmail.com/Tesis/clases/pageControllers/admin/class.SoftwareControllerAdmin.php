@@ -999,7 +999,6 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
                     $oUsuario = $oSoftware->getUsuario();
                     $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
-
                     $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
 
                     $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
@@ -1059,28 +1058,36 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "widgetsContent", "HeaderDenunciasBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "mainContent", "ListadoDenunciasBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "widgetsContent", "HeaderDenunciasBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "mainContent", "ListadoDenunciasBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
             $iRecordsTotal = 0;
-            $aInstituciones = AdminController::getInstance()->buscarInstitucionesDenuncias($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            $aSoftware = AdminController::getInstance()->buscarSoftwareDenuncias($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
 
-            if(count($aInstituciones) > 0){
+            if(count($aSoftware) > 0){
 
-                foreach($aInstituciones as $oInstitucion){
+                foreach($aSoftware as $oSoftware){
 
-                    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+                    $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
 
-                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
-                    $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
-                    $this->getTemplate()->set_var("sUbicacion", $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre());
-                    $this->getTemplate()->set_var("sEmail", $oInstitucion->getEmail());
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
 
-                    $aDenuncias = $oInstitucion->getDenuncias();
+                    $oUsuario = $oSoftware->getUsuario();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                    $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+
+                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                    $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                    $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+
+                    $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
+                    $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
+                                                                                                                      
+                    $aDenuncias = $oSoftware->getDenuncias();
 
                     $this->getTemplate()->set_var("iCantDenuncias", count($aDenuncias));
 
@@ -1100,24 +1107,24 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                         $this->getTemplate()->set_var("sMensaje", $sMensaje);
                         $this->getTemplate()->set_var("iDenunciaId", $oDenuncia->getId());
 
-                        $this->getTemplate()->parse("DenunciaHistorialInstitucionBlock", true);
+                        $this->getTemplate()->parse("DenunciaHistorialSoftwareBlock", true);
                     }
 
-                    $this->getTemplate()->parse("InstitucionDenunciaBlock", true);
-                    $this->getTemplate()->set_var("DenunciaHistorialInstitucionBlock", "");
+                    $this->getTemplate()->parse("SoftwareDenunciaBlock", true);
+                    $this->getTemplate()->set_var("DenunciaHistorialSoftwareBlock", "");
                 }
 
                 $this->getTemplate()->set_var("NoRecordsDenunciasBlock", "");
 
             }else{
-                $this->getTemplate()->set_var("InstitucionModerarBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "noRecords", "NoRecordsDenunciasBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No hay instituciones con denuncias");
+                $this->getTemplate()->set_var("SoftwareDenunciaBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "noRecords", "NoRecordsDenunciasBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay aplicaciones denunciadas");
                 $this->getTemplate()->parse("noRecords", false);
             }
 
             $params[] = "masDenuncias=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/instituciones-denuncias-procesar", "listadoDenunciasResult", $params);
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/software-denuncias-procesar", "listadoDenunciasResult", $params);
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
@@ -1149,69 +1156,66 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     }
 
     /**
-     * Agrega el envio de mail notificando al usuario administrador (si es que poseia)
-     * que la institucion fue eliminada del sistema por acumulacion de denuncias.
+     * Agrega el envio de mail notificando al usuario que creo la aplicacion
+     * que fue eliminada del sistema por acumulacion de denuncias.
      */
     private function eliminarPorDenuncias()
     {
-        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
-        if(empty($iInstitucionId)){
+        $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
         try{
-            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
 
-            //tiene administrador?
-            if(null !== $oInstitucion->getUsuario())
-            {
-                //el usuario tiene activadas las notificaciones por mail?
-                //lo tengo que levantar asi porque NO es el usuario que inicio sesion.
-                $oParametroUsuario = AdminController::getInstance()->getParametroUsuarioByNombre('NOTIFICACIONES_MAIL', $oInstitucion->getUsuario()->getId());
+            $oUsuario = $oSoftware->getUsuario();
+            
+            //el usuario tiene activadas las notificaciones por mail?
+            //lo tengo que levantar asi porque NO es el usuario que inicio sesion.
+            $oParametroUsuario = AdminController::getInstance()->getParametroUsuarioByNombre('NOTIFICACIONES_MAIL', $oUsuario->getId());
 
-                //porque es booleano
-                if($oParametroUsuario->getValor()){
+            //porque es booleano
+            if($oParametroUsuario->getValor()){
 
-                    $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
-                    $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
-                    $mailContacto = $parametros->obtener('EMAIL_SITIO_CONTACTO');
+                $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+                $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+                $mailContacto = $parametros->obtener('EMAIL_SITIO_CONTACTO');
 
-                    //envio mail al usuario administrador de la institucion
-                    $sMailDestino = $oInstitucion->getUsuario()->getEmail();
-                    $hrefSitio = htmlentities($this->getRequest()->getBaseTagUrl());
+                $sMailDestino = $oUsuario->getEmail();
+                $hrefSitio = htmlentities($this->getRequest()->getBaseTagUrl());
 
-                    //link externo para desactivar notificaciones de mail
-                    $hrefCancelarSuscripcion = htmlentities($hrefSitio."desactivar-notificaciones-mail?id=".$oInstitucion->getUsuario()->getId()."&key=".$oInstitucion->getUsuario()->getUrlTokenKey());
+                //link externo para desactivar notificaciones de mail
+                $hrefCancelarSuscripcion = htmlentities($hrefSitio."desactivar-notificaciones-mail?id=".$oUsuario->getId()."&key=".$oUsuario->getUrlTokenKey());
 
-                    $this->getTemplate()->load_file("gui/templates/index/frameMail01-01.gui.html", "frameMail");
+                $this->getTemplate()->load_file("gui/templates/index/frameMail01-01.gui.html", "frameMail");
 
-                    //head y footer mail.
-                    $this->getTemplate()->set_var("hrefSitio", $hrefSitio);
-                    $this->getTemplate()->set_var("sNombreSitio", $nombreSitio." - Comunidad");
-                    $this->getTemplate()->set_var("sEmailDestino", $sMailDestino);
-                    $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
-                    $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
+                //head y footer mail.
+                $this->getTemplate()->set_var("hrefSitio", $hrefSitio);
+                $this->getTemplate()->set_var("sNombreSitio", $nombreSitio." - Comunidad");
+                $this->getTemplate()->set_var("sEmailDestino", $sMailDestino);
+                $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
+                $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
 
-                    $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeBlock");
 
-                    $sTituloMensaje = htmlentities("Institución eliminada de la comunidad.");
-                    $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
+                $sTituloMensaje = htmlentities("Aplicación eliminada de la comunidad.");
+                $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
 
-                    $sNombreUsuario = $oInstitucion->getUsuario()->getNombre()." ".$oInstitucion->getUsuario()->getApellido();
-                    $sNombreInstitucion = $oInstitucion->getNombre();
-                    $sMensaje = htmlentities($sNombreUsuario." le informamos que la institución '".$sNombreInstitucion."' fue revisada y eliminada de la comunidad por uno de nuestros moderadores debido a acumulación de denuncias.");
+                $sNombreUsuario = $oUsuario->getNombre()." ".$oUsuario->getApellido();
+                $sTituloSoftware = $oSoftware->getTitulo();
+                $sMensaje = htmlentities($sNombreUsuario." le informamos que la aplicación '".$sTituloSoftware."' fue revisada y eliminada de la comunidad por uno de nuestros moderadores debido a acumulación de denuncias.");
 
-                    $this->getTemplate()->set_var("sMensaje", $sMensaje);
+                $this->getTemplate()->set_var("sMensaje", $sMensaje);
 
-                    $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
+                $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
 
-                    $this->getMailerHelper()->sendMail($mailContacto, $nombreSitio." - Comunidad", $sMailDestino, $sNombreUsuario, "Institucion eliminada de la comunidad.", $sMensajeBody);
-                }
+                $this->getMailerHelper()->sendMail($mailContacto, $nombreSitio." - Comunidad", $sMailDestino, $sNombreUsuario, "Aplicacion eliminada de la comunidad.", $sMensajeBody);
             }
         }catch(Exception $e){
             //hubo un error en el envio de mail.
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $msg = "Ocurrio un error, no se ha eliminado la institucion del sistema. No se pudo enviar el mail de notificacion al usuario administrador de la institución";
+            $msg = "Ocurrio un error, no se ha eliminado la aplicación del sistema. No se pudo enviar el mail de notificación al usuario autor de la aplicación";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
@@ -1221,34 +1225,42 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             return;
         }
 
-        //si se envio bien el mail entonces elimino la institucion
-        $this->eliminarInstitucion();
+        //si se envio bien el mail entonces elimino la aplicacion
+        $this->borrarSoftware();
     }
 
     private function masDenuncias()
     {
         try{
-            $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "ajaxGrillaDenunciasBlock", "GrillaDenunciasBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "ajaxGrillaDenunciasBlock", "GrillaDenunciasBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
             $iRecordsTotal = 0;
-            $aInstituciones = AdminController::getInstance()->buscarInstitucionesDenuncias($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+            $aSoftware = AdminController::getInstance()->buscarSoftwareDenuncias($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
 
-            if(count($aInstituciones) > 0){
+            if(count($aSoftware) > 0){
 
-                foreach($aInstituciones as $oInstitucion){
+                foreach($aSoftware as $oSoftware){
 
-                    $this->getTemplate()->set_var("iInstitucionId", $oInstitucion->getId());
+                    $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
 
-                    $this->getTemplate()->set_var("sNombre", $oInstitucion->getNombre());
-                    $this->getTemplate()->set_var("sTipo", $oInstitucion->getNombreTipoInstitucion());
-                    $this->getTemplate()->set_var("sUbicacion", $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getNombre().", ".$oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre());
-                    $this->getTemplate()->set_var("sEmail", $oInstitucion->getEmail());
+                    $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
 
-                    $aDenuncias = $oInstitucion->getDenuncias();
+                    $oUsuario = $oSoftware->getUsuario();
+                    $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
+                    $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
+
+                    $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
+                    $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
+                    $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
+
+                    $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
+                    $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
+
+                    $aDenuncias = $oSoftware->getDenuncias();
 
                     $this->getTemplate()->set_var("iCantDenuncias", count($aDenuncias));
 
@@ -1268,24 +1280,24 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                         $this->getTemplate()->set_var("sMensaje", $sMensaje);
                         $this->getTemplate()->set_var("iDenunciaId", $oDenuncia->getId());
 
-                        $this->getTemplate()->parse("DenunciaHistorialInstitucionBlock", true);
+                        $this->getTemplate()->parse("DenunciaHistorialSoftwareBlock", true);
                     }
 
-                    $this->getTemplate()->parse("InstitucionDenunciaBlock", true);
-                    $this->getTemplate()->set_var("DenunciaHistorialInstitucionBlock", "");
+                    $this->getTemplate()->parse("SoftwareDenunciaBlock", true);
+                    $this->getTemplate()->set_var("DenunciaHistorialSoftwareBlock", "");
                 }
 
                 $this->getTemplate()->set_var("NoRecordsDenunciasBlock", "");
 
             }else{
-                $this->getTemplate()->set_var("InstitucionModerarBlock", "");
-                $this->getTemplate()->load_file_section("gui/vistas/admin/instituciones.gui.html", "noRecords", "NoRecordsDenunciasBlock");
-                $this->getTemplate()->set_var("sNoRecords", "No se encontraron instituciones denunciadas");
+                $this->getTemplate()->set_var("SoftwareDenunciaBlock", "");
+                $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "noRecords", "NoRecordsDenunciasBlock");
+                $this->getTemplate()->set_var("sNoRecords", "No hay aplicaciones denunciadas");
                 $this->getTemplate()->parse("noRecords", false);
             }
 
             $paramsPaginador[] = "masDenuncias=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/instituciones-denuncias-procesar", "listadoDenunciasResult", $paramsPaginador);
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/software-denuncias-procesar", "listadoDenunciasResult", $paramsPaginador);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaDenunciasBlock', false));
         }catch(Exception $e){
@@ -1295,30 +1307,30 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
     private function limpiarDenuncias()
     {
-        $iInstitucionId = $this->getRequest()->getParam('iInstitucionId');
-        if(empty($iInstitucionId)){
+        $iSoftwareId = $this->getRequest()->getParam('iSoftwareId');
+        if(empty($iSoftwareId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            $oInstitucion = ComunidadController::getInstance()->getInstitucionById($iInstitucionId);
-            $result = AdminController::getInstance()->limpiarDenuncias($oInstitucion);
+            $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
+            $result = AdminController::getInstance()->limpiarDenuncias($oSoftware);
 
             $this->restartTemplate();
 
             if($result){
-                $msg = "Se limpiaron las denuncias para la institución.";
+                $msg = "Se limpiaron las denuncias para la aplicación.";
                 $bloque = 'MsgCorrectoBlockI32';
                 $this->getJsonHelper()->setSuccess(true);
             }else{
-                $msg = "Ocurrio un error, no se han limpiado las denuncias para la institución.";
+                $msg = "Ocurrio un error, no se han limpiado las denuncias para la aplicación.";
                 $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);
             }
 
         }catch(Exception $e){
-            $msg = "Ocurrio un error, no se han limpiado las denuncias para la institución.";
+            $msg = "Ocurrio un error, no se han limpiado las denuncias para la aplicación.";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
         }

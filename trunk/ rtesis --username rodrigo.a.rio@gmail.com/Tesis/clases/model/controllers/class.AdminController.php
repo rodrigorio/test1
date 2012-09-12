@@ -527,7 +527,7 @@ class AdminController
         }
     }
 
-    public function  obtenerDenunciasInstitucion($iInstitucionId)
+    public function obtenerDenunciasInstitucion($iInstitucionId)
     {
         try{
             $filtro["d.instituciones_id"] = $iInstitucionId;
@@ -539,7 +539,7 @@ class AdminController
         }
     }
 
-    public function  obtenerDenunciasFicha($iFichaId)
+    public function obtenerDenunciasFicha($iFichaId)
     {
         try{
             $filtro["d.fichas_abstractas_id"] = $iFichaId;
@@ -563,6 +563,32 @@ class AdminController
             throw new Exception($e);
         }
     }
+
+    public function buscarSoftwareDenuncias($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            //genero el filtro con al menos 1 denuncia.
+            $filtro["minDenuncias"] = "1";
+
+            $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
+            return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function buscarPublicacionesDenuncias($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            //genero el filtro con al menos 1 denuncia.
+            $filtro["minDenuncias"] = "1";
+
+            $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
+            return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+        }catch (Exception $e){
+            throw new Exception($e);
+        }
+    } 
 
     /**
      *
