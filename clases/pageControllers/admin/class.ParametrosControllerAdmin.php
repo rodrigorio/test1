@@ -174,7 +174,7 @@ class ParametrosControllerAdmin extends PageControllerAbstract
      */
     public function listarParametrosAsociadosUsuarios()
     {
-
+        
     }
 
     public function procesar()
