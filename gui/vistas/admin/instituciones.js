@@ -679,6 +679,5 @@ $(document).ready(function(){
                 }
             });
         }
-    });
-    
+    });    
 }); 

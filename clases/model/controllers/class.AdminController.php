@@ -926,16 +926,15 @@ class AdminController
     }
     
     /**
-     * Este metodo indica si un parametro se encuentra asociado al usuario o no.
+     * Indica si un parametro esta asociado a los usuarios del sistema
      */
-    public function existeParametroUsuario($iParametroId, $iUsaurioId)
+    public function existeParametroUsuarios($iParametroId)
     {
         try{
-            $filtro = array("pu.parametros_id" => $iParametroId,
-                            "pu.usuarios_id" => $iUsaurioId);
+            $filtro = array("pu.parametros_id" => $iParametroId);
             
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
-            return $oParametrosIntermediary->existeParametroUsuario($filtro);
+            return $oParametrosIntermediary->existeParametroUsuarios($filtro);
         }catch(Exception $e){
            throw new Exception($e);
         }
@@ -976,6 +975,22 @@ class AdminController
             throw new Exception($e);
         }
     }
+    /**
+     * recibe un ParametroUsuario con un valor por defecto.
+     * se asocia a todos los usuarios del sistema con ese valor.
+     */
+    public function asociaParametroUsuariosSistema($oParametroUsuario)
+    {
+        try{
+            $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
+            return $oParametrosIntermediary->asociaParametroUsuariosSistema($oParametroUsuario);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    /**
+     * guarda una instancia de ParametroUsuario asociado a un usuario en particular
+     */
     public function guardarParametroUsuario($oParametroUsuario)
     {
         try{

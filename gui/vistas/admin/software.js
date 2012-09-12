@@ -554,6 +554,94 @@ function borrarFotoPerfil(iUsuarioId){
     }
 }
 
+function limpiarDenunciasSoftware(iSoftwareId){
+
+    if(confirm("Se limpiaran todas las denuncias realizadas por los integrantes de la comunidad, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"admin/software-denuncias-procesar",
+            data:{
+                iSoftwareId:iSoftwareId,
+                limpiarDenuncias:"1"
+            },
+            beforeSend: function(){
+                setWaitingStatus('desplegable_'+iSoftwareId, true);
+            },
+            success:function(data){
+                setWaitingStatus('desplegable_'+iSoftwareId, false);
+                if(data.success != undefined && data.success == 1){
+                    $("."+iSoftwareId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Limpiar Denuncias");
+                }else{
+                    dialog = $('<div id="dialog" title="Limpiar Denuncias"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarSoftwarePorDenuncias(iSoftwareId){
+
+    if(confirm("Se borrara la aplicación del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"admin/software-denuncias-procesar",
+            data:{
+                iSoftwareId:iSoftwareId,
+                eliminar:"1"
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iSoftwareId).remove();
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Aplicación");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Aplicación"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
 
     $("a[rel^='prettyPhoto']").prettyPhoto();
@@ -571,6 +659,16 @@ $(document).ready(function(){
           this.reset();
         });
         return false;
+    });
+
+    $(".borrarSoftwarePorDenuncias").live('click', function(){
+        var iSoftwareId = $(this).attr("rel");
+        borrarSoftwarePorDenuncias(iSoftwareId);
+    });
+
+    $(".limpiarDenunciasSoftware").live('click', function(){
+        var iSoftwareId = $(this).attr("rel");
+        limpiarDenunciasSoftware(iSoftwareId);
     });
 
     $(".editarSoftware").live('click', function(){
