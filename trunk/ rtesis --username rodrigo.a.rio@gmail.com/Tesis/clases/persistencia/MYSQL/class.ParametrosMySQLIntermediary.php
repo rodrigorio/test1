@@ -433,7 +433,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
         }
     }
 
-    public function existeParametroUsuario($filtro)
+    public function existeParametroUsuarios($filtro)
     {
         try{
             $db = $this->conn;
@@ -442,7 +442,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        parametro_x_usuario pu
+                        parametros_usuario pu
                     WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
@@ -605,6 +605,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
     public function actualizarParametroUsuario($oParametroUsuario)
     {
         try{
@@ -620,6 +621,52 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
 
             return true;
 
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     *
+     * Este metodo inserta en la tabla parametros_usuario que es la tabla
+     * donde se guarda una copia de todos los parametros que se van a asociar automaticamente
+     * a un nuevo usuario registrado en el sistema.
+     *
+     * Tambien crea la asociacion en la tabla parametro_x_usuario para todos los usuarios
+     * ya existentes.
+     *
+     * en ambos casos inserta con el valor por defecto contenido en $oParametroUsuario->getValor()
+     *
+     * @param ParametroUsuario $oParametroUsuario posee solo id del parametro y valor (valor por defecto para todos los usuarios)
+     *
+     */
+    public function asociaParametroUsuariosSistema($oParametroUsuario)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $iParametroId = $oParametroUsuario->getId();
+            $sValorDefecto = $oParametroUsuario->getValor();
+
+            $sSQL = "INSERT INTO parametros_usuario SET 
+                        parametros_id = '".$iParametroId."', 
+                        valorDefecto = '".$sValorDefecto."' ";
+
+            $db->execSQL($sSQL);
+
+            //asocio el parametro a los usuarios existentes con valor por defecto
+            
+            $sSQL = "INSERT INTO parametro_x_usuario (parametros_id, usuarios_id, valor)
+                     SELECT ".$iParametroId.", id, ".$sValorDefecto." FROM usuarios ";
+
+            $db->execSQL($sSQL);
+
+            $db->commit();
+
+            return true;
+            
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
@@ -658,6 +705,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
     public function borrarParametroUsuario($oParametroUsuario)
     {
         try{
@@ -672,6 +720,38 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             return true;
 
         }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Elimina la asociacion entre un parametro y todos los usuarios del sistema.
+     *
+     * Se elimina la relacion para los usuarios existentes y tambien se elimina de la tabla
+     * que tiene la copia de parametros para usuarios con valores por defecto
+     * para que no se asigne a los nuevos usuarios registrados.
+     * 
+     */
+    public function eliminarAsociacionParametroUsuarios($iParametroId)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $iParametroId = $this->escInt($iParametroId);
+
+            //esto se hace asi porque si lo hago con borrado en cascada se hace una recursividad
+            //se borra en la tabla parametros->parametros_usuario->parametro_x_usuario
+            //y yo lo que quiero es que no se puedan borrar parametros si tienen relaciones creadas.            
+            $db->execSQL("DELETE FROM parametros_usuario WHERE parametros_id = ".$iParametroId);
+            $db->execSQL("DELETE FROM parametro_x_usuario WHERE parametros_id = ".$iParametroId);
+
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }
     }
