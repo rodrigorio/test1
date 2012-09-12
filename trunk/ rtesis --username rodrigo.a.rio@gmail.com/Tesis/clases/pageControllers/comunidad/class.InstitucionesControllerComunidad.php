@@ -850,6 +850,9 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sNombreTipoInstitucion", $oInstitucion->getNombreTipoInstitucion());
                     $this->getTemplate()->set_var("sCargo", $oInstitucion->getCargo());
 
+                    //mensajes adjuntos. por moderacion y por acumulacion de denuncias.
+                    $sMensajesInstitucion = "";
+
                     if($oInstitucion->getModeracion()->isPendiente()){
                         $cartelModeracion = "MsgFichaInfoBlock";
                         $tituloModeracion = "Moderación Pendiente";
@@ -868,11 +871,23 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                         $mensajeModeracion = "La institución es visible para cualquier visitante fuera de la comunidad de profesionales, su contenido fue aprobado.";
                     }
 
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucion", $cartelModeracion);
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucionModeracion", $cartelModeracion);
                     $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                     $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                    $this->getTemplate()->parse("sMensajeInstitucion", false);
+                    $sMensajesInstitucion = $this->getTemplate()->pparse("sMensajeInstitucionModeracion");
 
+                    //puede agregarse un mensaje por acumulacion de denuncias.
+                    $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+                    $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+                    if(count($oInstitucion->getDenuncias()) >= $iCantMaxDenuncias){
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucionDenuncias", "MsgFichaErrorBlock");
+                        $this->getTemplate()->set_var("sTituloMsgFicha", "Acumulación de denuncias");
+                        $this->getTemplate()->set_var("sMsgFicha", "La institución se ha quitado de los listados temporalmente por acumulación de denuncias.");
+                        $sMensajesInstitucion .= $this->getTemplate()->pparse("sMensajeInstitucionDenuncias");
+                    }
+
+                    $this->getTemplate()->set_var("sMensajeInstitucion", $sMensajesInstitucion);
+                    
                     $this->getTemplate()->parse("MiInstitucionBlock", true);
 
                     $this->getTemplate()->set_var("sMensajeInstitucion","");

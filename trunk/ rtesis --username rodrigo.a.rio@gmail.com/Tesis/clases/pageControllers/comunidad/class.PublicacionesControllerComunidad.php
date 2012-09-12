@@ -284,7 +284,9 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
                     $this->getTemplate()->set_var("sPublico", $sPublico);
 
+                    //los mensajes pueden ser por moderacion y por acumulacion de denuncias.
                     //si esta marcada como publica muestro cartel segun moderacion
+                    $sMensajesPublicacion = "";
                     if($bPublico){
                         if($oFicha->getModeracion()->isPendiente()){
                             $cartelModeracion = "MsgFichaInfoBlock";
@@ -304,11 +306,24 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                             $mensajeModeracion = "La publicación esta marcada como visible para visitantes fuera de la comunidad, su contenido esta aprobado.";
                         }
 
-                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", $cartelModeracion);
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacionModeracion", $cartelModeracion);
                         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                         $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
-                        $this->getTemplate()->parse("sMensajePublicacion", false);
+                        $this->getTemplate()->parse("sMensajePublicacionModeracion");
+                        $sMensajesPublicacion = $this->getTemplate()->pparse("sMensajePublicacionModeracion");
                     }
+
+                    //puede agregarse un mensaje por acumulacion de denuncias.
+                    $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+                    $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+                    if(count($oFicha->getDenuncias()) >= $iCantMaxDenuncias){
+                        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacionDenuncias", "MsgFichaErrorBlock");
+                        $this->getTemplate()->set_var("sTituloMsgFicha", "Acumulación de denuncias");
+                        $this->getTemplate()->set_var("sMsgFicha", "La publicación se ha quitado de los listados temporalmente por acumulación de denuncias.");
+                        $sMensajesPublicacion .= $this->getTemplate()->pparse("sMensajePublicacionDenuncias");
+                    }
+
+                    $this->getTemplate()->set_var("sMensajePublicacion", $sMensajesPublicacion);
 
                     $this->getTemplate()->set_var("sActivoComentarios", $sActivoComentarios);
 
