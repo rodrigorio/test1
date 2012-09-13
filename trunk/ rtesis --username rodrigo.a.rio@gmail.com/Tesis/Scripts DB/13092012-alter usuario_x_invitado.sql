@@ -1,0 +1,1 @@
+ALTER TABLE `tesis`.`usuario_x_invitado` CHANGE `relacion` `relacion` VARCHAR(500) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
