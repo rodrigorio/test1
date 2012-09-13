@@ -1,0 +1,1 @@
+ALTER TABLE `tesis`.`diagnosticos_scc`     CHANGE `areas_id` `areas_id` INT(11) NULL  COMMENT 'estado inicial';

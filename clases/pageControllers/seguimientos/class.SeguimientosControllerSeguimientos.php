@@ -1792,7 +1792,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
          	  		}
 	                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
 	                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-	                $this->getTemplate()->parse("OptionPracticaBlock", true);
+	                $this->getTemplate()->parse("NivelesListBlock", true);
             	}
          	}
          	
