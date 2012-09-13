@@ -233,5 +233,5 @@ abstract class SeguimientoAbstract
     }
     
     abstract public function getObjetivos();
-    abstract public function setObjetivos();
+    abstract public function setObjetivos($vObjetivos);
 }
