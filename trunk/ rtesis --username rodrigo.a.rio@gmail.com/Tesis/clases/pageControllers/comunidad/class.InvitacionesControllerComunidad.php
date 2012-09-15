@@ -168,9 +168,7 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->parse("ButtonBlock");
                 $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
 
-                echo $sMensajeBody; exit();
-
-                //$this->getMailerHelper()->sendMail($sMailDesde, $sNombreUsuario, $sMailDestino, $sNombreInvitado, $sNombreUsuario." te ha invitado a ser parte de la comunidad ".$nombreSitio, $sMensajeBody);
+                $this->getMailerHelper()->sendMail($sMailDesde, $sNombreUsuario, $sMailDestino, $sNombreInvitado, $sNombreUsuario." te ha invitado a ser parte de la comunidad ".$nombreSitio, $sMensajeBody);
             }
 
             $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
