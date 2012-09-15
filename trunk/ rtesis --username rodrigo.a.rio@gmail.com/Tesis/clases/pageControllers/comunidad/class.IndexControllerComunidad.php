@@ -60,7 +60,6 @@ class IndexControllerComunidad extends PageControllerAbstract
     static function setCenterHeader(Templates $template){
         $request = FrontController::getInstance()->getRequest();
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $perfilDesc = $perfil->getDescripcion();
         $nombreUsuario = $perfil->getNombreUsuario();
         
         //lo hago asi para no enroscarme porq es un metodo estatico no puedo usar $this
@@ -72,7 +71,7 @@ class IndexControllerComunidad extends PageControllerAbstract
         $template->set_var("hrefEditarPerfil", $request->getBaseUrl().'/comunidad/datos-personales');
         $template->set_var("hrefAdministrador", $request->getBaseUrl().'/admin/home');
         //si no es moderador o admin quito el boton al administrador
-        if($perfilDesc != 'administrador' && $perfilDesc != 'moderador'){
+        if(!$perfil->isAdministrador() && !$perfil->isModerador()){
             $template->set_var("AdministradorButton", "");
         }        
     }

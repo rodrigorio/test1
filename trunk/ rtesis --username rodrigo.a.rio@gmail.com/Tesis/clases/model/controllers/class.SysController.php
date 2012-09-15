@@ -128,7 +128,7 @@ class SysController
     public function cerrarSesion(){
         try{
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            if(get_class($perfil) != 'Visitante'){
+            if(!$perfil->isVisitante()){
                 PluginSession::destruirSesion();
             }
         }catch(Exception $e){

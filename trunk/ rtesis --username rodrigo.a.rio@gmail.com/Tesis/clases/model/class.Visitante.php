@@ -66,4 +66,6 @@ class Visitante extends PerfilAbstract
     {
         throw new Exception("ERROR, luego de loguearse un usuario nunca puede quedar en perfil Visitante");
     }
+
+    public function isVisitante(){ return true; }
 }

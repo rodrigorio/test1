@@ -66,4 +66,8 @@ class Administrador extends PerfilAbstract
             return $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCIONLOGIN_PATH');
         }
     }
+
+    public function isAdministrador(){
+        return true;
+    }
 }

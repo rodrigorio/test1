@@ -74,8 +74,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     {
         try{
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $perfilDesc = $perfil->getDescripcion();
-
+            
             $this->setFrameTemplate()
                  ->setHeadTag();
 
@@ -87,7 +86,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "widgetsContent", "HeaderBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "mainContent", "ListadoUsuariosBlock");
 
-            if($perfilDesc != 'administrador'){
+            if(!$perfil->isAdministrador()){
                 $this->getTemplate()->set_var("PanelAdminBlock", "");
             }
 
@@ -128,8 +127,6 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             	$i=0;
                 foreach($aUsuarios as $oUsuario){
 
-                    $this->getTemplate()->set_var("odd", ($i % 2 == 0) ? "gradeC" : "gradeA");
-
                     $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
                     $this->getTemplate()->set_var("hrefEditarUsuario", $hrefEditarUsuario);
 
@@ -158,10 +155,10 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sPerfil", $sPerfil);
                     $this->getTemplate()->set_var("sEmail", $sEmail);
 
-                    if($perfilDesc != 'administrador'){
-                        $this->getTemplate()->set_var("DeleteButton", "");
-                    }else{
+                    if($perfil->isAdministrador()){
                         $this->getTemplate()->parse("DeleteButton");
+                    }else{
+                        $this->getTemplate()->set_var("DeleteButton", "");
                     }
 
                     $this->getTemplate()->parse("UsuarioBlock", true);
@@ -273,7 +270,6 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     private function masUsuarios()
     {
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $perfilDesc = $perfil->getDescripcion();
         
         $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
         
@@ -325,10 +321,10 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sPerfil", $sPerfil);
                 $this->getTemplate()->set_var("sEmail", $sEmail);
 
-                if($perfilDesc != 'administrador'){
-                    $this->getTemplate()->set_var("DeleteButton", "");
-                }else{
+                if($perfil->isAdministrador()){
                     $this->getTemplate()->parse("DeleteButton");
+                }else{
+                    $this->getTemplate()->set_var("DeleteButton", "");
                 }
 
                 $this->getTemplate()->parse('UsuarioBlock', true);
@@ -685,7 +681,6 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionUsuarios");
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $perfilDesc = $perfil->getDescripcion();
 
             $this->printMsgTop();
 
@@ -750,7 +745,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
                 $usuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
 
-                if($perfilDesc != 'administrador'){
+                if(!$perfil->isAdministrador()){
                     $this->getTemplate()->set_var("PanelAdminFormModifBlock", "");
                 }else{
                     $sPerfilUsuario = AdminController::getInstance()->obtenerDescripcionPerfilUsuario($usuario);

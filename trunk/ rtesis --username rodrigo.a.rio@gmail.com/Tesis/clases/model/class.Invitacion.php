@@ -83,7 +83,7 @@ class Invitacion{
         $this->oUsuario = $oUsuario;
     }
 
-    public function getUsuario($oUsuario)
+    public function getUsuario()
     {
         return $this->oUsuario;
     }
@@ -93,7 +93,7 @@ class Invitacion{
         $this->oInvitado = $oInvitado;
     }
 
-    public function getInvitado($oInvitado)
+    public function getInvitado()
     {
         return $this->oInvitado;
     }

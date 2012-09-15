@@ -24,8 +24,7 @@ class InvitacionMySQLIntermediary extends InvitacionIntermediary
     public function existe($filtro){
     	try{
             $db = $this->conn;
-            $filtro = $this->escapeStringArray($filtro);
-
+            
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
@@ -36,19 +35,19 @@ class InvitacionMySQLIntermediary extends InvitacionIntermediary
                         personas p ON i.id = p.id ";
 
             $WHERE = array();
-            
-            if(isset($filtro['ui.usuarios_id']) && $filtro['ui.usuarios_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('ui.usuarios_id', $filtro['ui.usuarios_id']);
+
+            if(isset($filtro['ui.usuarios_id']) && $filtro['ui.usuarios_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('ui.usuarios_id', $filtro['ui.usuarios_id'], MYSQL_TYPE_INT);
             }            
             if(isset($filtro['p.email']) && $filtro['p.email']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.email', $filtro['p.email']);
             }
             if(isset($filtro['expiracion'])){
-                $WHERE[] = " DATE_SUB(ui.fecha,INTERVAL ".$filtro['expiracion']." DAY) <= now() ";
+                $WHERE[] = " TO_DAYS(NOW()) - TO_DAYS(ui.fecha) <= ".$filtro['expiracion']." ";
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-
+            
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -122,16 +121,23 @@ class InvitacionMySQLIntermediary extends InvitacionIntermediary
                         p.id AS iId,
                         p.email as sEmail
                     FROM
-                        invitados i JOIN personas p ON i.id = p.id ";
+                        personas p JOIN invitados i ON i.id = p.id ";
 
-            if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+
+            if(isset($filtro['p.id']) && $filtro['p.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id']);
             }
+            if(isset($filtro['p.email']) && $filtro['p.email']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.email', $filtro['p.email']);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }
-
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -166,8 +172,8 @@ class InvitacionMySQLIntermediary extends InvitacionIntermediary
             //borro las invitaciones expiradas
             $sSQL = "DELETE FROM usuario_x_invitado 
                      WHERE usuarios_id = ".$iUsuarioId." 
-                     AND DATE_SUB(fecha,INTERVAL ".$iDiasExpiracion." DAY) > now() ";
-
+                     AND TO_DAYS(NOW()) - TO_DAYS(fecha) >= ".$iDiasExpiracion." ";
+                        
             $db->execSQL($sSQL);
             
             //borro los invitados que quedaron sin invitaciones, si es que quedaron

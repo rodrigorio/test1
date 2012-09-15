@@ -46,13 +46,7 @@ class ComunidadController
     public function enviarInvitacion($oInvitacion)
     {
         try{
-            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
-
-            //borro las invitaciones expiradas para el usuario, asi controlo que no se junte basura.
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
-            $oInvitacionIntermediary->borrarInvitacionesExpiradasUsuario($iUsuarioId, $iDiasExpiracion);
-
+            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);                        
             return $oInvitacionIntermediary->insertar($oInvitacion);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -68,13 +62,13 @@ class ComunidadController
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
             $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
-
-            $filtro = array("ui.usuarios_id" => $iUsuarioId,
-                            "p.email" => $sEmail,
-                            "expiracion" => $cantDiasExpiracion);
+            
+            $filtroExiste = array("ui.usuarios_id" => $iUsuarioId,
+                                  "p.email" => $sEmail,
+                                  "expiracion" => $cantDiasExpiracion);
 
             $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
-            return $oInvitacionIntermediary->existe($filtro);
+            return $oInvitacionIntermediary->existe($filtroExiste);
             
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -96,6 +90,18 @@ class ComunidadController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }        
+    }
+
+    public function borrarInvitacionesExpiradasUsuario()
+    {
+        try{
+            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $iDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
+            $oInvitacionIntermediary->borrarInvitacionesExpiradasUsuario($iUsuarioId, $iDiasExpiracion);            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     public function listaPaises($array, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){

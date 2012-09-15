@@ -71,5 +71,7 @@ class IntegranteActivo extends PerfilAbstract
         }else{
             return $parametros->obtener('PERFIL_INTEGRANTEACTIVO_REDIRECCIONLOGIN_PATH');
         }
-    }    
+    }
+
+    public function isIntegranteActivo(){ return true; }
 }
