@@ -1,8 +1,5 @@
 <?php
 
-/**
- *
- */
 class RegistracionControllerIndex extends PageControllerAbstract
 {
     private function validarUrlTemporal(){
