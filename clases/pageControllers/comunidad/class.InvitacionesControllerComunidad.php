@@ -61,9 +61,11 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
 
-            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+            $oPerfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $oUsuario = $oPerfil->getUsuario();
 
-            if($oUsuario->getInvitacionesDisponibles() <= 0){
+            if(!$oPerfil->isAdministrador() && !$oPerfil->isModerador() &&
+               $oUsuario->getInvitacionesDisponibles() <= 0){
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->setMessage("No tiene invitaciones disponibles para enviar.");
                 $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -85,20 +87,23 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
+           
+            ComunidadController::getInstance()->borrarInvitacionesExpiradasUsuario();
 
             $oInvitado = ComunidadController::getInstance()->obtenerInvitadoByEmail($this->getRequest()->getPost('email'));
+            
             if(null !== $oInvitado){
                 //persona que ya fue invitada
-                $oInvitado->setNombre($this->getRequest()->getPost('nombre'));
-                $oInvitado->setApellido($this->getRequest()->getPost('apellido'));
+                $oInvitado->setNombre(ucwords($this->getRequest()->getPost('nombre')));
+                $oInvitado->setApellido(ucwords($this->getRequest()->getPost('apellido')));
             }else{
                 //persona que es invitada por primera vez
                 $oInvitado = new stdClass();
-                $oInvitado->sNombre = $this->getRequest()->getPost('nombre');
-                $oInvitado->sApellido = $this->getRequest()->getPost('apellido');
+                $oInvitado->sNombre = ucwords($this->getRequest()->getPost('nombre'));
+                $oInvitado->sApellido = ucwords($this->getRequest()->getPost('apellido'));
                 $oInvitado->sEmail = $this->getRequest()->getPost('email');
                 $oInvitado = Factory::getInvitadoInstance($oInvitado);
-            }            
+            }
 
             $oInvitacion = new stdClass();
             $oInvitacion->sRelacion = $this->getRequest()->getPost('relacion');
@@ -108,7 +113,7 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
             $oInvitacion->setEstadoPendiente();
 
             $result = ComunidadController::getInstance()->enviarInvitacion($oInvitacion);
-
+            
             //si se dio de alta correctamente la invitacion envio el mail a la persona invitada
             if($result){
                 $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
@@ -133,7 +138,7 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
                 $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
 
-                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeSubMensajeBlock", true);
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeSubMensajeBlock");
 
                 $sTituloMensaje = htmlentities($sNombreInvitado." has recibido una invitación para unirte a la comunidad ".$nombreSitio.".");
                 $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
@@ -153,20 +158,24 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
                                             recursos útiles que puedan usar en su desempeño laboral. El sistema también ofrecerá funcionalidad
                                             participativa a la comunidad en general.");
 
-                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "PanelBotonesBlock");
+                $this->getTemplate()->set_var("sSubMensaje", $sSubMensaje);
 
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "PanelBotonesBlock", true);
 
                 $hrefButton = htmlentities($hrefSitio."registracion?token=".$oInvitacion->getToken());
                 $this->getTemplate()->set_var("sButton", "Registrarme");
-                $this->getTemplate()->set_var("sButton", $hrefButton);
+                $this->getTemplate()->set_var("hrefButton", $hrefButton);
                 $this->getTemplate()->parse("ButtonBlock");
                 $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
 
-                $this->getMailerHelper()->sendMail($sMailDesde, $sNombreUsuario, $sMailDestino, $sNombreInvitado, $sNombreUsuario." te ha invitado a ser parte de la comunidad ".$nombreSitio, $sMensajeBody);
+                echo $sMensajeBody; exit();
+
+                //$this->getMailerHelper()->sendMail($sMailDesde, $sNombreUsuario, $sMailDestino, $sNombreInvitado, $sNombreUsuario." te ha invitado a ser parte de la comunidad ".$nombreSitio, $sMensajeBody);
             }
 
             $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
             $this->getJsonHelper()->setSuccess(true);
+            $this->getJsonHelper()->setValor("cantidadInvitaciones", $oInvitacion->getUsuario()->getInvitacionesDisponibles());
             $this->getJsonHelper()->setMessage("La invitación se ha enviado con éxito al correo indicado, el link de registración expirará dentro de ".$cantDiasExpiracion." días.");
 
         }catch(Exception $e){
@@ -179,13 +188,14 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
 
     public function formulario()
     {
-        $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+        $oPerfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $oUsuario = $oPerfil->getUsuario();        
         $iInvitacionesDisponibles = $oUsuario->getInvitacionesDisponibles();
 
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
         
-        //Si no tiene invitaciones devuelvo un cartel informando.
-        if(empty($iInvitacionesDisponibles)){
+        //Si no es admin o mod y no tiene invitaciones devuelvo un cartel informando.
+        if(!$oPerfil->isAdministrador() && !$oPerfil->isModerador() && empty($iInvitacionesDisponibles)){
             $msg = "No tiene invitaciones disponibles para enviar.";
             $bloque = 'MsgInfoBlockI32';
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);

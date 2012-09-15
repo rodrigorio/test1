@@ -159,16 +159,15 @@ class MYSQL{
 	 * @param bool $bQuote
 	 * @return string
 	 */
-	public function escape($str=null,$bQuote = false){
-		if (is_null($str) || strlen($str) == 0){
-			return "NULL";
-		}
-		if($bQuote){
-			return "'" . mysql_real_escape_string($str) . "'" ;
-		}else{
-			return mysql_real_escape_string($str);
-		}
-
+	public function escape($str=null, $bQuote = false){
+            if (is_null($str) || strlen($str) == 0){
+                    return "NULL";
+            }
+            if($bQuote){
+                    return "'" . mysql_real_escape_string($str) . "'" ;
+            }else{
+                    return mysql_real_escape_string($str);
+            }
 	}
 
 	/**

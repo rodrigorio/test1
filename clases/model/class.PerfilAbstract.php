@@ -29,6 +29,28 @@ abstract class PerfilAbstract
 
     public function __construct(){}
 
+    /**
+     * En la clase Moderador es redeclarada para devolver true.
+     */
+    public function isModerador(){ return false; }
+    /**
+     * En la clase Administrador es redeclarada para devolver true.
+     */
+    public function isAdministrador(){ return false; }
+    /**
+     * En la clase IntegranteActivo es redeclarada para devolver true.
+     */
+    public function isIntegranteActivo(){ return false; }
+    /**
+     * En la clase IntegranteInactivo es redeclarada para devolver true.
+     */
+    public function isIntegranteInactivo(){ return false; }
+    /**
+     * En la clase Visitante es redeclarada para devolver true.
+     */
+    public function isVisitante(){ return false; }
+
+
     public function iniciarPermisos()
     {
         $this->oPermisos = new SessionNamespace('permisos');

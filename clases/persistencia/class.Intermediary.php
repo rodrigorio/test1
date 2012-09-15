@@ -134,15 +134,17 @@ abstract class Intermediary
      * @param int $tipo Constante correspondiente al tipo del contenido del campo
      * @return string
      */
-    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){        
+    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){
         $filtro = "";
         if($valor != ""){
             switch($tipo){
                 case MYSQL_TYPE_STRING: $valor = $this->escStr($valor); break;
                 case MYSQL_TYPE_INT:
-                	$valor = $this->escInt($valor); 
-                	break;
-                case MYSQL_TYPE_FLOAT: $valor = $this->escFloat($valor); break;
+                    $valor = $this->escInt($valor);
+                    break;
+                case MYSQL_TYPE_FLOAT: 
+                    $valor = $this->escFloat($valor);
+                    break;
                 case MYSQL_TYPE_DATE: $valor = $this->escDate($valor); break;
                 default: $valor = $this->escStr($valor);
             }

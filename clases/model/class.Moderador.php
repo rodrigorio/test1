@@ -71,6 +71,10 @@ class Moderador extends PerfilAbstract
         }else{
             return $parametros->obtener('PERFIL_MODERADOR_REDIRECCIONLOGIN_PATH');
         }
-    }    
+    }
+
+    public function isModerador(){
+        return true;
+    }
 }
 

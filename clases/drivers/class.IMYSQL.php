@@ -203,7 +203,7 @@ class IMYSQL implements DB
      * @return string
      */
     public function escape($str = null, $bQuote = false, $iType = MYSQL_TYPE_STRING)
-    {
+    {        
         if(is_null($str) || strlen($str) == 0){
             return "NULL";
         }
@@ -213,7 +213,7 @@ class IMYSQL implements DB
                 $sValue = mysqli_real_escape_string($this->LINK_ID, $str);
                 break;
             case MYSQL_TYPE_INT:
-                $sValue = (int) $str;
+                $sValue = (int)$str;                
                 break;
             case MYSQL_TYPE_FLOAT:
                 $sValue = str_replace(",",".",$str);
