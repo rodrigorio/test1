@@ -594,9 +594,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             return false;
         }
     }
-    
-    public function actualizarCampoArray($objects, $cambios){}
-
+        
     public function registrar(Usuario $oUsuario, $iUserId)
     {
         try{
@@ -672,114 +670,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
         
-    public function sendMail($orig, $dest, $asunto, $body){
-    	  // Varios destinatarios
-            $para  = $dest;
-
-            // subject
-            $titulo = $asunto;
-
-            // message
-            $mensaje = $body;
-
-            // Para enviar un correo HTML mail, la cabecera Content-type debe fijarse
-            $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
-            $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-            // Cabeceras adicionales
-            $cabeceras .= "To: ".$dest. "\r\n";
-            $cabeceras .= 'From: Registracion <'.$orig.'>' . "\r\n";
-            $cabeceras .= 'Cc:' . "\r\n";
-            $cabeceras .= 'Bcc: ' . "\r\n";
-
-            // Mail it
-            if (mail($para, $titulo, $mensaje, $cabeceras)){
-                    return true;
-            }else{
-                    return false;
-            }
-    }
-    
-    /**
-     * 
-     * Enter description here ...
-     * @param unknown_type $iIdUsuario
-     * @param Invitado $oInvitado {
-     * 		nombre
-     * 		apellido
-     * 		email
-     * 		relacion
-     * }
-     * @throws Exception
-     */
-    
-	public function enviarInvitacion($oUsuario , Invitado $oInvitado){
-		
-        try{
-			$db = $this->conn;
-			$db->begin_transaction();
-			$sSQL =	" insert personas set";
-					if($oInvitado->getNombre()){
-						$sSQL .=" nombre =".$db->escape($oInvitado->getNombre(),true).", ";
-					}
-					if($oInvitado->getApellido()){
-                    	$sSQL .=" apellido =".$db->escape($oInvitado->getApellido(),true).", ";
-					}
-			$sSQL .= " email = ".$db->escape($oInvitado->getEmail(),true)." ";
-			$db->execSQL($sSQL);
-			$iUltimoId = $db->insert_id();
-
-			$sSQL 	= " insert invitados ".
-			        " set id= ".$iUltimoId."";
-			$db->execSQL($sSQL);
-			$iIdUsuario = $oUsuario->getId();
-			$time 	= time();
-			$token 	= md5($time);
-			$sSQL =" insert usuario_x_invitado ".
-			        " set usuarios_id= ".$iIdUsuario.", ".
-                    " invitados_id=".$iUltimoId.", ".
-                    " relacion=".$db->escape($oInvitado->getRelacion(),true).",".
-			 		" token=".$db->escape($token,true)."";
-			$db->execSQL($sSQL);
-
-			$sSQL =" update usuarios u ".
-			        " set u.invitacionesDisponibles = u.invitacionesDisponibles-1 ".
-			 		" WHERE u.id= ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)."";
-			$db->execSQL($sSQL);
-
-			$db->commit();
-			
-			$nom 	= $oInvitado->getNombre();
-			$ape 	= $oInvitado->getApellido();
-			$email 	= $oInvitado->getEmail();
-			
-			$body 	= "<p>Usted ha sido invitado por ".$oUsuario->getNombre().", ".$oUsuario->getApellido()."";
-			$body 	.= "<br/> para que pueda integrar la comunidad de profesionales de personas discapacitas, etc, etc.";
-			$body 	.= "<a href='http://www.rodrigorio.com.ar/tesis/registracion?token=$token' > registrate</a>";
-			$body 	.= "</p>";
-			$msg = '
-			<html>
-			<head>
-			  <title>Usted ha sido invitado para registrarse en .....</title>
-			</head>
-			<body>
-			  <p>Haga click en el siguiente enlace para poder registrarse!</p>
-			  <div>'.$body.'</div>
-			</body>
-			</html>
-			';
-			$asunto = "registracion";
-			$dest 	= $oInvitado->getEmail();
-			$orig	= "registracion@sistemadegestion.com";
-			$this->sendMail($orig, $dest, $asunto, $msg);
-			return  true;
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
-    }
-
-
     public function actualizar($oUsuario)
     {       
         try{
@@ -977,7 +867,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
 
-    public function borrar($oUsuario) {
+    public function borrar($oUsuario)
+    {
         try{
             $db = $this->conn;
             $db->execSQL("delete from personas where id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT));
@@ -988,71 +879,79 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
 	
-	public function validarUrlTmp($token){
-		 try{
+    public function validarUrlTmp($token)
+    {
+        try{
             $db = $this->conn;
+
             $sSQL = "SELECT 
-            		  ui.`usuarios_id`,
-					  ui.`invitados_id`,
-					  ui.`relacion`,
-					  ui.`fecha`,
-					  ui.`estado`,
-					  ui.`token`,
-					  p.`email`,
-					  p.`nombre`,
-					  p.`apellido`
-					FROM 
-					  `usuario_x_invitado` ui
-					JOIN
-						usuarios u ON u.id = ui.usuarios_id
-					JOIN
-						personas p ON p.id = ui.invitados_id
-					WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now() 
-						 AND ui.token = ".$db->escape($token,true)." AND ui.estado = 'pendiente' ";
+                        ui.`usuarios_id`,
+                        ui.`invitados_id`,
+                        ui.`relacion`,
+                        ui.`fecha`,
+                        ui.`estado`,
+                        ui.`token`,
+                        p.`email`,
+                        p.`nombre`,
+                        p.`apellido`
+                    FROM
+                        `usuario_x_invitado` ui
+                    JOIN
+                        usuarios u ON u.id = ui.usuarios_id
+                    JOIN
+                        personas p ON p.id = ui.invitados_id
+                    WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now()
+                    AND ui.token = ".$db->escape($token,true)." AND ui.estado = 'pendiente' ";
+
             return $db->getDBObject($sSQL);
-	 	}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
 	
-	public function guardarNuevaContrasenia($iId){
-		try{
-			$db = $this->conn;
-			$time 	= time();
-			$token 	= md5($time);
-			$pass	= substr( md5(microtime()), 1, 8);
-			$oPass = new stdClass();
-			$oPass->nuevaContrasenia = $pass;
-			$oPass->token = $token;
-			$sSQL = " insert into usuarios_datos_temp set ".
+    public function guardarNuevaContrasenia($iId)
+    {
+        try{
+            $db = $this->conn;
+
+            $time 	= time();
+            $token 	= md5($time);
+            $pass	= substr( md5(microtime()), 1, 8);
+            $oPass = new stdClass();
+            $oPass->nuevaContrasenia = $pass;
+            $oPass->token = $token;
+            $sSQL = " insert into usuarios_datos_temp set ".
                     " id=".$db->escape($iId,false,MYSQL_TYPE_INT).", " .
                     " contraseniaNueva=".$db->escape(md5($pass),true).", ".
                     " token=".$db->escape($token,true)." ";
 
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return $oPass;
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
+            $db->execSQL($sSQL);
+            $db->commit();
+            return $oPass;
+        }catch(Exception $e){
+                throw new Exception($e->getMessage(), 0);
+                return false;
+        }
+    }
 	
-	public function validarConfirmacionContrasenia($token){
-		 try{
+    public function validarConfirmacionContrasenia($token)
+    {
+        try{
             $db = $this->conn;
+
             $sSQL = "SELECT 
-            			udt.id as iId, 
-            			udt.contraseniaNueva as sContraseniaNueva
-					FROM 
-					  `usuarios_datos_temp` udt
-					JOIN
-						usuarios u ON udt.id = u.id
-					JOIN
-						personas p ON p.id = udt.id
-					WHERE DATE_SUB(udt.fecha,INTERVAL 5 DAY) <= now() 
-						 AND udt.token = ".$db->escape($token,true)." ";
+                        udt.id as iId,
+                        udt.contraseniaNueva as sContraseniaNueva
+                    FROM
+                      `usuarios_datos_temp` udt
+                    JOIN
+                            usuarios u ON udt.id = u.id
+                    JOIN
+                            personas p ON p.id = udt.id
+                    WHERE DATE_SUB(udt.fecha,INTERVAL 5 DAY) <= now()
+                    AND udt.token = ".$db->escape($token,true)." ";
+
             $objUsuario = $db->getDBObject($sSQL);
             if($objUsuario){
             	$filtro   = array('p.id' => $objUsuario->iId);
@@ -1064,11 +963,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }else{
             	return false;
             }
-	 	}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
 
     public function obtenerPrivacidadCampo($filtro, $nombreCampo)
     {
@@ -1228,4 +1127,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             return false;
         }        
     }
+
+    public function actualizarCampoArray($objects, $cambios){}
 }

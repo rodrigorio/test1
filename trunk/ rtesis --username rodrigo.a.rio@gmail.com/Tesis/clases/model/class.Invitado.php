@@ -8,8 +8,6 @@
  */
 class Invitado extends PersonaAbstract{
    
-    private $sRelacion;//relacion que tiene con el que invita
-
     public function __construct(stdClass $oParams = null){
         parent::__construct();
 
@@ -25,13 +23,4 @@ class Invitado extends PersonaAbstract{
             }
         }
     }
-
-    public function getRelacion() {
-        return $this->sRelacion;
-    }
-
-    public function setRelacion($sRelacion){
-        $this->sRelacion = $sRelacion;
-    }
 }
-?>
