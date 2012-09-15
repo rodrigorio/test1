@@ -35,13 +35,13 @@
  * 2) Los paramatros de entidad siempre son dinamicos, los parametros estaticos unicamente son los de controlador y de sistema.
  *
  *
- *   'DATABASE_HOST' => '190.190.234.167',
- *   'DATABASE_DRIVER' => 'IMYSQL',
- *   'DATABASE_USER' => 'usuariodetest',
- *   'DATABASE_PASSWORD' => 'usuariodetest1234',
- *   'DATABASE_NAME' => 'tesis',
- *   'DATABASE_PORT' => '3306',
- *   'DATABASE_AUTOCOMMIT' => '0',
+    'DATABASE_HOST' => '201.212.143.102',
+    'DATABASE_DRIVER' => 'IMYSQL',
+    'DATABASE_USER' => 'usuariodetest',
+    'DATABASE_PASSWORD' => 'usuariodetest1234',
+    'DATABASE_NAME' => 'tesis',
+    'DATABASE_PORT' => '3306',
+    'DATABASE_AUTOCOMMIT' => '0',
  * 
  * @author Matias Velilla
  */
@@ -109,10 +109,10 @@ class PluginParametros extends PluginAbstract
     private function agregarParametrosEstaticos()
     {
         $sistema = array(
-                        'DATABASE_HOST' => 'localhost',
+                        'DATABASE_HOST' => '201.212.143.102',
                         'DATABASE_DRIVER' => 'IMYSQL',
-                        'DATABASE_USER' => 'root',
-                        'DATABASE_PASSWORD' => 'urbis9878',
+                        'DATABASE_USER' => 'usuariodetest',
+                        'DATABASE_PASSWORD' => 'usuariodetest1234',
                         'DATABASE_NAME' => 'tesis',
                         'DATABASE_PORT' => '3306',
                         'DATABASE_AUTOCOMMIT' => '0',
@@ -288,6 +288,7 @@ class PluginParametros extends PluginAbstract
     private function obtenerParametroUsuario($key)
     {
         $grupoUsuario = $this->getGrupoUsuarioParametro();
+        $valor = null;
         if($this->parametrosDinamicosCargados)
         {
             $valor = $this->parametrosDinamicosStrategy->obtenerParametroDinamico($grupoUsuario, $key);
@@ -297,7 +298,7 @@ class PluginParametros extends PluginAbstract
     
     private function obtenerParametroControlador($key)
     {
-        $grupoControlador = $this->getGrupoControladorParametro();
+        $grupoControlador = $this->getGrupoControladorParametro();        
         $valor = $this->obtenerParametroEstatico($grupoControlador, $key);        
         if (null === $valor && $this->parametrosDinamicosCargados)
         {

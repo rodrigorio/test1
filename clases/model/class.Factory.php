@@ -343,4 +343,13 @@ class Factory
         $oDenuncia = new Denuncia($obj);
         return $oDenuncia;
     }
+    
+    /**
+     * @param stdClass $obj
+     * @return Invitacion|null
+     */
+    public static function &getInvitacionInstance(stdClass $obj){
+        $oInvitacion = new Invitacion($obj);
+        return $oInvitacion;
+    }
 }

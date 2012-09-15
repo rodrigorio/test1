@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Matias Velilla
  */
@@ -27,15 +28,6 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         return $this;
     }
 
-    private function setMenuDerecha()
-    {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
-
-        $this->getTemplate()->set_var("hrefNuevaInvitacion", $this->getRequest()->getBaseTagUrl()."comunidad/nueva-invitacion");
-        $this->getTemplate()->set_var("hrefInvitaciones", $this->getRequest()->getBaseTagUrl()."comunidad/invitaciones");
-        $this->getTemplate()->set_var("hrefMisInvitaciones", $this->getRequest()->getBaseTagUrl()."comunidad/invitaciones-listado");        
-    }
-
     /**
      * Establece descripcion de invitaciones y el menu con 2 opciones,
      * estado de invitaciones enviadas y formulario para enviar nueva invitacion
@@ -50,10 +42,7 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         IndexControllerComunidad::setCenterHeader($this->getTemplate());
 
         //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Invitaciones");
-
-        //menu derecha
-        $this->setMenuDerecha();
+        $this->getTemplate()->set_var("tituloSeccion", "Invitaciones Comunidad");
 
         //contenido ppal home invitaciones
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerMainCont", "PageRightInnerMainContBlock");
@@ -62,78 +51,153 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
-    /**
-     * Procesa el envio desde un formulario de invitacion.
-     */
-    public function procesar(){
-    	 //si accedio a traves de la url muestra pagina 404
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
+    public function procesar()
+    {
+        //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $oUsuario	= SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-   			$oInvitado	= new stdClass();
-	   		$oInvitado->sRelacion 	= $this->getRequest()->getPost('relacion');
-			$oInvitado->sNombre 	= $this->getRequest()->getPost('nombre');
-			$oInvitado->sApellido 	= $this->getRequest()->getPost('apellido');
-			$oInvitado->sEmail 		= $this->getRequest()->getPost('email');
-		//	$sDescripcion			= $this->getRequest()->getPost('sDescripcion');
-			$sDescripcion="";
-			ComunidadController::getInstance()->enviarInvitacion($oUsuario, $oInvitado, $sDescripcion);
-			$this->getJsonHelper()->setSuccess(true);
-                                      //->setRedirect($redirect);
+
+            $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+
+            if($oUsuario->getInvitacionesDisponibles() <= 0){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("No tiene invitaciones disponibles para enviar.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            if(ComunidadController::getInstance()->existeMailDb($this->getRequest()->getPost('email')))
+            {
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("El mail ya esta siendo utilizado por un integrante de la comunidad.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            if(ComunidadController::getInstance()->existeInvitacionUsuario($this->getRequest()->getPost('email')))
+            {
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("Ya has enviado una invitación a esa dirección de correo.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oInvitado = ComunidadController::getInstance()->obtenerInvitadoByEmail($this->getRequest()->getPost('email'));
+            if(null !== $oInvitado){
+                //persona que ya fue invitada
+                $oInvitado->setNombre($this->getRequest()->getPost('nombre'));
+                $oInvitado->setApellido($this->getRequest()->getPost('apellido'));
+            }else{
+                //persona que es invitada por primera vez
+                $oInvitado = new stdClass();
+                $oInvitado->sNombre = $this->getRequest()->getPost('nombre');
+                $oInvitado->sApellido = $this->getRequest()->getPost('apellido');
+                $oInvitado->sEmail = $this->getRequest()->getPost('email');
+                $oInvitado = Factory::getInvitadoInstance($oInvitado);
+            }            
+
+            $oInvitacion = new stdClass();
+            $oInvitacion->sRelacion = $this->getRequest()->getPost('relacion');
+            $oInvitacion->oInvitado = $oInvitado;
+            $oInvitacion->oUsuario = $oUsuario;
+            $oInvitacion = Factory::getInvitacionInstance($oInvitacion);
+            $oInvitacion->setEstadoPendiente();
+
+            $result = ComunidadController::getInstance()->enviarInvitacion($oInvitacion);
+
+            //si se dio de alta correctamente la invitacion envio el mail a la persona invitada
+            if($result){
+                $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+                $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+                $mailContacto = $parametros->obtener('EMAIL_SITIO_CONTACTO');
+
+                $sMailDestino = $oInvitacion->getInvitado()->getEmail();
+                $sMailDesde = $oInvitacion->getUsuario()->getEmail();
+                $hrefSitio = htmlentities($this->getRequest()->getBaseTagUrl());
+                $sNombreInvitado = $oInvitacion->getInvitado()->getNombre()." ".$oInvitacion->getInvitado()->getApellido();
+                $sNombreUsuario = $oInvitacion->getUsuario()->getNombre()." ".$oInvitacion->getUsuario()->getApellido();
+
+                //En este caso no se puede desuscribir a notificaciones por mail porque todavia no es un usuario.
+                $hrefCancelarSuscripcion = $hrefSitio;
+
+                $this->getTemplate()->load_file("gui/templates/index/frameMail01-01.gui.html", "frameMail");
+
+                //head y footer mail.
+                $this->getTemplate()->set_var("hrefSitio", $hrefSitio);
+                $this->getTemplate()->set_var("sNombreSitio", $nombreSitio." - Comunidad");
+                $this->getTemplate()->set_var("sEmailDestino", $sMailDestino);
+                $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
+                $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
+
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeSubMensajeBlock", true);
+
+                $sTituloMensaje = htmlentities($sNombreInvitado." has recibido una invitación para unirte a la comunidad ".$nombreSitio.".");
+                $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
+
+                $sMensaje = htmlentities($sNombreUsuario." te ha invitado a abrir una cuenta en la comunidad de profesionales ".$nombreSitio.". 
+                                         Podrás encontrar recursos informáticos y ser parte de una gran comunidad participativa de profesionales
+                                         orientados a la educación inclusiva y discapacidad.");
+                
+                $this->getTemplate()->set_var("sMensaje", $sMensaje);
+
+                $sSubMensaje = htmlentities("La comunidad esta destinada a docentes, profesionales y estudiantes avanzados de ciencias de la educación
+                                            y salud, que estén involucrados y comprometidos en su desempeño laboral-profesional con el bienestar
+                                            psicofísico, la inserción social y la calidad de vida en su totalidad de personas discapacitadas.
+                                            Principalmente se podrá gestionar información para  el seguimiento profesional de la evolución del
+                                            aprendizaje en personas discapacitadas.
+                                            Se quiere lograr el fácil intercambio de experiencias y que los profesionales puedan tener acceso a
+                                            recursos útiles que puedan usar en su desempeño laboral. El sistema también ofrecerá funcionalidad
+                                            participativa a la comunidad en general.");
+
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "PanelBotonesBlock");
+
+
+                $hrefButton = htmlentities($hrefSitio."registracion?token=".$oInvitacion->getToken());
+                $this->getTemplate()->set_var("sButton", "Registrarme");
+                $this->getTemplate()->set_var("sButton", $hrefButton);
+                $this->getTemplate()->parse("ButtonBlock");
+                $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
+
+                $this->getMailerHelper()->sendMail($sMailDesde, $sNombreUsuario, $sMailDestino, $sNombreInvitado, $sNombreUsuario." te ha invitado a ser parte de la comunidad ".$nombreSitio, $sMensajeBody);
+            }
+
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
+            $this->getJsonHelper()->setSuccess(true);
+            $this->getJsonHelper()->setMessage("La invitación se ha enviado con éxito al correo indicado, el link de registración expirará dentro de ".$cantDiasExpiracion." días.");
+
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->setMessage("Ocurrió un error no se pudo enviar la invitación.");
         }
-        //setea headers y body en el response con los valores codificados
+        
         $this->getJsonHelper()->sendJsonAjaxResponse();
-    	
     }
 
-    /**
-     * Vista para enviar una nueva invitacion
-     */
     public function formulario()
     {
-        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $usuario = $perfil->getUsuario();
-        $invitacionesDisponibles = $usuario->getInvitacionesDisponibles();
+        $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+        $iInvitacionesDisponibles = $oUsuario->getInvitacionesDisponibles();
 
-        //Si no tiene invitaciones redirecciono con mensaje.
-        if(empty($invitacionesDisponibles)){
-            $url = PluginRedireccionAccionDesactivada::getLastRequestUri();
-            if(empty($url)){
-                $url = $perfil->getUrlRedireccion(true);
-            }else{
-                $this->getRedirectorHelper()->setPrependBase(false);
-            }
-            $this->getRedirectorHelper()->gotoUrl($url); //por defecto redireccion resulta en un inmediato exit() luego de la sentencia.
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        
+        //Si no tiene invitaciones devuelvo un cartel informando.
+        if(empty($iInvitacionesDisponibles)){
+            $msg = "No tiene invitaciones disponibles para enviar.";
+            $bloque = 'MsgInfoBlockI32';
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getTemplate()->set_var("popUpContent", $this->getTemplate()->pparse('html', false));
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+            return;
         }
 
-        $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
-        $this->setHeadTag();
-
-        IndexControllerComunidad::setCabecera($this->getTemplate());
-        IndexControllerComunidad::setCenterHeader($this->getTemplate());
-
-        //titulo seccion
-        $this->getTemplate()->set_var("tituloSeccion", "Enviar Nueva Invitacion");
-
-        //menu derecha
-        $this->setMenuDerecha();
-
-        //contenido ppal
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-        $this->getTemplate()->set_var("iInvitacionesDisponibles", $invitacionesDisponibles);
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-    }
-
-    /**
-     * Lista de todas las invitaciones realizadas y el estado en el que se encuentran
-     */
-    public function listado()
-    {
-    }    
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/invitaciones.gui.html", "popUpContent", "FormularioBlock");
+        $this->getTemplate()->set_var("iInvitacionesDisponibles", $iInvitacionesDisponibles);
+           
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+    }  
 }

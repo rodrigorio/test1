@@ -209,12 +209,17 @@ class PersistenceFactory {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return(ControladorPaginaMySQLIntermediary::getInstance($conn));
         }
-    }
-    
+    }    
     public static function getDenunciaIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return(DenunciaMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getInvitacionIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(InvitacionMySQLIntermediary::getInstance($conn));
         }
     }
 }

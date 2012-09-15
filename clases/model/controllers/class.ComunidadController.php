@@ -43,19 +43,59 @@ class ComunidadController
         $this->db = $db;
     }
 	
-
-    public function obtenerUltimaPublicacion()
+    public function enviarInvitacion($oInvitacion)
     {
-
-    }
-
-    public function enviarInvitacion($oUsuario, $oInvitado, $sDescripcion){
         try{
-            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->enviarInvitacion($oUsuario,Factory::getInvitadoInstance($oInvitado), $sDescripcion);
+            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
+
+            //borro las invitaciones expiradas para el usuario, asi controlo que no se junte basura.
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
+            $oInvitacionIntermediary->borrarInvitacionesExpiradasUsuario($iUsuarioId, $iDiasExpiracion);
+
+            return $oInvitacionIntermediary->insertar($oInvitacion);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Devuelve verdadero si el usuario que esta logueado ya envio una invitacion al
+     * correo de una persona y la invitacion todavia no expiro.
+     */
+    public function existeInvitacionUsuario($sEmail)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
+
+            $filtro = array("ui.usuarios_id" => $iUsuarioId,
+                            "p.email" => $sEmail,
+                            "expiracion" => $cantDiasExpiracion);
+
+            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
+            return $oInvitacionIntermediary->existe($filtro);
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function obtenerInvitadoByEmail($sEmail)
+    {
+        try{
+            $filtro = array('p.email' => $sEmail);
+            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aInvitados = $oInvitacionIntermediary->obtenerInvitados($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aInvitados){
+                return $aInvitados[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }        
     }
 
     public function listaPaises($array, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
@@ -66,13 +106,11 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }
     }
-    /**
-     *
-     */
-    public function getPaisById($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+
+    public function getPaisById($filtro, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
-            $aPais = $oPaisIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            $aPais = $oPaisIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount);
             if(null !== $aPais){
                 return $aPais[0];
             }else{
@@ -92,9 +130,6 @@ class ComunidadController
         }
     }
 
-    /**
-     *
-     */
     public function getProvinciaById($filtro,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
@@ -119,9 +154,6 @@ class ComunidadController
         }
     }
 
-    /**
-     *
-     */
     public function getCiudadById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $filtro = array('c.id' => $iId);
