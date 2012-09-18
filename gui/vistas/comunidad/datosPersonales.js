@@ -1,8 +1,13 @@
 //funcion para el dialog si paso a ser integrante activo
 function showDialogIntegranteActivo(){
-    var dialog = $("#dialog");
-    if ($("#dialog").length == 0){ dialog = $('<div id="dialog" title="Comunidad SGPAPD"></div>').appendTo('body'); }
 
+    var dialog = $("#dialog");
+    if($("#dialog").length){
+        dialog.attr("title", "Cambio de perfil");
+    }else{
+        dialog = $('<div id="dialog" title="Cambio de perfil"></div>').appendTo('body');
+    }
+    
     dialog.load(
         "comunidad/datos-personales-procesar",
         {seccion:'dialogIntegranteActivo'},
@@ -12,7 +17,7 @@ function showDialogIntegranteActivo(){
                 width:650,
                 resizable:false,
                 draggable:false,
-                modal:true,
+                modal:false,
                 closeOnEscape:true
             });
         }
@@ -188,15 +193,15 @@ var validateFormInfoBasica = {
         },
         sexo: mensajeValidacion("requerido"),
         fechaNacimientoDia:{
-                            required: mensajeValidacion("requerido", 'día'),
+                            required: mensajeValidacion("requerido2", 'día'),
                             digits: mensajeValidacion("digitos")
         },
         fechaNacimientoMes:{
-                            required: mensajeValidacion("requerido", 'mes'),
+                            required: mensajeValidacion("requerido2", 'mes'),
                             digits: mensajeValidacion("digitos")
         },
         fechaNacimientoAnio:{
-                            required: mensajeValidacion("requerido", 'año'),
+                            required: mensajeValidacion("requerido2", 'año'),
                             digits: mensajeValidacion("digitos")
         }
     }
@@ -610,11 +615,11 @@ $(document).ready(function(){
                 }
 
                 var dataInfo = response.split(';');
-                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
                 var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
 
                 //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
-                if(resultado != "0" && resultado != "1" && resultado != "2"){
+                if(resultado != "0" && resultado != "1"){
                     $('#msg_form_curriculum .msg').html(lang['error permiso']);
                     $('#msg_form_curriculum').addClass("info").fadeIn('slow');
                     return;
@@ -626,13 +631,7 @@ $(document).ready(function(){
                 }else{
                     $('#msg_form_curriculum .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
-                    $('#wrapCvActual').html(html);
-                    
-                    if(resultado == "2"){
-                        alert("Pasaste a ser Integrante activo");
-                        //redireccionar a pagina de bienvenida para integrantes activos
-                        //en esa pagina tirar bleble y link a pagina de manual de usuario
-                    }
+                    $('#wrapCvActual').html(html);                    
                 }
                 return;
             }

@@ -110,16 +110,30 @@ class SysController
                     $errorSuspendido = true;
                     return array($errorDatos, $errorSuspendido, $exito);
                 }
-                $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
-                $oPerfil->iniciarPermisos();
-                SessionAutentificacion::getInstance()->cargarAutentificacion($oPerfil)
-                                                     ->realizoLogin(true);
-                $exito = true;
+                $exito = $this->iniciarPerfilSessionUsuario($oUsuario);                
                 return array($errorDatos, $errorSuspendido, $exito);
             }else{
                 $errorDatos = true;
                 return array($errorDatos, $errorSuspendido, $exito);
             }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Envuelve a un objeto Usuario en el objeto perfil que le corresponde segun base de datos.
+     * Luego levanta los permisos y lo carga en session.
+     */
+    public function iniciarPerfilSessionUsuario($oUsuario)
+    {
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
+            $oPerfil->iniciarPermisos();
+            SessionAutentificacion::getInstance()->cargarAutentificacion($oPerfil)
+                                                 ->realizoLogin(true);
+            return true;
         }catch(Exception $e){
             throw $e;
         }

@@ -52,6 +52,7 @@ class InstitucionesControllerIndex extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "columnaDerechaContent", "BuscarInstitucionesBlock");
         $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+        IndexControllerIndex::setCabecera($this->getTemplate());
         IndexControllerIndex::setFooter($this->getTemplate());
 
         ///////////// ARMO LOS SELECTS DEL FORMULARIO DEL FILTRO
@@ -259,6 +260,7 @@ class InstitucionesControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Instituciones");
             $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+            IndexControllerIndex::setCabecera($this->getTemplate());
             IndexControllerIndex::setFooter($this->getTemplate());
 
             $this->getTemplate()->load_file_section("gui/vistas/index/instituciones.gui.html", "centerPageContent", "FichaInstitucionBlock");

@@ -104,6 +104,24 @@ class ComunidadController
         }
     }
 
+    public function getInvitacionByToken($sToken)
+    {
+        try{
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
+            $filtro = array('ui.token' => $sToken, 'expiracion' => $cantDiasExpiracion);
+            $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aInvitacion = $oInvitacionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            if(null !== $aInvitacion){
+                return $aInvitacion[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        } 
+    }
+    
     public function listaPaises($array, &$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
@@ -604,7 +622,6 @@ class ComunidadController
             null !== $oUsuario->getTelefono() &&
 
             null !== $oUsuario->getSecundaria() &&
-            null !== $oUsuario->getCurriculumVitae() &&
             null !== $oUsuario->getEspecialidad()                     
         ){
             return true;
@@ -1130,7 +1147,7 @@ class ComunidadController
             throw new Exception($e->getMessage());
         }        
     }
-
+    
     /**
      * Se diferencia de buscar publicaciones visitantes porque no arregla los filtros de moderacion y de publico
      */

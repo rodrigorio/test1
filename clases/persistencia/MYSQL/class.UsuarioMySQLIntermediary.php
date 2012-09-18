@@ -595,74 +595,84 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
         
-    public function registrar(Usuario $oUsuario, $iUserId)
+    public function registrarInvitado($oObj)
     {
         try{
             $db = $this->conn;
             $db->begin_transaction();
             
-            $filtro["u.nombre"] = $oUsuario->getNombreUsuario();
-
-            if($this->existe($filtro)){
-                return 10;
-            }
-
-            $filtro["p.numeroDocumento"]= $oUsuario->getNumeroDocumento();
-            if($this->existe($filtro)){
-                return 11;
-            }
-
-            $filtro["p.email"]= $oUsuario->getEmail();
-            if($this->existe($filtro)){
-                return 12;
-            }
-
-            $sSQL = " update personas " .
-                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
-                    " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
-                    " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
-                    " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento= ".$db->escape($oUsuario->getFechaNacimiento(), true,MYSQL_TYPE_DATE);
-
-            if($oUsuario->getEmail()){
-                $sSQL .=" ,email = ".$db->escape($oUsuario->getEmail(),true)." ";
-            }
-
-            $sSQL .=" WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
-
-            $db->execSQL($sSQL);
-
-            $sUrlTokenKey = md5($time.$oUsuario->getNombre().$oUsuario->getApellido());
+            $sSQL = " UPDATE personas SET ".
+                    " nombre = ".$this->escStr($oObj->sNombre).", " .
+                    " apellido = ".$this->escStr($oObj->sApellido).", " .
+                    " documento_tipos_id = ".$this->escInt($oObj->iTipoDocumentoId).", ".
+                    " numeroDocumento = ".$this->escStr($oObj->sNumeroDocumento).", " .
+                    " sexo = ".$this->escStr($oObj->sSexo).", " .
+                    " fechaNacimiento = '".$oObj->dFechaNacimiento."' ".
+                    " WHERE id = ".$this->escInt($oObj->iInvitadoId)." ";
             
-            $sSQL =" insert usuarios ".
-                   " set id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT).", ".
+            $db->execSQL($sSQL);
+
+            $time = time();
+            $sUrlTokenKey = md5($time.$oObj->sNombre.$oObj->sApellido);
+            
+            $sSQL =" INSERT INTO usuarios SET ".
+                   " id = ".$this->escInt($oObj->iInvitadoId).", ".
                    " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
-                   " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).", ".
+                   " nombre = ".$this->escStr($oObj->sNombreUsuario).", ".
                    " urlTokenKey = '".$sUrlTokenKey."', ".
-                   " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
+                   " contrasenia = ".$this->escStr($oObj->sContrasenia)." ";
 
             $db->execSQL($sSQL);
 
-            $sSQL =" update usuario_x_invitado ".
+            //seteo la invitacion como aceptada
+            $sSQL =" UPDATE usuario_x_invitado ".
                    " SET estado = 'aceptada' ".
-                   " WHERE usuarios_id= ".$db->escape($iUserId,false,MYSQL_TYPE_INT)." ".
-                   " AND invitados_id=".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
+                   " WHERE usuarios_id = ".$this->escInt($oObj->iUsuarioId)." ".
+                   " AND invitados_id = ".$this->escInt($oObj->iInvitadoId)." ";
 
             $db->execSQL($sSQL);
 
-            $db->execSQL("insert into privacidad set usuarios_id = ".$oUsuario->getId());
+            //borro las otras invitaciones pendientes a la misma persona si es que las hay
+            $sSQL = "DELETE FROM usuario_x_invitado 
+                     WHERE invitados_id = ".$this->escInt($oObj->iInvitadoId)." 
+                     AND estado = 'pendiente' ";
+            $db->execSQL($sSQL);
+
+            //inicio privacidad con valores por defecto
+            $db->execSQL("INSERT INTO privacidad SET usuarios_id = ".$this->escInt($oObj->iInvitadoId)." ");
 
             //asocio los parametros de usuario con los valores por defecto.
             $sSQL = "INSERT INTO parametro_x_usuario(parametros_id, usuarios_id, valor)
-                     SELECT parametros_id, '".$oUsuario->getId()."', valorDefecto
+                     SELECT parametros_id, ".$this->escInt($oObj->iInvitadoId).", valorDefecto
                      FROM parametros_usuario ";
 
             $db->execSQL($sSQL);
 
             $db->commit();
 
-            $oUsuario->setUrlTokenKey($sUrlTokenKey);
+            //si todo salio bien creo el nuevo usuario y lo devuelvo
+            $oUsuario = new stdClass();
+            $oUsuario->iId              = $oObj->iInvitadoId;
+            $oUsuario->sNombre          = $oObj->sNombre;
+            $oUsuario->sApellido        = $oObj->sApellido;
+            $oUsuario->iTipoDocumentoId = $oObj->iTipoDocumentoId;
+            $oUsuario->sNumeroDocumento = $oObj->sNumeroDocumento;
+            $oUsuario->sSexo            = $oObj->sSexo;
+            $oUsuario->dFechaNacimiento = $oObj->dFechaNacimiento;
+            $oUsuario->sEmail           = $oObj->sEmail;
+            $oUsuario->oCiudad          = null;
+            $oUsuario->oInstitucion     = null;
+            $oUsuario->oEspecialidad    = null;
+            $oUsuario->oFotoPerfil      = null;
+            $oUsuario->oCurriculumVitae = null;
+            $oUsuario->sNombreUsuario   = $oObj->sNombreUsuario;
+            $oUsuario->sContrasenia     = $oObj->sContrasenia;
+            $oUsuario->dFechaAlta       = date("Y/m/d");
+            $oUsuario->sUrlTokenKey     = $sUrlTokenKey;
+            $oUsuario->bActivo = true;
+            $oUsuario->iInvitacionesDisponibles = 5;
+
+            return Factory::getUsuarioInstance($oUsuario);
             
         }catch(Exception $e){
             $db->rollback_transaction();
@@ -780,23 +790,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $especialidadId = 'null';
             }
             
-            $filtro["u.nombre"] = $oUsuario->getNombreUsuario();
-            if($this->existe($filtro)){
-                return 10;
-            }
-
-            $filtro["p.numeroDocumento"] = $oUsuario->getNumeroDocumento();
-            if($this->existe($filtro)){
-                return 11;
-            }
-
-            $filtro["p.email"]= $oUsuario->getEmail();
-            if($this->existe($filtro)){
-                return 12;
-            }
-
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
 
+            $time = time();
             $sUrlTokenKey = md5($time.$oUsuario->getNombre().$oUsuario->getApellido());
             
             $db->begin_transaction();
@@ -878,38 +874,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-	
-    public function validarUrlTmp($token)
-    {
-        try{
-            $db = $this->conn;
-
-            $sSQL = "SELECT 
-                        ui.`usuarios_id`,
-                        ui.`invitados_id`,
-                        ui.`relacion`,
-                        ui.`fecha`,
-                        ui.`estado`,
-                        ui.`token`,
-                        p.`email`,
-                        p.`nombre`,
-                        p.`apellido`
-                    FROM
-                        `usuario_x_invitado` ui
-                    JOIN
-                        usuarios u ON u.id = ui.usuarios_id
-                    JOIN
-                        personas p ON p.id = ui.invitados_id
-                    WHERE DATE_SUB(ui.fecha,INTERVAL 5 DAY) <= now()
-                    AND ui.token = ".$db->escape($token,true)." AND ui.estado = 'pendiente' ";
-
-            return $db->getDBObject($sSQL);
-        }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-            return false;
-        }
-    }
-	
+		
     public function guardarNuevaContrasenia($iId)
     {
         try{

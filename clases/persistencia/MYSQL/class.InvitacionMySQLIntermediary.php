@@ -21,6 +21,79 @@ class InvitacionMySQLIntermediary extends InvitacionIntermediary
         return self::$instance;
     }
 
+    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT
+                        p.id AS iId,
+                        p.email as sEmail,
+
+                        ui.usuarios_id as iUsuarioId,
+                        ui.relacion as sRelacion,
+                        ui.fecha as dFecha,
+                        ui.estado as sEstado,
+                        ui.token as sToken,
+                        ui.nombre as sNombre,
+                        ui.apellido as sApellido
+                    FROM
+                        usuario_x_invitado ui JOIN invitados i ON i.id = ui.invitados_id
+                        JOIN personas p ON i.id = p.id ";
+
+            $WHERE = array();
+
+            if(isset($filtro['ui.token']) && $filtro['ui.token'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('ui.token', $filtro['ui.token']);
+            }            
+            if(isset($filtro['expiracion']) && $filtro['expiracion'] != ""){
+                $WHERE[] = " TO_DAYS(NOW()) - TO_DAYS(ui.fecha) <= ".$filtro['expiracion']." ";
+            }
+            
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aInvitacion = array();
+            while($oObj = $db->oNextRecord()){
+
+                //invitado y usuario
+                $oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+
+                $oInvitado = new stdClass();
+                $oInvitado->iId = $oObj->iId;
+                $oInvitado->sNombre = $oObj->sNombre;
+                $oInvitado->sApellido = $oObj->sApellido;
+                $oInvitado->sEmail = $oObj->sEmail;
+                $oInvitado = Factory::getInvitadoInstance($oInvitado);
+
+                $oInvitacion = new stdClass();
+                $oInvitacion->oInvitado = $oInvitado;
+                $oInvitacion->oUsuario = $oUsuario;
+                $oInvitacion->dFecha = $oObj->dFecha;
+                $oInvitacion->sToken = $oObj->sToken;
+                $oInvitacion->sRelacion = $oObj->sRelacion;
+                $oInvitacion->sEstado = $oObj->sEstado;
+                $oInvitacion = Factory::getInvitacionInstance($oInvitacion);
+
+                $aInvitacion[] = $oInvitacion;
+            }
+
+            return $aInvitacion;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        } 
+    }    
+
     public function existe($filtro){
     	try{
             $db = $this->conn;
@@ -193,7 +266,6 @@ class InvitacionMySQLIntermediary extends InvitacionIntermediary
         }
     }
 
-    public function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
     public function actualizar($object){}
     public function actualizarCampoArray($objects, $cambios){}
     public function guardar($object){}
