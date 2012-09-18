@@ -6,34 +6,40 @@
     .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
     .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
     .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
     .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
     .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+    .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
     .script("{pathUrlBase}"+"gui/js/vistas.js")
     .script("{pathUrlBase}"+"gui/vistas/index/registracion.js");
 </script>
 <!--EndJsContent-->
+
+<!--BeginDescripcionSeccionBlock-->
+<div class="pato2">
+    Registrate y empieza a ser un integrante de nuestra comunidad!
+</div>
+<!--EndDescripcionSeccionBlock-->
 
 <!--BeginFormularioBlock-->
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <form id="formRegistracion" name="formRegistracion" action="" method="post">
         <div class="ajax_wait30 di_no"></div>
-        <h2 class="mabo">Registrarse para ser parte de la comunidad !</h2>
-        <div class="mabo3 fost_it">Completa este breve formulario y forma parte de la comunidad de profesionales.</div>
+        <h2 class="mabo">Bienvenido {sNombreInvitado}</h2>
+        <div class="mabo3 fost_it">Estas a un paso. Completa este breve formulario y empieza a formar parte de la comunidad de profesionales.</div>
 
         <div class="form_line msg_tipoDocumento">
             <label for="tipoDocumento">
                 <span class="marca_obligatorio">&#8226;</span>
                 Tipo de documento
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <select class="teta_up small" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
-                        <option value="">Tipo:</option>
-                        <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
-                    </select>
-                </div>
-            </div>
+            <div class="cl_le"></div>
+            <select class="teta_up small" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
+                <option value="">Tipo:</option>
+                <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
+            </select>
         </div>
 
         <div class="form_line msg_nroDocumento">
@@ -41,17 +47,19 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 N&uacute;mero de documento
             </label>
+            <div id="hintNroDocumento" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> <span class="msg">Solo n&uacute;meros, sin espacios en blanco.</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
                     <input type="text" name="nroDocumento" id="nroDocumento" title="N&uacute;mero de documento" maxlength="8" value="" />
                 </div>
             </div>
+            <p>Luego de registrarte utilizar&aacute;s tu n&uacute;mero de documento para iniciar sesi&oacute;n</p>
         </div>
 
         <div class="form_line msg_nombre">
             <label for="nombre">
                 <span class="marca_obligatorio">&#8226;</span>
-                Nombre
+                Tu Nombre
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -63,7 +71,7 @@
         <div class="form_line msg_apellido">
             <label for="apellido">
                 <span class="marca_obligatorio">&#8226;</span>
-                Apellido
+                Tu Apellido
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -81,25 +89,43 @@
                     <input readonly="readonly" class="readonly" type="text" name="email" id="email" title="Tu correo electronico" maxlength="50" value="{sEmail}" />
                 </div>
             </div>
+            <p>Podr&aacute;s cambiarlo luego de registrarte si lo deseas.</p>
         </div>
 
-        <div class="form_line msg_contraseniaNueva">
-            <label for="contraseniaNueva">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nueva
+        <div class="form_line msg_nombreUsuario">
+            <label for="nombreUsuario">
+                Un nombre de usuario
             </label>
-            <div id="hintContraseniaNueva" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> <span class="msg">La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</span></div>
+            <div id="hintNombreUsuario" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> <span class="msg">Al menos 5 caracteres. No se permiten espacios en blanco.</span></div>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="password" name="contraseniaNueva" id="contraseniaNueva" title="Nueva Contrase&ntilde;a" maxlength="30" />
-                    <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />
+                    <input type="text" name="nombreUsuario" id="nombreUsuario" title="Un nombre de usuario" maxlength="60" value="" />
+                </div>
+            </div>
+            <p>
+                <span class="fowe_bo">Te recordamos que una vez registrado utilizar&aacute;s tu n&uacute;mero de documento para iniciar sesi&oacute;n.</span><br>
+               Tu nombre de usuario se usar&aacute; para crear algunos enlaces referidos a tu cuenta, contenido multimedia asociado, etc.<br>
+               Si dejas este campo vac&iacute;o el sistema lo generar&aacute; automaticamente a partir de tu nombre y apellido.
+            </p>
+        </div>
+
+        <div class="form_line msg_contrasenia">
+            <label for="contrasenia">
+                <span class="marca_obligatorio">&#8226;</span>
+                Contrase&ntilde;a
+            </label>
+            <div id="hintContrasenia" class="msg_campo_der hint iveal di_no" style='right:-220px'><span class="bs i"></span> <span class="msg">La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</span></div>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="password" name="contrasenia" id="contrasenia" title="Contrase&ntilde;a" maxlength="30" />
+                    <input type="hidden" name="contraseniaMD5" id="contraseniaMD5" value="" />
                 </div>
             </div>
         </div>
         <div class="form_line msg_contraseniaConfirmar">
             <label for="contraseniaConfirmar">
                 <span class="marca_obligatorio">&#8226;</span>
-                Vuelva a ingresar nueva
+                Vuelve a ingresarla
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -114,45 +140,80 @@
                 Sexo
             </label>
             <div class="cl_le"></div>
-            <select style="width:150px" name="sexo" id="sexo" title="Sexo">
+            <select class="small" name="sexo" id="sexo" title="Sexo">
                 <option value="">Elija Sexo:</option>
-                <option {sSelectedMasculino} value="m">Masculino</option>
-                <option {sSelectedFemenino} value="f">Femenino</option>
+                <option value="m">Masculino</option>
+                <option value="f">Femenino</option>
             </select>
         </div>
 
-        <div class="form_line msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
+        <div class="form_line mabo3 msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
             <label for="fechaNacimientoDia">
                 <span class="marca_obligatorio">&#8226;</span>
                 Fecha de Nacimiento
             </label>
             <div class="cl_le"></div>
             <div class="fl_le mari2">
-                <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
+                <select style="width:100px" class="teta_ca" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
                     <option value="">D&iacute;a:</option>
-                    <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
+                    <!--BeginOptionSelectDia--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDia-->
                 </select>
             </div>
             <div class="fl_le mari2">
-                <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
+                <select style="width:100px" class="teta_ca" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
                     <option value="">Mes:</option>
-                    <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
+                    <!--BeginOptionSelectMes--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectMes-->
                 </select>
             </div>
-            <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
+            <select style="width:100px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
                 <option value="">A&ntilde;o:</option>
-                <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
+                <!--BeginOptionSelectAnio--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectAnio-->
             </select>
         </div>
 
-        <div class="fl_le iveal mabo2">
-            <label for="denunciar" class="button buttonConfirm buttonLarge mari3">
-                <button id="enviarDenuncia" type="submit" name="enviarDenuncia" class="btn01">
-                    Enviar Denuncia
+        <div style="display:none;" id='msg_form_registracion' class="msg_form iveal cl_le mabo2"><span class="bs i"></span> <span class="msg"></span></div>
+        <div class="teal_ce iveal">
+            <label for="registrar" class="button buttonSpecial buttonXLarge mari3">
+                <button id="registrar" type="submit" name="registrar" class="btn01">
+                    Registrarme !
                 </button>
             </label>
         </div>
-        <input type="hidden" value="{iItemId}" name="iItemIdFormDenuncia" id="iItemIdFormDenuncia" />
+        <input type="hidden" value="{sToken}" name="sToken" id="sToken" />
     </form>
 </div>
 <!--EndFormularioBlock-->
+
+<!--BeginInfoIntegrantesComunidadBlock-->
+<h2 class="mabo2 iveal">
+    <span class="i32 mi relationshipPeople32 male"></span>
+    Crea Seguimientos
+</h2>
+<p>
+    Crea seguimientos y guarda de forma ordenada y parametrica la informaci&oacute;
+    de las personas a las que asistes de manera profesional.
+</p>
+<ul class="m_vert mabo3 iveal">
+    <li><span class="i bs confirm"></span> Administra variables param&eacute;tricas</li>
+    <li><span class="i bs confirm"></span> Exporta informes</li>
+    <li><span class="i bs confirm"></span> A&ntilde;ade contenido multimedia</li>
+</ul>
+
+<h2 class="mabo2 iveal">
+    <span class="i32 bs group32 male"></span>
+    Interact&uacute;a en la comunidad de profesionales
+</h2>
+<p>
+    Comun&iacute;cate con otros profesionales que siguen a las mismas personas a las que t&uacute; tratas.
+</p>
+<ul class="m_vert mabo3 iveal">
+    <li><span class="i bs confirm"></span> Crea publicaciones.</li>
+    <li><span class="i bs confirm"></span> Realiza reviews de art&iacute;culos/productos/eventos art&iacute;culos.</li>
+    <li><span class="i bs confirm"></span> Descarga aplicaciones, valora y comparte tus propias herramientas.</li>
+</ul>
+
+<p>
+    Puedes representar a la instituci&oacute;n en la que formas parte y llevas a cabo tu labor profesional.<br>
+    Crea reviews y publicaciones abiertas a la comunidad en general y mucho m&aacute;s.
+</p>
+<!--EndInfoIntegrantesComunidadBlock-->

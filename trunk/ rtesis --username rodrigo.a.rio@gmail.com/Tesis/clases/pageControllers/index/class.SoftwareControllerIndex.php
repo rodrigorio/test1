@@ -52,6 +52,7 @@ class SoftwareControllerIndex extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/index/software.gui.html", "columnaDerechaContent", "BuscarAplicacionesBlock");
         $this->getTemplate()->load_file_section("gui/vistas/index/software.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+        IndexControllerIndex::setCabecera($this->getTemplate());
         IndexControllerIndex::setFooter($this->getTemplate());
 
         $this->listarCategorias();
@@ -336,6 +337,7 @@ class SoftwareControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Descargas");
             $this->getTemplate()->load_file_section("gui/vistas/index/software.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+            IndexControllerIndex::setCabecera($this->getTemplate());
             IndexControllerIndex::setFooter($this->getTemplate());
 
             $this->getTemplate()->load_file_section("gui/vistas/index/software.gui.html", "centerPageContent", "AplicacionAmpliadaBlock");

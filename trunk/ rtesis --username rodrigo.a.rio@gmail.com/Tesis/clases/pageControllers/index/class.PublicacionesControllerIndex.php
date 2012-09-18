@@ -50,6 +50,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "columnaDerechaContent", "BuscarPublicacionesBlock");
         $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+        IndexControllerIndex::setCabecera($this->getTemplate());
         IndexControllerIndex::setFooter($this->getTemplate());
                  
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
@@ -275,6 +276,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Publicaciones Comunidad");
             $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+            IndexControllerIndex::setCabecera($this->getTemplate());
             IndexControllerIndex::setFooter($this->getTemplate());
 
             $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "centerPageContent", "PublicacionAmpliadaBlock");
@@ -359,6 +361,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             $this->getTemplate()->set_var("sNombreSeccionTopPage", "Publicaciones Comunidad");
             $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "topPageContent", "DescripcionSeccionBlock");
 
+            IndexControllerIndex::setCabecera($this->getTemplate());
             IndexControllerIndex::setFooter($this->getTemplate());
 
             $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "centerPageContent", "ReviewAmpliadaBlock");

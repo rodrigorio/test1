@@ -55,6 +55,11 @@ class Invitacion{
         return $this;
     }
 
+    public function isPendiente()
+    {
+        return $this->sEstado == self::ESTADO_PENDIENTE;
+    }
+
     public function setToken($sToken)
     {
         $this->sToken = $sToken;

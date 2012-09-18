@@ -44,29 +44,21 @@ class IndexController
     }
 	
     /**
-     * @param stdClass $obj
+     * registra un invitado en el sistema para que pase a ser un usuario.
+     * este metodo no crea el objeto perfil ni actualiza los permisos de sesion.
+     *
+     * recibe como parametro un stdClass
+     * y devuelve un objeto Usuario si se pudo registrar con exito.
      */
-    public function registrar($obj, $iUsuarioId){
+    public function registrarInvitado($oObj){
     	try{
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->registrar(Factory::getUsuarioInstance($obj), $iUsuarioId);           
+            return $oUsuarioIntermediary->registrarInvitado($oObj);
         }catch(Exception $e){
             throw $e;
         }
     }
-
-    /**
-     * @param string $token
-     */
-    public function validarUrlTmp($token){
-    	try{
-			$oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            return $oUsuarioIntermediary->validarUrlTmp($token);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
-    }
-    
+        
     /**
      * @param string $token
      */

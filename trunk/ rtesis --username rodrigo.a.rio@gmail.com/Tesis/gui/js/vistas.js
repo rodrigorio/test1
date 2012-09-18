@@ -288,6 +288,12 @@ $(document).ready(function(){
         $("#msg_top").hide('drop', {direction: "up"}, 1000)
     }, 5000);
 
+    $(".msgTopWindow .cerrar").click(
+        function(){
+            $(this).parent().fadeTo(350, 0, function () {$(this).slideUp(600);});
+        }
+    );
+    
     $("input.defVal").live("focus", function(){valueToggleFocus($(this));});
     $("input.defVal").live("blur", function(){valueToggleBlur($(this),false);});
 

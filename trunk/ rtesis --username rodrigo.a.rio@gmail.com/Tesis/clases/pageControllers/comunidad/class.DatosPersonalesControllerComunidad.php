@@ -241,14 +241,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
                     $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor());
                     
-                    if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
-                       ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
-                        $respuesta = "2; ";
-                    }else{
-                        $respuesta = "1; ";
-                    }
-
-                    $respuesta .= $this->getTemplate()->pparse('curriculumActual', false);
+                    $respuesta = "1; ".$this->getTemplate()->pparse('curriculumActual', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
                     $respuesta = "0; Error al guardar en base de datos";
@@ -377,7 +370,6 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         $this->getTemplate()->load_file("gui/templates/comunidad/frame01-01.gui.html", "frame");
         $this->setHeadTag();
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "cssContent", "CssContent");
 
         $this->printMsgTop();
 
@@ -387,6 +379,17 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         //titulo seccion
         $this->getTemplate()->set_var("tituloSeccion", "Modificar datos personales");
 
+        //si es integrante inactivo muestro el hint para pasar a ser integrante activo.
+        if($perfil->isIntegranteInactivo()){
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopWindow", "MsgTopAnuncio");
+            $this->getTemplate()->set_var("sMensajeTopWindow", "<strong>Aún permaneces como integrante inactivo.</strong>
+                                                                Para empezar a utilizar el total de acciones que ofrecemos a los integrantes de la comunidad debes brindarnos la siguiente información:<br><br>
+                                                                Ciudad en la que vives, Codigo postal de la ciudad en la que vives, Domicilio actual, Un número de teléfono,
+                                                                Nombre de la institución donde terminaste tus estudios secundarios y la Especialidad en la que te desenvuelves como profesional<br>
+                                                                <br>Recuerda que estos datos permanecerán ocultos a otros usuarios y los solicitamos para brindar una mayor seguridad dentro de la comunidad.");
+           $this->getTemplate()->parse('msgIntegranteInactivo');
+        }
+        
         //privacidad (columna)
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
         //seteo los valores actuales para los campos
