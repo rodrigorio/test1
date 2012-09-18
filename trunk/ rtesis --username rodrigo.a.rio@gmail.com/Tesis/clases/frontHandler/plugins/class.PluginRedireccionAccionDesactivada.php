@@ -218,11 +218,18 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
         $moduloActivo = $this->esModuloActivo($request->getModuleName());
         //guardo tambien el flag que indica si el modulo de la home del sitio esta activo
         $moduloHomeActivo = $this->esModuloActivo($moduloHome);      
+        
         //guardo el flag acerca de si el perfil autentificado tiene permiso para despachar la accion del request actual
-        $accionActivo = $perfil->activo($request->getKeyPermiso());        
-
+        //mucho cuidado que en las condiciones para php NULL es lo mismo que 0.
+        //pero para nosotros null es que no tiene permiso y 0 que la accion esta desactivada. MUCHO CUIDADO
+        //por eso hay que usar isset() porque hace la distincion.
+        // isset(null) -> falso
+        // isset(true) -> verdadero
+        // isset(false) -> verdadero        
+        $accionActivo = $perfil->activo($request->getKeyPermiso());
+               
         //primero contemplo Ajax: Si el modulo del request actual esta deshabilitado o la accion esta deshabilitada tiro error 401 al .js
-        if($request->isXmlHttpRequest() && (!$moduloActivo || !$accionActivo))
+        if($request->isXmlHttpRequest() && (!$moduloActivo || (isset($accionActivo) && !$accionActivo)))
         {
             //diferente mensaje dependiendo que era lo que estaba desactivado.
             $msg = (!$moduloActivo)?self::MENSAJE_MODULO_DESACTIVADO:self::MENSAJE_ACCION_DESACTIVADA;
@@ -265,7 +272,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
 
         //De aca en mas ya estamos seguros de que el modulo esta activo.
         //Si la accion esta desactivada y coincide con la home tiro excepcion (si estan habilitadas en el FrontController) y retorno.
-        if(!$accionActivo && $request->getKeyPermiso() == $moduloHome."_".$controladorHome."_".$accionHome)
+        if(isset($accionActivo) && !$accionActivo && $request->getKeyPermiso() == $moduloHome."_".$controladorHome."_".$accionHome)
         {
             if($front->throwExceptions()){
                 throw new Exception("La accion desactivada corresponde con el home del sitio, no puede estar desactivada!,
@@ -277,7 +284,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
         //Si la accion en particular del request esta deshabilitada
         //trato de ir a la accion guardada en el historial.
         //Si no hay ninguna accion guardada ejecuto redireccion 307 dependiendo el perfil.
-        if(!$accionActivo)
+        if(isset($accionActivo) && !$accionActivo)
         {
             $this->getResponse()->setHttpResponseCode(307);
             if(!$this->rutearUltimaVista())

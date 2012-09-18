@@ -528,7 +528,10 @@ var validateFormInfoProfesional = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        cargoInstitucion:{required:true},
+        cargoInstitucion:{required:function(element){
+                                     return $("#institucionId").val() != "";
+                                   }
+                          },
         secundaria:{required:true},
         universidadCarrera:{required:function(element){
                                 return $("#universidad").val() != "";

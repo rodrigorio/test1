@@ -74,7 +74,7 @@ class SysController
     public function cargarPermisosPerfil($idPerfil)
     {
     	$oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
-    	return $oPermisosIntermediary->permisosPorPerfil($idPerfil);       
+    	return $oPermisosIntermediary->permisosPorPerfil($idPerfil);
     }
 
     /**
