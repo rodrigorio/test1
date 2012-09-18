@@ -50,15 +50,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     
     private function setJSSeguimientos(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "jsContent", "JsContent");
-        return $this;
-    	
+        return $this;    	
     }
     private function setJSAntecedentes(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "jsContent", "JsContent");
         return $this;
     }
-
-  	private function setJSDiagnostico(){
+    private function setJSDiagnostico(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "jsContent", "JsContent");
         return $this;
     }

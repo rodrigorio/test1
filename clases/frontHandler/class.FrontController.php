@@ -455,7 +455,7 @@ class FrontController
 														
             do {
                 $this->request->setDispatched(true);
-				
+                				
                 /**
                  * Notify plugins of dispatch startup
                  *

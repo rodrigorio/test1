@@ -135,8 +135,8 @@ class PluginParametros extends PluginAbstract
                         'ERROR_DB_REDIRECICON_ACCION' => 'sitioEnConstruccion',
 
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCION_MODULO' => 'comunidad',
-                        'PERFIL_INTEGRANTEINACTIVO_REDIRECCION_CONTROLADOR' => 'index',
-                        'PERFIL_INTEGRANTEINACTIVO_REDIRECCION_ACCION' => 'datosPersonales',
+                        'PERFIL_INTEGRANTEINACTIVO_REDIRECCION_CONTROLADOR' => 'datosPersonales',
+                        'PERFIL_INTEGRANTEINACTIVO_REDIRECCION_ACCION' => 'index',
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCION_PATH' => '/comunidad/datos-personales',
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_MODULO' => 'comunidad',
                         'PERFIL_INTEGRANTEINACTIVO_REDIRECCIONLOGIN_CONTROLADOR' => 'index',

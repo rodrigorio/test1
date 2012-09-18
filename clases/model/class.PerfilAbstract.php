@@ -137,7 +137,7 @@ abstract class PerfilAbstract
         }
         if($this->tiene($funcion))
         {
-            return $this->oPermisos->acciones[$funcion];
+            return ($this->oPermisos->acciones[$funcion])? true : false;
         }
         return null;
     }
