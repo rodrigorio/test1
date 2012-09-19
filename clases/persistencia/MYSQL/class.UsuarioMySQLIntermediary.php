@@ -875,65 +875,6 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
 		
-    public function guardarNuevaContrasenia($iId)
-    {
-        try{
-            $db = $this->conn;
-
-            $time 	= time();
-            $token 	= md5($time);
-            $pass	= substr( md5(microtime()), 1, 8);
-            $oPass = new stdClass();
-            $oPass->nuevaContrasenia = $pass;
-            $oPass->token = $token;
-            $sSQL = " insert into usuarios_datos_temp set ".
-                    " id=".$db->escape($iId,false,MYSQL_TYPE_INT).", " .
-                    " contraseniaNueva=".$db->escape(md5($pass),true).", ".
-                    " token=".$db->escape($token,true)." ";
-
-            $db->execSQL($sSQL);
-            $db->commit();
-            return $oPass;
-        }catch(Exception $e){
-                throw new Exception($e->getMessage(), 0);
-                return false;
-        }
-    }
-	
-    public function validarConfirmacionContrasenia($token)
-    {
-        try{
-            $db = $this->conn;
-
-            $sSQL = "SELECT 
-                        udt.id as iId,
-                        udt.contraseniaNueva as sContraseniaNueva
-                    FROM
-                      `usuarios_datos_temp` udt
-                    JOIN
-                            usuarios u ON udt.id = u.id
-                    JOIN
-                            personas p ON p.id = udt.id
-                    WHERE DATE_SUB(udt.fecha,INTERVAL 5 DAY) <= now()
-                    AND udt.token = ".$db->escape($token,true)." ";
-
-            $objUsuario = $db->getDBObject($sSQL);
-            if($objUsuario){
-            	$filtro   = array('p.id' => $objUsuario->iId);
-                $aUsuario = $this->obtener($filtro);
-                if(null === $aUsuario){return false;}
-                $oUsuario = $aUsuario[0];
-                $oUsuario->setContrasenia( $objUsuario->sContraseniaNueva );
-                return $this->guardar($oUsuario);
-            }else{
-            	return false;
-            }
-        }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-            return false;
-        }
-    }
-
     public function obtenerPrivacidadCampo($filtro, $nombreCampo)
     {
     	try{
@@ -1091,6 +1032,65 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             throw new Exception($e->getMessage(), 0);
             return false;
         }        
+    }
+
+    public function guardarNuevaContrasenia($iId)
+    {
+        try{
+            $db = $this->conn;
+
+            $time 	= time();
+            $token 	= md5($time);
+            $pass	= substr( md5(microtime()), 1, 8);
+            $oPass = new stdClass();
+            $oPass->nuevaContrasenia = $pass;
+            $oPass->token = $token;
+            $sSQL = " insert into usuarios_datos_temp set ".
+                    " id=".$db->escape($iId,false,MYSQL_TYPE_INT).", " .
+                    " contraseniaNueva=".$db->escape(md5($pass),true).", ".
+                    " token=".$db->escape($token,true)." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+            return $oPass;
+        }catch(Exception $e){
+                throw new Exception($e->getMessage(), 0);
+                return false;
+        }
+    }
+
+    public function validarConfirmacionContrasenia($token)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT
+                        udt.id as iId,
+                        udt.contraseniaNueva as sContraseniaNueva
+                    FROM
+                      `usuarios_datos_temp` udt
+                    JOIN
+                            usuarios u ON udt.id = u.id
+                    JOIN
+                            personas p ON p.id = udt.id
+                    WHERE DATE_SUB(udt.fecha,INTERVAL 5 DAY) <= now()
+                    AND udt.token = ".$db->escape($token,true)." ";
+
+            $objUsuario = $db->getDBObject($sSQL);
+            if($objUsuario){
+            	$filtro   = array('p.id' => $objUsuario->iId);
+                $aUsuario = $this->obtener($filtro);
+                if(null === $aUsuario){return false;}
+                $oUsuario = $aUsuario[0];
+                $oUsuario->setContrasenia( $objUsuario->sContraseniaNueva );
+                return $this->guardar($oUsuario);
+            }else{
+            	return false;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
     }
 
     public function actualizarCampoArray($objects, $cambios){}

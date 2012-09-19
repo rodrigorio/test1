@@ -19,7 +19,7 @@
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal" id="title"><span class="i32 mi authenticate32"></span></div>
     <form id="formLogin" name="formLogin" action="" method="post">
-        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div class="ajax_wait30 di_no"></div>
         <div style="display:none;" id='msg_form_login' class="msg_form iveal"><span class="bs i"></span> <span class="msg"></span></div>
 
         <div class="form_line msg_nroDocumento msg_tipoDocumento">
@@ -56,47 +56,58 @@
             </label>
         </div>
         <div class="fl_ri iveal">
-            <a href="javascript:;" id="rec_pass"><span class="bs i help"></span> ¿Olvidaste tu contraseña?</a>
+            <a href="javascript:;" id="recuperarContrasenia"><span class="bs i help"></span> ¿Olvidaste tu contraseña?</a>
         </div>
 
         <input type="hidden" value="{sNextUrl}" name="next" id="next">
-    </form>
-    
-    <div style="display:none;" id="recuperarContrasenia">
-		<div id="titleRecPass"><h2>Recuperar contrase&ntilde;a</h2></div>
-		<div id="msg_email" class="form_line">
-			<div style='right:-220px' id="hintrec_email" class="msg_campo_der hint iveal di_no">
-				<span class="bs i"></span> <span class="msg">Escriba un email valido.</span>
-			</div>
-			<label for="email">Tu correo electr&oacute;nico:</label>
-			<div class="fwrap">
-	            <div class="inner_fwrap">
-					<input  id="rec_email" name="rec_email" type="text" value="" >
-				</div>
-			</div>
-		</div>
-		<div id="msg_user" class="form_line">
-			<div style='right:-220px' id="hintrec_nombre_usuario" class="msg_campo_der hint iveal di_no">
-				<span class="bs i"></span><span class="msg">Escriba un nombre de usuario.</span>
-			</div>
-			<label for="username">Nombre de usuario:</label>
-			<div class="fwrap">
-	        	<div class="inner_fwrap">
-	      	        <input type="text" name="rec_nombre_usuario" id="rec_nombre_usuario" />
-	      	     </div>
-			</div>
-		</div>
-		<div class="fl_le iveal">
-            <label for="acceder" class="button buttonConfirm buttonLarge mari3">
-                <button id="rec_pass" type="button" onclick="recuperarPass();" class="btn01">
-                    <span class="i mi signIn"></span> 
-                    Enviar
-                </button>
-            </label>
-        </div>
-    </div>
+    </form>   
 </div>
 <!--EndFormularioBlock-->
+
+<!--BeginFormRecuperarContrasenia-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal" id="title"><span class="i32 mi password32"></span></div>
+    <form id="formRecuperarContrasenia" name="formRecuperarContrasenia" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+        
+        <div class="mabo3 fost_it">Te enviaremos una nueva contrase&ntilde;a a la direcci&oacute;n de correo que tienes en la cuenta.</div>
+
+        <div class="form_line msg_emailRecuperarPass">
+            <label for="emailRecuperarPass">Tu correo electr&oacute;nico</label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="emailRecuperarPass" id="emailRecuperarPass" title="Tu correo electr&oacute;nico"  maxlength="50" value="" />
+                </div>
+            </div>
+            <p>Debe ser la cuenta de correo que tienes asociada a tu perfil dentro de la comunidad</p>
+        </div>
+        
+        <div class="form_line msg_nroDocumentoRecuperarPass msg_tipoDocumentoRecuperarPass">
+            <label for="tipoDocumentoRecuperarPass">
+                Documento
+            </label>
+            <div class="cl_le"></div>
+            <div class="fl_le mari2">
+                <select class="teta_up" style="width:75px" name="tipoDocumentoRecuperarPass" id="tipoDocumentoRecuperarPass" title="Tipo de Documento">
+                    <option value="">Tipo:</option>
+                    <!--BeginOptionSelectDocumento--><option value="{iValue}">{sDescripcion}</option><!--EndOptionSelectDocumento-->
+                </select>
+            </div>
+            <input style="width:350px" class="defVal" type="text" name="nroDocumentoRecuperarPass" id="nroDocumentoRecuperarPass" title="Numero" maxlength="30" value="Numero" />
+        </div>
+
+        <div style="display:none;" id='msg_form_recuperarContrasenia' class="msg_form iveal mabo2"><span class="bs i"></span> <span class="msg"></span></div>
+        <div class="fl_le iveal">
+            <label for="enviarContrasenia" class="button buttonConfirm buttonLarge mari3">
+                <button id="enviarContrasenia" type="submit" name="enviarContrasenia" class="btn01">
+                    <span class="i bs mailAdd"></span>
+                    Enviar nueva contrase&ntilde;a
+                </button>
+            </label>
+        </div>        
+    </form>
+</div>
+<!--EndFormRecuperarContrasenia-->
 
 <!--BeginImagenLoginBlock-->
 <div class="fl_ri bosh bo lihe0">

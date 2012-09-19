@@ -224,42 +224,138 @@ class LoginControllerIndex extends PageControllerAbstract
         
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
-    
-    public function recuperarContrasenia(){
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
-    	try{
-            //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
-            $this->getJsonHelper()->initJsonAjaxResponse();
-	        $sNombreUsuario 	= $this->getRequest()->getPost("nombreUsuario");
-	        //$iDni 	= $this->getRequest()->getPost("dni");
-	        $sEmail	 	= $this->getRequest()->getPost("email");
 
-    		$res =  IndexController::getInstance()->recuperarContrasenia($sNombreUsuario,$sEmail);
-    		if($res === true ){
-    			$this->getJsonHelper()->setSuccess(true);
-    		}else if($res === -1){
-    			$this->getJsonHelper()->setSuccess(false)->setMessage("No se pudo enviar el email, reintente mas tarde.");
-    		}else{
-    			$this->getJsonHelper()->setSuccess(false)->setMessage("Datos incorrectos, reintente mas tarde.");
-    		}
-    	}catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
+    public function formRecuperarContrasenia()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
         }
-    	//setea headers y body en el response con los valores codificados
-       	$this->getJsonHelper()->sendJsonAjaxResponse();
+
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "popUpContent", "FormRecuperarContrasenia");
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
     
-    function confirmarContrasenia(){
+    public function procesarRecuperarContrasenia()
+    {
+        if($this->getRequest()->has('token')){
+            $this->confirmarNuevaContrasenia();
+            return;
+        }
+
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        
+        if($this->getRequest()->has('enviarContrasenia'))
+        {
+            try{
+                $this->getJsonHelper()->initJsonAjaxResponse();
+
+                $sEmail = $this->getRequest()->getPost("emailRecuperarPass");
+                $iTipoDocumentoId = $this->getRequest()->getPost("tipoDocumentoRecuperarPass");
+                $sNumeroDocumento = $this->getRequest()->getPost("sNumeroDocumentoRecuperarPass");
+
+                $oUsuario = ComunidadController::getInstance()->getUsuarioByEmailDni($sEmail, $iTipoDocumentoId, $sNumeroDocumento);
+                if(null === $oUsuario){
+                    $this->getJsonHelper()->setSuccess(false)->setMessage("Los datos no coinciden con ningún integrante de la comunidad.");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+
+                //todavia existe un password temporal generado que no caduco
+                if(IndexController::getInstance()->existePasswordTemporal($iUsuarioId))
+                {
+                    $this->getJsonHelper()
+                         ->setSuccess(false)
+                         ->setMessage("Ya se ha procesado una solicitd de cambio de contraseña, el sistema no generará otra hasta que ésta expire.
+                                       El link para confirmar el cambio fue enviado a la dirección de correo electrónico ".$oUsuario->getEmail().".");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+
+                IndexController::getInstance()->crearPasswordTemporal($oUsuario);
+
+                $oPasswordTemporal = $oUsuario->getPasswordTemporal();
+
+                if(null === $oPasswordTemporal)
+                {
+                    $this->getJsonHelper()
+                         ->setSuccess(false)
+                         ->setMessage("No se pudo generar una nueva contraseña, vuelva a intentarlo mas tarde.");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+                
+                $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+                $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+                $mailContacto = $parametros->obtener('EMAIL_SITIO_CONTACTO');
+
+                $sMailDestino = $oUsuario->getEmail();                
+                $hrefSitio = htmlentities($this->getRequest()->getBaseTagUrl());                
+                $sNombreUsuario = $oUsuario->getNombreCompleto();
+                
+                $hrefCancelarSuscripcion = htmlentities($hrefSitio."desactivar-notificaciones-mail?id=".$oUsuario->getId()."&key=".$oUsuario->getUrlTokenKey());
+
+                $this->getTemplate()->load_file("gui/templates/index/frameMail01-01.gui.html", "frameMail");
+
+                //head y footer mail.
+                $this->getTemplate()->set_var("hrefSitio", $hrefSitio);
+                $this->getTemplate()->set_var("sNombreSitio", $nombreSitio." - Comunidad");
+                $this->getTemplate()->set_var("sEmailDestino", $sMailDestino);
+                $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
+                $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
+
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeBlock");
+
+                $sTituloMensaje = htmlentities("Cambio de contraseña");
+                $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
+
+                $sMensaje = htmlentities("Se ha solicitado desde el sistema la generación de una nueva contraseña para acceder como integrante de la comunidad.<br>
+                                          Tu nueva contraseña es: ".$oPasswordTemporal->getPassword()."<br>
+                                          Si no deseas utilizarla simplemente ignora este mensaje, la solicitud quedara obsoleta.");
+
+                $this->getTemplate()->set_var("sMensaje", $sMensaje);
+
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "PanelBotonesBlock", true);
+
+                $hrefButton = htmlentities($hrefSitio."recuperar-contrasenia-procesar?token=".$oPasswordTemporal->getToken());
+                $this->getTemplate()->set_var("sButton", htmlentities("Confirmar cambio de contraseña"));
+                $this->getTemplate()->set_var("hrefButton", $hrefButton);
+                $this->getTemplate()->parse("ButtonBlock");
+                $sMensajeBody = $this->getTemplate()->pparse("frameMail", false);
+
+                $this->getMailerHelper()->sendMail($mailContacto, $nombreSitio." - Comunidad", $sMailDestino, $sNombreUsuario, $nombreSitio." - Solicitud cambio de contrasena", $sMensajeBody);
+
+                //envio el html para el dialog de exito
+                $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_REC_PASS');
+                $sMensaje = "Se ha generado una nueva contraseña, se envió un link temporal a la dirección de e-mail.<br>
+                             El link expirará dentro de ".$cantDiasExpiracion." día/s.";
+
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sDialogExito", "MsgCorrectoBlockI32");
+                $this->getTemplate()->set_var("sMensaje", $sMensaje);
+            
+                $this->getJsonHelper()->setSuccess(true)
+                     ->setValor('html', $this->getTemplate()->pparse('sDialogExito'))
+                     ->sendJsonAjaxResponse();
+                
+            }catch(Exception $e){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+            }                                    
+        }
+    }
+    
+    private function confirmarNuevaContrasenia()
+    {
     	try{
-    		$sToken 	= $this->getRequest()->get("token");
-    		$oUsuario	= IndexController::getInstance()->confirmarContrasenia($sToken);
-    		if($oUsuario){
-    			$url = "/?mt=as4dd.";
-    			$this->getRedirectorHelper()->gotoUrl($url);
-    		}else{
-    		    exit("Se produjo un error y no se ha podido realizar la accion.");
-    		}
+            $sToken = $this->getRequest()->get("token");
+            $oUsuario = IndexController::getInstance()->confirmarContrasenia($sToken);
+            if($oUsuario){
+                $url = "/?mt=as4dd.";
+                $this->getRedirectorHelper()->gotoUrl($url);
+            }else{
+                exit("Se produjo un error y no se ha podido realizar la accion.");
+            }
     	}catch(Exception $e){
 
     	}

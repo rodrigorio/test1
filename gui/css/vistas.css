@@ -413,7 +413,7 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .ficha02 .puntuar .desc{font-weight:bold;}
 .ficha02 .puntuar #txt_puntaje{font-size:1.7em}
 
-.ficha03{background-color:#FFF; font-size:1em; font-family:Arial; padding:10px 10px 0 10px; border:1px solid #CCC; border-top:1px solid #999; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
+.ficha03{background-color:#FFF; font-size:1em; font-family:Arial;}
 .ficha03 .encabezado, .ficha03 .contenido{padding:10px; overflow:auto}
 .ficha03 .encabezado{background-color:#EFEFEF; margin-bottom:5px; border-bottom:1px solid #CCC}
 .ficha03 .encabezado .izq{position:relative; z-index:1;}
@@ -423,6 +423,7 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .ficha03 .encabezado .der{float:right; position:relative; margin-left:20px; z-index:2}
 .ficha03 .contenido{background-color:#E8EAFF; border-bottom:1px solid #FFF; margin-bottom:10px; border-bottom:1px solid #CCC}
 .ficha03 .contenido.row{margin-bottom:5px !important; border-bottom:1px dashed #CCC !important;}
+.ficha03.ampliada{padding:10px 10px 0 10px; border:1px solid #CCC; border-top:1px solid #999; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
 .ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
