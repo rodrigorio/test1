@@ -99,8 +99,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     FROM
                        objetivos o 
                         JOIN 
-                    	objetivos_curriculares oc ON o.id = oc.id ";
-            
+                    	objetivos_curriculares oc ON o.id = oc.id 
+                    	JOIN
+                    	seguimiento_scc_x_objetivo_curricular sc ON oc.id = sc.objetivos_curriculares_id";
+                        
+                     
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
