@@ -56,11 +56,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        o.id as iId, o.descripcion as sDescripcion, op.objetivos_ejes_id as iObjetivoEjeId
+                        o.id as iId, o.descripcion as sDescripcion, op.objetivo_ejes_id as iObjetivoEjeId, sp.seguimientos_personalizados_id as iSeguimientoId
                     FROM
                        objetivos o 
                         JOIN 
-                    	objetivos_personalizados op ON o.id = op.id ";
+                    	objetivos_personalizados op ON o.id = op.id 
+                    	JOIN 
+                    	seguimiento_personalizado_x_objetivo_personalizado sp ON op.id = sp.objetivos_personalizados_id";
             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
