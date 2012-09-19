@@ -32,20 +32,23 @@ class RutasModuloIndex
                                           'controller' => $homeSitioControlador,
                                           'action'     => $homeSitioAccion));
         $router->addRoute('defaultDefaultDefault', $route);
-        $route = new RegexRoute('recuperarContrasenia',
+
+        //recuperar contrasenia
+        $route = new RegexRoute('recuperar-contrasenia',
                                 array(
                                         'module' => "index",
                                         'controller' => "login",
-                                        'action'     => "recuperarContrasenia"
+                                        'action'     => "formRecuperarContrasenia"
                                 ));
         $router->addRoute('indexLoginFormRecuperarContrasenia', $route);
-        $route = new RegexRoute('confirmarContrasenia',
+        $route = new RegexRoute('recuperar-contrasenia-procesar',
                                 array(
                                         'module' => "index",
                                         'controller' => "login",
-                                        'action'     => "confirmarContrasenia"
+                                        'action'     => "procesarRecuperarContrasenia"
                                 ));
-        $router->addRoute('indexLoginFormConfirmarContrasenia', $route);
+        $router->addRoute('indexLoginFormConfirmarContraseniaProcesar', $route);
+
         $route = new RegexRoute('registracion',
                                 array(
                                         'module' => "index",

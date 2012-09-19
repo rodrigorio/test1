@@ -400,8 +400,7 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
     });
 }
 
-function editarSoftware(iSoftwareId){
-    
+function editarSoftware(iSoftwareId){    
     var dialog = $("#dialog");
     if ($("#dialog").length != 0){
         dialog.hide("slow");
