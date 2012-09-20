@@ -376,16 +376,9 @@ class LoginControllerIndex extends PageControllerAbstract
     private function confirmarNuevaContrasenia()
     {
     	try{
-            $sToken = $this->getRequest()->get("token");
-            $oUsuario = IndexController::getInstance()->confirmarContrasenia($sToken);
-            if($oUsuario){
-                $url = "/?mt=as4dd.";
-                $this->getRedirectorHelper()->gotoUrl($url);
-            }else{
-                exit("Se produjo un error y no se ha podido realizar la accion.");
-            }
-    	}catch(Exception $e){
 
+    	}catch(Exception $e){
+            throw $e;
     	}
     }
 }
