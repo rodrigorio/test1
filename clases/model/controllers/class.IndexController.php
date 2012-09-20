@@ -58,52 +58,66 @@ class IndexController
             throw $e;
         }
     }
-        
-    /**
-     * @param string $token
-     */
-    public function recuperarContrasenia($sNombreUsuario,$sEmail){
+
+    public function existePasswordTemporal($iUsuarioId)
+    {
     	try{
-            $request = FrontController::getInstance()->getRequest();
-            $filtro = array('u.nombre' => $sNombreUsuario, 'p.email' =>  $sEmail);
+            //tengo en cuenta que no este expirada.
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_REC_PASS');
+
+            $filtro = array('upt.usuarios_id' => $iUsuarioId,
+                            'expiracion' => $cantDiasExpiracion);
+            
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            $iRecordsTotal = 0;
-            $aUsuario = $oUsuarioIntermediary->obtener($filtro,$iRecordsTotal,null,null,null,null);
-            if($aUsuario !== null){
-                $oUsuario = $aUsuario[0];
-            	$oNuevoPass = $oUsuarioIntermediary->guardarNuevaContrasenia($oUsuario->getId());
-            	if($oNuevoPass){
-	            	$asunto = "Recuperaci�n de contrase�a";
-					$dest 	= $oUsuario()->getEmail();
-					$orig	= "servicios@sistemadegestion.com";
-					$sToken	= $oNuevoPass->token;
-					$sNuevaContrasenia	= $oNuevoPass->nuevaContrasenia;
-					$body 	="<html>
-								<head>
-								  <title>Usted ha sido invitado para registrarse en .....</title>
-								</head>
-								<body>
-								  <p>Si usted no solicit� cambiar su contrase�a omita este mail, en caso contrario 
-								  		haga click en el siguiente enlace para confirmar su nueva contrase�a!</p>
-								  <p><a href='".$request->getBaseTagUrl()."confirmarContrasenia?token=$sToken'> Confirmar </a></p>		
-								  <div><p>Nueva contrase�a : ".$sNuevaContrasenia."</div>
-								</body>
-							</html>";
-	            	$envio = $oUsuarioIntermediary->sendMail($orig, $dest, $asunto, $body);
-	            	if($envio){
-	            		return true;
-	            	}else{
-	            		return -1;
-	            	}
-            	}else{
-            		return null;
-            	} 
-            }else{
-            	return null;
+            return $oUsuarioIntermediary->existePasswordTemporal($filtro);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function borrarPasswordTemporalExpiradaUsuario($iUsuarioId)
+    {
+        try{
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $iDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_REC_PASS');
+
+            $oUsuarioIntermediary->borrarPasswordTemporalExpiradaUsuario($iUsuarioId, $iDiasExpiracion);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Crea un password temporal y lo asocia al usuario
+     */
+    public function crearPasswordTemporal($oUsuario)
+    {
+    	try{
+            $sPassword = Utils::generarPassword();
+            $sPasswordMd5 = md5($sPassword);
+            $dTime = time();
+            $sToken = md5($sPassword.$dTime);
+            $sEmail = $oUsuario->getEmail();
+
+            $oPasswordTemporal = new stdClass();
+            $oPasswordTemporal->sPassword = $sPassword;
+            $oPasswordTemporal->sPasswordMd5 = $sPasswordMd5;
+            $oPasswordTemporal->sToken = $sToken;
+            $oPasswordTemporal->sEmail = $sEmail;
+            $oPasswordTemporal = Factory::getPasswordTemporalInstance($oPasswordTemporal);
+
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $result = $oUsuarioIntermediary->insertarPasswordTemporal($oPasswordTemporal, $oUsuario->getId());
+
+            if($result){
+                $oUsuario->setPasswordTemporal($oPasswordTemporal);
             }
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+
+            return $result;
+            
+        }catch(Exception $e){
+            throw $e;
+        }
     }
 
     /**

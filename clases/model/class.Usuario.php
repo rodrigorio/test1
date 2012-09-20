@@ -45,6 +45,12 @@ class Usuario extends PersonaAbstract
     private $bActivo;
 
     private $sUrlTokenKey;
+
+    /**
+     * instancia de PasswordTemporal.
+     * Se puede asociar a un usuario si solicita recuperar la contrasenia
+     */
+    private $oPasswordTemporal;
     
     public function __construct(stdClass $oParams = null){
         parent::__construct();
@@ -201,5 +207,15 @@ class Usuario extends PersonaAbstract
     public function getUrlTokenKey()
     {
         return $this->sUrlTokenKey;
+    }
+
+    public function getPasswordTemporal()
+    {
+        return $this->oPasswordTemporal;
+    }
+    public function setPasswordTemporal($oPasswordTemporal)
+    {
+        $this->oPasswordTemporal = $oPasswordTemporal;
+        return $this;
     }
 }

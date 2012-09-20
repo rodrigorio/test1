@@ -35,12 +35,22 @@ class LoginControllerIndex extends PageControllerAbstract
     {        
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        //seguridad extra
+        $iTipoDocumento = $this->getRequest()->getPost('tipoDocumento');
+        $sNumeroDocumento = $this->getRequest()->getPost('nroDocumento');
+        $sContraseniaMd5 = $this->getRequest()->getPost('contraseniaMD5');
+        if(empty($iTipoDocumento) || empty($sNumeroDocumento) || empty($sContraseniaMd5)){
+            $this->getJsonHelper()->setSuccess(false)->setMessage("No se han enviado correctamente los datos desde el formulario.");
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
+        }
         
         try{
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            list($errorDatos, $errorSuspendido, $exito) = SysController::getInstance()->loginUsuario($this->getRequest()->getPost('tipoDocumento'), $this->getRequest()->getPost('nroDocumento'), $this->getRequest()->getPost('contraseniaMD5'));
+            list($errorDatos, $errorSuspendido, $exito) = SysController::getInstance()->loginUsuario($iTipoDocumento, $sNumeroDocumento, $sContraseniaMd5);
 
             if($exito){
                 $redirect = $this->getRequest()->getPost('next');
@@ -234,6 +244,14 @@ class LoginControllerIndex extends PageControllerAbstract
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "popUpContent", "FormRecuperarContrasenia");
 
+        //armo el select con los tipos de documentos cargados en db
+        $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+        foreach ($aTiposDocumentos as $value => $text){
+            $this->getTemplate()->set_var("iValue", $value);
+            $this->getTemplate()->set_var("sDescripcion", $text);
+            $this->getTemplate()->parse("OptionSelectDocumento", true);
+        }
+
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
     
@@ -253,7 +271,13 @@ class LoginControllerIndex extends PageControllerAbstract
 
                 $sEmail = $this->getRequest()->getPost("emailRecuperarPass");
                 $iTipoDocumentoId = $this->getRequest()->getPost("tipoDocumentoRecuperarPass");
-                $sNumeroDocumento = $this->getRequest()->getPost("sNumeroDocumentoRecuperarPass");
+                $sNumeroDocumento = $this->getRequest()->getPost("nroDocumentoRecuperarPass");
+
+                if(empty($sEmail) || empty($iTipoDocumentoId) || empty($sNumeroDocumento)){
+                    $this->getJsonHelper()->setSuccess(false)->setMessage("No se han enviado correctamente los datos desde el formulario.");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
 
                 $oUsuario = ComunidadController::getInstance()->getUsuarioByEmailDni($sEmail, $iTipoDocumentoId, $sNumeroDocumento);
                 if(null === $oUsuario){
@@ -263,15 +287,17 @@ class LoginControllerIndex extends PageControllerAbstract
                 }
 
                 //todavia existe un password temporal generado que no caduco
-                if(IndexController::getInstance()->existePasswordTemporal($iUsuarioId))
+                if(IndexController::getInstance()->existePasswordTemporal($oUsuario->getId()))
                 {
                     $this->getJsonHelper()
                          ->setSuccess(false)
                          ->setMessage("Ya se ha procesado una solicitd de cambio de contraseña, el sistema no generará otra hasta que ésta expire.
-                                       El link para confirmar el cambio fue enviado a la dirección de correo electrónico ".$oUsuario->getEmail().".");
+                                       El link para confirmar el cambio fue enviado a la dirección de correo electrónico ".$oUsuario->getEmail());
                     $this->getJsonHelper()->sendJsonAjaxResponse();
                     return;
                 }
+
+                IndexController::getInstance()->borrarPasswordTemporalExpiradaUsuario($oUsuario->getId());
 
                 IndexController::getInstance()->crearPasswordTemporal($oUsuario);
 
@@ -305,16 +331,18 @@ class LoginControllerIndex extends PageControllerAbstract
                 $this->getTemplate()->set_var("sEmailContacto", $mailContacto);
                 $this->getTemplate()->set_var("hrefCancelarSuscripcion", $hrefCancelarSuscripcion);
 
-                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "TituloMensajeSubMensajeDestacadoBlock");
 
                 $sTituloMensaje = htmlentities("Cambio de contraseña");
                 $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
 
-                $sMensaje = htmlentities("Se ha solicitado desde el sistema la generación de una nueva contraseña para acceder como integrante de la comunidad.<br>
-                                          Tu nueva contraseña es: ".$oPasswordTemporal->getPassword()."<br>
+                $sMensaje = htmlentities("Se ha solicitado desde el sistema la generación de una nueva contraseña para acceder como integrante de la comunidad.
                                           Si no deseas utilizarla simplemente ignora este mensaje, la solicitud quedara obsoleta.");
 
                 $this->getTemplate()->set_var("sMensaje", $sMensaje);
+
+                $sSubMensaje = htmlentities("Tu nueva contraseña es: ".$oPasswordTemporal->getPassword()." ");
+                $this->getTemplate()->set_var("sSubMensaje", $sSubMensaje);
 
                 $this->getTemplate()->load_file_section("gui/componentes/mails.gui.html", "sMainContent", "PanelBotonesBlock", true);
 
