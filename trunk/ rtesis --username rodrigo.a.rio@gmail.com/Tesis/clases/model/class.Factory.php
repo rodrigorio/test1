@@ -352,4 +352,13 @@ class Factory
         $oInvitacion = new Invitacion($obj);
         return $oInvitacion;
     }
+
+    /**
+     * @param stdClass $obj
+     * @return PasswordTemporal|null
+     */
+    public static function &getPasswordTemporalInstance(stdClass $obj){
+        $oPasswordTemporal = new PasswordTemporal($obj);
+        return $oPasswordTemporal;
+    }
 }

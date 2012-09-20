@@ -433,6 +433,29 @@ class ComunidadController
         }
     }
 
+    /**
+     * Retorna un objeto usuario a partir del numero de documento y el email.
+     * si no existe retorna null
+     */
+    public function getUsuarioByEmailDni($sEmail, $iTipoDocumentoId, $sNumeroDocumento){
+    	try{
+            $filtro = array('p.documento_tipos_id' => $iTipoDocumentoId,
+                            'p.numeroDocumento' => $sNumeroDocumento,
+                            'p.email' => $sEmail);
+            
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aUsuario = $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aUsuario){
+                return $aUsuario[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function buscarUsuarios($filtro, $iRecordsTotal = 0,$sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);

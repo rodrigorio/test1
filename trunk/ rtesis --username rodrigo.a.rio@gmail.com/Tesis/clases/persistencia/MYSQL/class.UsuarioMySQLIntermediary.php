@@ -158,8 +158,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(isset($filtro['u.contrasenia']) && $filtro['u.contrasenia']!=""){
                 $WHERE[] = $this->crearFiltroTexto('u.contrasenia', $filtro['u.contrasenia']);
             }
-            if(isset($filtro['p.email']) && $filtro['p.email']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.email', $filtro['p.email']);
+            if(isset($filtro['p.email']) && $filtro['p.email'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('p.email', $filtro['p.email']);
             }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre']!=""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
@@ -1034,28 +1034,84 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }        
     }
 
-    public function guardarNuevaContrasenia($iId)
+    public function existePasswordTemporal($filtro)
+    {
+        try{
+            $db = $this->conn;
+            
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        usuario_passwords_temporales upt ";
+
+            $WHERE = array();
+
+            if(isset($filtro['ui.usuarios_id']) && $filtro['ui.usuarios_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('ui.usuarios_id', $filtro['ui.usuarios_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['expiracion'])){
+                $WHERE[] = " TO_DAYS(NOW()) - TO_DAYS(upt.fecha) <= ".$filtro['expiracion']." ";
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function borrarPasswordTemporalExpiradaUsuario($iUsuarioId, $iDiasExpiracion)
     {
         try{
             $db = $this->conn;
 
-            $time 	= time();
-            $token 	= md5($time);
-            $pass	= substr( md5(microtime()), 1, 8);
-            $oPass = new stdClass();
-            $oPass->nuevaContrasenia = $pass;
-            $oPass->token = $token;
-            $sSQL = " insert into usuarios_datos_temp set ".
-                    " id=".$db->escape($iId,false,MYSQL_TYPE_INT).", " .
-                    " contraseniaNueva=".$db->escape(md5($pass),true).", ".
-                    " token=".$db->escape($token,true)." ";
+            $db->begin_transaction();
+
+            //borro las invitaciones expiradas
+            $sSQL = "DELETE FROM usuario_passwords_temporales
+                     WHERE usuarios_id = ".$iUsuarioId."
+                     AND TO_DAYS(NOW()) - TO_DAYS(fecha) >= ".$iDiasExpiracion." ";
+
+            $db->execSQL($sSQL);
+
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function insertarPasswordTemporal($oPasswordTemporal, $iUsuarioId)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " INSERT INTO usuario_passwords_temporales SET ".
+                    " usuarios_id = ".$this->escInt($iUsuarioId).", " .
+                    " contraseniaNueva = ".$this->escStr($oPasswordTemporal->getPasswordMd5()).", ".
+                    " token = ".$this->escStr($oPasswordTemporal->getToken()).", ".
+                    " email = ".$this->escStr($oPasswordTemporal->getEmail())." ";
 
             $db->execSQL($sSQL);
             $db->commit();
-            return $oPass;
+
+            $oPasswordTemporal->setFecha(date("Y/m/d"));
+            
+            return true;
+            
         }catch(Exception $e){
-                throw new Exception($e->getMessage(), 0);
-                return false;
+            throw new Exception($e->getMessage(), 0);
+            return false;
         }
     }
 

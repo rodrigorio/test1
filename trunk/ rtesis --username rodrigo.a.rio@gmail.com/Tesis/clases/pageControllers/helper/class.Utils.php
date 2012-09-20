@@ -40,5 +40,17 @@ class Utils{
     	return $fechaForm;
     }
 
-    
+    /**
+     * Genera un password aleatorio
+     *
+     */
+    public static function generarPassword($longitud = 8)
+    {
+       $conjunto_caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890*.+=-_#&";
+       $str = "";
+       for($i=0; $i<$longitud; $i++){
+          $str .= $conjunto_caracteres{rand() % strlen( $conjunto_caracteres)};
+       }
+       return $str;
+    }
 }
