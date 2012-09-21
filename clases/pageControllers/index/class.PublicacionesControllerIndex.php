@@ -10,9 +10,6 @@ class PublicacionesControllerIndex extends PageControllerAbstract
                                        'filtroApellidoAutor' => 'ap.apellido',
                                        'filtroFechaDesde' => 'fechaDesde');
         
-    /**
-     * Setea el Head para las vistas de Instituciones
-     */
     private function setHeadTag()
     {
         $front = FrontController::getInstance();
@@ -32,6 +29,26 @@ class PublicacionesControllerIndex extends PageControllerAbstract
         return $this;
     }
     
+    private function setHeadTagPublicacion($oFicha)
+    {
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+
+        $tituloVista = $nombreSitio.' | '.$oFicha->getTitulo();
+        $descriptionVista = $oFicha->getDescripcionBreve();
+        $keywordsVista = $oFicha->getKeywords();
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/vistas/index/publicaciones.gui.html", "jsContent", "JsContent");
+
+        return $this;
+    }
+
     public function index(){
         $this->listar();
     }
@@ -268,7 +285,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             //paso todas las validaciones muestro la vista
 
             $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
-            $this->setHeadTag();
+            $this->setHeadTagPublicacion($oPublicacion);
 
             $this->printMsgTop();
 
@@ -353,7 +370,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             //paso todas las validaciones muestro la vista
 
             $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
-            $this->setHeadTag();
+            $this->setHeadTagPublicacion($oPublicacion);
 
             $this->printMsgTop();
 

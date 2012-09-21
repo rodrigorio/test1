@@ -28,6 +28,26 @@ class SoftwareControllerIndex extends PageControllerAbstract
 
         return $this;
     }
+
+    private function setHeadTagSoftware($oSoftware)
+    {
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+
+        $tituloVista = $nombreSitio.' | '.$oSoftware->getTitulo();
+        $descriptionVista = $oSoftware->getDescripcionBreve();
+        $keywordsVista = $oSoftware->getCategoria()->getNombre();
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/vistas/index/software.gui.html", "jsContent", "JsContent");
+
+        return $this;
+    }
     
     public function index(){
         $this->listar();
@@ -329,7 +349,7 @@ class SoftwareControllerIndex extends PageControllerAbstract
             }
 
             $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
-            $this->setHeadTag();
+            $this->setHeadTagSoftware($oSoftware);
 
             $this->printMsgTop();
 

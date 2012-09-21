@@ -266,6 +266,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sEstadoClass", "disabled");
                 }
 
+                $this->getTemplate()->set_var("hrefAmpliarSeguimiento", $hrefAmpliarSeguimiento);
+
                 $srcAvatarPersona = $this->getUploadHelper()->getDirectorioUploadFotos().$oSeguimiento->getDiscapacitado()->getNombreAvatar();
                 $this->getTemplate()->set_var("scrAvatarPersona", $srcAvatarPersona);
 

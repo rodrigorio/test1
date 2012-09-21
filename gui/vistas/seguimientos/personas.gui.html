@@ -382,19 +382,21 @@
         <h2 class="mabo3">Informaci&oacute;n Extra</h2>
 
         <span class="fowe_bo teta_up">Nombre Padre:</span> {sNombreApellidoPadre}<br>
-        <div class="pato pabo grupo">
+        <div class="pato pabo">
             <span class="fowe_bo teta_up">Ocupaci&oacute;n Padre</span><br>{sOcupacionPadre}
         </div>
         <span class="fowe_bo teta_up">Nacimiento Padre:</span> {sNacimientoPadre}<br>
         <span class="fowe_bo teta_up">Nombre Madre:</span> {sNombreApellidoMadre}<br>
-        <div class="pato pabo grupo">
+        <div class="pato pabo">
             <span class="fowe_bo teta_up">Ocupaci&oacute;n Madre</span><br>{sOcupacionMadre}
         </div>
         <span class="fowe_bo teta_up">Nacimiento Madre:</span> {sNacimientoMadre}<br>
-        <div class="pato pabo grupo">
+        <div class="pato pabo">
             <span class="fowe_bo teta_up">Hermanos</span><br>{sNombreHermanos}
         </div>
-        <span class="fowe_bo teta_up">Instituci&oacute;n:</span> <a target="_blank" href="comunidad/ampliar-institucion?iInstitucionId={iInstitucionId}">{sNombreInstitucion}</a>
+        <!--BeginLinkInstitucionBlock-->
+        <span class="fowe_bo teta_up">Instituci&oacute;n:</span> <a target="_blank" href="{hrefAmpliarInstitucion}">{sNombreInstitucion}</a>
+        <!--EndLinkInstitucionBlock-->
     </div>
 </div>
     <!--BeginIntegrantesPersona-->

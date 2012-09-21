@@ -45,6 +45,33 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
         return $this;
     }
 
+    private function setHeadTagInstitucion($oInstitucion)
+    {
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+
+        $tituloVista = $nombreSitio.' | '.$oInstitucion->getNombre();
+
+        $sUbicacion = $oInstitucion->getCiudad()->getNombre()." ".
+                      $oInstitucion->getCiudad()->getProvincia()->getNombre()." ".
+                      $oInstitucion->getCiudad()->getProvincia()->getPais()->getNombre();
+
+        $descriptionVista = "Institución de ".$sUbicacion." relacionada con ".$oInstitucion->getNombreTipoInstitucion().".
+                             Contacto a la dirección de email ".$oInstitucion->getEmail();
+
+        $keywordsVista = $oInstitucion->getCiudad()->getNombre().", ".$oInstitucion->getNombre().", ".$oInstitucion->getNombreTipoInstitucion();
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "jsContent", "JsContent");
+
+        return $this;
+    }
+
     private function setMenuDerecha()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/instituciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
@@ -641,7 +668,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
             }
 
             $this->setFrameTemplate()
-                 ->setHeadTag()
+                 ->setHeadTagInstitucion($oInstitucion)
                  ->setMenuDerecha();
 
             IndexControllerComunidad::setCabecera($this->getTemplate());
