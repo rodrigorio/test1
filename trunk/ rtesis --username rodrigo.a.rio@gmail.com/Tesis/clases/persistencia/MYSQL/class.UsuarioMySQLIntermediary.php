@@ -1046,8 +1046,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $WHERE = array();
 
-            if(isset($filtro['ui.usuarios_id']) && $filtro['ui.usuarios_id'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('ui.usuarios_id', $filtro['ui.usuarios_id'], MYSQL_TYPE_INT);
+            if(isset($filtro['upt.usuarios_id']) && $filtro['upt.usuarios_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('upt.usuarios_id', $filtro['upt.usuarios_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['upt.token']) && $filtro['upt.token'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('upt.token', $filtro['upt.token']);
             }
             if(isset($filtro['expiracion'])){
                 $WHERE[] = " TO_DAYS(NOW()) - TO_DAYS(upt.fecha) <= ".$filtro['expiracion']." ";
@@ -1115,37 +1118,35 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         }
     }
 
-    public function validarConfirmacionContrasenia($token)
+    public function confirmarPasswordTemporal($sToken, $iDiasExpiracion)
     {
         try{
+            $sToken = $this->escStr($sToken);
+
             $db = $this->conn;
+            $db->begin_transaction();
 
-            $sSQL = "SELECT
-                        udt.id as iId,
-                        udt.contraseniaNueva as sContraseniaNueva
-                    FROM
-                      `usuarios_datos_temp` udt
-                    JOIN
-                            usuarios u ON udt.id = u.id
-                    JOIN
-                            personas p ON p.id = udt.id
-                    WHERE DATE_SUB(udt.fecha,INTERVAL 5 DAY) <= now()
-                    AND udt.token = ".$db->escape($token,true)." ";
+            //asocio el nuevo password al usuario
+            $sSQL = "UPDATE usuarios SET contrasenia = (
+                        SELECT contraseniaNueva 
+                        FROM usuario_passwords_temporales upt
+                        WHERE upt.token = ".$sToken." )
+                     WHERE id = (
+                        SELECT usuarios_id
+                        FROM usuario_passwords_temporales upt
+                        WHERE upt.token = ".$sToken." )";
 
-            $objUsuario = $db->getDBObject($sSQL);
-            if($objUsuario){
-            	$filtro   = array('p.id' => $objUsuario->iId);
-                $aUsuario = $this->obtener($filtro);
-                if(null === $aUsuario){return false;}
-                $oUsuario = $aUsuario[0];
-                $oUsuario->setContrasenia( $objUsuario->sContraseniaNueva );
-                return $this->guardar($oUsuario);
-            }else{
-            	return false;
-            }
+            $db->execSQL($sSQL);
+
+            //borro el registro temporal
+            $sSQL = "DELETE FROM usuario_passwords_temporales WHERE token = ".$sToken;
+            $db->execSQL($sSQL);
+
+            $db->commit();
+            return true;
+
         }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-            return false;
+            throw $e;
         }
     }
 
