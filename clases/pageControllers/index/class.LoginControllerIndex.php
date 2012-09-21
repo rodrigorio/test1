@@ -174,6 +174,7 @@ class LoginControllerIndex extends PageControllerAbstract
         $actionFormUrl = "login-procesar";
 
         $this->getTemplate()->load_file("gui/templates/index/frame01-03.gui.html", "frame");
+        $this->getTemplate()->set_var("sNombreSeccionTopPage", "Autenticarse");
 
         $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "jsContent", "JsContent");
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
@@ -376,7 +377,74 @@ class LoginControllerIndex extends PageControllerAbstract
     private function confirmarNuevaContrasenia()
     {
     	try{
+            $sToken = $this->getRequest()->getParam('token');
 
+            if(empty($sToken))
+            {
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $front = FrontController::getInstance();
+            $parametros = $front->getPlugin('PluginParametros');
+            $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+            $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
+            $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
+            $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');            
+            $linkRecuperarPass = $this->getRequest()->getBaseUrl()."/recuperar-contrasenia";
+
+            $this->getTemplate()->load_file("gui/templates/index/frame01-03.gui.html", "frame");
+            $this->getTemplate()->set_var("sNombreSeccionTopPage", "Autenticarse");
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "jsContent", "JsContent");
+            $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+            $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+            $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+            $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+            IndexControllerIndex::setCabecera($this->getTemplate());
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/index/login.gui.html", "columnaIzquierdaContent", "FormularioBlock");
+            $this->getTemplate()->set_var("sLinkRecuperarPass", $linkRecuperarPass);
+
+            //armo el select con los tipos de documentos cargados en db
+            $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
+            foreach ($aTiposDocumentos as $value => $text){
+                $this->getTemplate()->set_var("iValue", $value);
+                $this->getTemplate()->set_var("sDescripcion", $text);
+                $this->getTemplate()->parse("OptionSelectDocumento", true);
+            }
+
+            //muestro mensaje segun se haya confirmado el cambio de password o no.
+            //si no existe password temporal quiere decir que ya se utilizo o que el enlace caduco
+            $sTituloMsgFicha = "Recuperar Contraseña";
+            if(!IndexController::getInstance()->existePasswordTemporalToken($sToken))
+            {
+                $ficha = "MsgFichaErrorBlock";                
+                $sMsgFicha = "No se ha actualizado la contraseña para su cuenta en el sistema.
+                              Puede ser debido a que la solicitud ya se ha utilizado o que el link de solicitud haya expirado y necesite generar uno nuevo.";
+            }else{
+                IndexController::getInstance()->confirmarPasswordTemporal($sToken);
+                $ficha = "MsgFichaCorrectoBlock";
+                $sMsgFicha = "El cambio de contraseña se ha producido con éxito, puede iniciar sesión con los nuevos datos de cuenta.";
+            }
+                      
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "columnaDerechaContent", $ficha);
+            $this->getTemplate()->set_var("sTituloMsgFicha", $sTituloMsgFicha);
+            $this->getTemplate()->set_var("sMsgFicha", $sMsgFicha);
+
+            //Link a Inicio
+            $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "itemExtraMsgFicha", "MenuVertical02Block");
+            $this->getTemplate()->unset_blocks("OpcionesMenu"); //solo uso un link
+            $this->getTemplate()->set_var("idOpcion", 'opt1');
+            $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/');
+            $this->getTemplate()->set_var("sNombreOpcion", "Volver a inicio");
+
+            IndexControllerIndex::setFooter($this->getTemplate());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+           
     	}catch(Exception $e){
             throw $e;
     	}

@@ -75,6 +75,22 @@ class IndexController
         }
     }
 
+    public function existePasswordTemporalToken($sToken)
+    {
+    	try{
+            //tengo en cuenta que no este expirada.
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_REC_PASS');
+
+            $filtro = array('upt.token' => $sToken,
+                            'expiracion' => $cantDiasExpiracion);
+
+            $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
+            return $oUsuarioIntermediary->existePasswordTemporal($filtro);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function borrarPasswordTemporalExpiradaUsuario($iUsuarioId)
     {
         try{
@@ -120,21 +136,15 @@ class IndexController
         }
     }
 
-    /**
-     * @param string $token
-     */
-    public function confirmarContrasenia($sToken){
+    public function confirmarPasswordTemporal($sToken)
+    {
     	try{
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
-            $oUsuario = $oUsuarioIntermediary->validarConfirmacionContrasenia($sToken);
-            if($oUsuario){
-            	return true;
-            }else{
-            	return null;
-            }
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
+            $iDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_REC_PASS');
+            return $oUsuarioIntermediary->confirmarPasswordTemporal($sToken, $iDiasExpiracion);
+        }catch(Exception $e){
+            throw $e;
+        }
     }
 
     /**
