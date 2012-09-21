@@ -51,6 +51,26 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
         return $this;
     }
 
+    private function setHeadTagPublicacion($oFicha)
+    {
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+
+        $tituloVista = $nombreSitio.' | '.$oFicha->getTitulo();
+        $descriptionVista = $oFicha->getDescripcionBreve();
+        $keywordsVista = $oFicha->getKeywords();
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "jsContent", "JsContent");
+
+        return $this;
+    }
+
     private function setMenuDerecha()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/publicaciones.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
@@ -1214,7 +1234,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
             
             $this->setFrameTemplate()
-                 ->setHeadTag()
+                 ->setHeadTagPublicacion($oPublicacion)
                  ->setMenuDerecha();
 
             IndexControllerComunidad::setCabecera($this->getTemplate());
@@ -1292,7 +1312,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             }
 
             $this->setFrameTemplate()
-                 ->setHeadTag()
+                 ->setHeadTagPublicacion($oReview)
                  ->setMenuDerecha();
 
             IndexControllerComunidad::setCabecera($this->getTemplate());

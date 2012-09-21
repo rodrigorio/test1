@@ -47,6 +47,26 @@ class SoftwareControllerComunidad extends PageControllerAbstract
         return $this;
     }
 
+    private function setHeadTagSoftware($oSoftware)
+    {
+        $front = FrontController::getInstance();
+        $parametros = $front->getPlugin('PluginParametros');
+        $nombreSitio = $parametros->obtener('NOMBRE_SITIO');
+
+        $tituloVista = $nombreSitio.' | '.$oSoftware->getTitulo();
+        $descriptionVista = $oSoftware->getDescripcionBreve();
+        $keywordsVista = $oSoftware->getCategoria()->getNombre();
+
+        $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
+        $this->getTemplate()->set_var("sTituloVista", $tituloVista);
+        $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
+        $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
+
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "jsContent", "JsContent");
+
+        return $this;
+    }
+
     private function setMenuDerecha()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/software.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
@@ -1100,7 +1120,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
             }
 
             $this->setFrameTemplate()
-                 ->setHeadTag()
+                 ->setHeadTagSoftware($oSoftware)
                  ->setMenuDerecha();
 
             IndexControllerComunidad::setCabecera($this->getTemplate());

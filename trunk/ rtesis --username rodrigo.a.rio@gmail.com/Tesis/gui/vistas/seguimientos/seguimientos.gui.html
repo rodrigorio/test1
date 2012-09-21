@@ -21,7 +21,7 @@
 <ul class="m_vert menu02">
     <li>
         <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
-            Listado de seguimientos
+            Mis seguimientos
         </a>
     </li>
     <li>
@@ -30,7 +30,7 @@
         </a>
     </li>
     <li>
-        <a class="agregarPersona" href="">
+        <a class="agregarPersona" href="javascript:;">
             Agregar persona
         </a>
     </li>
@@ -190,7 +190,7 @@
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
     <form id="formModificarSeguimiento" name="formModificarSeguimiento" action="" method="post">
-        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div class="ajax_wait30 di_no"></div>
 
         <h2 class="mabo3">Modificar Seguimiento</h2>
 
@@ -321,8 +321,8 @@
         </form>            
     </div>
 </div>
-<div id="listadoSeguimientos" class="grupo">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+<div id="listadoSeguimientos" class="grupo po_re">
+    <div class="ajax_wait30 di_no"></div>
     <div id="listadoSeguimientosResult">
        <!--BeginGrillaSeguimientosBlock-->
        <div class="fost_it pato2 pabo2">Cantidad seguimientos filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
@@ -341,7 +341,7 @@
                     <div class="fl_le mari2 th_fto_s thumb03">
                         <i style="background-image:url('{scrAvatarPersona}')"></i>
                     </div>
-                    <a class="fowe_bo verPersona" rel="{iPersonaId}" href="seguimientos/ver-persona">{sSeguimientoPersona}</a>
+                    <a class="fowe_bo verPersona" rel="{iPersonaId}" href="javascript:;">{sSeguimientoPersona}</a>
                </td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoPersonaDNI}</td>
                <td class="desplegable" rel="{iSeguimientoId}">{sSeguimientoTipo}</td>

@@ -687,13 +687,6 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         $sOcupacionMadre = $oDiscapacitado->getOcupacionMadre();
         $sNombreHermanos = $oDiscapacitado->getNombreHermanos();
 
-        $iInstitucionId = "";
-        $sInstitucion = "";
-        if(null != $oDiscapacitado->getInstitucion()){
-            $iInstitucionId = $oDiscapacitado->getInstitucion()->getId();
-            $sInstitucion = $oDiscapacitado->getInstitucion()->getNombre();
-        }
-
         //foto de perfil actual
         $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
         if(null != $oDiscapacitado->getFotoPerfil()){
@@ -736,8 +729,16 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sOcupacionMadre",$sOcupacionMadre);
         $this->getTemplate()->set_var("sNacimientoMadre",$sNacimientoMadre);
         $this->getTemplate()->set_var("sNombreHermanos",$sNombreHermanos);
-        $this->getTemplate()->set_var("iInstitucionId",$iInstitucionId);
-        $this->getTemplate()->set_var("sNombreInstitucion",$sInstitucion);
+
+        if(null !== $oDiscapacitado->getInstitucion()){
+            $oInstitucion = $oDiscapacitado->getInstitucion();
+            $this->getTemplate()->set_var("sNombreInstitucion", $oInstitucion->getNombre());
+            $sTituloUrl = $this->getInflectorHelper()->urlize($oInstitucion->getNombre());
+            $this->getTemplate()->set_var("hrefAmpliarInstitucion", $this->getRequest()->getBaseUrl().'/comunidad/instituciones/'.$oInstitucion->getId()."-".$sTituloUrl);
+            $this->getTemplate()->parse("LinkInstitucionBlock");
+        }else{
+            $this->getTemplate()->set_var("LinkInstitucionBlock", "");
+        }
 
         //lista de otros profesionales haciendo el seguimiento a esta persona.
         $aUsuarios = SeguimientosController::getInstance()->obtenerUsuariosAsociadosPersona($iPersonaIdForm);
@@ -748,7 +749,13 @@ class PersonasControllerSeguimientos extends PageControllerAbstract
                 //no se muestra a si mismo
                 $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
                 if($oUsuario->getId() == $perfil->getUsuario()->getId()){
-                    continue;
+                    //si era el unico seguidor termina sino sigue.
+                    if(count($aUsuarios) == 1){
+                        $this->getTemplate()->set_var("IntegrantesPersona", "");
+                        break;
+                    }else{
+                        continue;
+                    }
                 }
 
                 //foto de perfil actual
