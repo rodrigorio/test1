@@ -1005,8 +1005,12 @@ class ComunidadController
     public function obtenerSoftwareCategoria($iCategoriaId)
     {
         try{
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             $filtro = array('s.categorias_id' => $iCategoriaId);
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;            
             $iRecordsTotal = 0;
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
@@ -1020,11 +1024,15 @@ class ComunidadController
     public function obtenerSoftwareCategoriaVisitantes($iCategoriaId)
     {
         try{
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
+            $iCantMaxDenuncias = (int)$parametros->obtener('CANT_MAX_DENUNCIAS');
+
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             $filtro = array('s.categorias_id' => $iCategoriaId);
             $filtro["f.activo"] = "1";
             $filtro["s.publico"] = "1";
             $filtro["m.sModeracionEstado"] = "aprobado";
+            $filtro["maxDenuncias"] = $iCantMaxDenuncias;
             $iRecordsTotal = 0;
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
