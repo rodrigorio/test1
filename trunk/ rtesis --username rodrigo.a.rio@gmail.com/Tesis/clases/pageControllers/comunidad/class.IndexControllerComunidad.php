@@ -41,6 +41,7 @@ class IndexControllerComunidad extends PageControllerAbstract
         $request = FrontController::getInstance()->getRequest();
 
         //links menu top comunidad
+        $template->set_var("topHeaderMenuHrefHome", $request->getBaseUrl().'/');
         $template->set_var("topHeaderMenuHrefComunidad", $request->getBaseUrl().'/comunidad/home');
         $template->set_var("topHeaderMenuHrefPublicaciones", $request->getBaseUrl().'/comunidad/publicaciones');
         $template->set_var("topHeaderMenuHrefInstituciones", $request->getBaseUrl().'/comunidad/instituciones');
@@ -61,13 +62,14 @@ class IndexControllerComunidad extends PageControllerAbstract
         $request = FrontController::getInstance()->getRequest();
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $nombreUsuario = $perfil->getNombreUsuario();
+        $nombreIntegrante = $perfil->getUsuario()->getNombreCompleto();
         
         //lo hago asi para no enroscarme porq es un metodo estatico no puedo usar $this
         $oUploadHelper = new UploadHelper();
         $srcAvatar = $oUploadHelper->getDirectorioUploadFotos().$perfil->getAvatarUsuario();
                
         $template->set_var("scrAvatarSession", $srcAvatar);
-        $template->set_var("nombreUsuarioLogged", $nombreUsuario);
+        $template->set_var("nombreIntegranteLogged", $nombreIntegrante);
         $template->set_var("hrefEditarPerfil", $request->getBaseUrl().'/comunidad/datos-personales');
         $template->set_var("hrefAdministrador", $request->getBaseUrl().'/admin/home');
         //si no es moderador o admin quito el boton al administrador
