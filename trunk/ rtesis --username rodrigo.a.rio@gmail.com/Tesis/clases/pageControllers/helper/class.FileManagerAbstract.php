@@ -282,7 +282,7 @@ abstract class FileManagerAbstract extends HelperAbstract
      */
     public function limpiarNombreArchivo($s)
     {
-        return InflectorHelper::urlize($s);
+        return InflectorHelper::unaccent($s);
     }
 
     /**

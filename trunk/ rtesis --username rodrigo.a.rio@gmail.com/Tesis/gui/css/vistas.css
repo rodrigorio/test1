@@ -110,7 +110,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .buttonLarge, .buttonLarge .buttonText, .buttonLarge button{font-size:12px; padding:3px 6px}
 /* agranda el size del boton, por defecto los botones ocupan una linea (line-height), este ocupa mas de una */
 .buttonXLarge, .buttonXLarge .buttonText, .buttonXLarge button{font-size:16px; padding: 8px 12px; text-transform:uppercase}
-
+.button .i{vertical-align:middle}
 
 
 /****************************************/
@@ -134,7 +134,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .tetr_ca{text-transform:capitalize}
 .lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
-.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important}
+.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
@@ -459,7 +459,6 @@ ul.menu01 li a{color:#1111CC !important; text-decoration: none; font-weight:bold
 .menu01{line-height:1;}
 .menu01 ul{position: absolute; top: -999em; width: 200px;}
 .menu01 ul li{width: 100%;}
-.menu01 li a .i{float:none !important}
 .menu01 li a:hover{background-color:#D1D9FF}
 .menu01 li{float: left; position: relative}
 .menu01 a{display: block; position: relative}
@@ -631,11 +630,8 @@ p .destacado{font-weight:bold;}
 /* porque se usan en <span> que es un tag lineal */
 .i, .i32{display:inline-block} 
 .i{height:16px; width:16px} .i32{height:32px; width:32px} 
-/* cuando hay un icono dentro de un link */
-a .i{margin-right:4px; float:left}
 /* para utilizar iconos alineados verticalmente con texto. La clase va en el contenedor y se usa asi para el fix de ie6 */
-/* esta clase no se usa cuando los iconos van dentro de tags <a> !! */
-.iveal .i, .iveal .i32{vertical-align:middle}
+.iveal .i, .iveal .i32, li a .i{vertical-align:middle}
 /* para convertir el icono en boton si es que se usa como tal pero solo sin <a> */
 .ihover:hover{cursor:pointer; background-color:#DDD; outline:1px solid #AAA}
 /* para iconos dentro de inputs lineheight */

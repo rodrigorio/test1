@@ -127,7 +127,8 @@ class SeguimientosController
      * @return Array $result, $moderacion. Result es un boolean que dice si se guardo o no, $moderacion indica si se guardo con pendiente de moderacion
      *     
      */
-    public function guardarDiscapacitado($oDiscapacitado){
+    public function guardarDiscapacitado($oDiscapacitado)
+    {
         try{
             //ojo, extraigo el objeto usuario del objeto perfil.
             $oUsuarioSesion = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
@@ -153,6 +154,7 @@ class SeguimientosController
                 $result = $oDiscapacitadoIntermediary->guardar($oDiscapacitado);
                 return array($result, false);
             }
+            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }

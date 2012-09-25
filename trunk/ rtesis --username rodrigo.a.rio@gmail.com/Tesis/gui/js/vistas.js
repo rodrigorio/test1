@@ -142,14 +142,22 @@ function ocultarElemento(object){
 /**
  * Para setear un contenedor en estado de espera a un request ajax
  * Se pasa el id del contenedor y el estado: true->en espera, false->se finalizo el envio/devolucion
- *
- * @param contenedorId string
- * @param show boolean
  */
-function setWaitingStatus(contenedorId, show)
-{    
+function setWaitingStatus(contenedorId, show, ajaxLoadingSize)
+{
+    //ajaxLoading tiene valor por defecto
+    ajaxLoadingSize = ajaxLoadingSize || '30';
+    
     var contenedor = $("#" + contenedorId);
-    var ajaxLoading = $("#" + contenedorId + " .ajax_wait30");
+
+    var ajaxLoading
+    if(ajaxLoadingSize == '30'){
+        ajaxLoading = $("#" + contenedorId + " .ajax_wait30");
+    }else{
+        if(ajaxLoadingSize == '16'){
+            ajaxLoading = $("#" + contenedorId + " .ajax_wait16");
+        }
+    }
 
     if(show){
         contenedor.addClass("ajaxdelay");

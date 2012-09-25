@@ -123,6 +123,8 @@ function bindEventFormAgregarArchivo(iSeguimientoId)
 
 $(document).ready(function(){
 
+    $("a[rel^='prettyPhoto']").prettyPhoto();
+
     //menu derecha
     $("#pageRightInnerContNav li").mouseenter(function(){
         if(!$(this).hasClass("selected")){
@@ -178,5 +180,38 @@ $(document).ready(function(){
                 $("#area").html(data);
             }
         });
+    });
+
+    $(".verPersona").live('click',function(){
+
+        $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
+
+        var dialog = $("#dialog");
+        if ($("#dialog").length != 0){
+            dialog.hide("slow");
+            dialog.remove();
+        }
+        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
+
+        setWaitingStatus('fichaPersonaMenu', true, "16");
+
+        dialog.load(
+            "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                setWaitingStatus('fichaPersonaMenu', false, "16");
+                dialog.dialog({
+                    position:['center', '20'],
+                    width:450,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true
+                });
+                bindEventsPersonaVerFicha(); //la funcion esta en personas.js
+                $("a[rel^='prettyPhoto']").prettyPhoto();
+            }
+        );
+        return false;
     });
 });

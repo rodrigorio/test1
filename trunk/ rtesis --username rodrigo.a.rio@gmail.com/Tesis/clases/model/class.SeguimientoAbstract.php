@@ -46,6 +46,15 @@ abstract class SeguimientoAbstract
     protected $oDiagnostico;
     
     public function __construct(){}
+
+    /**
+     * En la clase SeguimientoPersonalizado es redeclarada para devolver true.
+     */
+    public function isSeguimientoPersonalizado(){ return false; }
+    /**
+     * En la clase SeguimientoSCC es redeclarada para devolver true.
+     */
+    public function isSeguimientoSCC(){ return false; }
    
     public function setId($id){
         $this->iId = $id;
@@ -127,13 +136,14 @@ abstract class SeguimientoAbstract
         return $this->sDiaHorario;
     }
 
-    public function getFechaCreacion(){
-        return $this->dFechaCreacion;
+    public function getFechaCreacion($format = false){
+        if($format){
+            return Utils::fechaFormateada($this->dFecha);
+        }else{
+            return $this->dFechaCreacion;
+        }
     }
 
-    /**
-     * Estos son asi porque en la DB el campo tipo es un enum
-     */
     public function setEstadoActivo()
     {
         $this->sEstado = self::ESTADO_ACTIVO;
@@ -209,9 +219,6 @@ abstract class SeguimientoAbstract
         return $this->aEmbedVideos;
     }
 
-    /**
-     * @return null|Archivo
-     */
     public function getArchivoAntecedentes()
     {
         return $this->oAntecedentes;
@@ -227,11 +234,11 @@ abstract class SeguimientoAbstract
     
     public function getDiagnostico(){
     	if(!$this->oDiagnostico){
-    		$this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoBySeg($this);
+            $this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoBySeg($this);
     	}
     	return $this->oDiagnostico;
     }
     
     abstract public function getObjetivos();
-    abstract public function setObjetivos($vObjetivos);
+    abstract public function setObjetivos($aObjetivos);
 }

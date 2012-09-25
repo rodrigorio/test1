@@ -1,9 +1,4 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of classSeguimientoSCC
  *
@@ -25,13 +20,16 @@ class SeguimientoSCC extends SeguimientoAbstract
             }
         }
     }
+
+    public function isSeguimientoSCC(){ return true; }
     
     public function getObjetivos(){
         if($this->aObjetivos === null){
             $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosCurriculares($this->iId);
         }
         return $this->aObjetivos;
-    }   
+    }
+    
     public function setObjetivos($aObjetivos)
     {
     	$this->aObjetivos = $aObjetivos;
