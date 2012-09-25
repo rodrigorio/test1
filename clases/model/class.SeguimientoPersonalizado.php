@@ -1,8 +1,4 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of classSeguimientoPersonalizado
@@ -25,13 +21,17 @@ class SeguimientoPersonalizado extends SeguimientoAbstract {
             }
         }
     }
+
+    public function isSeguimientoPersonalizado(){ return true; }
+
     public function getObjetivos(){
         if($this->aObjetivos === null){
             $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizados($this->iId);
         }
         return $this->aObjetivos;
     }
-   public function setObjetivos($aObjetivos)
+
+    public function setObjetivos($aObjetivos)
     {
     	$this->aObjetivos = $aObjetivos;
         return $this;

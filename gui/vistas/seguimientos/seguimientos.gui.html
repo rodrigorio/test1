@@ -38,7 +38,17 @@
 <!--EndPageRightInnerContHomeBlock-->
 
 <!--BeginPageRightInnerContVerSeguimientoBlock-->
-<ul id="pageRightInnerContNav" class="m_vert menu05">
+<ul class="m_vert mabo3 teal_ri">
+    <li>
+        <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
+            <span class="i bs arrowLeft"></span> Volver a mis seguimientos
+        </a>
+    </li>
+</ul>
+
+{fichaPersona}
+    
+<ul id="pageRightInnerContNav" class="m_vert menu05 cl_ri">
     <li {currentOptionVerSeguimiento}>
         <a href="{hrefVerSeguimiento}?iSeguimientoId={iSeguimientoId}">
             Ver Seguimiento
@@ -74,11 +84,24 @@
 </ul>
 <!--EndPageRightInnerContVerSeguimientoBlock-->
 
+<!--BeginPageRightInnerContFichaPersonaBlock-->
+<div id="fichaPersonaMenu" class="pa2 mabo3 po_re grupo baco3">
+    <div class="ajax_wait16 di_no"></div>
+    <div class="fl_ri teal_ri">
+        <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_s thumb01 mabo">
+            <i style="background-image:url('{scrFotoPerfilActual}')"></i>
+        </a>
+        <h2 class="mabo">{sNombrePersona}</h2>
+        <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
+    </div>
+</div>
+<!--EndPageRightInnerContFichaPersonaBlock-->
+
 <!--BeginFormularioCrearSeguimientoBlock-->
 <div class='ficha04 bora grupo' style="width:640px;">
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="" method="post">
-        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div class="ajax_wait30 di_no"></div>
 
         <h2 class="mabo3">Crear un nuevo seguimiento</h2>
 
@@ -406,7 +429,7 @@
                 <i style="background-image:url('{scrFotoPerfilActual}')"></i>
             </a>
             <h2 class="mabo2">{sNombrePersona}</h2>
-            <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="seguimientos/ver-persona">Ampliar Persona</a>
+            <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
         </div>
         <div class="fl_le lihe2">
             <span class="fte2 txt_imp2">Fecha Creaci&oacute;n:</span> {sSeguimientoFechaCreacion}<br>

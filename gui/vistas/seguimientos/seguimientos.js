@@ -736,6 +736,8 @@ function bindEventsFormModificarSeguimiento()
 }
 
 $(document).ready(function(){
+
+    $("a[rel^='prettyPhoto']").prettyPhoto();
    
     //Listado Seguimientos
     $("#filtroFechaDesde").datepicker();
@@ -895,10 +897,13 @@ $(document).ready(function(){
         }
         dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
 
+        setWaitingStatus('fichaPersonaMenu', true, "16");
+
         dialog.load(
             "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
+                setWaitingStatus('fichaPersonaMenu', false, "16");
                 dialog.dialog({
                     position:['center', '20'],
                     width:450,
@@ -951,9 +956,7 @@ $(document).ready(function(){
         if(!$(this).hasClass("selected")){
             $(this).children("ul").fadeOut('slow');
         }
-    });
-
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    });   
     
     //formulario adjuntar foto, video, archivo
     $(".agregarFotoSeguimiento").live('click',function(){
