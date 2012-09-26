@@ -370,7 +370,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
             //paso todas las validaciones muestro la vista
 
             $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
-            $this->setHeadTagPublicacion($oPublicacion);
+            $this->setHeadTagPublicacion($oReview);
 
             $this->printMsgTop();
 
