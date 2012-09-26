@@ -310,8 +310,8 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .topRight{top:5px; right:5px}
 .bottomRight{bottom:5px; right:5px}
 
-.paginacion a{background-color:#EEE; color:#333; border:1px #999 solid; padding:3px 5px 3px 5px; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; text-decoration:none;}
-.paginacion a:hover{border:1px #000 solid; text-decoration:none;}
+.paginacion a{background-color:#EEE; color:#333; padding:8px; text-decoration:none;}
+.paginacion a:hover{text-decoration:none;}
 .paginacion .activo{background-color:#666; color:#FFF; border-color:#666}
 .paginacion .activo span{font-weight:bold; text-transform:capitalize;}
 
