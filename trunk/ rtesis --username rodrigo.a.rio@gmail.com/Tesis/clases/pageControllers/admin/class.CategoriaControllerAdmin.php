@@ -272,7 +272,7 @@ class CategoriaControllerAdmin extends PageControllerAbstract
             }else{
                 AdminController::getInstance()->guardarCategoria($oCategoria);
                 $this->getJsonHelper()->setMessage($mensaje);
-                $this->getJsonHelper()->setValor($accion, $mensaje);
+                $this->getJsonHelper()->setValor('accion', $accion);
                 $this->getJsonHelper()->setSuccess(true);
             }
 

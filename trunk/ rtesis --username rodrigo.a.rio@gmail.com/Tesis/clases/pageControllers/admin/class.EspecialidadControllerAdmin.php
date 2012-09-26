@@ -239,7 +239,7 @@ class EspecialidadControllerAdmin extends PageControllerAbstract
             }else{
                 AdminController::getInstance()->guardarEspecialidad($oEspecialidad);
                 $this->getJsonHelper()->setMessage($mensaje);
-                $this->getJsonHelper()->setValor($accion, $mensaje);
+                $this->getJsonHelper()->setValor('accion', $accion);
                 $this->getJsonHelper()->setSuccess(true);
             }
                                            

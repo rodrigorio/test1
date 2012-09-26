@@ -56,25 +56,22 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $sNombre = $this->getRequest()->getPost("nombre");
             $sDescripcion = $this->getRequest()->getPost("descripcion");
 
-            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
+            if(AdminController::getInstance()->existeNivelByDescripcion($sDescripcion)){
+                $this->getJsonHelper()->setMessage("Ya existe un nivel con ese nombre.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            $oCategoria = new stdClass();
-            $oCategoria->sNombre = $sNombre;
-            $oCategoria->sDescripcion = $sDescripcion;
-            $oCategoria->sUrlToken = $this->getInflectorHelper()->urlize($sNombre);
-            $oCategoria = Factory::getCategoriaInstance($oCategoria);
+            $oNivel = new stdClass();
+            $oNivel->sDescripcion = $sDescripcion;
+            $oNivel = Factory::getNivelInstance($oNivel);
 
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor($accion, "crearNivel");
+            AdminController::getInstance()->guardarNivel($oNivel);
+            $this->getJsonHelper()->setMessage("El nivel fue creado con éxito");
+            $this->getJsonHelper()->setValor("accion", "crearNivel");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -103,7 +100,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             AdminController::getInstance()->guardarCategoria($oCategoria);
             $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor($accion, $mensaje);
+            $this->getJsonHelper()->setValor("accion", "modificarNivel");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -160,32 +157,29 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
                  ->setHeadTag();
 
             IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "ListadoEspecialidadesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderNivelesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoNivelesBlock");
 
             $iRecordsTotal = 0;
-            $vCategoria = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
-            if(count($vCategoria)>0){
-                foreach ($vCategoria as $oCategoria){
+            $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aNiveles)>0){
+                foreach ($aNiveles as $oNivel){
 
-                    $hrefEditarCategoria = $this->getUrlFromRoute("adminCategoriaEditarCategoria", true)."?id=".$oCategoria->getId();
+                    $hrefEditarNivel = $this->getUrlFromRoute("adminObjetivosCurricularesFormularioNivel", true)."?editar=1&id=".$oNivel->getId();
 
-                    $this->getTemplate()->set_var("hrefEditarCategoria", $hrefEditarCategoria);
+                    $this->getTemplate()->set_var("hrefEditarNivel", $hrefEditarNivel);
 
-                    $sDescripcion = (null === $oCategoria->getDescripcion())?" - ":$oCategoria->getDescripcion();
-
-                    $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-                    $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-                    $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-                    $this->getTemplate()->parse("CategoriasBlock", true);
+                    $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oNivel->getDescripcion());
+                    $this->getTemplate()->parse("NivelBlock", true);
                 }
-                $this->getTemplate()->set_var("NoRecordsCategoriasBlock", "");
+                $this->getTemplate()->set_var("NoRecordsNivelesBlock", "");
             }else{
-                $this->getTemplate()->set_var("CategoriasBlock", "");
+                $this->getTemplate()->set_var("NivelBlock", "");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -200,12 +194,12 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
              ->setHeadTag();
 
         IndexControllerAdmin::setCabecera($this->getTemplate());
-        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
         $this->printMsgTop();
 
-        $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderNivelesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "FormNivelBlock");
 
         if($this->getRequest()->has('editar')){
             $this->editarNivelForm();
@@ -308,7 +302,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             AdminController::getInstance()->guardarCategoria($oCategoria);
             $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor($accion, "crearNivel");
+            $this->getJsonHelper()->setValor("accion", "crearCiclo");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -337,7 +331,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             AdminController::getInstance()->guardarCategoria($oCategoria);
             $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor($accion, $mensaje);
+            $this->getJsonHelper()->setValor("accion", "modificarCiclo");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -394,32 +388,30 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
                  ->setHeadTag();
 
             IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "ListadoEspecialidadesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderCiclosBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoCiclosBlock");
 
             $iRecordsTotal = 0;
-            $vCategoria = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
-            if(count($vCategoria)>0){
-                foreach ($vCategoria as $oCategoria){
+            $aCiclos = SeguimientosController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aCiclos)>0){
+                foreach ($aCiclos as $oCiclo){
+                    $hrefEditarCiclo = $this->getUrlFromRoute("adminObjetivosCurricularesFormularioCiclo", true)."?editar=1&id=".$oCiclo->getId();
 
-                    $hrefEditarCategoria = $this->getUrlFromRoute("adminCategoriaEditarCategoria", true)."?id=".$oCategoria->getId();
+                    $this->getTemplate()->set_var("hrefEditarCiclo", $hrefEditarCiclo);
 
-                    $this->getTemplate()->set_var("hrefEditarCategoria", $hrefEditarCategoria);
+                    $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oCiclo->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oCiclo->getNivel()->getDescripcion());
 
-                    $sDescripcion = (null === $oCategoria->getDescripcion())?" - ":$oCategoria->getDescripcion();
-
-                    $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-                    $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-                    $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-                    $this->getTemplate()->parse("CategoriasBlock", true);
+                    $this->getTemplate()->parse("CicloBlock", true);
                 }
-                $this->getTemplate()->set_var("NoRecordsCategoriasBlock", "");
+                $this->getTemplate()->set_var("NoRecordsCiclosBlock", "");
             }else{
-                $this->getTemplate()->set_var("CategoriasBlock", "");
+                $this->getTemplate()->set_var("CicloBlock", "");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -434,12 +426,12 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
              ->setHeadTag();
 
         IndexControllerAdmin::setCabecera($this->getTemplate());
-        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
         $this->printMsgTop();
 
-        $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderCiclosBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "FormCicloBlock");
 
         if($this->getRequest()->has('editar')){
             $this->editarCicloForm();
@@ -542,7 +534,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             AdminController::getInstance()->guardarCategoria($oCategoria);
             $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor($accion, "crearNivel");
+            $this->getJsonHelper()->setValor("accion", "crearArea");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -571,7 +563,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             AdminController::getInstance()->guardarCategoria($oCategoria);
             $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor($accion, $mensaje);
+            $this->getJsonHelper()->setValor("accion", "modificarArea");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -628,32 +620,31 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
                  ->setHeadTag();
 
             IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionEspecialidades");
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/especialidad.gui.html", "mainContent", "ListadoEspecialidadesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderAreasBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoAreasBlock");
 
             $iRecordsTotal = 0;
-            $vCategoria = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
-            if(count($vCategoria)>0){
-                foreach ($vCategoria as $oCategoria){
+            $aAreas = SeguimientosController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aAreas)>0){
+                foreach ($aAreas as $oArea){
+                    $hrefEditarArea = $this->getUrlFromRoute("adminObjetivosCurricularesFormularioArea", true)."?editar=1&id=".$oArea->getId();
 
-                    $hrefEditarCategoria = $this->getUrlFromRoute("adminCategoriaEditarCategoria", true)."?id=".$oCategoria->getId();
+                    $this->getTemplate()->set_var("hrefEditarArea", $hrefEditarArea);
 
-                    $this->getTemplate()->set_var("hrefEditarCategoria", $hrefEditarCategoria);
+                    $this->getTemplate()->set_var("iAreaId", $oArea->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oArea->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getCiclo()->getDescripcion());
 
-                    $sDescripcion = (null === $oCategoria->getDescripcion())?" - ":$oCategoria->getDescripcion();
-
-                    $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-                    $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-                    $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-                    $this->getTemplate()->parse("CategoriasBlock", true);
+                    $this->getTemplate()->parse("AreaBlock", true);
                 }
-                $this->getTemplate()->set_var("NoRecordsCategoriasBlock", "");
+                $this->getTemplate()->set_var("NoRecordsAreasBlock", "");
             }else{
-                $this->getTemplate()->set_var("CategoriasBlock", "");
+                $this->getTemplate()->set_var("AreaBlock", "");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -668,12 +659,12 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
              ->setHeadTag();
 
         IndexControllerAdmin::setCabecera($this->getTemplate());
-        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
         $this->printMsgTop();
 
-        $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderAreasBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "FormAreaBlock");
 
         if($this->getRequest()->has('editar')){
             $this->editarAreaForm();
