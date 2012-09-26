@@ -52,7 +52,7 @@ p{margin-bottom:18px}
 
 h1{font-size:2.8em; line-height:36px}
 h2{font-size:1.7em}
-h3{font-weight:bold}
+h3{font-weight:bold; text-transform:uppercase;}
 
 a{text-decoration:none; color:#1111CC; outline:0;}
 a:hover{text-decoration:underline}
@@ -130,7 +130,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 
 .di_bl{display:block} .di_no{display:none !important} .di_in{display:inline} .di_inbl{display:inline-block !important}
 .cl_bo{clear:both} .cl_le{clear:left !important} .cl_ri{clear:right !important}
-.teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center}
+.teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center} .teal_ju{text-align:justify;}
 .tetr_ca{text-transform:capitalize}
 .lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
