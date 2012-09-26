@@ -155,7 +155,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+                $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.nombre',true), $filtro['p.nombre'] );
             }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento']);
@@ -167,7 +167,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $WHERE[] = $this->crearFiltroTexto('u.contrasenia', $filtro['u.contrasenia']);
             }
             if(isset($filtro['p.email']) && $filtro['p.email'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('p.email', $filtro['p.email']);
+                $WHERE[] = $this->crearFiltroSimple($db->decryptData('p.email',true), $filtro['p.email']);
             }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre']!=""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
@@ -334,7 +334,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $WHERE = array();
 
             if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
+                $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.apellido',true),  $filtro['p.apellido'] );
             }            
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
                 $WHERE[] = $this->crearFiltroTexto('p.numeroDocumento', $filtro['p.numeroDocumento']);
@@ -975,7 +975,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         personas p
                     JOIN
                     	usuarios u ON p.id = u.id
-                    WHERE email = ".$email;
+                    WHERE email = ".$db->encryptData($email);
 
             if(!empty($userId)){
                 $sSQL .= " and u.id <> ".$userId;
