@@ -620,19 +620,33 @@ class IMYSQL implements DB
     }
     /**
      *Funciones para encriptar y desencriptar datos en la base de datos
+     * @param data es el dato que quiero encriptar o desencriptar en la bd
+     * @param convert es valor booleano que me dice si lo casteo a string (se usa normalmente en el where)
      */
-    public function encryptData( $data = null) {
-  		if($data===null){
+    public function encryptData( $data = null, $convert = null) {
+  		if ($data===null) {
   			return null;
   		}
-  		return "AES_ENCRYPT(".$data.",".$this->escape($this->keyEncript,true).")";
+  		
+    	$str = "AES_ENCRYPT(".$data.",".$this->escape($this->keyEncript,true).")";
+   		if ($convert !== null) {
+    		$str = " CONVERT(".$str.",CHAR) ";
+    	}
+       	
+        return $str;
+  		 
     }
     
- 	public function decryptData( $data = null) {
+ 	public function decryptData( $data = null , $convert = null ) {
   		if($data===null){
   			return null;
   		}
-  		return "AES_DECRYPT(".$data.",".$this->escape($this->keyEncript,true).")";
+  		$str = "AES_DECRYPT(".$data.",".$this->escape($this->keyEncript,true).")";
+  		
+ 		if ($convert !== null) {
+    		$str = " CONVERT(".$str.",CHAR) ";
+    	}
+    	return  $str;
     }
 }
 ?>
