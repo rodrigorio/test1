@@ -84,7 +84,8 @@ class IMYSQL implements DB
     private $bAutoCommit    = false;
     private $bInTransaction = false;
     private $sLastQuery     = null;
-
+	
+    private $keyEncript = "ABC1234abc00934GGooslk667rpPMABC";
     /**
      * @param string $host
      * @param string $db
@@ -616,6 +617,22 @@ class IMYSQL implements DB
                 
                 $this->halt();
             }
+    }
+    /**
+     *Funciones para encriptar y desencriptar datos en la base de datos
+     */
+    public function encryptData( $data = null) {
+  		if($data===null){
+  			return null;
+  		}
+  		return "AES_ENCRYPT(".$data.",".$this->escape($this->keyEncript,true).")";
+    }
+    
+ 	public function decryptData( $data = null) {
+  		if($data===null){
+  			return null;
+  		}
+  		return "AES_DECRYPT(".$data.",".$this->escape($this->keyEncript,true).")";
     }
 }
 ?>

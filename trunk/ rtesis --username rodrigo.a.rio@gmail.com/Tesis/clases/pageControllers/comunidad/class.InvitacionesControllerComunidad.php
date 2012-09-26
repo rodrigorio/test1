@@ -144,18 +144,18 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTituloMensaje", $sTituloMensaje);
 
                 $sMensaje = htmlentities($sNombreUsuario." te ha invitado a abrir una cuenta en la comunidad de profesionales ".$nombreSitio.". 
-                                         Podrás encontrar recursos informáticos y ser parte de una gran comunidad participativa de profesionales
-                                         orientados a la educación inclusiva y discapacidad.");
+                                         PodrÃ¡s encontrar recursos informÃ¡ticos y ser parte de una gran comunidad participativa de profesionales
+                                         orientados a la educaciÃ³n inclusiva y discapacidad.");
                 
                 $this->getTemplate()->set_var("sMensaje", $sMensaje);
 
-                $sSubMensaje = htmlentities("La comunidad esta destinada a docentes, profesionales y estudiantes avanzados de ciencias de la educación
-                                            y salud, que estén involucrados y comprometidos en su desempeño laboral-profesional con el bienestar
-                                            psicofísico, la inserción social y la calidad de vida en su totalidad de personas discapacitadas.
-                                            Principalmente se podrá gestionar información para  el seguimiento profesional de la evolución del
+                $sSubMensaje = htmlentities("La comunidad esta destinada a docentes, profesionales y estudiantes avanzados de ciencias de la educaciÃ³n
+                                            y salud, que estÃ©n involucrados y comprometidos en su desempeÃ±o laboral-profesional con el bienestar
+                                            psicofÃ­sico, la inserciÃ³n social y la calidad de vida en su totalidad de personas discapacitadas.
+                                            Principalmente se podrÃ¡ gestionar informaciÃ³n para  el seguimiento profesional de la evoluciÃ³n del
                                             aprendizaje en personas discapacitadas.
-                                            Se quiere lograr el fácil intercambio de experiencias y que los profesionales puedan tener acceso a
-                                            recursos útiles que puedan usar en su desempeño laboral. El sistema también ofrecerá funcionalidad
+                                            Se quiere lograr el fÃ¡cil intercambio de experiencias y que los profesionales puedan tener acceso a
+                                            recursos Ãºtiles que puedan usar en su desempeÃ±o laboral. El sistema tambiÃ©n ofrecerÃ¡ funcionalidad
                                             participativa a la comunidad en general.");
 
                 $this->getTemplate()->set_var("sSubMensaje", $sSubMensaje);
@@ -174,11 +174,11 @@ class InvitacionesControllerComunidad extends PageControllerAbstract
             $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
             $this->getJsonHelper()->setSuccess(true);
             $this->getJsonHelper()->setValor("cantidadInvitaciones", $oInvitacion->getUsuario()->getInvitacionesDisponibles());
-            $this->getJsonHelper()->setMessage("La invitación se ha enviado con éxito al correo indicado, el link de registración expirará dentro de ".$cantDiasExpiracion." días.");
+            $this->getJsonHelper()->setMessage("La invitaciÃ³n se ha enviado con Ã©xito al correo indicado, el link de registraciÃ³n expirarÃ¡ dentro de ".$cantDiasExpiracion." dÃ­as.");
 
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
-            $this->getJsonHelper()->setMessage("Ocurrió un error no se pudo enviar la invitación.");
+            $this->getJsonHelper()->setMessage("OcurriÃ³ un error no se pudo enviar la invitaciÃ³n.");
         }
         
         $this->getJsonHelper()->sendJsonAjaxResponse();
