@@ -416,5 +416,36 @@ class RutasModuloAdmin
                                     'action'     => 'form'
                                 ));
         $router->addRoute('adminParametrosForm', $route);
+
+
+        //categorias
+        $route = new RegexRoute('admin/procesar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'procesarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaProcesarCategoria', $route);
+        $route = new RegexRoute('admin/listar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminCategoriaListarCategoriaes', $route);
+        $route = new RegexRoute('admin/nueva-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'nuevaCategoria'
+                                ));
+        $router->addRoute('adminCategoriaNuevaCategoria', $route);
+        $route = new RegexRoute('admin/editar-categoria',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'categoria',
+                                        'action'     => 'editarCategoria'
+                                ));
+        $router->addRoute('adminCategoriaEditarCategoria', $route);
     }
 }
