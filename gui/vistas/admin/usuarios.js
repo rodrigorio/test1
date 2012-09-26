@@ -437,6 +437,7 @@ var optionsAjaxFormInfoBasica = {
 /////////////////////////
 
 function listaProvinciasByPais(idPais){
+	
     //si el valor elegido es '' entonces marco como disabled
     if(idPais == ''){
         $('#provincia').addClass("disabled");
@@ -499,9 +500,6 @@ function listaCiudadesByProvincia(idProvincia){
         }
     });
 }
-
-$("#pais").change(function(){listaProvinciasByPais($("#pais option:selected").val());});
-$("#provincia").change(function(){listaCiudadesByProvincia($("#provincia option:selected").val());});
 
 var validateFormInfoContacto = {
     errorElement: "span",
@@ -1060,6 +1058,9 @@ $(document).ready(function(){
     if($("#formInfoContacto").length){
         $("#formInfoContacto").validate(validateFormInfoContacto);
         $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
+        
+        $("#pais").change(function(){ listaProvinciasByPais($("#pais option:selected").val());});
+        $("#provincia").change(function(){listaCiudadesByProvincia($("#provincia option:selected").val());});
     }
     
     if($("#formInfoProfesional").length){

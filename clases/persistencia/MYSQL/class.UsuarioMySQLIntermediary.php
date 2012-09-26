@@ -106,13 +106,21 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.id as iId, 
+                        ".$db->decryptData( 'p.nombre')." as sNombre, 
+                        ".$db->decryptData( 'p.apellido')." as sApellido,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
-                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        ".$db->decryptData( ' p.email ')." as sEmail, 
+                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
+                        ".$db->decryptData( 'p.celular')." as sCelular,
+                        ".$db->decryptData( 'p.fax')." as sFax, 
+                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
+                        ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
                         p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
-                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
-                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+                        ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
+                        ".$db->decryptData( ' p.empresa')." as sEmpresa,
+                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
+                        ".$db->decryptData( 'p.secundaria')." as sSecundaria,
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
 
@@ -278,13 +286,21 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+                        p.id as iId, 
+                        ".$db->decryptData( 'p.nombre')." as sNombre, 
+                        ".$db->decryptData( 'p.apellido')." as sApellido,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
-                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        ".$db->decryptData( ' p.email ')." as sEmail, 
+                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
+                        ".$db->decryptData( 'p.celular')." as sCelular,
+                        ".$db->decryptData( 'p.fax')." as sFax, 
+                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
+                        ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
                         p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
-                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
-                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+                        ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
+                        ".$db->decryptData( ' p.empresa')." as sEmpresa,
+                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
+                        ".$db->decryptData( 'p.secundaria')." as sSecundaria,
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
 
@@ -709,24 +725,24 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 			
             $db->begin_transaction();
             $sSQL = " update personas " .
-                    " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-                    " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+                    " set nombre =".$db->encryptData($db->escape($oUsuario->getNombre(),true)).", " .
+                    " apellido =".$db->encryptData($db->escape($oUsuario->getApellido(),true)).", " .
                     " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
                     " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".
-                    " email =".$db->escape($oUsuario->getEmail(),true).", " .
-                    " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
-                    " celular =".$db->escape($oUsuario->getCelular(),true).", " .
-                    " fax =".$db->escape($oUsuario->getFax(),true).", " .
-                    " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .
+                    " email =".$db->encryptData($db->escape($oUsuario->getEmail(),true)).", " .
+                    " telefono =".$db->encryptData($db->escape($oUsuario->getTelefono(),true)).", " .
+                    " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .
+                    " fax =".$db->encryptData($db->escape($oUsuario->getFax(),true)).", " .
+                    " domicilio =".$db->encryptData($db->escape($oUsuario->getDomicilio(),true)).", " .
                     " instituciones_id =".$institucionId.", ".
                     " ciudades_id =".$ciudadId.", ".
-                    " ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
-                    " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
-                    " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
-                    " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
-                    " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." ".
+                    " ciudadOrigen =".$db->encryptData($db->escape($oUsuario->getCiudadOrigen(),true)).", " .
+                    " codigoPostal =".$db->encryptData($db->escape($oUsuario->getCodigoPostal(),true)).", " .
+                    " empresa =".$db->encryptData($db->escape($oUsuario->getEmpresa(),true)).", " .
+                    " universidad =".$db->encryptData($db->escape($oUsuario->getUniversidad(),true)).", " .
+                    " secundaria =".$db->encryptData($db->escape($oUsuario->getSecundaria(),true))." ".
                     " WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
             
             $db->execSQL($sSQL);
@@ -797,25 +813,26 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             
             $db->begin_transaction();
             
+           
             $sSQL = " insert into personas ".
-            " set nombre =".$db->escape($oUsuario->getNombre(),true).", " .
-            " apellido =".$db->escape($oUsuario->getApellido(),true).", " .
+            " set nombre =".$db->encryptData($db->escape($oUsuario->getNombre(),true)).", " .
+            " apellido =".$db->encryptData($db->escape($oUsuario->getApellido(),true)).", " .
             " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
             " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
             " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
             " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".
-            " email =".$db->escape($oUsuario->getEmail(),true).", " .
-            " telefono =".$db->escape($oUsuario->getTelefono(),true).", " .
-            " celular =".$db->escape($oUsuario->getCelular(),true).", " .
-            " fax =".$db->escape($oUsuario->getFax(),true).", " .
-            " domicilio =".$db->escape($oUsuario->getDomicilio(),true).", " .//revisar esto
+            " email =".$db->encryptData($db->escape($oUsuario->getEmail(),true)).", " .
+            " telefono =".$db->encryptData($db->escape($oUsuario->getTelefono(),true)).", " .
+            " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .
+            " fax =".$db->encryptData($db->escape($oUsuario->getFax(),true)).", " .
+            " domicilio =".$db->encryptData($db->escape($oUsuario->getDomicilio(),true)).", " .
             " instituciones_id = ".$institucionId.", ".
             " ciudades_id = ".$ciudadId.", ".
-            " ciudadOrigen =".$db->escape($oUsuario->getCiudadOrigen(),true).", " .
+            " ciudadOrigen =".$db->encryptData($db->escape($oUsuario->getCiudadOrigen(),true)).", " .
             " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
-            " empresa =".$db->escape($oUsuario->getEmpresa(),true).", " .
-            " universidad =".$db->escape($oUsuario->getUniversidad(),true).", " .
-            " secundaria =".$db->escape($oUsuario->getSecundaria(),true)." ";
+            " empresa =".$db->encryptData($db->escape($oUsuario->getEmpresa(),true)).", " .
+            " universidad =".$db->encryptData($db->escape($oUsuario->getUniversidad(),true)).", " .
+            " secundaria =".$db->encryptData($db->escape($oUsuario->getSecundaria(),true))." ";
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
