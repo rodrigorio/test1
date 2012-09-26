@@ -1,0 +1,94 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
+   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/vistas/admin/especialidad.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar especialidades integrantes comunidad</h2>
+</header>
+<section>
+    <h3>Especialidades que los integrantes pueden seleccionar al editar su perfil</h3>
+</section>
+<!--EndHeaderBlock-->
+
+<!--BeginFormEspecialidadBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formEspecialidad" name="formEspecialidad" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <dt>
+        <label for="nombre">Nombre</label>
+    </dt>
+    <dd>
+        <input type="text" class="small" name="nombre" id="nombre" maxlength="50" value="{sNombre}">
+        <p>Nombre de la especialidad.</p>
+    </dd>
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 medium maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <!--BeginSubmitCrearEspecialidadBlock-->
+    <button id="crearEspecialidad" name="crearEspecialidad" type="submit">Crear Especialidad</button>
+    <!--EndSubmitCrearEspecialidadBlock-->
+
+    <!--BeginSubmitModificarEspecialidadBlock-->
+    <button id="modificarEspecialidad" name="modificarEspecialidad" type="submit">Modificar Especialidad</button>
+    <input type="hidden" name="iEspecialidadId" id="iEspecialidadId" value="{iEspecialidadId}">
+    <!--EndSubmitModificarEspecialidadBlock-->
+
+    <div style="display:none"  id='msg_form_especialidad' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormEspecialidadBlock-->
+
+<!--BeginListadoEspecialidadesBlock-->
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginEspecialidadesBlock-->
+        <tr class="{iEspecialidadId}">
+            <td>{sNombre}</td>
+            <td class="medium">{sDescripcion}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Especialidad" href="{hrefEditarEspecialidad}"><span class="i bs edit ihover"></span></a>
+                <span title="eliminar especialidad" rel="{iEspecialidadId}" class="i bs delete ihover borrarEspecialidad"></span>
+            </td>
+        </tr>
+        <!--EndEspecialidadesBlock-->
+        <!--BeginNoRecordsEspecialidadesBlock-->
+        <tr>
+            <td colspan="3">No hay especialidades cargadas</td>
+        </tr>
+        <!--EndNoRecordsEspecialidadesBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoEspecialidadesBlock-->

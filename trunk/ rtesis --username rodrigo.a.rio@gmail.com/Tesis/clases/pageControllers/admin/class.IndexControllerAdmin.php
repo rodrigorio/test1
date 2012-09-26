@@ -105,6 +105,11 @@ class IndexControllerAdmin extends PageControllerAbstract
         //instituciones
         $template->set_var("sHrefInstitucionesListar", $request->getBaseTagUrl()."admin/instituciones");
 
+        //seguimientos SCC
+        $template->set_var("sHrefNiveles", $request->getBaseTagUrl()."admin/listar-niveles");
+        $template->set_var("sHrefCiclos", $request->getBaseTagUrl()."admin/listar-ciclos");
+        $template->set_var("sHrefAreas", $request->getBaseTagUrl()."admin/listar-areas");
+        
         //avanzadas
         $template->set_var("sHrefAccionesPerfil", $request->getBaseTagUrl()."admin/acciones-perfil");
         $template->set_var("sHrefParametros", $request->getBaseTagUrl()."admin/parametros");
