@@ -606,7 +606,7 @@ class SeguimientosController
      * Obtener diagnostico de un seguimiento
      *
      */
- 	public function getDiagnosticoBySeg($oSeguimiento)
+    public function getDiagnosticoBySeg($oSeguimiento)
     {
     	try{
     		$filtro = array('s.id' => $oSeguimiento->getId());
@@ -626,11 +626,8 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
-    /**
-     * Obtener diagnostico por id
-     *
-     */
- 	public function getDiagnosticoById($iId)
+
+    public function getDiagnosticoById($iId)
     {
     	try{
     		$filtro = array('d.id' => $iId);
@@ -647,12 +644,7 @@ class SeguimientosController
         }
     }
 
-    
-    /**
-     * Obtener ciclo por id
-     *
-     */
- 	public function getCicloById($iId)
+    public function getCicloById($iId)
     {
     	try{
     		$filtro = array('c.id' => $iId);
@@ -685,6 +677,17 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+
+    public function existeNivelByDescripcion($sDescripcion)
+    {
+        try{
+            $filtro = array('n.descripcion' => $sDescripcion);
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            return $oNivelIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw $e;
+        }  
+    }
     
     public function getAreaById($iId)
       {
@@ -702,6 +705,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+
     public function guardarDiagnostico($oDiagnostico){
         try{
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);

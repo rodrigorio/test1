@@ -116,7 +116,8 @@ class NivelMySQLIntermediary extends NivelIntermediary
 		
 	}
  	
-	public function existe($filtro){
+    public function existe($filtro)
+    {
     	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -125,7 +126,7 @@ class NivelMySQLIntermediary extends NivelIntermediary
                         1 as existe
                     FROM
                         niveles n 
-					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                    WHERE ".$this->crearCondicionSimple($filtro,"",false);
 
             $db->query($sSQL);
 
@@ -134,10 +135,10 @@ class NivelMySQLIntermediary extends NivelIntermediary
             if(empty($foundRows)){ 
             	return false; 
             }
+
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false; 
         }
     }
 }
