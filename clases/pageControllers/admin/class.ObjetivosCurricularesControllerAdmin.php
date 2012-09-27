@@ -84,22 +84,24 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
     private function modificarNivel()
     {
         try{
-            $iCategoriaId = $this->getRequest()->getPost("iCategoriaId");
+            $iNivelId = $this->getRequest()->getPost("iNivelId");
 
-            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
+            $oNivel = SeguimientosController::getInstance()->getNivelById($iNivelId);
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            if(!empty($sDescripcion) && $sDescripcion !== $oNivel->getDescripcion()){
+                if(AdminController::getInstance()->existeNivelByDescripcion($sDescripcion)){
+                    $this->getJsonHelper()->setMessage("Ya existe un nivel con ese nombre.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
             }
 
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
-            $oCategoria->setNombre($sNombre);
-            $oCategoria->setUrlToken($this->getInflectorHelper()->urlize($sNombre));
-            $oCategoria->setDescripcion($sDescripcion);
+            $oNivel->setDescripcion($sDescripcion);
 
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
+            AdminController::getInstance()->guardarNivel($oNivel);
+            $this->getJsonHelper()->setMessage("El nivel fue modificado con éxito");
             $this->getJsonHelper()->setValor("accion", "modificarNivel");
             $this->getJsonHelper()->setSuccess(true);
 
@@ -114,8 +116,8 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
-        $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
-        if(empty($iCategoriaId)){
+        $iNivelId = $this->getRequest()->getParam('iNivelId');
+        if(empty($iNivelId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
@@ -123,18 +125,18 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             try{
-                $result = AdminController::getInstance()->eliminarCategoria($iCategoriaId);
+                $result = AdminController::getInstance()->eliminarNivel($iNivelId);
 
                 $this->restartTemplate();
 
                 if($result){
-                    $msg = "La categoría fue eliminada del sistema";
+                    $msg = "El nivel fue eliminado del sistema";
                     $bloque = 'MsgCorrectoBlockI32';
                     $this->getJsonHelper()->setSuccess(true);
                 }
 
             }catch(Exception $e){
-                $msg = "No se pudo eliminar la categoría del sistema. Compruebe que no haya ningún software asociado.";
+                $msg = "No se pudo eliminar el nivel del sistema. Compruebe que no tenga ningun ciclo asociado.";
                 $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);
             }
@@ -213,49 +215,36 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
     private function editarNivelForm()
     {
         try{
-            $iCategoriaId = $this->getRequest()->getParam('id');
+            $iNivelId = $this->getRequest()->getParam('id');
 
-            if(empty($iCategoriaId)){
+            if(empty($iNivelId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
             
-            $this->getTemplate()->set_var("sTituloForm", "Modificar categoría");
-            $this->getTemplate()->set_var("SubmitCrearCategoriaBlock", "");
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Nivel");
+            $this->getTemplate()->set_var("SubmitCrearNivelBlock", "");
 
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            $oNivel = SeguimientosController::getInstance()->getNivelById($iNivelId);
 
-            $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-            $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-            $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+            $this->getTemplate()->set_var("iNivelId", $iNivelId);
+            $this->getTemplate()->set_var("sDescripcion", $oNivel->getDescripcion());
          
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
     private function crearNivelForm()
     {
         try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
-
-            $this->printMsgTop();
-
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
-
-            $this->getTemplate()->set_var("sTituloForm", "Crear nueva categoria");
-            $this->getTemplate()->set_var("SubmitModificarCategoriaBlock", "");
-            $this->getTemplate()->set_var("EditarFotoBlock", "");
-
+            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Nivel");
+            $this->getTemplate()->set_var("SubmitModificarNivelBlock", "");
+            
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -284,32 +273,30 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $sNombre = $this->getRequest()->getPost("nombre");
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
             $sDescripcion = $this->getRequest()->getPost("descripcion");
 
-            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
+            if(AdminController::getInstance()->existeNivelByDescripcion($sDescripcion)){
+                $this->getJsonHelper()->setMessage("Ya existe un nivel con ese nombre.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            $oCategoria = new stdClass();
-            $oCategoria->sNombre = $sNombre;
-            $oCategoria->sDescripcion = $sDescripcion;
-            $oCategoria->sUrlToken = $this->getInflectorHelper()->urlize($sNombre);
-            $oCategoria = Factory::getCategoriaInstance($oCategoria);
+            $oNivel = new stdClass();
+            $oNivel->sDescripcion = $sDescripcion;
+            $oNivel = Factory::getNivelInstance($oNivel);
 
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor("accion", "crearCiclo");
+            AdminController::getInstance()->guardarNivel($oNivel);
+            $this->getJsonHelper()->setMessage("El nivel fue creado con éxito");
+            $this->getJsonHelper()->setValor("accion", "crearNivel");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();
+        $this->getJsonHelper()->sendJsonAjaxResponse();  
     }
 
     private function modificarCiclo()

@@ -105,7 +105,8 @@ class AdminController
         }
     }
     
-    public function guardarCategoria($oCategoria){
+    public function guardarCategoria($oCategoria)
+    {
         try{
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->guardar($oCategoria);
@@ -134,6 +135,16 @@ class AdminController
             }
 
             return $oCategoriaIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
+    public function guardarNivel($oNivel)
+    {
+        try{
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            return $oNivelIntermediary->guardar($oNivel);
         }catch(Exception $e){
             throw new Exception($e);
         }
