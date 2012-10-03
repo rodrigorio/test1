@@ -147,7 +147,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $usuario->setFax($sFax);
             
             ComunidadController::getInstance()->guardarUsuario($usuario);
-
+			//SysController::getInstance()->iniciarPerfilSessionUsuario($usuario);
             if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
                ComunidadController::getInstance()->cambiarIntegranteActivoUsuarioSesion()){
                $this->getJsonHelper()->setValor('integranteActivo', '1');

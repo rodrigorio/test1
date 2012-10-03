@@ -28,20 +28,22 @@ var optionsAjaxFormCrearSeguimiento = {
     resetForm: false,
     url: "seguimientos/procesar-seguimiento",
     beforeSerialize: function($form, options){
-
+    	
         if($("#formCrearSeguimiento").valid() == true){
+        	
             $('#msg_form_crearSeguimiento').hide();
             $('#msg_form_crearSeguimiento').removeClass("correcto").removeClass("error");
             $('#msg_form_crearSeguimiento .msg').html("");
 
             setWaitingStatus('formCrearSeguimiento', true);
         }else{
+        	
             return false;
         }
     },
 
     success:function(data){
-
+    	
         setWaitingStatus('formCrearSeguimiento', false);
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
