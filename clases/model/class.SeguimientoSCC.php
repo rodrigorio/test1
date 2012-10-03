@@ -1,13 +1,13 @@
 <?php
+
 /**
- * Description of classSeguimientoSCC
+ * SeguimientoSCC
  *
  * @author Andres
  */
 class SeguimientoSCC extends SeguimientoAbstract
 {
     public function __construct(stdClass $oParams = null){
-        parent::__construct();
         $vArray = get_object_vars($oParams);
         $vThisVars = get_class_vars(__CLASS__);
         if(is_array($vArray)){
@@ -25,14 +25,19 @@ class SeguimientoSCC extends SeguimientoAbstract
     
     public function getObjetivos(){
         if($this->aObjetivos === null){
-            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosCurriculares($this->iId);
+            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosAprendizaje($this->iId);
         }
         return $this->aObjetivos;
     }
     
-    public function setObjetivos($aObjetivos)
+    public function setObjetivos($aObjetivosAprendizaje)
     {
-    	$this->aObjetivos = $aObjetivos;
+    	$this->aObjetivos = $aObjetivosAprendizaje;
+        return $this;
+    }
+
+    public function addObjetivo($oObjetivoAprendizaje){
+        $this->aObjetivos[] = $oObjetivoAprendizaje;
         return $this;
     }
 }
