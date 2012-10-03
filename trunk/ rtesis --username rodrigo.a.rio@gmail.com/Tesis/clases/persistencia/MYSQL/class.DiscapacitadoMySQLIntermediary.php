@@ -36,31 +36,32 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             
             $sSQL = "SELECT
                         p.id as iId, 
-                        p.nombre as sNombre,
-                        p.apellido as sApellido,
+                        ".$db->decryptData( 'p.nombre' )." as sNombre,
+                        ".$db->decryptData( 'p.apellido' )." as sApellido,
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
                         p.sexo as sSexo,
                         p.fechaNacimiento as dFechaNacimiento,
-                        p.email as sEmail, 
-                        p.telefono as sTelefono,
-                        p.celular as sCelular,
-                        p.fax as sFax, 
-                        p.domicilio as sDomicilio,
+                        ".$db->decryptData( 'p.email' )." as sEmail, 
+                        ".$db->decryptData( 'p.telefono' )." as sTelefono,
+                        ".$db->decryptData( 'p.celular' )." as sCelular,
+                        ".$db->decryptData( 'p.fax' )." as sFax, 
+                        ".$db->decryptData( 'p.domicilio' )." as sDomicilio,
                         p.instituciones_id as iInstitucionId,
                         p.ciudades_id as iCiudadId,
-                        p.ciudadOrigen as sCiudadOrigen,
-                        p.codigoPostal as sCodigoPostal,
-                        p.empresa as sEmpresa,
-                        p.universidad as sUniversidad, 
-                        p.secundaria as sSecundaria,
+                        ".$db->decryptData( 'p.ciudadOrigen' )." as sCiudadOrigen,
+                        ".$db->decryptData( 'p.codigoPostal' )." as sCodigoPostal,
+                        ".$db->decryptData( 'p.empresa' )." as sEmpresa,
+                        ".$db->decryptData( 'p.universidad' )." as sUniversidad, 
+                        ".$db->decryptData( 'p.secundaria' )." as sSecundaria,
                         
-                        d.nombreApellidoPadre as sNombreApellidoPadre,
-                        d.nombreApellidoMadre as sNombreApellidoMadre,
+                        ".$db->decryptData( 'd.nombreApellidoPadre' )." as sNombreApellidoPadre,
+                        ".$db->decryptData( 'd.nombreApellidoMadre' )." as sNombreApellidoMadre,
                         d.fechaNacimientoPadre as dFechaNacimientoPadre,
                         d.fechaNacimientoMadre as dFechaNacimientoMadre,
-                        d.ocupacionPadre as sOcupacionPadre, d.ocupacionMadre as sOcupacionMadre,
-                        d.nombreHermanos as sNombreHermanos,
+                        ".$db->decryptData( 'd.ocupacionPadre' )." as sOcupacionPadre, 
+                        ".$db->decryptData( 'd.ocupacionMadre' )." as sOcupacionMadre,
+                        ".$db->decryptData( 'd.nombreHermanos' )." as sNombreHermanos,
                         d.usuarios_id as iUsuarioId,
 
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
@@ -83,10 +84,10 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $WHERE[] = $this->crearFiltroSimple('p.instituciones_id', $filtro['p.instituciones_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['p.nombre']) && $filtro['p.nombre']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.nombre', $filtro['p.nombre']);
+                $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.nombre',true), $filtro['p.nombre']);
             }
             if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
+                $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.apellido',true), $filtro['p.apellido']);
             }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
                 $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento'], MYSQL_TYPE_INT);
@@ -95,7 +96,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 $WHERE[] = $this->crearFiltroSimple('p.documento_tipos_id', $filtro['p.documento_tipos_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['p.email']) && $filtro['p.email']!=""){
-                $WHERE[] = $this->crearFiltroTexto('p.email', $filtro['p.email']);
+                $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.email',true), $filtro['p.email']);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -106,7 +107,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
+           
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -239,29 +240,28 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 			
             $db->begin_transaction();
             $sSQL = " update personas " .
-                    " set nombre = ".$db->escape($oDiscapacitado->getNombre(),true).", " .
-                    " apellido = ".$db->escape($oDiscapacitado->getApellido(),true).", " .
+                    " set nombre = ".$db->encryptData($db->escape($oDiscapacitado->getNombre(),true)).", " .
+                    " apellido = ".$db->encryptData($db->escape($oDiscapacitado->getApellido(),true)).", " .
                     " documento_tipos_id = ".$db->escape($oDiscapacitado->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento = ".$db->escape($oDiscapacitado->getNumeroDocumento(),true).", " .
                     " sexo = ".$db->escape($oDiscapacitado->getSexo(),true).", " .
-                    " telefono = ".$db->escape($oDiscapacitado->getTelefono(),true).", " .
+                    " telefono = ".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
                     " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', ".
-                    " domicilio =".$db->escape($oDiscapacitado->getDomicilio(),true).", " .
+                    " domicilio =".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .
                     " instituciones_id = ".$institucionId.", ".
                     " ciudades_id = ".$ciudadId." ".
                     " WHERE id = '".$oDiscapacitado->getId()."' ";
 
-
              $db->execSQL($sSQL);
 
              $sSQL =" update discapacitados ".
-                    " set nombreApellidoPadre=".$db->escape($oDiscapacitado->getNombreApellidoPadre(),true).", " .
-                    " nombreApellidoMadre =".$db->escape($oDiscapacitado->getNombreApellidoMadre(),true).", ".
+                    " set nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
+                    " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
                     " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
                     " fechaNacimientoMadre = '".$oDiscapacitado->getFechaNacimientoMadre()."', ".
-                    " ocupacionPadre =".$db->escape($oDiscapacitado->getOcupacionPadre(),true).", ".
-                    " ocupacionMadre =".$db->escape($oDiscapacitado->getOcupacionMadre(),true).", ".
-                    " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", ".
+                    " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", ".
+                    " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", ".
+                    " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
                     " usuarios_id = ".$iUsuarioId." ".
                     " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)." ";
 
@@ -302,14 +302,14 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $db->begin_transaction();
 
             $sSQL = " insert into personas ".
-                    " set nombre = ".$db->escape($oDiscapacitado->getNombre(),true).", " .
-                    " apellido = ".$db->escape($oDiscapacitado->getApellido(),true).", " .
+                    " set nombre = ".$db->encryptData($db->escape($oDiscapacitado->getNombre(),true)).", " .
+                    " apellido = ".$db->encryptData($db->escape($oDiscapacitado->getApellido(),true)).", " .
                     " documento_tipos_id = ".$db->escape($oDiscapacitado->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento = ".$db->escape($oDiscapacitado->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo = ".$db->escape($oDiscapacitado->getSexo(),true).", " .
-                    " telefono = ".$db->escape($oDiscapacitado->getTelefono(),true).", " .
+                    " telefono = ".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
                     " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', " .
-                    " domicilio = ".$db->escape($oDiscapacitado->getDomicilio(),true).", " .//revisar esto
+                    " domicilio = ".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .//revisar esto
                     " instituciones_id = ".$db->escape($institucionId,true).", ".
                     " ciudades_id = ".$db->escape($ciudadId,true)." ";
             
@@ -319,13 +319,13 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 			
             $sSQL = " insert into discapacitados set ".
                     " id = ".$db->escape($iLastId,false).", " .
-                    " nombreApellidoPadre=".$db->escape($oDiscapacitado->getNombreApellidoPadre(),true).", " .
-                    " nombreApellidoMadre =".$db->escape($oDiscapacitado->getNombreApellidoMadre(),true).", ".
+                    " nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
+                    " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
                     " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
                     " fechaNacimientoMadre = '".$oDiscapacitado->getFechaNacimientoMadre()."', ".
-                    " ocupacionPadre =".$db->escape($oDiscapacitado->getOcupacionPadre(),true).", " .
-                    " ocupacionMadre =".$db->escape($oDiscapacitado->getOcupacionMadre(),true).", " .
-                    " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", ".
+                    " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", " .
+                    " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", " .
+                    " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
                     " usuarios_id = ".$iUsuarioId." ";
 					
             $db->execSQL($sSQL);
@@ -394,23 +394,23 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
 
             $sSQL = " insert into discapacitados_moderacion ".
                     " set id = '".$oDiscapacitado->getId()."', ".
-                    " nombre =".$db->escape($oDiscapacitado->getNombre(),true).", " .
-                    " apellido =".$db->escape($oDiscapacitado->getApellido(),true).", " .
+                    " nombre =".$db->encryptData($db->escape($oDiscapacitado->getNombre(),true)).", " .
+                    " apellido =".$db->encryptData($db->escape($oDiscapacitado->getApellido(),true)).", " .
                     " documento_tipos_id =".$db->escape($oDiscapacitado->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oDiscapacitado->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo =".$db->escape($oDiscapacitado->getSexo(),true).", " .
-                    " telefono =".$db->escape($oDiscapacitado->getTelefono(),true).", " .
+                    " telefono =".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
                     " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', " .
-                    " domicilio =".$db->escape($oDiscapacitado->getDomicilio(),true).", " .//revisar esto
+                    " domicilio =".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .//revisar esto
                     " instituciones_id =".$db->escape($institucionId,true).", ".
                     " ciudades_id =".$db->escape($ciudadId,true).", ".
-                    " nombreApellidoPadre=".$db->escape($oDiscapacitado->getNombreApellidoPadre(),true).", " .
-                    " nombreApellidoMadre =".$db->escape($oDiscapacitado->getNombreApellidoMadre(),true).", ".
+                    " nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
+                    " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
                     " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
                     " fechaNacimientoMadre = '".$oDiscapacitado->getFechaNacimientoMadre()."', ".
-                    " ocupacionPadre =".$db->escape($oDiscapacitado->getOcupacionPadre(),true).", " .
-                    " ocupacionMadre =".$db->escape($oDiscapacitado->getOcupacionMadre(),true).", " .
-                    " nombreHermanos =".$db->escape($oDiscapacitado->getNombreHermanos(),true).", ".
+                    " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", " .
+                    " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", " .
+                    " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
                     " usuarios_id = ".$iUsuarioId.", ".
                     " nombreBigSize = ".$this->escStr($nombreBigSize).", ".
                     " nombreMediumSize = ".$this->escStr($nombreMediumSize).", ".
@@ -556,19 +556,22 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        dm.id as iId, dm.nombre as sNombre, dm.apellido as sApellido,
+                        dm.id as iId, 
+                        ".$db->decryptData( 'dm.nombre' )." as sNombre, 
+                        ".$db->decryptData( 'dm.apellido' )." as sApellido,
                         dm.documento_tipos_id as iTipoDocumentoId,
                         dm.numeroDocumento as sNumeroDocumento,
                         dm.sexo as sSexo, dm.fechaNacimiento as dFechaNacimiento,
-                        dm.telefono as sTelefono,
-                        dm.domicilio as sDomicilio,
+                        ".$db->decryptData( 'dm.telefono' )." as sTelefono,
+                        ".$db->decryptData( 'dm.domicilio' )." as sDomicilio,
                         dm.ciudades_id as iCiudadId, dm.instituciones_id as iInstitucionId,
-                        dm.nombreApellidoPadre as sNombreApellidoPadre,
-                        dm.nombreApellidoMadre as sNombreApellidoMadre,
-                        dm.fechaNacimientoPadre as dFechaNacimientoPadre,
-                        dm.fechaNacimientoMadre as dFechaNacimientoMadre,
-                        dm.ocupacionPadre as sOcupacionPadre, dm.ocupacionMadre as sOcupacionMadre,
-                        dm.nombreHermanos as sNombreHermanos,
+                        ".$db->decryptData( 'dm.nombreApellidoPadre' )." as sNombreApellidoPadre,
+                        ".$db->decryptData( 'dm.nombreApellidoMadre' )." as sNombreApellidoMadre,
+                        ".$db->decryptData( 'dm.fechaNacimientoPadre' )." as dFechaNacimientoPadre,
+                        ".$db->decryptData( 'dm.fechaNacimientoMadre' )." as dFechaNacimientoMadre,
+                        ".$db->decryptData( 'dm.ocupacionPadre' )." as sOcupacionPadre, 
+                        ".$db->decryptData( 'dm.ocupacionMadre' )." as sOcupacionMadre,
+                        ".$db->decryptData( 'dm.nombreHermanos' )." as sNombreHermanos,
                         dm.usuarios_id as iUsuarioId,
                         dm.nombreBigSize as sFotoNombreBigSize,
                         dm.nombreMediumSize as sFotoNombreMediumSize,

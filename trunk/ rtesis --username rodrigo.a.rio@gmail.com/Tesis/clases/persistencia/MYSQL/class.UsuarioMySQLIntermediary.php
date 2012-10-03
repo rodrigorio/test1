@@ -105,45 +105,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        p.id as iId, 
-                        ".$db->decryptData( 'p.nombre')." as sNombre, 
-                        ".$db->decryptData( 'p.apellido')." as sApellido,
-                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        ".$db->decryptData( ' p.email ')." as sEmail, 
-                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
-                        ".$db->decryptData( 'p.celular')." as sCelular,
-                        ".$db->decryptData( 'p.fax')." as sFax, 
-                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
-                        ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
-                        p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
-                        ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
-                        ".$db->decryptData( ' p.empresa')." as sEmpresa,
-                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
-                        ".$db->decryptData( 'p.secundaria')." as sSecundaria,
-                        p.documento_tipos_id as iTipoDocumentoId,
-                        p.numeroDocumento as sNumeroDocumento,
-
-                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario, u.activo as bActivo,
-                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
-                        u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
-                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
-                        u.urlTokenKey as sUrlTokenKey,
+            $sSQL = $this->generateSelectUuarios(). "
 
                         e.id as iEspecialidadId,
-                        e.nombre as sEspecialidadNombre, e.descripcion as sEspecialidadDescripcion,
-
-                        a.id as iCvId, a.nombre as sCvNombre,
-                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
-                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
-                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
-                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
-
-                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
-                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
-                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
+                        e.nombre as sEspecialidadNombre, 
+                        e.descripcion as sEspecialidadDescripcion
+         
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
                         LEFT JOIN especialidades e ON u.especialidades_id = e.id
@@ -170,7 +137,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                 $WHERE[] = $this->crearFiltroSimple($db->decryptData('p.email',true), $filtro['p.email']);
             }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre']!=""){
-                $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
+                $WHERE[] = $this->crearFiltroTexto($db->decryptData('u.nombre',true), $filtro['u.nombre']);
             }
             if(isset($filtro['u.urlTokenKey']) && $filtro['u.urlTokenKey']!=""){
                 $WHERE[] = $this->crearFiltroTexto('u.urlTokenKey', $filtro['u.urlTokenKey']);
@@ -285,43 +252,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        p.id as iId, 
-                        ".$db->decryptData( 'p.nombre')." as sNombre, 
-                        ".$db->decryptData( 'p.apellido')." as sApellido,
-                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        ".$db->decryptData( ' p.email ')." as sEmail, 
-                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
-                        ".$db->decryptData( 'p.celular')." as sCelular,
-                        ".$db->decryptData( 'p.fax')." as sFax, 
-                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
-                        ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
-                        p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
-                        ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
-                        ".$db->decryptData( ' p.empresa')." as sEmpresa,
-                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
-                        ".$db->decryptData( 'p.secundaria')." as sSecundaria,
-                        p.documento_tipos_id as iTipoDocumentoId,
-                        p.numeroDocumento as sNumeroDocumento,
-
-                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario, u.activo as bActivo,
-                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
-                        u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
-                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
-                        u.urlTokenKey as sUrlTokenKey,
-
-                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
-                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
-                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
-
-                        a.id as iCvId, a.nombre as sCvNombre,
-                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
-                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
-                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
-                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
-
+            $sSQL =  $this->generateSelectUuarios(). "
+            
                         pe.descripcion as sPerfilDescripcion
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
@@ -464,35 +396,46 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = "SELECT DISTINCT SQL_CALC_FOUND_ROWS
-                        p.id as iId, p.nombre as sNombre, p.apellido as sApellido,
+            $sSQL =  "SELECT SQL_CALC_FOUND_ROWS
+                       DISTINCT p.id as iId, 
+                        ".$db->decryptData( 'p.nombre')." as sNombre, 
+                        ".$db->decryptData( 'p.apellido')." as sApellido,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        p.email as sEmail, p.telefono as sTelefono, p.celular as sCelular,
-                        p.fax as sFax, p.domicilio as sDomicilio, p.ciudadOrigen as sCiudadOrigen,
+                        ".$db->decryptData( 'p.email ')." as sEmail, 
+                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
+                        ".$db->decryptData( 'p.celular')." as sCelular,
+                        ".$db->decryptData( 'p.fax')." as sFax, 
+                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
+                        ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
                         p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
-                        p.codigoPostal as sCodigoPostal, p.empresa as sEmpresa,
-                        p.universidad as sUniversidad, p.secundaria as sSecundaria,
+                        ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
+                        ".$db->decryptData( 'p.empresa')." as sEmpresa,
+                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
+                        ".$db->decryptData( 'p.secundaria')." as sSecundaria,
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
 
-                        u.sitioWeb as sSitioWeb, u.nombre as sNombreUsuario, u.activo as bActivo,
+                        ".$db->decryptData( 'u.sitioWeb' )." as sSitioWeb, 
+                        ".$db->decryptData( 'u.nombre' )." as sNombreUsuario, u.activo as bActivo,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        u.cargoInstitucion as sCargoInstitucion, u.biografia as sBiografia,
+                        u.cargoInstitucion as sCargoInstitucion, 
+                        ".$db->decryptData( 'u.biografia' )." as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
                         u.urlTokenKey as sUrlTokenKey,
-
-                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
-                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
-                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
-
+                        
                         a.id as iCvId, a.nombre as sCvNombre,
                         a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
                         a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
                         a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
-                        a.titulo as sCvTitulo, a.tipo as sCvTipo
-                    FROM
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
+
+                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo
+
+            		FROM
                         personas p JOIN usuarios u ON p.id = u.id
                         LEFT JOIN fotos f ON f.personas_id = u.id
                         LEFT JOIN archivos a ON a.usuarios_id = u.id
@@ -618,8 +561,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->begin_transaction();
             
             $sSQL = " UPDATE personas SET ".
-                    " nombre = ".$this->escStr($oObj->sNombre).", " .
-                    " apellido = ".$this->escStr($oObj->sApellido).", " .
+                    " nombre = ".$db->encryptData($this->escStr($oObj->sNombre)).", " .
+                    " apellido = ".$db->encryptData($this->escStr($oObj->sApellido)).", " .
                     " documento_tipos_id = ".$this->escInt($oObj->iTipoDocumentoId).", ".
                     " numeroDocumento = ".$this->escStr($oObj->sNumeroDocumento).", " .
                     " sexo = ".$this->escStr($oObj->sSexo).", " .
@@ -634,7 +577,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL =" INSERT INTO usuarios SET ".
                    " id = ".$this->escInt($oObj->iInvitadoId).", ".
                    " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
-                   " nombre = ".$this->escStr($oObj->sNombreUsuario).", ".
+                   " nombre = ".$db->encryptData($this->escStr($oObj->sNombreUsuario)).", ".
                    " urlTokenKey = '".$sUrlTokenKey."', ".
                    " contrasenia = ".$this->escStr($oObj->sContrasenia)." ";
 
@@ -748,10 +691,10 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->execSQL($sSQL);
 
             $sSQL =" update usuarios ".
-                   " set sitioWeb = ".$db->escape($oUsuario->getSitioWeb(),true).", " .
+                   " set sitioWeb = ".$db->encryptData($db->escape($oUsuario->getSitioWeb(),true)).", " .
                    " especialidades_id = ".$especialidadId.", ".
                    " cargoInstitucion = ".$this->escStr($oUsuario->getCargoInstitucion()).", ".
-                   " biografia = ".$this->escStr($oUsuario->getBiografia()).", ".
+                   " biografia = ".$db->encryptData($this->escStr($oUsuario->getBiografia())).", ".
                    " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
                    " carreraFinalizada = ".$carreraFinalizada.", ".
                    " activo = ".$activo.", ".
@@ -844,15 +787,15 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $sSQL = " insert into usuarios set ".
                     " id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT).", " .
-                    " sitioWeb = ".$db->escape($oUsuario->getSitioWeb(),true).", " .
+                    " sitioWeb = ".$db->encryptData($db->escape($oUsuario->getSitioWeb(),true)).", " .
                     " especialidades_id = ".$especialidadId.", ".
                     " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
                     " cargoInstitucion = ".$this->escStr($oUsuario->getCargoInstitucion()).", ".
-                    " biografia = ".$this->escStr($oUsuario->getBiografia()).", ".
+                    " biografia = ".$db->encryptData($this->escStr($oUsuario->getBiografia())).", ".
                     " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
                     " carreraFinalizada = ".$carreraFinalizada.", ".
                     " urlTokenKey = '".$sUrlTokenKey."', ".
-                    " nombre = ".$db->escape($oUsuario->getNombreUsuario(),true).",".
+                    " nombre = ".$db->encryptData($db->escape($oUsuario->getNombreUsuario(),true)).",".
                     " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
 
             $db->execSQL($sSQL);   
@@ -1007,7 +950,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         1 as existe
                     FROM
                         usuarios 
-                    WHERE nombre = ".$nombreUsuario;
+                    WHERE nombre = ".$db->encryptData($nombreUsuario);
 
             $db->query($sSQL);
 
@@ -1168,4 +1111,48 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     }
 
     public function actualizarCampoArray($objects, $cambios){}
+    
+    private function generateSelectUuarios(){
+    	$db = $this->conn;
+      	$sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        p.id as iId, 
+                        ".$db->decryptData( 'p.nombre')." as sNombre, 
+                        ".$db->decryptData( 'p.apellido')." as sApellido,
+                        p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
+                        ".$db->decryptData( 'p.email ')." as sEmail, 
+                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
+                        ".$db->decryptData( 'p.celular')." as sCelular,
+                        ".$db->decryptData( 'p.fax')." as sFax, 
+                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
+                        ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
+                        p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
+                        ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
+                        ".$db->decryptData( 'p.empresa')." as sEmpresa,
+                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
+                        ".$db->decryptData( 'p.secundaria')." as sSecundaria,
+                        p.documento_tipos_id as iTipoDocumentoId,
+                        p.numeroDocumento as sNumeroDocumento,
+
+                        ".$db->decryptData( 'u.sitioWeb' )." as sSitioWeb, 
+                        ".$db->decryptData( 'u.nombre' )." as sNombreUsuario, u.activo as bActivo,
+                        u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
+                        u.invitacionesDisponibles as iInvitacionesDisponibles,
+                        u.cargoInstitucion as sCargoInstitucion, 
+                        ".$db->decryptData( 'u.biografia' )." as sBiografia,
+                        u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
+                        u.urlTokenKey as sUrlTokenKey,
+                        
+                        a.id as iCvId, a.nombre as sCvNombre,
+                        a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
+                        a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
+                        a.fechaAlta as sCvFechaAlta, a.orden as iCvOrden,
+                        a.titulo as sCvTitulo, a.tipo as sCvTipo,
+
+                        f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
+                        f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
+                        f.orden as iFotoOrden, f.titulo as sFotoTitulo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
+               ";
+      	return $sSQL;
+    }
 }

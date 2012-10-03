@@ -45,7 +45,7 @@ class PersonasControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/personas.gui.html", "mainContent", "ListadoDiscapacitadosBlock");
 
             $filtro = array();
-            $iRecordPerPage = 5;
+            $iRecordPerPage = null;
             $iPage = $this->getRequest()->getPost("iPage");
             $iPage = strlen($iPage) ? $iPage : 1;
             $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;

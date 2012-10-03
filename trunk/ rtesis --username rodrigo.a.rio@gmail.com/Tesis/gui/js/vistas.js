@@ -32,6 +32,14 @@ var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1)
 var is_mac = (clientPC.indexOf("mac")!=-1);
 var is_moz = 0;
 
+function verAtributos(obj){
+	for(x in obj){
+		if( typeof(obj[x]) != "function"){
+			alert("Atributo: "+x + " value:" +obj[x]);
+		}
+	}	
+}
+
 // VALIDATOR //
 
 /**

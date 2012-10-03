@@ -621,7 +621,12 @@ class IMYSQL implements DB
     /**
      *Funciones para encriptar y desencriptar datos en la base de datos
      * @param data es el dato que quiero encriptar o desencriptar en la bd
-     * @param convert es valor booleano que me dice si lo casteo a string (se usa normalmente en el where)
+     * @param convert es valor booleano que me dice si lo casteo a string (se usa normalmente en el where cuando necesito 
+     * no diferenciar las mayusculas y minusculas)
+     * ej:
+     *  select * usuarios where CONVERT(AES_DECRYPT(campoEmail,keyEncript), CHAR) LIKE "%RodriGo.a.rio@gmail.com%" 
+     *  acá busco en los usuarios el que tenga como email rodrigo.a.rio@gmail.com, mas alla de como haya ingresado 
+     *  el email en el formulario(mayusculas o minusculas).
      */
     public function encryptData( $data = null, $convert = null) {
   		if ($data===null) {
