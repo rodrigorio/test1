@@ -1,11 +1,7 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- * Description of class ObjetivoAbstract
+ * ObjetivoAbstract
  *
  * @author Andres
  */
@@ -54,12 +50,15 @@ abstract class ObjetivoAbstract
     public function getId(){
         return $this->iId;
     }
-    /**
-     *  @return string $sDescripcion
-     */
-    public function getDescripcion(){
-        return $this->sDescripcion;
+
+    public function getDescripcion($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }else{
+            return $this->sDescripcion;
+        }
     }
+    
     /**
      *  @return date $dEstimacion
      */
@@ -79,4 +78,3 @@ abstract class ObjetivoAbstract
         return $this->oObjetivoRelevancia;
     }
 }
-
