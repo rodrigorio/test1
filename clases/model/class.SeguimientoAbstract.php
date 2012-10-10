@@ -227,19 +227,10 @@ abstract class SeguimientoAbstract
     public function setArchivoAntecedentes($oAntecedentes){
         $this->oAntecedentes = $oAntecedentes;
     }
-    
-    public function setDiagnostico($oDiagnostico){
-    	$this->oDiagnostico = $oDiagnostico;
-    }
-    
-    public function getDiagnostico(){
-    	if(!$this->oDiagnostico){
-            $this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoBySeg($this);
-    	}
-    	return $this->oDiagnostico;
-    }
-    
+        
     abstract public function getObjetivos();
     abstract public function setObjetivos($aObjetivos);
     abstract public function addObjetivo($aObjetivo);
+    abstract public function getDiagnostico();
+    abstract public function setDiagnostico($oDiagnostico);
 }

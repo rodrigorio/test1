@@ -40,4 +40,15 @@ class SeguimientoPersonalizado extends SeguimientoAbstract{
         $this->aObjetivos[] = $oObjetivoPersonalizado;
         return $this;
     }
+
+    public function setDiagnostico($oDiagnosticoPersonalizado){
+    	$this->oDiagnostico = $oDiagnosticoPersonalizado;
+    }
+
+    public function getDiagnostico(){
+    	if(!$this->oDiagnostico){
+            $this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoPersonalizadoBySeguimientoId($this->iId);
+    	}
+    	return $this->oDiagnostico;
+    }
 }

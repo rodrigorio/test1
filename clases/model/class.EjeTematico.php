@@ -7,6 +7,12 @@ class EjeTematico{
     private $oArea;
     private $sContenidos;
     
+    /**
+     * Esta es una descripcion del estado inicial que solo estara presente
+     * cuando la instancia este asociada a un diagnostico SCC.
+     */
+    private $sEstadoInicial = null;
+    
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
         $vThisVars = get_class_vars(__CLASS__);
@@ -70,5 +76,18 @@ class EjeTematico{
     public function setArea($oArea)
     {
         $this->oArea = $oArea;
+    }
+
+    public function getEstadoInicial($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sEstadoInicial);
+        }else{
+            return $this->sEstadoInicial;
+        }
+    }
+
+    public function setEstadoInicial($sEstadoInicial)
+    {
+        $this->sEstadoInicial = $sEstadoInicial;
     }
 }

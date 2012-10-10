@@ -18,11 +18,11 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
         }
     }
     
-    public function setAreaId($oArea){
-        $this->oArea = $oArea;
+    public function setEjeTematico($oEjeTematico){
+        $this->oEjeTematico = $oEjeTematico;
     }
 
-    public function getArea(){
-        return $this->oArea;
+    public function getEjeTematico(){
+        return $this->oEjeTematico;
     }
 }
