@@ -2,7 +2,7 @@
 
 abstract class DiagnosticoAbstract
 {
-    
+
     protected $iId;
     protected $sDescripcion;
 

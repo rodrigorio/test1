@@ -254,13 +254,30 @@ class Factory
         $oCiclo = new Ciclo($obj);
         return $oCiclo;
     }
-    public static function &getObjetivoCurricularInstance(stdClass $obj){
-        $oObjetivoCurricular = new ObjetivoCurricular($obj);
-        return $oObjetivoCurricular;
+    
+    public static function &getEjeTematicoInstance(stdClass $obj){
+        $oEjeTematico = new EjeTematico($obj);
+        return $oEjeTematico;
     }
+    
+    public static function &getObjetivoAprendizajeInstance(stdClass $obj){
+        $oObjetivoAprendizaje = new ObjetivoAprendizaje($obj);
+        return $oObjetivoAprendizaje;
+    }
+
     public static function &getObjetivoPersonalizadoInstance(stdClass $obj){
         $oObjetivoPersonalizado = new ObjetivoPersonalizado($obj);
         return $oObjetivoPersonalizado;
+    }
+
+    public static function &getObjetivoPersonalizadoEjeInstance(stdClass $obj){
+        $oObjetivoPersonalizadoEje = new ObjetivoPersonalizadoEje($obj);
+        return $oObjetivoPersonalizadoEje;
+    }
+
+    public static function &getObjetivoRelevanciaInstance(stdClass $obj){
+        $oObjetivoRelevancia = new ObjetivoRelevancia($obj);
+        return $oObjetivoRelevancia;
     }
   
     public static function &getModeracionInstance(stdClass $obj){
