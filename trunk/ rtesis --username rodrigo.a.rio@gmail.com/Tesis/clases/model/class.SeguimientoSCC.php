@@ -40,4 +40,15 @@ class SeguimientoSCC extends SeguimientoAbstract
         $this->aObjetivos[] = $oObjetivoAprendizaje;
         return $this;
     }
+
+    public function setDiagnostico($oDiagnosticoSCC){
+    	$this->oDiagnostico = $oDiagnosticoSCC;
+    }
+
+    public function getDiagnostico(){
+    	if(!$this->oDiagnostico){
+            $this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSCCBySeguimientoId($this->iId);
+    	}
+    	return $this->oDiagnostico;
+    }
 }
