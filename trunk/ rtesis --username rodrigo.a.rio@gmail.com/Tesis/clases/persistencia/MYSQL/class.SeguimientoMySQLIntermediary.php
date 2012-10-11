@@ -50,8 +50,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           s.diaHorario as sDiaHorario,
                           s.practicas_id as iPracticaId,
                           s.usuarios_id as iUsuarioId,
-                          ".$db->decryptData( 's.antecedentes')." as sAntecedentes,
-                          ".$db->decryptData( 's.pronostico')." as sPronostico,
+                          s.antecedentes as sAntecedentes,
+                          s.pronostico as sPronostico,
                           s.fechaCreacion as dFechaCreacion,
                           s.estado AS sEstado,
                           IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo,
@@ -67,7 +67,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           a.titulo as sArchivoTitulo,
                           a.tipo as sArchivoTipo,
                           
-                          ".$db->decryptData( 'p.nombre')."
+                          p.nombre
                     FROM
                         seguimientos s
                     LEFT JOIN
@@ -89,7 +89,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $WHERE[] = $this->crearFiltroSimple('s.estado', $filtro['s.estado']);
             }
             if(isset($filtro['p.apellido']) && $filtro['p.apellido'] != ""){
-                $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.apellido',true), $filtro['p.apellido']);
+                $WHERE[] = $this->crearFiltroTexto('p.apellido', $filtro['p.apellido']);
             }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento']);
@@ -212,8 +212,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           s.diaHorario as sDiaHorario,
                           s.practicas_id as iPracticaId,
                           s.usuarios_id as iUsuarioId,
-                          ".$db->decryptData( 's.antecedentes')." as sAntecedentes,
-                          ".$db->decryptData( 's.pronostico')." as sPronostico,
+                          s.antecedentes as sAntecedentes,
+                          s.pronostico as sPronostico,
                           s.fechaCreacion as dFechaCreacion,
                           s.estado as sEstado,
                           IF(sp.id IS NULL, '".self::TIPO_SEGUIMIENTO_SCC."', '".self::TIPO_SEGUIMIENTO_PERSONALIZADO."') as tipo,
@@ -320,7 +320,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             }
             
         }catch(Exception $e){
-        	//echo  $e->getMessage();
+        	echo  $e->getMessage();
             throw new Exception($e->getMessage(), 0);
             return false;
         }
@@ -353,8 +353,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->encryptData($db->escape($oSeguimientoPersonalizado->getAntecedentes(),true)).", " .
-                    " pronostico= ".$db->encryptData($db->escape($oSeguimientoPersonalizado->getPronostico(), true)) .", ".
+                    " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
+                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ".
                     " estado= ".$db->escape($oSeguimientoPersonalizado->getEstado(), true) ." ".
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 			 $db->execSQL($sSQL);
@@ -370,7 +370,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			 return true;
 	
 		}catch(Exception $e){
-			//echo $e->getMessage();
+			echo $e->getMessage();
             $db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -404,8 +404,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->encryptData($db->escape($oSeguimientoSCC->getAntecedentes(),true)).", " .
-                    " pronostico= ".$db->encryptData($db->escape($oSeguimientoSCC->getPronostico(), true)) .", ".
+                    " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
+                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) .", ".
             		" estado= ".$db->escape($oSeguimientoSCC->getEstado(), true) ." ".
                     " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 
@@ -414,17 +414,16 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			 
 			 $diagnosticoSCCId = null;
 			 
-//              $sSQL =" update seguimientos_scc ".
-//                     " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
-// 					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
-// 			 $db->execSQL($sSQL);
- 			 $db->commit();
+             $sSQL =" update seguimientos_scc ".
+                    " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
+					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
+			 $db->execSQL($sSQL);
+			 $db->commit();
 
                          return true;
 
 
 		}catch(Exception $e){
-			echo $e->getMessage();
             $db->rollback_transaction();
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -459,8 +458,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 						" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
                         " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                         " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                        " antecedentes =".$db->encryptData($db->escape($oSeguimientoPersonalizado->getAntecedentes(),true)).", " .
-                        " pronostico= ".$db->encryptData($db->escape($oSeguimientoPersonalizado->getPronostico(), true)) ." ";
+                        " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
+                        " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ";
 			
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
@@ -524,8 +523,8 @@ public function insertarSCC($oSeguimientoSCC)
 					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->encryptData($db->escape($oSeguimientoSCC->getAntecedentes(),true)).", " .
-                    " pronostico= ".$db->encryptData($db->escape($oSeguimientoSCC->getPronostico(), true)) ." ";
+                    " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
+                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ";
 			
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
