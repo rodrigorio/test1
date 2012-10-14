@@ -25,7 +25,10 @@ class DiagnosticoSCC extends DiagnosticoAbstract
 	
     public function getEjesTematicos()
     {
-        return $this->aEjesTematicos;
+    	if($this->aEjesTematicos === null){
+            $this->aEjesTematicos = SeguimientoController::getInstance()->getEjes($this->iId);
+    	}
+    	return $this->aEjesTematicos;
     }
 
     public function setEjesTematicos($aEjesTematicos)

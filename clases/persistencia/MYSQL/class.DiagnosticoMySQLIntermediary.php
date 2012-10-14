@@ -29,7 +29,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                     	d.id as iId,
                     	d.descripcion as sDescripcion,
                     	dp.codigo as sCodigo,
-                    	dscc.areas_id as iAreaId,
                     	IF(dp.id IS NULL, '".self::TIPO_DIAGNOSTICO_SCC."', '".self::TIPO_DIAGNOSTICO_PERSONALIZADO."') as tipo
                     FROM
                         diagnosticos d
@@ -63,8 +62,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
                 if($oObj->tipo == self::TIPO_DIAGNOSTICO_SCC){
-                	$oDiagnostico->oArea = null;
-	                $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
+                	$aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
                 }else{
                 	$oDiagnostico->sCodigo = $oObj->sCodigo;
 	                $aDiagnosticos[] = Factory::getDiagnosticoPersonalizadoInstance($oDiagnostico);
@@ -113,7 +111,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                     	d.id as iId,
                     	d.descripcion as sDescripcion,
                     	dp.codigo as sCodigo,
-                    	dscc.areas_id as iAreaId,
                     	IF(dp.id IS NULL, '".self::TIPO_DIAGNOSTICO_SCC."', '".self::TIPO_DIAGNOSTICO_PERSONALIZADO."') as tipo
                     FROM
                         diagnosticos d
@@ -146,7 +143,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
                 if($oObj->tipo == self::TIPO_DIAGNOSTICO_SCC){
-	                $oDiagnostico->oArea =  SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);;
+	                //$oDiagnostico->oArea =  SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);
             	    $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
                 }else{
                 	$oDiagnostico->sCodigo = $oObj->sCodigo;
@@ -167,8 +164,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $sSQL = "SELECT
             			SQL_CALC_FOUND_ROWS
                     	d.id as iId,
-                    	d.descripcion as sDescripcion,
-                    	dscc.areas_id as iAreaId
+                    	d.descripcion as sDescripcion                    	
                     FROM
                         diagnosticos d
                     JOIN
@@ -200,8 +196,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             	$oDiagnostico 				= new stdClass();
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
-            	$oDiagnostico->oArea = SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);
-	            $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
+            	$aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
             }
             return $aDiagnosticos;
             
