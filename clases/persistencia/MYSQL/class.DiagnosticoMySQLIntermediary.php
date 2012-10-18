@@ -143,7 +143,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
                 if($oObj->tipo == self::TIPO_DIAGNOSTICO_SCC){
-	                //$oDiagnostico->oArea =  SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);
+	                $oDiagnostico->aEjesTematicos = null;
             	    $aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
                 }else{
                 	$oDiagnostico->sCodigo = $oObj->sCodigo;
@@ -196,6 +196,8 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             	$oDiagnostico 				= new stdClass();
                 $oDiagnostico->iId 			= $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
+                $oDiagnostico->aEjesTematicos = null;
+                
             	$aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
             }
             return $aDiagnosticos;
@@ -313,11 +315,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $sSQL = " update diagnosticos " .
                     " set descripcion =".$db->escape($oDiagnosticoSCC->getDescripcion(),true)." ".
                     " WHERE id = ".$db->escape($oDiagnosticoSCC->getId(),false,MYSQL_TYPE_INT)." ";
-
-			 $db->execSQL($sSQL);
-             $sSQL =" update diagnosticos_scc ".
-                    " set areas_id =".$db->escape($oDiagnosticoSCC->getArea()->getId(),false,MYSQL_TYPE_INT)."  ". 
-					" WHERE id = ".$db->escape($oDiagnosticoSCC->getId(),false,MYSQL_TYPE_INT)." ";
              
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -373,8 +370,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 			$iLastId = $db->insert_id();		
 			$sSQL =" insert into diagnosticos_scc set ".
                     " id =".$db->escape($iLastId,false)." ";
-			if($oDiagnosticoSCC->getArea()){
-              $sSQL.=" ,areas_id =".$db->escape($oDiagnosticoSCC->getArea()->getId(),false,MYSQL_TYPE_INT)." " ;
 			}
 			$sSQL ;
 			$db->execSQL($sSQL);
