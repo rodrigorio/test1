@@ -613,12 +613,7 @@ function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
  */
 function editarPublicacion(iPublicacionId, tipo){
 
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Modificar '+tipo+'"></div>').appendTo('body');
+    var dialog = setWaitingStatusDialog(550, 'Modificar '+tipo);
 
     var url = "";
     switch(tipo){
@@ -630,15 +625,6 @@ function editarPublicacion(iPublicacionId, tipo){
         url+"?publicacionId="+iPublicacionId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             if(tipo == "publicacion"){
                 bindEventsPublicacionForm();
             }else{
@@ -649,81 +635,33 @@ function editarPublicacion(iPublicacionId, tipo){
 }
 
 function editarFoto(iFotoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Foto"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Editar Foto");
     dialog.load(
         "comunidad/publicaciones/galeria-fotos/form?iFotoId="+iFotoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFotoForm();
         }
     );
 }
 
 function editarVideo(iEmbedVideoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Video"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Editar Video");
     dialog.load(
         "comunidad/publicaciones/galeria-videos/form?iEmbedVideoId="+iEmbedVideoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsEditarVideoForm();
         }
     );
 }
 
 function editarArchivo(iArchivoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Editar Archivo");
     dialog.load(
         "comunidad/publicaciones/galeria-archivos/form?iArchivoId="+iArchivoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsArchivoForm();
         }
     );
@@ -1081,26 +1019,11 @@ $(document).ready(function(){
     ////////////////
     
     $("#crearPublicacion").click(function(){
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $('<div id="dialog" title="Crear Publicacion"></div>').appendTo('body');
-
+        var dialog = setWaitingStatusDialog(550, "Crear Publicacion");
         dialog.load(
             "comunidad/publicaciones/form-nueva-publicacion",
             {},
-            function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:550,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
-                
+            function(responseText, textStatus, XMLHttpRequest){                
                 bindEventsPublicacionForm();
             }
         );
@@ -1108,26 +1031,11 @@ $(document).ready(function(){
     });
 
     $("#crearReview").click(function(){
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $('<div id="dialog" title="Crear Review"></div>').appendTo('body');
-
+        var dialog = setWaitingStatusDialog(550, "Crear Review");
         dialog.load(
             "comunidad/publicaciones/form-crear-review",
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:550,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
-
                 bindEventsReviewForm();
             }
         );
