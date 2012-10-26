@@ -225,23 +225,20 @@ function recuperarContrasenia()
 }
 
 function login()
-{
-    var dialog = $("#dialog");
-    if($("#dialog").length){ $("#dialog").remove(); }
-    dialog = $('<div id="dialog" title="Acceder"></div>').appendTo('body'); 
+{   
+    var dialogOpt = {
+        width:550,
+        resizable:false,
+        draggable:false,
+        modal:true,
+        closeOnEscape:true
+    }
 
+    dialog = setWaitingStatusDialog(dialogOpt, "Acceder");
     dialog.load(
         pathUrlBase+"login?popUp=1",
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:true,
-                closeOnEscape:true
-            });
-
             bindEventsFormLogin();
         }
     );
