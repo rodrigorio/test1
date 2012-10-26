@@ -33,11 +33,11 @@ var is_mac = (clientPC.indexOf("mac")!=-1);
 var is_moz = 0;
 
 function verAtributos(obj){
-	for(x in obj){
-		if( typeof(obj[x]) != "function"){
-			alert("Atributo: "+x + " value:" +obj[x]);
-		}
-	}	
+    for(x in obj){
+        if( typeof(obj[x]) != "function"){
+            alert("Atributo: "+x + " value:" +obj[x]);
+        }
+    }
 }
 
 // VALIDATOR //
@@ -145,6 +145,14 @@ function revelarElemento(object){
 }
 function ocultarElemento(object){
     object.addClass("di_no").removeClass("di_bl");
+}
+
+function setWaitingStatusDialog(dialogOpt, titulo){
+    var dialog = $("#dialog");
+    if($("#dialog").length){ $("#dialog").remove(); }
+    dialog = $("<div id='dialog' title='"+titulo+"'><div class='fte3 pa2'>Cargando... <span class='ajax_wait30'></span></div></div>").appendTo('body');
+    dialog.dialog(dialogOpt);
+    return dialog;
 }
 
 /**
