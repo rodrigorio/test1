@@ -401,80 +401,33 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
 }
 
 function editarSoftware(iSoftwareId){    
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Modificar Aplicación"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Modificar Aplicación");
     dialog.load(
         "comunidad/descargas/form-modificar-aplicacion?iSoftwareId="+iSoftwareId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsSoftwareForm();
         }
     );
 }
 
 function editarFoto(iFotoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Foto"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Editar Foto");
     dialog.load(
         "comunidad/descargas/galeria-fotos/form?iFotoId="+iFotoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFotoForm();
         }
     );
 }
 
 function editarArchivo(iArchivoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Editar Archivo");
     dialog.load(
         "comunidad/descargas/galeria-archivos/form?iArchivoId="+iArchivoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsArchivoForm();
         }
     );
@@ -795,26 +748,11 @@ $(document).ready(function(){
     ////////////////
     
     $("#crearSoftware").click(function(){
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $('<div id="dialog" title="Crear Aplicación"></div>').appendTo('body');
-
+        var dialog = setWaitingStatusDialog(550, "Crear Aplicación");
         dialog.load(
             "comunidad/descargas/form-nueva-aplicacion",
             {},
-            function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:550,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
-                
+            function(responseText, textStatus, XMLHttpRequest){                
                 bindEventsSoftwareForm();
             }
         );
