@@ -1,26 +1,11 @@
 //funcion para el dialog si paso a ser integrante activo
-function showDialogIntegranteActivo(){
-
-    var dialog = $("#dialog");
-    if($("#dialog").length){
-        dialog.attr("title", "Cambio de perfil");
-    }else{
-        dialog = $('<div id="dialog" title="Cambio de perfil"></div>').appendTo('body');
-    }
-    
+function showDialogIntegranteActivo()
+{
+    var dialog = setWaitingStatusDialog(650, "Cambio de Perfil");    
     dialog.load(
         "comunidad/datos-personales-procesar",
         {seccion:'dialogIntegranteActivo'},
-        function(data){
-            dialog.dialog({
-                position:['center',5],
-                width:650,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-        }
+        function(data){}
     );
 }
 
@@ -692,63 +677,37 @@ $(document).ready(function(){
     }
 });
 
-function showDialogConfirmCerrarCuenta(){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $("<div id='dialog' title='Cerrar Cuenta'></div>").appendTo('body');
-    
-    dialog.load(
-        "comunidad/cerrar-cuenta",
-        {confirmar:"1"},
-        function(){
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true,
-                buttons:{
-                    "Confirmar": function(){
-                        dialog.hide("slow");
-                        dialog.remove();
-                        dialog = $("<div id='dialog' title='Cerrar Cuenta'></div>").appendTo('body');
-                        $.ajax({
-                            type:"post",
-                            dataType:'jsonp',
-                            url:"comunidad/cerrar-cuenta",
-                            success:function(data){
-                                dialog.html(data.html);
-                                dialog.dialog({
-                                    position:['center', 'center'],
-                                    width:500,
-                                    resizable:false,
-                                    draggable:false,
-                                    modal:false,
-                                    closeOnEscape:true,
-                                    buttons:{
-                                        "Aceptar": function() {
-                                            $(this).dialog("close");
-                                            if(data.success != undefined && data.success == 1){
-                                                //tendria que ser la url de logout para eliminar el usuario en sesion
-                                                location = data.redirect;
-                                            }
-                                        }
-                                    }
-                                });
-                            }
+function showDialogConfirmCerrarCuenta()
+{    
+    var buttons = {
+        "Confirmar": function(){
+            var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+            dialog = setWaitingStatusDialog(500, "Cerrar Cuenta", buttonAceptar);
+            $.ajax({
+                type:"post",
+                dataType:'jsonp',
+                url:"comunidad/cerrar-cuenta",
+                success:function(data){
+                    dialog.html(data.html);
+                    if(data.success != undefined && data.success == 1){
+                        $(".ui-dialog-buttonset .ui-button").click(function(){
+                            //tendria que ser la url de logout para eliminar el usuario en sesion
+                            location = data.redirect;
                         });
-                    },
-                    "Cancelar": function() {
-                        $(this).dialog( "close" );
                     }
                 }
             });
+        },
+        "Cancelar": function() {
+            $(this).dialog( "close" );
         }
+    }
+
+    var dialog = setWaitingStatusDialog(500, "Cerrar Cuenta", buttons);    
+    dialog.load(
+        "comunidad/cerrar-cuenta",
+        {confirmar:"1"},
+        function(){}
     );
 }
 

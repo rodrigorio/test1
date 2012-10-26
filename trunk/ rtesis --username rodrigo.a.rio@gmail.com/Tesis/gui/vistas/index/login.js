@@ -62,9 +62,7 @@ var optionsAjaxFormLogin = {
         }
     },
 
-    success:function(data){
-        //quito el estado en espera del contenedor
-        setWaitingStatus('formLogin', false);
+    success:function(data){        
         if(data.success == undefined || data.success == 0){
             //si se produjo error muestro el mensaje
             var mensaje = data.mensaje;
@@ -77,6 +75,7 @@ var optionsAjaxFormLogin = {
             //si se logueo de forma satisfactoria redirecciono
             location = data.redirect;
         }
+        setWaitingStatus('formLogin', false);
     }
 };
 
@@ -202,23 +201,11 @@ function bindEventsRecuperarContrasenia()
 
 function recuperarContrasenia()
 {
-    var dialog = $("#dialog");
-    if($("#dialog").length){ $("#dialog").remove(); }
-    dialog = $('<div id="dialog" title="Recuperar Contraseña"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(550, "Recuperar Contraseña");
     dialog.load(
         "recuperar-contrasenia",
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsRecuperarContrasenia();
         }
     );
@@ -226,15 +213,7 @@ function recuperarContrasenia()
 
 function login()
 {   
-    var dialogOpt = {
-        width:550,
-        resizable:false,
-        draggable:false,
-        modal:true,
-        closeOnEscape:true
-    }
-
-    dialog = setWaitingStatusDialog(dialogOpt, "Acceder");
+    var dialog = setWaitingStatusDialog(550, "Acceder");
     dialog.load(
         pathUrlBase+"login?popUp=1",
         {},
