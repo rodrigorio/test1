@@ -372,28 +372,12 @@ function bindEventsPersonaForm(){
 function bindEventsPersonaVerFicha()
 {
     $("#modificarPersona").click(function(){
-
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
-
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $('<div id="dialog" title="Modificar Persona"></div>').appendTo('body');
-
+        var dialog = setWaitingStatusDialog(650, "Modificar Persona");
         dialog.load(
             "seguimientos/modificar-persona?popUp=1&personaId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:650,
-                    resizable:false,
-                    draggable:true,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsPersonaForm();
                 $("a[rel^='prettyPhoto']").prettyPhoto();
             }

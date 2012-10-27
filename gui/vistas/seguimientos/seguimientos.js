@@ -533,82 +533,37 @@ function bindEventsEditarVideoForm(){
     $("#formEditarVideo").ajaxForm(optionsAjaxFormEditarVideo);
 }
 
-function editarFoto(iFotoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Foto"></div>').appendTo('body');
-
+function editarFoto(iFotoId)
+{    
+    var dialog = setWaitingStatusDialog(550, "Editar Foto");
     dialog.load(
         "seguimientos/form-editar-adjunto?editarFoto=1&iFotoId="+iFotoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFotoForm();
         }
     );
 }
 
-function editarVideo(iEmbedVideoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Video"></div>').appendTo('body');
-
+function editarVideo(iEmbedVideoId)
+{
+    var dialog = setWaitingStatusDialog(550, "Editar Video");
     dialog.load(
         "seguimientos/form-editar-adjunto?editarVideo=1&iEmbedVideoId="+iEmbedVideoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsEditarVideoForm();
         }
     );
 }
 
-function editarArchivo(iArchivoId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Editar Archivo"></div>').appendTo('body');
-
+function editarArchivo(iArchivoId)
+{
+    var dialog = setWaitingStatusDialog(550, "Editar Archivo");
     dialog.load(
         "seguimientos/form-editar-adjunto?editarArchivo=1&iArchivoId="+iArchivoId,
         {},
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:550,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsArchivoForm();
         }
     );
@@ -862,25 +817,11 @@ $(document).ready(function(){
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
         $.getScript(pathUrlBase+"utilidades/jquery/ajaxupload.3.6.js");
 
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $('<div id="dialog" title="Agregar Persona"></div>').appendTo('body');
-
+        var dialog = setWaitingStatusDialog(650, "Agregar Persona");
         dialog.load(
             "seguimientos/agregar-persona?popUp=1",
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:650,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsPersonaForm(); //la funcion esta en personas.js
                 $("a[rel^='prettyPhoto']").prettyPhoto();
             }
@@ -892,28 +833,13 @@ $(document).ready(function(){
 
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
 
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
-
         setWaitingStatus('fichaPersonaMenu', true, "16");
-
+        var dialog = setWaitingStatusDialog(450, $(this).html());
         dialog.load(
             "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 setWaitingStatus('fichaPersonaMenu', false, "16");
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:450,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsPersonaVerFicha(); //la funcion esta en personas.js
                 $("a[rel^='prettyPhoto']").prettyPhoto();
             }
@@ -921,27 +847,13 @@ $(document).ready(function(){
         return false;
     });
 
-    $(".modificarSeguimiento").live('click',function(){
-
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='Edicion Basica'></div>").appendTo('body');
-
+    $(".modificarSeguimiento").live('click',function()
+    {
+        var dialog = setWaitingStatusDialog(450, "Edicion Básica");
         dialog.load(
             "seguimientos/form-modificar-seguimiento?iSeguimientoId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:450,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsFormModificarSeguimiento();
             }
         );
@@ -965,26 +877,11 @@ $(document).ready(function(){
 
         var iSeguimientoId = $("#iItemIdForm").val();
 
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='Agregar Foto'></div>").appendTo('body');
-               
+        var dialog = setWaitingStatusDialog(450, "Agregar Foto");
         dialog.load(
             "seguimientos/form-adjuntar-foto?iSeguimientoId="+iSeguimientoId,
             {},
             function(responseText, textStatus, XMLHttpRequest){                
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:450,
-                    resizable:false,
-                    draggable:true,
-                    modal:false,
-                    closeOnEscape:true
-                });
-
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarFoto(iSeguimientoId);
                 }                          
@@ -998,26 +895,11 @@ $(document).ready(function(){
 
         var iSeguimientoId = $("#iItemIdForm").val();
         
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='Agregar Video'></div>").appendTo('body');
-
+        var dialog = setWaitingStatusDialog(450, "Agregar Video");
         dialog.load(
             "seguimientos/form-adjuntar-video?iSeguimientoId="+iSeguimientoId,
             {},
-            function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:450,
-                    resizable:false,
-                    draggable:true,
-                    modal:false,
-                    closeOnEscape:true
-                });
-                
+            function(responseText, textStatus, XMLHttpRequest){                
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarVideo(iSeguimientoId);
                 }
@@ -1029,27 +911,12 @@ $(document).ready(function(){
     $(".agregarArchivoSeguimiento").live('click',function(){
 
         var iSeguimientoId = $("#iItemIdForm").val();
-
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='Agregar Archivo'></div>").appendTo('body');
-
+        
+        var dialog = setWaitingStatusDialog(450, "Agregar Archivo");
         dialog.load(
             "seguimientos/form-adjuntar-archivo?iSeguimientoId="+iSeguimientoId,
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:450,
-                    resizable:false,
-                    draggable:true,
-                    modal:false,
-                    closeOnEscape:true
-                });
-                
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarArchivo(iSeguimientoId);
                 }
