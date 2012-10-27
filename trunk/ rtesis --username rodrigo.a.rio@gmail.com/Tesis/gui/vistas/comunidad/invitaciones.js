@@ -82,29 +82,14 @@ function bindEventsFormEnviarInvitacion()
     $("textarea.maxlength").maxlength();
 }
 
-function enviarInvitacion(){
+function enviarInvitacion()
+{
+    var dialog = setWaitingStatusDialog(500, 'Enviar invitación');   
     $.ajax({
         type:"post",
         url:"comunidad/nueva-invitacion",
         success:function(data){
-
-            var dialog = $("#dialog");
-            if($("#dialog").length){
-                dialog.attr("title", "Enviar invitación");
-            }else{
-                dialog = $('<div id="dialog" title="Enviar invitación"></div>').appendTo('body');
-            }
             dialog.html(data);
-
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormEnviarInvitacion();
         }
     });

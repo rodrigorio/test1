@@ -666,7 +666,9 @@ function borrarArchivo(iArchivoId){
     }
 }
 
-function reportarSoftware(iSoftwareId){
+function reportarSoftware(iSoftwareId)
+{
+    var dialog = setWaitingStatusDialog(500, 'Denunciar Aplicación');
     $.ajax({
         type:"post",
         url:"comunidad/denunciar-aplicacion",
@@ -674,21 +676,7 @@ function reportarSoftware(iSoftwareId){
             iSoftwareId:iSoftwareId
         },
         success:function(data){
-
-            var dialog = $("#dialog");
-            if(dialog.length){ dialog.remove(); }
-            dialog = $('<div id="dialog" title="Denunciar Aplicación"></div>').appendTo('body');
             dialog.html(data);
-
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormDenunciarAplicacion();
         }
     });
