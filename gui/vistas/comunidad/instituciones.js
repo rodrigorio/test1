@@ -384,7 +384,9 @@ function borrarInstitucion(iInstitucionId){
     }
 }
 
-function solicitarInstitucion(iInstitucionId){
+function solicitarInstitucion(iInstitucionId)
+{
+    var dialog = setWaitingStatusDialog(500, 'Solicitar Institución');
     $.ajax({
         type:"post",
         url:"comunidad/instituciones/procesar",
@@ -393,30 +395,15 @@ function solicitarInstitucion(iInstitucionId){
             solicitarInstitucionForm:"1"
         },
         success:function(data){
-
-            var dialog = $("#dialog");
-            if($("#dialog").length){
-                dialog.attr("title", "Solicitar Institución");
-            }else{
-                dialog = $('<div id="dialog" title="Solicitar Institución"></div>').appendTo('body');
-            }
             dialog.html(data);
-
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormSolicitarInstitucion();           
         }
     });
 }
 
-function reportarInstitucion(iInstitucionId){
+function reportarInstitucion(iInstitucionId)
+{
+    var dialog = setWaitingStatusDialog(500, 'Denunciar Institución');
     $.ajax({
         type:"post",
         url:"comunidad/denunciar-institucion",
@@ -424,21 +411,7 @@ function reportarInstitucion(iInstitucionId){
             iInstitucionId:iInstitucionId
         },
         success:function(data){
-
-            var dialog = $("#dialog");
-            if(dialog.length){ dialog.remove(); }
-            dialog = $('<div id="dialog" title="Denunciar Institución"></div>').appendTo('body');
             dialog.html(data);
-
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormDenunciarInstitucion();
         }
     });

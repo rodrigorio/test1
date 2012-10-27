@@ -925,7 +925,9 @@ function borrarArchivo(iArchivoId){
     }
 }
 
-function reportarPublicacion(iPublicacionId, sTipoItemForm){
+function reportarPublicacion(iPublicacionId, sTipoItemForm)
+{
+    var dialog = setWaitingStatusDialog(500, 'Denunciar Publicación');
     $.ajax({
         type:"post",
         url:"comunidad/denunciar-publicacion",
@@ -934,21 +936,7 @@ function reportarPublicacion(iPublicacionId, sTipoItemForm){
             objType: sTipoItemForm
         },
         success:function(data){
-
-            var dialog = $("#dialog");
-            if(dialog.length){ dialog.remove(); }
-            dialog = $('<div id="dialog" title="Denunciar Publicación"></div>').appendTo('body');
             dialog.html(data);
-
-            dialog.dialog({
-                position:['center', 'center'],
-                width:500,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormDenunciarPublicacion();
         }
     });
