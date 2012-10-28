@@ -14,6 +14,28 @@ function ocultarElemento(object){
     object.addClass("di_no").removeClass("di_bl");
 }
 
+function setWaitingStatusDialog(width, titulo, buttons){
+
+    buttons = buttons || undefined;
+
+    var dialog = $("#dialog");
+    if($("#dialog").length){ dialog.remove(); }
+    dialog = $("<div id='dialog' title='"+titulo+"'><div class='fte3 pa2'>Cargando... <span class='ajax_wait30'></span></div></div>").appendTo('body');
+
+    dialog.dialog({
+        show:{effect:'fade', duration:1000},
+        hide:{effect:'fade', duration:500},
+        position:['center', 80],
+        width:width,
+        resizable:false,
+        draggable:false,
+        modal:false,
+        closeOnEscape:true,
+        buttons:buttons
+    });
+    return dialog;
+}
+
 /**
  * Para setear un contenedor en estado de espera a un request ajax
  * Se pasa el id del contenedor y el estado: true->en espera, false->se finalizo el envio/devolucion

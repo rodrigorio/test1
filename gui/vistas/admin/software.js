@@ -257,44 +257,22 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
     });
 }
 
-function editarSoftware(iSoftwareId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Modificar Software"></div>').appendTo('body');
-
+function editarSoftware(iSoftwareId)
+{
+    var dialog = setWaitingStatusDialog(800, "Modificar Software");
     dialog.load(
         "admin/software-form",
         {
             iSoftwareId:iSoftwareId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsSoftwareForm();
         }
     );
 }
 
 function ampliarSoftware(iSoftwareId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Ficha Software ID: '+iSoftwareId+'"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(700, "Ficha Software ID: "+iSoftwareId);
     dialog.load(
         "admin/software-procesar",
         {
@@ -302,15 +280,6 @@ function ampliarSoftware(iSoftwareId){
             iSoftwareId:iSoftwareId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:700,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsAdmin();
             $("a[rel^='prettyPhoto']").prettyPhoto();
         }
@@ -318,7 +287,6 @@ function ampliarSoftware(iSoftwareId){
 }
 
 function editarFoto(iFotoId){
-
     var dialog = $("#dialog2");
     if ($("#dialog2").length != 0){
         dialog.hide("slow");
@@ -731,27 +699,13 @@ $(document).ready(function(){
         return false;
     });
 
-    $(".verFichaUsuario").live('click',function(){
-
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
-
+    $(".verFichaUsuario").live('click',function()
+    {
+        var dialog = setWaitingStatusDialog(650, $(this).html());
         dialog.load(
             "admin/usuarios-procesar?ver=1&iUsuarioId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:650,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsAdmin();
                 $("a[rel^='prettyPhoto']").prettyPhoto();
             }
