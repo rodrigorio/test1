@@ -370,7 +370,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 			$iLastId = $db->insert_id();		
 			$sSQL =" insert into diagnosticos_scc set ".
                     " id =".$db->escape($iLastId,false)." ";
-			}
+			
 			$sSQL ;
 			$db->execSQL($sSQL);
 			$db->commit();

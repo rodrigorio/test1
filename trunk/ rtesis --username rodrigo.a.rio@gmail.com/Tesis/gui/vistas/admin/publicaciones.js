@@ -438,15 +438,9 @@ function cambiarEstadoPublicacion(iPublicacionId, valor, tipo){
 /**
  * Tipo es Publicacion/Review
  */
-function editarPublicacion(iPublicacionId, tipo){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Modificar '+tipo+'"></div>').appendTo('body');
-
+function editarPublicacion(iPublicacionId, tipo)
+{
+    var dialog = setWaitingStatusDialog(700, "Modificar "+tipo);
     dialog.load(
         "admin/publicaciones-form",
         {
@@ -454,15 +448,6 @@ function editarPublicacion(iPublicacionId, tipo){
             objType:tipo
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:700,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             if(tipo == "publicacion"){
                 bindEventsPublicacionForm();
             }else{
@@ -475,15 +460,9 @@ function editarPublicacion(iPublicacionId, tipo){
 /**
  * Tipo es Publicacion/Review
  */
-function ampliarPublicacion(iPublicacionId, tipo){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Ficha '+tipo+' ID: '+iPublicacionId+'"></div>').appendTo('body');
-
+function ampliarPublicacion(iPublicacionId, tipo)
+{
+    var dialog = setWaitingStatusDialog(700, "Ficha "+tipo+" ID: "+iPublicacionId);
     dialog.load(
         "admin/publicaciones-procesar",
         {
@@ -492,15 +471,6 @@ function ampliarPublicacion(iPublicacionId, tipo){
             objType:tipo
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:700,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsAdmin();
             $("a[rel^='prettyPhoto']").prettyPhoto();
         }

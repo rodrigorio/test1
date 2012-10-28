@@ -1017,27 +1017,13 @@ $(document).ready(function(){
         return false;
     });
     
-    $(".verFichaUsuario").live('click',function(){
-        
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
-
+    $(".verFichaUsuario").live('click',function()
+    {
+        var dialog = setWaitingStatusDialog(650, $(this).html());
         dialog.load(
             "admin/usuarios-procesar?ver=1&iUsuarioId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:650,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsAdmin();
                 $("a[rel^='prettyPhoto']").prettyPhoto();
             }

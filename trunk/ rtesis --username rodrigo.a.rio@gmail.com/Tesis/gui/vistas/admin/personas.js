@@ -124,15 +124,9 @@ function borrarDiscapacitado(personaId){
     }
 }
 
-function ampliarPersona(iPersonaId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Ficha Persona ID: '+iPersonaId+'"></div>').appendTo('body');
-
+function ampliarPersona(iPersonaId)
+{
+    var dialog = setWaitingStatusDialog(600, "Ficha Persona ID: "+iPersonaId);
     dialog.load(
         "admin/personas-procesar",
         {
@@ -140,30 +134,15 @@ function ampliarPersona(iPersonaId){
             iPersonaId:iPersonaId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:600,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsAdmin();
             $("a[rel^='prettyPhoto']").prettyPhoto();
         }
     );
 }
 
-function ampliarInstitucion(iInstitucionId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Ficha Institucion ID: '+iInstitucionId+'"></div>').appendTo('body');
-
+function ampliarInstitucion(iInstitucionId)
+{
+    var dialog = setWaitingStatusDialog(700, "Ficha Institucion ID: "+iInstitucionId);
     dialog.load(
         "admin/instituciones-procesar",
         {
@@ -171,15 +150,6 @@ function ampliarInstitucion(iInstitucionId){
             iInstitucionId:iInstitucionId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:700,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsAdmin();
             $("a[rel^='prettyPhoto']").prettyPhoto();
         }

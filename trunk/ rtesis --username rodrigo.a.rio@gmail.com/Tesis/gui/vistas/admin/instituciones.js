@@ -164,44 +164,23 @@ function bindEventsInstitucionForm(){
     }
 }
 
-function editarInstitucion(iInstitucionId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Modificar Institución"></div>').appendTo('body');
-
+function editarInstitucion(iInstitucionId)
+{
+    var dialog = setWaitingStatusDialog(800, "Modificar Institución");
     dialog.load(
         "admin/instituciones-form",
         {
             iInstitucionId:iInstitucionId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsInstitucionForm();
         }
     );
 }
 
-function ampliarInstitucion(iInstitucionId){
-
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Ficha Institucion ID: '+iInstitucionId+'"></div>').appendTo('body');
-
+function ampliarInstitucion(iInstitucionId)
+{
+    var dialog = setWaitingStatusDialog(700, "Ficha Institucion ID: "+iInstitucionId);
     dialog.load(
         "admin/instituciones-procesar",
         {
@@ -209,18 +188,9 @@ function ampliarInstitucion(iInstitucionId){
             iInstitucionId:iInstitucionId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:700,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsAdmin();
             $("a[rel^='prettyPhoto']").prettyPhoto();
-
+            
             if($("#mapaInstitucion").length){
                 mapaSimple("mapaInstitucion");
             }
@@ -537,26 +507,11 @@ $(document).ready(function(){
     });
 
     $(".verFichaUsuario").live('click',function(){
-
-        var dialog = $("#dialog");
-        if ($("#dialog").length != 0){
-            dialog.hide("slow");
-            dialog.remove();
-        }
-        dialog = $("<div id='dialog' title='"+$(this).html()+"'></div>").appendTo('body');
-
+        var dialog = setWaitingStatusDialog(650, $(this).html());
         dialog.load(
             "admin/usuarios-procesar?ver=1&iUsuarioId="+$(this).attr('rel'),
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                dialog.dialog({
-                    position:['center', '20'],
-                    width:650,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true
-                });
                 bindEventsAdmin();
                 $("a[rel^='prettyPhoto']").prettyPhoto();
             }

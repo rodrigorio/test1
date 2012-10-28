@@ -41,28 +41,13 @@ function eliminarParametro(iParametroId){
 
 function crearParametro()
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "FORMULARIO PARAMETRO");
     dialog.load(
         "admin/parametros-form",
         {
             crearParametro:"1"
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametro();
         }
     );
@@ -70,13 +55,7 @@ function crearParametro()
 
 function editarParametro(iParametroId)
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "FORMULARIO PARAMETRO");
     dialog.load(
         "admin/parametros-form",
         {
@@ -84,15 +63,6 @@ function editarParametro(iParametroId)
             iParametroId:iParametroId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametro();
         }
     );    
@@ -484,28 +454,13 @@ function bindEventsFormModificarParametroUsuario()
 
 function asociarParametroSistema()
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO SISTEMA"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "FORMULARIO PARAMETRO SISTEMA");
     dialog.load(
         "admin/parametros-form",
         {
             asociarParametroSistema:"1"
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametroSistema();
         }
     );
@@ -513,28 +468,13 @@ function asociarParametroSistema()
 
 function asociarParametroControlador()
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO CONTROLADOR"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "FORMULARIO PARAMETRO CONTROLADOR");
     dialog.load(
         "admin/parametros-form",
         {
             asociarParametroControlador:"1"
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametroControlador();
         }
     );
@@ -542,28 +482,13 @@ function asociarParametroControlador()
 
 function asociarParametroUsuarios()
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO USUARIOS"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "FORMULARIO PARAMETRO USUARIOS");
     dialog.load(
         "admin/parametros-form",
         {
             asociarParametroUsuarios:"1"
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametroUsuarios();
         }
     );
@@ -571,13 +496,7 @@ function asociarParametroUsuarios()
 
 function modificarValorParametroSistema(iParametroId)
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO SISTEMA"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "MODIFICAR VALOR PARAMETRO SISTEMA");
     dialog.load(
         "admin/parametros-form",
         {
@@ -585,15 +504,6 @@ function modificarValorParametroSistema(iParametroId)
             iParametroId:iParametroId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametroSistema();
         }
     );
@@ -601,13 +511,7 @@ function modificarValorParametroSistema(iParametroId)
 
 function modificarValorParametroControlador(iParametroId, iGrupoId)
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="FORMULARIO PARAMETRO CONTROLADOR"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "MODIFICAR VALOR PARAMETRO CONTROLADOR");
     dialog.load(
         "admin/parametros-form",
         {
@@ -616,15 +520,6 @@ function modificarValorParametroControlador(iParametroId, iGrupoId)
             iControladorId:iGrupoId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormParametroControlador();
         }
     );
@@ -632,13 +527,7 @@ function modificarValorParametroControlador(iParametroId, iGrupoId)
 
 function modificarValorParametroUsuario(iParametroId, iGrupoId)
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="MODIFICAR VALOR PARAMETRO USUARIO"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "MODIFICAR VALOR PARAMETRO USUARIO");
     dialog.load(
         "admin/parametros-form",
         {
@@ -647,15 +536,6 @@ function modificarValorParametroUsuario(iParametroId, iGrupoId)
             iUsuarioId:iGrupoId
         },
         function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-
             bindEventsFormModificarParametroUsuario();
         }
     );
@@ -787,28 +667,13 @@ function eliminarParametroUsuarios(iParametroId){
 
 function listarParametrosUsuarios()
 {
-    var dialog = $("#dialog");
-    if ($("#dialog").length != 0){
-        dialog.hide("slow");
-        dialog.remove();
-    }
-    dialog = $('<div id="dialog" title="Parámetros asociados a los usuarios del sistema"></div>').appendTo('body');
-
+    var dialog = setWaitingStatusDialog(800, "Parámetros asociados a los usuarios del sistema");
     dialog.load(
         "admin/parametros-procesar",
         {
             listarParametrosAsociadosUsuarios:"1"
         },
-        function(responseText, textStatus, XMLHttpRequest){
-            dialog.dialog({
-                position:['center', '20'],
-                width:800,
-                resizable:false,
-                draggable:true,
-                modal:false,
-                closeOnEscape:true
-            });
-        }
+        function(responseText, textStatus, XMLHttpRequest){}
     );
 }
 
