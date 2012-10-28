@@ -1,3 +1,2 @@
 <?php
-abstract class EjeTematicoIntermediary extends Intermediary{
-}
+abstract class EjeTematicoIntermediary extends Intermediary{}

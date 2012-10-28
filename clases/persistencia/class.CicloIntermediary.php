@@ -1,4 +1,2 @@
 <?php
-abstract class CicloIntermediary extends Intermediary{
-	
-}
+abstract class CicloIntermediary extends Intermediary{}

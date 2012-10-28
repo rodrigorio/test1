@@ -1,9 +1,5 @@
 <?php
-/**
- * Description of class AreaMySQLIntermediary
- *
- * @author Andres
- */
+
 class AreaMySQLIntermediary extends AreaIntermediary
 {
 	private static $instance = null;
