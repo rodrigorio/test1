@@ -1,41 +1,33 @@
 <?php
-/**
- * Description of class CicloMySQLIntermediary
- *
- * @author Andres
- */
+
 class CicloMySQLIntermediary extends CicloIntermediary
 {
     private static $instance = null;
 
+    protected function __construct( $conn) {
+        parent::__construct($conn);
+    }
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
-
-
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return MySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (null === self::$instance){
+    public static function &getInstance(IMYSQL $conn){
+        if (null === self::$instance){
             self::$instance = new self($conn);
         }
         return self::$instance;
-	}
-	public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    }
+
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        c.id as iId, c.descripcion as sDescripcion, c.niveles_id as iNivelesId
+                        c.id as iId, c.descripcion as sDescripcion, c.niveles_id as iNivelesId, 
+                        n.descripcion as sDescripcionNivel
                     FROM
                        ciclos c 
                     JOIN niveles n ON c.niveles_id = n.id ";
+
                     if(!empty($filtro)){     
                     	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
                     }
@@ -47,10 +39,15 @@ class CicloMySQLIntermediary extends CicloIntermediary
 
             $aCiclos = array();
             while($oObj = $db->oNextRecord()){
-            	$oCiclo 		= new stdClass();
-            	$oCiclo->iId 	= $oObj->iId;
+            	$oCiclo	= new stdClass();
+            	$oCiclo->iId = $oObj->iId;
             	$oCiclo->sDescripcion = $oObj->sDescripcion;
-            	$oCiclo->oNivel= SeguimientosController::getInstance()->getNivelById($oObj->iNivelesId);
+
+                $oNivel = new stdClass();
+            	$oNivel->iId = $oObj->iNivelesId;
+            	$oNivel->sDescripcion = $oObj->sDescripcionNivel;
+            	$oCiclo->oNivel = Factory::getNivelInstance($oNivel);
+                
             	$aCiclos[] = Factory::getCicloInstance($oCiclo);
             }
 
@@ -59,9 +56,10 @@ class CicloMySQLIntermediary extends CicloIntermediary
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-	}
-	public  function insertar($oCiclo)
-   {
+    }
+
+    public  function insertar($oCiclo)
+    {
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into ciclos ".

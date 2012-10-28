@@ -1,9 +1,5 @@
 <?php
-/**
- * Description of class EjeTematicoMySQLIntermediary
- *
- * @author Andres
- */
+
 class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
 {
 	private static $instance = null;

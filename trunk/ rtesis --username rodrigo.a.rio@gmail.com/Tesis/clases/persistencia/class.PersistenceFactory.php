@@ -160,17 +160,22 @@ class PersistenceFactory {
             return (NivelMySQLIntermediary::getInstance($conn));
         }
     }
-      public static function getAreaIntermediary(IMYSQL $conn)
+    public static function getAreaIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return (AreaMySQLIntermediary::getInstance($conn));
         }
-    }
-    
+    }    
     public static function getCicloIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return (CicloMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getEjeTematicoIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(EjeTematicoMySQLIntermediary::getInstance($conn));
         }
     }
     public static function getObjetivoIntermediary(IMYSQL $conn)

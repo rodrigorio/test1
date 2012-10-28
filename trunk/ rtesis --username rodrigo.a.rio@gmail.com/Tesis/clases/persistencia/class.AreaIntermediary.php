@@ -1,4 +1,2 @@
 <?php
-abstract class AreaIntermediary extends Intermediary{
-	
-}
+abstract class AreaIntermediary extends Intermediary{}
