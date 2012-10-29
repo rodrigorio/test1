@@ -28,9 +28,9 @@ class CicloMySQLIntermediary extends CicloIntermediary
                        ciclos c 
                     JOIN niveles n ON c.niveles_id = n.id ";
 
-                    if(!empty($filtro)){     
-                    	$sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
-                    }
+            if(!empty($filtro)){
+                $sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
+            }
 
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -58,82 +58,85 @@ class CicloMySQLIntermediary extends CicloIntermediary
         }
     }
 
-    public  function insertar($oCiclo)
+    public function insertar($oCiclo)
     {
-		try{
-			$db = $this->conn;
-			$sSQL =	" insert into ciclos ".
-                    " set descripcion =".$db->escape($oCiclo->getDescripcion(),true).", " .
-                    " niveles_id =".$db->escape($oCiclo->getNivel()->getId(),false,MYSQL_TYPE_INT)." ";
+        try{            
+            $db = $this->conn;
+            $sSQL = " insert into ciclos ".
+                    " set descripcion = ".$this->escStr($oCiclo->getDescripcion()).", ".
+                    " niveles_id = ".$this->escInt($oCiclo->getNivel()->getId())." ";
 			 
-			 $db->execSQL($sSQL);
-			 $db->commit();
+            $db->execSQL($sSQL);
 
+            $iLastId = $db->insert_id();
+            $oCiclo->setId($iLastId);
+
+            $db->commit();
              
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
     
-	public  function actualizar($oCiclo)
-    {
-		try{
-			$db = $this->conn;
-		if($oCiclo->getNivel()!= null){
-			$nivelId = ($oCiclo->getNivel()->getId());
-			}else {
-				$nivelId = null;
-			}
-        
-			$sSQL =	" update ciclos ".
-                    " set descripcion =".$db->escape($oCiclo->getDescripcion(),true).", " .
-                    " niveles_id =".escape($nivelId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oCiclo->getId(),false,MYSQL_TYPE_INT)." " ;			 
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-             
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-    public function guardar($oCiclo)
+    public function actualizar($oCiclo)
     {
         try{
-			if($oCiclo->getId() != null){
+            $db = $this->conn;
+        
+            $sSQL = " update ciclos ".
+                    " set descripcion = ".$this->escStr($oCiclo->getDescripcion()).", ".
+                    " niveles_id = ".$this->escInt($oCiclo->getNivel()->getId())." ".
+                    " where id = ".$this->escInt($oCiclo->getId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function guardar($oCiclo)
+    {
+        if(null === $oCiclo->getNivel()){
+            throw new Exception("El ciclo ".$oCiclo->getDescripcion()." no tiene nivel", 0);
+        }
+        
+        try{
+            if($oCiclo->getId() !== null){
             	return $this->actualizar($oCiclo);
             }else{
-				return $this->insertar($oCiclo);
+                return $this->insertar($oCiclo);
             }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
-	public function borrar($oCiclo) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from ciclos where id=".$db->escape($oCiclo->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
 
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+    public function borrar($oCiclo)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from ciclos where id = ".$this->escInt($oCiclo->getId()));
+            $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 	
-	public function actualizarCampoArray($objects, $cambios){
-		
-	}
+    public function actualizarCampoArray($objects, $cambios){}
  	
-	public function existe($filtro){
+    public function existe($filtro)
+    {
     	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
-                    FROM
+                     FROM
                         ciclos c 
-					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                     WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
 
@@ -142,10 +145,10 @@ class CicloMySQLIntermediary extends CicloIntermediary
             if(empty($foundRows)){ 
             	return false; 
             }
+
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false; 
         }
     }
 }
