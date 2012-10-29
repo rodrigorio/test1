@@ -123,7 +123,7 @@ class NivelMySQLIntermediary extends NivelIntermediary
                         1 as existe
                     FROM
                         niveles n 
-                    WHERE ".$this->crearCondicionSimple($filtro,"",false);
+                    WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
 
