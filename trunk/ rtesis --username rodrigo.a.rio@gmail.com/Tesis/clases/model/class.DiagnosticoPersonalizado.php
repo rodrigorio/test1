@@ -18,6 +18,8 @@ class DiagnosticoPersonalizado extends DiagnosticoAbstract
         }
     }
 
+    public function isDiagnosticoPersonalizado(){ return true; }
+
     /**
      * @param string $sCodigo
      */
