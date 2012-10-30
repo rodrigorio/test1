@@ -6,7 +6,7 @@ class DiagnosticoSCC extends DiagnosticoAbstract
      * Ejes Tematicos asociados al diagnostico
      * Instancias de objetos EjeTematico
      */
-    private $aEjesTematicos;
+    private $aEjesTematicos = null;
    
     public function __construct(stdClass $oParams = null)
     {
@@ -27,9 +27,6 @@ class DiagnosticoSCC extends DiagnosticoAbstract
 	
     public function getEjesTematicos()
     {
-    	if($this->aEjesTematicos === null){
-            $this->aEjesTematicos = SeguimientoController::getInstance()->getEjes($this->iId);
-    	}
     	return $this->aEjesTematicos;
     }
 
