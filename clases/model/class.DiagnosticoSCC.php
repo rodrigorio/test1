@@ -22,6 +22,8 @@ class DiagnosticoSCC extends DiagnosticoAbstract
             }
         }
     }
+
+    public function isDiagnosticoSCC(){ return true; }
 	
     public function getEjesTematicos()
     {

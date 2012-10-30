@@ -43,6 +43,7 @@ abstract class SeguimientoAbstract
      * Instancia de clase Archivo
      */
     protected $oAntecedentes;
+
     protected $oDiagnostico;
     
     public function __construct(){}

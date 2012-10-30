@@ -1,12 +1,13 @@
 <?php
 class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 {
- 	const TIPO_DIAGNOSTICO_SCC = "DiagnosticoSCC";
+    const TIPO_DIAGNOSTICO_SCC = "DiagnosticoSCC";
     const TIPO_DIAGNOSTICO_PERSONALIZADO = "DiagnosticoPersonalizado";
+
     private static $instance = null;
 
-    protected function __construct( $conn) {
-            parent::__construct($conn);
+    protected function __construct( $conn){
+        parent::__construct($conn);
     }
 
     /**
@@ -15,95 +16,17 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
      * @param mixed $conn
      * @return DiagnosticoMySQLIntermediary
      */
-    public static function &getInstance(IMYSQL $conn) {
+    public static function &getInstance(IMYSQL $conn){
         if (null === self::$instance){
             self::$instance = new self($conn);
         }
         return self::$instance;
     }
 
-    public final function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-        try{
-            $db = clone($this->conn);
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                    	d.id as iId,
-                    	d.descripcion as sDescripcion,
-                    	dp.codigo as sCodigo,
-                    	IF(dp.id IS NULL, '".self::TIPO_DIAGNOSTICO_SCC."', '".self::TIPO_DIAGNOSTICO_PERSONALIZADO."') as tipo
-                    FROM
-                        diagnosticos d
-                    LEFT JOIN
-                        diagnosticos_personalizado dp ON dp.id = d.id
-                    LEFT JOIN
-                        diagnosticos_scc dscc ON d.id = dscc.id ";
-              
-
-            $WHERE = array();
-			if(isset($filtro['d.id']) && $filtro['d.id'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('d.id', $filtro['d.id'],MYSQL_TYPE_INT);
-            }
-            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-
-            if(isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by $sOrderBy $sOrder ";
-            }
-            
-            if ($iIniLimit!==null && $iRecordCount!==null){
-                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-            }
-            $db->query($sSQL);
-            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($iRecordsTotal)){ return null; }
-
-            $aDiagnosticos = array();
-            while($oObj = $db->oNextRecord()){
-  				$oDiagnostico 				= new stdClass();
-                $oDiagnostico->iId 			= $oObj->iId;
-                $oDiagnostico->sDescripcion = $oObj->sDescripcion;
-                if($oObj->tipo == self::TIPO_DIAGNOSTICO_SCC){
-                	$aDiagnosticos[] = Factory::getDiagnosticoSCCInstance($oDiagnostico);
-                }else{
-                	$oDiagnostico->sCodigo = $oObj->sCodigo;
-	                $aDiagnosticos[] = Factory::getDiagnosticoPersonalizadoInstance($oDiagnostico);
-                }
-            }
-
-            return $aDiagnosticos;
-
-        }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        }
-    }
-
-    public function existe($filtro){
-    	try{
-            $db = $this->conn;
-            $filtro = $this->escapeStringArray($filtro);
-
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        1 as existe
-                    FROM
-                        diagnosicos d 
-                    JOIN 
-                    	diagnosticos u ON s.id = d.id
-                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
-
-            $db->query($sSQL);
-
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($foundRows)){ 
-            	return false; 
-            }
-            return true;
-    	}catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-            return false;
-        }
-    }
+    public function existe($filtro){}
     
-    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = clone($this->conn);
 

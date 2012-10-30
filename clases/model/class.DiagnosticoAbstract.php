@@ -2,11 +2,13 @@
 
 abstract class DiagnosticoAbstract
 {
-
     protected $iId;
     protected $sDescripcion;
 
     public function __construct(){}
+    
+    public function isDiagnosticoPersonalizado(){ return false; }
+    public function isDiagnosticoSCC(){ return false; }
 
     /**
      *  @param int $iId
