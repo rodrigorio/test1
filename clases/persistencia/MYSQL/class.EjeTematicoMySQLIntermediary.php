@@ -176,5 +176,9 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
     }
 
     //estos metodos son para el abm de asociaciones de un EjeTematico a un seguimiento SCC
-    
+    public function borrarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId){}
+    public function existeEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId){}
+    public function guardarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico){}
+    public function asociarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico){}
+    public function actualizarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico){}
 }
