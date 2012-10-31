@@ -362,7 +362,7 @@ class SeguimientosController
             $aArchivos = $oSeguimiento->getArchivos();
             
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            $result = $oSeguimientoIntermediary->borrar($oSeguimiento->getId());
+            $result = $oSeguimientoIntermediary->borrar($oSeguimiento);
             if($result){
                 //borro archivos de fotos y adjuntos en el servidor, los registros en db volaron en cascada
                 if(null != $aFotos){
@@ -601,6 +601,20 @@ class SeguimientosController
         }catch(Exception $e){
             $oSeguimiento->setEmbedVideos(null);
             throw new Exception($e->getMessage());
+        }
+    }
+    public function getEjeTematicoById($iId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+        try{
+            $filtro = array('e.id' => $iId);
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
+            if(null !== $aEjeTematico){
+                return $aEjeTematico[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e);
         }
     }
 }
