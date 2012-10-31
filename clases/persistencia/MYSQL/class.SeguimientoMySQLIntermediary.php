@@ -529,7 +529,6 @@ public function insertarSCC($oSeguimientoSCC)
 			$db->execSQL($sSQL);
 			$iLastId = $db->insert_id();
 			
-			
 			$oDiagnostico = Factory::getDiagnosticoSCCInstance(new stdClass());
 			$diagnosticoSCCId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
 			
@@ -548,11 +547,19 @@ public function insertarSCC($oSeguimientoSCC)
 		}
    }
     
-   public function borrar($iSeguimientoId)
+   public function borrar($oSeguimiento)
    {
         try{
             $db = $this->conn;
+            
+			$db->begin_transaction();
+			
+			$iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
+			$iSeguimientoId = $oSeguimiento->getId();
+			
+            $db->execSQL("delete from diagnosticos where id = '".$iDiagnosticoId."'");						            
             $db->execSQL("delete from seguimientos where id = '".$iSeguimientoId."'");
+                        
             $db->commit();
             return true;
         }catch(Exception $e){
