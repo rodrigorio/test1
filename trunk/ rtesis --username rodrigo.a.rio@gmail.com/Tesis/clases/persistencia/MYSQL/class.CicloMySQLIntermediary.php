@@ -39,6 +39,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
 
             $aCiclos = array();
             while($oObj = $db->oNextRecord()){
+                
             	$oCiclo	= new stdClass();
             	$oCiclo->iId = $oObj->iId;
             	$oCiclo->sDescripcion = $oObj->sDescripcion;

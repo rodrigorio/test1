@@ -22,12 +22,15 @@ class AreaMySQLIntermediary extends AreaIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCicloId, 
-                        c.descripcion as sDescripcionCiclo
+                        a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCicloId,  
+                        c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
+                        n.descripcion as sDescripcionNivel
                     FROM
                         areas a 
                     JOIN 
-                    	ciclos c ON a.ciclos_id = c.id ";
+                    	ciclos c ON a.ciclos_id = c.id
+                    JOIN
+                        niveles n ON c.niveles_id = n.id ";
             
             if(!empty($filtro)){
                 $sSQL .= " WHERE".$this->crearCondicionSimple($filtro);
@@ -40,15 +43,24 @@ class AreaMySQLIntermediary extends AreaIntermediary
             
             $aAreas = array();
             while($oObj = $db->oNextRecord()){
-            	$oArea = new stdClass();
-            	$oArea->iId = $oObj->iId;
-            	$oArea->sDescripcion = $oObj->sDescripcion;
+
+            	$oNivel = new stdClass();
+            	$oNivel->iId = $oObj->iNivelId;
+            	$oNivel->sDescripcion = $oObj->sDescripcionNivel;
+            	$oNivel = Factory::getNivelInstance($oNivel);
 
                 $oCiclo = new stdClass();
                 $oCiclo->iId = $oObj->iCicloId;
                 $oCiclo->sDescripcion = $oObj->sDescripcionCiclo;
-            	$oArea->oCiclo = Factory::getAreaInstance($oCiclo);
+            	$oCiclo = Factory::getCicloInstance($oCiclo);
+                $oCiclo->setNivel($oNivel);
+
+            	$oArea = new stdClass();
+            	$oArea->iId = $oObj->iId;
+            	$oArea->sDescripcion = $oObj->sDescripcion;
+            	$oArea->oCiclo = $oCiclo;
             	$aAreas[] = Factory::getAreaInstance($oArea);
+                
             }
             return $aAreas;
         }catch(Exception $e){

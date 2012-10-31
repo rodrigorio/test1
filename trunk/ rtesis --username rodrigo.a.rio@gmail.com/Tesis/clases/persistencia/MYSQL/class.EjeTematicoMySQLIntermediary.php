@@ -23,14 +23,20 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
 
             $sSQL = "SELECT
                         e.id as iId, e.descripcion as sDescripcion, e.contenidos as sContenidos, e.areas_id as iAreaId, 
-                        a.sDescripcionArea
+                        a.descripcion as sDescripcionArea, a.ciclos_id as iCicloId,
+                        c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
+                        n.descripcion as sDescripcionNivel
                     FROM
                         ejes e 
                     JOIN 
-                    	areas a ON e.areas_id = a.id ";
+                    	areas a ON e.areas_id = a.id
+                    JOIN
+                        ciclos c ON a.ciclos_id = c.id
+                    JOIN
+                        niveles n ON c.niveles_id = n.id";
             
             if(!empty($filtro)){
-                $sSQL .= " WHERE".$this->crearCondicionSimple($filtro);
+                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
             }
 
             $db->query($sSQL);
@@ -40,6 +46,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             
             $aEjesTematicos = array();
             while($oObj = $db->oNextRecord()){
+                
             	$oEjeTematico = new stdClass();
             	$oEjeTematico->iId = $oObj->iId;
             	$oEjeTematico->sDescripcion = $oObj->sDescripcion;
@@ -48,7 +55,21 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                 $oArea = new stdClass();
             	$oArea->iId = $oObj->iAreaId;
             	$oArea->sDescripcion = $oObj->sDescripcionArea;
-            	$oEjeTematico->oArea = Factory::getAreaInstance($oArea);
+                $oArea = Factory::getAreaInstance($oArea);
+
+            	$oCiclo	= new stdClass();
+            	$oCiclo->iId = $oObj->iCicloId;
+            	$oCiclo->sDescripcion = $oObj->sDescripcionCiclo;
+                $oCiclo = Factory::getCicloInstance($oCiclo);
+
+            	$oNivel = new stdClass();
+            	$oNivel->iId = $oObj->iNivelId;
+            	$oNivel->sDescripcion = $oObj->sDescripcionNivel;
+            	$oNivel = Factory::getNivelInstance($oNivel);
+                
+            	$oCiclo->setNivel($oNivel);
+                $oArea->setCiclo($oCiclo);
+                $oEjeTematico->oArea = $oArea;
 
             	$aEjesTematicos[] = Factory::getEjeTematicoInstance($oEjeTematico);
             }
