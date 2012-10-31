@@ -22,12 +22,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
         }
         return self::$instance;
     }
-
-    public function existe($filtro){}
-    
-    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
-    {  
-    }
     
    /**
     * Siempre que se obtiene, se devuelve como maximo un diagnostico porque
@@ -46,11 +40,11 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                         diagnosticos d
                     JOIN
                         diagnosticos_scc dscc ON d.id = dscc.id 
-                   	JOIN 
-                   		seguimientos_scc s ON s.diagnosticos_scc_id = dscc.id 
-                   	JOIN 
-                   		diagnosticos_scc_x_ejes	dxe ON dscc.id = dxe.ejes_id 
-                   	WHERE s.id = ".$this->escInt($iSeguimientoId)." limit 1 ";
+                    JOIN
+                        seguimientos_scc s ON s.diagnosticos_scc_id = dscc.id
+                    JOIN
+                        diagnosticos_scc_x_ejes	dxe ON dscc.id = dxe.ejes_id
+                    WHERE s.id = ".$this->escInt($iSeguimientoId)." limit 1 ";
             
             $db->query($sSQL);
             $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
@@ -60,18 +54,20 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $oDiagnostico = null;
             while($oObj = $db->oNextRecord()){
             	if($oDiagnostico === nul){
-	            	$oDiagnostico 				= new stdClass();
-	                $oDiagnostico->iId 			= $oObj->iId;
-	                $oDiagnostico->sDescripcion = $oObj->sDescripcion;
-	                $oDiagnostico = Factory::getDiagnosticoSCCInstance($oDiagnostico);           		            		
+                    $oDiagnostico = new stdClass();
+                    $oDiagnostico->iId = $oObj->iId;
+                    $oDiagnostico->sDescripcion = $oObj->sDescripcion;
+                    $oDiagnostico = Factory::getDiagnosticoSCCInstance($oDiagnostico);
             	}            	
             	
             	$oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeId);
                 $oEjeTematico->setEstadoInicial($oObj->sEstadoInicial);            	
                 $aEjesTematicos[] = $oEjeTematico;               
             }
-            
-            $oDiagnostico->setEjesTematicos($aEjesTematicos);
+
+            if(null !== $oDiagnostico){
+                $oDiagnostico->setEjesTematicos($aEjesTematicos);
+            }
                                    
             return $oDiagnostico;
             
@@ -80,7 +76,8 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
         }
     }
 	
-    public final function obtenerPersonalizado($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtenerPersonalizado($iSeguimientoId)
+    {
         try{
             $db = clone($this->conn);
 
@@ -92,168 +89,156 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                         diagnosticos d
                     JOIN
                         diagnosticos_personalizado dp ON d.id = dp.id 
-                   	JOIN 
-                   		seguimientos_personalizados s ON s.diagnostico_personalizado_id = dp.id ";
+                    JOIN
+                        seguimientos_personalizados s ON s.diagnosticos_personalizado_id = dp.id
+                    WHERE
+                        s.id = ".$this->escInt($iSeguimientoId)." limit 1 ";
             
-			$WHERE = array();
-			if(isset($filtro['d.id']) && $filtro['d.id'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('d.id', $filtro['d.id'], MYSQL_TYPE_INT);
-            }
-        	if(isset($filtro['s.id']) && $filtro['s.id'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('s.id', $filtro['s.id'], MYSQL_TYPE_INT);
-            }
-            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-
-            if(isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by $sOrderBy $sOrder ";
-            }
-            
-            if ($iIniLimit!==null && $iRecordCount!==null){
-                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
-            }
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
-            $aDiagnosticos = array();
+            $oDiagnostico = null;
             while($oObj = $db->oNextRecord()){
-            	$oDiagnostico 				= new stdClass();
-                $oDiagnostico->iId 			= $oObj->iId;
+            	$oDiagnostico = new stdClass();
+                $oDiagnostico->iId = $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
-                $oDiagnostico->sCodigo 		= $oObj->sCodigo;
-	            $aDiagnosticos[] = Factory::getDiagnosticoPersonalizadoInstance($oDiagnostico);
+                $oDiagnostico->sCodigo = $oObj->sCodigo;
+                $oDiagnostico = Factory::getDiagnosticoPersonalizadoInstance($oDiagnostico);
             }
-            return $aDiagnosticos;
+            
+            return $oDiagnostico;
             
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
+    
     public function guardar($oDiagnostico)
     {        
         try{
-        	$sDiagnosticoClass = get_class($oDiagnostico);
             if($oDiagnostico->getId() !== null){
-                if($sDiagnosticoClass == self::TIPO_DIAGNOSTICO_PERSONALIZADO){
+                if($oDiagnostico->isDiagnosticoPersonalizado()){
                     return $this->actualizar($oDiagnostico);
                 }else{
                     return $this->actualizarSCC($oDiagnostico);
                 }
             }else{
-                if($sDiagnosticoClass == self::TIPO_DIAGNOSTICO_PERSONALIZADO){
+                if($oDiagnostico->isDiagnosticoPersonalizado()){
                     return $this->insertar($oDiagnostico);
                 }else{
                     return $this->insertarSCC($oDiagnostico);
                 }
-            }
-            
+            }            
         }catch(Exception $e){
-        	echo $e->getMessage();
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-     public function actualizar($oDiagnosticoPersonalizado) {
+    public function actualizar($oDiagnosticoPersonalizado)
+    {
         try{
-			$db = $this->conn;
-					
-						
+            $db = $this->conn;
+											
             $db->begin_transaction();
+
             $sSQL = " update diagnosticos " .
-                    " set descripcion =".$db->escape($oDiagnosticoPersonalizado->getDescripcion(),true)." ".
-                    " WHERE id = ".$db->escape($oDiagnosticoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
+                    " set descripcion = ".$this->escStr($oDiagnosticoPersonalizado->getDescripcion())." ".
+                    " WHERE id = ".$this->escInt($oDiagnosticoPersonalizado->getId())." ";
+
+            $db->execSQL($sSQL);
 				 
-             $sSQL =" update diagnosticos_personalizado ".
-                    " set codigo =".$db->escape($oDiagnosticoPersonalizado->getCodigo(),true)." ".
-					" WHERE id = ".$db->escape($oDiagnosticoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
+            $sSQL = " update diagnosticos_personalizado ".
+                    " set codigo = ".$this->escStr($oDiagnosticoPersonalizado->getCodigo())." ".
+                    " WHERE id = ".$this->escInt($oDiagnosticoPersonalizado->getId())." ";
              
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+            $db->execSQL($sSQL);
+            $db->commit();
+            return true;
 	
-		}catch(Exception $e){
-			echo $e->getMessage();
+        }catch(Exception $e){
             $db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
+            throw $e;
+        }
     }
 
+    /**
+     * Los ejes se guardan en el mysql de ejes.
+     */
     public function actualizarSCC($oDiagnosticoSCC)
     {
         try{
-			$db = $this->conn;
-            $db->begin_transaction();
+            $db = $this->conn;
+
             $sSQL = " update diagnosticos " .
-                    " set descripcion =".$db->escape($oDiagnosticoSCC->getDescripcion(),true)." ".
-                    " WHERE id = ".$db->escape($oDiagnosticoSCC->getId(),false,MYSQL_TYPE_INT)." ";
+                    " set descripcion = ".$this->escStr($oDiagnosticoSCC->getDescripcion())." ".
+                    " WHERE id = ".$db->escInt($oDiagnosticoSCC->getId())." ";
              
-			 $db->execSQL($sSQL);
-			 $db->commit();
-             return true;
+            $db->execSQL($sSQL);
+            $db->commit();
 
-
-		}catch(Exception $e){
-			echo $e->getMessage();
-            $db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
+            return true;
+        }catch(Exception $e){
+            throw $e;
+        }
     }
     
     public function insertar($oDiagnosticoPersonalizado)
-   {
-		try{
+    {
+        try{
             $db = $this->conn;
 					
-			$db->begin_transaction();
-			$sSQL =	" insert into diagnosticos ".
-                        " set  descripcion =".$db->escape($oDiagnosticoPersonalizado->getDescripcion(),true)." ";
+            $db->begin_transaction();
+
+            $sSQL = " insert into diagnosticos ".
+                    " set descripcion = ".$db->escStr($oDiagnosticoPersonalizado->getDescripcion())." ";
 			
-			$db->execSQL($sSQL);
-			$iLastId = $db->insert_id();
+            $db->execSQL($sSQL);
+
+            $iLastId = $db->insert_id();
 			
-		    $sSQL =" insert into diagnosticos_personalizado set ".
-                        " id =".$db->escape($iLastId,false).", " .
-                        " codigo =".$db->escape($oDiagnosticoPersonalizado->getCodigo(),true)." ";
-			$db->execSQL($sSQL);
+            $sSQL = " insert into diagnosticos_personalizado set ".
+                    " id = ".$this->escInt($iLastId).", ".
+                    " codigo = ".$this->escStr($oDiagnosticoPersonalizado->getCodigo())." ";
+
+            $db->execSQL($sSQL);
 						
-			$db->commit();
-			return $iLastId;
+            $db->commit();
 
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-   }
-
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw $e;
+        }
+    }
    
-	public function insertarSCC($oDiagnosticoSCC)
+    public function insertarSCC($oDiagnosticoSCC)
     {
-		try{
-		    $db = $this->conn;
-					
-			$db->begin_transaction();
-			$sSQL =	" insert into diagnosticos ".
-                        " set  descripcion =".$db->escape($oDiagnosticoSCC->getDescripcion(),true)." ";
-			
-			$db->execSQL($sSQL);
-			
-			$iLastId = $db->insert_id();		
-			$sSQL =" insert into diagnosticos_scc set ".
-                    " id =".$db->escape($iLastId,false)." ";
-			
-			$sSQL ;
-			$db->execSQL($sSQL);
-			$db->commit();
-			return $iLastId;
+        try{
+            $db = $this->conn;
 
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
+            $db->begin_transaction();
+
+            $sSQL = " insert into diagnosticos ".
+                    " set descripcion = ".$this->escStr($oDiagnosticoSCC->getDescripcion())." ";
+
+            $db->execSQL($sSQL);
+
+            $iLastId = $db->insert_id();
+
+            $sSQL = " insert into diagnosticos_scc set ".
+                    " id = ".$db->escInt($iLastId)." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
    }
     
    public function borrar($iDiagnosticoId)
@@ -264,12 +249,11 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $db->commit();
             return true;
         }catch(Exception $e){
-            return false;
             throw new Exception($e->getMessage(), 0);
         }
     }
-
- 
-   	 
-    public function actualizarCampoArray($objects, $cambios){} 
+    	 
+    public function actualizarCampoArray($objects, $cambios){}
+    public function existe($filtro){}
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }  
