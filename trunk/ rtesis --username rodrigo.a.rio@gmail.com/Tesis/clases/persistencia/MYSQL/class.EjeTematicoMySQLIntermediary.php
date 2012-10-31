@@ -137,13 +137,14 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
 
-    public function borrar($oEjeTematico){
+    public function borrar($oEjeTematico)
+    {
         try{
             $db = $this->conn;
             $db->execSQL("delete from ejes where id = ".$this->escInt($oEjeTematico->getId()));
             $db->commit();
         }catch(Exception $e){
-                throw new Exception($e->getMessage(), 0);
+            throw new Exception($e->getMessage(), 0);
         }
     }
 	
@@ -173,4 +174,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    //estos metodos son para el abm de asociaciones de un EjeTematico a un seguimiento SCC
+    
 }
