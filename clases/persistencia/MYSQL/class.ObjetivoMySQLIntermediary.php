@@ -1,68 +1,65 @@
 <?php
-/* Description of class ObjetivoMySQLIntermediary
- *
- * @author Andrés
- */
+
 class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 {
-	private static $instance = null;
+    private static $instance = null;
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
+    protected function __construct( $conn){
+        parent::__construct($conn);
+    }
 
-
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return ObjetivoMySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (null === self::$instance){
+    public static function &getInstance(IMYSQL $conn){
+        if (null === self::$instance){
             self::$instance = new self($conn);
         }
         return self::$instance;
-	}
+    }
 	
-     public function existe($filtro){
-    	try{
+    public function existeObjetivoAprendizaje($filtro)
+    {
+        try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        objetivos o 
-                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                        objetivos o
+                    JOIN
+                        objetivos_aprendizaje oa 
+                    WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+                return false;
             }
             return true;
-    	}catch(Exception $e){
+        }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
     
-      public final function obtenerObjetivoPersonalizado($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtenerObjetivoPersonalizado($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        o.id as iId, o.descripcion as sDescripcion, op.objetivo_ejes_id as iObjetivoEjeId, sp.seguimientos_personalizados_id as iSeguimientoId
+                        o.id as iId, o.descripcion as sDescripcion,
+                        op.objetivo_personalizado_ejes_id as iObjetivoEjeId, op.objetivo_relevancias_id as iObjetivoRelevanciaId, op.evolucion as fEvolucion, op.estimacion as dEstimacion,
+                        ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia
                     FROM
-                       objetivos o 
-                        JOIN 
-                    	objetivos_personalizados op ON o.id = op.id 
-                    	JOIN 
-                    	seguimiento_personalizado_x_objetivo_personalizado sp ON op.id = sp.objetivos_personalizados_id";
+                        objetivos o
+                    JOIN
+                        objetivos_personalizados op ON o.id = op.id
+                    JOIN
+                        objetivo_personalizado_ejes ope ON ope.id = op.objetivo_personalizado_ejes_id
+                    JOIN
+                        objetivo_relevancias orr ON orr.id = op.objetivo_relevancias_id ";
             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
@@ -76,32 +73,51 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             
             $aObjetivos = array();
             while($oObj = $db->oNextRecord()){
-            	$oObjetivo		= new stdClass();
-            	$oObjetivo->iId 		= $oObj->iId;
-            	$oObjetivo->sDescripcion	= $oObj->sDescripcion;
-            	$oObjetivo->oObjetivoEje 		= ComunidadController::getInstance()->getObjetivoEjeById($oObj->iObjetivoEjeid);            
-            	
-            	$aObjetivos[]		= Factory::getObjetivoInstance($oObjetivo);
 
+                $oObjetivoPersonalizadoEje = new stdClass();
+            	$oObjetivoPersonalizadoEje->iId = $oObj->iObjetivoEjeId;
+            	$oObjetivoPersonalizadoEje->sDescripcion = $oObj->sDescripcionEje;
+                $oObjetivoPersonalizadoEje = Factory::getObjetivoPersonalizadoEjeInstance($oObjetivoPersonalizadoEje);
+
+                $oObjetivoRelevancia = new stdClass();
+            	$oObjetivoRelevancia->iId = $oObj->iObjetivoRelevanciaId;
+            	$oObjetivoRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
+                $oObjetivoRelevancia = Factory::getObjetivoRelevanciaInstance($oObjetivoRelevancia);
+
+            	$oObjetivo = new stdClass();
+            	$oObjetivo->iId = $oObj->iId;
+            	$oObjetivo->sDescripcion = $oObj->sDescripcion;
+            	$oObjetivo->dEstimacion = $oObj->dEstimacion;
+                $oObjetivo->fEvolucion = $oObj->fEvolucion;
+                $oObjetivo->oObjetivoRelevancia = $oObjetivoRelevancia;
+                $oObjetivo->oObjetivoPersonalizadoEje = $oObjetivoPersonalizadoEje;
+            	
+            	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
             }
+
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-     public final function obtenerObjetivoCurricular($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+
+    public final function obtenerObjetivoAprendizaje($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        o.id as iId, o.descripcion as sDescripcion, oc.areas_id as iAreaId
+                        o.id as iId, o.descripcion as sDescripcion,
+                        oa.ejes_id as iEjeTematicoId,
+                        sxo.evolucion as fEvolucion, sxo.estimacion as dEstimacion,
+                        sxo.objetivo_relevancias_id as iObjetivoRelevanciaId, orr.descripcion as sDescripcionRelevancia 
                     FROM
                        objetivos o 
-                        JOIN 
-                    	objetivos_curriculares oc ON o.id = oc.id 
-                    	JOIN
-                    	seguimiento_scc_x_objetivo_curricular sc ON oc.id = sc.objetivos_curriculares_id";
+                    JOIN
+                       objetivos_aprendizaje oa ON o.id = oa.id
+                    JOIN
+                       seguimiento_scc_x_objetivo_aprendizaje sxo ON oc.id = sxo.objetivos_aprendizaje_id ";
                         
                      
             if(!empty($filtro)){
@@ -254,18 +270,20 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 		}
 	}
 	
-	public function borrar($iObjetivoId)
-   {
+    public function borrar($iObjetivoId)
+    {
         try{
             $db = $this->conn;
             $db->execSQL("delete from objetivos where id = '".$iObjetivoId."'");
             $db->commit();
             return true;
         }catch(Exception $e){
-            return false;
             throw new Exception($e->getMessage(), 0);
         }
     }
-	 public function actualizarCampoArray($objects, $cambios){} 
+
+    public function actualizarCampoArray($objects, $cambios){}
+    public function existe($filtro){}
+    public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
 	

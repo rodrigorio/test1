@@ -176,9 +176,92 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
     }
 
     //estos metodos son para el abm de asociaciones de un EjeTematico a un seguimiento SCC
-    public function borrarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId){}
-    public function existeEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId){}
-    public function guardarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico){}
-    public function asociarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico){}
-    public function actualizarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico){}
+    public function borrarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from diagnosticos_scc_x_ejes 
+                          where diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)." 
+                          and ejes_id = ".$this->escInt($iEjeTematicoId));
+            $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function existeEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId)
+    {
+    	try{
+            $db = $this->conn;
+            
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        diagnosticos_scc_x_ejes dxe
+                    WHERE 
+                        dxe.diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                    AND
+                        dxe.ejes_id = ".$this->escInt($iEjeTematicoId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function guardarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico)
+    {
+        try{
+            if($this->existeEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico->getId())){
+                return $this->actualizarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico);
+            } else {
+                return $this->asociarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 0);
+        }        
+    }
+
+    public function asociarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico)
+    {
+        try{
+            $db = $this->conn;
+            $sSQL = " insert into diagnosticos_scc_x_ejes ".
+                    " set diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)." ".
+                    " set ejes_id = ".$this->escInt($oEjeTematico->getId())." ".
+                    " set estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ";
+                    
+            $db->execSQL($sSQL);
+            $db->commit();
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public function actualizarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico)
+    {
+        try{
+            $db = $this->conn;
+            $sSQL = " update diagnosticos_scc_x_ejes set ".
+                    " estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ".
+                    " WHERE
+                        dxe.diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                      AND
+                        dxe.ejes_id = ".$this->escInt($oEjeTematico->getId());
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 }
