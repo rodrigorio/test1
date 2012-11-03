@@ -117,9 +117,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     JOIN
                        objetivos_aprendizaje oa ON o.id = oa.id
                     JOIN
-                       seguimiento_scc_x_objetivo_aprendizaje sxo ON oc.id = sxo.objetivos_aprendizaje_id ";
-                        
-                     
+                       seguimiento_scc_x_objetivo_aprendizaje sxo ON oa.id = sxo.objetivos_aprendizaje_id
+                    JOIN
+                       objetivo_relevancias orr ON orr.id = sxo.objetivo_relevancias_id ";
+                                             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
@@ -132,17 +133,28 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             
             $aObjetivos = array();
             while($oObj = $db->oNextRecord()){
-            	$oObjetivo		= new stdClass();
-            	$oObjetivo->iId 		= $oObj->iId;
-            	$oObjetivo->sDescripcion	= $oObj->sDescripcion;
-            	$oObjetivo->oArea		= ComunidadController::getInstance()->getAreaById($oObj->iAreaId); 
-            	$aObjetivos[]		= Factory::getObjetivoInstance($oObjetivo);
+
+                $oObjetivoRelevancia = new stdClass();
+            	$oObjetivoRelevancia->iId = $oObj->iObjetivoRelevanciaId;
+            	$oObjetivoRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
+                $oObjetivoRelevancia = Factory::getObjetivoRelevanciaInstance($oObjetivoRelevancia);
+                
+            	$oObjetivo = new stdClass();
+            	$oObjetivo->iId = $oObj->iId;
+            	$oObjetivo->sDescripcion = $oObj->sDescripcion;
+            	$oObjetivo->dEstimacion = $oObj->dEstimacion;
+                $oObjetivo->fEvolucion = $oObj->fEvolucion;
+                $oObjetivo->oObjetivoRelevancia = $oObjetivoRelevancia;
+                $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
+            	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
             }
+
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
+    
     public function guardarObjetivoCurricular($oOjetivo)
     {
         try{
