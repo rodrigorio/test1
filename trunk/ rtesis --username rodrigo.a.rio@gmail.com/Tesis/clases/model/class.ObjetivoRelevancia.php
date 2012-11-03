@@ -1,21 +1,10 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- * Description of class ObjetivoRelevancia
- *
- * @author Andres
- */
-class ObjetivoRelevancia {
+class ObjetivoRelevancia{
+    
     private $iId;
     private $sDescripcion;
- /**
-     *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase 
-     * @param stdClass $oParams
-     */
+    
     public function __construct(stdClass $oParams = null){
             $vArray = get_object_vars($oParams);
             $vThisVars = get_class_vars(__CLASS__);
