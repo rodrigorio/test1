@@ -155,132 +155,259 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         }
     }
     
-    public function guardarObjetivoCurricular($oOjetivo)
+    public function guardarObjetivoAprendizaje($oOjetivo)
+    {
+        if($oObjetivo->getEjeTematico() === null){
+            throw new Exception("El objetivo no tiene eje tematico");
+        }
+        
+        try{
+            if($oObjetivo->getId() !== null){
+                return $this->actualizarObjetivoAprendizaje($oObjetivo);
+            }else{
+                return $this->insertarObjetivoAprendizaje($oOjetivo);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function insertarObjetivoAprendizaje($oObjetivo)
     {
         try{
-			if($oObjetivo->getId() != null){
-            	return $this->actualizarObjetivoCurricular($oObjetivo);
-            }else{
-				return $this->insertarObjetivoCurricular($oOjetivo);
-            }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $sSQL = " insert into objetivos ".
+                    " set descripcion = ".$this->escStr($oObjetivo->getDescripcion())." ";
+
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+
+            $sSQL = " insert into objetivos_aprendizaje ".
+                    " set id = ".$this->escInt($iLastId).", ".
+                    " ejes_id =".$this->escInt($oObjetivo->getEjeTematico()->getId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            $oObjetivo->setId($iLastId);
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
     }
-    public function guardarObjetivoPersonalizado($oOjetivo)
+
+    public function actualizarObjetivoAprendizaje($oObjetivo)
+    {        
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+            
+            $sSQL = " update objetivos ".
+                    " set descripcion = ".$this->escStr($oObjetivo->getDescripcion())." ".
+                    " where id = ".$this->escInt($oObjetivo->getId())." ";
+
+            $db->execSQL($sSQL);
+
+            $sSQL = " update objetivos_aprendizaje ".
+                    " set ejes_id =".$this->escInt($oObjetivo->getEjeTematico()->getId())." ".
+                    " where id = ".$this->escInt($oObjetivo->getId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Objetivo personalizado siempre esta asociado a un seguimiento personalizado.
+     * No es que se crean desde el administrador y despues se asocian en una relacion NxN
+     * como pasa en los objetivos de aprendizaje.
+     */
+    public function guardarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oOjetivo)
+    {
+        if($oObjetivo->getObjetivoPersonalizadoEje() === null){
+            throw new Exception("El objetivo no tiene eje");
+        }
+
+        if($oObjetivo->getObjetivoRelevancia() === null){
+            throw new Exception("El objetivo no tiene relevancia");
+        }
+        
+        try{
+            if ($oObjetivo->getId() !== null) {
+                return $this->actualizarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo);
+            } else {
+                return $this->asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oOjetivo);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Determina si un objetivo de aprendizaje esta asociado a un seguimiento SCC
+     */
+    public function existeObjetivoAprendizajeSeguimientoSCC($iSeguimientoSCCId, $iObjetivoId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        seguimiento_scc_x_objetivo_aprendizaje sxo
+                    WHERE
+                        sxo.objetivos_aprendizaje_id = ".$this->escInt($iObjetivoId)."
+                    AND
+                        sxo.seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Asociar un objetivo de aprendizaje a un seguimiento SCC con sus valores de relacion
+     * estimacion, evolucion, etc.
+     */
+    public function guardarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo)
+    {
+        if($oObjetivo->getObjetivoRelevancia() === null){
+            throw new Exception("El objetivo no tiene relevancia");
+        }
+        
+        try{
+            if($this->existeObjetivoAprendizajeSeguimientoSCC($iSeguimientoSCCId, $oObjetivo->getId())){
+                return $this->actualizarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo);
+            } else {
+                return $this->asociarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oOjetivo);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public function asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oOjetivo)
     {
         try{
-			if($oObjetivo->getId() != null){
-            	return $this->actualizarObjetivoPersonalizado($oObjetivo);
-            }else{
-				return $this->insertarObjetivoPersonalizado($oOjetivo);
-            }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $sSQL = " insert into objetivos ".
+                    " set descripcion = ".$this->escStr($oObjetivo->getDescripcion())." ";
+
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+
+            $sSQL = " insert into objetivos_personalizados ".
+                    " set id = ".$this->escInt($iLastId).", ".
+                    " seguimientos_personalizados_id = ".$this->escInt($iSeguimientoPersonalizadoId).", ".
+                    " objetivo_personalizado_ejes_id = ".$this->escInt($oOjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
+                    " objetivo_relevancias_id = ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId()).", ".
+                    " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
+                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            $oOjetivo->setId($iLastId);
+                        
+            return true;
+            
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
     }
-   public  function insertarObjetivoCurricular($oObjetivo)
-   {
-		try{
-			$db = $this->conn;
-			$db->begin_transaction();
-			$sSQL =	" insert into objetivos ".
-                    " set descripcion =".$db->escape($oObjetivo->getDescripcion(),true)." " ;
-			        			 
-			 $db->execSQL($sSQL);
-			 $iLastId = $db->insert_id();
-			 
-			 $sSQL =	" insert into objetivos_curriculares ".
-                    " set  id=".$db->escape($iLastId,false).", " .
-                    " areas_id =".$db->escape($oObjetivo->getAreaId(),false,MYSQL_TYPE_INT)." " ;
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
 
-             
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
-   public  function insertarObjetivoPersonalizado($oObjetivo)
-   {
-		try{
-			$db = $this->conn;
-			$db->begin_transaction();
-			$sSQL =	" insert into objetivos ".
-                    " set descripcion =".$db->escape($oObjetivo->getDescripcion(),true)." " ;
-			        			 
-			 $db->execSQL($sSQL);
-			 $iLastId = $db->insert_id();
-			 
-			 $sSQL =	" insert into objetivos_personalizados ".
-                    " set  id=".$db->escape($iLastId,false).", " .
-                    " objetivo_ejes_id =".$db->escape($oObjetivo->getObjetivoEjeId(),false,MYSQL_TYPE_INT)." " ;
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+    /**
+     * Antes de llegar a este metodo el controlador deberia confirmar que es un objetivo
+     * de un seguimiento que pertenece al usuario que inicio sesion.
+     */
+    public function actualizarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo)
+    {
+        try{
+            $db = $this->conn;
 
-             
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
-    public function actualizarObjetivoCurricular($oObjetivo)
-      {
-		try{
-			$db = $this->conn;
-		
-			$sSQL =	" update objetivos ".
-		            " set descripcion =".$db->escape($oObjetivo->getDescripcion(),true)." ".
-		            " where id =".$db->escape($oObjetivo->getId(),false,MYSQL_TYPE_INT)." ";
-			        			 
-			 $db->execSQL($sSQL);
-			 $iLastId = $db->insert_id();
-			 
-			 $sSQL = " update objetivos_curriculares ".
-                     " set areas_id =".$db->escape($oObjetivo->getAreaId(),false,MYSQL_TYPE_INT)." ".
-			         " where id =".$db->escape($oObjetivo->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+            $sSQL = " update objetivos ".
+                    " set descripcion = ".$this->escStr($oObjetivo->getDescripcion())." ".
+                    " where id = ".$this->escInt($oObjetivo->getId())." ";
 
-             
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
-     public function actualizarObjetivoPersonalizado($oObjetivo)
-      {
-		try{
-			$db = $this->conn;
-		
-			$sSQL =	" update objetivos ".
-		            " set descripcion =".$db->escape($oObjetivo->getDescripcion(),true)." ".
-		            " where id =".$db->escape($oObjetivo->getId(),false,MYSQL_TYPE_INT)." ";
-			        			 
-			 $db->execSQL($sSQL);
-			 $iLastId = $db->insert_id();
-			 
-			 $sSQL = " update objetivos_personalizados".
-                     " set areas_id =".$db->escape($oObjetivo->getAreaId(),false,MYSQL_TYPE_INT)." ".
-			         " where id =".$db->escape($oObjetivo->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+            $db->execSQL($sSQL);
 
-             
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-	}
+            $sSQL = " update objetivos_personalizados set ".
+                    " objetivo_personalizado_ejes_id = ".$this->escInt($oOjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
+                    " objetivo_relevancias_id = ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId()).", ".
+                    " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
+                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ".
+                    " where id = ".$this->escInt($oObjetivo->getId())." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+            
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function asociarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oOjetivo)
+    {
+        try{
+            $db = $this->conn;
+            $sSQL = " insert into seguimiento_scc_x_objetivo_aprendizaje ".
+                    " set seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId).", ".
+                    " objetivos_aprendizaje_id = ".$this->escInt($oOjetivo->getId()).", ".
+                    " evolucion = ".$this->escDate($oObjetivo->getEvolucion()).", ".
+                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
+                    " objetivo_relevancias_id ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId());
+            
+            $db->execSQL($sSQL);
+            $db->commit();
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /*
+    public function actualizarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo)
+    {
+        try{
+            $db = $this->conn;
+            $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje set ".
+                    " estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ".
+                    " WHERE
+                        dxe.diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                      AND
+                        dxe.ejes_id = ".$this->escInt($oEjeTematico->getId());
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 	
     public function borrar($iObjetivoId)
     {
@@ -293,9 +420,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+     */
 
     public function actualizarCampoArray($objects, $cambios){}
-    public function existe($filtro){}
+    public function existe($objects){}
+    public function insertar($objects){}
+    public function guardar($objects){}
+    public function borrar($objects){}
     public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
 	

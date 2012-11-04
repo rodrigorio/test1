@@ -176,12 +176,12 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
     }
 
     //estos metodos son para el abm de asociaciones de un EjeTematico a un seguimiento SCC
-    public function borrarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId)
+    public function borrarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $iEjeTematicoId)
     {
         try{
             $db = $this->conn;
             $db->execSQL("delete from diagnosticos_scc_x_ejes 
-                          where diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)." 
+                          where diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId)."
                           and ejes_id = ".$this->escInt($iEjeTematicoId));
             $db->commit();
         }catch(Exception $e){
@@ -189,7 +189,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
 
-    public function existeEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $iEjeTematicoId)
+    public function existeEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $iEjeTematicoId)
     {
     	try{
             $db = $this->conn;
@@ -199,7 +199,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                     FROM
                         diagnosticos_scc_x_ejes dxe
                     WHERE 
-                        dxe.diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                        dxe.diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId)."
                     AND
                         dxe.ejes_id = ".$this->escInt($iEjeTematicoId);
 
@@ -216,27 +216,31 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
 
-    public function guardarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico)
+    /**
+     * El controlador tiene que verificar que es el diagnostico de un seguimiento que haya
+     * creado el usuario que esta en sesion
+     */
+    public function guardarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
     {
         try{
-            if($this->existeEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico->getId())){
-                return $this->actualizarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico);
+            if($this->existeEjeTematicoSeguimientoSCC($iDiagnosticoSCCId, $oEjeTematico->getId())){
+                return $this->actualizarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
             } else {
-                return $this->asociarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico);
+                return $this->asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
             }
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), 0);
         }        
     }
 
-    public function asociarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico)
+    public function asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
     {
         try{
             $db = $this->conn;
             $sSQL = " insert into diagnosticos_scc_x_ejes ".
-                    " set diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)." ".
-                    " set ejes_id = ".$this->escInt($oEjeTematico->getId())." ".
-                    " set estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ";
+                    " set diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId).", ".
+                    " ejes_id = ".$this->escInt($oEjeTematico->getId()).", ".
+                    " estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ";
                     
             $db->execSQL($sSQL);
             $db->commit();
@@ -246,7 +250,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
     
-    public function actualizarEjeTematicoSeguimientoSCC($iSeguimientoSCCId, $oEjeTematico)
+    public function actualizarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
     {
         try{
             $db = $this->conn;

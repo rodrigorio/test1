@@ -69,7 +69,7 @@ abstract class ObjetivoAbstract
      *  @return date $fEvolucion
      */
     public function getEvolucion(){
-        return $this->dEvolucion;
+        return $this->fEvolucion;
     }
     /**
      *  @return  $oObjetivoRelevancia
