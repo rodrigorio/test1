@@ -240,7 +240,15 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
    }
-    
+
+   /**
+    * Ojo con este porque en realidad todo seguimiento debe tener asociado los registros en db
+    * correspondientes al diagnostico.
+    *
+    * El diagnostico se borra cuando se borra el seguimiento.
+    *
+    * No puede haber borrado en cascada entre las tablas de seguimiento y diagnostico
+    */
    public function borrar($iDiagnosticoId)
    {
         try{

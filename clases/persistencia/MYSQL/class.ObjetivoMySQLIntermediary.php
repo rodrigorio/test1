@@ -377,7 +377,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $sSQL = " insert into seguimiento_scc_x_objetivo_aprendizaje ".
                     " set seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId).", ".
                     " objetivos_aprendizaje_id = ".$this->escInt($oOjetivo->getId()).", ".
-                    " evolucion = ".$this->escDate($oObjetivo->getEvolucion()).", ".
+                    " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
                     " objetivo_relevancias_id ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId());
             
@@ -389,17 +389,18 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         }
     }
 
-    /*
     public function actualizarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo)
     {
         try{
             $db = $this->conn;
-            $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje set ".
-                    " estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ".
+            $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
+                    " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
+                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
+                    " objetivo_relevancias_id ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId())." ".
                     " WHERE
-                        dxe.diagnosticos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                        sxo.seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
                       AND
-                        dxe.ejes_id = ".$this->escInt($oEjeTematico->getId());
+                        sxo.objetivos_aprendizaje_id = ".$this->escInt($oOjetivo->getId());
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -420,8 +421,20 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-     */
 
+    public function borrarObjetivoAprendizajeDiagnosticoSCC($iSeguimientoSCCId, $iObjetivoId)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from seguimiento_scc_x_objetivo_aprendizaje
+                          where seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                          and objetivos_aprendizaje_id = ".$this->escInt($iObjetivoId));
+            $db->commit();
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+   
     public function actualizarCampoArray($objects, $cambios){}
     public function existe($objects){}
     public function insertar($objects){}
