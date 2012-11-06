@@ -1,12 +1,16 @@
 <?php
+
 class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 {
     /**
      * solo para generar los selects de filtros o las consultas dentro de esta clase,
-     * para cualquier otra cosa se utiliza el getClass en el objeto que hereda de SeguimientoAbstract.
+     * para cualquier otra cosa se utiliza los metodos
+     *
+     * isSeguimientoPersonalizado()
+     * isSeguimientoSCC()
      *
      * Los valores de las constantes TIENEN QUE COINCIDIR CON EL NOMBRE DE LAS CLASES CONCRETAS
-     * 'SeguimientoSCC', 'SeguimientoPersonalizado', etc.
+     * 'SeguimientoSCC', 'SeguimientoPersonalizado'
      * 
      */
     const TIPO_SEGUIMIENTO_SCC = "SeguimientoSCC";
@@ -18,12 +22,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             parent::__construct($conn);
     }
 
-    /**
-     * Singleton
-     *
-     * @param mixed $conn
-     * @return SeguimientoMySQLIntermediary
-     */
     public static function &getInstance(IMYSQL $conn) {
         if (null === self::$instance){
             self::$instance = new self($conn);
@@ -40,9 +38,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                      self::TIPO_SEGUIMIENTO_PERSONALIZADO => 'Seguimiento Personalizado');
     }
 
-    public final function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function buscar($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = clone($this->conn);
+
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                           s.id as iId,
                           s.discapacitados_id as iDiscapacitadoId,
@@ -100,8 +100,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 }else{
                     $WHERE[] = " sp.id != 'null' ";
                 }
-            }
-            
+            }            
             //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
             if(isset($filtro['fecha']) && null !== $filtro['fecha']){
                 if(is_array($filtro['fecha'])){                    
@@ -119,8 +118,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 $sSQL .= " order by sEstado asc, s.fechaCreacion desc ";
             }
             
-            if ($iIniLimit!==null && $iRecordCount!==null){
-                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            if($iIniLimit !== null && $iRecordCount !== null){
+                $sSQL .= " limit ".$this->escInt($iIniLimit).", ".$this->escInt($iRecordCount);
             }
             
             $db->query($sSQL);
@@ -131,18 +130,19 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $aSeguimientos = array();
             while($oObj = $db->oNextRecord()){
 
-                $oSeguimiento 			= new stdClass();
-                $oSeguimiento->iId 		= $oObj->iId;
-                $oSeguimiento->oDiscapacitado   = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
+                //todos los objetos que estan en relacion de composicion se crean en esta instancia.
+                $oSeguimiento = new stdClass();
+                $oSeguimiento->iId = $oObj->iId;
+                $oSeguimiento->oDiscapacitado = SeguimientosController::getInstance()->getDiscapacitadoById($oObj->iDiscapacitadoId);
                 $oSeguimiento->sFrecuenciaEncuentros = $oObj->sFrecuenciaEncuentros;
-                $oSeguimiento->sDiaHorario      = $oObj->sDiaHorario;
-                $oSeguimiento->oPractica        = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
-                $oSeguimiento->iUsuarioId       = $oObj->iUsuarioId;
-                $oSeguimiento->oUsuario         = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
-                $oSeguimiento->sAntecedentes    = $oObj->sAntecedentes;
-                $oSeguimiento->sPronostico      = $oObj->sPronostico;
-                $oSeguimiento->dFechaCreacion   = $oObj->dFechaCreacion;
-                $oSeguimiento->sEstado          = $oObj->sEstado;
+                $oSeguimiento->sDiaHorario = $oObj->sDiaHorario;
+                $oSeguimiento->oPractica = SeguimientosController::getInstance()->getPracticaById($oObj->iPracticaId);
+                $oSeguimiento->iUsuarioId = $oObj->iUsuarioId;
+                $oSeguimiento->oUsuario = ComunidadController::getInstance()->getUsuarioById($oObj->iUsuarioId);
+                $oSeguimiento->sAntecedentes = $oObj->sAntecedentes;
+                $oSeguimiento->sPronostico = $oObj->sPronostico;
+                $oSeguimiento->dFechaCreacion = $oObj->dFechaCreacion;
+                $oSeguimiento->sEstado = $oObj->sEstado;
 
                 if(null !== $oObj->iArchivoId){
                     $oAntecedentes = new stdClass();
@@ -160,8 +160,10 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 }
 
                 if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
+                    $oSeguimiento->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSeguimientoPersonalizadoById($oObj->iId);
                     $aSeguimientos[] = Factory::getSeguimientoSCCInstance($oSeguimiento);
                 }else{
+                    $oSeguimiento->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSeguimientoSCCById($oObj->iId);
                     $aSeguimientos[] = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                 }
             }
@@ -196,7 +198,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
     
@@ -286,9 +287,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 }
                 
                 if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
-              		$objSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
+                    $oSeguimiento->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSeguimientoSCCById($oObj->iId);
+                    $objSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
                 }else{
-                	$objSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
+                    $oSeguimiento->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSeguimientoPersonalizadoById($oObj->iId);
+                    $objSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                 }
                 $aSeguimientos[] = $objSeguimiento;
             }
@@ -303,77 +306,77 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     public function guardar($oSeguimiento)
     {        
         try{
-            $seguimientoClass = get_class($oSeguimiento);
-
             if($oSeguimiento->getId() !== null){
-                if($seguimientoClass == self::TIPO_SEGUIMIENTO_PERSONALIZADO){
+                if($oSeguimiento->isSeguimientoPersonalizado()){
                     return $this->actualizar($oSeguimiento);
                 }else{
                     return $this->actualizarSCC($oSeguimiento);
                 }
             }else{
-                if($seguimientoClass == self::TIPO_SEGUIMIENTO_PERSONALIZADO){
+                if($oSeguimiento->isSeguimientoPersonalizado()){
                     return $this->insertar($oSeguimiento);
                 }else{
                     return $this->insertarSCC($oSeguimiento);
                 }
-            }
-            
+            }            
         }catch(Exception $e){
-        	echo  $e->getMessage();
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
 
-     public function actualizar($oSeguimientoPersonalizado) {
+    public function actualizar($oSeguimientoPersonalizado)
+    {
         try{
-			$db = $this->conn;
-					
-			if($oSeguimientoPersonalizado->getUsuario()!= null){
-				$usuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-        	if($oSeguimientoPersonalizado->getDiscapacitado()!= null){
-				$discapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-            if($oSeguimientoPersonalizado->getPractica()!= null){
-				$practicaId = $oSeguimientoPersonalizado->getPractica()->getId();
-			}else {
-				$practicaId = null;
-			}
+            $db = $this->conn;
+
+            if($oSeguimientoPersonalizado->getUsuario() === null){
+                throw new Exception("El seguimiento no tiene usuario");
+            }
+            if($oSeguimientoPersonalizado->getDiscapacitado() === null){
+                throw new Exception("El seguimiento no tiene discapacitado asociado");
+            }
+            if($oSeguimientoPersonalizado->getDiagnostico() === null){
+                throw new Exception("El seguimiento no tiene diagnostico");
+            }
+
+            if($oSeguimientoPersonalizado->getPractica() !== null){
+                $practicaId = $oSeguimientoPersonalizado->getPractica()->getId();
+            }else {
+                $practicaId = null;
+            }
+
+            $usuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
+            $discapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
+            $iDiagnosticoId = $oSeguimientoPersonalizado->getDiagnostico()->getId();
 			
             $db->begin_transaction();
-            $sSQL = " update seguimientos " .
-                    " set frecuenciaEncuentros =".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario =".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ".
-                    " estado= ".$db->escape($oSeguimientoPersonalizado->getEstado(), true) ." ".
-                    " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
 
-			 // ver esto!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			 $diagnosticoPersonalizadoId = null;
+            $sSQL = " update seguimientos " .
+                    " set frecuenciaEncuentros = ".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
+                    " diaHorario = ".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
+                    " discapacitados_id = ".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id = ".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id = ".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
+                    " antecedentes = ".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
+                    " pronostico = ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ".
+                    " estado = ".$db->escape($oSeguimientoPersonalizado->getEstado(), true) ." ".
+                    " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
+
+            $db->execSQL($sSQL);
 			 
-             $sSQL =" update seguimientos_personalizados ".
-                    " set diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." ".
-					" WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
-			 $db->commit();
-			 return true;
+            $sSQL = " update seguimientos_personalizados ".
+                    " set diagnostico_personalizado_id = ".$db->escape($iDiagnosticoId,false,MYSQL_TYPE_INT)." ".
+                    " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
 	
-		}catch(Exception $e){
-			echo $e->getMessage();
+        }catch(Exception $e){
             $db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
+            throw new Exception($e->getMessage(), 0);
+        }
     }
 
     public function actualizarSCC($oSeguimientoSCC)
