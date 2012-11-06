@@ -46,9 +46,6 @@ class SeguimientoSCC extends SeguimientoAbstract
     }
 
     public function getDiagnostico(){
-    	if(!$this->oDiagnostico){
-            $this->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSCCBySeguimientoId($this->iId);
-    	}
     	return $this->oDiagnostico;
     }
 }
