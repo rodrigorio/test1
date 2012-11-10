@@ -202,13 +202,15 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                     " id = ".$this->escInt($iLastId).", ".
                     " codigo = ".$this->escStr($oDiagnosticoPersonalizado->getCodigo())." ";
 
-            $db->execSQL($sSQL);
-						
+            $db->execSQL($sSQL);						
             $db->commit();
+
+            $oDiagnosticoPersonalizado->setId($iLastId);
 
             return true;
         }catch(Exception $e){
             $db->rollback_transaction();
+            $oDiagnosticoPersonalizado->setId(null);
             throw $e;
         }
     }

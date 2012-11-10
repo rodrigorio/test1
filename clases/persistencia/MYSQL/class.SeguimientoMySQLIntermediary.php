@@ -304,9 +304,25 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     }
 
     public function guardar($oSeguimiento)
-    {        
+    {
+        if($oSeguimiento->getUsuario() === null){
+            throw new Exception("El seguimiento no tiene usuario");
+        }
+        if($oSeguimiento->getDiscapacitado() === null){
+            throw new Exception("El seguimiento no tiene discapacitado asociado");
+        }
+        if($oSeguimiento->getPractica() === null){
+            throw new Exception("El seguimiento no tiene practica");
+        }
+        
         try{
             if($oSeguimiento->getId() !== null){
+
+                //porque el diagnostico se crea cuando se inserta el seguimiento
+                if($oSeguimiento->getDiagnostico() === null){
+                    throw new Exception("El seguimiento no tiene diagnostico");
+                }
+                
                 if($oSeguimiento->isSeguimientoPersonalizado()){
                     return $this->actualizar($oSeguimiento);
                 }else{
@@ -329,43 +345,28 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         try{
             $db = $this->conn;
 
-            if($oSeguimientoPersonalizado->getUsuario() === null){
-                throw new Exception("El seguimiento no tiene usuario");
-            }
-            if($oSeguimientoPersonalizado->getDiscapacitado() === null){
-                throw new Exception("El seguimiento no tiene discapacitado asociado");
-            }
-            if($oSeguimientoPersonalizado->getDiagnostico() === null){
-                throw new Exception("El seguimiento no tiene diagnostico");
-            }
-
-            if($oSeguimientoPersonalizado->getPractica() !== null){
-                $practicaId = $oSeguimientoPersonalizado->getPractica()->getId();
-            }else {
-                $practicaId = null;
-            }
-
-            $usuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
-            $discapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
+            $iUsuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
+            $iDiscapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
             $iDiagnosticoId = $oSeguimientoPersonalizado->getDiagnostico()->getId();
+            $iPracticaId = $oSeguimientoPersonalizado->getPractica()->getId();
 			
             $db->begin_transaction();
 
-            $sSQL = " update seguimientos " .
-                    " set frecuenciaEncuentros = ".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario = ".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
-                    " discapacitados_id = ".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id = ".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id = ".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes = ".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
+            $sSQL = " UPDATE seguimientos SET ".
+                    " frecuenciaEncuentros = ".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", ".
+                    " diaHorario = ".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", ".
+                    " discapacitados_id = ".$db->escape($iDiscapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id = ".$db->escape($iUsuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id = ".$db->escape($iPracticaId,false,MYSQL_TYPE_INT).", ".
+                    " antecedentes = ".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", ".
                     " pronostico = ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) .", ".
-                    " estado = ".$db->escape($oSeguimientoPersonalizado->getEstado(), true) ." ".
+                    " estado = ".$db->escape($oSeguimientoPersonalizado->getEstado(), true)." ".
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
 			 
-            $sSQL = " update seguimientos_personalizados ".
-                    " set diagnostico_personalizado_id = ".$db->escape($iDiagnosticoId,false,MYSQL_TYPE_INT)." ".
+            $sSQL = " UPDATE seguimientos_personalizados SET ".
+                    " diagnosticos_personalizado_id = ".$db->escape($iDiagnosticoId,false,MYSQL_TYPE_INT)." ".
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
@@ -382,193 +383,167 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     public function actualizarSCC($oSeguimientoSCC)
     {
         try{
-			$db = $this->conn;
+            $db = $this->conn;
 					
-			if($oSeguimientoSCC->getUsuario()!= null){
-				$usuarioId = $oSeguimientoSCC->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-        	if($oSeguimientoSCC->getDiscapacitado()!= null){
-				$discapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-            if($oSeguimientoSCC->getPractica()!= null){
-				$practicaId = $oSeguimientoSCC->getPractica()->getId();
-			}else {
-				$practicaId = null;
-			}
+            $iUsuarioId = $oSeguimientoSCC->getUsuario()->getId();
+            $iDiscapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
+            $iDiagnosticoId = $oSeguimientoSCC->getDiagnostico()->getId();
+            $iPracticaId = $oSeguimientoSCC->getPractica()->getId();
 			
             $db->begin_transaction();
-            $sSQL = " update seguimientos " .
-                    " set frecuenciaEncuentros =".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
-                    " diaHorario =".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                    " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
-                    " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) .", ".
-            		" estado= ".$db->escape($oSeguimientoSCC->getEstado(), true) ." ".
+            
+            $sSQL = " UPDATE seguimientos SET ".
+                    " frecuenciaEncuentros = ".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
+                    " diaHorario = ".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
+                    " discapacitados_id = ".$db->escape($iDiscapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id = ".$db->escape($iUsuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id = ".$db->escape($iPracticaId,false,MYSQL_TYPE_INT).", ".
+                    " antecedentes = ".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
+                    " pronostico = ".$db->escape($oSeguimientoSCC->getPronostico(), true) .", ".
+                    " estado = ".$db->escape($oSeguimientoSCC->getEstado(), true) ." ".
                     " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 
-			 $db->execSQL($sSQL);
-
+            $db->execSQL($sSQL);
 			 
-			 $diagnosticoSCCId = null;
-			 
-             $sSQL =" update seguimientos_scc ".
-                    " set diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." ".
-					" WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
-			 $db->execSQL($sSQL);
-			 $db->commit();
+            $sSQL = " UPDATE seguimientos_scc SET ".
+                    " diagnosticos_scc_id = ".$db->escape($iDiagnosticoId,false,MYSQL_TYPE_INT)." ".
+                    " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 
-                         return true;
+            $db->execSQL($sSQL);
+            $db->commit();
 
+            return true;
 
-		}catch(Exception $e){
+        }catch(Exception $e){
             $db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-		}
+            throw new Exception($e->getMessage(), 0);
+        }
     }
     
     public function insertar($oSeguimientoPersonalizado)
-   {
-		try{
-                        $db = $this->conn;
-					
-			if($oSeguimientoPersonalizado->getUsuario()!= null){
-				$usuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-                        if($oSeguimientoPersonalizado->getDiscapacitado()!= null){
-				$discapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-                        if($oSeguimientoPersonalizado->getPractica()!= null){
-				$practicaId = $oSeguimientoPersonalizado->getPractica()->getId();
-			}else {
-				$practicaId = null;
-			}
-			
-			
-			$db->begin_transaction();
-			$sSQL =	" insert into seguimientos ".
-                        " set frecuenciaEncuentros =".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", " .
-                        " diaHorario =".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", " .
-						" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                        " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                        " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
-                        " antecedentes =".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", " .
-                        " pronostico= ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ";
-			
-			$db->execSQL($sSQL);
-			$iLastId = $db->insert_id();
-			
-			$oDiagnostico = Factory::getDiagnosticoPersonalizadoInstance(new stdClass());
-			$diagnosticoPersonalizadoId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
-			
-			$sSQL =" insert into seguimientos_personalizados set ".
-                        " id=".$db->escape($iLastId,false).", " .
-                        " diagnostico_personalizado_id=".$db->escape($diagnosticoPersonalizadoId,false,MYSQL_TYPE_INT)." " ;
-			$db->execSQL($sSQL);
+    {
+        try{
+            $db = $this->conn;
 
-			$sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1 ";
+            $iUsuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
+            $iDiscapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
+            $iPracticaId = $oSeguimientoPersonalizado->getPractica()->getId();
+			
+            $db->begin_transaction();
+
+            $sSQL = " INSERT INTO seguimientos ".
+                    " set frecuenciaEncuentros = ".$db->escape($oSeguimientoPersonalizado->getFrecuenciaEncuentros(),true).", ".
+                    " diaHorario = ".$db->escape($oSeguimientoPersonalizado->getDiaHorario(),true).", ".
+                    " discapacitados_id = ".$db->escape($iDiscapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id = ".$db->escape($iUsuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id = ".$db->escape($iPracticaId,false,MYSQL_TYPE_INT).", ".
+                    " antecedentes = ".$db->escape($oSeguimientoPersonalizado->getAntecedentes(),true).", ".
+                    " pronostico = ".$db->escape($oSeguimientoPersonalizado->getPronostico(), true) ." ";
+
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+
+            $oDiagnostico = Factory::getDiagnosticoPersonalizadoInstance(new stdClass());
+            SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+
+            $sSQL = " INSERT INTO seguimientos_personalizados SET ".
+                    " id = ".$this->escInt($iLastId).", ".
+                    " diagnostico_personalizado_id = ".$db->escape($oDiagnostico->getId(),false,MYSQL_TYPE_INT)." ";
+
+            $db->execSQL($sSQL);
+
+            //MAL SE ASOCIAN LAS VARIABLES DE LA UNIDAD FIJA.
+            /*
+            $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1";
             $db->query($sSQL);
             while($oObj = $db->oNextRecord()){
             	$iUnidadId = $oObj->iId;
             }
 
-            $sSQL =" insert into seguimiento_x_unidades set ".
-            " unidad_id = ".$db->escape($iUnidadId,false).", " .
-            " seguimiento_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT)." " ;
+            $sSQL = " insert into seguimiento_x_unidades set ".
+                    " unidad_id = ".$this->escInt($iUnidadId).", ".
+                    " seguimiento_id = ".$this->escInt($iLastId)." ";
+             */
 
-			$db->execSQL($sSQL);
-			$db->commit();
-			return true;
+            $db->execSQL($sSQL);
+            $db->commit();
 
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
-   }
+            $oSeguimientoPersonalizado->setId($iLastId);
+            $oSeguimientoPersonalizado->setDiagnostico($oDiagnostico);
 
+            return true;
+
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            $oSeguimientoPersonalizado->setId(null);
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
    
-public function insertarSCC($oSeguimientoSCC)
-   {
-		try{
-		    $db = $this->conn;
-					
-			if($oSeguimientoSCC->getUsuario()!= null){
-				$usuarioId = $oSeguimientoSCC->getUsuario()->getId();
-			}else {
-				$usuarioId = null;
-			}
-        	if($oSeguimientoSCC->getDiscapacitado()!= null){
-				$discapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
-			}else {
-				$discapacitadoId = null;
-			}
-            if($oSeguimientoSCC->getPractica()!= null){
-				$practicaId = $oSeguimientoSCC->getpractica()->getId();
-			}else {
-				$practicaId = null;
-			}
-			
-			
-			$db->begin_transaction();
-			$sSQL =	" insert into seguimientos ".
+    public function insertarSCC($oSeguimientoSCC)
+    {
+        try{
+
+            $iUsuarioId = $oSeguimientoSCC->getUsuario()->getId();
+            $iDiscapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
+            $iPracticaId = $oSeguimientoSCC->getPractica()->getId();
+
+            $db = $this->conn;
+									
+            $db->begin_transaction();
+
+            $sSQL = " insert into seguimientos ".
                     " set frecuenciaEncuentros =".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
                     " diaHorario =".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
-					" discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
                     " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
                     " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
                     " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ";
 			
-			$db->execSQL($sSQL);
-			$iLastId = $db->insert_id();
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
 			
-			$oDiagnostico = Factory::getDiagnosticoSCCInstance(new stdClass());
-			$diagnosticoSCCId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+            $oDiagnostico = Factory::getDiagnosticoSCCInstance(new stdClass());
+            $diagnosticoSCCId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
 			
-			$sSQL =" insert into seguimientos_scc set ".
-                    " id=".$db->escape($iLastId,false).", " .
-                    " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
+            $sSQL =" insert into seguimientos_scc set ".
+            " id=".$db->escape($iLastId,false).", " .
+            " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
 		
-			$db->execSQL($sSQL);
-			$db->commit();
-			return true;
+            $db->execSQL($sSQL);
+            $db->commit();
+            return true;
 
-		}catch(Exception $e){
-			$db->rollback_transaction();
-			throw new Exception($e->getMessage(), 0);
-			return false;
-		}
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
    }
     
    public function borrar($oSeguimiento)
    {
+       //REVISAR... cuando se borra un seguimiento borrar todo lo q no desaparece x cascada.
+
+       /*
         try{
             $db = $this->conn;
             
-			$db->begin_transaction();
+            $db->begin_transaction();
 			
-			$iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
-			$iSeguimientoId = $oSeguimiento->getId();
+            $iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
+            $iSeguimientoId = $oSeguimiento->getId();
 			
             $db->execSQL("delete from diagnosticos where id = '".$iDiagnosticoId."'");						            
             $db->execSQL("delete from seguimientos where id = '".$iSeguimientoId."'");
                         
             $db->commit();
             return true;
+            
         }catch(Exception $e){
-            return false;
             throw new Exception($e->getMessage(), 0);
         }
+        */
     }
 
     /**
