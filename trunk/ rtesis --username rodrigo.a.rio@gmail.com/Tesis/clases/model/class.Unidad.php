@@ -1,109 +1,112 @@
 <?php
-/**
- * Description of class Unidad
- *
- * @author Andrés
- */
+
 class Unidad{
-	private $iId;
-	private $sNombre;
-	private $sDescripcion;
-	private $iEditable;
-	private $dFechaHora;
-	private $iPorDefecto;
+    
+    private $iId;
+    private $sNombre;
+    private $sDescripcion;
+    private $bEditable;
+    private $dFechaHora;
+    private $bPorDefecto;
+
+    /**
+     * Cuando las variables son las de una unidad que esta asociada a un seguimiento
+     * entonces estas deben tener el valor mas reciente.
+     *
+     * Tambien tiene que haber metodos para obtener las variables de una unidad
+     * pero que los valores dependan de una fecha determinada.
+     *
+     * TODO on demand, porque depende de lo que se necesite en el momento, y es mucha info.
+     *
+     * FIJARSE EN LA DB PORQUE RODRIGO LO HIZO MAL DONDE CARAJO GUARDAS LOS VALORES POR FECHA
+     */
+    private $aVariables;
+			
+    public function __construct(stdClass $oParams = null) {
+        $vArray = get_object_vars($oParams);
+        $vThisVars = get_class_vars(__CLASS__);
+        if (is_array($vArray)) {
+            foreach ($vArray as $varName => $value) {
+                if (array_key_exists($varName, $vThisVars)) {
+                    $this->$varName = $value;
+                } else {
+                    throw new Exception("Unknown property $varName in " . __CLASS__, -1);
+                }
+            }
+        }
+    }
 	
-		
-	/**
- 	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
-	 * @param stdClass $oParams
-	 */
-	public function __construct(stdClass $oParams = null){
-		$vArray = get_object_vars($oParams);
-		$vThisVars = get_class_vars(__CLASS__);
-		if(is_array($vArray)){
-			foreach($vArray as $varName => $value){
-				if(array_key_exists($varName,$vThisVars)){
-					$this->$varName = $value;
-				}else{
-					throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
-				}
-			}
-		}
-	}
-	
-/**
- 	 *  @param int $iId
-	 */
-	public function setId($iId){
-		$this->iId = (int)$iId;
-	}
+    /**
+     *  @param int $iId
+     */
+    public function setId($iId){
+            $this->iId = (int)$iId;
+    }
+
    /**
-	 * @param string $sNombre
-	 */
-	public function setNombre($sNombre){
-		$this->sNombre = $sNombre;
-	}
+    * @param string $sNombre
+    */
+    public function setNombre($sNombre){
+        $this->sNombre = $sNombre;
+    }
+    
     /**
-	 * @param string $sDescripcion
-	 */
-	public function setDescripcion($sDescripcion){
-		$this->sDescripcion = $sDescripcion;
-	}
+     * @param string $sDescripcion
+     */
+    public function setDescripcion($sDescripcion){
+            $this->sDescripcion = $sDescripcion;
+    }
+
     /**
- 	 *  @param int $iEditable
-	 */
-	public function setEditable($iEditable){
-		$this->iEditable = (int)$iEditable;
-	}
-    /**
- 	 *  @param int $dFechaHora
-	 */
-	public function setFechaHora($dFechaHora){
-		$this->dFechaHora = (int)$dFechaHora;
-	}
-	/**
- 	 *  @param int $iPorDefecto
-	 */
-	public function setPorDefecto($iPorDefecto){
-		$this->iPorDefecto= (int)$iPorDefecto;
-	}	
+     *  @param int $dFechaHora
+     */
+    public function setFechaHora($dFechaHora){
+            $this->dFechaHora = (int)$dFechaHora;
+    }
 	
-	//gets
-	/**
-	 *  @return int $iId
-	 */
-	public function getId(){
-		return $this->iId ;
-	}
     /**
-	 * @return string $sNombre
-	 */
-	public function getNombre(){
-		return $this->sNombre;
-	}
+     *  @return int $iId
+     */
+    public function getId(){
+            return $this->iId ;
+    }
+
     /**
-	 * @return string $sDescripcion
-	 */
-	public function getDescripcion(){
-		return $this->sDescripcion;
-	}
-	/**
-	 * @return string $iEditable
-	 */
-	public function getEditable(){
-		return $this->iEditable;
-	}
+     * @return string $sNombre
+     */
+    public function getNombre(){
+            return $this->sNombre;
+    }
+
     /**
-	 * @return string $dFechaHora
-	 */
-	public function getFechaHora(){
-		return $this->dFechaHora;
-	}
+     * @return string $sDescripcion
+     */
+    public function getDescripcion(){
+            return $this->sDescripcion;
+    }
+
     /**
-	 * @return string $iPorDefecto
-	 */
-	public function getPorDefecto(){
-		return $this->iPorDefecto;
-	}
-   
+     * @return string $dFechaHora
+     */
+    public function getFechaHora(){
+            return $this->dFechaHora;
+    }
+
+    public function isEditable($flag = null){
+        if(null !== $flag){
+            $this->bEditable = $flag ? true : false;
+            return $this;
+        }else{
+            return $this->bEditable;
+        }
+    }
+
+    public function isPorDefecto($flag = null){
+        if(null !== $flag){
+            $this->bPorDefecto = $flag ? true : false;
+            return $this;
+        }else{
+            return $this->bPorDefecto;
+        }
+    }    
 }

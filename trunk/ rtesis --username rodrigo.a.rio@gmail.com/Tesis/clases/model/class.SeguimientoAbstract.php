@@ -45,6 +45,8 @@ abstract class SeguimientoAbstract
     protected $oAntecedentes;
 
     protected $oDiagnostico;
+
+    protected $aUnidades = null;
     
     public function __construct(){}
 
@@ -228,7 +230,26 @@ abstract class SeguimientoAbstract
     public function setArchivoAntecedentes($oAntecedentes){
         $this->oAntecedentes = $oAntecedentes;
     }
-        
+
+    public function getUnidades()
+    {
+        if($this->aUnidades === null){
+            $this->aUnidades = SeguimientosController::getInstance()->obtenerUnidadesSeguimiento($this->iId);
+        }
+        return $this->aUnidades;
+    }
+
+    public function setUnidades($aUnidades){
+        $this->aUnidades = $aUnidades;
+        return $this;
+    }
+
+    public function addUnidad($oUnidad)
+    {
+        $this->aUnidades[] = $oUnidad;
+        return $this;
+    }
+
     abstract public function getObjetivos();
     abstract public function setObjetivos($aObjetivos);
     abstract public function addObjetivo($aObjetivo);
