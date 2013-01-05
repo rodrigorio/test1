@@ -71,12 +71,13 @@ var optionsAjaxFormLogin = {
             }
             $('#msg_form_login .msg').html(mensaje);
             $('#msg_form_login').addClass("error").fadeIn('slow');
+            setWaitingStatus('formLogin', false);
         }else{
             //si se logueo de forma satisfactoria redirecciono
             location = data.redirect;
         }
-        setWaitingStatus('formLogin', false);
     }
+
 };
 
 var validateFormRecuperarContrasenia = {
