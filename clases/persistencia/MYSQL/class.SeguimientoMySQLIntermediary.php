@@ -452,8 +452,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
             $db->execSQL($sSQL);
 
-            //MAL SE ASOCIAN LAS VARIABLES DE LA UNIDAD FIJA.
-            /*
+          
             $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1";
             $db->query($sSQL);
             while($oObj = $db->oNextRecord()){
@@ -463,7 +462,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $sSQL = " insert into seguimiento_x_unidades set ".
                     " unidad_id = ".$this->escInt($iUnidadId).", ".
                     " seguimiento_id = ".$this->escInt($iLastId)." ";
-             */
+            
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -495,9 +494,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $sSQL = " insert into seguimientos ".
                     " set frecuenciaEncuentros =".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
                     " diaHorario =".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
-                    " discapacitados_id =".$db->escape($discapacitadoId,false,MYSQL_TYPE_INT).", ".
-                    " usuarios_id =".$db->escape($usuarioId,false,MYSQL_TYPE_INT).", ".
-                    " practicas_id =".$db->escape($practicaId,false,MYSQL_TYPE_INT).", ".
+                    " discapacitados_id =".$db->escape($iDiscapacitadoId,false,MYSQL_TYPE_INT).", ".
+                    " usuarios_id =".$db->escape($iUsuarioId,false,MYSQL_TYPE_INT).", ".
+                    " practicas_id =".$db->escape($iPracticaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
                     " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ";
 			
@@ -509,7 +508,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			
             $sSQL =" insert into seguimientos_scc set ".
             " id=".$db->escape($iLastId,false).", " .
-            " diagnostico_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
+            " diagnosticos_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
 		
             $db->execSQL($sSQL);
             $db->commit();

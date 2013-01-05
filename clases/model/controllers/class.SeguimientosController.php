@@ -923,4 +923,15 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
+    public function getDiagnosticoSeguimientoSCCById($iDiagnosticoId)
+    {
+    	try{
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            return $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    
+    }
 }

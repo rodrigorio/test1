@@ -24,12 +24,9 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
     }
     
    /**
-    * Siempre que se obtiene, se devuelve como maximo un diagnostico porque
-    * en las vistas no hay listado de diagnostico, es solo uno por seguimiento.
-    * 
-    * Este obtener por lo tanto no devuelve un array sino un unico objeto
+    *
     */
-   public final function obtenerSCC($iSeguimientoId){
+   public final function obtenerSCC($filtro){
         try{
             $db = clone($this->conn);
 
@@ -46,6 +43,16 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                         diagnosticos_scc_x_ejes	dxe ON dscc.id = dxe.ejes_id
                     WHERE s.id = ".$this->escInt($iSeguimientoId)." limit 1 ";
             
+         	/*if(!empty($filtro)){
+                $sSQL .= " WHERE ".$this->crearCondicionSimple($filtro);
+            }
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            if ($iIniLimit!==null && $iRecordCount!==null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+            */
             $db->query($sSQL);
             $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
             if(empty($iRecordsTotal)){ return null; }
@@ -173,7 +180,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 
             $sSQL = " update diagnosticos " .
                     " set descripcion = ".$this->escStr($oDiagnosticoSCC->getDescripcion())." ".
-                    " WHERE id = ".$db->escInt($oDiagnosticoSCC->getId())." ";
+                    " WHERE id = ".$this->escInt($oDiagnosticoSCC->getId())." ";
              
             $db->execSQL($sSQL);
             $db->commit();
@@ -192,7 +199,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $db->begin_transaction();
 
             $sSQL = " insert into diagnosticos ".
-                    " set descripcion = ".$db->escStr($oDiagnosticoPersonalizado->getDescripcion())." ";
+                    " set descripcion = ".$this->escStr($oDiagnosticoPersonalizado->getDescripcion())." ";
 			
             $db->execSQL($sSQL);
 
@@ -230,7 +237,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $iLastId = $db->insert_id();
 
             $sSQL = " insert into diagnosticos_scc set ".
-                    " id = ".$db->escInt($iLastId)." ";
+                    " id = ".$this->escInt($iLastId)." ";
 
             $db->execSQL($sSQL);
             $db->commit();
