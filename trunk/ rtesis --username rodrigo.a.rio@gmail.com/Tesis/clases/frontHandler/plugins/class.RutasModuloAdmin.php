@@ -422,69 +422,115 @@ class RutasModuloAdmin
         $route = new RegexRoute('admin/procesar-nivel',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'procesarNivel'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesProcesarNivel', $route);
+        $router->addRoute('adminObjetivosAprendizajeProcesarNivel', $route);
         $route = new RegexRoute('admin/listar-niveles',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'listarNiveles'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesListarNiveles', $route);
+        $router->addRoute('adminObjetivosAprendizajeListarNiveles', $route);
         $route = new RegexRoute('admin/form-nivel',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'formularioNivel'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesFormularioNivel', $route);
+        $router->addRoute('adminObjetivosAprendizajeFormularioNivel', $route);
 
         //ciclos
         $route = new RegexRoute('admin/procesar-ciclo',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'procesarCiclo'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesProcesarCiclo', $route);
+        $router->addRoute('adminObjetivosAprendizajeProcesarCiclo', $route);
         $route = new RegexRoute('admin/listar-ciclos',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'listarCiclos'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesListarCiclos', $route);
+        $router->addRoute('adminObjetivosAprendizajeListarCiclos', $route);
         $route = new RegexRoute('admin/form-ciclo',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'formularioCiclo'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesFormularioCiclo', $route);
+        $router->addRoute('adminObjetivosAprendizajeFormularioCiclo', $route);
 
         //areas
         $route = new RegexRoute('admin/procesar-area',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'procesarArea'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesProcesarArea', $route);
+        $router->addRoute('adminObjetivosAprendizajeProcesarArea', $route);
         $route = new RegexRoute('admin/listar-areas',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'listarAreas'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesListarAreas', $route);
+        $router->addRoute('adminObjetivosAprendizajeListarAreas', $route);
         $route = new RegexRoute('admin/form-area',
                                 array(
                                         'module' => 'admin',
-                                        'controller' => 'objetivosCurriculares',
+                                        'controller' => 'objetivosAprendizaje',
                                         'action'     => 'formularioArea'
                                 ));
-        $router->addRoute('adminObjetivosCurricularesFormularioArea', $route);
+        $router->addRoute('adminObjetivosAprendizajeFormularioArea', $route);
+
+        //ejes
+        $route = new RegexRoute('admin/procesar-eje',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'procesarEje'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeProcesarEje', $route);
+        $route = new RegexRoute('admin/listar-ejes',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'listarEjes'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeListarEjes', $route);
+        $route = new RegexRoute('admin/form-eje',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'formularioEje'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeFormularioEje', $route);
+
+        //objetivos aprendizaje
+        $route = new RegexRoute('admin/procesar-objetivo-aprendizaje',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'procesarObjetivoAprendizaje'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeProcesarObjetivoAprendizaje', $route);
+        $route = new RegexRoute('admin/listar-objetivos-aprendizaje',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'listarObjetivosAprendizaje'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeListarObjetivosAprendizaje', $route);
+        $route = new RegexRoute('admin/form-objetivo-aprendizaje',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'formularioObjetivoAprendizaje'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeFormularioObjetivoAprendizaje', $route);
     }
 }
