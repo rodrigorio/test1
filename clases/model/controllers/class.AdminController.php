@@ -1095,4 +1095,28 @@ class AdminController
             throw new Exception($e);
         }
     }
+    /**
+     * Carga el Eje Tematico por el Admin
+     *
+     */
+    public function guardarEjeTematico($oEjeTematico){
+        try{
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->guardar($oEjeTematico);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     *  Elimina el eje tematico
+     */
+    public function eliminarEjeTematico($oEjeTematico)
+    {
+        try{
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->Borrar($oEjeTematico);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
 }

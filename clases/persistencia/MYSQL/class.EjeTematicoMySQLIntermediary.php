@@ -216,10 +216,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
 
-    /**
-     * El controlador tiene que verificar que es el diagnostico de un seguimiento que haya
-     * creado el usuario que esta en sesion
-     */
+   
     public function guardarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
     {
         try{
@@ -232,6 +229,10 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             throw new Exception($e->getMessage(), 0);
         }        
     }
+     /**
+     * El controlador de seguimiento con el metodo "isDiagnosticoSeguimientoUsuario" tiene que verificar que es el diagnostico de un seguimiento que haya
+     * creado el usuario que esta en sesion
+     */
 
     public function asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
     {
@@ -266,6 +267,34 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+      public function isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimientos_scc sd
+                        JOIN seguimientos s ON sd.id = s.id
+                      WHERE
+                        sd.diagnostico_scc_id = ".$this->escInt($iDiagnosticoId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
         }
     }
 }
