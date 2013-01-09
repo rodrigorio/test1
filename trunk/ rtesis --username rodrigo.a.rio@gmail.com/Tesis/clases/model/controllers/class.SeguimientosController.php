@@ -923,6 +923,47 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    /**
+     * Obtener Eje Tematico
+     *
+     */
+   public function getEjeTematico($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+      {
+    	try{
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Guardar Eje Tematico
+     *
+     */
+   public function guardarEjeTematico($iDiagnosticoSCCId,$oEjeTematico){
+        try{
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->guardarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }    
+    /**
+     * Devuelve true si el diagnóstico pertenece a un seguimiento creado por el usuario que esta logueado.
+     *
+     * @return boolean true si la foto pertenece al integrante logueado.
+     */
+    public function isDiagnosticoSeguimientoUsuario($iDiagnosticoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
     
     public function getDiagnosticoSeguimientoSCCById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
