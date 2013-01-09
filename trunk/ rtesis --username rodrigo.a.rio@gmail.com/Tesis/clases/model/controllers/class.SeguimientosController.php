@@ -924,14 +924,25 @@ class SeguimientosController
         }
     }
     
-    public function getDiagnosticoSeguimientoSCCById($iDiagnosticoId)
+    public function getDiagnosticoSeguimientoSCCById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
     	try{
+    		$filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
-            return $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal);
+            return $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
+    }
     
+	public function getDiagnosticoSeguimientoPersonalizadoById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('s.id' => $iSeguimientoId);
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            return $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 }
