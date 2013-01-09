@@ -238,7 +238,7 @@ class Factory
         $oArea = new Area($obj);
         return $oArea;
     }
- 	/**
+    /**
      * @param stdClass $obj
      * @return Nivel|null
      */
@@ -246,7 +246,7 @@ class Factory
         $oNivel = new Nivel($obj);
         return $oNivel;
     }
- 	/**
+    /**
      * @param stdClass $obj
      * @return Ciclo|null
      */
@@ -254,12 +254,18 @@ class Factory
         $oCiclo = new Ciclo($obj);
         return $oCiclo;
     }
-    
+    /**
+     * @param stdClass $obj
+     * @return EjeTematico|null
+     */
     public static function &getEjeTematicoInstance(stdClass $obj){
         $oEjeTematico = new EjeTematico($obj);
         return $oEjeTematico;
     }
-    
+    /**
+     * @param stdClass $obj
+     * @return ObjetivoAprendizaje|null
+     */
     public static function &getObjetivoAprendizajeInstance(stdClass $obj){
         $oObjetivoAprendizaje = new ObjetivoAprendizaje($obj);
         return $oObjetivoAprendizaje;

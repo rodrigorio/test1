@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Esta clase tiene todo el manejo de las vistas del ABM de la rama
+ * Nivel, Ciclo, Area, Eje, Obj Aprendizaje
+ *
+ */
 class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 {
     private function setFrameTemplate(){
@@ -22,7 +27,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
         //js de home
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "jsContent", "JsContent");
         
         return $this;
     }
@@ -49,6 +54,86 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
             $this->borrarNivel();
             return;
         }       
+    }
+
+    public function procesarCiclo()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        if($this->getRequest()->has('crearCiclo')){
+            $this->crearCiclo();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarCiclo')){
+            $this->modificarCiclo();
+            return;
+        }
+
+        if($this->getRequest()->has('borrarCiclo')){
+            $this->borrarCiclo();
+            return;
+        }
+    }
+
+    public function procesarArea()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        if($this->getRequest()->has('crearArea')){
+            $this->crearArea();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarArea')){
+            $this->modificarArea();
+            return;
+        }
+
+        if($this->getRequest()->has('borrarArea')){
+            $this->borrarArea();
+            return;
+        }
+    }
+
+    public function procesarEje()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        if($this->getRequest()->has('crearEje')){
+            $this->crearEje();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarEje')){
+            $this->modificarEje();
+            return;
+        }
+
+        if($this->getRequest()->has('borrarEje')){
+            $this->borrarEje();
+            return;
+        }
+    }
+
+    public function procesarObjetivoAprendizaje()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        if($this->getRequest()->has('crearObjetivoAprendizaje')){
+            $this->crearObjetivoAprendizaje();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarObjetivoAprendizaje')){
+            $this->modificarObjetivoAprendizaje();
+            return;
+        }
+
+        if($this->getRequest()->has('borrarObjetivoAprendizaje')){
+            $this->borrarObjetivoAprendizaje();
+            return;
+        }
     }
 
     private function crearNivel()
@@ -79,6 +164,105 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();            
+    }
+
+    private function crearCiclo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iNivelId = $this->getRequest()->getPost("nivelId");
+            $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
+
+            if(AdminController::getInstance()->existeCicloByDescripcion($sDescripcion, $oNivel)){
+                $this->getJsonHelper()->setMessage("Ya existe un ciclo con ese nombre dentro del nivel.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+            
+            $oCiclo = new stdClass();
+            $oCiclo->sDescripcion = $sDescripcion;
+            $oCiclo = Factory::getCicloInstance($oCiclo);
+            $oCiclo->setNivel($oNivel);
+
+            AdminController::getInstance()->guardarCiclo($oCiclo);
+            $this->getJsonHelper()->setMessage("El ciclo fue creado con éxito dentro del nivel");
+            $this->getJsonHelper()->setValor("accion", "crearCiclo");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function crearArea()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iCicloId = $this->getRequest()->getPost("cicloId");
+            $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+            
+            if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)){
+                $this->getJsonHelper()->setMessage("Ya existe un área con ese nombre en el ciclo seleccionado.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oArea = new stdClass();
+            $oArea->sDescripcion = $sDescripcion;
+            $oArea = Factory::getAreaInstance($oArea);
+            $oArea->setCiclo($oCiclo);
+
+            AdminController::getInstance()->guardarArea($oArea);
+            $this->getJsonHelper()->setMessage("El área fue creada con éxito dentro del ciclo");
+            $this->getJsonHelper()->setValor("accion", "crearArea");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function crearEje()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iAreaId = $this->getRequest()->getPost("areaId");
+            $oArea = AdminController::getInstance()->getAreaById($iAreaId);
+
+            if(AdminController::getInstance()->verificarExisteEjeByDescripcion($sDescripcion, $oArea)){
+                $this->getJsonHelper()->setMessage("Ya existe un Eje Temático con ese nombre en el área seleccionada.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oEjeTematico = new stdClass();
+            $oEjeTematico->sDescripcion = $sDescripcion;
+            $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
+            $oEjeTematico->setArea($oArea);
+
+            AdminController::getInstance()->guardarEjeTematico($oEjeTematico);
+            $this->getJsonHelper()->setMessage("El Eje Temático fue creado con éxito dentro del Área");
+            $this->getJsonHelper()->setValor("accion", "crearEje");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function modificarNivel()
@@ -246,57 +430,6 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
-    }
-
-    public function procesarCiclo()
-    {
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-
-        if($this->getRequest()->has('crearCiclo')){
-            $this->crearCiclo();
-            return;
-        }
-
-        if($this->getRequest()->has('modificarCiclo')){
-            $this->modificarCiclo();
-            return;
-        }
-
-        if($this->getRequest()->has('borrarCiclo')){
-            $this->borrarCiclo();
-            return;
-        }
-    }
-
-    private function crearCiclo()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $sDescripcion = $this->getRequest()->getPost("descripcion");
-
-            if(AdminController::getInstance()->existeNivelByDescripcion($sDescripcion)){
-                $this->getJsonHelper()->setMessage("Ya existe un nivel con ese nombre.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            $oNivel = new stdClass();
-            $oNivel->sDescripcion = $sDescripcion;
-            $oNivel = Factory::getNivelInstance($oNivel);
-
-            AdminController::getInstance()->guardarNivel($oNivel);
-            $this->getJsonHelper()->setMessage("El nivel fue creado con éxito");
-            $this->getJsonHelper()->setValor("accion", "crearNivel");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();  
     }
 
     private function modificarCiclo()
@@ -478,59 +611,6 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }
     }
     
-    public function procesarArea()
-    {
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-
-        if($this->getRequest()->has('crearArea')){
-            $this->crearArea();
-            return;
-        }
-
-        if($this->getRequest()->has('modificarArea')){
-            $this->modificarArea();
-            return;
-        }
-
-        if($this->getRequest()->has('borrarArea')){
-            $this->borrarArea();
-            return;
-        }
-    }
-
-    private function crearArea()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $sNombre = $this->getRequest()->getPost("nombre");
-            $sDescripcion = $this->getRequest()->getPost("descripcion");
-
-            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            $oCategoria = new stdClass();
-            $oCategoria->sNombre = $sNombre;
-            $oCategoria->sDescripcion = $sDescripcion;
-            $oCategoria->sUrlToken = $this->getInflectorHelper()->urlize($sNombre);
-            $oCategoria = Factory::getCategoriaInstance($oCategoria);
-
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor("accion", "crearArea");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
     private function modificarArea()
     {
         try{
