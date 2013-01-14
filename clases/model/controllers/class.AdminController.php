@@ -1260,10 +1260,10 @@ class AdminController
      * Carga el objetivo aprendizaje por el Admin
      *
      */
-    public function guardarObjetivoAprendizaje($iSeguimientoSCCId,$oObjetivoAprendizaje){
+    public function guardarObjetivoAprendizaje($oObjetivoAprendizaje){
         try{
             $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoAprendizajeIntermediary->guardarObjetivoAprendizaje($iSeguimientoSCCId,$oObjetivoAprendizaje);
+            return $oObjetivoAprendizajeIntermediary->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
