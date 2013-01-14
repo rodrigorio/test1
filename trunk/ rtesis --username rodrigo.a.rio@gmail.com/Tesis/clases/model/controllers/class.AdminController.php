@@ -1119,4 +1119,165 @@ class AdminController
             throw new Exception($e);
         }
     }
+     /**
+     *  Obtiene el eje tematico ById
+     */
+    public function getEjeTematicoById($iEjeTematicoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('e.id' => $iEjeTematicoId);
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     *  Obtiene el area ById
+     */
+    public function getAreaById($iAreaId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('a.id' => $iAreaId);
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     * Carga el Area por el Admin
+     *
+     */
+    public function guardarArea($oArea){
+        try{
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            return $oAreaIntermediary->guardar($oArea);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     *  Elimina el area
+     */
+    public function eliminarArea($oArea)
+    {
+        try{
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            return $oAreaIntermediary->Borrar($oArea);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    /**
+     *  Obtiene el Ciclo ById
+     */
+    public function getCicloById($iCicloId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('c.id' => $iCicloId);
+            $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
+            return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+   /**
+     * Carga el Ciclo por el Admin
+     *
+     */
+    public function guardarCiclo($oCiclo){
+        try{
+            $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
+            return $oCicloIntermediary->guardar($oCiclo);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     *  Elimina el ciclo
+     */
+    public function eliminarCiclo($oCiclo)
+    {
+        try{
+            $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
+            return $oCicloIntermediary->Borrar($oCiclo);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    /**
+     *  Obtiene el nivel ById
+     */
+    public function getNivelById($iNivelId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('n.id' => $iNivelId);
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            return $oNivelIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+  /**
+     * Carga el Nivel por el Admin
+     *
+     */
+    public function guardarNivel($oNivel){
+        try{
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            return $oNivelIntermediary->guardar($oNivel);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     *  Elimina el Nivel
+     */
+    public function eliminarNivel($oNivel)
+    {
+        try{
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            return $oNivelIntermediary->Borrar($oNivel);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+/**
+     *  Obtiene el objetivo aprendizaje ById
+     */
+    public function getObjetivoAprendizajeById($iObjetivoAprendizajeId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('o.id' => $iObjetivoAprendizajeId);
+            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoAprendizajeIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+  /**
+     * Carga el objetivo aprendizaje por el Admin
+     *
+     */
+    public function guardarObjetivoAprendizaje($iSeguimientoSCCId,$oObjetivoAprendizaje){
+        try{
+            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoAprendizajeIntermediary->guardarObjetivoAprendizaje($iSeguimientoSCCId,$oObjetivoAprendizaje);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
+     *  Elimina el objetivo aprendizaje
+     */
+    public function eliminarObjetivoAprendizaje($iSeguimientoSCCId, $iObjetivoId)
+    {
+        try{
+            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoAprendizajeIntermediary->borrarObjetivoAprendizajeDiagnosticoSCC($iSeguimientoSCCId, $iObjetivoId);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
 }
