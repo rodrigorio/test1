@@ -1219,18 +1219,7 @@ class AdminController
             throw new Exception($e->getMessage());
         }
     }
-  /**
-     * Carga el Nivel por el Admin
-     *
-     */
-    public function guardarNivel($oNivel){
-        try{
-            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
-            return $oNivelIntermediary->guardar($oNivel);
-        }catch(Exception $e){
-            throw new Exception($e->getMessage());
-        }
-    }
+  
      /**
      *  Elimina el Nivel
      */

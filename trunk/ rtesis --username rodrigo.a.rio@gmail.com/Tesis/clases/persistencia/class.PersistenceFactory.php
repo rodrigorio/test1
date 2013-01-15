@@ -227,11 +227,6 @@ class PersistenceFactory {
             return(InvitacionMySQLIntermediary::getInstance($conn));
         }
     }
-    public static function getEjeTematicoIntermediary(IMYSQL $conn)
-    {
-        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
-            return(EjeTematicoMySQLIntermediary::getInstance($conn));
-        }
-    }
+
     
 }
