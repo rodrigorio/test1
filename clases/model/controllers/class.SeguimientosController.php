@@ -949,7 +949,7 @@ class SeguimientosController
         }
     }    
     /**
-     * Devuelve true si el diagnóstico pertenece a un seguimiento creado por el usuario que esta logueado.
+     * Devuelve true si el diagnï¿½stico pertenece a un seguimiento creado por el usuario que esta logueado.
      *
      * @return boolean true si la foto pertenece al integrante logueado.
      */
