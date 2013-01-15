@@ -265,12 +265,38 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
+    private function crearObjetivoAprendizaje()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iEjeTematicoId = $this->getRequest()->getPost("ejeTematicoId");
+            $oEjeTematico = AdminController::getInstance()->getEjeTematicoById($iEjeTematicoId);
+
+            $oObjetivoAprendizaje = new stdClass();
+            $oObjetivoAprendizaje->sDescripcion = $sDescripcion;
+            $oObjetivoAprendizaje = Factory::getEjeTematicoInstance($oObjetivoAprendizaje);
+            $oObjetivoAprendizaje->setEjeTematico($oEjeTematico);
+
+            AdminController::getInstance()->guardarObjetivoAprendizaje($oEjeTematico);
+            $this->getJsonHelper()->setMessage("El Objetivo de Aprendizaje fue creado con éxito dentro del Eje Temático");
+            $this->getJsonHelper()->setValor("accion", "crearObjetivoAprendizaje");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
     private function modificarNivel()
     {
         try{
             $iNivelId = $this->getRequest()->getPost("iNivelId");
 
-            $oNivel = SeguimientosController::getInstance()->getNivelById($iNivelId);
+            $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
             if(!empty($sDescripcion) && $sDescripcion !== $oNivel->getDescripcion()){
@@ -294,6 +320,40 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();   
+    }
+    
+    private function modificarCiclo()
+    {
+        try{
+            $iCicloId = $this->getRequest()->getPost("iCicloId");
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+            $oNivel = $oCiclo->getNivel();
+
+            if(!empty($sDescripcion) && $sDescripcion !== $oCiclo->getDescripcion()){
+                if(AdminController::getInstance()->existeCicloByDescripcion($sDescripcion, $oNivel)){
+                    $this->getJsonHelper()->setMessage("Ya existe un ciclo con esa descripción en el nivel.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+            }
+
+            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            $oCategoria->setNombre($sNombre);
+            $oCategoria->setUrlToken($this->getInflectorHelper()->urlize($sNombre));
+            $oCategoria->setDescripcion($sDescripcion);
+
+            AdminController::getInstance()->guardarCategoria($oCategoria);
+            $this->getJsonHelper()->setMessage($mensaje);
+            $this->getJsonHelper()->setValor("accion", "modificarCiclo");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function borrarNivel()
@@ -430,35 +490,6 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
-    }
-
-    private function modificarCiclo()
-    {
-        try{
-            $iCategoriaId = $this->getRequest()->getPost("iCategoriaId");
-
-            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
-            $oCategoria->setNombre($sNombre);
-            $oCategoria->setUrlToken($this->getInflectorHelper()->urlize($sNombre));
-            $oCategoria->setDescripcion($sDescripcion);
-
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor("accion", "modificarCiclo");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function borrarCiclo()
