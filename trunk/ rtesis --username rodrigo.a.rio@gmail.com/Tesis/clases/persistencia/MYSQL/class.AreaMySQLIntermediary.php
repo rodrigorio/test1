@@ -162,4 +162,31 @@ class AreaMySQLIntermediary extends AreaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+   public function verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)
+    {
+    	try{
+            $db = $this->conn;
+                        
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                     FROM
+                        areas a 
+                     WHERE 
+                     a.descripcion = ".$this->escStr($sDescripcion). "
+                      AND 
+                     a.ciclos_id = " .$this->escInt($oCiclo->getId()));
+            
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 }

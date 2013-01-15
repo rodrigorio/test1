@@ -1258,15 +1258,52 @@ class AdminController
         }
     }
      /**
-     *  Elimina el objetivo aprendizaje
+     *  Verifica si existe el nivel
      */
-    public function eliminarObjetivoAprendizaje($iSeguimientoSCCId, $iObjetivoId)
+    public function existeNivelByDescripcion($sDescripcion)
     {
         try{
-            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoAprendizajeIntermediary->borrarObjetivoAprendizajeDiagnosticoSCC($iSeguimientoSCCId, $iObjetivoId);
+            $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
+            return $oNivelIntermediary->existe($sDescripcion);
         }catch(Exception $e){
             throw new Exception($e);
         }
     }
+     /**
+     *  Verifica si existe el ciclo
+     */
+    public function existeCicloByDescripcion($sDescripcion, $oNivel)
+    {
+        try{
+            $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
+            return $oCicloIntermediary->existeCicloByDescripcion($sDescripcion,$oNivel);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+     /**
+     *  Verifica si existe el area
+     */
+    public function verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)
+    {
+        try{
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            return $oAreaIntermediary->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    /**
+     *  Verifica si existe el eje
+     */
+    public function verificarExisteEjeByDescripcion($sDescripcion, $oArea)
+    {
+        try{
+            $oEjeIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            return $oEjeIntermediary->verificarExisteEjeByDescripcion($sDescripcion, $oArea);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+    
 }
