@@ -297,4 +297,31 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             return false;
         }
     }
+   public function verificarExisteEjeByDescripcion($sDescripcion, $oArea)
+    {
+    	try{
+            $db = $this->conn;
+                        
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                     FROM
+                        eje e 
+                     WHERE 
+                     e.descripcion = ".$this->escStr($sDescripcion). "
+                      AND 
+                     e.areas_id = " .$this->escInt($oArea->getId()));
+            
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){ 
+            	return false; 
+            }
+
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 }

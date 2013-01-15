@@ -874,12 +874,13 @@ class SeguimientosController
         }
     }
    /**
-     * Obtener Objetivos Curriculares ************ver que quiero obtener aca
+     * Obtener Objetivos Curriculares 
      *
      */
-   public function getObjetivoAprendizajeBySeguimiento($iSeguimientoId)
+   public function getObjetivoAprendizaje($iSeguimientoId)
       {
     	try{
+    		$filtro = array('sxo.id' => $iSeguimientoId);
     		$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
