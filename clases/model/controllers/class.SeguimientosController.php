@@ -874,14 +874,14 @@ class SeguimientosController
         }
     }
    /**
-     * Obtener Objetivos Curriculares
+     * Obtener Objetivos Curriculares ************ver que quiero obtener aca
      *
      */
-   public function getObjetivosCurriculares($iSeguimientoId)
+   public function getObjetivoAprendizaje($iSeguimientoId)
       {
     	try{
-            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->obtenerObjetivoCurricular($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+    		$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -890,10 +890,10 @@ class SeguimientosController
      * Guardar Objetivos Curriculares
      *
      */
-   public function guardarObjetivoCurricular($oObjetivo){
+   public function guardarObjetivoAprendizaje($oObjetivo){
         try{
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->guardarObjetivoCurricular($oOjetivo);
+            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -904,7 +904,7 @@ class SeguimientosController
      */
     public function guardarObjetivoPersonalizado($oObjetivo){
         try{
-            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+        	$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
