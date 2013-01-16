@@ -32,7 +32,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS			
                     	d.id AS iId,
-                    	d.descripcion AS sDescripcion, dxe.ejes_id AS iEjeId, dxe.estadoInicial AS sEstadoInicial                    	
+                    	d.descripcion AS sDescripcion                  	
                     FROM
                         diagnosticos d
                     JOIN
@@ -51,7 +51,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
             
-            echo $sSQL;exit;
             $db->query($sSQL);
             $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
             if(empty($iRecordsTotal)){ return null; }
@@ -63,16 +62,13 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             	$oDiagnostico->iId = $oObj->iId;
                 $oDiagnostico->sDescripcion = $oObj->sDescripcion;
                 $oDiagnostico = Factory::getDiagnosticoSCCInstance($oDiagnostico);
-
-            	$oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeId);
-                $oEjeTematico->setEstadoInicial($oObj->sEstadoInicial);            	
-                $aEjesTematicos[] = $oEjeTematico;               
             }
 
             if(null !== $oDiagnostico){
-                $oDiagnostico->setEjesTematicos($aEjesTematicos);
+            	$filtro = array('d.id' => $oDiagnostico->getId());
+                $oDiagnostico->setEjesTematicos($this->obtenerEjesXDiagnostico($filtro,null,null,null,null,null));
             }
-                                   
+                  
             return $oDiagnostico;
             
         }catch(Exception $e){
@@ -105,7 +101,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            echo $sSQL; exit;
+
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -186,7 +182,8 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $sSQL = " update diagnosticos " .
                     " set descripcion = ".$this->escStr($oDiagnosticoSCC->getDescripcion())." ".
                     " WHERE id = ".$this->escInt($oDiagnosticoSCC->getId())." ";
-             
+            
+            SeguimientosController::getInstance()->asociarEjesTematicos($oDiagnosticoSCC->getId(),$oDiagnosticoSCC->getEjesTematicos());
             $db->execSQL($sSQL);
             $db->commit();
 
@@ -275,8 +272,8 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
         }
     }
     
-    /*
-    private function obtenerEjesXDiagnostico($filtro)
+    
+    private function obtenerEjesXDiagnostico($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
     {
    		try{
             $db = clone($this->conn);
@@ -334,9 +331,16 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    */
+    
      
     public function actualizarCampoArray($objects, $cambios){}
     public function existe($filtro){}
-    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
+    
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    	$oDiagnostico = $this->obtenerSCC($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+    	if ($oDiagnostico == null) {
+    		$oDiagnostico = $this->obtenerPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
+    	}
+    	return $oDiagnostico;
+    }
 }  

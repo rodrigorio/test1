@@ -15,13 +15,15 @@ var validateFormDiagnostico = {
         diagnostico:{required:true},
         nivel:{required:true},
         ciclo:{required:true},
-        area:{required:true}
+        area:{required:true},
+        eje:{required:true}
     },
     messages:{
         diagnostico: mensajeValidacion("requerido"),
         nivel: mensajeValidacion("requerido"),
         ciclo: mensajeValidacion("requerido"),
-        area: mensajeValidacion("requerido")
+        area: mensajeValidacion("requerido"),
+        eje: mensajeValidacion("requerido")
     }
 };
 
@@ -181,6 +183,24 @@ $(document).ready(function(){
             }
         });
     });
+    
+    $("#area").live("change",function(){
+    	me = this;
+    	$.ajax({
+            url: "seguimientos/listar-ejes-por-area",
+            type: "POST",
+            data:{
+                "areaId":me.value
+            },
+            beforeSend: function(){
+                setWaitingStatus('eje', true);
+            },
+            success:function(data){
+                setWaitingStatus('eje', false);
+                $("#eje").html(data);
+            }
+        });
+    });
 
     $(".verPersona").live('click',function(){
 
@@ -198,5 +218,26 @@ $(document).ready(function(){
             }
         );
         return false;
+    });
+    
+    $("#agregarEje").live('click',function(){
+    	$('#msg_form_guardarDiagnostico').hide();
+    	if ($('#eje option:selected').val() == "") {
+    		 $('#msg_form_guardarDiagnostico').show();
+             $('#msg_form_guardarDiagnostico').removeClass("correcto").addClass("error");
+             $('#msg_form_guardarDiagnostico .msg').html("Debe seleccionar un eje.");
+             return false;
+    	}
+     	
+    	var html = 
+			       " <tr>"+
+			       " 	<td>"+$('#nivel option:selected').text()+"<input type='hidden'  name='nivelHidden[]' value='"+$('#nivel option:selected').val()+"'/></td>"+
+			       "   	<td>"+$('#ciclo option:selected').text()+"<input type='hidden'  name='cicloHidden[]' value='"+$('#ciclo option:selected').val()+"'/></td>"+
+			       " 	<td>"+$('#area option:selected').text()+"<input type='hidden'  name='areaHidden[]' value='"+$('#area option:selected').val()+"'/></td>"+
+			       "  	<td>"+$('#eje option:selected').text()+"<input type='hidden'  name='ejeHidden[]' value='"+$('#eje option:selected').val()+"'/></td>"+
+			       "	<td>"+$('#estadoInicial').val()+"<input type='hidden'  name='estadoInicialHidden[]' value='"+$('#estadoInicial').val()+"'/></td>"+
+			       " </tr>";
+
+      $("#contentEjesResult").append(html);
     });
 });

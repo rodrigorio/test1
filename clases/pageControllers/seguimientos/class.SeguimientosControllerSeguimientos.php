@@ -1816,7 +1816,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iNivelId = "";
          	if($oDiagnostico ){
 	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
-	            if( $oDiagnostico->getArea() ){
+	            if( $oDiagnostico->getEjesTematicos() ){
 	            	$iAreaId = $oDiagnostico->getArea()->getId();
 	           		$this->getTemplate()->set_var("iArea",$iAreaId);
 	           		$iCicloId = $oDiagnostico->getArea()->getCiclo()->getId();
@@ -1881,25 +1881,33 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
            //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         	//$filtroSql["u.id"] = $perfil->getUsuario()->getId();
-        
+        	
             $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
            // TODO Agregar validacion de pedir el diagnostico segun permiso d
             $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
+       
 			if($oDiagnostico){
 				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
 	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
 	            	$sCodigo	 	= $this->getRequest()->getPost('codigo');
 			    	$oDiagnostico->setCodigo($sCodigo);
 	            }else{
-	            	$iAreaId	    = $this->getRequest()->getPost('area');
-			    	//TODO agregar objeto area
-			    	$stdArea = new stdClass();
-			    	$stdArea->iId = $iAreaId;
-			    	$oArea = Factory::getAreaInstance($stdArea);
-			    	$oDiagnostico->setArea($oArea);
+	            	$ejes	    = $this->getRequest()->getPost('ejeHidden');
+	            	$estadoInicial	    = $this->getRequest()->getPost('estadoInicialHidden');
+	            	$i = 0;
+	            	$vEjesTematicos = array();
+	            	foreach ($ejes as $ejeId){
+	            		$oEjeTematico = Factory::getEjeTematicoInstance(new stdClass());
+	            		$oEjeTematico->setId($ejeId);
+	            		$oEjeTematico->setEstadoInicial($estadoInicial[$i]);
+	            		$i++;
+	            		$vEjesTematicos[] = $oEjeTematico;
+	            	}
+	            	
+			    	$oDiagnostico->setEjesTematicos($vEjesTematicos);
 	            }
 	            $oDiagnostico->setDescripcion($sDescripcion);
-		        $res		 	= SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+		        $res = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
 			}else{
 				$res = false;
 			}
@@ -1960,6 +1968,30 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
           	}
           	
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('areas', false));
+        }catch(Exception $e){
+            $this->getAjaxHelper()->sendHtmlAjaxResponse("");
+            return;
+        }
+    }
+ 	 public function listarEjesPorArea(){
+    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ejes", "EjesListBlock");
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            $iAreaId	    = $this->getRequest()->getPost('areaId');
+            $iRecordsTotal 	= 0;
+        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
+  			$vEjes	= SeguimientosController::getInstance()->getEjesByAreaId($iAreaId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+			$this->getTemplate()->set_var("iEjeId", "");
+            $this->getTemplate()->set_var("sEjeDescripcion", "Seleccione el eje");
+            $this->getTemplate()->parse("EjesListBlock", true);	
+  			foreach($vEjes as $oEje){
+				$this->getTemplate()->set_var("iEjeId", $oEje->getId());
+	            $this->getTemplate()->set_var("sEjeDescripcion", $oEje->getDescripcion());
+	            $this->getTemplate()->parse("EjesListBlock", true);
+          	}
+          	
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ejes', false));
         }catch(Exception $e){
             $this->getAjaxHelper()->sendHtmlAjaxResponse("");
             return;
