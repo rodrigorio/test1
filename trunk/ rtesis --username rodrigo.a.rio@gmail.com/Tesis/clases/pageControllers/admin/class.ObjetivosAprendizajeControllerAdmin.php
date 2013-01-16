@@ -279,7 +279,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
             $oObjetivoAprendizaje = Factory::getEjeTematicoInstance($oObjetivoAprendizaje);
             $oObjetivoAprendizaje->setEjeTematico($oEjeTematico);
 
-            AdminController::getInstance()->guardarObjetivoAprendizaje($oEjeTematico);
+            AdminController::getInstance()->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
             $this->getJsonHelper()->setMessage("El Objetivo de Aprendizaje fue creado con éxito dentro del Eje Temático");
             $this->getJsonHelper()->setValor("accion", "crearObjetivoAprendizaje");
             $this->getJsonHelper()->setSuccess(true);
@@ -339,14 +339,100 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
                 }
             }
 
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
-            $oCategoria->setNombre($sNombre);
-            $oCategoria->setUrlToken($this->getInflectorHelper()->urlize($sNombre));
-            $oCategoria->setDescripcion($sDescripcion);
+            $oCiclo->setDescripcion($sDescripcion);
 
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
+            AdminController::getInstance()->guardarCiclo($oCiclo);
+            $this->getJsonHelper()->setMessage("El ciclo fue modificado con éxito dentro del nivel");
             $this->getJsonHelper()->setValor("accion", "modificarCiclo");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarArea()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iAreaId = $this->getRequest()->getPost("areaId");
+            $oArea = AdminController::getInstance()->getAreaById($iAreaId);
+            $oCiclo = $oArea->getCiclo();
+
+            if(!empty($sDescripcion) && $sDescripcion !== $oArea->getDescripcion()){
+                if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)){
+                    $this->getJsonHelper()->setMessage("Ya existe un área con ese nombre en el ciclo.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+            }
+
+            $oArea->setDescripcion($sDescripcion);
+
+            AdminController::getInstance()->guardarArea($oArea);
+            $this->getJsonHelper()->setMessage("El área fue modificada con éxito dentro del ciclo");
+            $this->getJsonHelper()->setValor("accion", "modificarArea");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarEje()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iEjeId = $this->getRequest()->getPost("ejeId");
+            $oEje = AdminController::getInstance()->getEjeTematicoById($iEjeId);
+            $oArea = $oEje->getArea();
+
+            if(!empty($sDescripcion) && $sDescripcion !== $oEje->getDescripcion()){
+                if(AdminController::getInstance()->verificarExisteEjeByDescripcion($sDescripcion, $oArea)){
+                    $this->getJsonHelper()->setMessage("Ya existe un Eje Temático con ese nombre en el área seleccionada.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+            }
+
+            $oEje->setDescripcion($sDescripcion);
+
+            AdminController::getInstance()->guardarEjeTematico($oEje);
+            $this->getJsonHelper()->setMessage("El Eje Temático fue modificado con éxito dentro del Área");
+            $this->getJsonHelper()->setValor("accion", "modificarEje");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarObjetivoAprendizaje()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iObjetivoAprendizajeId = $this->getRequest()->getPost("objetivoAprendizajeId");
+            $oObjetivoAprendizaje = AdminController::getInstance()->getObjetivoAprendizajeById($iObjetivoAprendizajeId);
+
+            $oObjetivoAprendizaje->setDescripcion($sDescripcion);
+
+            AdminController::getInstance()->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
+            $this->getJsonHelper()->setMessage("El Objetivo de Aprendizaje fue modificado con éxito dentro del Eje Temático");
+            $this->getJsonHelper()->setValor("accion", "modificarObjetivoAprendizaje");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -396,6 +482,166 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }
     }
 
+    private function borrarCiclo()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        $iCicloId = $this->getRequest()->getParam('iCicloId');
+        if(empty($iCicloId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            try{
+                $result = AdminController::getInstance()->eliminarCiclo($iCicloId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "El ciclo fue eliminado del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "No se pudo eliminar el ciclo del sistema. Compruebe que no haya ningún área asociada.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function borrarArea()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        $iAreaId = $this->getRequest()->getParam('iAreaId');
+        if(empty($iAreaId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            try{
+                $result = AdminController::getInstance()->eliminarArea($iAreaId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "El área fue eliminada del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "No se pudo eliminar el área del sistema. Compruebe que no haya ningún eje temático asociado.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function borrarEje()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        $iEjeId = $this->getRequest()->getParam('iEjeId');
+        if(empty($iEjeId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            try{
+                $result = AdminController::getInstance()->eliminarArea($iAreaId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "El eje temático fue eliminado del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "No se pudo eliminar el eje temático del sistema. Compruebe que no haya ningún objetivo de aprendizaje asociado.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function borrarObjetivoAprendizaje()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        $iObjetivoAprendizajeId = $this->getRequest()->getParam('iObjetivoAprendizajeId');
+        if(empty($iObjetivoAprendizajeId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            try{
+                $result = AdminController::getInstance()->eliminarObjetivoAprendizaje($iObjetivoAprendizajeId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "El objetivo aprendizaje fue eliminado del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "Ocurrió un error. No se pudo eliminar el objetivo de aprendizaje del sistema.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function listarNiveles()
     {
         try{
@@ -407,15 +653,15 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderNivelesBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoNivelesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderNivelesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoNivelesBlock");
 
             $iRecordsTotal = 0;
-            $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
             if(count($aNiveles)>0){
-                foreach ($aNiveles as $oNivel){
+                foreach($aNiveles as $oNivel){
 
-                    $hrefEditarNivel = $this->getUrlFromRoute("adminObjetivosCurricularesFormularioNivel", true)."?editar=1&id=".$oNivel->getId();
+                    $hrefEditarNivel = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioNivel", true)."?editar=1&id=".$oNivel->getId();
 
                     $this->getTemplate()->set_var("hrefEditarNivel", $hrefEditarNivel);
 
@@ -430,10 +676,172 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
-            print_r($e);
+            throw $e;
+        }
+    }
+
+    public function listarCiclos()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderCiclosBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoCiclosBlock");
+
+            $iRecordsTotal = 0;
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aCiclos)>0){
+                foreach ($aCiclos as $oCiclo){
+                    $hrefEditarCiclo = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioCiclo", true)."?editar=1&id=".$oCiclo->getId();
+
+                    $this->getTemplate()->set_var("hrefEditarCiclo", $hrefEditarCiclo);
+
+                    $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oCiclo->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oCiclo->getNivel()->getDescripcion());
+
+                    $this->getTemplate()->parse("CicloBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsCiclosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("CicloBlock", "");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function listarAreas()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderAreasBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoAreasBlock");
+
+            $iRecordsTotal = 0;
+            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aAreas)>0){
+                foreach ($aAreas as $oArea){
+                    $hrefEditarArea = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioArea", true)."?editar=1&id=".$oArea->getId();
+
+                    $this->getTemplate()->set_var("hrefEditarArea", $hrefEditarArea);
+
+                    $this->getTemplate()->set_var("iAreaId", $oArea->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oArea->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getCiclo()->getDescripcion());
+
+                    $this->getTemplate()->parse("AreaBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsAreasBlock", "");
+            }else{
+                $this->getTemplate()->set_var("AreaBlock", "");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function listarEjes()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderEjesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoEjesBlock");
+
+            $iRecordsTotal = 0;
+            $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aEjes)>0){
+                foreach($aEjes as $oEje){
+                    $hrefEditarEje = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioEje", true)."?editar=1&id=".$oEje->getId();
+
+                    $this->getTemplate()->set_var("hrefEditarEje", $hrefEditarEje);
+
+                    $this->getTemplate()->set_var("iEjeId", $oEje->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oEje->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oEje->getArea()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oEje->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionArea", $oEje->getArea()->getDescripcion());
+
+                    $this->getTemplate()->parse("EjeBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsEjesBlock", "");
+            }else{
+                $this->getTemplate()->set_var("EjeBlock", "");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
         }
     }
     
+    public function listarObjetivosAprendizaje()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderObjetivosAprendizajeBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoObjetivosAprendizajeBlock");
+
+            $iRecordsTotal = 0;
+            $aObjetivosAprendizaje = AdminController::getInstance()->getObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aObjetivosAprendizaje)>0){
+                foreach ($aObjetivosAprendizaje as $oObjetivoAprendizaje){
+                    $hrefEditarObjetivoAprendizaje = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioObjetivoAprendizaje", true)."?editar=1&id=".$oObjetivoAprendizaje->getId();
+
+                    $this->getTemplate()->set_var("hrefEditarObjetivoAprendizaje", $hrefEditarObjetivoAprendizaje);
+
+                    $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oObjetivoAprendizaje->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionArea", $oEje->getArea()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEje()->getArea()->getDescripcion());
+
+                    $this->getTemplate()->parse("ObjetivoAprendizajeBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsObjetivoAprendizajeBlock", "");
+            }else{
+                $this->getTemplate()->set_var("ObjetivoAprendizajeBlock", "");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+        
     public function formularioNivel()
     {
         $this->setFrameTemplate()
@@ -489,85 +897,6 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             throw $e;
-        }
-    }
-
-    private function borrarCiclo()
-    {
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-
-        $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
-        if(empty($iCategoriaId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            try{
-                $result = AdminController::getInstance()->eliminarCategoria($iCategoriaId);
-
-                $this->restartTemplate();
-
-                if($result){
-                    $msg = "La categoría fue eliminada del sistema";
-                    $bloque = 'MsgCorrectoBlockI32';
-                    $this->getJsonHelper()->setSuccess(true);
-                }
-
-            }catch(Exception $e){
-                $msg = "No se pudo eliminar la categoría del sistema. Compruebe que no haya ningún software asociado.";
-                $bloque = 'MsgErrorBlockI32';
-                $this->getJsonHelper()->setSuccess(false);
-            }
-
-            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
-            $this->getTemplate()->set_var("sMensaje", $msg);
-            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
-
-            $this->getJsonHelper()->sendJsonAjaxResponse();
-
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-
-    public function listarCiclos()
-    {
-        try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
-
-            $this->printMsgTop();
-
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderCiclosBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoCiclosBlock");
-
-            $iRecordsTotal = 0;
-            $aCiclos = SeguimientosController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
-            if(count($aCiclos)>0){
-                foreach ($aCiclos as $oCiclo){
-                    $hrefEditarCiclo = $this->getUrlFromRoute("adminObjetivosCurricularesFormularioCiclo", true)."?editar=1&id=".$oCiclo->getId();
-
-                    $this->getTemplate()->set_var("hrefEditarCiclo", $hrefEditarCiclo);
-
-                    $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
-                    $this->getTemplate()->set_var("sDescripcion", $oCiclo->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oCiclo->getNivel()->getDescripcion());
-
-                    $this->getTemplate()->parse("CicloBlock", true);
-                }
-                $this->getTemplate()->set_var("NoRecordsCiclosBlock", "");
-            }else{
-                $this->getTemplate()->set_var("CicloBlock", "");
-            }
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-        }catch(Exception $e){
-            print_r($e);
         }
     }
 
@@ -639,115 +968,6 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             throw new Exception($e);
-        }
-    }
-    
-    private function modificarArea()
-    {
-        try{
-            $iCategoriaId = $this->getRequest()->getPost("iCategoriaId");
-
-            if(AdminController::getInstance()->verificarExisteCategoria($oCategoria)){
-                $this->getJsonHelper()->setMessage("Ya existe una categoría con ese nombre.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
-            $oCategoria->setNombre($sNombre);
-            $oCategoria->setUrlToken($this->getInflectorHelper()->urlize($sNombre));
-            $oCategoria->setDescripcion($sDescripcion);
-
-            AdminController::getInstance()->guardarCategoria($oCategoria);
-            $this->getJsonHelper()->setMessage($mensaje);
-            $this->getJsonHelper()->setValor("accion", "modificarArea");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    private function borrarArea()
-    {
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-
-        $iCategoriaId = $this->getRequest()->getParam('iCategoriaId');
-        if(empty($iCategoriaId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            try{
-                $result = AdminController::getInstance()->eliminarCategoria($iCategoriaId);
-
-                $this->restartTemplate();
-
-                if($result){
-                    $msg = "La categoría fue eliminada del sistema";
-                    $bloque = 'MsgCorrectoBlockI32';
-                    $this->getJsonHelper()->setSuccess(true);
-                }
-
-            }catch(Exception $e){
-                $msg = "No se pudo eliminar la categoría del sistema. Compruebe que no haya ningún software asociado.";
-                $bloque = 'MsgErrorBlockI32';
-                $this->getJsonHelper()->setSuccess(false);
-            }
-
-            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
-            $this->getTemplate()->set_var("sMensaje", $msg);
-            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
-
-            $this->getJsonHelper()->sendJsonAjaxResponse();
-
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-
-    public function listarAreas()
-    {
-        try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
-
-            $this->printMsgTop();
-
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderAreasBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoAreasBlock");
-
-            $iRecordsTotal = 0;
-            $aAreas = SeguimientosController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
-            if(count($aAreas)>0){
-                foreach ($aAreas as $oArea){
-                    $hrefEditarArea = $this->getUrlFromRoute("adminObjetivosCurricularesFormularioArea", true)."?editar=1&id=".$oArea->getId();
-
-                    $this->getTemplate()->set_var("hrefEditarArea", $hrefEditarArea);
-
-                    $this->getTemplate()->set_var("iAreaId", $oArea->getId());
-                    $this->getTemplate()->set_var("sDescripcion", $oArea->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getCiclo()->getDescripcion());
-
-                    $this->getTemplate()->parse("AreaBlock", true);
-                }
-                $this->getTemplate()->set_var("NoRecordsAreasBlock", "");
-            }else{
-                $this->getTemplate()->set_var("AreaBlock", "");
-            }
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-        }catch(Exception $e){
-            print_r($e);
         }
     }
 
