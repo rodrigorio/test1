@@ -84,6 +84,7 @@
                     </div>
                 </div>
             </div>
+  
                 <div class="form_line msg_nivel">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Nivel</span>
@@ -121,7 +122,53 @@
 		                <!--EndAreaDivBlock-->
                     </div>
                 </div>
-
+                <div class="form_line msg_eje">
+                    <div class="inner_fwrap">
+                       	<span class="fowe_bo">Eje tem&aacute;tico</span>
+                      	<!--BeginEjeDivBlock-->
+		                <select name="eje" id="eje">
+		                	<option value="">Seleccione el Eje</option>
+		                	<!--BeginEjesListBlock-->
+		                      <option value="{iEjeId}" {sSelectedEje}>{sEjeDescripcion}</option>
+		                	<!--EndEjesListBlock-->
+		                 </select>
+		                <!--EndEjeDivBlock-->
+                    </div>
+                </div>
+                
+				<div class="form_line msg_estadoInicial">
+                    <div class="inner_fwrap">
+                       	<span class="fowe_bo">Estado inicial</span>
+                      	<!--BeginEstadoInicialDivBlock-->
+		                <textarea cols="40" rows="5" id="estadoInicial"></textarea>
+		                <!--EndEstadoInicialDivBlock-->
+                    </div>
+                </div>
+                <div class="mabo2">
+	                <label for="agregarEje" class="button buttonLarge mari3">
+	                    <button id="agregarEje" type="button" name="agregarEje" class="btn01">
+	                        Agregar Eje
+	                    </button>
+	                </label>
+	            </div>
+	            
+	        <div id='result_ejes'>
+	        	<table class='table01 wi100p mabo2'>
+	        	<thead>
+		        	<tr class="encabezado">
+		               <td class="big iveal">Nivel</td>
+		               <td class="small">Ciclo</td>
+		               <td class="small iveal">Area</td>
+		               <td class="small iveal">Eje tem&aacute;tico</td>
+		               <td class="small iveal">Estado inicial</td>
+		               <td class="medium iveal"></td>  
+	           		</tr>
+	        	</thead>
+	        	<tbody id="contentEjesResult">
+	        	
+	        	</tbody>
+	        	</table>	
+	        </div>
             <div class="fl_le mabo2">
                 <label for="guardarDiagnostico" class="button buttonConfirm buttonLarge mari3">
                     <button id="guardarDiagnostico" type="submit" name="guardarDiagnostico" class="btn01">
@@ -133,7 +180,9 @@
             <input type="hidden" name="idDiagnostico" id="idDiagnostico" value="{iDiagnosticoId}" >
 
             <div style="display:none;" id='msg_form_guardarDiagnostico' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-        </form>
+		    
+		
+		</form>
     </div>
 </div>
 <!--EndFormularioSCCBlock-->

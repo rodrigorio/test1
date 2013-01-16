@@ -632,12 +632,8 @@ class SeguimientosController
     		$filtro = array('d.id' => $iId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aDiagnostico = $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aDiagnostico){
-                return $aDiagnostico[0];
-            }else{
-                return null;
-            }
+            return $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+          
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -767,6 +763,20 @@ class SeguimientosController
     		$filtro = array('c.id' => $iId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             return  $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Obtener areas por id de ciclo
+     *
+     */
+ 	public function getEjesByAreaId($iAreaId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+    		$filtro = array('a.id' => $iAreaId);
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return  $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -961,7 +971,19 @@ class SeguimientosController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
-    }    
+    }   
+     /**
+     * Guardar Eje Tematico
+     *
+     */
+   public function asociarEjesTematicos($iDiagnosticoSCCId,$vEjeTematico){
+        try{
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }     
     /**
      * Devuelve true si el diagn�stico pertenece a un seguimiento creado por el usuario que esta logueado.
      *
@@ -996,6 +1018,20 @@ class SeguimientosController
     		$filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             return $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+	/**
+     *  Obtiene el eje tematico ById
+     */
+    public function getEjeTematicoById($iEjeTematicoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+    	try{
+    		$filtro = array('e.id' => $iEjeTematicoId);
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

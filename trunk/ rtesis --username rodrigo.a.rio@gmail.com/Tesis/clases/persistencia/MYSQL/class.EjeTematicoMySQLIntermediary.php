@@ -22,7 +22,9 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        e.id as iId, e.descripcion as sDescripcion, e.contenidos as sContenidos, e.areas_id as iAreaId, 
+                        e.id as iId, e.descripcion as sDescripcion, 
+                        e.contenidos as sContenidos, 
+                        e.areas_id as iAreaId, 
                         a.descripcion as sDescripcionArea, a.ciclos_id as iCicloId,
                         c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
                         n.descripcion as sDescripcionNivel
@@ -234,15 +236,22 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
      * creado el usuario que esta en sesion
      */
 
-    public function asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
+    public function asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico)
     {
         try{
             $db = $this->conn;
-            $sSQL = " insert into diagnosticos_scc_x_ejes ".
-                    " set diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId).", ".
-                    " ejes_id = ".$this->escInt($oEjeTematico->getId()).", ".
-                    " estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())." ";
-                    
+            $sSQL = " insert into diagnosticos_scc_x_ejes (diagnosticos_scc_id, ejes_id, estadoInicial) VALUES ";
+           
+            for ($i=0; $i< count($vEjeTematico); $i++) {
+            	$oEjeTematico = $vEjeTematico[$i];
+            	$sSQL .= " (".$this->escInt($iDiagnosticoSCCId).", "
+            		.$this->escInt($oEjeTematico->getId()).", "
+            		.$this->escStr($oEjeTematico->getEstadoInicial()).") ";
+            	if (count($vEjeTematico) > $i+1) {
+            		$sSQL .= ",";
+            	}
+            } 
+                      
             $db->execSQL($sSQL);
             $db->commit();
 

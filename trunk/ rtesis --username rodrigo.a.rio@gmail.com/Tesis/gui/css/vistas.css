@@ -163,7 +163,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
 
 .he100p{height:100% !important;}
-.wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important}
+.wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important} .wi200{width:200px !important;}
 
 .he400{height:400px !important; } .he500{height:500px !important; }
 

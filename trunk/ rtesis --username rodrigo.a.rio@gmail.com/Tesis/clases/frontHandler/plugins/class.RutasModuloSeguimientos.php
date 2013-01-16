@@ -215,5 +215,12 @@ class RutasModuloSeguimientos
                                         'action'     => 'listarAreasPorCiclos'
                                 ));
         $router->addRoute('seguimientosListarAreasPorCiclo', $route);  
+        $route = new RegexRoute('seguimientos/listar-ejes-por-area',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'listarEjesPorArea'
+                                ));
+        $router->addRoute('seguimientosListarEjePorArea', $route);  
     }
 }
