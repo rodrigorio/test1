@@ -884,35 +884,48 @@ class SeguimientosController
     		$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
-     * Guardar Objetivos Curriculares
+     * Guardar Objetivos Curriculares verifica que sea el usuario que creo el seguimiento
      *
      */
-   public function guardarObjetivoAprendizaje($oObjetivo){
+   public function guardarObjetivoAprendizaje($oObjetivo, $oSeguimiento){
         try{
+        	$iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
+        	}
+        	
+        		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo);
+            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo,);
+                                   
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
-    }
+    } 
     /**
-     * Guardar Objetivos Personalizados
+     * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento
      *
      */
-    public function guardarObjetivoPersonalizado($oObjetivo){
+    public function guardarObjetivoPersonalizado($oObjetivo, $oSeguimiento){
         try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
+        	}
         	$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }  
     /**
-     * Borrar Objetivo
+     * Borrar Objetivo personalizado falta verificar que sea el usuario que creo el seguimiento!!!!!
      *
      */
     public function borrarObjetivo($iObjetivoId)
@@ -921,7 +934,7 @@ class SeguimientosController
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->borrar($iObjetivoId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -950,7 +963,7 @@ class SeguimientosController
         }
     }    
     /**
-     * Devuelve true si el diagnóstico pertenece a un seguimiento creado por el usuario que esta logueado.
+     * Devuelve true si el diagnï¿½stico pertenece a un seguimiento creado por el usuario que esta logueado.
      *
      * @return boolean true si la foto pertenece al integrante logueado.
      */
