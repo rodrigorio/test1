@@ -579,6 +579,32 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-   	 
+    public function isSeguimientoUsuario($iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimientos s
+                        JOIN  ON f.seguimientos_id = s.id
+                      WHERE
+                        s.id = ".$this->escInt($iSeguimientoId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
     public function actualizarCampoArray($objects, $cambios){}    
 }
