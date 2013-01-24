@@ -701,8 +701,13 @@ class SeguimientosController
         }
     }
 
-    public function guardarDiagnostico($oDiagnostico){
+    public function guardarDiagnostico($oDiagnostico, $oSeguimiento){
         try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
+        	}
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             return $oDiagnosticoIntermediary->guardar($oDiagnostico);
         }catch(Exception $e){
@@ -795,7 +800,7 @@ class SeguimientosController
         }         
     }
     /**
-     * Obtener Unidades
+     * Obtener Unidades falta filtro!!
      *
      */
    public function getUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
@@ -874,9 +879,15 @@ class SeguimientosController
      * Obtener Objetivos Personalizados
      *
      */
-   public function getObjetivosPersonalizados($iSeguimientoId)
+   public function getObjetivosPersonalizados($oSeguimiento)
       {
     	try{
+    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        		throw new Exception("No posee permiso para ver este seguimiento", 401);
+        	}
+        	$filtro = array('op.seguimientos_personalizados_id' => $oSeguimiento->getId());
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
@@ -887,10 +898,16 @@ class SeguimientosController
      * Obtener Objetivos Curriculares 
      *
      */
-   public function getObjetivoAprendizaje($iSeguimientoId)
+   public function getObjetivoAprendizaje($oSeguimiento)
       {
     	try{
-    		$filtro = array('sxo.id' => $iSeguimientoId);
+    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        		throw new Exception("No posee permiso para ver este seguimiento", 401);
+        	}
+    		$filtro = array('sxo.seguimientos_scc_id' => $oSeguimiento->getId());    		
+    		
     		$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
@@ -908,8 +925,7 @@ class SeguimientosController
         	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
         		throw new Exception("No posee permiso para modificar este seguimiento", 401);
         	}
-        	
-        		
+        	        		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo);
                                    
@@ -935,14 +951,20 @@ class SeguimientosController
         }
     }  
     /**
-     * Borrar Objetivo personalizado falta verificar que sea el usuario que creo el seguimiento!!!!!
+     * Borrar Objetivo personalizado verifica que sea el usuario que creo el seguimiento!!!!!
      *
      */
-    public function borrarObjetivo($iObjetivoId)
+    public function borrarObjetivo($oObjetivo, $oSeguimiento)
     {
     	try{
+    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
+        	}
+    		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->borrar($iObjetivoId);
+            return $oObjetivoIntermediary->borrar($oObjetivo->getId());
         }catch(Exception $e){
             throw $e;
         }
@@ -971,13 +993,14 @@ class SeguimientosController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
-    }   
+    } 
      /**
-     * Guardar Eje Tematico
+     * Asociar Eje Tematico
      *
      */
    public function asociarEjesTematicos($iDiagnosticoSCCId,$vEjeTematico){
         try{
+        	        	
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico);
         }catch(Exception $e){
@@ -1004,6 +1027,12 @@ class SeguimientosController
     public function getDiagnosticoSeguimientoSCCById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
     	try{
+    		$filtro2 = array('s.id' => $iSeguimientoId);
+    		$oSeguimiento = $this-> obtenerSeguimientos($filtro2, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
+        	throw new Exception("No posee permiso para ver este seguimiento", 401);
+        	}
     		$filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             return $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
