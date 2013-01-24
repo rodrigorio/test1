@@ -911,7 +911,7 @@ class SeguimientosController
         	
         		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo,);
+            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo);
                                    
         }catch(Exception $e){
             throw $e;

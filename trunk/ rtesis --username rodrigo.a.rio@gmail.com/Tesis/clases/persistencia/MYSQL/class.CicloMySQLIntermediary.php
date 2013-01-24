@@ -164,7 +164,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
                      WHERE 
                      c.descripcion = ".$this->escStr($sDescripcion). "
                       AND 
-                     c.niveles_id = " .$this->escInt($oNivel->getId()));
+                     c.niveles_id = " .$this->escInt($oNivel->getId());
             
             $db->query($sSQL);
 

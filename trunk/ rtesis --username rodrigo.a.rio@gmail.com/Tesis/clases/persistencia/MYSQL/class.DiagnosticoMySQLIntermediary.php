@@ -50,7 +50,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
+          
             $db->query($sSQL);
             $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
             if(empty($iRecordsTotal)){ return null; }
@@ -66,9 +66,9 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 
             if(null !== $oDiagnostico){
             	$filtro = array('d.id' => $oDiagnostico->getId());
-                $oDiagnostico->setEjesTematicos($this->obtenerEjesXDiagnostico($filtro,null,null,null,null,null));
+            	$oDiagnostico->setEjesTematicos($this->obtenerEjesXDiagnostico($filtro,null,null,null,null,null));
             }
-                  
+
             return $oDiagnostico;
             
         }catch(Exception $e){
@@ -279,22 +279,18 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                    	d.id AS iId,
-                    	d.descripcion AS sDescripcion,
-                    	e.id AS ejeId,
-                    	e.descripcion,
-                    	e.contenidos,
-                    	e.areas_id,              
-                    	dxe.ejes_id AS iEjeId, 
+                    	e.id AS iId,
+                    	e.descripcion as sDescripcion,
+                    	e.contenidos as sContenidos,
+                    	e.areas_id as iAreaId,              
+                    	dxe.ejes_id AS iId, 
                     	dxe.estadoInicial AS sEstadoInicial                    	
                     FROM
                         diagnosticos d
                     JOIN
                         diagnosticos_scc dscc ON d.id = dscc.id 
                     JOIN
-                        seguimientos_scc s ON s.diagnosticos_scc_id = dscc.id
-                    JOIN
-                        diagnosticos_scc_x_ejes	dxe ON dscc.id = dxe.ejes_id 
+                        diagnosticos_scc_x_ejes	dxe ON dscc.id = diagnosticos_scc_id 
                     JOIN 
                     	ejes e ON e.id = dxe.ejes_id ";
             
@@ -307,7 +303,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
+         
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -315,12 +311,13 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 			$vEjesTematicos = array();
             $oEjeTematico = null;
             while($oObj = $db->oNextRecord()){
-            	$oEjeTematico = new stdClass();
+               	$oEjeTematico = new stdClass();
                 $oEjeTematico->iId = $oObj->iId;
                 $oEjeTematico->sDescripcion = $oObj->sDescripcion;
-                $oEjeTematico->oArea = $oObj->iAreaId;
+                $oEjeTematico->oArea = Factory::getAreaInstance(new stdClass());
+                $oEjeTematico->oArea->getId($oObj->iAreaId);
                 $oEjeTematico->sContenidos = $oObj->sContenidos;
-                $oEjeTematico = Factory::getDiagnosticoPersonalizadoInstance($oEjeTematico);
+                $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
                 $oEjeTematico->setEstadoInicial($oObj->sEstadoInicial);            	
                 $vEjesTematicos[] = $oEjeTematico; 
             }

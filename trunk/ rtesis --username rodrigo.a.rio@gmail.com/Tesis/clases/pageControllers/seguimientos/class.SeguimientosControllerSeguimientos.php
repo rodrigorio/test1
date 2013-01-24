@@ -1811,21 +1811,28 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioSCCBlock");
 
             $oDiagnostico = $oSeguimiento->getDiagnostico();
-            $iAreaId = "";
+            $iAreaId  = "";
             $iCicloId = "";
             $iNivelId = "";
-         	if($oDiagnostico ){
+         	if ($oDiagnostico) {
+         		
 	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
-	            if( $oDiagnostico->getEjesTematicos() ){
-	            	$iAreaId = $oDiagnostico->getArea()->getId();
-	           		$this->getTemplate()->set_var("iArea",$iAreaId);
-	           		$iCicloId = $oDiagnostico->getArea()->getCiclo()->getId();
-	           		$iNivelId = $oDiagnostico->getArea()->getCiclo()->getNivel()->getId();
+	            $this->getTemplate()->load_file_section("gui/componentes/grillas.gui.html", "listaEje", "GrillaEjesTematicos");
+	            if ($oDiagnostico->getEjesTematicos()) {
+	            	
+	            	foreach ($oDiagnostico->getEjesTematicos() as $oEje) {
+	            		
+	            		$this->getTemplate()->set_var("iEjeId", $oEje->getId());
+	            		$this->getTemplate()->set_var("sEjeText", $oEje->getDescripcion());
+	            		$this->getTemplate()->set_var("sEstadoInicial", $oEje->getEstadoInicial());
+		            	$this->getTemplate()->parse("ResultListEjes", true);
+	            	}
+		            $this->getTemplate()->parse("listaEje", false);
 	            }
 	            $this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
          	}
          	$iRecordsTotal = 0;
-        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
+        	$sOrderBy 	= $sOrder = $iIniLimit = $iRecordCount = null;
         	$filtroSql 	= array();
          	$vNiveles 	= SeguimientosController::getInstance()->getNiveles($filtroSql, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
          	if( $vNiveles ){
@@ -1937,11 +1944,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			$this->getTemplate()->set_var("iCicloId", "");
             $this->getTemplate()->set_var("sCicloDescripcion", "Seleccione el ciclo");
             $this->getTemplate()->parse("CiclosListBlock", true);	
-  			foreach($vCiclos as $oCiclo){
-				$this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
-	            $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
-	            $this->getTemplate()->parse("CiclosListBlock", true);
-          	}
+            if ($vCiclos) {
+            	foreach($vCiclos as $oCiclo){
+					$this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+		            $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
+		            $this->getTemplate()->parse("CiclosListBlock", true);
+	          	}
+            }
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ciclos', false));
         }catch(Exception $e){
             $this->getAjaxHelper()->sendHtmlAjaxResponse("");
@@ -1961,11 +1970,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			$this->getTemplate()->set_var("iAreaId", "");
             $this->getTemplate()->set_var("sAreaDescripcion", "Seleccione el area");
             $this->getTemplate()->parse("AreasListBlock", true);	
-  			foreach($vAreas as $oArea){
-				$this->getTemplate()->set_var("iAreaId", $oArea->getId());
-	            $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
-	            $this->getTemplate()->parse("AreasListBlock", true);
-          	}
+            if ($vAreas) {
+	  			foreach($vAreas as $oArea){
+					$this->getTemplate()->set_var("iAreaId", $oArea->getId());
+		            $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
+		            $this->getTemplate()->parse("AreasListBlock", true);
+	          	}
+            }
           	
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('areas', false));
         }catch(Exception $e){
@@ -1984,13 +1995,14 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
   			$vEjes	= SeguimientosController::getInstance()->getEjesByAreaId($iAreaId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
 			$this->getTemplate()->set_var("iEjeId", "");
             $this->getTemplate()->set_var("sEjeDescripcion", "Seleccione el eje");
-            $this->getTemplate()->parse("EjesListBlock", true);	
-  			foreach($vEjes as $oEje){
-				$this->getTemplate()->set_var("iEjeId", $oEje->getId());
-	            $this->getTemplate()->set_var("sEjeDescripcion", $oEje->getDescripcion());
-	            $this->getTemplate()->parse("EjesListBlock", true);
-          	}
-          	
+            $this->getTemplate()->parse("EjesListBlock", true);
+            if ($vEjes) {
+	  			foreach($vEjes as $oEje){
+					$this->getTemplate()->set_var("iEjeId", $oEje->getId());
+		            $this->getTemplate()->set_var("sEjeDescripcion", $oEje->getDescripcion());
+		            $this->getTemplate()->parse("EjesListBlock", true);
+	          	}
+            }
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ejes', false));
         }catch(Exception $e){
             $this->getAjaxHelper()->sendHtmlAjaxResponse("");
