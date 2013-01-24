@@ -221,6 +221,13 @@ $(document).ready(function(){
     });
     
     $("#agregarEje").live('click',function(){
+    	var ejes=document.getElementsByName("ejeHidden[]");
+    	for (var i = 0; i < ejes.length; i++) {
+    	    if (ejes[i].value == $('#eje option:selected').val()) {
+    	    	alert("No puede agregar 2 veces el mismo eje.")
+    	    	return false;
+    	    }
+    	}
     	$('#msg_form_guardarDiagnostico').hide();
     	if ($('#eje option:selected').val() == "") {
     		 $('#msg_form_guardarDiagnostico').show();
@@ -228,16 +235,26 @@ $(document).ready(function(){
              $('#msg_form_guardarDiagnostico .msg').html("Debe seleccionar un eje.");
              return false;
     	}
-     	
+      
     	var html = 
 			       " <tr>"+
 			       " 	<td>"+$('#nivel option:selected').text()+"<input type='hidden'  name='nivelHidden[]' value='"+$('#nivel option:selected').val()+"'/></td>"+
 			       "   	<td>"+$('#ciclo option:selected').text()+"<input type='hidden'  name='cicloHidden[]' value='"+$('#ciclo option:selected').val()+"'/></td>"+
 			       " 	<td>"+$('#area option:selected').text()+"<input type='hidden'  name='areaHidden[]' value='"+$('#area option:selected').val()+"'/></td>"+
 			       "  	<td>"+$('#eje option:selected').text()+"<input type='hidden'  name='ejeHidden[]' value='"+$('#eje option:selected').val()+"'/></td>"+
-			       "	<td>"+$('#estadoInicial').val()+"<input type='hidden'  name='estadoInicialHidden[]' value='"+$('#estadoInicial').val()+"'/></td>"+
+			       "	<td><div class='fwrap'><div class='inner_fwrap'><textarea rows='0' cols='0' class='textAreaLihe textareaAutoGrow defVal maxlength' onblur='editarEje(this);'>"+$('#estadoInicial').val()+"</textarea><input type='hidden'  name='estadoInicialHidden[]' value='"+$('#estadoInicial').val()+"'/></div></div></td>"+
+			       "	<td><span onclick='eliminarEje(this)' class='i bs delete ihover' rel='2' title='Eliminar eje'></span></td>"+
 			       " </tr>";
 
       $("#contentEjesResult").append(html);
     });
 });
+
+function eliminarEje(eje)
+{
+	$(eje).parent().parent().remove();
+}
+
+function editarEje(eje){
+	$(eje).parent().find("input[type=hidden]").val($(eje).val());
+}

@@ -318,7 +318,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                      WHERE 
                      e.descripcion = ".$this->escStr($sDescripcion). "
                       AND 
-                     e.areas_id = " .$this->escInt($oArea->getId()));
+                     e.areas_id = " .$this->escInt($oArea->getId());
             
             $db->query($sSQL);
 

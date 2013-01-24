@@ -174,7 +174,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
                      WHERE 
                      a.descripcion = ".$this->escStr($sDescripcion). "
                       AND 
-                     a.ciclos_id = " .$this->escInt($oCiclo->getId()));
+                     a.ciclos_id = " .$this->escInt($oCiclo->getId());
             
             $db->query($sSQL);
 
