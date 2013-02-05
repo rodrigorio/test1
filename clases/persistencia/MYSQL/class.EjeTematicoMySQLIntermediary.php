@@ -288,7 +288,10 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                         1 as existe
                       FROM
                         seguimientos_scc sd
-                        JOIN seguimientos s ON sd.id = s.id
+                      JOIN 
+                      seguimientos s 
+                      ON
+                      sd.id = s.id
                       WHERE
                         sd.diagnostico_scc_id = ".$this->escInt($iDiagnosticoId)." AND
                         s.usuarios_id = ".$this->escInt($iUsuarioId);

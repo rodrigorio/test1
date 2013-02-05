@@ -701,13 +701,8 @@ class SeguimientosController
         }
     }
 
-    public function guardarDiagnostico($oDiagnostico, $oSeguimiento){
-        try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
-        	}
+    public function guardarDiagnostico($oDiagnostico){
+        try{          
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             return $oDiagnosticoIntermediary->guardar($oDiagnostico);
         }catch(Exception $e){
@@ -805,7 +800,7 @@ class SeguimientosController
      */
    public function getUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
       {
-    	try{
+    	try{    		
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
@@ -821,6 +816,34 @@ class SeguimientosController
     	try{
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Obtener variables  por id de unidad
+     *
+     */
+ 	public function getVariablesByUnidadId($iUnidadId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+    		$filtro = array('v.unidad_id' => $iUnidadId);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return  $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    /**
+     * Obtener unidades  por id de seguimiento
+     *
+     */
+ 	public function getUnidadesBySeguimientoId($iSeguimientoId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+    		$filtro = array('u.id' => $iSeguimientoId);
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return  $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -881,12 +904,7 @@ class SeguimientosController
      */
    public function getObjetivosPersonalizados($oSeguimiento)
       {
-    	try{
-    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        		throw new Exception("No posee permiso para ver este seguimiento", 401);
-        	}
+    	try{    	    
         	$filtro = array('op.seguimientos_personalizados_id' => $oSeguimiento->getId());
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
@@ -901,13 +919,7 @@ class SeguimientosController
    public function getObjetivoAprendizaje($oSeguimiento)
       {
     	try{
-    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        		throw new Exception("No posee permiso para ver este seguimiento", 401);
-        	}
-    		$filtro = array('sxo.seguimientos_scc_id' => $oSeguimiento->getId());    		
-    		
+    	   	$filtro = array('sxo.seguimientos_scc_id' => $oSeguimiento->getId());    		
     		$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
@@ -915,17 +927,11 @@ class SeguimientosController
         }
     }
     /**
-     * Guardar Objetivos Curriculares verifica que sea el usuario que creo el seguimiento
+     * Guardar Objetivos Curriculares verificar antes que sea el usuario que creo el seguimiento
      *
      */
-   public function guardarObjetivoAprendizaje($oObjetivo, $oSeguimiento){
-        try{
-        	$iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
-        	}
-        	        		
+   public function guardarObjetivoAprendizaje($oObjetivo){
+        try{        	      		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo);
                                    
@@ -937,13 +943,8 @@ class SeguimientosController
      * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento
      *
      */
-    public function guardarObjetivoPersonalizado($oObjetivo, $oSeguimiento){
-        try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
-        	}
+    public function guardarObjetivoPersonalizado($oObjetivo){
+        try{            
         	$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
         }catch(Exception $e){
@@ -954,17 +955,11 @@ class SeguimientosController
      * Borrar Objetivo personalizado verifica que sea el usuario que creo el seguimiento!!!!!
      *
      */
-    public function borrarObjetivo($oObjetivo, $oSeguimiento)
+    public function borrarObjetivo($iObjetivoId)
     {
-    	try{
-    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        		throw new Exception("No posee permiso para modificar este seguimiento", 401);
-        	}
-    		
+    	try{    	    		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->borrar($oObjetivo->getId());
+            return $oObjetivoIntermediary->borrar($iObjetivoId);
         }catch(Exception $e){
             throw $e;
         }
@@ -999,40 +994,17 @@ class SeguimientosController
      *
      */
    public function asociarEjesTematicos($iDiagnosticoSCCId,$vEjeTematico){
-        try{
-        	        	
+        try{        	        	
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }     
-    /**
-     * Devuelve true si el diagn�stico pertenece a un seguimiento creado por el usuario que esta logueado.
-     *
-     * @return boolean true si la foto pertenece al integrante logueado.
-     */
-    public function isDiagnosticoSeguimientoUsuario($iDiagnosticoId)
-    {
-        try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId);
-        }catch(Exception $e){
-            throw new Exception($e);
-            return false;
-        }
-    }
-    
+        
     public function getDiagnosticoSeguimientoSCCById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
     	try{
-    		$filtro2 = array('s.id' => $iSeguimientoId);
-    		$oSeguimiento = $this-> obtenerSeguimientos($filtro2, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
-    	    $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-        	if(null !== $oSeguimiento->getUsuario() && $iUsuarioId != $oSeguimiento->getUsuario()->getId()){
-        	throw new Exception("No posee permiso para ver este seguimiento", 401);
-        	}
     		$filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             return $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
@@ -1063,6 +1035,98 @@ class SeguimientosController
             return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
+        }
+    }
+      /**
+     * Devuelve true si  pertenece a un seguimiento creado por el usuario que esta logueado.
+     *
+     * @return boolean true si pertenece al integrante logueado.
+     */
+    public function isDiagnosticoPersonalizadoUsuario($iDiagnosticoPersonalizadoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->isDiagnosticoPersonalizadoUsuario($iUsuarioId, $iDiagnosticoPersonalizadoId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+    /**
+     * Devuelve true si  pertenece a un seguimiento creado por el usuario que esta logueado.
+     *
+     * @return boolean true si pertenece al integrante logueado.
+     */
+    public function isDiagnosticoSCCUsuario($iDiagnosticoSCCId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->isDiagnosticoSCCUsuario($iUsuarioId, $iDiagnosticoSCCId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+    /**
+     * Devuelve true si el diagn�stico pertenece a un seguimiento creado por el usuario que esta logueado.
+     *
+     * @return boolean true si la foto pertenece al integrante logueado.
+     */
+    public function isEjeTematicoDiagnosticoUsuario($iDiagnosticoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+    public function isObjetivoPersonalizadoUsuario($iObjetivoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->isObjetivoPersonalizadoUsuario($iObjetivoId,$iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+    public function isObjetivoAprendizajeUsuario($iObjetivoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->isObjetivoAprendizajeUsuario($iObjetivoId,$iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+    public function isUnidadUsuario($iUnidadId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->isUnidadUsuario($iUnidadId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
+        }
+    }
+    public function isVariableUsuario($iVariableId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return $oVariableIntermediary->isVariableUsuario($iVariableId, $iUsuarioId);
+        }catch(Exception $e){
+            throw new Exception($e);
+            return false;
         }
     }
 }
