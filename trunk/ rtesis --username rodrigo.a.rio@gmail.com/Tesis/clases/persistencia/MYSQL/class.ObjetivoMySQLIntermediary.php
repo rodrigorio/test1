@@ -434,6 +434,74 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+     public function isObjetivoPersonalizadoUsuario($iObjetivoId,$iUsuarioId);
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimientos s
+                        JOIN 
+                        seguimientos_personalizados sp 
+                        ON 
+                        sp.id = s.id
+                        JOIN
+                        objetivos_personalizados op
+                        ON
+                        sp.id = op.seguimientos_personalizados_id
+                      WHERE
+                        op.id = ".$this->escInt($iObjetivoId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+    public function isObjetivoAprendizajeUsuario($iObjetivoId,$iUsuarioId);
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimientos s
+                        JOIN 
+                        seguimientos_scc sscc 
+                        ON 
+                        sscc.id = s.id
+                        JOIN
+                        seguimiento_scc_x_objetivo_aprendizaje soa
+                        ON
+                        sscc.id = soa.seguimientos_scc_id
+                      WHERE
+                        soa.objetivos_aprendizaje_id = ".$this->escInt($iObjetivoId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
    
     public function actualizarCampoArray($objects, $cambios){}
     public function existe($objects){}

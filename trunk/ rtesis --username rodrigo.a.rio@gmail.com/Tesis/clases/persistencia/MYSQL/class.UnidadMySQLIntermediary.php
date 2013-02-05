@@ -1,7 +1,7 @@
 <?php
  /* Description of class UnidadMySQLIntermediary
  *
- * @author Andrés
+ * @author Andrï¿½s
  */
 class UnidadMySQLIntermediary extends UnidadIntermediary
 {
@@ -30,9 +30,13 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion
+                        u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, su.seguimiento_id 
                     FROM
-                       unidades u ";
+                       seguimiento_x_unidades su
+                    JOIN   
+                       unidades u
+                    ON
+                      su.unidad_id = u.id";
                     if(!empty($filtro)){     
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
@@ -139,6 +143,36 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
            	return false; 
+        }
+    }
+    public function isUnidadUsuario($iUnidadId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimientos s
+                      JOIN 
+                      	seguimiento_x_unidades su 
+                      ON 	
+                      	su.seguimiento_id = s.id
+                      WHERE
+                        su.unidad_id = ".$this->escInt($iUnidadId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
         }
     }
 }
