@@ -795,7 +795,7 @@ class SeguimientosController
         }         
     }
     /**
-     * Obtener Unidades falta filtro!!
+     * Obtener Unidades 
      *
      */
    public function getUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
@@ -835,6 +835,21 @@ class SeguimientosController
         }
     }
     /**
+     * Obtener unidades  por id de usuario
+     *
+     */
+ 	public function getUnidadesByUsuarioId($iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+    		$iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+    		$filtro = array('s.usuarios_id' => $iUsuarioId);
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return  $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     /**
      * Obtener unidades  por id de seguimiento
      *
      */

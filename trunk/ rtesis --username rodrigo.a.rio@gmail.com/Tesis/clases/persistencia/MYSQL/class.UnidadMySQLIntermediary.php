@@ -30,9 +30,13 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, su.seguimiento_id 
+                        u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion
                     FROM
+                       seguimientos s
+                    JOIN   
                        seguimiento_x_unidades su
+                    ON
+                      s.id = su.seguimiento_id    
                     JOIN   
                        unidades u
                     ON

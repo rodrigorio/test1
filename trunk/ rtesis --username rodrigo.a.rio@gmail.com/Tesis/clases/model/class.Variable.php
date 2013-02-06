@@ -3,7 +3,7 @@
 /**
  * Description of class Variable
  *
- * @author Andrés
+ * @author Andrï¿½s
  */
 class Variable {
 	private $iId;
@@ -94,18 +94,6 @@ class Variable {
 		return $this->sDescripcion;
 	}
     /**
-	 * @return string $oUnidad
-	 */
-	public function getUnidad(){
-		
-		if($this->oUnidad==null){
-			$this->oUnidad = SeguimientosController::getInstance()->getUnidadById($this->iUnidadId);
-			//TODO llamar a metodo que trae unidad segun variableid (o unidadId???? dice Andres)
-		} 		
-		return $this->oUnidad;
-	}
-	
-   /**
 	 * @return string $dFechaHora
 	 */
 	public function getFechaHora(){
