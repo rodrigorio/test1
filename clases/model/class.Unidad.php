@@ -18,7 +18,6 @@ class Unidad{
      *
      * TODO on demand, porque depende de lo que se necesite en el momento, y es mucha info.
      *
-     * FIJARSE EN LA DB PORQUE RODRIGO LO HIZO MAL DONDE CARAJO GUARDAS LOS VALORES POR FECHA
      */
     private $aVariables;
 			
@@ -63,7 +62,23 @@ class Unidad{
     public function setFechaHora($dFechaHora){
             $this->dFechaHora = (int)$dFechaHora;
     }
-	
+	public function setVariables($aVariables){
+        $this->aVariables = $aVariables;
+        return $this;
+    }
+    public function getVariables()
+    {
+        if($this->aVariables === null){
+            $this->aVariables = SeguimientosController::getInstance()->getVariablesByUnidadId($this->iId);
+        }
+        return $this->aVariables;
+    }
+    public function addVariable($oVariable)
+    {
+        $this->aVarible[] = $oVariable;
+        return $this;
+    }
+    
     /**
      *  @return int $iId
      */

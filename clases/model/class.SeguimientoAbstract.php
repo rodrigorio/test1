@@ -234,7 +234,7 @@ abstract class SeguimientoAbstract
     public function getUnidades()
     {
         if($this->aUnidades === null){
-            $this->aUnidades = SeguimientosController::getInstance()->obtenerUnidadesSeguimiento($this->iId);
+            $this->aUnidades = SeguimientosController::getInstance()->getUnidadesBySeguimientoId($this->iId);
         }
         return $this->aUnidades;
     }
