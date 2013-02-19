@@ -914,6 +914,18 @@ class SeguimientosController
         }
     }
     /**
+     * Asociar Unidad de variables a seguimiento 
+     *
+     */
+   public function asociarUnidadVariables($iSeguimientoId,$vVariable){
+        try{        	        	
+            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
+            return $oSeguimientoIntermediary->asociarUnidadVariables($iSeguimientoId,$vVariable);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }     
+    /**
      * Obtener Objetivos Personalizados
      *
      */
