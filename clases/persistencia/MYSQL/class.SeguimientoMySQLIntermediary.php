@@ -669,5 +669,38 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             return false;
         }
     }
+   /**
+     * El controlador de seguimiento con el metodo "isDiagnosticoSeguimientoUsuario" tiene que verificar que es el diagnostico de un seguimiento que haya
+     * creado el usuario que esta en sesion
+     */
+
+    public function asociarUnidadVariables($iSeguimientoId,$vVariable)
+    {
+        try{
+            $db = $this->conn;            
+            $db->begin_transaction();            
+            $sSQL = " insert into seguimientos_x_contenido_variables (seguimiento_id, variable_id, valor, fechaHora) VALUES ";
+            
+            
+            for ($i=0; $i< count($vVariable); $i++) {
+            	$oVariable = $vVariable[$i];
+            	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
+            		.$this->escInt($oVariable->getId()).", "
+            		.$this->escInt($oVariable->Valor()).", "//como saco este valor
+            		.$this->($oVariable->getFechaHora()).") ";
+            	if (count($vVariable) > $i+1) {
+            		$sSQL .= ",";
+            	}
+            } 
+                      
+            $db->execSQL($sSQL);
+            $db->commit();
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+                 
+    }
+    
     public function actualizarCampoArray($objects, $cambios){}    
 }
