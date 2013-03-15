@@ -965,7 +965,9 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
         }
-    } 
+    }
+     * */
+    
     /**
      * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento
      *
