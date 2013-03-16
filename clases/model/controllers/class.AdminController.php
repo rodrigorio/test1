@@ -1157,6 +1157,7 @@ class AdminController
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
      *  Obtiene los Niveles
      */
@@ -1196,7 +1197,8 @@ class AdminController
             throw new Exception($e->getMessage());
         }
     }
-/**
+
+    /**
      * Obtener areas por id de ciclo
      *
      */

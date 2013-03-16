@@ -5,7 +5,7 @@
  * Nivel, Ciclo, Area, Eje, Obj Aprendizaje
  *
  */
-class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
+class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 {
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
@@ -643,7 +643,7 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
     }
 
     public function listarNiveles()
-    {
+    {       
         try{
             $this->setFrameTemplate()
                  ->setHeadTag();
@@ -811,8 +811,8 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
             $this->printMsgTop();
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderObjetivosAprendizajeBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "ListadoObjetivosAprendizajeBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderObjetivosAprendizajeBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoObjetivosAprendizajeBlock");
 
             $iRecordsTotal = 0;
             $aObjetivosAprendizaje = AdminController::getInstance()->getObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
@@ -824,10 +824,10 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oObjetivoAprendizaje->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getCiclo()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionArea", $oEje->getArea()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEje()->getArea()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionEje", $oObjetivoAprendizaje->getEje()->getDescripcion());
 
                     $this->getTemplate()->parse("ObjetivoAprendizajeBlock", true);
                 }
@@ -852,8 +852,8 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
 
         $this->printMsgTop();
 
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderNivelesBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "FormNivelBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderNivelesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "FormNivelBlock");
 
         if($this->getRequest()->has('editar')){
             $this->editarNivelForm();
@@ -864,27 +864,91 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
         }
     }
 
-    private function editarNivelForm()
+    public function formularioCiclo()
     {
-        try{
-            $iNivelId = $this->getRequest()->getParam('id');
+        $this->setFrameTemplate()
+             ->setHeadTag();
 
-            if(empty($iNivelId)){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-            
-            $this->getTemplate()->set_var("sTituloForm", "Modificar Nivel");
-            $this->getTemplate()->set_var("SubmitCrearNivelBlock", "");
+        IndexControllerAdmin::setCabecera($this->getTemplate());
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
 
-            $oNivel = SeguimientosController::getInstance()->getNivelById($iNivelId);
+        $this->printMsgTop();
 
-            $this->getTemplate()->set_var("iNivelId", $iNivelId);
-            $this->getTemplate()->set_var("sDescripcion", $oNivel->getDescripcion());
-         
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderCiclosBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "FormCicloBlock");
 
-        }catch(Exception $e){
-            throw $e;
+        if($this->getRequest()->has('editar')){
+            $this->editarCicloForm();
+        }
+
+        if($this->getRequest()->has('crear')){
+            $this->crearCicloForm();
+        }
+    }
+
+    public function formularioArea()
+    {
+        $this->setFrameTemplate()
+             ->setHeadTag();
+
+        IndexControllerAdmin::setCabecera($this->getTemplate());
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+        $this->printMsgTop();
+
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderAreasBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "FormAreaBlock");
+
+        if($this->getRequest()->has('editar')){
+            $this->editarAreaForm();
+        }
+
+        if($this->getRequest()->has('crear')){
+            $this->crearAreaForm();
+        }
+    }
+
+    private function formularioEje()
+    {
+        $this->setFrameTemplate()
+             ->setHeadTag();
+
+        IndexControllerAdmin::setCabecera($this->getTemplate());
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+        $this->printMsgTop();
+
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderEjesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "FormEjeBlock");
+
+        if($this->getRequest()->has('editar')){
+            $this->editarEjeForm();
+        }
+
+        if($this->getRequest()->has('crear')){
+            $this->crearEjeForm();
+        }
+    }
+
+    private function formularioObjetivoAprendizaje()
+    {
+        $this->setFrameTemplate()
+             ->setHeadTag();
+
+        IndexControllerAdmin::setCabecera($this->getTemplate());
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+        $this->printMsgTop();
+
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderObjetivosAprendizajeBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "FormObjetivoAprendizajeBlock");
+
+        if($this->getRequest()->has('editar')){
+            $this->editarObjetivoAprendizajeForm();
+        }
+
+        if($this->getRequest()->has('crear')){
+            $this->crearObjetivoAprendizajeForm();
         }
     }
 
@@ -899,146 +963,342 @@ class ObjetivosCurricularesControllerAdmin extends PageControllerAbstract
             throw $e;
         }
     }
-
-    public function formularioCiclo()
+    
+    private function crearCicloForm()
     {
-        $this->setFrameTemplate()
-             ->setHeadTag();
+        try{
+            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Ciclo");
+            $this->getTemplate()->set_var("SubmitModificarCicloBlock", "");
 
-        IndexControllerAdmin::setCabecera($this->getTemplate());
-        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+            //combo niveles
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("sNivelSelected", "");
+                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("SelectNivelesBlock", true);
+            }
 
-        $this->printMsgTop();
-
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderCiclosBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "FormCicloBlock");
-
-        if($this->getRequest()->has('editar')){
-            $this->editarCicloForm();
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
         }
+    }  
+    
+    private function crearAreaForm()
+    {
+        try{
+            $this->getTemplate()->set_var("sTituloForm", "Crear nueva Area");
+            $this->getTemplate()->set_var("SubmitModificarAreaBlock", "");
 
-        if($this->getRequest()->has('crear')){
-            $this->crearCicloForm();
+            //combo niveles
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("sNivelSelected", "");
+                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("SelectNivelesBlock", true);
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    private function crearEjeForm()
+    {
+        try{
+            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Eje");
+            $this->getTemplate()->set_var("SubmitModificarEjeBlock", "");
+
+            //combo niveles
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("sNivelSelected", "");
+                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("SelectNivelesBlock", true);
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    private function crearObjetivoAprendizajeForm()
+    {
+        try{
+            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Objetivo de Aprendizaje");
+            $this->getTemplate()->set_var("SubmitModificarObjetivoAprendizajeBlock", "");
+
+            //combo niveles
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("sNivelSelected", "");
+                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("SelectNivelesBlock", true);
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    private function editarNivelForm()
+    {
+        try{
+            $iNivelId = $this->getRequest()->getParam('id');
+
+            if(empty($iNivelId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Nivel");
+            $this->getTemplate()->set_var("SubmitCrearNivelBlock", "");
+
+            $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
+
+            $this->getTemplate()->set_var("iNivelId", $iNivelId);
+            $this->getTemplate()->set_var("sDescripcion", $oNivel->getDescripcion());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw $e;
         }
     }
 
     private function editarCicloForm()
     {
         try{
-            $iCategoriaId = $this->getRequest()->getParam('id');
+            $iCicloId = $this->getRequest()->getParam('id');
 
-            if(empty($iCategoriaId)){
+            if(empty($iCicloId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $this->getTemplate()->set_var("sTituloForm", "Modificar categoría");
-            $this->getTemplate()->set_var("SubmitCrearCategoriaBlock", "");
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Ciclo");
+            $this->getTemplate()->set_var("SubmitCrearCicloBlock", "");
 
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            $oCiclo = AdminController::getInstance()->obtenerCicloById($iCicloId);
 
-            $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-            $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-            $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+            //combo niveles
+            $iNivelId = $oCiclo->getNivel()->getId();
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                if($iNivelId == $oNivel->getId()){
+                    $this->getTemplate()->set_var("sNivelSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectNivel", true);
+                $this->getTemplate()->set_var("sNivelSelected", "");
+            }
+
+            $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+            $this->getTemplate()->set_var("sDescripcion", $oCiclo->getDescripcion());
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e);
-        }
-    }
-
-    private function crearCicloForm()
-    {
-        try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
-
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
-
-            $this->printMsgTop();
-
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
-
-            $this->getTemplate()->set_var("sTituloForm", "Crear nueva categoria");
-            $this->getTemplate()->set_var("SubmitModificarCategoriaBlock", "");
-            $this->getTemplate()->set_var("EditarFotoBlock", "");
-
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-        }catch(Exception $e){
-            throw new Exception($e);
-        }
-    }
-
-    public function formularioArea()
-    {
-        $this->setFrameTemplate()
-             ->setHeadTag();
-
-        IndexControllerAdmin::setCabecera($this->getTemplate());
-        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
-
-        $this->printMsgTop();
-
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "widgetsContent", "HeaderAreasBlock");
-        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosCurriculares.gui.html", "mainContent", "FormAreaBlock");
-
-        if($this->getRequest()->has('editar')){
-            $this->editarAreaForm();
-        }
-
-        if($this->getRequest()->has('crear')){
-            $this->crearAreaForm();
+            throw $e;
         }
     }
 
     private function editarAreaForm()
     {
         try{
-            $iCategoriaId = $this->getRequest()->getParam('id');
+            $iAreaId = $this->getRequest()->getParam('id');
 
-            if(empty($iCategoriaId)){
+            if(empty($iAreaId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $this->getTemplate()->set_var("sTituloForm", "Modificar categoría");
-            $this->getTemplate()->set_var("SubmitCrearCategoriaBlock", "");
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Área");
+            $this->getTemplate()->set_var("SubmitCrearAreaBlock", "");
 
-            $oCategoria = ComunidadController::getInstance()->obtenerCategoriaById($iCategoriaId);
+            $oArea = AdminController::getInstance()->obtenerAreaById($iAreaId);
+            
+            //combo niveles
+            $iNivelId = $oArea->getCiclo()->getNivel()->getId();
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                if($iNivelId == $oNivel->getId()){
+                    $this->getTemplate()->set_var("sNivelSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectNivel", true);
+                $this->getTemplate()->set_var("sNivelSelected", "");
+            }
 
-            $this->getTemplate()->set_var("iCategoriaId", $oCategoria->getId());
-            $this->getTemplate()->set_var("sNombre", $oCategoria->getNombre());
-            $this->getTemplate()->set_var("sDescripcion", $oCategoria->getDescripcion());
+            //combo ciclos
+            $iCicloId = $oArea->getCiclo()->getId();
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aCiclos as $oCiclo){
+                $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
+                $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
+                if($iCicloId == $oCiclo->getId()){
+                    $this->getTemplate()->set_var("sCicloSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectCiclo", true);
+                $this->getTemplate()->set_var("sCicloSelected", "");
+            }
+            
+            $this->getTemplate()->set_var("iAreaId", $oArea->getId());
+            $this->getTemplate()->set_var("sDescripcion", $oArea->getDescripcion());
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
-    private function crearAreaForm()
+    private function editarEjeForm()
     {
         try{
-            $this->setFrameTemplate()
-                 ->setHeadTag();
+            $iEjeId = $this->getRequest()->getParam('id');
 
-            IndexControllerAdmin::setCabecera($this->getTemplate());
-            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionCategorias");
+            if(empty($iEjeId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
 
-            $this->printMsgTop();
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Eje Temático");
+            $this->getTemplate()->set_var("SubmitCrearEjeBlock", "");
 
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "widgetsContent", "HeaderBlock");
-            $this->getTemplate()->load_file_section("gui/vistas/admin/categoria.gui.html", "mainContent", "FormCategoriaBlock");
+            $oEje = AdminController::getInstance()->obtenerEjeById($iEjeId);
 
-            $this->getTemplate()->set_var("sTituloForm", "Crear nueva categoria");
-            $this->getTemplate()->set_var("SubmitModificarCategoriaBlock", "");
-            $this->getTemplate()->set_var("EditarFotoBlock", "");
+            //combo niveles
+            $iNivelId = $oEje->getArea()->getCiclo()->getNivel()->getId();
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                if($iNivelId == $oNivel->getId()){
+                    $this->getTemplate()->set_var("sNivelSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectNivel", true);
+                $this->getTemplate()->set_var("sNivelSelected", "");
+            }
+
+            //combo ciclos
+            $iCicloId = $oEje->getArea()->getCiclo()->getId();
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aCiclos as $oCiclo){
+                $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
+                $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
+                if($iCicloId == $oCiclo->getId()){
+                    $this->getTemplate()->set_var("sCicloSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectCiclo", true);
+                $this->getTemplate()->set_var("sCicloSelected", "");
+            }
+
+            //combo areas
+            $iAreaId = $oEje->getArea()->getId();
+            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aAreas as $oArea){
+                $this->getTemplate()->set_var("iValueArea", $oArea->getId());
+                $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
+                if($iAreaId == $oArea->getId()){
+                    $this->getTemplate()->set_var("sAreaSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectArea", true);
+                $this->getTemplate()->set_var("sAreaSelected", "");
+            }
+
+            $this->getTemplate()->set_var("iEjeId", $oEje->getId());
+            $this->getTemplate()->set_var("sDescripcion", $oEje->getDescripcion());
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
+        }
+    }
+
+    private function editarObjetivoAprendizajeForm()
+    {
+        try{
+            $iObjetivoAprendizajeId = $this->getRequest()->getParam('id');
+
+            if(empty($iObjetivoAprendizajeId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Objetivo Aprendizaje");
+            $this->getTemplate()->set_var("SubmitCrearObjetivoAprendizajeBlock", "");
+
+            $oObjetivoAprendizaje = AdminController::getInstance()->obtenerObjetivoAprendizajeById($iObjetivoAprendizajeId);
+
+            //combo niveles
+            $iNivelId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getId();
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                if($iNivelId == $oNivel->getId()){
+                    $this->getTemplate()->set_var("sNivelSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectNivel", true);
+                $this->getTemplate()->set_var("sNivelSelected", "");
+            }
+
+            //combo ciclos
+            $iCicloId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getId();
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aCiclos as $oCiclo){
+                $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
+                $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
+                if($iCicloId == $oCiclo->getId()){
+                    $this->getTemplate()->set_var("sCicloSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectCiclo", true);
+                $this->getTemplate()->set_var("sCicloSelected", "");
+            }
+
+            //combo areas
+            $iAreaId = $oObjetivoAprendizaje->getEje()->getArea()->getId();
+            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aAreas as $oArea){
+                $this->getTemplate()->set_var("iValueArea", $oArea->getId());
+                $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
+                if($iAreaId == $oArea->getId()){
+                    $this->getTemplate()->set_var("sAreaSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectArea", true);
+                $this->getTemplate()->set_var("sAreaSelected", "");
+            }
+
+            //combo ejes
+            $iEjeId = $oObjetivoAprendizaje->getEje()->getId();
+            $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsTotal, null, null, null, null);
+            foreach ($aEjes as $oEje){
+                $this->getTemplate()->set_var("iValueEje", $oEje->getId());
+                $this->getTemplate()->set_var("sDescripcionEje", $oEje->getDescripcion());
+                if($iEjeId == $oEje->getId()){
+                    $this->getTemplate()->set_var("sEjeSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectEje", true);
+                $this->getTemplate()->set_var("sEjeSelected", "");
+            }
+
+            $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
+            $this->getTemplate()->set_var("sDescripcion", $oObjetivoAprendizaje->getDescripcion());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw $e;
         }
     }
 }
