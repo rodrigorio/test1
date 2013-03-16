@@ -680,14 +680,13 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $db = $this->conn;            
             $db->begin_transaction();            
             $sSQL = " insert into seguimientos_x_contenido_variables (seguimiento_id, variable_id, valor, fechaHora) VALUES ";
-            
-            
+                        
             for ($i=0; $i< count($vVariable); $i++) {
             	$oVariable = $vVariable[$i];
             	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
             		.$this->escInt($oVariable->getId()).", "
-            		.$this->escInt($oVariable->Valor()).", "//como saco este valor
-            		.$this->($oVariable->getFechaHora()).") ";
+            		.$this->escInt($oVariable->Valor()).", "
+            		.$this->escDate($oVariable->getFechaHora()).") ";
             	if (count($vVariable) > $i+1) {
             		$sSQL .= ",";
             	}

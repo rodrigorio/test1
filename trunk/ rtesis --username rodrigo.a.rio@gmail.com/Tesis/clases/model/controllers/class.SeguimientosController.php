@@ -953,6 +953,7 @@ class SeguimientosController
             throw $e;
         }
     }
+    
     /**
      * Guardar Objetivos Curriculares verificar antes que sea el usuario que creo el seguimiento
      *
@@ -966,7 +967,6 @@ class SeguimientosController
             throw $e;
         }
     }
-     * */
     
     /**
      * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento

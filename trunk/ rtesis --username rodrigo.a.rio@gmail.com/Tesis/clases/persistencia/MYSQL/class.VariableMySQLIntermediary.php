@@ -152,7 +152,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
            	return false; 
         }
     }
-     public function isVariableUsuario($iVariableId, $iUsuarioId);
+    public function isVariableUsuario($iVariableId, $iUsuarioId)
     {
     	try{
             $db = $this->conn;
@@ -189,4 +189,5 @@ class VariableMySQLIntermediary extends VariableIntermediary
             throw new Exception($e->getMessage(), 0);
             return false;
         }
+    }
 }
