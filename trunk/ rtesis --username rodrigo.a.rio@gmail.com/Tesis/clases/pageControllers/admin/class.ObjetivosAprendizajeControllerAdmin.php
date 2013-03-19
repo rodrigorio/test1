@@ -238,6 +238,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $sContenidos = $this->getRequest()->getPost("contenidos");
             $iAreaId = $this->getRequest()->getPost("areaId");
             $oArea = AdminController::getInstance()->getAreaById($iAreaId);
 
@@ -250,6 +251,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $oEjeTematico = new stdClass();
             $oEjeTematico->sDescripcion = $sDescripcion;
+            $oEjeTematico->sContenidos = $sContenidos;
             $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
             $oEjeTematico->setArea($oArea);
 
@@ -271,7 +273,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $iEjeTematicoId = $this->getRequest()->getPost("ejeTematicoId");
+            $iEjeTematicoId = $this->getRequest()->getPost("ejeTematico");
             $oEjeTematico = AdminController::getInstance()->getEjeTematicoById($iEjeTematicoId);
 
             $oObjetivoAprendizaje = new stdClass();
@@ -392,6 +394,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $sContenidos = $this->getRequest()->getPost("contenidos");
             $iEjeId = $this->getRequest()->getPost("ejeId");
             $oEje = AdminController::getInstance()->getEjeTematicoById($iEjeId);
             $oArea = $oEje->getArea();
@@ -406,6 +409,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $oEje->setDescripcion($sDescripcion);
+            $oEje->setContenidos($sContenidos);
 
             AdminController::getInstance()->guardarEjeTematico($oEje);
             $this->getJsonHelper()->setMessage("El Eje Temático fue modificado con éxito dentro del Área");
@@ -655,6 +659,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderNivelesBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoNivelesBlock");
+            
+            $this->getTemplate()->set_var("hrefCrearNivel", $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioNivel", true)."?crear=1");
 
             $iRecordsTotal = 0;
             $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
@@ -694,6 +700,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderCiclosBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoCiclosBlock");
 
+            $this->getTemplate()->set_var("hrefCrearCiclo", $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioCiclo", true)."?crear=1");
+
             $iRecordsTotal = 0;
             $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
             if(count($aCiclos)>0){
@@ -732,6 +740,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderAreasBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoAreasBlock");
+
+            $this->getTemplate()->set_var("hrefCrearArea", $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioArea", true)."?crear=1");
 
             $iRecordsTotal = 0;
             $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
@@ -773,8 +783,11 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderEjesBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoEjesBlock");
 
+            $this->getTemplate()->set_var("hrefCrearEje", $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioEje", true)."?crear=1");
+
             $iRecordsTotal = 0;
             $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsTotal, null, null, null, null);
+            
             if(count($aEjes)>0){
                 foreach($aEjes as $oEje){
                     $hrefEditarEje = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioEje", true)."?editar=1&id=".$oEje->getId();
@@ -814,8 +827,11 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderObjetivosAprendizajeBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoObjetivosAprendizajeBlock");
 
+            $this->getTemplate()->set_var("hrefCrearObjetivoAprendizaje", $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioObjetivoAprendizaje", true)."?crear=1");
+
             $iRecordsTotal = 0;
             $aObjetivosAprendizaje = AdminController::getInstance()->getObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
+           
             if(count($aObjetivosAprendizaje)>0){
                 foreach ($aObjetivosAprendizaje as $oObjetivoAprendizaje){
                     $hrefEditarObjetivoAprendizaje = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioObjetivoAprendizaje", true)."?editar=1&id=".$oObjetivoAprendizaje->getId();
@@ -824,11 +840,11 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oObjetivoAprendizaje->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEje()->getArea()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionEje", $oObjetivoAprendizaje->getEje()->getDescripcion());
-
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEjeTematico()->getArea()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionEje", $oObjetivoAprendizaje->getEjeTematico()->getDescripcion());
+                                   
                     $this->getTemplate()->parse("ObjetivoAprendizajeBlock", true);
                 }
                 $this->getTemplate()->set_var("NoRecordsObjetivoAprendizajeBlock", "");
@@ -1011,7 +1027,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
     private function crearEjeForm()
     {
         try{
-            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Eje");
+            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Eje Temático");
             $this->getTemplate()->set_var("SubmitModificarEjeBlock", "");
 
             //combo niveles
@@ -1218,6 +1234,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->set_var("iEjeId", $oEje->getId());
             $this->getTemplate()->set_var("sDescripcion", $oEje->getDescripcion());
+            $this->getTemplate()->set_var("sContenidos", $oEje->getContenidos());
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 

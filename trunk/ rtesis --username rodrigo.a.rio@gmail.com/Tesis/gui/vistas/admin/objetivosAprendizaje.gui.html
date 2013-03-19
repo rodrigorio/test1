@@ -15,80 +15,497 @@
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
    .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
-   .script("{pathUrlBase}"+"gui/vistas/admin/especialidad.js");
+   .script("{pathUrlBase}"+"gui/vistas/admin/objetivosAprendizaje.js");
 </script>
 <!--EndJsContent-->
 
-<!--BeginHeaderBlock-->
+<!--BeginHeaderNivelesBlock-->
 <article class="full-block clearfix">
 <header>
-    <h2>Administrar especialidades integrantes comunidad</h2>
+    <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
 </header>
 <section>
-    <h3>Especialidades que los integrantes pueden seleccionar al editar su perfil</h3>
+    <h3><span class="txt_imp2">Niveles</span> dentro del plan curricular utilizados en seguimientos SCC.</h3>
 </section>
-<!--EndHeaderBlock-->
+<!--EndHeaderNivelesBlock-->
 
-<!--BeginFormEspecialidadBlock-->
-<h1 class="teta_up">{sTituloForm}</h1>
-<form id="formEspecialidad" name="formEspecialidad" action="" method="post">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <dt>
-        <label for="nombre">Nombre</label>
-    </dt>
-    <dd>
-        <input type="text" class="small" name="nombre" id="nombre" maxlength="50" value="{sNombre}">
-        <p>Nombre de la especialidad.</p>
-    </dd>
-    <dt>
-        <label for="descripcion">Descripci&oacute;n</label>
-    </dt>
-    <dd>
-        <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 medium maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
-    </dd>
+<!--BeginHeaderCiclosBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
+</header>
+<section>
+    <h3><span class="txt_imp2">Ciclos</span> dentro de los distintos niveles curriculares utilizados en seguimientos SCC.</h3>
+</section>
+<!--EndHeaderCiclosBlock-->
 
-    <!--BeginSubmitCrearEspecialidadBlock-->
-    <button id="crearEspecialidad" name="crearEspecialidad" type="submit">Crear Especialidad</button>
-    <!--EndSubmitCrearEspecialidadBlock-->
+<!--BeginHeaderAreasBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
+</header>
+<section>
+    <h3><span class="txt_imp2">Areas</span> curriculares dentro de los ciclos utilizados en seguimientos SCC.</h3>
+</section>
+<!--EndHeaderAreasBlock-->
 
-    <!--BeginSubmitModificarEspecialidadBlock-->
-    <button id="modificarEspecialidad" name="modificarEspecialidad" type="submit">Modificar Especialidad</button>
-    <input type="hidden" name="iEspecialidadId" id="iEspecialidadId" value="{iEspecialidadId}">
-    <!--EndSubmitModificarEspecialidadBlock-->
+<!--BeginHeaderEjesBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
+</header>
+<section>
+    <h3><span class="txt_imp2">Ejes</span> tem&aacute;ticos dentro de las distintas &aacute;reas curriculares utilizadas en seguimientos SCC.</h3>
+</section>
+<!--EndHeaderEjesBlock-->
 
-    <div style="display:none"  id='msg_form_especialidad' class="notification">
-        <p class="msg"></p>
-    </div>
-</form>
-<!--EndFormEspecialidadBlock-->
+<!--BeginHeaderObjetivosAprendizajeBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
+</header>
+<section>
+    <h3><span class="txt_imp2">Objetivos de Aprendizaje</span> dentro de los distintos Ejes tem&aacute;ticos utilizados en seguimientos SCC.</h3>
+</section>
+<!--EndHeaderObjetivosAprendizajeBlock-->
 
-<!--BeginListadoEspecialidadesBlock-->
+<!--BeginListadoNivelesBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="{hrefCrearNivel}" rel="tooltip" original-title="Crear un nuevo nivel en el sistema">Crear nuevo nivel</a>
+</div>
 <section>
     <table class="datatable">
         <thead>
             <tr>
-            <th>Nombre</th>
             <th>Descripcion</th>
             <th></th>
             </tr>
         </thead>
         <tbody>
-        <!--BeginEspecialidadesBlock-->
-        <tr class="{iEspecialidadId}">
-            <td>{sNombre}</td>
-            <td class="medium">{sDescripcion}</td>
+        <!--BeginNivelBlock-->
+        <tr class="{iNivelId}">
+            <td>{sDescripcion}</td>
             <td class="teal_ce">
-                <a class="di_inbl" rel="tooltip" original-title="Editar Especialidad" href="{hrefEditarEspecialidad}"><span class="i bs edit ihover"></span></a>
-                <span title="eliminar especialidad" rel="{iEspecialidadId}" class="i bs delete ihover borrarEspecialidad"></span>
+                <a class="di_inbl" rel="tooltip" original-title="Editar Nivel" href="{hrefEditarNivel}"><span class="i bs edit ihover"></span></a>
+                <span title="eliminar nivel" rel="{iNivelId}" class="i bs delete ihover borrarNivel"></span>
             </td>
         </tr>
-        <!--EndEspecialidadesBlock-->
-        <!--BeginNoRecordsEspecialidadesBlock-->
+        <!--EndNivelBlock-->
+        <!--BeginNoRecordsNivelesBlock-->
         <tr>
-            <td colspan="3">No hay especialidades cargadas</td>
+            <td colspan="2">No hay niveles cargados en el sistema</td>
         </tr>
-        <!--EndNoRecordsEspecialidadesBlock-->
+        <!--EndNoRecordsNivelesBlock-->
         </tbody>
     </table>
 </section>
-<!--EndListadoEspecialidadesBlock-->
+<!--EndListadoNivelesBlock-->
+
+<!--BeginListadoCiclosBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="{hrefCrearCiclo}" rel="tooltip" original-title="Crear un nuevo ciclo en el sistema">Crear nuevo ciclo</a>
+</div>
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Descripcion</th>
+            <th>Nivel</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginCicloBlock-->
+        <tr class="{iCicloId}">
+            <td>{sDescripcion}</td>
+            <td>{sDescripcionNivel}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Ciclo" href="{hrefEditarCiclo}"><span class="i bs edit ihover"></span></a>
+                <span title="Eliminar Ciclo" rel="{iCicloId}" class="i bs delete ihover borrarCiclo"></span>
+            </td>
+        </tr>
+        <!--EndCicloBlock-->
+        <!--BeginNoRecordsCiclosBlock-->
+        <tr>
+            <td colspan="3">No hay ciclos cargados</td>
+        </tr>
+        <!--EndNoRecordsCiclosBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoCiclosBlock-->
+
+<!--BeginListadoAreasBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="{hrefCrearArea}" rel="tooltip" original-title="Crear una nueva &Aacute;rea Curricular">Crear nueva &Aacute;rea</a>
+</div>
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Descripcion</th>
+            <th>Nivel</th>
+            <th>Ciclo</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginAreaBlock-->
+        <tr class="{iAreaId}">
+            <td>{sDescripcion}</td>
+            <td>{sDescripcionNivel}</td>
+            <td>{sDescripcionCiclo}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Area" href="{hrefEditarArea}"><span class="i bs edit ihover"></span></a>
+                <span title="Eliminar Area" rel="{iAreaId}" class="i bs delete ihover borrarArea"></span>
+            </td>
+        </tr>
+        <!--EndAreaBlock-->
+        <!--BeginNoRecordsAreasBlock-->
+        <tr>
+            <td colspan="4">No hay &aacute;reas cargados</td>
+        </tr>
+        <!--EndNoRecordsAreasBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoAreasBlock-->
+
+<!--BeginListadoEjesBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="{hrefCrearEje}" rel="tooltip" original-title="Crear un nuevo Eje Tem&aacute;tico en el sistema">Crear nuevo Eje Tem&aacute;tico</a>
+</div>
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Descripcion</th>
+            <th>Nivel</th>
+            <th>Ciclo</th>
+            <th>Area</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginEjeBlock-->
+        <tr class="{iAreaId}">
+            <td>{sDescripcion}</td>
+            <td>{sDescripcionNivel}</td>
+            <td>{sDescripcionCiclo}</td>
+            <td>{sDescripcionArea}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Eje" href="{hrefEditarEje}"><span class="i bs edit ihover"></span></a>
+                <span title="Eliminar Eje" rel="{iEjeId}" class="i bs delete ihover borrarEje"></span>
+            </td>
+        </tr>
+        <!--EndEjeBlock-->
+        <!--BeginNoRecordsEjesBlock-->
+        <tr>
+            <td colspan="5">No hay Ejes cargados</td>
+        </tr>
+        <!--EndNoRecordsEjesBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoEjesBlock-->
+
+<!--BeginListadoObjetivosAprendizajeBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="{hrefCrearObjetivoAprendizaje}" rel="tooltip" original-title="Crear un nuevo Objetivo de Aprendizaje en el sistema">Crear Objetivo Aprendizaje</a>
+</div>
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Descripcion</th>
+            <th>Nivel</th>
+            <th>Ciclo</th>
+            <th>Area</th>
+            <th>Eje Tem&aacute;tico</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <!--BeginObjetivoAprendizajeBlock-->
+        <tr class="{iObjetivoAprendizajeId}">
+            <td>{sDescripcion}</td>
+            <td>{sDescripcionNivel}</td>
+            <td>{sDescripcionCiclo}</td>
+            <td>{sDescripcionArea}</td>
+            <td>{sDescripcionEje}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar Objetivo Aprendizaje" href="{hrefEditarObjetivoAprendizaje}"><span class="i bs edit ihover"></span></a>
+                <span title="Eliminar Objetivo Aprendizaje" rel="{iObjetivoAprendizajeId}" class="i bs delete ihover borrarObjetivoAprendizaje"></span>
+            </td>
+        </tr>
+        <!--EndObjetivoAprendizajeBlock-->
+        <!--BeginNoRecordsObjetivoAprendizajeBlock-->
+        <tr>
+            <td colspan="6">No hay Objetivos de Aprendizaje cargados</td>
+        </tr>
+        <!--EndNoRecordsObjetivoAprendizajeBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoObjetivosAprendizajeBlock-->
+
+<!--BeginFormNivelBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formNivel" name="formNivel" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <input type="text" class="medium" name="descripcion" id="descripcion" maxlength="50" value="{sDescripcion}">
+    </dd>
+
+    <!--BeginSubmitCrearNivelBlock-->
+    <button id="crearNivel" name="crearNivel" type="submit">Crear Nivel</button>
+    <!--EndSubmitCrearNivelBlock-->
+
+    <!--BeginSubmitModificarNivelBlock-->
+    <button id="modificarNivel" name="modificarNivel" type="submit">Modificar Nivel</button>
+    <input type="hidden" name="iNivelId" id="iNivelId" value="{iNivelId}">
+    <!--EndSubmitModificarNivelBlock-->
+
+    <div style="display:none"  id='msg_form_nivel' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormNivelBlock-->
+
+<!--BeginFormCicloBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formCiclo" name="formCiclo" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="nivel">Nivel</label>
+    </dt>
+    <dd>
+        <select class="medium" name="nivel" id="nivel">
+            <option value="">Elija nivel para el ciclo:</option>
+            <!--BeginOptionSelectNivel-->
+            <option value="{iValueNivel}" {sNivelSelected}>{sDescripcionNivel}</option>
+            <!--EndOptionSelectNivel-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <input type="text" class="medium" name="descripcion" id="descripcion" maxlength="50" value="{sDescripcion}">
+    </dd>
+
+    <!--BeginSubmitCrearCicloBlock-->
+    <button id="crearCiclo" name="crearCiclo" type="submit">Crear Ciclo</button>
+    <!--EndSubmitCrearCicloBlock-->
+
+    <!--BeginSubmitModificarCicloBlock-->
+    <button id="modificarCiclo" name="modificarCiclo" type="submit">Modificar Ciclo</button>
+    <input type="hidden" name="iCicloId" id="iCicloId" value="{iCicloId}">
+    <!--EndSubmitModificarCicloBlock-->
+
+    <div style="display:none"  id='msg_form_ciclo' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormCicloBlock-->
+
+<!--BeginFormAreaBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formArea" name="formArea" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="nivel">Nivel</label>
+    </dt>
+    <dd>
+        <select class="medium" name="nivel" id="nivel">
+            <option value="">Elija nivel para el ciclo:</option>
+            <!--BeginOptionSelectNivel-->
+            <option value="{iValueNivel}" {sNivelSelected}>{sDescripcionNivel}</option>
+            <!--EndOptionSelectNivel-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="ciclo">Ciclo</label>
+    </dt>
+    <dd>
+        <select class="medium" name="ciclo" id="ciclo">
+            <option value="">Elija ciclo para el &aacute;rea:</option>
+            <!--BeginOptionSelectCiclo-->
+            <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
+            <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+    
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <input type="text" class="medium" name="descripcion" id="descripcion" maxlength="50" value="{sDescripcion}">
+    </dd>
+
+    <!--BeginSubmitCrearAreaBlock-->
+    <button id="crearArea" name="crearArea" type="submit">Crear &Aacute;rea</button>
+    <!--EndSubmitCrearAreaBlock-->
+
+    <!--BeginSubmitModificarAreaBlock-->
+    <button id="modificarArea" name="modificarArea" type="submit">Modificar &Aacute;rea</button>
+    <input type="hidden" name="iAreaId" id="iAreaId" value="{iAreaId}">
+    <!--EndSubmitModificarAreaBlock-->
+
+    <div style="display:none"  id='msg_form_area' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormAreaBlock-->
+
+<!--BeginFormEjeBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formEje" name="formEje" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="nivel">Nivel</label>
+    </dt>
+    <dd>
+        <select class="medium" name="nivel" id="nivel">
+            <option value="">Elija nivel para el ciclo:</option>
+            <!--BeginOptionSelectNivel-->
+            <option value="{iValueNivel}" {sNivelSelected}>{sDescripcionNivel}</option>
+            <!--EndOptionSelectNivel-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="ciclo">Ciclo</label>
+    </dt>
+    <dd>
+        <select class="medium" name="ciclo" id="ciclo">
+            <option value="">Elija ciclo para el &aacute;rea:</option>
+            <!--BeginOptionSelectCiclo-->
+            <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
+            <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="area">&Aacute;rea</label>
+    </dt>
+    <dd>
+        <select class="medium" name="area" id="area">
+            <option value="">Elija &aacute;rea para el Eje:</option>
+            <!--BeginOptionSelectArea-->
+            <option value="{iValueArea}" {sAreaSelected}>{sDescripcionArea}</option>
+            <!--EndOptionSelectArea-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <input type="text" class="medium" name="descripcion" id="descripcion" maxlength="50" value="{sDescripcion}">
+    </dd>
+
+    <dt>
+        <label for="contenidos">Contenidos</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large maxlength" rows="0" cols="0" id="contenidos" name="contenidos" title="Contenidos Eje Tem&aacute;tico">{sContenidos}</textarea>
+    </dd>
+
+    <!--BeginSubmitCrearEjeBlock-->
+    <button id="crearEje" name="crearEje" type="submit">Crear Eje</button>
+    <!--EndSubmitCrearEjeBlock-->
+
+    <!--BeginSubmitModificarEjeBlock-->
+    <button id="modificarEje" name="modificarEje" type="submit">Modificar Eje</button>
+    <input type="hidden" name="iEjeId" id="iEjeId" value="{iEjeId}">
+    <!--EndSubmitModificarEjeBlock-->
+
+    <div style="display:none"  id='msg_form_eje' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormEjeBlock-->
+
+<!--BeginFormObjetivoAprendizajeBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formObjetivoAprendizaje" name="formObjetivoAprendizaje" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="nivel">Nivel</label>
+    </dt>
+    <dd>
+        <select class="medium" name="nivel" id="nivel">
+            <option value="">Elija nivel para el ciclo:</option>
+            <!--BeginOptionSelectNivel-->
+            <option value="{iValueNivel}" {sNivelSelected}>{sDescripcionNivel}</option>
+            <!--EndOptionSelectNivel-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="ciclo">Ciclo</label>
+    </dt>
+    <dd>
+        <select class="medium" name="ciclo" id="ciclo">
+            <option value="">Elija ciclo para el &aacute;rea:</option>
+            <!--BeginOptionSelectCiclo-->
+            <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
+            <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="area">&Aacute;rea</label>
+    </dt>
+    <dd>
+        <select class="medium" name="area" id="area">
+            <option value="">Elija &aacute;rea para el Eje:</option>
+            <!--BeginOptionSelectArea-->
+            <option value="{iValueArea}" {sAreaSelected}>{sDescripcionArea}</option>
+            <!--EndOptionSelectArea-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="ejeTematico">Eje Tem&aacute;tico</label>
+    </dt>
+    <dd>
+        <select class="medium" name="ejeTematico" id="ejeTematico">
+            <option value="">Elija eje tem&aacute;tico:</option>
+            <!--BeginOptionSelectEjeTematico-->
+            <option value="{iValueEjeTematico}" {sEjeTematicoSelected}>{sDescripcionEjeTematico}</option>
+            <!--EndOptionSelectEjeTematico-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <input type="text" class="medium" name="descripcion" id="descripcion" maxlength="50" value="{sDescripcion}">
+    </dd>
+
+    <!--BeginSubmitCrearObjetivoAprendizajeBlock-->
+    <button id="crearObjetivoAprendizaje" name="crearObjetivoAprendizaje" type="submit">Crear Objetivo Aprendizaje</button>
+    <!--EndSubmitCrearObjetivoAprendizajeBlock-->
+
+    <!--BeginSubmitModificarObjetivoAprendizajeBlock-->
+    <button id="modificarObjetivoAprendizaje" name="modificarObjetivoAprendizaje" type="submit">Modificar ObjetivoAprendizaje</button>
+    <input type="hidden" name="iObjetivoAprendizajeId" id="iObjetivoAprendizajeId" value="{iObjetivoAprendizajeId}">
+    <!--EndSubmitModificarObjetivoAprendizajeBlock-->
+
+    <div style="display:none"  id='msg_form_objetivoAprendizaje' class="notification">
+        <p class="msg"></p>
+    </div>
+</form>
+<!--EndFormObjetivoAprendizajeBlock-->

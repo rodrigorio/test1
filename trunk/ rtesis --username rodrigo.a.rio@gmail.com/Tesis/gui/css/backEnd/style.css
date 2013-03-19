@@ -1134,7 +1134,7 @@ table input[type="checkbox"] {
 .fte2{font-size:0.8em}
 .txt_cuidado{color:#F00}
 .txt_imp{font-weight:bold; text-transform:capitalize}
-.txt_imp2{font-weight:bold; text-transform:uppercase}
+.txt_imp2{font-weight:bold; text-transform:uppercase; color:#AE4349}
 p .destacado{font-weight:bold;}
 
 /* para ubicar en posiciones absolutas */
