@@ -149,8 +149,24 @@ function borrarEspecialidad(iEspecialidadId){
 
 $(document).ready(function(){
 
-    if($("#formEspecialidad").length){
-        bindEventsEspecialidadForm();
+    if($("#formNivel").length){
+        bindEventsFormNivel();
+    }
+
+    if($("#formCiclo").length){
+        bindEventsFormCiclo();
+    }
+
+    if($("#formArea").length){
+        bindEventsFormArea();
+    }
+
+    if($("#formEje").length){
+        bindEventsFormEje();
+    }
+
+    if($("#formObjetivoAprendizaje").length){
+        bindEventsFormObjetivoAprendizaje();
     }
     
     $(".borrarEspecialidad").live('click', function(){

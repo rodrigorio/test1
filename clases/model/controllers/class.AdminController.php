@@ -1119,32 +1119,60 @@ class AdminController
             throw new Exception($e);
         }
     }
-     /**
+
+    /**
      *  Obtiene el eje tematico ById
      */
-    public function getEjeTematicoById($iEjeTematicoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getEjeTematicoById($iEjeTematicoId)
     {
     	try{
-    		$filtro = array('e.id' => $iEjeTematicoId);
+            $filtro = array('e.id' => $iEjeTematicoId);
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEjeTematico){
+                return $aEjeTematico[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     *  Obtiene las Areas
+     */
+    public function getEjes($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
      *  Obtiene el area ById
      */
-    public function getAreaById($iAreaId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getAreaById($iAreaId)
     {
     	try{
-    		$filtro = array('a.id' => $iAreaId);
+            $filtro = array('a.id' => $iAreaId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
-            return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aArea){
+                return $aArea[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
      *  Obtiene las Areas
      */
@@ -1174,12 +1202,18 @@ class AdminController
      * Obtener ciclo por id de nivel
      *
      */
-    public function getCicloByNivelId($iId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getCicloByNivelId($iId)
     {
     	try{
-    		$filtro = array('n.id' => $iId);
+            $filtro = array('n.id' => $iId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
-            return  $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aCiclo){
+                return $aCiclo[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1202,12 +1236,18 @@ class AdminController
      * Obtener areas por id de ciclo
      *
      */
- 	public function getAreasByCicloId($iId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getAreasByCicloId($iId)
     {
     	try{
-    		$filtro = array('c.id' => $iId);
+            $filtro = array('c.id' => $iId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
-            return  $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aArea){
+                return $aArea[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1216,12 +1256,18 @@ class AdminController
      * Obtener areas por id de ciclo
      *
      */
- 	public function getEjesByAreaId($iAreaId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getEjesByAreaId($iAreaId)
     {
     	try{
-    		$filtro = array('a.id' => $iAreaId);
+            $filtro = array('a.id' => $iAreaId);
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return  $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEjeTematico){
+                return $aEjeTematico[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1253,12 +1299,18 @@ class AdminController
     /**
      *  Obtiene el Ciclo ById
      */
-    public function getCicloById($iCicloId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getCicloById($iCicloId)
     {
     	try{
-    		$filtro = array('c.id' => $iCicloId);
+            $filtro = array('c.id' => $iCicloId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
-            return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aCiclo){
+                return $aCiclo[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1290,12 +1342,18 @@ class AdminController
     /**
      *  Obtiene el nivel ById
      */
-    public function getNivelById($iNivelId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getNivelById($iNivelId)
     {
     	try{
-    		$filtro = array('n.id' => $iNivelId);
+            $filtro = array('n.id' => $iNivelId);
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
-            return $oNivelIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aNivel = $oNivelIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aNivel){
+                return $aNivel[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1343,29 +1401,53 @@ class AdminController
      * Obtener variables  por id de unidad
      *
      */
- 	public function getVariablesByUnidadId($iUnidadId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getVariablesByUnidadId($iUnidadId)
     {
     	try{
-    		$filtro = array('v.unidad_id' => $iUnidadId);
+            $filtro = array('v.unidad_id' => $iUnidadId);
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return  $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aVariable = $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aVariable){
+                return $aVariable[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+
     /**
      *  Obtiene el objetivo aprendizaje ById
      */
-    public function getObjetivoAprendizajeById($iObjetivoAprendizajeId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getObjetivoAprendizajeById($iObjetivoAprendizajeId)
     {
     	try{
-    		$filtro = array('o.id' => $iObjetivoAprendizajeId);
+            $filtro = array('o.id' => $iObjetivoAprendizajeId);
+            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aObjetivoAprendizaje = $oObjetivoAprendizajeIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aObjetivoAprendizaje){
+                return $aObjetivoAprendizaje[0];
+            }else{
+                return null;
+            }     
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function getObjetivosAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
             $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoAprendizajeIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+
     /**
      * Guardar Variables
      *

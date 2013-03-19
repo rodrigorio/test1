@@ -608,7 +608,7 @@ class SeguimientosController
     public function getDiagnosticoBySeg($oSeguimiento)
     {
     	try{
-    		$filtro = array('s.id' => $oSeguimiento->getId());
+            $filtro = array('s.id' => $oSeguimiento->getId());
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
             if(get_class($oSeguimiento)=="SeguimientoPersonalizado"){
@@ -629,20 +629,24 @@ class SeguimientosController
     public function getDiagnosticoById($iId)
     {
     	try{
-    		$filtro = array('d.id' => $iId);
+            $filtro = array('d.id' => $iId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-          
+            $aDiagnostico = $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aDiagnostico){
+                return $aDiagnostico[0];
+            }else{
+                return null;
+            }            
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
 
-    public function getCicloById($iId)
+    public function getCicloById($iCicloId)
     {
     	try{
-    		$filtro = array('c.id' => $iId);
+            $filtro = array('c.id' => $iCicloId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             $iRecordsTotal = 0;
             $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -656,10 +660,10 @@ class SeguimientosController
         }
     }
     
-     public function getNivelById($iId)
+     public function getNivelById($iNivelId)
       {
     	try{
-    		$filtro = array('n.id' => $iId);
+            $filtro = array('n.id' => $iNivelId);
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             $iRecordsTotal = 0;
             $aNivel = $oNivelIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -684,10 +688,10 @@ class SeguimientosController
         }  
     }
     
-    public function getAreaById($iId)
+    public function getAreaById($iAreaId)
       {
     	try{
-    		$filtro = array('a.id' => $iId);
+            $filtro = array('a.id' => $iId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             $iRecordsTotal = 0;
             $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -742,12 +746,18 @@ class SeguimientosController
      * Obtener ciclo por id de nivel
      *
      */
-    public function getCicloByNivelId($iId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getCicloByNivelId($iNivelId)
     {
     	try{
-    		$filtro = array('n.id' => $iId);
+            $filtro = array('n.id' => $iNivelId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
-            return  $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aCiclo){
+                return $aCiclo[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -757,12 +767,18 @@ class SeguimientosController
      * Obtener areas por id de ciclo
      *
      */
- 	public function getAreasByCicloId($iId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getAreasByCicloId($iCicloId)
     {
     	try{
-    		$filtro = array('c.id' => $iId);
+            $filtro = array('c.id' => $iCicloId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
-            return  $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aArea){
+                return $aArea[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -771,12 +787,18 @@ class SeguimientosController
      * Obtener areas por id de ciclo
      *
      */
- 	public function getEjesByAreaId($iAreaId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getEjesByAreaId($iAreaId)
     {
     	try{
-    		$filtro = array('a.id' => $iAreaId);
+            $filtro = array('a.id' => $iAreaId);
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return  $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEjeTematico){
+                return $aEjeTematico[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -824,12 +846,18 @@ class SeguimientosController
      * Obtener variables  por id de unidad
      *
      */
- 	public function getVariablesByUnidadId($iUnidadId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+ 	public function getVariablesByUnidadId($iUnidadId)
     {
     	try{
-    		$filtro = array('v.unidad_id' => $iUnidadId);
+            $filtro = array('v.unidad_id' => $iUnidadId);
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return  $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aVariable = $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aVariable){
+                return $aVariable[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -838,13 +866,19 @@ class SeguimientosController
      * Obtener unidades  por id de usuario
      *
      */
- 	public function getUnidadesByUsuarioId($iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getUnidadesByUsuarioId()
     {
     	try{
-    		$iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-    		$filtro = array('s.usuarios_id' => $iUsuarioId);
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $filtro = array('s.usuarios_id' => $iUsuarioId);
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return  $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aUnidad){
+                return $aUnidad[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -853,12 +887,18 @@ class SeguimientosController
      * Obtener unidades  por id de seguimiento
      *
      */
- 	public function getUnidadesBySeguimientoId($iSeguimientoId, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    public function getUnidadesBySeguimientoId($iSeguimientoId)
     {
     	try{
-    		$filtro = array('u.id' => $iSeguimientoId);
+            $filtro = array('u.id' => $iSeguimientoId);
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return  $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aUnidad){
+                return $aUnidad[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1010,7 +1050,7 @@ class SeguimientosController
      * Guardar Eje Tematico
      *
      */
-   public function guardarEjeTematico($iDiagnosticoSCCId,$oEjeTematico){
+   public function guardarEjeTematico($iDiagnosticoSCCId, $oEjeTematico){
         try{
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->guardarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
@@ -1022,7 +1062,7 @@ class SeguimientosController
      * Asociar Eje Tematico
      *
      */
-   public function asociarEjesTematicos($iDiagnosticoSCCId,$vEjeTematico){
+   public function asociarEjesTematicos($iDiagnosticoSCCId, $vEjeTematico){
         try{        	        	
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico);
@@ -1031,41 +1071,60 @@ class SeguimientosController
         }
     }     
         
-    public function getDiagnosticoSeguimientoSCCById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getDiagnosticoSeguimientoSCCById($iSeguimientoId)
     {
     	try{
-    		$filtro = array('s.id' => $iSeguimientoId);
+            $filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
-            return $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aDiagnosticos = $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aDiagnosticos){
+                return $aDiagnosticos[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
     
-	public function getDiagnosticoSeguimientoPersonalizadoById($iSeguimientoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getDiagnosticoSeguimientoPersonalizadoById($iSeguimientoId)
     {
     	try{
-    		$filtro = array('s.id' => $iSeguimientoId);
+            $filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
-            return $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aDiagnostico = $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aDiagnosticos){
+                return $aDiagnosticos[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
     
-	/**
+    /**
      *  Obtiene el eje tematico ById
      */
-    public function getEjeTematicoById($iEjeTematicoId, &$iRecordsTotal = 0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    public function getEjeTematicoById($iEjeTematicoId)
     {
     	try{
-    		$filtro = array('e.id' => $iEjeTematicoId);
+            $filtro = array('e.id' => $iEjeTematicoId);
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEjeTematico){
+                return $aEjeTematico[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+    
       /**
      * Devuelve true si  pertenece a un seguimiento creado por el usuario que esta logueado.
      *

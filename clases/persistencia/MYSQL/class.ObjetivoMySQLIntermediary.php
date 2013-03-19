@@ -116,9 +116,9 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                        objetivos o 
                     JOIN
                        objetivos_aprendizaje oa ON o.id = oa.id
-                    JOIN
+                    LEFT JOIN
                        seguimiento_scc_x_objetivo_aprendizaje sxo ON oa.id = sxo.objetivos_aprendizaje_id
-                    JOIN
+                    LEFT JOIN
                        objetivo_relevancias orr ON orr.id = sxo.objetivo_relevancias_id ";
                                              
             if(!empty($filtro)){
@@ -134,21 +134,26 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $aObjetivos = array();
             while($oObj = $db->oNextRecord()){
 
-                $oObjetivoRelevancia = new stdClass();
-            	$oObjetivoRelevancia->iId = $oObj->iObjetivoRelevanciaId;
-            	$oObjetivoRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
-                $oObjetivoRelevancia = Factory::getObjetivoRelevanciaInstance($oObjetivoRelevancia);
-                
-            	$oObjetivo = new stdClass();
+                $oObjetivo = new stdClass();
+
+                $oObjetivo->oObjetivoRelevancia = null;
+                if(null !== $oObj->iObjetivoRelevanciaId){
+                    $oObjetivoRelevancia = new stdClass();
+                    $oObjetivoRelevancia->iId = $oObj->iObjetivoRelevanciaId;
+                    $oObjetivoRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
+                    $oObjetivoRelevancia = Factory::getObjetivoRelevanciaInstance($oObjetivoRelevancia);
+                    $oObjetivo->oObjetivoRelevancia = $oObjetivoRelevancia;
+                }
+                            	
             	$oObjetivo->iId = $oObj->iId;
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->fEvolucion = $oObj->fEvolucion;
-                $oObjetivo->oObjetivoRelevancia = $oObjetivoRelevancia;
                 $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
-            	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
+                
+            	$aObjetivos[] = Factory::getObjetivoAprendizajeInstance($oObjetivo);
             }
-
+            
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -434,7 +439,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-     public function isObjetivoPersonalizadoUsuario($iObjetivoId,$iUsuarioId);
+
+    public function isObjetivoPersonalizadoUsuario($iObjetivoId, $iUsuarioId)
     {
     	try{
             $db = $this->conn;
@@ -468,7 +474,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             return false;
         }
     }
-    public function isObjetivoAprendizajeUsuario($iObjetivoId,$iUsuarioId);
+    public function isObjetivoAprendizajeUsuario($iObjetivoId,$iUsuarioId)
     {
     	try{
             $db = $this->conn;
@@ -506,8 +512,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     public function actualizarCampoArray($objects, $cambios){}
     public function existe($objects){}
     public function insertar($objects){}
+    public function actualizar($objects){}
     public function guardar($objects){}
-    public function borrar($objects){}
     public function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){}
 }
 	
