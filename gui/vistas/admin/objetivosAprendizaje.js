@@ -1,33 +1,4 @@
-//existe ya una institucion con ese nombre?
-jQuery.validator.addMethod("nombreEspecialidadDb", function(value, element){
-    var result = true;
-    if($("#nombre").val() != ""){
-        
-        var data;
-        if($("#iEspecialidadId").length && $("#iEspecialidadId").val() != ""){
-            data = {
-                sNombre:function(){return $("#nombre").val();},
-                iEspecialidadId: function(){return $("#iEspecialidadId").val();}
-            }
-        }else{
-            data = {sNombre:function(){return $("#nombre").val();}}
-        }
-        
-        $.ajax({
-            url:"admin/verfificar-uso-especialidad",
-            type:"post",
-            async:false,
-            data:data,
-            success:function(data){
-                //si el nombre existe tira el cartel
-                if(data == '1'){result = false;}
-            }
-        });
-    }
-    return result;
-});
-
-var validateFormEspecialidad = {
+var validateFormNivel = {
     errorElement: "span",
     validClass: "valid-side-note",
     errorClass: "invalid-side-note",
@@ -43,89 +14,341 @@ var validateFormEspecialidad = {
         $(element).removeClass("invalid");
     },
     rules:{
-        nombre:{required:true, nombreEspecialidadDb:true},
         descripcion:{required:true}
     },
     messages:{
-        nombre:{
-            required: mensajeValidacion("requerido"),
-            nombreEspecialidadDb: "Ya existe una especialidad con ese nombre en el sistema"
-        },
         descripcion: mensajeValidacion("requerido")
     }
 };
 
-var optionsAjaxFormEspecialidad = {
+var optionsAjaxFormNivel = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'admin/procesar-especialidad',
+    url: 'admin/procesar-nivel',
     beforeSerialize:function(){
 
-        if($("#formEspecialidad").valid() == true){
-
-            $('#msg_form_especialidad').hide();
-            $('#msg_form_especialidad').removeClass("success").removeClass("error2");
-            $('#msg_form_especialidad .msg').html("");
-            setWaitingStatus('formEspecialidad', true);
-
+        if($("#formNivel").valid() == true){
+            $('#msg_form_nivel').hide();
+            $('#msg_form_nivel').removeClass("success").removeClass("error2");
+            $('#msg_form_nivel .msg').html("");
+            setWaitingStatus('formNivel', true);
         }else{
             return false;
         }
     },
 
     success:function(data){
-        setWaitingStatus('formEspecialidad', false);
+        setWaitingStatus('formNivel', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_especialidad .msg').html(lang['error procesar']);
+                $('#msg_form_nivel .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_especialidad .msg').html(data.mensaje);
+                $('#msg_form_nivel .msg').html(data.mensaje);
             }
-            $('#msg_form_especialidad').addClass("error2").fadeIn('slow');
+            $('#msg_form_nivel').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_especialidad .msg').html(lang['exito procesar']);
+                $('#msg_form_nivel .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_especialidad .msg').html(data.mensaje);
+                $('#msg_form_nivel .msg').html(data.mensaje);
             }
-            if(data.agregarEspecialidad != undefined){
-                $('#formEspecialidad').each(function(){
+            if(data.accion == 'crearNivel'){
+                $('#formNivel').each(function(){
                   this.reset();
                 });
             }
-            $('#msg_form_especialidad').addClass("success").fadeIn('slow');
+            $('#msg_form_nivel').addClass("success").fadeIn('slow');
         }
     }
 };
 
-function bindEventsEspecialidadForm(){
-    $("#formEspecialidad").validate(validateFormEspecialidad);
-    $("#formEspecialidad").ajaxForm(optionsAjaxFormEspecialidad);
+var validateFormCiclo = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        descripcion:{required:true},
+        nivel:{required:true}
+    },
+    messages:{
+        descripcion: mensajeValidacion("requerido"),
+        nivel :mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormCiclo = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/procesar-ciclo',
+    beforeSerialize:function(){
+
+        if($("#formCiclo").valid() == true){
+            $('#msg_form_ciclo').hide();
+            $('#msg_form_ciclo').removeClass("success").removeClass("error2");
+            $('#msg_form_ciclo .msg').html("");
+            setWaitingStatus('formCiclo', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formCiclo', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_ciclo .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_ciclo .msg').html(data.mensaje);
+            }
+            $('#msg_form_ciclo').addClass("error2").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_ciclo .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_ciclo .msg').html(data.mensaje);
+            }
+            if(data.accion == 'crearCiclo'){
+                $('#formCiclo').each(function(){
+                  this.reset();
+                });
+            }
+            $('#msg_form_ciclo').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+function bindEventsFormNivel(){
+    $("#formNivel").validate(validateFormNivel);
+    $("#formNivel").ajaxForm(optionsAjaxFormNivel);
 }
 
-function borrarEspecialidad(iEspecialidadId){
+function bindEventsFormCiclo(){
+    $("#formCiclo").validate(validateFormCiclo);
+    $("#formCiclo").ajaxForm(optionsAjaxFormCiclo);
+}
 
-    if(confirm("Se borrara la especialidad del sistema, desea continuar?")){
+function bindEventsFormArea(){
+    $("#formArea").validate(validateFormArea);
+    $("#formArea").ajaxForm(optionsAjaxFormArea);
+}
+
+function bindEventsFormEje(){
+    $("#formEje").validate(validateFormEje);
+    $("#formEje").ajaxForm(optionsAjaxFormEje);
+}
+
+function bindEventsFormObjetivoAprendizaje(){
+    $("#formObjetivoAprendizaje").validate(validateFormObjetivoAprendizaje);
+    $("#formObjetivoAprendizaje").ajaxForm(optionsAjaxFormObjetivoAprendizaje);
+}
+
+function borrarNivel(iNivelId){
+    if(confirm("Se borrara el nivel del sistema, desea continuar?")){
         $.ajax({
             type:"post",
             dataType:'jsonp',
-            url:"admin/eliminar-especialidad",
+            url:"admin/procesar-nivel",
             data:{
-                iEspecialidadId:iEspecialidadId
+                iNivelId:iNivelId,
+                borrarNivel:'1'
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
-                    $("."+iEspecialidadId).hide("slow", function(){
-                        $("."+iEspecialidadId).remove();
+                    $("."+iNivelId).hide("slow", function(){
+                        $("."+iNivelId).remove();
                     });
                 }
 
                 var dialog = $("#dialog");
                 if($("#dialog").length != 0){
-                    dialog.attr("title","Eliminar Especialidad");
+                    dialog.attr("title","Eliminar Nivel");
                 }else{
-                    dialog = $('<div id="dialog" title="Eliminar Especialidad"></div>').appendTo('body');
+                    dialog = $('<div id="dialog" title="Eliminar Nivel"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarCiclo(iCicloId){
+    if(confirm("Se borrara el ciclo del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:'jsonp',
+            url:"admin/procesar-ciclo",
+            data:{
+                iCicloId:iCicloId,
+                borrarCiclo:'1'
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iCicloId).hide("slow", function(){
+                        $("."+iCicloId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Ciclo");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Ciclo"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarArea(iAreaId){
+    if(confirm("Se borrara el área del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:'jsonp',
+            url:"admin/procesar-area",
+            data:{
+                iAreaId:iAreaId,
+                borrarArea:'1'
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iAreaId).hide("slow", function(){
+                        $("."+iAreaId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Área");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Área"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarEje(iEjeId){
+    if(confirm("Se borrara el Eje Temático del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:'jsonp',
+            url:"admin/procesar-eje",
+            data:{
+                iEjeId:iEjeId,
+                borrarEje:'1'
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iEjeId).hide("slow", function(){
+                        $("."+iEjeId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Eje Temático");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Eje Temático"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarObjetivoAprendizaje(iObjetivoAprendizajeId){
+    if(confirm("Se borrara el Objetivo de Aprendizaje del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:'jsonp',
+            url:"admin/procesar-objetivo-aprendizaje",
+            data:{
+                iObjetivoAprendizajeId:iObjetivoAprendizajeId,
+                borrarObjetivoAprendizaje:'1'
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iObjetivoAprendizajeId).hide("slow", function(){
+                        $("."+iObjetivoAprendizajeId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Objetivo de Aprendizaje");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Objetivo de Aprendizaje"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
 
@@ -169,9 +392,28 @@ $(document).ready(function(){
         bindEventsFormObjetivoAprendizaje();
     }
     
-    $(".borrarEspecialidad").live('click', function(){
-        var iEspecialidadId = $(this).attr("rel");
-        borrarEspecialidad(iEspecialidadId);
+    $(".borrarNivel").live('click', function(){
+        var iNivelId = $(this).attr("rel");
+        borrarNivel(iNivelId);
     });
 
+    $(".borrarCiclo").live('click', function(){
+        var iCicloId = $(this).attr("rel");
+        borrarCiclo(iCicloId);
+    });
+
+    $(".borrarArea").live('click', function(){
+        var iAreaId = $(this).attr("rel");
+        borrarArea(iAreaId);
+    });
+
+    $(".borrarEje").live('click', function(){
+        var iEjeId = $(this).attr("rel");
+        borrarEje(iEjeId);
+    });
+
+    $(".borrarObjetivoAprendizaje").live('click', function(){
+        var iObjetivoAprendizajeId = $(this).attr("rel");
+        borrarObjetivoAprendizaje(iObjetivoAprendizajeId);
+    });
 });
