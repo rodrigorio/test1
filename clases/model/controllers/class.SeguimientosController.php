@@ -608,7 +608,7 @@ class SeguimientosController
     public function getDiagnosticoBySeg($oSeguimiento)
     {
     	try{
-            $filtro = array('s.id' => $oSeguimiento->getId());
+    		$filtro = array('s.id' => $oSeguimiento->getId());
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
             if(get_class($oSeguimiento)=="SeguimientoPersonalizado"){
@@ -957,10 +957,10 @@ class SeguimientosController
      * Asociar Unidad de variables a seguimiento 
      *
      */
-   public function asociarUnidadVariables($iSeguimientoId,$vVariable){
+   public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$oUnidad){
         try{        	        	
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            return $oSeguimientoIntermediary->asociarUnidadVariables($iSeguimientoId,$vVariable);
+            return $oSeguimientoIntermediary->asociarSeguimientoXContenidoVariables($iSeguimientoId,$oUnidad);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
