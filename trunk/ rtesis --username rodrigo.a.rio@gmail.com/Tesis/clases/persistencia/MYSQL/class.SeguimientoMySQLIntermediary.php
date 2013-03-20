@@ -674,7 +674,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
      * creado el usuario que esta en sesion
      */
 
-    public function asociarUnidadVariables($iSeguimientoId,$vVariable)
+    public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$oUnidad)
     {
         try{
             $db = $this->conn;            
