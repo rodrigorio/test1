@@ -957,10 +957,10 @@ class SeguimientosController
      * Asociar Unidad de variables a seguimiento 
      *
      */
-   public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$oUnidad){
+   public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad){
         try{        	        	
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            return $oSeguimientoIntermediary->asociarSeguimientoXContenidoVariables($iSeguimientoId,$oUnidad);
+            return $oSeguimientoIntermediary->asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
