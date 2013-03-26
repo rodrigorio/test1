@@ -1,5 +1,5 @@
 <?php
-* Description of class VariableEscalaConvinada
+/* Description of class VariableEscalaConvinada
  *
  * @author Andr�s
  */

@@ -1,5 +1,5 @@
 <?php
-* Description of class VariableTexto
+/*Description of class VariableTexto
  *
  * @author Andr�s
  */
