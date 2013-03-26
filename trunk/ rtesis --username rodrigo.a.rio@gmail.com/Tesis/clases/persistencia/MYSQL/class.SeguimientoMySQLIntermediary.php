@@ -682,14 +682,15 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
           $sSQL =  "CREATE TEMPORARY TABLE tablaTemporal ( variable VARCHAR(50), valor INT(15), tipo VARCHAR(50),fechaModificacion TIMESTAMP)"  
           $db->execSQL($sSQL);                   
             $sSQL = " insert into tablaTemporal (seguimiento_id, variable_id, valor, fechaHora) VALUES ";
-            for ($i=0; $j< count($vUnidad); $j++) { 
-            	$oVariable = $vUnidad[$j]->getVariables();
+            for ($J=0; $j< count($vUnidad); $j++) { 
+            	 
+            	$vVariable = $vUnidad[$j]->getVariables();
             
             for ($i=0; $i< count($vVariable); $i++) {
             	$oVariable = $vVariable[$i];
             	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
             		.$this->escInt($oVariable->getId()).", "
-            		.$this->escInt($oVariable->???Valor()).", "
+            		.$this->escInt($oVariable->getValor()).", "
             		.$this->escDate($oVariable->getFechaHora()).") ";
             	if (count($vVariable) > $i+1) {
             		$sSQL .= ",";
