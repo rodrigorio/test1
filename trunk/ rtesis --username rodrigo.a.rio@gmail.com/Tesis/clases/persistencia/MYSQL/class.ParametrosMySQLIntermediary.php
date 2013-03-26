@@ -721,7 +721,7 @@ class ParametrosMySQLIntermediary extends ParametrosIntermediary
             
             $sSQL = "INSERT INTO parametro_x_usuario (parametros_id, usuarios_id, valor)
                      SELECT ".$iParametroId.", id, ".$sValorDefecto." FROM usuarios ";
-
+            
             $db->execSQL($sSQL);
 
             $db->commit();

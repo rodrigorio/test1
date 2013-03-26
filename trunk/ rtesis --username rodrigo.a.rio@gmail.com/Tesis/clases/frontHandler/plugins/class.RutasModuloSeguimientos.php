@@ -221,6 +221,6 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'listarEjesPorArea'
                                 ));
-        $router->addRoute('seguimientosListarEjePorArea', $route);  
+        $router->addRoute('seguimientosListarEjePorArea', $route);        
     }
 }

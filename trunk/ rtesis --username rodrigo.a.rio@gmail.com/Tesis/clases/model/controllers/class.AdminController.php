@@ -1366,7 +1366,7 @@ class AdminController
     {
         try{
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
-            return $oNivelIntermediary->Borrar($oNivel);
+            return $oNivelIntermediary->borrar($oNivel);
         }catch(Exception $e){
             throw new Exception($e);
         }
@@ -1517,7 +1517,8 @@ class AdminController
     {
         try{
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
-            return $oNivelIntermediary->existe($sDescripcion);
+            $filtro = array('n.descripcion' => $sDescripcion);
+            return $oNivelIntermediary->existe($filtro);
         }catch(Exception $e){
             throw new Exception($e);
         }
@@ -1529,7 +1530,7 @@ class AdminController
     {
         try{
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
-            return $oCicloIntermediary->existeCicloByDescripcion($sDescripcion,$oNivel);
+            return $oCicloIntermediary->existeCicloByDescripcion($sDescripcion, $oNivel);
         }catch(Exception $e){
             throw new Exception($e);
         }

@@ -130,6 +130,221 @@ var optionsAjaxFormCiclo = {
     }
 };
 
+var validateFormArea = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        descripcion:{required:true},
+        nivel:{required:true},
+        ciclo:{required:true}
+    },
+    messages:{
+        descripcion: mensajeValidacion("requerido"),
+        nivel :mensajeValidacion("requerido"),
+        ciclo :mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormArea = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/procesar-area',
+    beforeSerialize:function(){
+
+        if($("#formArea").valid() == true){
+            $('#msg_form_area').hide();
+            $('#msg_form_area').removeClass("success").removeClass("error2");
+            $('#msg_form_area .msg').html("");
+            setWaitingStatus('formArea', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formArea', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_area .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_area .msg').html(data.mensaje);
+            }
+            $('#msg_form_area').addClass("error2").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_area .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_area .msg').html(data.mensaje);
+            }
+            if(data.accion == 'crearArea'){
+                $('#formArea').each(function(){
+                  this.reset();
+                });
+            }
+            $('#msg_form_area').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+var validateFormEje = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        descripcion:{required:true},
+        nivel:{required:true},
+        ciclo:{required:true},
+        area:{required:true},
+        contenidos:{required:true}
+    },
+    messages:{
+        descripcion: mensajeValidacion("requerido"),
+        nivel :mensajeValidacion("requerido"),
+        ciclo :mensajeValidacion("requerido"),
+        area :mensajeValidacion("requerido"),
+        contenidos :mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormEje = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/procesar-eje',
+    beforeSerialize:function(){
+
+        if($("#formEje").valid() == true){
+            $('#msg_form_eje').hide();
+            $('#msg_form_eje').removeClass("success").removeClass("error2");
+            $('#msg_form_eje .msg').html("");
+            setWaitingStatus('formEje', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formEje', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_eje .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_eje .msg').html(data.mensaje);
+            }
+            $('#msg_form_eje').addClass("error2").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_eje .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_eje .msg').html(data.mensaje);
+            }
+            if(data.accion == 'crearEje'){
+                $('#formEje').each(function(){
+                  this.reset();
+                });
+            }
+            $('#msg_form_eje').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+var validateFormObjetivoAprendizaje = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        descripcion:{required:true},
+        nivel:{required:true},
+        ciclo:{required:true},
+        area:{required:true},
+        ejeTematico:{required:true}
+    },
+    messages:{
+        descripcion: mensajeValidacion("requerido"),
+        nivel :mensajeValidacion("requerido"),
+        ciclo :mensajeValidacion("requerido"),
+        area :mensajeValidacion("requerido"),
+        ejeTematico :mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormObjetivoAprendizaje = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/procesar-objetivo-aprendizaje',
+    beforeSerialize:function(){
+
+        if($("#formObjetivoAprendizaje").valid() == true){
+            $('#msg_form_objetivoAprendizaje').hide();
+            $('#msg_form_objetivoAprendizaje').removeClass("success").removeClass("error2");
+            $('#msg_form_objetivoAprendizaje .msg').html("");
+            setWaitingStatus('formObjetivoAprendizaje', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formObjetivoAprendizaje', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_objetivoAprendizaje .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_objetivoAprendizaje .msg').html(data.mensaje);
+            }
+            $('#msg_form_objetivoAprendizaje').addClass("error2").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_objetivoAprendizaje .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_objetivoAprendizaje .msg').html(data.mensaje);
+            }
+            if(data.accion == 'crearObjetivoAprendizaje'){
+                $('#formObjetivoAprendizaje').each(function(){
+                  this.reset();
+                });
+            }
+            $('#msg_form_objetivoAprendizaje').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
 function bindEventsFormNivel(){
     $("#formNivel").validate(validateFormNivel);
     $("#formNivel").ajaxForm(optionsAjaxFormNivel);
@@ -368,6 +583,128 @@ function borrarObjetivoAprendizaje(iObjetivoAprendizajeId){
             }
         });
     }
+}
+
+//combos con ajax formularios
+function listaCiclosByNivel(idNivel, formId){
+
+    //si el valor elegido es '' entonces marco como disabled
+    if(idNivel == ''){
+        $('#ciclo').addClass("disabled");
+    }else{
+        $('#ciclo').removeClass("disabled");
+    }
+
+    if($("#area").length){
+        $('#area').addClass("disabled");
+    }
+    if($("#ejeTematico").length){
+        $('#ejeTematico').addClass("disabled");
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-ciclos-por-niveles",
+        data:{"iNivelId":idNivel},
+        beforeSend: function(){
+            setWaitingStatus(formId, true);
+        },
+        success: function(data){
+            var lista = $.parseJSON(data);
+            $('#ciclo').html("");
+
+            //los demas van vacios si es que estan en el formulario, se completan a medida que se seleccionan
+            if($("#area").length){
+                $('#area').html("");
+                $('#area').html(new Option('Elija Área:', '',true));
+            }
+            if($("#ejeTematico").length){
+                $('#ejeTematico').html("");
+                $('#ejeTematico').html(new Option('Elija Eje Temático:', '',true));
+            }
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#ciclo').append(new Option('Elija Ciclo:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#ciclo').append(new Option(lista[i].sNombre, lista[i].id));
+                }
+            }else{
+                $('#ciclo').html(new Option('Elija Ciclo:', '',true));
+            }
+            setWaitingStatus(formId, false);
+        }
+    });
+ }
+
+function listaAreasByCiclo(idCiclo, formId){
+    if(idCiclo == ''){
+        $('#area').addClass("disabled");
+    }else{
+        $('#area').removeClass("disabled");
+    }
+
+    if($("#ejeTematico").length){
+        $('#ejeTematico').addClass("disabled");
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-areas-por-ciclos",
+        data:{"iCicloId":idCiclo},
+        beforeSend: function(){
+            setWaitingStatus(formId, true);
+        },
+        success: function(data){
+            var lista = $.parseJSON(data);
+            $('#area').html("");
+
+            if($("#ejeTematico").length){
+                $('#ejeTematico').html("");
+                $('#ejeTematico').html(new Option('Elija Eje Temático:', '',true));
+            }
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#area').append(new Option('Elija Área:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#area').append(new Option(lista[i].sNombre, lista[i].id));
+                }
+            }else{
+                $('#area').append(new Option('Elija Área:', '',true));
+            }
+            setWaitingStatus(formId, false);
+        }
+    });
+}
+
+function listaEjesTematicosByArea(idArea, formId){
+    if(idArea == ''){
+        $('#ejeTematico').addClass("disabled");
+    }else{
+        $('#ejeTematico').removeClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-ejes-por-area",
+        data:{"iAreaId":iAreaId},
+        beforeSend: function(){
+            setWaitingStatus(formId, true);
+        },
+        success: function(data){
+            var lista = $.parseJSON(data);
+            $('#ejeTematico').html("");
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#ejeTematico').append(new Option('Elija Eje Temático:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#ejeTematico').append(new Option(lista[i].sNombre, lista[i].id));
+                }
+            }else{
+                $('#area').append(new Option('Elija Eje Temático:', '',true));
+            }
+            setWaitingStatus(formId, false);
+        }
+    });
 }
 
 $(document).ready(function(){

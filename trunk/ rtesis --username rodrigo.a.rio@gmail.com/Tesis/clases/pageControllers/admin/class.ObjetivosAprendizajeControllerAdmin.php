@@ -167,21 +167,21 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
     }
 
     private function crearCiclo()
-    {
+    {       
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $iNivelId = $this->getRequest()->getPost("nivelId");
+            $iNivelId = $this->getRequest()->getPost("nivel");
             $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
-
+                    
             if(AdminController::getInstance()->existeCicloByDescripcion($sDescripcion, $oNivel)){
                 $this->getJsonHelper()->setMessage("Ya existe un ciclo con ese nombre dentro del nivel.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
-            
+
             $oCiclo = new stdClass();
             $oCiclo->sDescripcion = $sDescripcion;
             $oCiclo = Factory::getCicloInstance($oCiclo);
@@ -296,6 +296,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
     private function modificarNivel()
     {
         try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
             $iNivelId = $this->getRequest()->getPost("iNivelId");
 
             $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
@@ -327,14 +328,18 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
     private function modificarCiclo()
     {
         try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
             $iCicloId = $this->getRequest()->getPost("iCicloId");
+            $iNivelId = $this->getRequest()->getPost("nivel");
             $sDescripcion = $this->getRequest()->getPost("descripcion");
+
             $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
-            $oNivel = $oCiclo->getNivel();
+            $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
 
             if(!empty($sDescripcion) && $sDescripcion !== $oCiclo->getDescripcion()){
                 if(AdminController::getInstance()->existeCicloByDescripcion($sDescripcion, $oNivel)){
-                    $this->getJsonHelper()->setMessage("Ya existe un ciclo con esa descripción en el nivel.");
+                    $this->getJsonHelper()->setMessage("Ya existe un ciclo con esa descripción en el nivel seleccionado.");
                     $this->getJsonHelper()->setSuccess(false);
                     $this->getJsonHelper()->sendJsonAjaxResponse();
                     return;
@@ -342,6 +347,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $oCiclo->setDescripcion($sDescripcion);
+            $oCiclo->setNivel($oNivel);
 
             AdminController::getInstance()->guardarCiclo($oCiclo);
             $this->getJsonHelper()->setMessage("El ciclo fue modificado con éxito dentro del nivel");
@@ -358,6 +364,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
     private function modificarArea()
     {
         try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
@@ -391,6 +398,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
     private function modificarEje()
     {
         try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
@@ -454,12 +462,14 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         if(empty($iNivelId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
-
+        
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             try{
-                $result = AdminController::getInstance()->eliminarNivel($iNivelId);
+                $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
+                
+                $result = AdminController::getInstance()->eliminarNivel($oNivel);
 
                 $this->restartTemplate();
 
@@ -499,7 +509,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             try{
-                $result = AdminController::getInstance()->eliminarCiclo($iCicloId);
+                $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+                $result = AdminController::getInstance()->eliminarCiclo($oCiclo);
 
                 $this->restartTemplate();
 
@@ -988,12 +999,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo niveles
             $iRecordsNiveles = 0;
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("sNivelSelected", "");
-                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-                $this->getTemplate()->parse("SelectNivelesBlock", true);
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("OptionSelectNivel", true);
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -1010,12 +1021,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo niveles
             $iRecordsNiveles = 0;
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("sNivelSelected", "");
-                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-                $this->getTemplate()->parse("SelectNivelesBlock", true);
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("OptionSelectNivel", true);
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -1032,12 +1043,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo niveles
             $iRecordsNiveles = 0;
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("sNivelSelected", "");
-                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-                $this->getTemplate()->parse("SelectNivelesBlock", true);
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("OptionSelectNivel", true);
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -1054,12 +1065,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo niveles
             $iRecordsNiveles = 0;
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("sNivelSelected", "");
-                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-                $this->getTemplate()->parse("SelectNivelesBlock", true);
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("OptionSelectNivel", true);
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -1104,11 +1115,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->set_var("sTituloForm", "Modificar Ciclo");
             $this->getTemplate()->set_var("SubmitCrearCicloBlock", "");
 
-            $oCiclo = AdminController::getInstance()->obtenerCicloById($iCicloId);
+            $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
 
             //combo niveles
             $iNivelId = $oCiclo->getNivel()->getId();
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
                 $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
@@ -1145,7 +1157,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             
             //combo niveles
             $iNivelId = $oArea->getCiclo()->getNivel()->getId();
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
                 $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
@@ -1158,7 +1171,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ciclos
             $iCicloId = $oArea->getCiclo()->getId();
-            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsCiclos = 0;
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
                 $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
@@ -1195,7 +1209,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo niveles
             $iNivelId = $oEje->getArea()->getCiclo()->getNivel()->getId();
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
                 $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
@@ -1208,7 +1223,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ciclos
             $iCicloId = $oEje->getArea()->getCiclo()->getId();
-            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsCiclos = 0;
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
                 $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
@@ -1221,7 +1237,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo areas
             $iAreaId = $oEje->getArea()->getId();
-            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsAreas = 0;
+            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsAreas, null, null, null, null);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
                 $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
@@ -1259,7 +1276,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo niveles
             $iNivelId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getId();
-            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
                 $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
                 $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
@@ -1272,7 +1290,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ciclos
             $iCicloId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getId();
-            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsCiclos = 0;
+            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
                 $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
@@ -1285,7 +1304,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo areas
             $iAreaId = $oObjetivoAprendizaje->getEje()->getArea()->getId();
-            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsAreas = 0;
+            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsAreas, null, null, null, null);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
                 $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
@@ -1298,7 +1318,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ejes
             $iEjeId = $oObjetivoAprendizaje->getEje()->getId();
-            $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsTotal, null, null, null, null);
+            $iRecordsEjes = 0;
+            $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsEjes, null, null, null, null);
             foreach ($aEjes as $oEje){
                 $this->getTemplate()->set_var("iValueEje", $oEje->getId());
                 $this->getTemplate()->set_var("sDescripcionEje", $oEje->getDescripcion());
