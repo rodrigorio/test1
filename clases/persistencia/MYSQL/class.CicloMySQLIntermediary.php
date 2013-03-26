@@ -120,6 +120,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
             $db = $this->conn;
             $db->execSQL("delete from ciclos where id = ".$this->escInt($oCiclo->getId()));
             $db->commit();
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }

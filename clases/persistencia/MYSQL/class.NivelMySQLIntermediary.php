@@ -106,6 +106,7 @@ class NivelMySQLIntermediary extends NivelIntermediary
             $db = $this->conn;
             $db->execSQL("delete from niveles where id = ".$this->escInt($oNivel->getId()));
             $db->commit();
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
