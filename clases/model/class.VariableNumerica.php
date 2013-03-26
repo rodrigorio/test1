@@ -5,7 +5,7 @@
  */
  class VariableNumerica extends Variable {
  	
- 	private $sValor;
+ 	private $fValor;
  	
  	
  /**
