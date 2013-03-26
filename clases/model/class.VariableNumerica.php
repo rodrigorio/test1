@@ -1,5 +1,5 @@
 <?php
-* Description of class VariableNumerica
+/* Description of class VariableNumerica
  *
  * @author Andr�s
  */

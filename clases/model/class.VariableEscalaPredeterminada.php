@@ -1,5 +1,5 @@
 <?php
-* Description of class VariableEscalaPredeterminada
+/* Description of class VariableEscalaPredeterminada
  *
  * @author Andr�s
  */
