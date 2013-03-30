@@ -280,6 +280,8 @@ class IndexControllerIndex extends PageControllerAbstract
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
     	try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
             $iPaisId = $this->getRequest()->getPost("iPaisId");
 
             $result = array();
@@ -295,7 +297,7 @@ class IndexControllerIndex extends PageControllerAbstract
                 }
             }
 
-            echo json_encode($result);
+            $this->getJsonHelper()->sendJson($result);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -306,6 +308,8 @@ class IndexControllerIndex extends PageControllerAbstract
          if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
          
     	 try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
             $iProvinciaId =  $this->getRequest()->getPost("iProvinciaId");
             $result = array();
             if($iProvinciaId != 0){
@@ -318,7 +322,7 @@ class IndexControllerIndex extends PageControllerAbstract
                 }
             }
 
-            echo json_encode($result);
+            $this->getJsonHelper()->sendJson($result);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

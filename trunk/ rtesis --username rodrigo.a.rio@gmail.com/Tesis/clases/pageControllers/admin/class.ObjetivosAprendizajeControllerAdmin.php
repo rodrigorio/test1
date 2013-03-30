@@ -53,7 +53,13 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         if($this->getRequest()->has('borrarNivel')){
             $this->borrarNivel();
             return;
-        }       
+        }    
+        
+        //select con ajax
+        if($this->getRequest()->has('ciclosByNivel')){
+            $this->getCiclosByNivel();
+            return;
+        }
     }
 
     public function procesarCiclo()
@@ -74,6 +80,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->borrarCiclo();
             return;
         }
+
+        //select con ajax
+        if($this->getRequest()->has('areasByCiclo')){
+            $this->getAreasByCiclo();
+            return;
+        }
     }
 
     public function procesarArea()
@@ -92,6 +104,12 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
         if($this->getRequest()->has('borrarArea')){
             $this->borrarArea();
+            return;
+        }
+
+        //select con ajax
+        if($this->getRequest()->has('ejesByArea')){
+            $this->getEjesByArea();
             return;
         }
     }
@@ -1339,4 +1357,91 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             throw $e;
         }
     }
+
+    private function getCiclosByNivel(){
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iNivelId =  $this->getRequest()->getPost("iNivelId");
+
+            if(empty($iNivelId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+            
+            $jCiclos = array();
+            $iRecordsTotal = 0;
+            $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
+            $aCiclos = SeguimientosController::getInstance()->getCicloByNivelId($iNivelId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            if(!empty($aCiclos)){
+                foreach($aCiclos as $oCiclo){
+                    $obj = new stdClass();
+                    $obj->iId = $oCiclo->getId();
+                    $obj->sDescripcion = $oCiclo->getDescripcion();
+                    array_push($jCiclos, $obj);
+                }
+            }
+            
+            $this->getJsonHelper()->sendJson($jCiclos);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function getAreasByCiclo(){
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iCicloId =  $this->getRequest()->getPost("iCicloId");
+
+            if(empty($iCicloId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $jAreas = array();
+            $iRecordsTotal = 0;
+            $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
+            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            if(!empty($aAreas)){
+                foreach($aAreas as $oArea){
+                    $obj = new stdClass();
+                    $obj->iId = $oArea->getId();
+                    $obj->sDescripcion = $oArea->getDescripcion();
+                    array_push($jAreas, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jAreas);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    private function getEjesByArea(){
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iAreaId =  $this->getRequest()->getPost("iAreaId");
+
+            if(empty($iAreaId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $jEjes = array();
+            $iRecordsTotal = 0;
+            $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
+            $aEjes = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            if(!empty($aEjes)){
+                foreach($aEjes as $oEje){
+                    $obj = new stdClass();
+                    $obj->iId = $oEje->getId();
+                    $obj->sDescripcion = $oEje->getDescripcion();
+                    array_push($jEjes, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jEjes);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }    
 }

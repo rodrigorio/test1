@@ -604,8 +604,8 @@ function listaCiclosByNivel(idNivel, formId){
     
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-ciclos-por-niveles",
-        data:{"iNivelId":idNivel},
+        url: "admin/procesar-nivel",
+        data:{iNivelId:idNivel, ciclosByNivel:"1"},
         beforeSend: function(){
             setWaitingStatus(formId, true);
         },
@@ -626,7 +626,7 @@ function listaCiclosByNivel(idNivel, formId){
             if(lista.length != undefined && lista.length > 0){
                 $('#ciclo').append(new Option('Elija Ciclo:', '',true));
                 for(var i=0;i<lista.length;i++){
-                    $('#ciclo').append(new Option(lista[i].sNombre, lista[i].id));
+                    $('#ciclo').append(new Option(lista[i].sDescripcion, lista[i].iId));
                 }
             }else{
                 $('#ciclo').html(new Option('Elija Ciclo:', '',true));
@@ -649,8 +649,8 @@ function listaAreasByCiclo(idCiclo, formId){
     
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-areas-por-ciclos",
-        data:{"iCicloId":idCiclo},
+        url: "admin/procesar-ciclo",
+        data:{iCicloId:idCiclo, areasByCiclo:"1"},
         beforeSend: function(){
             setWaitingStatus(formId, true);
         },
@@ -666,7 +666,7 @@ function listaAreasByCiclo(idCiclo, formId){
             if(lista.length != undefined && lista.length > 0){
                 $('#area').append(new Option('Elija Área:', '',true));
                 for(var i=0;i<lista.length;i++){
-                    $('#area').append(new Option(lista[i].sNombre, lista[i].id));
+                    $('#area').append(new Option(lista[i].sDescripcion, lista[i].iId));
                 }
             }else{
                 $('#area').append(new Option('Elija Área:', '',true));
@@ -685,8 +685,8 @@ function listaEjesTematicosByArea(idArea, formId){
 
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-ejes-por-area",
-        data:{"iAreaId":iAreaId},
+        url: "admin/procesar-area",
+        data:{iAreaId:idArea, ejesByArea:"1"},
         beforeSend: function(){
             setWaitingStatus(formId, true);
         },
@@ -697,7 +697,7 @@ function listaEjesTematicosByArea(idArea, formId){
             if(lista.length != undefined && lista.length > 0){
                 $('#ejeTematico').append(new Option('Elija Eje Temático:', '',true));
                 for(var i=0;i<lista.length;i++){
-                    $('#ejeTematico').append(new Option(lista[i].sNombre, lista[i].id));
+                    $('#ejeTematico').append(new Option(lista[i].sDescripcion, lista[i].iId));
                 }
             }else{
                 $('#area').append(new Option('Elija Eje Temático:', '',true));
