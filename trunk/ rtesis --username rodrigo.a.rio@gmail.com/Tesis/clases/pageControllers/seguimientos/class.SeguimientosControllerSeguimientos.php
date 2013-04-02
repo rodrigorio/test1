@@ -1850,7 +1850,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
          	
          	$iRecordsTotal = 0;
          	if($iNivelId!=""){
-	  			$vCiclos 	= SeguimientosController::getInstance()->getCicloByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+	  			$vCiclos 	= SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
 	  			foreach($vCiclos as $oCiclo){
 	  				if($iCicloId == $oCiclo->getId()){
          	  			 $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
@@ -1933,6 +1933,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     }
     
     public function listarCiclosPorNiveles(){
+    	echo "aaaa";
     	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         try{
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ciclos", "CiclosListBlock");
@@ -1940,8 +1941,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iNivelId	    = $this->getRequest()->getPost('nivelId');
             $iRecordsTotal 	= 0;
         	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
-  			$vCiclos 	= SeguimientosController::getInstance()->getCicloByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-			$this->getTemplate()->set_var("iCicloId", "");
+  			$vCiclos 	= SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
+			print_r($vCiclos);
+  			$this->getTemplate()->set_var("iCicloId", "");
             $this->getTemplate()->set_var("sCicloDescripcion", "Seleccione el ciclo");
             $this->getTemplate()->parse("CiclosListBlock", true);	
             if ($vCiclos) {
