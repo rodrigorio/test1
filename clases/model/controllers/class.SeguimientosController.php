@@ -746,18 +746,14 @@ class SeguimientosController
      * Obtener ciclo por id de nivel
      *
      */
-    public function getCicloByNivelId($iNivelId)
+    public function getCiclosByNivelId($iNivelId)
     {
     	try{
             $filtro = array('n.id' => $iNivelId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aCiclo){
-                return $aCiclo[0];
-            }else{
-                return null;
-            }
+            return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+         
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1077,12 +1073,7 @@ class SeguimientosController
             $filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aDiagnosticos = $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aDiagnosticos){
-                return $aDiagnosticos[0];
-            }else{
-                return null;
-            }
+            return $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1094,12 +1085,7 @@ class SeguimientosController
             $filtro = array('s.id' => $iSeguimientoId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aDiagnostico = $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aDiagnosticos){
-                return $aDiagnosticos[0];
-            }else{
-                return null;
-            }
+            return $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

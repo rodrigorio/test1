@@ -1199,21 +1199,16 @@ class AdminController
         }
     }
     /**
-     * Obtener ciclo por id de nivel
+     * Obtener ciclos por id de nivel
      *
      */
-    public function getCicloByNivelId($iId)
+    public function getCiclosByNivelId($iId)
     {
     	try{
             $filtro = array('n.id' => $iId);
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aCiclo = $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aCiclo){
-                return $aCiclo[0];
-            }else{
-                return null;
-            }
+            return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

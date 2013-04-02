@@ -43,7 +43,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
             	$oCiclo	= new stdClass();
             	$oCiclo->iId = $oObj->iId;
             	$oCiclo->sDescripcion = $oObj->sDescripcion;
-
+	#WARNING en un futuro puede producir ciclos infinitos.
                 $oNivel = new stdClass();
             	$oNivel->iId = $oObj->iNivelesId;
             	$oNivel->sDescripcion = $oObj->sDescripcionNivel;

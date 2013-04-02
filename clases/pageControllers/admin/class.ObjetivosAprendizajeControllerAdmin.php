@@ -1371,7 +1371,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $jCiclos = array();
             $iRecordsTotal = 0;
             $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
-            $aCiclos = SeguimientosController::getInstance()->getCicloByNivelId($iNivelId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
             if(!empty($aCiclos)){
                 foreach($aCiclos as $oCiclo){
                     $obj = new stdClass();
