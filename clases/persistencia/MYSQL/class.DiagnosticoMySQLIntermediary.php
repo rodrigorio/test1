@@ -303,7 +303,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-         
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -314,8 +313,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                	$oEjeTematico = new stdClass();
                 $oEjeTematico->iId = $oObj->iId;
                 $oEjeTematico->sDescripcion = $oObj->sDescripcion;
-                $oEjeTematico->oArea = Factory::getAreaInstance(new stdClass());
-                $oEjeTematico->oArea->getId($oObj->iAreaId);
+                $oEjeTematico->oArea = SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);
                 $oEjeTematico->sContenidos = $oObj->sContenidos;
                 $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
                 $oEjeTematico->setEstadoInicial($oObj->sEstadoInicial);            	

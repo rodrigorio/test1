@@ -632,12 +632,7 @@ class SeguimientosController
             $filtro = array('d.id' => $iId);
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aDiagnostico = $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aDiagnostico){
-                return $aDiagnostico[0];
-            }else{
-                return null;
-            }            
+            return $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -691,7 +686,7 @@ class SeguimientosController
     public function getAreaById($iAreaId)
       {
     	try{
-            $filtro = array('a.id' => $iId);
+            $filtro = array('a.id' => $iAreaId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             $iRecordsTotal = 0;
             $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -723,6 +718,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
     public function getCiclos($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
@@ -732,6 +728,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
     public function getAreas($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
@@ -753,7 +750,6 @@ class SeguimientosController
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-         
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -769,12 +765,7 @@ class SeguimientosController
             $filtro = array('c.id' => $iCicloId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aArea){
-                return $aArea[0];
-            }else{
-                return null;
-            }
+            return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -789,12 +780,7 @@ class SeguimientosController
             $filtro = array('a.id' => $iAreaId);
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aEjeTematico){
-                return $aEjeTematico[0];
-            }else{
-                return null;
-            }
+            return  $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

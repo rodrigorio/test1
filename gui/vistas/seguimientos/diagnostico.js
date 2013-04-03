@@ -166,6 +166,7 @@ $(document).ready(function(){
             }
         });
     });
+    
     $("#ciclo").live("change",function(){
     	me = this;
     	$.ajax({

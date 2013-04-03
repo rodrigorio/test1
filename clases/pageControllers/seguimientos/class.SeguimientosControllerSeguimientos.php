@@ -1815,19 +1815,21 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iCicloId = "";
             $iNivelId = "";
          	if ($oDiagnostico) {
-         		
 	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
 	            $this->getTemplate()->load_file_section("gui/componentes/grillas.gui.html", "listaEje", "GrillaEjesTematicos");
 	            if ($oDiagnostico->getEjesTematicos()) {
-	            	
 	            	foreach ($oDiagnostico->getEjesTematicos() as $oEje) {
-	            		
 	            		$this->getTemplate()->set_var("iEjeId", $oEje->getId());
 	            		$this->getTemplate()->set_var("sEjeText", $oEje->getDescripcion());
 	            		$this->getTemplate()->set_var("sEstadoInicial", $oEje->getEstadoInicial());
+	            		$this->getTemplate()->set_var("sNivelText", $oEje->getArea()->getCiclo()->getNivel()->getDescripcion());
+	            		$this->getTemplate()->set_var("sCicloText", $oEje->getArea()->getCiclo()->getDescripcion());
+	            		$this->getTemplate()->set_var("sAreaText", $oEje->getArea()->getDescripcion());
 		            	$this->getTemplate()->parse("ResultListEjes", true);
 	            	}
 		            $this->getTemplate()->parse("listaEje", false);
+	            }else{
+		            $this->getTemplate()->set_var("listaEje", "");
 	            }
 	            $this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
          	}
@@ -1878,7 +1880,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
          	}
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
    		  }catch(Exception $e){
-            print_r($e);
+           	//print_r($e);
         }
     }
     
@@ -1933,7 +1935,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     }
     
     public function listarCiclosPorNiveles(){
-    	echo "aaaa";
     	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         try{
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ciclos", "CiclosListBlock");
@@ -1942,7 +1943,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iRecordsTotal 	= 0;
         	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
   			$vCiclos 	= SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-			print_r($vCiclos);
   			$this->getTemplate()->set_var("iCicloId", "");
             $this->getTemplate()->set_var("sCicloDescripcion", "Seleccione el ciclo");
             $this->getTemplate()->parse("CiclosListBlock", true);	
