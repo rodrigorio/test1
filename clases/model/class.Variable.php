@@ -14,6 +14,20 @@
 		
 	
 	
+    /**
+     * En la clase VariableNumerica es redeclarada para devolver true.
+     */
+    public function isVariableNumerica(){ return false; }
+    /**
+     * En la clase VariableTexto es redeclarada para devolver true.
+     */
+    public function isVariableTexto(){ return false; }
+    /**
+     * En la clase VariableCualitativa es redeclarada para devolver true.
+     */
+    public function isVariableCualitativa(){ return false; }
+	
+	
    /**
  	 *  @param int $iId
 	 */
