@@ -305,8 +305,8 @@ function bindEventsPersonaForm(){
             beforeSend: function(){
                 setWaitingStatus('selectsUbicacion', true);
             },
-            success: function(data){
-                var lista = $.parseJSON(data);
+            success: function(lista){
+
                 $('#provincia').html("");
                 //dejo vacio el de ciudad si cambio de pais hasta que elija una provincia
                 $('#ciudad').html("");
@@ -317,7 +317,7 @@ function bindEventsPersonaForm(){
                         $('#provincia').append(new Option(lista[i].sNombre, lista[i].id));
                     }
                 }else{
-                    $('#provincia').html(new Option('Elija Provincia:', '',true));
+                    $('#provincia').html(new Option('No hay provincias cargadas', '',true));
                 }
                 setWaitingStatus('selectsUbicacion', false);
             }
@@ -337,8 +337,7 @@ function bindEventsPersonaForm(){
             beforeSend: function(){
                 setWaitingStatus('selectsUbicacion', true);
             },
-            success: function(data){
-                var lista = $.parseJSON(data);
+            success: function(lista){
                 $('#ciudad').html("");
                 if(lista.length != undefined && lista.length > 0){
                     $('#ciudad').append(new Option('Elija Ciudad:', '',true));
@@ -346,7 +345,7 @@ function bindEventsPersonaForm(){
                         $('#ciudad').append(new Option(lista[i].sNombre, lista[i].id));
                     }
                 }else{
-                    $('#ciudad').append(new Option('Elija Ciudad:', '',true));
+                    $('#ciudad').append(new Option('No hay ciudades cargadas', '',true));
                 }
                 setWaitingStatus('selectsUbicacion', false);
             }
