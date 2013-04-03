@@ -223,7 +223,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $iCicloId = $this->getRequest()->getPost("cicloId");
+            $iCicloId = $this->getRequest()->getPost("ciclo");
             $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
             
             if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)){
@@ -257,7 +257,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
             $sContenidos = $this->getRequest()->getPost("contenidos");
-            $iAreaId = $this->getRequest()->getPost("areaId");
+            $iAreaId = $this->getRequest()->getPost("area");
             $oArea = AdminController::getInstance()->getAreaById($iAreaId);
 
             if(AdminController::getInstance()->verificarExisteEjeByDescripcion($sDescripcion, $oArea)){
@@ -265,14 +265,14 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
-            }
-
+            }            
+            
             $oEjeTematico = new stdClass();
             $oEjeTematico->sDescripcion = $sDescripcion;
             $oEjeTematico->sContenidos = $sContenidos;
             $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
             $oEjeTematico->setArea($oArea);
-
+            
             AdminController::getInstance()->guardarEjeTematico($oEjeTematico);
             $this->getJsonHelper()->setMessage("El Eje Temático fue creado con éxito dentro del Área");
             $this->getJsonHelper()->setValor("accion", "crearEje");
@@ -296,7 +296,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $oObjetivoAprendizaje = new stdClass();
             $oObjetivoAprendizaje->sDescripcion = $sDescripcion;
-            $oObjetivoAprendizaje = Factory::getEjeTematicoInstance($oObjetivoAprendizaje);
+            $oObjetivoAprendizaje = Factory::getObjetivoAprendizajeInstance($oObjetivoAprendizaje);
             $oObjetivoAprendizaje->setEjeTematico($oEjeTematico);
 
             AdminController::getInstance()->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
@@ -386,9 +386,10 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $iAreaId = $this->getRequest()->getPost("areaId");
-            $oArea = AdminController::getInstance()->getAreaById($iAreaId);
-            $oCiclo = $oArea->getCiclo();
+            $iAreaId = $this->getRequest()->getPost("iAreaId");
+            $iCicloId = $this->getRequest()->getPost("ciclo");
+            $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+            $oArea = AdminController::getInstance()->getAreaById($iAreaId);            
 
             if(!empty($sDescripcion) && $sDescripcion !== $oArea->getDescripcion()){
                 if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)){
@@ -400,6 +401,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $oArea->setDescripcion($sDescripcion);
+            $oArea->setCiclo($oCiclo);
 
             AdminController::getInstance()->guardarArea($oArea);
             $this->getJsonHelper()->setMessage("El área fue modificada con éxito dentro del ciclo");
@@ -421,9 +423,11 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
             $sContenidos = $this->getRequest()->getPost("contenidos");
-            $iEjeId = $this->getRequest()->getPost("ejeId");
-            $oEje = AdminController::getInstance()->getEjeTematicoById($iEjeId);
-            $oArea = $oEje->getArea();
+            $iEjeId = $this->getRequest()->getPost("iEjeId");
+            $iAreaId = $this->getRequest()->getPost("area");
+
+            $oArea = AdminController::getInstance()->getAreaById($iAreaId);
+            $oEje = AdminController::getInstance()->getEjeTematicoById($iEjeId);            
 
             if(!empty($sDescripcion) && $sDescripcion !== $oEje->getDescripcion()){
                 if(AdminController::getInstance()->verificarExisteEjeByDescripcion($sDescripcion, $oArea)){
@@ -436,6 +440,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $oEje->setDescripcion($sDescripcion);
             $oEje->setContenidos($sContenidos);
+            $oEje->setArea($oArea);
 
             AdminController::getInstance()->guardarEjeTematico($oEje);
             $this->getJsonHelper()->setMessage("El Eje Temático fue modificado con éxito dentro del Área");
@@ -455,10 +460,14 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $iObjetivoAprendizajeId = $this->getRequest()->getPost("objetivoAprendizajeId");
+            $iObjetivoAprendizajeId = $this->getRequest()->getPost("iObjetivoAprendizajeId");
+            $iEjeTematicoId = $this->getRequest()->getPost("ejeTematico");
+
+            $oEjeTematico = AdminController::getInstance()->getEjeTematicoById($iEjeTematicoId);
             $oObjetivoAprendizaje = AdminController::getInstance()->getObjetivoAprendizajeById($iObjetivoAprendizajeId);
 
             $oObjetivoAprendizaje->setDescripcion($sDescripcion);
+            $oObjetivoAprendizaje->setEjeTematico($oEjeTematico);
 
             AdminController::getInstance()->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
             $this->getJsonHelper()->setMessage("El Objetivo de Aprendizaje fue modificado con éxito dentro del Eje Temático");
@@ -953,7 +962,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }
     }
 
-    private function formularioEje()
+    public function formularioEje()
     {
         $this->setFrameTemplate()
              ->setHeadTag();
@@ -975,7 +984,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }
     }
 
-    private function formularioObjetivoAprendizaje()
+    public function formularioObjetivoAprendizaje()
     {
         $this->setFrameTemplate()
              ->setHeadTag();
@@ -1171,7 +1180,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->set_var("sTituloForm", "Modificar Área");
             $this->getTemplate()->set_var("SubmitCrearAreaBlock", "");
 
-            $oArea = AdminController::getInstance()->obtenerAreaById($iAreaId);
+            $oArea = AdminController::getInstance()->getAreaById($iAreaId);
             
             //combo niveles
             $iNivelId = $oArea->getCiclo()->getNivel()->getId();
@@ -1223,7 +1232,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->set_var("sTituloForm", "Modificar Eje Temático");
             $this->getTemplate()->set_var("SubmitCrearEjeBlock", "");
 
-            $oEje = AdminController::getInstance()->obtenerEjeById($iEjeId);
+            $oEje = AdminController::getInstance()->getEjeTematicoById($iEjeId);
 
             //combo niveles
             $iNivelId = $oEje->getArea()->getCiclo()->getNivel()->getId();
@@ -1290,10 +1299,10 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->set_var("sTituloForm", "Modificar Objetivo Aprendizaje");
             $this->getTemplate()->set_var("SubmitCrearObjetivoAprendizajeBlock", "");
 
-            $oObjetivoAprendizaje = AdminController::getInstance()->obtenerObjetivoAprendizajeById($iObjetivoAprendizajeId);
+            $oObjetivoAprendizaje = AdminController::getInstance()->getObjetivoAprendizajeById($iObjetivoAprendizajeId);
 
             //combo niveles
-            $iNivelId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getId();
+            $iNivelId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getNivel()->getId();
             $iRecordsNiveles = 0;
             $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
@@ -1307,7 +1316,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ciclos
-            $iCicloId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getId();
+            $iCicloId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getId();
             $iRecordsCiclos = 0;
             $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
             foreach ($aCiclos as $oCiclo){
@@ -1321,7 +1330,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo areas
-            $iAreaId = $oObjetivoAprendizaje->getEje()->getArea()->getId();
+            $iAreaId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getId();
             $iRecordsAreas = 0;
             $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsAreas, null, null, null, null);
             foreach ($aAreas as $oArea){
@@ -1335,17 +1344,18 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ejes
-            $iEjeId = $oObjetivoAprendizaje->getEje()->getId();
+            $iEjeId = $oObjetivoAprendizaje->getEjeTematico()->getId();
             $iRecordsEjes = 0;
             $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsEjes, null, null, null, null);
+            
             foreach ($aEjes as $oEje){
-                $this->getTemplate()->set_var("iValueEje", $oEje->getId());
-                $this->getTemplate()->set_var("sDescripcionEje", $oEje->getDescripcion());
+                $this->getTemplate()->set_var("iValueEjeTematico", $oEje->getId());
+                $this->getTemplate()->set_var("sDescripcionEjeTematico", $oEje->getDescripcion());
                 if($iEjeId == $oEje->getId()){
-                    $this->getTemplate()->set_var("sEjeSelected", "selected='selected'");
+                    $this->getTemplate()->set_var("sEjeTematicoSelected", "selected='selected'");
                 }
-                $this->getTemplate()->parse("OptionSelectEje", true);
-                $this->getTemplate()->set_var("sEjeSelected", "");
+                $this->getTemplate()->parse("OptionSelectEjeTematico", true);
+                $this->getTemplate()->set_var("sEjeTematicoSelected", "");
             }
 
             $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());

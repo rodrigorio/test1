@@ -88,8 +88,8 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $db = $this->conn;
             $sSQL = " insert into ejes ".
                     " set descripcion = ".$this->escStr($oEjeTematico->getDescripcion()).", ".
-                    " set contenidos = ".$this->escStr($oEjeTematico->getContenidos()).", ".
-                    " areas_id = ".$this->escInt($oEjeTematico->getArea()->getId())." ";
+                    " contenidos = ".$this->escStr($oEjeTematico->getContenidos()).", ".
+                    " areas_id = ".$this->escInt($oEjeTematico->getArea()->getId())." ";            
 			 
             $db->execSQL($sSQL);
 
@@ -110,7 +110,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         
             $sSQL = " update ejes ".
                     " set descripcion = ".$this->escStr($oEjeTematico->getDescripcion()).", ".
-                    " set contenidos = ".$this->escStr($oEjeTematico->getContenidos()).", ".
+                    " contenidos = ".$this->escStr($oEjeTematico->getContenidos()).", ".
                     " areas_id = ".$this->escInt($oEjeTematico->getArea()->getId())." ".
                     " where id = ".$this->escInt($oEjeTematico->getId())." ";
 
@@ -308,7 +308,8 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             throw new Exception($e->getMessage(), 0);
             return false;
         }
-    }
+   }
+
    public function verificarExisteEjeByDescripcion($sDescripcion, $oArea)
     {
     	try{
@@ -317,11 +318,11 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                      FROM
-                        eje e 
+                        ejes e 
                      WHERE 
-                     e.descripcion = ".$this->escStr($sDescripcion). "
+                     e.descripcion = ".$this->escStr($sDescripcion)." 
                       AND 
-                     e.areas_id = " .$this->escInt($oArea->getId());
+                     e.areas_id = ".$this->escInt($oArea->getId());
             
             $db->query($sSQL);
 

@@ -160,8 +160,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         }
     }
     
-    public function guardarObjetivoAprendizaje($oOjetivo)
-    {
+    public function guardarObjetivoAprendizaje($oObjetivo)
+    {       
         if($oObjetivo->getEjeTematico() === null){
             throw new Exception("El objetivo no tiene eje tematico");
         }
@@ -170,7 +170,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             if($oObjetivo->getId() !== null){
                 return $this->actualizarObjetivoAprendizaje($oObjetivo);
             }else{
-                return $this->insertarObjetivoAprendizaje($oOjetivo);
+                return $this->insertarObjetivoAprendizaje($oObjetivo);
             }
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -238,7 +238,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
      * No es que se crean desde el administrador y despues se asocian en una relacion NxN
      * como pasa en los objetivos de aprendizaje.
      */
-    public function guardarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oOjetivo)
+    public function guardarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo)
     {
         if($oObjetivo->getObjetivoPersonalizadoEje() === null){
             throw new Exception("El objetivo no tiene eje");
@@ -252,7 +252,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             if ($oObjetivo->getId() !== null) {
                 return $this->actualizarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo);
             } else {
-                return $this->asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oOjetivo);
+                return $this->asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo);
             }
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), 0);
@@ -303,14 +303,14 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             if($this->existeObjetivoAprendizajeSeguimientoSCC($iSeguimientoSCCId, $oObjetivo->getId())){
                 return $this->actualizarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo);
             } else {
-                return $this->asociarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oOjetivo);
+                return $this->asociarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo);
             }
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), 0);
         }
     }
     
-    public function asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oOjetivo)
+    public function asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo)
     {
         try{
             $db = $this->conn;
@@ -325,15 +325,15 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $sSQL = " insert into objetivos_personalizados ".
                     " set id = ".$this->escInt($iLastId).", ".
                     " seguimientos_personalizados_id = ".$this->escInt($iSeguimientoPersonalizadoId).", ".
-                    " objetivo_personalizado_ejes_id = ".$this->escInt($oOjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
-                    " objetivo_relevancias_id = ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId()).", ".
+                    " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
+                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId()).", ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ";
 
             $db->execSQL($sSQL);
             $db->commit();
 
-            $oOjetivo->setId($iLastId);
+            $oObjetivo->setId($iLastId);
                         
             return true;
             
@@ -359,8 +359,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $db->execSQL($sSQL);
 
             $sSQL = " update objetivos_personalizados set ".
-                    " objetivo_personalizado_ejes_id = ".$this->escInt($oOjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
-                    " objetivo_relevancias_id = ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId()).", ".
+                    " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
+                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId()).", ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
@@ -375,16 +375,16 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         }
     }
 
-    public function asociarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oOjetivo)
+    public function asociarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo)
     {
         try{
             $db = $this->conn;
             $sSQL = " insert into seguimiento_scc_x_objetivo_aprendizaje ".
                     " set seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId).", ".
-                    " objetivos_aprendizaje_id = ".$this->escInt($oOjetivo->getId()).", ".
+                    " objetivos_aprendizaje_id = ".$this->escInt($oObjetivo->getId()).", ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
-                    " objetivo_relevancias_id ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId());
+                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId());
             
             $db->execSQL($sSQL);
             $db->commit();
@@ -401,11 +401,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
-                    " objetivo_relevancias_id ".$this->escInt($oOjetivo->getObjetivoRelevancia()->getId())." ".
+                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId())." ".
                     " WHERE
                         sxo.seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
                       AND
-                        sxo.objetivos_aprendizaje_id = ".$this->escInt($oOjetivo->getId());
+                        sxo.objetivos_aprendizaje_id = ".$this->escInt($oObjetivo->getId());
 
             $db->execSQL($sSQL);
             $db->commit();

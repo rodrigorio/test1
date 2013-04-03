@@ -367,11 +367,31 @@ function bindEventsFormArea(){
 function bindEventsFormEje(){
     $("#formEje").validate(validateFormEje);
     $("#formEje").ajaxForm(optionsAjaxFormEje);
+
+    $("#nivel").change(function(){
+        listaCiclosByNivel($("#nivel option:selected").val(), "formEje");
+    });
+    
+    $("#ciclo").change(function(){
+        listaAreasByCiclo($("#ciclo option:selected").val(), "formEje");
+    });
 }
 
 function bindEventsFormObjetivoAprendizaje(){
     $("#formObjetivoAprendizaje").validate(validateFormObjetivoAprendizaje);
     $("#formObjetivoAprendizaje").ajaxForm(optionsAjaxFormObjetivoAprendizaje);
+
+    $("#nivel").change(function(){
+        listaCiclosByNivel($("#nivel option:selected").val(), "formObjetivoAprendizaje");
+    });
+
+    $("#ciclo").change(function(){
+        listaAreasByCiclo($("#ciclo option:selected").val(), "formObjetivoAprendizaje");
+    });
+
+    $("#area").change(function(){
+        listaEjesTematicosByArea($("#area option:selected").val(), "formObjetivoAprendizaje");
+    });
 }
 
 function borrarNivel(iNivelId){
@@ -642,6 +662,7 @@ function listaCiclosByNivel(idNivel, formId){
  }
 
 function listaAreasByCiclo(idCiclo, formId){
+    
     if(idCiclo == ''){
         $('#area').addClass("disabled");
     }else{
