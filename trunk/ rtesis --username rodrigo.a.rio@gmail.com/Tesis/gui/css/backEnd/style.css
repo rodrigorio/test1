@@ -155,7 +155,7 @@ body section[role=main] {
 	height:100%;
 	margin-left:271px;
 	padding:25px;
-        min-height:600px;
+        min-height:900px;
 }
 select, input, textarea, button { font:99% sans-serif; }
 strong, th {

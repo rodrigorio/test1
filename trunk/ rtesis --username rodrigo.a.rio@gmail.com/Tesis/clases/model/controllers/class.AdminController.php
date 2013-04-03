@@ -1140,9 +1140,6 @@ class AdminController
         }
     }
 
-    /**
-     *  Obtiene las Areas
-     */
     public function getEjes($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
@@ -1237,12 +1234,7 @@ class AdminController
             $filtro = array('c.id' => $iId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aArea = $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aArea){
-                return $aArea[0];
-            }else{
-                return null;
-            }
+            return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1257,12 +1249,7 @@ class AdminController
             $filtro = array('a.id' => $iAreaId);
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aEjeTematico){
-                return $aEjeTematico[0];
-            }else{
-                return null;
-            }
+            return $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1499,8 +1486,8 @@ class AdminController
      */
     public function guardarObjetivoAprendizaje($oObjetivoAprendizaje){
         try{
-            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoAprendizajeIntermediary->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1548,7 +1535,7 @@ class AdminController
     public function verificarExisteEjeByDescripcion($sDescripcion, $oArea)
     {
         try{
-            $oEjeIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            $oEjeIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeIntermediary->verificarExisteEjeByDescripcion($sDescripcion, $oArea);
         }catch(Exception $e){
             throw new Exception($e);
