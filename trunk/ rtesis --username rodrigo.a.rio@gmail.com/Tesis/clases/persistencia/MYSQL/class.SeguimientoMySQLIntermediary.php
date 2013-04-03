@@ -678,30 +678,23 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     {
         try{
             $db = $this->conn;            
-            $db->begin_transaction();   
-          $sSQL =  "CREATE TEMPORARY TABLE tablaTemporal ( variable VARCHAR(50), valor INT(15), tipo VARCHAR(50),fechaModificacion TIMESTAMP)";
-          $db->execSQL($sSQL);                   
-            $sSQL = " insert into tablaTemporal (seguimiento_id, variable_id, valor, fechaHora) VALUES ";
-            for ($J=0; $j< count($vUnidad); $j++) { 
-            	 
-            	$vVariable = $vUnidad[$j]->getVariables();
-            
-            for ($i=0; $i< count($vVariable); $i++) {
+            $db->begin_transaction();              
+
+          $sSQL = "insert into seguimiento_x_contenido_variables (seguimiento_id, variable_id, valor, fechaHora) VALUES ";         
+        
+          for ($j=0; $j< count($vUnidad); $j++) { 
+            $vVariable = $vUnidad[$j]->getVariables();
+             for ($i=0; $i< count($vVariable); $i++) {
             	$oVariable = $vVariable[$i];
             	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
             		.$this->escInt($oVariable->getId()).", "
-            		.$this->escInt($oVariable->getValor()).", "
+            		.$this->escStr($oVariable->getValor()).", "
             		.$this->escDate($oVariable->getFechaHora()).") ";
             	if (count($vVariable) > $i+1) {
             		$sSQL .= ",";
             	}
-            	
-            	}
-            	if (count($vUnidad) > $j+1) {
-            		$sSQL .= ",";
-              } 
-            }          
-           
+           	}
+           }                             
                       
             $db->execSQL($sSQL);
             $db->commit();
@@ -710,34 +703,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
                  
-    }
-    /*public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$oUnidad)
-    {
-        try{
-            $db = $this->conn;            
-            $db->begin_transaction();   
-            $vVariable = $oUnidad ->getVariables();                     
-            $sSQL = " insert into seguimientos_x_contenido_variables (seguimiento_id, variable_id, valor, fechaHora) VALUES ";
-                        
-            for ($i=0; $i< count($vVariable); $i++) {
-            	$oVariable = $vVariable[$i];
-            	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
-            		.$this->escInt($oVariable->getId()).", "
-            		.$this->escInt($oVariable->Valor()).", "
-            		.$this->escDate($oVariable->getFechaHora()).") ";
-            	if (count($vVariable) > $i+1) {
-            		$sSQL .= ",";
-            	}
-            } 
-                      
-            $db->execSQL($sSQL);
-            $db->commit();
-
-        }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        }
-                 
-    }*/
+    }    
     
     public function actualizarCampoArray($objects, $cambios){}    
 }

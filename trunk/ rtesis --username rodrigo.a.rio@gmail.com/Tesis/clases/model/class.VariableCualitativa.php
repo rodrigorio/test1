@@ -1,9 +1,9 @@
 <?php
-/* Description of class VariableEscalaPredeterminada
+/* Description of class VariableEscalaConvinada
  *
  * @author Andr�s
  */
- class VariableEscalaPredeterminada extends Variable {
+ class VariableEscalaConvinada extends Variable {
  	
  	private $sValor;
  	
@@ -24,5 +24,24 @@
 				}
 			}
 		}
+	}
+     
+     
+     /**
+     * En la clase VariableCualitativa es redeclarada para devolver true.
+     */
+    public function isVariableCualitativa(){ return true; }
+	
+     /**
+ 	 *  @param string $sValor
+	 */
+	public function setValor($sValor){
+		$this->sValor = $sValor;
+	}
+     /**
+	 * @return string $sValor
+	 */
+	public function getValor(){
+		return $this->sValor;
 	}
  }

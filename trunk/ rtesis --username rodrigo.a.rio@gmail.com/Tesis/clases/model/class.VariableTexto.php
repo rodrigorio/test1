@@ -25,4 +25,20 @@
 			}
 		}
 	}
+     /**
+     * En la clase VariableTexto es redeclarada para devolver true.
+     */
+    public function isVariableTexto(){ return true; }
+     /**
+ 	 *  @param string $sValor
+	 */
+	public function setValor($sValor){
+		$this->sValor = $sValor;
+	}
+     /**
+	 * @return string $sValor
+	 */
+	public function getValor(){
+		return $this->sValor;
+	}
  }

@@ -30,9 +30,13 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        v.id as iId, v.nombre as sNombre, v.tipo as iTipo , v.descripcion as sDescripcion, v.unidad_id as iUnidadId, v.fechaHora as dFechaHora
+                        v.id as iId, v.nombre as sNombre, v.tipo as iTipo , v.descripcion as sDescripcion, v.unidad_id as iUnidadId, scv.valor as sValor, v.fechaHora as dFechaHora
                     FROM
-                       variables v ";
+                       variables v 
+                    JOIN 
+                       seguimiento_x_contenido_variables scv
+                    ON
+                       v.id = scv.variable_id ";
             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
@@ -51,7 +55,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
             	$oVariable->sNombre	= $oObj->sNombre;
             	$oVariable->iTipo   = $oObj->iTipo;
             	$oVariable->sDescripcion	= $oObj->sDescripcion;
-            	$oCiudad->oUnidad    = SeguimientoController::getInstance()->getUnidadById($oObj->iUnidadId);
+            	$oVariable->sValor = $oObj->sValor;
+            	//$oVariable->oUnidad    = SeguimientoController::getInstance()->getUnidadById($oObj->iUnidadId);
             	$oVariable->dFechaHora	= $oObj->dFechaHora;
             	$aVariables[]		= Factory::getVariableInstance($oVariable);
             }
