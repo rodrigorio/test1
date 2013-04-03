@@ -14,8 +14,7 @@ function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idCont
         beforeSend: function(){
             setWaitingStatus(idContenedor, true);
         },
-        success: function(data){
-            var lista = $.parseJSON(data);
+        success: function(lista){
             $('#'+idSelectProvincia).html("");
             //dejo vacio el de ciudad si cambio de pais hasta que elija una provincia
             $('#'+idSelectCiudad).html("");
@@ -26,7 +25,7 @@ function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idCont
                     $('#'+idSelectProvincia).append(new Option(lista[i].sNombre, lista[i].id));
                 }
             }else{
-                $('#'+idSelectProvincia).html(new Option('Elija Provincia:', '',true));
+                $('#'+idSelectProvincia).html(new Option('No hay provincias cargadas', '',true));
             }
             setWaitingStatus(idContenedor, false);
         }
@@ -46,8 +45,8 @@ function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
         beforeSend: function(){
             setWaitingStatus(idContenedor, true);
         },
-        success: function(data){
-            var lista = $.parseJSON(data);
+        success: function(lista){
+
             $('#'+idSelectCiudad).html("");
             if(lista.length != undefined && lista.length > 0){
                 $('#'+idSelectCiudad).append(new Option('Elija Ciudad:', '',true));
@@ -55,7 +54,7 @@ function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
                     $('#'+idSelectCiudad).append(new Option(lista[i].sNombre, lista[i].id));
                 }
             }else{
-                $('#'+idSelectCiudad).append(new Option('Elija Ciudad:', '',true));
+                $('#'+idSelectCiudad).append(new Option('No hay ciudades cargadas', '',true));
             }
             setWaitingStatus(idContenedor, false);
         }
