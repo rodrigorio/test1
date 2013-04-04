@@ -844,15 +844,17 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+
     /**
-     * Obtener unidades  por id de usuario
+     * Obtiene todas las unidades administrables que el usuario logueado creo
+     * para asociar a sus seguimientos personalizados
      *
      */
-    public function getUnidadesByUsuarioId()
+    public function obtenerUnidadesPersonalizadasUsuario()
     {
     	try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            $filtro = array('s.usuarios_id' => $iUsuarioId);
+            $filtro = array('u.usuarios_id' => $iUsuarioId, 'u.preCargada' => '0', 'u.asociacionAutomatica' => '0');
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             $iRecordsTotal = 0;
             $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -865,6 +867,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+
      /**
      * Obtener unidades  por id de seguimiento
      *

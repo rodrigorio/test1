@@ -5,9 +5,9 @@ class Unidad{
     private $iId;
     private $sNombre;
     private $sDescripcion;
-    private $bEditable;
+    private $bPreCargada;
     private $dFechaHora;
-    private $bPorDefecto;
+    private $bAsociacionAutomatica;
 
     /**
      * Cuando las variables son las de una unidad que esta asociada a un seguimiento
@@ -19,7 +19,7 @@ class Unidad{
      * TODO on demand, porque depende de lo que se necesite en el momento, y es mucha info.
      *
      */
-    private $aVariables;
+    private $aVariables = null;
 			
     public function __construct(stdClass $oParams = null) {
         $vArray = get_object_vars($oParams);
@@ -66,6 +66,7 @@ class Unidad{
         $this->aVariables = $aVariables;
         return $this;
     }
+
     public function getVariables()
     {
         if($this->aVariables === null){
@@ -73,6 +74,7 @@ class Unidad{
         }
         return $this->aVariables;
     }
+    
     public function addVariable($oVariable)
     {
         $this->aVarible[] = $oVariable;
@@ -83,21 +85,24 @@ class Unidad{
      *  @return int $iId
      */
     public function getId(){
-            return $this->iId ;
+        return $this->iId ;
     }
 
     /**
      * @return string $sNombre
      */
     public function getNombre(){
-            return $this->sNombre;
+        return $this->sNombre;
     }
 
     /**
      * @return string $sDescripcion
      */
-    public function getDescripcion(){
-            return $this->sDescripcion;
+    public function getDescripcion($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sDescripcion);
+        }
+        return $this->sDescripcion;
     }
 
     /**
@@ -107,21 +112,21 @@ class Unidad{
             return $this->dFechaHora;
     }
 
-    public function isEditable($flag = null){
+    public function isPreCargada($flag = null){
         if(null !== $flag){
-            $this->bEditable = $flag ? true : false;
+            $this->bPreCargada = $flag ? true : false;
             return $this;
         }else{
-            return $this->bEditable;
+            return $this->bPreCargada;
         }
     }
 
-    public function isPorDefecto($flag = null){
+    public function isAsociacionAutomatica($flag = null){
         if(null !== $flag){
-            $this->bPorDefecto = $flag ? true : false;
+            $this->bAsociacionAutomatica = $flag ? true : false;
             return $this;
         }else{
-            return $this->bPorDefecto;
+            return $this->bAsociacionAutomatica;
         }
     }    
 }
