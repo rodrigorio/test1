@@ -1894,15 +1894,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
            // TODO Agregar validacion de pedir el diagnostico segun permiso d
             $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
-       
+           
 			if($oDiagnostico){
 				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
 	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
 	            	$sCodigo	 	= $this->getRequest()->getPost('codigo');
 			    	$oDiagnostico->setCodigo($sCodigo);
 	            }else{
-	            	$ejes	    = $this->getRequest()->getPost('ejeHidden');
-	            	$estadoInicial	    = $this->getRequest()->getPost('estadoInicialHidden');
+	            	$ejesEliminados	= $this->getRequest()->getPost('ejeEliminados');
+	            	//SeguimientosController::getInstance()->eliminarDiagnosticos($ejesEliminados);
+	            	$ejes	    	= $this->getRequest()->getPost('ejeHidden');
+	            	$estadoInicial	= $this->getRequest()->getPost('estadoInicialHidden');
 	            	$i = 0;
 	            	$vEjesTematicos = array();
 	            	foreach ($ejes as $ejeId){

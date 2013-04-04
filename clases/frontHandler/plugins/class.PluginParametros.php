@@ -109,22 +109,22 @@ class PluginParametros extends PluginAbstract
     private function agregarParametrosEstaticos()
     {
         $sistema = array(
-                        /*'DATABASE_HOST' => 'localhost',
+                        'DATABASE_HOST' => 'localhost',
                         'DATABASE_DRIVER' => 'IMYSQL',
                         'DATABASE_USER' => 'root',
                         'DATABASE_PASSWORD' => 'urbis9878',
                         'DATABASE_NAME' => 'tesis',
                         'DATABASE_PORT' => '3306',
-                        'DATABASE_AUTOCOMMIT' => '0',*/
+                        'DATABASE_AUTOCOMMIT' => '0',
 
-      					  'DATABASE_HOST' => '201.212.143.102',
+      					/* 'DATABASE_HOST' => '201.212.143.102',
                         'DATABASE_DRIVER' => 'IMYSQL',
                         'DATABASE_USER' => 'usuariodetest',
                         'DATABASE_PASSWORD' => 'usuariodetest1234',
                         'DATABASE_NAME' => 'tesis',
                         'DATABASE_PORT' => '3306',
                         'DATABASE_AUTOCOMMIT' => '0',
-        
+        				*/
         
                         'MULTI_IDIOMA' => '1',
                         'SESSION_NAME' => 'Tesis',

@@ -184,7 +184,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $db = $this->conn;
             $db->execSQL("delete from diagnosticos_scc_x_ejes 
                           where diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId)."
-                          and ejes_id = ".$this->escInt($iEjeTematicoId));
+                          and ejes_id IN (".$this->escInt($iEjeTematicoId).")" );
             $db->commit();
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -289,9 +289,9 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                       FROM
                         seguimientos_scc sd
                       JOIN 
-                      seguimientos s 
+                      	seguimientos s 
                       ON
-                      sd.id = s.id
+                      	sd.id = s.id
                       WHERE
                         sd.diagnostico_scc_id = ".$this->escInt($iDiagnosticoId)." AND
                         s.usuarios_id = ".$this->escInt($iUsuarioId);
