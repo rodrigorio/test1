@@ -221,6 +221,24 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'listarEjesPorArea'
                                 ));
-        $router->addRoute('seguimientosListarEjePorArea', $route);        
+        $router->addRoute('seguimientosListarEjePorArea', $route);
+
+        //unidades
+        $route = new RegexRoute('seguimientos/listar-unidades',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosUnidadesIndex', $route);
+
+        //variables
+        $route = new RegexRoute('seguimientos/listar-variables',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'variables',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosVariablesIndex', $route);
     }
 }

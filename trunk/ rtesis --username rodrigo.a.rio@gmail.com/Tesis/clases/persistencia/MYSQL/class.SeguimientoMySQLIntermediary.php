@@ -453,13 +453,13 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $db->execSQL($sSQL);
 
           
-            $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.porDefecto = 1";
+            $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.asociacionAutomatica = 1";
             $db->query($sSQL);
             while($oObj = $db->oNextRecord()){
             	$iUnidadId = $oObj->iId;
             }
 
-            $sSQL = " insert into seguimiento_x_unidades set ".
+            $sSQL = " insert into seguimiento_x_unidad set ".
                     " unidad_id = ".$this->escInt($iUnidadId).", ".
                     " seguimiento_id = ".$this->escInt($iLastId)." ";
             

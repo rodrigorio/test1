@@ -5,45 +5,42 @@
  */
 class UnidadMySQLIntermediary extends UnidadIntermediary
 {
-	private static $instance = null;
+    private static $instance = null;
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
+    protected function __construct( $conn) {
+        parent::__construct($conn);
+    }
 
-
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return VariableMySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (null === self::$instance){
-            self::$instance = new self($conn);
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return VariableMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn) {
+        if (null === self::$instance){
+          self::$instance = new self($conn);
         }
         return self::$instance;
-	}
-public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
-		try{
+    }
+
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
             $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion
-                    FROM
-                       seguimientos s
-                    JOIN   
-                       seguimiento_x_unidades su
-                    ON
-                      s.id = su.seguimiento_id    
-                    JOIN   
-                       unidades u
-                    ON
-                      su.unidad_id = u.id";
-                    if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
-                    }
+            $sSQL = "   SELECT SQL_CALC_FOUND_ROWS
+                            u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion,
+                            u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica
+                        FROM
+                            unidades u
+                        LEFT JOIN
+                            seguimiento_x_unidad su ON u.id = su.unidad_id ";
+
+            if(!empty($filtro)){
+                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            }
 
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -52,20 +49,26 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
 
             $aUnidades = array();
             while($oObj = $db->oNextRecord()){
-            	$oUnidad 			= new stdClass();
-            	$oUnidad->iId 	= $oObj->iId;
-            	$oUnidad->sNombre	= $oObj->sNombre;
-            	$oUnidad->sDescripcion	= $oObj->sDescripcion;
-            	$aUnidades[]		= Factory::getUnidadInstance($oUnidad);
+                $oUnidad = new stdClass();
+                $oUnidad->iId = $oObj->iId;
+                $oUnidad->sNombre = $oObj->sNombre;
+                $oUnidad->sDescripcion = $oObj->sDescripcion;
+                $oUnidad->dFechaHora = $oObj->dFechaHora;
+
+                $oUnidad->bPreCargada = $oObj->bPreCargada ? true : false;
+                $oUnidad->bAsociacionAutomatica = $oObj->bAsociacionAutomatica ? true : false;
+
+                $aUnidades[] = Factory::getUnidadInstance($oUnidad);
             }
-            
+
             return $aUnidades;
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-        }
-	}
-	public  function insertar($oUnidad)
+        }        
+    }
+
+    public  function insertar($oUnidad)
    		{
 		try{
 			$db = $this->conn;
@@ -159,7 +162,7 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
                       FROM
                         seguimientos s
                       JOIN 
-                      	seguimiento_x_unidades su 
+                      	seguimiento_x_unidad su 
                       ON 	
                       	su.seguimiento_id = s.id
                       WHERE

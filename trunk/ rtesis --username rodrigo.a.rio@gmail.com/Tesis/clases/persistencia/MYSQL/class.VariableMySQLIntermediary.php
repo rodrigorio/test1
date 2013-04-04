@@ -167,7 +167,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
                       FROM
                         seguimientos s
                       JOIN 
-                      	seguimiento_x_unidades su 
+                      	seguimiento_x_unidad su 
                       ON 	
                       	su.seguimiento_id = s.id
                       JOIN

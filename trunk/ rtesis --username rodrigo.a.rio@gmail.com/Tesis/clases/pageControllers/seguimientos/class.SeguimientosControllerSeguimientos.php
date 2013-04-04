@@ -71,6 +71,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("hrefAgregarPersona", $this->getUrlFromRoute("seguimientosPersonasAgregar", true));
         $this->getTemplate()->set_var("hrefListadoSeguimientos", $this->getUrlFromRoute("seguimientosIndexIndex", true));
 
+        $this->getTemplate()->set_var("hrefListadoUnidadesVariables", $this->getUrlFromRoute("seguimientosUnidadesIndex", true));
+        $this->getTemplate()->set_var("hrefListadoPlantillasEntrevistas", "");
+
         return $this;
     }
 
