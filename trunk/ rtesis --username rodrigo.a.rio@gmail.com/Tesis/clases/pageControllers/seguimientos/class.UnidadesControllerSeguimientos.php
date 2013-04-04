@@ -27,7 +27,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->load_file_section("gui/vistas/admin/unidades.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "jsContent", "JsContent");
 
         return $this;
     }
@@ -91,5 +91,60 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    
+    public function formCrearUnidad()
+    {
+        $this->mostrarFormularioUnidadPopUp();
+    }
+
+    public function formModificarUnidad()
+    {
+        $this->mostrarFormularioUnidadPopUp();
+    }
+
+    /**
+     * Se dividi en formCrearUnidad y formModificarUnidad para poder desactivar/activar las funciones
+     * de manera independiente desde el administrador
+     */
+    private function mostrarFormularioUnidadPopUp()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+        
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "popUpContent", "FormularioUnidadBlock");
+
+        //AGREGAR UNIDAD
+        if($this->getRequest()->getActionName() == "formCrearUnidad"){
+
+            $this->getTemplate()->unset_blocks("SubmitModificarUnidadBlock");
+
+            $sTituloForm = "Agregar una nueva Unidad";
+
+            //valores por defecto en el agregar
+            $oPublicacion = null;
+            $sNombre = "";
+
+        //MODIFICAR UNIDAD
+        }else{
+            $iUnidadIdForm = $this->getRequest()->getParam('unidadId');
+            if(empty($iUnidadIdForm)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $sTituloForm = "Modificar Unidad";
+
+            $oUnidad = ComunidadController::getInstance()->getPublicacionById($iPublicacionIdForm);
+
+            $this->getTemplate()->unset_blocks("SubmitCrearUnidadBlock");
+
+            $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadIdForm);
+
+            $sNombre = $oUnidad->getNombre();
+        }
+
+        $this->getTemplate()->set_var("sNombre", $sNombre);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getResponse()->setBody($this->getTemplate()->pparse('frame', false)));
+    }    
 }

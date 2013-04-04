@@ -1,8 +1,7 @@
 <!--BeginJsContent-->
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
-    $LAB
-  //.script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
+    $LAB   
    .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
@@ -93,3 +92,117 @@
     </div>
 </div>
 <!--EndListadoUnidadesBlock-->
+
+<!--BeginFormularioUnidadBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
+    <form id="formUnidad" name="formUnidad" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+
+        <div class="form_line msg_titulo">
+            <label for="titulo">
+                <span class="marca_obligatorio">&#8226;</span>
+                T&iacute;tulo
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                </div>
+            </div>
+            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+        </div>
+        <div class="form_line msg_descripcionBreve">
+            <label for="descripcionBreve">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripcion Breve
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
+                </div>
+            </div>
+            <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+        </div>
+        <div class="form_line msg_activo">
+            <label for="activo">
+                Visible?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedActivo} value="1">S&iacute;</option>
+                <option {sSelectedDesactivado} value="0">No</option>
+            </select>
+            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+        </div>
+        <div class="form_line msg_publico">
+            <label for="publico">
+                Alcance Privacidad?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedPublico} value="1">El mundo</option>
+                <option {sSelectedComunidad} value="0">Solo comunidad</option>
+            </select>
+            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+        </div>
+        <div class="form_line msg_activoComentarios">
+            <label for="activoComentarios">
+                Activar Comentarios?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+                <option {sSelectedDesactivadoComentarios} value="0">No</option>
+            </select>
+            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Contenido Publicaci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form_line msg_keywords">
+
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+                </div>
+            </div>
+            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+        </div>
+
+        <!--BeginSubmitCrearUnidadBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearUnidad" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearUnidad" type="submit" name="crearUnidad" class="btn01">
+                    Crear Unidad
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearUnidadBlock-->
+
+        <!--BeginSubmitModificarUnidadBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarUnidad" class="button buttonConfirm buttonLarge">
+                <button id="modificarUnidad" type="submit" name="modificarUnidad" class="btn01">
+                    Modificar Unidad
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
+        <!--EndSubmitModificarUnidadBlock-->
+
+        <div style="display:none;" id='msg_form_unidad' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioUnidadBlock-->
