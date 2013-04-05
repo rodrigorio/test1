@@ -259,6 +259,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'procesar'
                                 ));
         $router->addRoute('seguimientosUnidadesProcesar', $route);
+        $route = new RegexRoute('seguimientos/borrar-unidad',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('seguimientosUnidadesBorrar', $route);
 
         //variables
         $route = new RegexRoute('seguimientos/listar-variables',

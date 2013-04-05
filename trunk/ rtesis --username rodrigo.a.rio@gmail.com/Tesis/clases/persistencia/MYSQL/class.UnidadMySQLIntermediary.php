@@ -171,16 +171,17 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         }
     }
     
- 	public function borrar($iUnidadId) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from unidades where id = '".$iUnidadId."'");
-			$db->commit();
-
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+    public function borrar($iUnidadId)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from unidades where id = '".$iUnidadId."'");
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 		
 	public function actualizarCampoArray($objects, $cambios){
 		

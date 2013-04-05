@@ -97,6 +97,45 @@ function masUnidades(){
     });
 }
 
+function eliminarUnidad(iUnidadId)
+{
+    var buttons = {
+        "Confirmar": function(){
+            //este es el dialog que confirma que la unidad fue eliminada del sistema
+            var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+            dialog = setWaitingStatusDialog(500, "Borrar Unidad", buttonAceptar);
+            $.ajax({
+                type:"post",
+                dataType:'jsonp',
+                url:"seguimientos/borrar-unidad",
+                data:{
+                    iUnidadId:iUnidadId
+                },
+                success:function(data){
+                    dialog.html(data.html);
+                    if(data.success != undefined && data.success == 1){
+                        $(".ui-dialog-buttonset .ui-button").click(function(){
+                            //se borro la unidad, refresco el listado con el filtro actual como esta
+                            $("#buscarUnidades").click();
+                        });
+                    }
+                }
+            });
+        },
+        "Cancelar": function() {
+            $(this).dialog( "close" );
+        }
+    }
+
+    //este es el dialog que pide confirmar la accion
+    var dialog = setWaitingStatusDialog(550, 'Borrar Unidad', buttons);
+    dialog.load(
+        "seguimientos/borrar-unidad",
+        {mostrarDialogConfirmar:"1"},
+        function(){}
+    );
+}
+
 $(document).ready(function(){
     $("#buscarUnidades").live('click', function(){
         masUnidades();
@@ -133,5 +172,10 @@ $(document).ready(function(){
                 bindEventsUnidadForm();
             }
         );
-    });   
+    });
+
+    $(".borrarUnidad").live('click', function(){
+        var iUnidadId = $(this).attr("rel");
+        eliminarUnidad(iUnidadId);
+    });
 });

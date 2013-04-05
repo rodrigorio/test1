@@ -680,6 +680,7 @@ function showDialogConfirmCerrarCuenta()
 {    
     var buttons = {
         "Confirmar": function(){
+            //este es el dialog que confirma que la cuenta fue eliminada del sistema
             var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
             dialog = setWaitingStatusDialog(500, "Cerrar Cuenta", buttonAceptar);
             $.ajax({
@@ -702,6 +703,7 @@ function showDialogConfirmCerrarCuenta()
         }
     }
 
+    //este es el dialog que pide confirmar la accion
     var dialog = setWaitingStatusDialog(500, "Cerrar Cuenta", buttons);    
     dialog.load(
         "comunidad/cerrar-cuenta",
