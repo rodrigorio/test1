@@ -155,6 +155,9 @@ class Unidad{
 
     public function getUsuarioId()
     {
+        if($this->iUsuarioId === null && $this->oUsuario !== null){
+            return $this->oUsuario->getId();
+        }
         return $this->iUsuarioId;
     }
 }

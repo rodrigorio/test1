@@ -238,6 +238,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'formCrearUnidad'
                                 ));
         $router->addRoute('seguimientosUnidadesFormCrearUnidad', $route);
+        $route = new RegexRoute('seguimientos/form-editar-unidad',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'formEditarUnidad'
+                                ));
+        $router->addRoute('seguimientosUnidadesFormEditarUnidad', $route);
         $route = new RegexRoute('seguimientos/guardar-unidad',
                                 array(
                                         'module' => 'seguimientos',

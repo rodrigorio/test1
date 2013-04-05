@@ -101,10 +101,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $db = $this->conn;
 
             //puede no tener usuario integrante si se crea desde el administrador
-            if($oUnidad->getUsuario() !== null){
-                $usuarioId = $oUnidad->getUsuario()->getId();
+            if($oUnidad->getUsuarioId() !== null){
+                $usuarioId = $this->escInt($oUnidad->getUsuarioId());
             }else{
-                $usuarioId = "null";
+                $usuarioId = "NULL";
             }
 
             //se setean dependiendo si se inserta desde modulo de seguimientos o desde el administrador
@@ -112,7 +112,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
             
             $sSQL = " INSERT INTO unidades SET ".
-                    "   usuarios_id = '".$usuarioId."', ".
+                    "   usuarios_id = ".$usuarioId.", ".
                     "   nombre = ".$this->escStr($oUnidad->getNombre())." , ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
@@ -120,36 +120,39 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
             $db->execSQL($sSQL);
             $db->commit();
+
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-    public  function actualizar($oUnidad)
+    public function actualizar($oUnidad)
     {
         try{
             $db = $this->conn;
 
-            if($oUnidad->getUsuario() !== null){
-                $usuarioId = $oUnidad->getUsuario()->getId();
+            if($oUnidad->getUsuarioId() !== null){
+                $usuarioId = $this->escInt($oUnidad->getUsuarioId());
             }else{
-                $usuarioId = "null";
+                $usuarioId = "NULL";
             }
 
             $preCargada = $oUnidad->isPreCargada() ? "1" : "0";
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
 
             $sSQL = " UPDATE unidades SET ".
-                    "   usuarios_id = '".$usuarioId."', ".
-                    "   nombre = ".$this->escStr($oUnidad->getNombre())." , ".
+                    "   usuarios_id = ".$usuarioId.", ".
+                    "   nombre = ".$this->escStr($oUnidad->getNombre()).", ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
-                    "   asociacionAutomatica = '".$asociacionAutomatica."' ";
+                    "   asociacionAutomatica = '".$asociacionAutomatica."' ".
                     " WHERE id = ".$this->escInt($oUnidad->getId())." ";
-
+            
             $db->execSQL($sSQL);
             $db->commit();
 
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }

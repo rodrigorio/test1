@@ -645,19 +645,19 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
 
             if(null != $oUsuario->getCiudad()){
-                $ciudadId = $oUsuario->getCiudad()->getId();
+                $ciudadId = $this->escInt($oUsuario->getCiudad()->getId());
             }else{
                 $ciudadId = 'null';
             }
 
             if(null != $oUsuario->getInstitucion()){
-                $institucionId = $oUsuario->getInstitucion()->getId();
+                $institucionId = $this->escInt($oUsuario->getInstitucion()->getId());
             }else{
                 $institucionId = 'null';
             }
 
             if(null != $oUsuario->getEspecialidad()){
-                $especialidadId = $oUsuario->getEspecialidad()->getId();
+                $especialidadId = $this->escInt($oUsuario->getEspecialidad()->getId());
             }else{
                 $especialidadId = 'null';
             }
@@ -732,19 +732,19 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
 
             if($oUsuario->getCiudad() != null){
-                $ciudadId = $oUsuario->getCiudad()->getId();
+                $ciudadId = $this->escInt($oUsuario->getCiudad()->getId());
             }else{
                 $ciudadId = 'null';
             }
 
             if($oUsuario->getInstitucion() != null){
-                $institucionId = $oUsuario->getInstitucion()->getId();
+                $institucionId = $this->escInt($oUsuario->getInstitucion()->getId());
             }else{
                 $institucionId = 'null';
             }
 
             if($oUsuario->getEspecialidad() != null){
-                $especialidadId = $oUsuario->getEspecialidad()->getId();
+                $especialidadId = $this->escInt($oUsuario->getEspecialidad()->getId());
             }else{
                 $especialidadId = 'null';
             }

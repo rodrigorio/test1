@@ -58,13 +58,13 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             $db = $this->conn;
 
             if(null !== $oInstitucion->getCiudad()){
-                $iCiudadId = $oInstitucion->getCiudad()->getId();
+                $iCiudadId = $this->escInt($oInstitucion->getCiudad()->getId());
             }else{
                 $iCiudadId = 'NULL';
             }
 
             if(null !== $oInstitucion->getUsuario()){
-                $iUsuarioId = $oInstitucion->getUsuario()->getId();
+                $iUsuarioId = $this->escInt($oInstitucion->getUsuario()->getId());
             }else{
                 $iUsuarioId = 'NULL';
             }
@@ -106,13 +106,13 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             $db = $this->conn;
             
             if(null !== $oInstitucion->getCiudad()){
-                $iCiudadId = $oInstitucion->getCiudad()->getId();
+                $iCiudadId = $this->escInt($oInstitucion->getCiudad()->getId());
             }else{
                 $iCiudadId = 'NULL';
             }
 
             if(null !== $oInstitucion->getUsuario()){
-                $iUsuarioId = $oInstitucion->getUsuario()->getId();
+                $iUsuarioId = $this->escInt($oInstitucion->getUsuario()->getId());
             }else{
                 $iUsuarioId = 'NULL';
             }
