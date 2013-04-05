@@ -134,12 +134,12 @@ abstract class Intermediary
      * @param int $tipo Constante correspondiente al tipo del contenido del campo
      * @return string
      */
-    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){
+    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){        
         $filtro = "";
         if($valor != ""){
             switch($tipo){
                 case MYSQL_TYPE_STRING: $valor = $this->escStr($valor); break;
-                case MYSQL_TYPE_INT:
+                case MYSQL_TYPE_INT:                   
                     $valor = $this->escInt($valor);
                     break;
                 case MYSQL_TYPE_FLOAT: 
@@ -167,11 +167,11 @@ abstract class Intermediary
     protected final function crearFiltroTexto($campo, $valor, $bRigthLeft = null){
     	$return = "";
 	if($bRigthLeft === true){
-    		$return = " $campo like '".$valor."%' ";
+            $return = " $campo like \"$valor%\" ";
     	}elseif($bRigthLeft === false){
-    		$return = " $campo like '%".$valor."' ";
+            $return = " $campo like \"%$valor\" ";
     	}else{
-    		$return = " $campo like '%".$valor."%' ";
+            $return = " $campo like \"%$valor%\" ";
     	}
     	return $return;
     }

@@ -45,6 +45,18 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $this->listar();
     }
 
+    public function procesar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('masUnidades')){
+            $this->masUnidades();
+            return;
+        }
+    }
+
     public function listar()
     {
         try{
@@ -77,8 +89,17 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                     list($iCantidadVariablesAsociadas, $iCantidadSeguimientosAsociados) = SeguimientosController::getInstance()->obtenerMetadatosUnidad($oUnidad->getId());
                     $this->getTemplate()->set_var("iCantidadVariables", $iCantidadVariablesAsociadas);
                     $this->getTemplate()->set_var("iCantidadSeguimientos", $iCantidadSeguimientosAsociados);
+
+                    if($iCantidadSeguimientosAsociados > 0){
+                        $this->getTemplate()->set_var("NoLinkSeguimientos", "");
+                        $this->getTemplate()->set_var("iCantidadSeguimientos", $iCantidadSeguimientosAsociados);
+                    }else{
+                        $this->getTemplate()->set_var("LinkSeguimientos", "");
+                    }
                     
                     $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("seguimientosVariablesIndex", true)."?id=".$oUnidad->getId());
+
+                    $this->getTemplate()->parse("UnidadBlock", true);
                 }
             }else{
                 $this->getTemplate()->set_var("UnidadBlock", "");
@@ -89,6 +110,49 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
+    }
+
+    private function masUnidades()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "ajaxThumbnailsUnidadesBlock", "ThumbsUnidadesBlock");
+
+        $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
+       
+        $iRecordsTotal = 0;
+        //en este listado no hay paginacion.
+        $aUnidades = SeguimientosController::getInstance()->obtenerUnidadesPersonalizadasUsuario($filtroSql, $iRecordsTotal, null, null, null, null);
+        
+        $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+        
+        if(count($aUnidades) > 0){
+
+            $this->getTemplate()->set_var("NoRecordsThumbsUnidadesBlock", "");
+
+            foreach($aUnidades as $oUnidad){
+                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
+                $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
+                $this->getTemplate()->set_var("sDescripcionVariable", $oUnidad->getDescripcion(true));
+
+                //lo hago asi porque sino es re pesado obtener todas las variables, etc. solo para saber cantidad                
+                list($iCantidadVariablesAsociadas, $iCantidadSeguimientosAsociados) = SeguimientosController::getInstance()->obtenerMetadatosUnidad($oUnidad->getId());
+                $this->getTemplate()->set_var("iCantidadVariables", $iCantidadVariablesAsociadas);
+
+                if($iCantidadSeguimientosAsociados > 0){
+                    $this->getTemplate()->set_var("NoLinkSeguimientos", "");
+                    $this->getTemplate()->set_var("iCantidadSeguimientos", $iCantidadSeguimientosAsociados);
+                }else{
+                    $this->getTemplate()->set_var("LinkSeguimientos", "");
+                }
+
+                $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("seguimientosVariablesIndex", true)."?id=".$oUnidad->getId());
+
+                $this->getTemplate()->parse("UnidadBlock", true);
+            }
+        }else{
+            $this->getTemplate()->set_var("UnidadBlock", "");
+        }
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxThumbnailsUnidadesBlock', false));
     }
 
     public function formCrearUnidad()
@@ -146,5 +210,80 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sNombre", $sNombre);
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getResponse()->setBody($this->getTemplate()->pparse('frame', false)));
-    }    
+    }
+
+    public function guardarUnidad()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('crearUnidad')){
+            $this->crearUnidad();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarUnidad')){
+            $this->modificarUnidad();
+            return;
+        }        
+    }
+
+    private function crearUnidad()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $oUnidad = new stdClass();
+
+            $oUnidad->sNombre = $this->getRequest()->getPost("nombre");
+            $oUnidad->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oUnidad->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
+
+            $oUnidad = Factory::getUnidadInstance($oUnidad);
+            $oUnidad->isAsociacionAutomatica(false);
+            $oUnidad->isPreCargada(false);
+
+            SeguimientosController::getInstance()->guardarUnidad($oUnidad);
+
+            $this->getJsonHelper()->setValor("agregarUnidad", "1");
+            $this->getJsonHelper()->setMessage("La unidad se ha creado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarUnidad()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
+            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar esta unidad", 401);
+            }
+
+            $oUnidad->setNombre($this->getRequest()->getPost("nombre"));
+            $oUnidad->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            SeguimientosController::getInstance()->guardarUnidad($oUnidad);
+
+            $this->getJsonHelper()->setMessage("La unidad se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarUnidad", "1");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
 }

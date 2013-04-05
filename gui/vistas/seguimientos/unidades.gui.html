@@ -52,8 +52,8 @@
 
             <br clear="all" />
 
-            <label for="BuscarUnidades" class="button buttonConfirm mari">
-                <button id="BuscarSeguimientos" type="button" name="BuscarUnidades" class="btn01">
+            <label for="buscarUnidades" class="button buttonConfirm mari">
+                <button id="buscarUnidades" type="button" name="buscarUnidades" class="btn01">
                     Buscar Unidades
                 </button>
             </label>
@@ -72,11 +72,16 @@
         <!--BeginThumbsUnidadesBlock-->
         <div class="fost_it pato2 pabo2">Cantidad unidades filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
             <!--BeginUnidadBlock-->
-            <div class="fl_le mari2 mabo2 thumbEdit baco3 pa2 bora {iUnidadId}">
-                <h3>{sNombreVariable}</h3>
+            <div class="fl_le mari2 mabo2 thumbEdit baco3 pa2 pale3 pari3 bora2 bosh {iUnidadId}">
+                <h3 class="teal_ri mabo">{sNombreVariable}</h3>
                 <p class="fte2">{sDescripcionVariable}</p>
-                <span class="fte2 txt_imp2">Cantidad variables asociadas: </span> {iCantidadVariables}<br>
-                <a class="verSeguimientosUnidad" rel="{iUnidadId}" href="javascript:;">Asociada a <span class="fowe_bo">{iCantidadSeguimientos}</span> seguimientos</a>
+                <span class="fte2 txt_imp2">Cantidad de variables: </span> {iCantidadVariables}<br>
+                <!--BeginLinkSeguimientos-->
+                <a class="verSeguimientosUnidad fte2" rel="{iUnidadId}" href="javascript:;">Asociada a <span class="fowe_bo">{iCantidadSeguimientos}</span> seguimientos</a>
+                <!--EndLinkSeguimientos-->
+                <!--BeginNoLinkSeguimientos-->
+                <span class="fte2">Sin seguimientos asociados</span>
+                <!--EndNoLinkSeguimientos-->
                 <div style="display:none" class="thumbEditMenu teal_ri">
                     <a class="di_inbl" title="Listar Variables" href="{hrefListarVariablesUnidad}"><span class="i mi expand ihover"></span></a>
                     <span title="Editar Unidad" rel="{iUnidadId}" class="i bs edit ihover editarVideo"></span>
@@ -95,91 +100,35 @@
 
 <!--BeginFormularioUnidadBlock-->
 <div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
+    <div class="titulo iveal"><span class="i32 mi relationshipData32"></span></div>
     <form id="formUnidad" name="formUnidad" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
-        <div class="form_line msg_titulo">
-            <label for="titulo">
+        <div class="form_line msg_nombre">
+            <label for="nombre">
                 <span class="marca_obligatorio">&#8226;</span>
-                T&iacute;tulo
+                Nombre
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                    <input type="text" name="nombre" id="nombre" title="Nombre Unidad de Variables" maxlength="100" value="{sNombre}" />
                 </div>
             </div>
-            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
-        </div>
-        <div class="form_line msg_descripcionBreve">
-            <label for="descripcionBreve">
-                <span class="marca_obligatorio">&#8226;</span>
-                Descripcion Breve
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
-                </div>
-            </div>
-            <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-        </div>
-        <div class="form_line msg_activo">
-            <label for="activo">
-                Visible?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedActivo} value="1">S&iacute;</option>
-                <option {sSelectedDesactivado} value="0">No</option>
-            </select>
-            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
-        </div>
-        <div class="form_line msg_publico">
-            <label for="publico">
-                Alcance Privacidad?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedPublico} value="1">El mundo</option>
-                <option {sSelectedComunidad} value="0">Solo comunidad</option>
-            </select>
-            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
-        </div>
-        <div class="form_line msg_activoComentarios">
-            <label for="activoComentarios">
-                Activar Comentarios?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
-                <option {sSelectedDesactivadoComentarios} value="0">No</option>
-            </select>
-            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+            <p>El nombre que llevara el conjunto de variables que luego se asociar&aacute;n a sus seguimientos personalizados</p>
         </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
-                Contenido Publicaci&oacute;n
+                Descripci&oacute;n
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del contenido total de la unidad de variables">{sDescripcion}</textarea>
                 </div>
             </div>
+            <p>Ingrese una breve descripci&oacute;n que le sirva de referencia a la hora de asociar la unidad a sus seguimientos</p>
         </div>
-        <div class="form_line msg_keywords">
-
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-                </div>
-            </div>
-            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
-        </div>
-
+        
         <!--BeginSubmitCrearUnidadBlock-->
         <div class="fl_le iveal mabo2">
             <label for="crearUnidad" class="button buttonConfirm buttonLarge mari3">

@@ -579,6 +579,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
     public function isSeguimientoUsuario($iUsuarioId, $iSeguimientoId)
     {
     	try{

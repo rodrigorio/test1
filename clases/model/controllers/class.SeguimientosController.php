@@ -58,8 +58,8 @@ class SeguimientosController
     public function buscarSeguimientos($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
     	try{
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-            $filtro[] = array("s.usuarios_id" => $oUsuario->getId());
-
+            $filtro["s.usuarios_id"] = $oUsuario->getId();
+            
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
@@ -808,14 +808,51 @@ class SeguimientosController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
+
+   public function getUnidadById($iUnidadId)
+    {
+    	try{
+            $filtro = array('u.id' => $iUnidadId);
+            $iRecordsTotal = 0;
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aUnidad){
+                return $aUnidad[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Se utiliza este metodo porque es muy costoso levantar todo el array de unidades y de seguimientos
+     * para saber la cantidad a la cual la unidad esta asociada.
+     *
+     * @param int $iUnidadId
+     *
+     * @return array($iCantVariables, $iCantSeguimientos)
+     */
+    public function obtenerMetadatosUnidad($iUnidadId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->obtenerMetadatosUnidad($iUnidadId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }        
+    }
+
     /**
      * Obtener Variables
      *
      */
-   public function getVariables($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+   public function getVariables($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
       {
     	try{
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
@@ -850,19 +887,17 @@ class SeguimientosController
      * para asociar a sus seguimientos personalizados
      *
      */
-    public function obtenerUnidadesPersonalizadasUsuario()
+    public function obtenerUnidadesPersonalizadasUsuario($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
     {
     	try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            $filtro = array('u.usuarios_id' => $iUsuarioId, 'u.preCargada' => '0', 'u.asociacionAutomatica' => '0');
+            
+            $filtro["u.usuarios_id"] = $iUsuarioId;
+            $filtro["u.preCargada"] = "0";
+            $filtro["u.asociacionAutomatica"] = "0";            
+            
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $iRecordsTotal = 0;
-            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aUnidad){
-                return $aUnidad[0];
-            }else{
-                return null;
-            }
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -900,11 +935,12 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
      * Guardar Unidades
      *
      */
-    public function guardarUnidades($oUnidad){
+    public function guardarUnidad($oUnidad){
         try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->guardar($oUnidad);
@@ -912,6 +948,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+
     /**
      * Borrar Unidad
      *
