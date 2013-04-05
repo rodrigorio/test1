@@ -8,6 +8,14 @@ class Unidad{
     private $bPreCargada;
     private $dFechaHora;
     private $bAsociacionAutomatica;
+    
+    /**
+     * Esta relacion se necesita porque pueden existir unidades creadas por usuario 
+     * que todavia no se asignaron a ningun seguimiento.
+     * Si la unidad se crea desde el administrador entonces el integrante no existe y la propiedad se mantendra en null
+     */
+    private $oUsuario = null;
+    private $iUsuarioId = null;
 
     /**
      * Cuando las variables son las de una unidad que esta asociada a un seguimiento
@@ -128,5 +136,25 @@ class Unidad{
         }else{
             return $this->bAsociacionAutomatica;
         }
-    }    
+    }
+
+    public function setUsuario($oUsuario){
+        $this->oUsuario = $oUsuario;
+    }
+
+    public function getUsuario(){
+        return $this->oUsuario;
+    }
+
+    public function setUsuarioId($iUsuarioId){
+        $this->iUsuarioId = $iUsuarioId;
+        if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
+            $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
+        }
+    }
+
+    public function getUsuarioId()
+    {
+        return $this->iUsuarioId;
+    }
 }

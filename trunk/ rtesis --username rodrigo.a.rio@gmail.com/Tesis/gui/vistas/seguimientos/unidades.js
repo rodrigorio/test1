@@ -12,37 +12,27 @@ var validateFormUnidad = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        titulo:{required:true},
-        descripcionBreve:{required:true},
-        descripcion:{required:true},
-        keywords:{required:true},
-        activo:{required:true},
-        publico:{required:true},
-        activoComentarios:{required:true}
+        nombre:{required:true},
+        descripcion:{required:true}
     },
     messages:{
-        titulo: mensajeValidacion("requerido"),
-        descripcionBreve: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido"),
-        keywords: mensajeValidacion("requerido"),
-        activo: mensajeValidacion("requerido"),
-        publico: mensajeValidacion("requerido"),
-        activoComentarios: mensajeValidacion("requerido")
+        nombre: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido")
     }
 };
 
 var optionsAjaxFormUnidad = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'comunidad/publicaciones/guardar-publicacion',
+    url: 'seguimientos/guardar-unidad',
     beforeSerialize:function(){
 
-        if($("#formPublicacion").valid() == true){
+        if($("#formUnidad").valid() == true){
 
-            $('#msg_form_publicacion').hide();
-            $('#msg_form_publicacion').removeClass("correcto").removeClass("error");
-            $('#msg_form_publicacion .msg').html("");
-            setWaitingStatus('formPublicacion', true);
+            $('#msg_form_unidad').hide();
+            $('#msg_form_unidad').removeClass("correcto").removeClass("error");
+            $('#msg_form_unidad .msg').html("");
+            setWaitingStatus('formUnidad', true);
 
         }else{
             return false;
@@ -50,28 +40,33 @@ var optionsAjaxFormUnidad = {
     },
 
     success:function(data){
-        setWaitingStatus('formPublicacion', false);
+        setWaitingStatus('formUnidad', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_publicacion .msg').html(lang['error procesar']);
+                $('#msg_form_unidad .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_publicacion .msg').html(data.mensaje);
+                $('#msg_form_unidad .msg').html(data.mensaje);
             }
-            $('#msg_form_publicacion').addClass("error").fadeIn('slow');
+            $('#msg_form_unidad').addClass("error").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_publicacion .msg').html(lang['exito procesar']);
+                $('#msg_form_unidad .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_publicacion .msg').html(data.mensaje);
+                $('#msg_form_unidad .msg').html(data.mensaje);
             }
-            if(data.agregarPublicacion != undefined){
+            if(data.agregarUnidad != undefined){
                 //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formPublicacion').each(function(){
+                $('#formUnidad').each(function(){
                   this.reset();
                 });
+
+                //refresco el formulario de busqueda pero elimino el filtro
+                $("#limpiarFiltro").click();
             }
-            $('#msg_form_publicacion').addClass("correcto").fadeIn('slow');
+            //refresco el listado actual
+            $("#buscarUnidades").click();
+            $('#msg_form_unidad').addClass("correcto").fadeIn('slow');
         }
     }
 };
@@ -81,42 +76,35 @@ function bindEventsUnidadForm(){
     $("#formUnidad").ajaxForm(optionsAjaxFormUnidad);
 }
 
-function masPublicaciones(){
+function masUnidades(){
 
-    var filtroTitulo = $('#filtroTitulo').val();
-    var filtroApellidoAutor = $('#filtroApellidoAutor').val();
-    var filtroFechaDesde = $('#filtroFechaDesde').val();
-    var filtroFechaHasta = $('#filtroFechaHasta').val();
+    var filtroNombreUnidad = $('#filtroNombreUnidad').val();
 
     $.ajax({
         type:"POST",
-        url:"comunidad/publicaciones/procesar",
+        url:"seguimientos/unidades-procesar",
         data:{
-            masPublicaciones:"1",
-            filtroTitulo: filtroTitulo,
-            filtroApellidoAutor: filtroApellidoAutor,
-            filtroFechaDesde: filtroFechaDesde,
-            filtroFechaHasta: filtroFechaHasta
+            masUnidades:"1",
+            filtroNombreUnidad: filtroNombreUnidad
         },
         beforeSend: function(){
-            setWaitingStatus('listadoPublicaciones', true);
+            setWaitingStatus('listadoUnidades', true);
         },
         success:function(data){
-            setWaitingStatus('listadoPublicaciones', false);
-            $("#listadoPublicacionesResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            setWaitingStatus('listadoUnidades', false);
+            $("#listadoUnidadesResult").html(data);
         }
     });
 }
 
 $(document).ready(function(){
-    $("#BuscarPublicaciones").live('click', function(){
-        masPublicaciones();
+    $("#buscarUnidades").live('click', function(){
+        masUnidades();
         return false;
     });
 
     $("#limpiarFiltro").live('click',function(){
-        $('#formFiltrarPublicaciones').each(function(){
+        $('#formFiltrarUnidades').each(function(){
           this.reset();
         });
         return false;

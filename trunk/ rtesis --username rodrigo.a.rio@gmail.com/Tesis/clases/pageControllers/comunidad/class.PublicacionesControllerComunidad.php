@@ -888,7 +888,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             
             ComunidadController::getInstance()->guardarPublicacion($oPublicacion);
             $this->getJsonHelper()->setMessage("La publicación se ha modificado con éxito");
-            $this->getJsonHelper()->setValor("modificarPersona", "1");
+            $this->getJsonHelper()->setValor("modificarPublicacion", "1");
             $this->getJsonHelper()->setSuccess(true);
             
         }catch(Exception $e){

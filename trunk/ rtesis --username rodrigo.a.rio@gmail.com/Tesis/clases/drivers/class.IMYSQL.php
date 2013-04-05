@@ -213,8 +213,8 @@ class IMYSQL implements DB
             case MYSQL_TYPE_STRING:
                 $sValue = mysqli_real_escape_string($this->LINK_ID, $str);
                 break;
-            case MYSQL_TYPE_INT:
-                $sValue = (int)$str;                
+            case MYSQL_TYPE_INT:                
+                $sValue = (int)$str;
                 break;
             case MYSQL_TYPE_FLOAT:
                 $sValue = str_replace(",",".",$str);
@@ -223,7 +223,7 @@ class IMYSQL implements DB
                 $sValue = $this->formatDate($str,true);
                 break;
             default:
-                $sValue =mysqli_real_escape_string($this->LINK_ID,$str);
+                $sValue = mysqli_real_escape_string($this->LINK_ID,$str);
                 break;
         }
 
