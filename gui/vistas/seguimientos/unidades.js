@@ -122,5 +122,16 @@ $(document).ready(function(){
         return false;
     });
 
-    
+    $(".editarUnidad").live('click', function(){
+        var iUnidadId = $(this).attr("rel");
+        var dialog = setWaitingStatusDialog(550, 'Editar Unidad');
+
+        dialog.load(
+            "seguimientos/form-editar-unidad?unidadId="+iUnidadId,
+            {},
+            function(responseText, textStatus, XMLHttpRequest){
+                bindEventsUnidadForm();
+            }
+        );
+    });   
 });

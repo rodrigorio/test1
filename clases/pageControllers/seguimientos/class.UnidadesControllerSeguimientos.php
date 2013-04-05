@@ -160,7 +160,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $this->mostrarFormularioUnidadPopUp();
     }
 
-    public function formModificarUnidad()
+    public function formEditarUnidad()
     {
         $this->mostrarFormularioUnidadPopUp();
     }
@@ -188,6 +188,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             //valores por defecto en el agregar
             $oPublicacion = null;
             $sNombre = "";
+            $sDescripcion = "";
 
         //MODIFICAR UNIDAD
         }else{
@@ -197,17 +198,23 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             }
 
             $sTituloForm = "Modificar Unidad";
+            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadIdForm);
 
-            $oUnidad = ComunidadController::getInstance()->getPublicacionById($iPublicacionIdForm);
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar esta unidad", 401);
+            }
 
             $this->getTemplate()->unset_blocks("SubmitCrearUnidadBlock");
-
             $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadIdForm);
 
             $sNombre = $oUnidad->getNombre();
+            $sDescripcion = $oUnidad->getDescripcion();
         }
 
         $this->getTemplate()->set_var("sNombre", $sNombre);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getResponse()->setBody($this->getTemplate()->pparse('frame', false)));
     }
@@ -273,7 +280,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
             $oUnidad->setNombre($this->getRequest()->getPost("nombre"));
             $oUnidad->setDescripcion($this->getRequest()->getPost("descripcion"));
-
+                        
             SeguimientosController::getInstance()->guardarUnidad($oUnidad);
 
             $this->getJsonHelper()->setMessage("La unidad se ha modificado con éxito");
