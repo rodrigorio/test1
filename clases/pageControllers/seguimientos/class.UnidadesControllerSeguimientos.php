@@ -293,4 +293,57 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
+
+    public function eliminar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        //devuelvo el dialog para confirmar el borrado de la unidad
+        if($this->getRequest()->has('mostrarDialogConfirmar')){
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaInfoBlock");
+            $this->getTemplate()->set_var("sTituloMsgFicha", "Unidad de Variables");
+            $this->getTemplate()->set_var("sMsgFicha", "Cuidado, se eliminaran de forma permanente todas las variables y la información que haya sido guardada de los seguimientos a los que la unidad esta asociada.
+                                                       <br>Una vez eliminada la Unidad la información guardada en las variables no podrá volver a recuperarse.");
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));
+            return;
+        }
+
+        //elimino la unidad seleccionada
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $iUnidadId = $this->getRequest()->getPost('iUnidadId');
+            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para borrar esta unidad", 401);
+            }
+
+            $result = SeguimientosController::getInstance()->borrarUnidad($oUnidad->getId());
+
+            if($result){
+                $msg = "La Unidad y las variables asociadas fueron eliminadas del sistema.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se ha podido eliminar la Unidad del sistema.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha eliminado la Unidad del sistema.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
 }
