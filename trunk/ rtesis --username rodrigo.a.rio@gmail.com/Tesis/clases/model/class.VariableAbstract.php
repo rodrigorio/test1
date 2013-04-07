@@ -3,17 +3,16 @@
 /**
  * Description of class Variable
  *
- * @author Andr�s
+ * @author Andrés
  */
- abstract class Variable {
-	private $iId;
-	private $sNombre;
-	private $iTipo;
-	private $sDescripcion;
-	private $dFechaHora;
-		
-	
-	
+ abstract class Variable
+{
+    private $iId;
+    private $sNombre;
+    private $iTipo;
+    private $sDescripcion;
+    private $dFechaHora;
+				
     /**
      * En la clase VariableNumerica es redeclarada para devolver true.
      */

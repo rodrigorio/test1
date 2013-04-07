@@ -166,7 +166,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important} .wi200{width:200px !important;}
 
 .he400{height:400px !important; } .he500{height:500px !important; }
-
+.listty_no li{list-style-type:none !important}
 
 
 /****************************************/
@@ -770,6 +770,9 @@ p .destacado{font-weight:bold;}
 .linkBreak{background-position:-48px -160px}
 .hierarchy{background-position:-80px -176px}
 .bank{background-position:-128px -176px} .bank32{background-position:-192px -32px}
+.profits{background-position:-160px -160px} .profits32{background-position:-224px -32px}
+.inputText{background-position:-144px -176px} .inputText32{background-position:-256px -32px}
+.inputRadio{background-position:-144px -160px} .inputRadio32{background-position:-288px -32px}
 .star1{background-position:0px -160px} 
 .star2{width:32px !important; background-position:0px -176px} 
 .star3{width:48px !important; background-position:0px -192px} 

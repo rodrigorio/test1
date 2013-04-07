@@ -3,7 +3,8 @@
  *
  * @author Andr�s
  */
- class VariableEscalaConvinada extends Variable {
+ class VariableEscalaConvinada extends VariableAbstract
+{
  	
  	private $sValor;
  	

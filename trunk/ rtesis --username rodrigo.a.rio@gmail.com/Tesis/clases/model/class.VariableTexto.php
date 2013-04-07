@@ -3,7 +3,7 @@
  *
  * @author Andr�s
  */
- class VariableTexto extends Variable {
+ class VariableTexto extends VariableAbstract {
  	
  	private $sValor;
  	

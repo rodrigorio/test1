@@ -3,7 +3,7 @@
  *
  * @author Andr�s
  */
- class VariableNumerica extends Variable {
+ class VariableNumerica extends VariableAbstract {
  	
  	private $fValor;
  	
