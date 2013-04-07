@@ -852,33 +852,29 @@ class SeguimientosController
      * Obtener Variables
      *
      */
-   public function getVariables($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
-      {
+    public function getVariables($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
+    {
     	try{
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
+    
     /**
      * Obtener variables  por id de unidad
      *
      */
- 	public function getVariablesByUnidadId($iUnidadId)
+    public function getVariablesByUnidadId($iUnidadId)
     {
     	try{
             $filtro = array('v.unidad_id' => $iUnidadId);
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aVariable = $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aVariable){
-                return $aVariable[0];
-            }else{
-                return null;
-            }
+            return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1137,7 +1133,7 @@ class SeguimientosController
         }
     }
     
-      /**
+    /**
      * Devuelve true si  pertenece a un seguimiento creado por el usuario que esta logueado.
      *
      * @return boolean true si pertenece al integrante logueado.
@@ -1149,11 +1145,12 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->isDiagnosticoPersonalizadoUsuario($iUsuarioId, $iDiagnosticoPersonalizadoId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
+
     /**
+     *
      * Devuelve true si  pertenece a un seguimiento creado por el usuario que esta logueado.
      *
      * @return boolean true si pertenece al integrante logueado.
@@ -1165,10 +1162,10 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->isDiagnosticoSCCUsuario($iUsuarioId, $iDiagnosticoSCCId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
+
     /**
      * Devuelve true si el diagn�stico pertenece a un seguimiento creado por el usuario que esta logueado.
      *
@@ -1181,10 +1178,10 @@ class SeguimientosController
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
+
     public function isObjetivoPersonalizadoUsuario($iObjetivoId)
     {
         try{
@@ -1192,10 +1189,10 @@ class SeguimientosController
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->isObjetivoPersonalizadoUsuario($iObjetivoId,$iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
+
     public function isObjetivoAprendizajeUsuario($iObjetivoId)
     {
         try{
@@ -1203,10 +1200,10 @@ class SeguimientosController
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->isObjetivoAprendizajeUsuario($iObjetivoId,$iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
+
     public function isUnidadUsuario($iUnidadId)
     {
         try{
@@ -1214,10 +1211,10 @@ class SeguimientosController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->isUnidadUsuario($iUnidadId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
+
     public function isVariableUsuario($iVariableId)
     {
         try{
@@ -1225,8 +1222,7 @@ class SeguimientosController
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->isVariableUsuario($iVariableId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
-            return false;
+            throw $e;
         }
     }
 }

@@ -207,10 +207,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             }
             return true;
     	}catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-           	return false; 
+            throw new Exception($e->getMessage(), 0); 
         }
     }
+    
     public function isUnidadUsuario($iUnidadId, $iUsuarioId)
     {
     	try{
@@ -219,14 +219,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $sSQL = " SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                       FROM
-                        seguimientos s
-                      JOIN 
-                      	seguimiento_x_unidad su 
-                      ON 	
-                      	su.seguimiento_id = s.id
+                        unidades u
                       WHERE
-                        su.unidad_id = ".$this->escInt($iUnidadId)." AND
-                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+                        u.id = ".$this->escInt($iUnidadId)." AND
+                        u.usuarios_id = ".$this->escInt($iUsuarioId);
 
             $db->query($sSQL);
 
@@ -235,6 +231,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(empty($foundRows)){
             	return false;
             }
+            
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

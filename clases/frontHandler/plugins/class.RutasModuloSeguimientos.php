@@ -275,5 +275,19 @@ class RutasModuloSeguimientos
                                         'action'     => 'index'
                                 ));
         $router->addRoute('seguimientosVariablesIndex', $route);
+        $route = new RegexRoute('seguimientos/form-crear-variable',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'formCrearVariable'
+                                ));
+        $router->addRoute('seguimientosUnidadesFormCrearVariable', $route);
+        $route = new RegexRoute('seguimientos/form-editar-variable',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'formEditarVariable'
+                                ));
+        $router->addRoute('seguimientosUnidadesFormEditarVariable', $route);
     }
 }

@@ -1,14 +1,225 @@
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  </head>
-  <body>
-    TODO write content
-  </body>
-</html>
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/variables.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginPageRightInnerContListadoVariablesBlock-->
+<ul class="m_vert mabo3 teal_ri">
+    <li>
+        <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
+            <span class="i bs arrowLeft"></span> Volver a mis seguimientos
+        </a>
+    </li>
+    <li>
+        <a id="listaUnidades" href="{hrefListadoUnidades}">
+            <span class="i bs arrowLeft"></span> Volver a mis unidades personalizadas
+        </a>
+    </li>
+</ul>
+<h3 class="mabo2">Asignar nueva variable a la unidad</h3>
+<ul class="m_vert menu02 listty_no">
+    <li>
+        <a class="di_inbl"id="crearVariableTexto" href="javascript:;">
+            <span class="i mc inputText mari2"></span>Nueva variable de texto
+        </a>
+    </li>
+    <li>
+        <a id="crearVariableNumerica" href="javascript:;">
+            <span class="i mc profits mari2"></span>Nueva variable num&eacute;rica
+        </a>
+    </li>
+    <li>
+        <a id="crearVariableCualitativa" href="javascript:;">
+            <span class="i mc inputRadio mari2"></span>Nueva variable cualitativa
+        </a>
+    </li>
+</ul>
+<!--EndPageRightInnerContListadoVariablesBlock-->
+
+<!--BeginListadoVariablesBlock-->
+<div id="listadoVariables" class="grupo po_re">
+    <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
+    <input type="hidden" value="" name="sOrder" id="sOrder" />
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+    <div id="listadoVariablesResult">
+        <!--BeginGrillaVariablesBlock-->
+        <table class="table01 wi100p mabo2">
+            <tr class="encabezado">
+               <td class="big iveal">Nombre {orderByNombre}</td>
+               <td class="small iveal">Tipo {orderByTipo}</td>
+               <td class="medium"></td>
+            </tr>
+            <!--BeginVariableBlock-->
+            <tr class="{iVariableId}">
+                <td>{sNombre}</td>
+                <td>
+                    <!--BeginIconoTipoTextoBlock-->
+                    <span class="i mc inputText mari2 iveal"></span>
+                    <!--EndIconoTipoTextoBlock-->
+
+                    <!--BeginIconoTipoNumericaBlock-->
+                    <span class="i mc profits mari2 iveal"></span>
+                    <!--EndIconoTipoNumericaBlock-->
+
+                    <!--BeginIconoTipoCualitativaBlock-->
+                    <span class="i mc inputRadio mari2 iveal"></span>
+                    <!--EndIconoTipoCualitativaBlock-->
+                     {sTipo}
+                </td>
+                <td class="teal_ce">
+                    <span title="Editar" rel="{sTipo}_{iVariableId}" class="i bs edit ihover editarVariable"></span>
+                    <span title="Eliminar" rel="{iVariableId}" class="i bs delete ihover borrarVariable"></span>
+                </td>
+            </tr>
+            <!--EndVariableBlock-->
+
+            <!--BeginNoRecordsVariablesBlock-->
+            <tr>
+                <td colspan="3">{sNoRecords}</td>
+            </tr>
+            <!--EndNoRecordsVariablesBlock-->
+        </table>
+        {paginacion}
+        <!--EndGrillaVariablesBlock-->
+    </div>
+</div>
+<!--EndListadoVariablesBlock-->
+
+<!--BeginFormularioVariableBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal">
+        <!--BeginIconoVariableTextoBlock-->
+        <span class="i32 mc inputText32"></span>
+        <!--EndIconoVariableTextoBlock-->
+
+        <!--BeginIconoVariableNumericaBlock-->
+        <span class="i32 mc profits32"></span>
+        <!--EndIconoVariableNumericaBlock-->
+
+        <!--BeginIconoVariableCualitativaBlock-->
+        <span class="i32 mc inputRadio32"></span>
+        <!--EndIconoVariableCualitativaBlock-->
+    </div>
+    <form id="formPublicacion" name="formPublicacion" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+
+        <div class="form_line msg_titulo">
+            <label for="titulo">
+                <span class="marca_obligatorio">&#8226;</span>
+                T&iacute;tulo
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                </div>
+            </div>
+            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+        </div>
+        <div class="form_line msg_descripcionBreve">
+            <label for="descripcionBreve">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripcion Breve
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
+                </div>
+            </div>
+            <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+        </div>
+        <div class="form_line msg_activo">
+            <label for="activo">
+                Visible?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedActivo} value="1">S&iacute;</option>
+                <option {sSelectedDesactivado} value="0">No</option>
+            </select>
+            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+        </div>
+        <div class="form_line msg_publico">
+            <label for="publico">
+                Alcance Privacidad?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedPublico} value="1">El mundo</option>
+                <option {sSelectedComunidad} value="0">Solo comunidad</option>
+            </select>
+            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+        </div>
+        <div class="form_line msg_activoComentarios">
+            <label for="activoComentarios">
+                Activar Comentarios?
+            </label>
+            <div class="cl_le"></div>
+            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+                <option {sSelectedDesactivadoComentarios} value="0">No</option>
+            </select>
+            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Contenido Publicaci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form_line msg_keywords">
+
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+                </div>
+            </div>
+            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+        </div>
+
+        <!--BeginSubmitCrearPublicacionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearPublicacion" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearPublicacion" type="submit" name="crearPublicacion" class="btn01">
+                    Crear Publicaci&oacute;n
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearPublicacionBlock-->
+
+        <!--BeginSubmitModificarPublicacionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarPublicacion" class="button buttonConfirm buttonLarge">
+                <button id="modificarPublicacion" type="submit" name="modificarPublicacion" class="btn01">
+                    Modificar Publicacion
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
+        <!--EndSubmitModificarPublicacionBlock-->
+
+        <div style="display:none;" id='msg_form_publicacion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioVariableBlock-->
