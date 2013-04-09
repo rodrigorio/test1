@@ -5,11 +5,12 @@
  *
  * @author Andrés
  */
- abstract class Variable
+ abstract class VariableAbstract
 {
     protected $iId;
     protected $sNombre;
     protected $sDescripcion;
+    protected $dFecha;
     protected $valor = null;
 				
     /**
@@ -69,4 +70,16 @@
 	public function getDescripcion(){
 		return $this->sDescripcion;
 	}
+
+    public function getFecha($format = false){
+        if($format){
+            return Utils::fechaFormateada($this->dFecha);
+        }else{
+            return $this->dFecha;
+        }
+    }
+
+    public function setFecha($dFecha){
+        $this->dFecha = $dFecha;
+    }
 }

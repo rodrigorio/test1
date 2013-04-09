@@ -32,7 +32,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion,
+                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha, 
                         scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico 
                     FROM
                        variables v 
@@ -57,21 +57,25 @@ class VariableMySQLIntermediary extends VariableIntermediary
             	$oVariable->iId	= $oObj->iId;
             	$oVariable->sNombre = $oObj->sNombre;
             	$oVariable->sDescripcion = $oObj->sDescripcion;
+                $oVariable->dFecha = $oObj->dFecha;
 
                 switch($oObj->sTipoVariable){
                     case "VariableTexto":{
                         $oVariable = Factory::getVariableTextoInstance($oVariable);
                         $oVariable->setValor($oObj->sValorTexto);
+                        break;
                     }
                     case "VariableNumerica":{
                         $oVariable = Factory::getVariableNumericaInstance($oVariable);
                         $oVariable->setValor($oObj->sValorNumerico);
+                        break;
                     }
                     case "VariableCualitativa":{
                         $oVariable = Factory::getVariableCualitativaInstance($oVariable);
                         $oVariable->setValor($oObj->sValorNumerico);
                         $aModalidades = SeguimientosController::getInstance()->getModalidadesByVariableId($oObj->iId);
                         $oVariable->setModalidades($aModalidades);
+                        break;
                     }
                 }
                 

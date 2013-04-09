@@ -107,25 +107,35 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
                     $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
+                    $this->getTemplate()->set_var("sTipoEnum", get_class($oVariable));
+                    $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
+                    $this->getTemplate()->set_var("sDescripcion", $oVariable->getDescripcion(true));
 
                     if($oVariable->isVariableNumerica()){
                         $this->getTemplate()->set_var("sTipo", "Variable Numérica");
-                        $this->getTemplate()->set_var("IconoTipoTextoBlock", "");
-                        $this->getTemplate()->set_var("IconoTipoCualitativaBlock", "");
+                        $iconoVariableBlock = "IconoTipoNumericaBlock";
                     }
 
                     if($oVariable->isVariableTexto()){
                         $this->getTemplate()->set_var("sTipo", "Variable de Texto");
-                        $this->getTemplate()->set_var("IconoTipoNumericaBlock", "");
-                        $this->getTemplate()->set_var("IconoTipoCualitativaBlock", "");
+                        $iconoVariableBlock = "IconoTipoTextoBlock";
                     }
 
                     if($oVariable->isVariableCualitativa()){
                         $this->getTemplate()->set_var("sTipo", "Variable Cualitativa");
-                        $this->getTemplate()->set_var("IconoTipoNumericaBlock", "");
-                        $this->getTemplate()->set_var("IconoTipoTextoBlock", "");
+                        $iconoVariableBlock = "IconoTipoCualitativaBlock";
+                        $sModalidades = "<strong>Modalidades: </strong> ";
+                        $aModalidades = $oVariable->getModalidades();
+                        foreach($aModalidades as $oModalidad){
+                            $sModalidades .= $oModalidad->getModalidad()." ";
+                        }
+                        $this->getTemplate()->set_var("sModalidades", $sModalidades);
                     }
 
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "iconoVariable", $iconoVariableBlock);
+                    $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
+                    $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
+                    
                     $this->getTemplate()->parse("VariableBlock", true);
                 }
             }else{

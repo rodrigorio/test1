@@ -49,6 +49,18 @@
 </ul>
 <!--EndPageRightInnerContListadoVariablesBlock-->
 
+<!--BeginIconoTipoTextoBlock-->
+<span class="i mc inputText"></span>
+<!--EndIconoTipoTextoBlock-->
+
+<!--BeginIconoTipoNumericaBlock-->
+<span class="i mc profits"></span>
+<!--EndIconoTipoNumericaBlock-->
+
+<!--BeginIconoTipoCualitativaBlock-->
+<span class="i mc inputRadio"></span>
+<!--EndIconoTipoCualitativaBlock-->
+
 <!--BeginListadoVariablesBlock-->
 <div id="listadoVariables" class="grupo po_re">
     <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
@@ -63,25 +75,32 @@
                <td class="medium"></td>
             </tr>
             <!--BeginVariableBlock-->
-            <tr class="{iVariableId}">
-                <td>{sNombre}</td>
-                <td>
-                    <!--BeginIconoTipoTextoBlock-->
-                    <span class="i mc inputText mari2 iveal"></span>
-                    <!--EndIconoTipoTextoBlock-->
-
-                    <!--BeginIconoTipoNumericaBlock-->
-                    <span class="i mc profits mari2 iveal"></span>
-                    <!--EndIconoTipoNumericaBlock-->
-
-                    <!--BeginIconoTipoCualitativaBlock-->
-                    <span class="i mc inputRadio mari2 iveal"></span>
-                    <!--EndIconoTipoCualitativaBlock-->
-                     {sTipo}
+            <tr class="{iVariableId} iveal">
+                <td><span title="Ver Detalles" rel="{iVariableId}" class="i mi expand ihover desplegable"></span> {sNombre}</td>
+                <td class="iveal">
+                    {iconoVariable} 
+                    {sTipo}
                 </td>
                 <td class="teal_ce">
-                    <span title="Editar" rel="{sTipo}_{iVariableId}" class="i bs edit ihover editarVariable"></span>
+                    <span title="Editar" rel="{sTipoEnum}_{iVariableId}" class="i bs edit ihover editarVariable"></span>
                     <span title="Eliminar" rel="{iVariableId}" class="i bs delete ihover borrarVariable"></span>
+                </td>
+            </tr>
+            <tr class="{iVariableId} ba_no">
+                <td id="desplegable_{iVariableId}" class="pa0 bobo_no" colspan="3" style="display:none;">
+                    <div class="anexoFicha grupo">
+                        <div class="titulo grupo">
+                            <div class="fte3 fl_le">Detalles</div>
+                            <span rel="{iVariableId}" class="i bs close ihover fl_ri"></span>
+                        </div>
+                        <br clear="all">
+                        <div class="lihe2">
+                            <span class="fte2">Creada en </span>{dFechaHora}<br>
+                            <h3 class="mabo2">Descripci&oacute;n</h3>
+                            <p>{sDescripcion}</p>
+                            {sModalidades}
+                        </div>
+                    </div>
                 </td>
             </tr>
             <!--EndVariableBlock-->
