@@ -3,12 +3,9 @@
  *
  * @author Andr�s
  */
- class VariableTexto extends VariableAbstract {
+ class VariableTexto extends VariableAbstract { 	 	
  	
- 	private $sValor;
- 	
- 	
- /**
+         /**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
 	 * @param stdClass $oParams
 	 */
@@ -29,16 +26,22 @@
      * En la clase VariableTexto es redeclarada para devolver true.
      */
     public function isVariableTexto(){ return true; }
+    
      /**
  	 *  @param string $sValor
 	 */
-	public function setValor($sValor){
-		$this->sValor = $sValor;
-	}
-     /**
-	 * @return string $sValor
-	 */
-	public function getValor(){
-		return $this->sValor;
-	}
+    public function setValor($sValor){
+        $this->valor = $sValor;
+    }
+
+    /**
+    * @return string $sValor
+     */
+    public function getValor($nl2br = false){
+        if($nl2br){
+            return nl2br($this->valor);
+        }else{
+            return $this->valor;
+        }
+    }
  }

@@ -1,39 +1,42 @@
 <?php
- /* Description of class VariableMySQLIntermediary
- *
- * @author Andr�s
- */
+
+ /** 
+  *
+  * @author Andres
+  */
 class VariableMySQLIntermediary extends VariableIntermediary
 {
-	private static $instance = null;
+    private static $instance = null;
 
-	protected function __construct( $conn) {
-		parent::__construct($conn);
-	}
-	/**
-	 * Singleton
-	 *
-	 * @param mixed $conn
-	 * @return VariableMySQLIntermediary
-	 */
-	public static function &getInstance(IMYSQL $conn) {
-		if (null === self::$instance){
+    protected function __construct( $conn){
+        parent::__construct($conn);
+    }
+
+    /**
+     * Singleton
+     *
+     * @param mixed $conn
+     * @return VariableMySQLIntermediary
+     */
+    public static function &getInstance(IMYSQL $conn){
+        if (null === self::$instance){
             self::$instance = new self($conn);
         }
         return self::$instance;
-	}
-	
-	
-    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    }
+		
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        v.id as iId, v.nombre as sNombre, v.tipo as iTipo , v.descripcion as sDescripcion, v.unidad_id as iUnidadId, scv.valor as sValor, v.fechaHora as dFechaHora
+                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion,
+                        scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico 
                     FROM
                        variables v 
-                    JOIN 
+                    LEFT JOIN
                        seguimiento_x_contenido_variables scv
                     ON
                        v.id = scv.variable_id ";
@@ -50,21 +53,37 @@ class VariableMySQLIntermediary extends VariableIntermediary
             
             $aVariables = array();
             while($oObj = $db->oNextRecord()){
-            	$oVariable 		= new stdClass();
-            	$oVariable->iId 		= $oObj->iId;
-            	$oVariable->sNombre	= $oObj->sNombre;
-            	$oVariable->iTipo   = $oObj->iTipo;
-            	$oVariable->sDescripcion	= $oObj->sDescripcion;
-            	$oVariable->sValor = $oObj->sValor;
-            	//$oVariable->oUnidad    = SeguimientoController::getInstance()->getUnidadById($oObj->iUnidadId);
-            	$oVariable->dFechaHora	= $oObj->dFechaHora;
-            	$aVariables[]		= Factory::getVariableInstance($oVariable);
+            	$oVariable = new stdClass();
+            	$oVariable->iId	= $oObj->iId;
+            	$oVariable->sNombre = $oObj->sNombre;
+            	$oVariable->sDescripcion = $oObj->sDescripcion;
+
+                switch($oObj->sTipoVariable){
+                    case "VariableTexto":{
+                        $oVariable = Factory::getVariableTextoInstance($oVariable);
+                        $oVariable->setValor($oObj->sValorTexto);
+                    }
+                    case "VariableNumerica":{
+                        $oVariable = Factory::getVariableNumericaInstance($oVariable);
+                        $oVariable->setValor($oObj->sValorNumerico);
+                    }
+                    case "VariableCualitativa":{
+                        $oVariable = Factory::getVariableCualitativaInstance($oVariable);
+                        $oVariable->setValor($oObj->sValorNumerico);
+                        $aModalidades = SeguimientosController::getInstance()->getModalidadesByVariableId($oObj->iId);
+                        $oVariable->setModalidades($aModalidades);
+                    }
+                }
+                
+            	$aVariables[] = $oVariable;
             }
+            
             return $aVariables;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-    }
+   }
+
    public  function insertar($oVariable)
    {
 		try{

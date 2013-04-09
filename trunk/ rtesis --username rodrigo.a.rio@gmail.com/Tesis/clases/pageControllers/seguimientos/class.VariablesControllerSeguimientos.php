@@ -95,7 +95,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
 
             $iRecordsTotal = 0;
             $filtro = array('v.unidad_id' => $iUnidadId);
+            //no utilizo getVariablesByUnidadId porque necesito el filtro de los orderBy del listado.
             $aVariables = SeguimientosController::getInstance()->getVariables($filtro, $iRecordsTotal, null, null, null, null);
+            
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
             if(count($aVariables) > 0){
 
