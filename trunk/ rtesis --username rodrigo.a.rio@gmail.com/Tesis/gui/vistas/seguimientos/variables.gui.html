@@ -71,13 +71,13 @@
         <table class="table01 wi100p mabo2">
             <tr class="encabezado">
                <td class="big iveal">Nombre {orderByNombre}</td>
-               <td class="small iveal">Tipo {orderByTipo}</td>
-               <td class="medium"></td>
+               <td class="medium iveal">Tipo {orderByTipo}</td>
+               <td class="small"></td>
             </tr>
             <!--BeginVariableBlock-->
             <tr class="{iVariableId} iveal">
-                <td><span title="Ver Detalles" rel="{iVariableId}" class="i mi expand ihover desplegable"></span> {sNombre}</td>
-                <td class="iveal">
+                <td class="desplegable" rel="{iVariableId}">{sNombre}</td>
+                <td class="desplegable iveal" rel="{iVariableId}">
                     {iconoVariable} 
                     {sTipo}
                 </td>
@@ -94,11 +94,10 @@
                             <span rel="{iVariableId}" class="i bs close ihover fl_ri"></span>
                         </div>
                         <br clear="all">
-                        <div class="lihe2">
-                            <span class="fte2">Creada en </span>{dFechaHora}<br>
-                            <h3 class="mabo2">Descripci&oacute;n</h3>
-                            <p>{sDescripcion}</p>
-                            {sModalidades}
+                        <div class="fte2 mabo2">Creada en <span class="fowe_bo">{dFechaHora}</span></div>
+                        <h3 class="mabo">Descripci&oacute;n</h3>
+                        <p class="pale2">{sDescripcion}</p>
+                        {sModalidades}
                         </div>
                     </div>
                 </td>

@@ -93,6 +93,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "pageRightInnerMainCont", "ListadoVariablesBlock");
 
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
+            
             $iRecordsTotal = 0;
             $filtro = array('v.unidad_id' => $iUnidadId);
             //no utilizo getVariablesByUnidadId porque necesito el filtro de los orderBy del listado.
@@ -138,6 +141,10 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                     
                     $this->getTemplate()->parse("VariableBlock", true);
                 }
+
+                $params[] = "masVariables=1";
+                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $params);
+
             }else{
                 $this->getTemplate()->set_var("sNoRecords", "No hay variables cargadas en la unidad");
                 $this->getTemplate()->set_var("VariableBlock", "");

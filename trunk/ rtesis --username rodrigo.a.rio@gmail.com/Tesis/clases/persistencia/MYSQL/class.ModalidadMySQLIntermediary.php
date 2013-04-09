@@ -32,6 +32,12 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by orden asc ";
+            }
+
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 

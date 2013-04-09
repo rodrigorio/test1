@@ -1,4 +1,38 @@
-$(document).ready(function(){   
+function masVariables(){
+    var sOrderBy = $('#sOrderBy').val();
+    var sOrder = $('#sOrder').val();
+
+    $.ajax({
+        type:"POST",
+        url:"seguimientos/variables-procesar",
+        data:{
+            masMisPublicaciones:"1",
+            sOrderBy: sOrderBy,
+            sOrder: sOrder
+        },
+        beforeSend: function(){
+            setWaitingStatus('listadoMisPublicaciones', true);
+        },
+        success:function(data){
+            setWaitingStatus('listadoMisPublicaciones', false);
+            $("#listadoMisPublicacionesResult").html(data);
+        }
+    });
+}
+
+$(document).ready(function(){
+
+    $(".close.ihover").live("click", function(){
+        var id = $(this).attr("rel");
+        $("#desplegable_" + id).hide();
+    });
+
+    $(".orderLink").live('click', function(){
+        $('#sOrderBy').val($(this).attr('orderBy'));
+        $('#sOrder').val($(this).attr('order'));
+        masVariables();
+    });
+
     $("#crearVariableTexto").click(function(){
         var dialog = setWaitingStatusDialog(550, "Crear variable de Texto");
         dialog.load(

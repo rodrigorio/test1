@@ -370,8 +370,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
-            echo $e->getMessage();
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
