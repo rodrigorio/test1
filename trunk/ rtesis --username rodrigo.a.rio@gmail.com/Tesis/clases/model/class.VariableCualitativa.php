@@ -1,9 +1,10 @@
 <?php
-/* Description of class VariableEscalaConvinada
+
+/**
  *
- * @author Andr�s
+ * @author Andres
  */
- class VariableEscalaConvinada extends VariableAbstract
+ class VariableCualitativa extends VariableAbstract
 {
     /**
      * array objetos Modalidad, nunca esta null porque es una relacion de composicion
