@@ -278,16 +278,23 @@ class RutasModuloSeguimientos
         $route = new RegexRoute('seguimientos/form-crear-variable',
                                 array(
                                         'module' => 'seguimientos',
-                                        'controller' => 'unidades',
+                                        'controller' => 'variables',
                                         'action'     => 'formCrearVariable'
                                 ));
         $router->addRoute('seguimientosUnidadesFormCrearVariable', $route);
         $route = new RegexRoute('seguimientos/form-editar-variable',
                                 array(
                                         'module' => 'seguimientos',
-                                        'controller' => 'unidades',
+                                        'controller' => 'variables',
                                         'action'     => 'formEditarVariable'
                                 ));
         $router->addRoute('seguimientosUnidadesFormEditarVariable', $route);
+        $route = new RegexRoute('seguimientos/variables-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'variables',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('seguimientosVariablesProcesar', $route);
     }
 }

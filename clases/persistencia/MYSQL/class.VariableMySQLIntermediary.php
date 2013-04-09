@@ -45,6 +45,14 @@ class VariableMySQLIntermediary extends VariableIntermediary
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+            
+            if ($iIniLimit !== null && $iRecordCount !== null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
+            }
+
             $db->query($sSQL);
                                               
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
