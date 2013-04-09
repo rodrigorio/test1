@@ -4,10 +4,7 @@
  * @author Andr�s
  */
  class VariableNumerica extends VariableAbstract {
- 	
- 	private $fValor;
- 	
- 	
+
      /**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
 	 * @param stdClass $oParams
@@ -30,16 +27,18 @@
      * En la clase VariableNumerica es redeclarada para devolver true.
      */
     public function isVariableNumerica(){ return true; }
-     /**
- 	 *  @param float $fValor
-	 */
-	public function setValor($fValor){
-		$this->fValor = $fValor;
-	}
-     /**
-	 * @return float $fValor
-	 */
-	public function getValor(){
-		return $this->fValor;
-	}
+
+    /**
+     *  @param float $fValor
+     */
+    public function setValor($fValor){
+        $this->valor = floatval($fValor);
+    }
+
+    /**
+     * @return float $fValor
+     */
+    public function getValor(){
+        return $this->valor;
+    }
  }

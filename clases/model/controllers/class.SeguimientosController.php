@@ -879,6 +879,21 @@ class SeguimientosController
     }
 
     /**
+     * Devuelve array de objetos modalidad para una variable del tipo cualitativa.
+     */
+    public function getModalidadesByVariableId($iVariableCualitativaId)
+    {
+    	try{
+            $filtro = array('vcm.variables_id' => $iVariableCualitativaId);
+            $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oModalidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Obtiene todas las unidades administrables que el usuario logueado creo
      * para asociar a sus seguimientos personalizados
      *

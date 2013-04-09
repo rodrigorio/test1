@@ -5,9 +5,10 @@
  */
  class VariableEscalaConvinada extends VariableAbstract
 {
- 	
- 	private $sValor;
- 	
+    /**
+     * array objetos Modalidad, nunca esta null porque es una relacion de composicion
+     */
+    private $aModalidades;
  	
  /**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
@@ -33,16 +34,33 @@
      */
     public function isVariableCualitativa(){ return true; }
 	
-     /**
- 	 *  @param string $sValor
-	 */
-	public function setValor($sValor){
-		$this->sValor = $sValor;
-	}
-     /**
-	 * @return string $sValor
-	 */
-	public function getValor(){
-		return $this->sValor;
-	}
+    /**
+     *  @param int $iModalidad
+     */
+    public function setValor($iModalidadId){
+        $this->valor = (int)$iModalidadId;
+    }
+
+   /**
+    * @return int valor
+    *
+    * corresponde al id de la modalidad seleccionada
+    */
+    public function getValor(){
+        return $this->valor;
+    }
+
+    public function getModalidades()
+    {
+        return $this->aModalidades;
+    }
+
+    public function setModalidades($aModalidades)
+    {
+        $this->aModalidades = $aModalidades;
+    }
+
+    public function addModalidad($oModalidad){
+        $this->aModalidades[] = $oModalidad;
+    }
  }

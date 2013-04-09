@@ -302,11 +302,35 @@ class Factory
     }
     /**
      * @param stdClass $obj
-     * @return Variable|null
+     * @return VariableTexto|null
      */
-    public static function &getVariableInstance(stdClass $obj){
-        $oVariable = new Variable($obj);
-        return $oVariable;
+    public static function &getVariableTextoInstance(stdClass $obj){
+        $oVariableTexto = new VariableTexto($obj);
+        return $oVariableTexto;
+    }
+    /**
+     * @param stdClass $obj
+     * @return VariableNumerica|null
+     */
+    public static function &getVariableNumericaInstance(stdClass $obj){
+        $oVariableNumerica = new VariableNumerica($obj);
+        return $oVariableNumerica;
+    }
+    /**
+     * @param stdClass $obj
+     * @return VariableCualitativa|null
+     */
+    public static function &getVariableCualitativaInstance(stdClass $obj){
+        $oVariableCualitativa = new VariableCualitativa($obj);
+        return $oVariableCualitativa;
+    }
+    /**
+     * @param stdClass $obj
+     * @return Modalidad|null
+     */
+    public static function &getModalidadInstance(stdClass $obj){
+        $oModalidad = new Modalidad($obj);
+        return $oModalidad;
     }
    /**
      * @param stdClass $obj

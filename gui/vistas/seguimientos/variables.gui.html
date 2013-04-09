@@ -29,7 +29,7 @@
         </a>
     </li>
 </ul>
-<h3 class="mabo2">Asignar nueva variable a la unidad</h3>
+<h3 class="mabo2">Agregar nueva variable a la unidad</h3>
 <ul class="m_vert menu02 listty_no">
     <li>
         <a class="di_inbl"id="crearVariableTexto" href="javascript:;">
@@ -98,128 +98,218 @@
 </div>
 <!--EndListadoVariablesBlock-->
 
-<!--BeginFormularioVariableBlock-->
+<!--BeginFormularioVariableTextoBlock-->
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal">
-        <!--BeginIconoVariableTextoBlock-->
         <span class="i32 mc inputText32"></span>
-        <!--EndIconoVariableTextoBlock-->
-
-        <!--BeginIconoVariableNumericaBlock-->
-        <span class="i32 mc profits32"></span>
-        <!--EndIconoVariableNumericaBlock-->
-
-        <!--BeginIconoVariableCualitativaBlock-->
-        <span class="i32 mc inputRadio32"></span>
-        <!--EndIconoVariableCualitativaBlock-->
     </div>
-    <form id="formPublicacion" name="formPublicacion" action="" method="post">
+    <form id="formVariableTexto" name="formVariableTexto" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
-        <div class="form_line msg_titulo">
-            <label for="titulo">
+        <div class="form_line msg_nombre">
+            <label for="nombre">
                 <span class="marca_obligatorio">&#8226;</span>
-                T&iacute;tulo
+                Nombre
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="titulo" id="titulo" title="T&iacute;tulo Publicaci&oacute;n" maxlength="255" value="{sTitulo}" />
+                    <input type="text" name="nombre" id="nombre" title="Nombre de la variable" maxlength="100" value="{sNombre}" />
                 </div>
             </div>
-            <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
-        </div>
-        <div class="form_line msg_descripcionBreve">
-            <label for="descripcionBreve">
-                <span class="marca_obligatorio">&#8226;</span>
-                Descripcion Breve
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="descripcionBreve" id="descripcionBreve" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}" />
-                </div>
-            </div>
-            <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-        </div>
-        <div class="form_line msg_activo">
-            <label for="activo">
-                Visible?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedActivo} value="1">S&iacute;</option>
-                <option {sSelectedDesactivado} value="0">No</option>
-            </select>
-            <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
-        </div>
-        <div class="form_line msg_publico">
-            <label for="publico">
-                Alcance Privacidad?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedPublico} value="1">El mundo</option>
-                <option {sSelectedComunidad} value="0">Solo comunidad</option>
-            </select>
-            <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
-        </div>
-        <div class="form_line msg_activoComentarios">
-            <label for="activoComentarios">
-                Activar Comentarios?
-            </label>
-            <div class="cl_le"></div>
-            <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-                <option value="">Seleccionar</option>
-                <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
-                <option {sSelectedDesactivadoComentarios} value="0">No</option>
-            </select>
-            <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+            <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
         </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
-                Contenido Publicaci&oacute;n
+                Descripci&oacute;n
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n para el contenido que la variable guarda.">{sDescripcion}</textarea>
                 </div>
             </div>
         </div>
-        <div class="form_line msg_keywords">
-
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-                </div>
-            </div>
-            <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
-        </div>
-
-        <!--BeginSubmitCrearPublicacionBlock-->
+        
+        <!--BeginSubmitCrearVariableTextoBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="crearPublicacion" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearPublicacion" type="submit" name="crearPublicacion" class="btn01">
-                    Crear Publicaci&oacute;n
+            <label for="crearVariableTexto" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearVariableTexto" type="submit" name="crearVariableTexto" class="btn01">
+                    Crear Variable
                 </button>
             </label>
         </div>
-        <!--EndSubmitCrearPublicacionBlock-->
+        <!--EndSubmitCrearVariableTextoBlock-->
 
-        <!--BeginSubmitModificarPublicacionBlock-->
+        <!--BeginSubmitModificarVariableTextoBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="modificarPublicacion" class="button buttonConfirm buttonLarge">
-                <button id="modificarPublicacion" type="submit" name="modificarPublicacion" class="btn01">
-                    Modificar Publicacion
+            <label for="modificarVariableTexto" class="button buttonConfirm buttonLarge">
+                <button id="modificarVariableTexto" type="submit" name="modificarVariableTexto" class="btn01">
+                    Modificar Variable
                 </button>
             </label>
         </div>
-        <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
-        <!--EndSubmitModificarPublicacionBlock-->
+        <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
+        <!--EndSubmitModificarVariableTextoBlock-->
 
-        <div style="display:none;" id='msg_form_publicacion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
 
     </form>
 </div>
-<!--EndFormularioVariableBlock-->
+<!--EndFormularioVariableTextoBlock-->
+
+<!--BeginFormularioVariableNumericaBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal">
+        <span class="i32 mc profits32"></span>
+    </div>
+    <form id="formVariableNumerica" name="formVariableNumerica" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+
+        <div class="form_line msg_nombre">
+            <label for="nombre">
+                <span class="marca_obligatorio">&#8226;</span>
+                Nombre
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="nombre" id="nombre" title="Nombre de la variable" maxlength="100" value="{sNombre}" />
+                </div>
+            </div>
+            <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n para el contenido que la variable guarda.">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!--BeginSubmitCrearVariableNumericaBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearVariableNumerica" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearVariableNumerica" type="submit" name="crearVariableNumerica" class="btn01">
+                    Crear Variable
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearVariableNumericaBlock-->
+
+        <!--BeginSubmitModificarVariableNumericaBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarVariableNumerica" class="button buttonConfirm buttonLarge">
+                <button id="modificarVariableNumerica" type="submit" name="modificarVariableNumerica" class="btn01">
+                    Modificar Variable
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
+        <!--EndSubmitModificarVariableNumericaBlock-->
+
+        <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioVariableNumericaBlock-->
+
+<!--BeginFormularioVariableCualitativaBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal">
+        <span class="i32 mc inputRadio32"></span>
+    </div>
+    <form id="formVariableCualitativa" name="formVariableCualitativa" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+
+        <div class="form_line msg_nombre">
+            <label for="nombre">
+                <span class="marca_obligatorio">&#8226;</span>
+                Nombre
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="nombre" id="nombre" title="Nombre de la variable" maxlength="100" value="{sNombre}" />
+                </div>
+            </div>
+            <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
+        </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n para el contenido que la variable guarda.">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="mabo" id="listadoModalidades">
+            <!--BeginGrillaModalidadesBlock-->
+            <table class="table01 wi100p">
+                <tr class="encabezado">
+                   <td class="small iveal">Modalidad</td>
+                   <td class="small iveal">Orden</td>
+                   <td class="small"></td>
+                </tr>
+                
+                <!--BeginModalidadBlock-->
+                <tr class="{modalidadHtmlId}">
+                    <td>
+                        <input class="small" type="text" name="modalidad[{modalidadHtmlId}][nombre]" id="nombre" title="Nombre Modalidad" maxlength="50" value="{sNombre}" />
+                        <input type="hidden" name="modalidad[{modalidadHtmlId}][modalidadId]" id="modalidadId" value="{iModalidadId}" />
+                    </td>
+                    <td>
+                        <input size="2" type="text" name="modalidad[{modalidadHtmlId}][orden]" id="orden" title="N&uacute;mero de ordenamiento" maxlength="2" value="{iOrden}" />
+                    </td>
+                    <td class="teal_ce">                        
+                        <span title="Eliminar" rel="{modalidadHtmlId}_{iModalidadId}" class="i bs delete ihover borrarModalidad"></span>
+                    </td>
+                </tr>
+                <!--EndModalidadBlock-->
+
+                <!--BeginNoRecordsVariablesBlock-->
+                <tr>
+                    <td colspan="3">Sin modalidades</td>
+                </tr>
+                <!--EndNoRecordsVariablesBlock-->
+            </table>
+            <!--EndGrillaModalidadesBlock-->
+        </div>
+        <div class="baco pa2">
+            <label class="button agregarModalidad">
+                <span class="i bs add"></span>
+                <span class="buttonText">Agregar Modalidad</span>
+            </label>
+        </div>
+
+        <!--BeginSubmitCrearVariableCualitativaBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearVariableCualitativa" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearVariableCualitativa" type="submit" name="crearVariableCualitativa" class="btn01">
+                    Crear Variable
+                </button>
+            </label>
+        </div>
+        <!--EndSubmitCrearVariableCualitativaBlock-->
+
+        <!--BeginSubmitModificarVariableCualitativaBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarVariableCualitativa" class="button buttonConfirm buttonLarge">
+                <button id="modificarVariableCualitativa" type="submit" name="modificarVariableCualitativa" class="btn01">
+                    Modificar Variable
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
+        <!--EndSubmitModificarVariableCualitativaBlock-->
+
+        <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioVariableCualitativaBlock-->
