@@ -878,6 +878,23 @@ class SeguimientosController
         }
     }
 
+    public function getVariableById($iVariableId)
+    {
+    	try{
+            $filtro = array('v.id' => $iVariableId);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aVariables = $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aVariables){
+                return $aVariables[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Devuelve array de objetos modalidad para una variable del tipo cualitativa.
      */

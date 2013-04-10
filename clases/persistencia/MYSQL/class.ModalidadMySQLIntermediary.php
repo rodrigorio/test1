@@ -72,6 +72,7 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
                 }
             }
         }
+        return true;
     }
 
     /**

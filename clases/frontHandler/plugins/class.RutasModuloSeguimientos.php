@@ -296,5 +296,12 @@ class RutasModuloSeguimientos
                                         'action'     => 'procesar'
                                 ));
         $router->addRoute('seguimientosVariablesProcesar', $route);
+        $route = new RegexRoute('seguimientos/guardar-variable',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'variables',
+                                        'action'     => 'guardar'
+                                ));
+        $router->addRoute('seguimientosUnidadesGuardar', $route);
     }
 }

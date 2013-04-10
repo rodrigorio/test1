@@ -1,21 +1,180 @@
+var validateFormVariableTexto = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        nombre:{required:true},
+        descripcion:{required:true}
+    },
+    messages:{
+        nombre: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormVariableTexto = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/guardar-variable',
+    beforeSerialize:function(){
+
+        if($("#formVariableTexto").valid() == true){
+
+            $('#msg_form_variable').hide();
+            $('#msg_form_variable').removeClass("correcto").removeClass("error");
+            $('#msg_form_variable .msg').html("");
+            setWaitingStatus('formVariableTexto', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formVariableTexto', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_variable .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_variable .msg').html(data.mensaje);
+            }
+            $('#msg_form_variable').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_variable .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_variable .msg').html(data.mensaje);
+            }
+            if(data.agregarVariable != undefined){
+                //el submit fue para agregar una nueva publicacion. limpio el form
+                $('#formVariableTexto').each(function(){
+                  this.reset();
+                });
+            }
+            
+            //refresco el listado actual
+            masVariables();
+            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+        }
+    }
+};
+
+var validateFormVariableNumerica = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        nombre:{required:true},
+        descripcion:{required:true}
+    },
+    messages:{
+        nombre: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormVariableNumerica = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/guardar-variable',
+    beforeSerialize:function(){
+
+        if($("#formVariableNumerica").valid() == true){
+
+            $('#msg_form_variable').hide();
+            $('#msg_form_variable').removeClass("correcto").removeClass("error");
+            $('#msg_form_variable .msg').html("");
+            setWaitingStatus('formVariableNumerica', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formVariableNumerica', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_variable .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_variable .msg').html(data.mensaje);
+            }
+            $('#msg_form_variable').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_variable .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_variable .msg').html(data.mensaje);
+            }
+            if(data.agregarVariable != undefined){
+                //el submit fue para agregar una nueva publicacion. limpio el form
+                $('#formVariableNumerica').each(function(){
+                  this.reset();
+                });
+            }
+
+            //refresco el listado actual
+            masVariables();
+            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+        }
+    }
+};
+
+function bindEventsVariableTextoForm(){
+    $("#formVariableTexto").validate(validateFormVariableTexto);
+    $("#formVariableTexto").ajaxForm(optionsAjaxFormVariableTexto);
+}
+
+function bindEventsVariableNumericaForm(){
+    $("#formVariableNumerica").validate(validateFormVariableNumerica);
+    $("#formVariableNumerica").ajaxForm(optionsAjaxFormVariableNumerica);
+}
+
+function bindEventsVariableCualitativaForm(){
+    $("#formVariableCualitativa").validate(validateFormVariableCualitativa);
+    $("#formVariableCualitativa").ajaxForm(optionsAjaxFormVariableCualitativa);
+}
+
 function masVariables(){
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
+    var unidadId = $('#unidadId').val();
 
     $.ajax({
         type:"POST",
         url:"seguimientos/variables-procesar",
         data:{
-            masMisPublicaciones:"1",
+            masVariables:"1",
             sOrderBy: sOrderBy,
-            sOrder: sOrder
+            sOrder: sOrder,
+            unidadId: unidadId
         },
         beforeSend: function(){
-            setWaitingStatus('listadoMisPublicaciones', true);
+            setWaitingStatus('listadoVariables', true);
         },
         success:function(data){
-            setWaitingStatus('listadoMisPublicaciones', false);
-            $("#listadoMisPublicacionesResult").html(data);
+            setWaitingStatus('listadoVariables', false);
+            $("#listadoVariablesResult").html(data);
         }
     });
 }
@@ -39,7 +198,7 @@ $(document).ready(function(){
             "seguimientos/form-crear-variable",
             {"formTexto":"1"},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsVariableForm();
+                bindEventsVariableTextoForm();
             }
         );
         return false;
@@ -51,7 +210,7 @@ $(document).ready(function(){
             "seguimientos/form-crear-variable",
             {"formNumerica":"1"},
             function(responseText, textStatus, XMLHttpRequest){                
-                bindEventsVariableForm();
+                bindEventsVariableNumericaForm();
             }
         );
         return false;
@@ -63,8 +222,6 @@ $(document).ready(function(){
             "seguimientos/form-crear-variable",
             {"formCualitativa":"1"},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsVariableForm();
-                //se agrega el javascript de la edicion de modalidades 
                 bindEventsVariableCualitativaForm();
             }
         );
@@ -91,9 +248,16 @@ $(document).ready(function(){
             "seguimientos/form-editar-variable",
             {"iVariableId":iVariableId},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsVariableForm();
-                if(tipo == "VariableCualitativa"){
-                    bindEventsVariableCualitativaForm();
+                switch(tipo){
+                case "VariableTexto":
+                  bindEventsVariableTextoForm();
+                  break;
+                case "VariableNumerica":
+                  bindEventsVariableNumericaForm();
+                  break;
+                case "VariableCualitativa":
+                  bindEventsVariableCualitativaForm();
+                  break;
                 }
             }
         );

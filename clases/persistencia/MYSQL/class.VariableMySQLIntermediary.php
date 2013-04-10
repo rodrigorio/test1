@@ -188,6 +188,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
            	return false; 
         }
     }
+    
     public function isVariableUsuario($iVariableId, $iUsuarioId)
     {
     	try{
@@ -196,22 +197,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $sSQL = " SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                       FROM
-                        seguimientos s
-                      JOIN 
-                      	seguimiento_x_unidad su 
-                      ON 	
-                      	su.seguimiento_id = s.id
-                      JOIN
-                         unidades u
-                      ON
-                         su.unidad_id = u.id
-                      JOIN
-                      	variables v
-                      ON
-                         u.id = v.unidad_id                     	
+                        variables v JOIN unidades u ON v.unidad_id = u.id 
                       WHERE
                         v.id = ".$this->escInt($iVariableId)." AND
-                        s.usuarios_id = ".$this->escInt($iUsuarioId);
+                        u.usuarios_id = ".$this->escInt($iUsuarioId)." ";
 
             $db->query($sSQL);
 
@@ -223,7 +212,6 @@ class VariableMySQLIntermediary extends VariableIntermediary
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-            return false;
         }
     }
 }
