@@ -1,8 +1,10 @@
 var ejeEliminados = new Array();
+
 function tieneEjes(){
-	var ejes=document.getElementsByName("ejeHidden[]");
+	var ejes = $(".eje");
 	return ejes.length > 0 ? false : true;
 }
+
 var validateFormDiagnostico = {
     errorElement: "div",
     validClass: "correcto",
@@ -49,7 +51,7 @@ var optionsAjaxFormDiagnostico = {
 
     success:function(data){
         setWaitingStatus('tabsFormDiagnostico', false);
-
+        
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
                 $('#msg_form_guardarDiagnostico .msg').html(lang['error procesar']);
@@ -58,6 +60,14 @@ var optionsAjaxFormDiagnostico = {
             }
             $('#msg_form_guardarDiagnostico').addClass("error").fadeIn('slow');
         }else{
+        	ejeEliminados = new Array();
+        	actualizarInputEjesEliminados();
+        	//$('input[name="nivelHiddenNew[]"],input[name="cicloHiddenNew[]"],input[name="areaHiddenNew[]"],input[name="ejeHiddenNew[]"],input[name="estadoInicialHiddenNew[]"]').each(function() {
+        	//	var name = $(this).attr( "name")
+        	//	name = name.replace("New","");
+        	//	$(this).attr( "name", name );
+        	//});
+        	
             if(data.mensaje == undefined){
                 $('#msg_form_guardarDiagnostico .msg').html(lang['exito procesar']);
             }else{
@@ -227,7 +237,7 @@ $(document).ready(function(){
     });
     
     $("#agregarEje").live('click',function(){
-    	var ejes=document.getElementsByName("ejeHidden[]");
+    	var ejes= $(".eje");
     	for (var i = 0; i < ejes.length; i++) {
     	    if (ejes[i].value == $('#eje option:selected').val()) {
     	    	alert("No puede agregar 2 veces el mismo eje.")
@@ -244,11 +254,11 @@ $(document).ready(function(){
       
     	var html = 
 			       " <tr id='"+$('#eje option:selected').val()+"'>"+
-			       " 	<td>"+$('#nivel option:selected').text()+"<input type='hidden'  name='nivelHidden[]' value='"+$('#nivel option:selected').val()+"'/></td>"+
-			       "   	<td>"+$('#ciclo option:selected').text()+"<input type='hidden'  name='cicloHidden[]' value='"+$('#ciclo option:selected').val()+"'/></td>"+
-			       " 	<td>"+$('#area option:selected').text()+"<input type='hidden'  name='areaHidden[]' value='"+$('#area option:selected').val()+"'/></td>"+
-			       "  	<td>"+$('#eje option:selected').text()+"<input type='hidden'  name='ejeHidden[]' value='"+$('#eje option:selected').val()+"'/></td>"+
-			       "	<td><div class='fwrap'><div class='inner_fwrap'><textarea rows='0' cols='0' class='textAreaLihe textareaAutoGrow defVal maxlength' onblur='editarEje(this);'>"+$('#estadoInicial').val()+"</textarea><input type='hidden'  name='estadoInicialHidden[]' value='"+$('#estadoInicial').val()+"'/></div></div></td>"+
+			       " 	<td>"+$('#nivel option:selected').text()+"<input type='hidden'  name='nivelHiddenNew[]' value='"+$('#nivel option:selected').val()+"'/></td>"+
+			       "   	<td>"+$('#ciclo option:selected').text()+"<input type='hidden'  name='cicloHiddenNew[]' value='"+$('#ciclo option:selected').val()+"'/></td>"+
+			       " 	<td>"+$('#area option:selected').text()+"<input type='hidden'  name='areaHiddenNew[]' value='"+$('#area option:selected').val()+"'/></td>"+
+			       "  	<td>"+$('#eje option:selected').text()+"<input type='hidden'  class='eje' name='ejeHidden["+$('#eje option:selected').val()+"][id]' value='"+$('#eje option:selected').val()+"'/></td>"+
+			       "	<td><div class='fwrap'><div class='inner_fwrap'><textarea rows='0' cols='0' class='textAreaLihe textareaAutoGrow defVal maxlength' onblur='editarEje(this);'>"+$('#estadoInicial').val()+"</textarea><input type='hidden'  name='ejeHidden["+$('#eje option:selected').val()+"][estadoInicial]' value='"+$('#estadoInicial').val()+"'/><input type='hidden'  name='ejeHidden["+$('#eje option:selected').val()+"][new]' value='si'/></div></div></td>"+
 			       "	<td><span onclick='eliminarEje(this)' class='i bs delete ihover' rel='2' title='Eliminar eje'></span></td>"+
 			       " </tr>";
 
@@ -259,8 +269,13 @@ $(document).ready(function(){
 function eliminarEje(eje)
 {
 	ejeEliminados.push($(eje).parent().parent().attr("id"));
-	$("#ejeEliminados").val(  ejeEliminados.toString() );
+	actualizarInputEjesEliminados();
 	$(eje).parent().parent().remove();
+}
+
+function actualizarInputEjesEliminados()
+{
+	$("#ejeEliminados").val(  ejeEliminados.toString() );	
 }
 
 function editarEje(eje)
