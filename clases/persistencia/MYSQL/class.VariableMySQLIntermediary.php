@@ -32,7 +32,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha, 
+                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha, 
                         scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico 
                     FROM
                        variables v 
