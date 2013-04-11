@@ -193,10 +193,11 @@ $(document).ready(function(){
     });
 
     $("#crearVariableTexto").click(function(){
+        var unidadId = $('#unidadId').val();
         var dialog = setWaitingStatusDialog(550, "Crear variable de Texto");
         dialog.load(
             "seguimientos/form-crear-variable",
-            {"formTexto":"1"},
+            {"formTexto":"1", "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsVariableTextoForm();
             }
@@ -205,10 +206,11 @@ $(document).ready(function(){
     });
 
     $("#crearVariableNumerica").click(function(){
+        var unidadId = $('#unidadId').val();
         var dialog = setWaitingStatusDialog(550, "Crear variable Numérica");
         dialog.load(
             "seguimientos/form-crear-variable",
-            {"formNumerica":"1"},
+            {"formNumerica":"1", "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){                
                 bindEventsVariableNumericaForm();
             }
@@ -217,10 +219,11 @@ $(document).ready(function(){
     });
 
     $("#crearVariableCualitativa").click(function(){
+        var unidadId = $('#unidadId').val();
         var dialog = setWaitingStatusDialog(550, "Crear variable Cualitativa");
         dialog.load(
             "seguimientos/form-crear-variable",
-            {"formCualitativa":"1"},
+            {"formCualitativa":"1", "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsVariableCualitativaForm();
             }
