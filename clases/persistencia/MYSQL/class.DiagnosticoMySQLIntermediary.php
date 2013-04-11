@@ -183,7 +183,13 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                     " set descripcion = ".$this->escStr($oDiagnosticoSCC->getDescripcion())." ".
                     " WHERE id = ".$this->escInt($oDiagnosticoSCC->getId())." ";
             
-            SeguimientosController::getInstance()->asociarEjesTematicos($oDiagnosticoSCC->getId(),$oDiagnosticoSCC->getEjesTematicos());
+            if (count($oDiagnosticoSCC->getEjesTematicos())) {
+            	for ($i=0; $i< count($oDiagnosticoSCC->getEjesTematicos()); $i++) {
+            		$vEjeTematico = $oDiagnosticoSCC->getEjesTematicos();
+            		$oEjeTematico = $vEjeTematico[$i];
+           			SeguimientosController::getInstance()->guardarEjeTematico($oDiagnosticoSCC->getId(),$oEjeTematico);
+            	}
+            }
             $db->execSQL($sSQL);
             $db->commit();
 

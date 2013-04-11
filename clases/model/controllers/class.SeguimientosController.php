@@ -1121,6 +1121,15 @@ class SeguimientosController
         }
     }     
         
+    public function eliminarEjesByDiagnostico($sEjesEliminadosId, $iDiagnosticoId){
+        try{        	        	
+            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
+            return $oEjeTematicoIntermediary->borrarEjeTematicoDiagnosticoSCC($iDiagnosticoId, $sEjesEliminadosId);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }     
+    
     public function getDiagnosticoSeguimientoSCCById($iSeguimientoId)
     {
     	try{

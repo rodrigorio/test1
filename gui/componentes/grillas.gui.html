@@ -5,13 +5,14 @@
 		<td>{sNivelText}<input type='hidden'  name='nivelHidden[]' value='{iNivelId}'/></td>
 	 	<td>{sCicloText}<input type='hidden'  name='cicloHidden[]' value='{iCicloId}'/></td>
 		<td>{sAreaText}<input type='hidden'  name='areaHidden[]' value='{iAreaId}'/></td>
-	  	<td>{sEjeText}<input type='hidden'  name='ejeHidden[]' value='{iEjeId}'/></td>
+	  	<td>{sEjeText}<input type='hidden' class="eje" name='ejeHidden[{iEjeId}][id]' value='{iEjeId}'/></td>
 		<td><div class='fwrap'>
 		<div class='inner_fwrap'>
 		<textarea rows='0' cols='0' class='textAreaLihe textareaAutoGrow defVal maxlength' onblur='editarEje(this);'>
 		{sEstadoInicial}
 		</textarea>
-		<input type='hidden'  name='estadoInicialHidden[]' value='{sEstadoInicial}'/></div></div></td>
+		<input type='hidden'  name='ejeHidden[{iEjeId}][estadoInicial]' value='{sEstadoInicial}'/>
+		<input type='hidden'  name='ejeHidden[{iEjeId}][new]' value='no' /></div></div></td>
 		<td><span onclick='eliminarEje(this)' class='i bs delete ihover' title='Eliminar eje'></span></td>
 	 </tr>
 	<!--EndResultListEjes-->

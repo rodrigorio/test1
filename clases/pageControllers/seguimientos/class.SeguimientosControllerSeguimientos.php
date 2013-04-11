@@ -1891,33 +1891,36 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-           //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         	//$filtroSql["u.id"] = $perfil->getUsuario()->getId();
         	
             $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
            // TODO Agregar validacion de pedir el diagnostico segun permiso d
             $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
-           
+        
 			if($oDiagnostico){
 				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
 	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
 	            	$sCodigo	 	= $this->getRequest()->getPost('codigo');
 			    	$oDiagnostico->setCodigo($sCodigo);
 	            }else{
-	            	$ejesEliminados	= $this->getRequest()->getPost('ejeEliminados');
-	            	//SeguimientosController::getInstance()->eliminarDiagnosticos($ejesEliminados);
+	            	$sEjesEliminadosId	= $this->getRequest()->getPost('ejeEliminados');
+	            	if ($sEjesEliminadosId != "") {
+	            		SeguimientosController::getInstance()->eliminarEjesByDiagnostico($sEjesEliminadosId, $iDiagnosticoId);
+	            	}
 	            	$ejes	    	= $this->getRequest()->getPost('ejeHidden');
-	            	$estadoInicial	= $this->getRequest()->getPost('estadoInicialHidden');
+	            	//$estadoInicial	= $this->getRequest()->getPost('estadoInicialHiddenNew');
 	            	$i = 0;
 	            	$vEjesTematicos = array();
-	            	foreach ($ejes as $ejeId){
-	            		$oEjeTematico = Factory::getEjeTematicoInstance(new stdClass());
-	            		$oEjeTematico->setId($ejeId);
-	            		$oEjeTematico->setEstadoInicial($estadoInicial[$i]);
-	            		$i++;
-	            		$vEjesTematicos[] = $oEjeTematico;
+	            	if (count($ejes)>0) {
+		            	foreach ($ejes as $eje){
+		             		$oEjeTematico = Factory::getEjeTematicoInstance(new stdClass());
+		            		$oEjeTematico->setId($eje["id"]);
+		            		$oEjeTematico->setEstadoInicial($eje["estadoInicial"]);
+		            		$vEjesTematicos[] = $oEjeTematico;
+		            	}	
 	            	}
-	            	
+	            	            	
 			    	$oDiagnostico->setEjesTematicos($vEjesTematicos);
 	            }
 	            $oDiagnostico->setDescripcion($sDescripcion);
