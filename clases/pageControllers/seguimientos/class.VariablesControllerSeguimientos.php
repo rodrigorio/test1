@@ -118,11 +118,13 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                     if($oVariable->isVariableNumerica()){
                         $this->getTemplate()->set_var("sTipo", "Variable Numérica");
                         $iconoVariableBlock = "IconoTipoNumericaBlock";
+                        $this->getTemplate()->set_var("sModalidades", "");
                     }
 
                     if($oVariable->isVariableTexto()){
                         $this->getTemplate()->set_var("sTipo", "Variable de Texto");
                         $iconoVariableBlock = "IconoTipoTextoBlock";
+                        $this->getTemplate()->set_var("sModalidades", "");
                     }
 
                     if($oVariable->isVariableCualitativa()){
@@ -131,8 +133,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                         $sModalidades = "<strong>Modalidades: </strong> ";
                         $aModalidades = $oVariable->getModalidades();
                         foreach($aModalidades as $oModalidad){
-                            $sModalidades .= $oModalidad->getModalidad()." ";
+                            $sModalidades .= $oModalidad->getModalidad().", ";
                         }
+                        $sModalidades = substr($sModalidades, 0, -1);
                         $this->getTemplate()->set_var("sModalidades", $sModalidades);
                     }
 
@@ -198,11 +201,13 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                 if($oVariable->isVariableNumerica()){
                     $this->getTemplate()->set_var("sTipo", "Variable Numérica");
                     $iconoVariableBlock = "IconoTipoNumericaBlock";
+                    $this->getTemplate()->set_var("sModalidades", "");
                 }
 
                 if($oVariable->isVariableTexto()){
                     $this->getTemplate()->set_var("sTipo", "Variable de Texto");
                     $iconoVariableBlock = "IconoTipoTextoBlock";
+                    $this->getTemplate()->set_var("sModalidades", "");
                 }
 
                 if($oVariable->isVariableCualitativa()){
@@ -211,8 +216,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                     $sModalidades = "<strong>Modalidades: </strong> ";
                     $aModalidades = $oVariable->getModalidades();
                     foreach($aModalidades as $oModalidad){
-                        $sModalidades .= $oModalidad->getModalidad()." ";
+                        $sModalidades .= $oModalidad->getModalidad().", ";
                     }
+                    $sModalidades = substr($sModalidades, 0, -1);
                     $this->getTemplate()->set_var("sModalidades", $sModalidades);
                 }
 
@@ -310,6 +316,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $iVariableIdForm = "";
             $sNombre = "";
             $sDescripcion = "";
+
+            $iUnidadId = $this->getRequest()->getPost('unidadId');
+            $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
             
         //FORMULARIO EDITAR
         }else{
@@ -346,6 +355,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $iVariableIdForm = "";
             $sNombre = "";
             $sDescripcion = "";
+
+            $iUnidadId = $this->getRequest()->getPost('unidadId');
+            $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
 
         //FORMULARIO EDITAR
         }else{
@@ -414,13 +426,14 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $oVariableTexto = new stdClass();
-
-            $oVariableTexto = Factory::getVariableTextoInstance($oUnidad);
+            $oVariableTexto = Factory::getVariableTextoInstance($oVariableTexto);
 
             $oVariableTexto->setNombre($this->getRequest()->getPost("nombre"));
             $oVariableTexto->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
             
-            SeguimientosController::getInstance()->guardarVariable($oVariableTexto);
+            SeguimientosController::getInstance()->guardarVariable($oVariableTexto, $iUnidadId);
 
             $this->getJsonHelper()->setValor("agregarVariable", "1");
             $this->getJsonHelper()->setMessage("La variable de texto se ha creado con éxito");
@@ -467,13 +480,14 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $oVariableNumerica = new stdClass();
-
-            $oVariableNumerica = Factory::getVariableTextoInstance($oVariableNumerica);
+            $oVariableNumerica = Factory::getVariableNumericaInstance($oVariableNumerica);
 
             $oVariableNumerica->setNombre($this->getRequest()->getPost("nombre"));
             $oVariableNumerica->setDescripcion($this->getRequest()->getPost("descripcion"));
 
-            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica);
+            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
+
+            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica, $iUnidadId);
 
             $this->getJsonHelper()->setValor("agregarVariable", "1");
             $this->getJsonHelper()->setMessage("La variable numérica se ha creado con éxito");
@@ -487,6 +501,60 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
     }
 
     private function modificarVariableNumerica()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iVariableId = $this->getRequest()->getPost('variableIdForm');
+            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+
+            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
+                throw new Exception("No tiene permiso para editar la variable", 401);
+            }
+
+            $oVariable->setNombre($this->getRequest()->getPost("nombre"));
+            $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            SeguimientosController::getInstance()->guardarVariable($oVariable);
+
+            $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarVariable", "1");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function crearVariableCualitativa()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $oVariableNumerica = new stdClass();
+            $oVariableNumerica = Factory::getVariableNumericaInstance($oVariableNumerica);
+
+            $oVariableNumerica->setNombre($this->getRequest()->getPost("nombre"));
+            $oVariableNumerica->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
+
+            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica, $iUnidadId);
+
+            $this->getJsonHelper()->setValor("agregarVariable", "1");
+            $this->getJsonHelper()->setMessage("La variable numérica se ha creado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarVariableCualitativa()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
