@@ -62,17 +62,26 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
 
     public function guardarModalidadesVariableCualitativa(VariableCualitativa $oVariable)
     {
-        if(null !== $oVariable->getModalidades()){
-            foreach($oVariable->getModalidades() as $oModalidad){
-                if(null !== $oModalidad->getId()){
-                    $this->actualizar($oModalidad);
-                }else{
-                    $iVariableId = $oVariable->getId();
-                    $this->insertarAsociado($oModalidad, $iVariableId);
+        try
+        {
+            if(null !== $oVariable->getModalidades()){
+                $db = $this->conn;
+                $db->begin_transaction();
+                foreach($oVariable->getModalidades() as $oModalidad){
+                    if(null !== $oModalidad->getId()){
+                        $this->actualizar($oModalidad);
+                    }else{
+                        $iVariableId = $oVariable->getId();
+                        $this->insertarAsociado($oModalidad, $iVariableId);
+                    }
                 }
+                $db->commit();                
             }
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
         }
-        return true;
     }
 
     /**
@@ -82,7 +91,6 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
     public function insertarAsociado($oModalidad, $iVariableId)
     {
         try{
-            $db = $this->conn;
             $iVariableId = $this->escInt($iVariableId);
 
             $sSQL = " INSERT INTO variable_cualitativa_modalidades SET ".
@@ -92,8 +100,7 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
-            $db->commit();
-
+            
             $oModalidad->setId($iLastId);
             return true;
         }catch(Exception $e){
@@ -104,15 +111,12 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
     public function actualizar($oModalidad)
     {
         try{
-            $db = $this->conn;
-
             $sSQL = " UPDATE variable_cualitativa_modalidades SET ".
                     " modalidad = ".$this->escStr($oModalidad->getModalidad()).", ".
                     " orden = ".$this->escInt($oModalidad->getOrden())." ".
                     " where id = ".$this->escInt($oModalidad->getId())." ";
                     			 
             $db->execSQL($sSQL);
-            $db->commit();
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
