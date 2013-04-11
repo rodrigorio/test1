@@ -96,57 +96,69 @@ class VariableMySQLIntermediary extends VariableIntermediary
         }
    }
 
-   public  function insertar($oVariable)
-   {
-		try{
-			$db = $this->conn;
-			$sSQL =	" insert into variables ".
-                    " set nombre =".$db->escape($oVariable->getNombre(),true).", " .
-			        " tipo =".$db->escape($oVariable->getTipo(),false,MYSQL_TYPE_INT).", ".
-			        " descripcion =".$db->escape($oVariable->getDescripcion(),true).", ".
-			        " unidad_id =".$db->escape($oVariable->getUnidad()->getId(),false,MYSQL_TYPE_INT).", ".
-			        " fechaHora =".$db->escape($oVariable->getFechaHora(),true)." ";
-			 
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-             
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-    
-	public function actualizar($oVariable)
-   {
-		try{
-			$db = $this->conn;
-		
-			$sSQL =	" update variables ".
-                    " set nombre =".$db->escape($oVariable->getNombre(),true).", " .
-			        " tipo =".$db->escape($oVariable->getTipo(),false,MYSQL_TYPE_INT).", ".
-			        " descripcion =".$db->escape($oVariable->getDescripcion(),true).", ".
-			        " unidad_id =".$db->escape($oVariable->getUnidad()->getId(),false,MYSQL_TYPE_INT).",".
-			        " fechaHora =".$db->escape($oVariable->getFechaHora(),true)." ".
-					" where id =".$db->escape($oVariable->getId(),false,MYSQL_TYPE_INT)." ";	 
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-             
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-    public function guardar($oVariable)
+    public function guardar($oVariable, $iUnidadId = "")
     {
         try{
-			if($oVariable->getId() != null){
-            	return $this->actualizar($oVariable);
+            $db = $this->conn;
+            $db->begin_transaction();
+            
+            if($oVariable->getId() != null){
+                $this->actualizar($oVariable);
             }else{
-				return $this->insertar($oVariable);
+                $this->insertar($oVariable, $iUnidadId);
             }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+   /**
+    * Si es actualizar no es necesario el id de unidad
+    */
+   public  function insertar($oVariable, $iUnidadId = "")
+   {
+        try{
+            $sTipo = get_class($oVariable);
+
+            $sSQL = " insert into variables set ".
+                    " nombre = ".$this->escStr($oVariable->getNombre()).", ".
+                    " tipo = ".$this->escStr($sTipo).", ".
+                    " descripcion = ".$this->escStr($oVariable->getDescripcion()).", ".
+                    " unidad_id = ".$this->escInt($iUnidadId)." ";
+			 
+             $this->conn->execSQL($sSQL);
+
+             if($oVariable->isVariableCualitativa()){
+                 $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+                 $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
+             }
+
+             return true;             
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public function actualizar($oVariable)
+   {
+        try{
+            $sTipo = get_class($oVariable);
+		
+            $sSQL = " update variables set ".
+                    " nombre = ".$this->escStr($oVariable->getNombre()).", ".
+                    " descripcion = ".$this->escStr($oVariable->getDescripcion())." ".
+                    " where id = ".$this->escInt($oVariable->getId())." ";
+
+             $this->conn->execSQL($sSQL);
+
+             return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
     
 	public function borrar($iVariableId) {
@@ -173,7 +185,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
                         1 as existe
                     FROM
                         variables v
-					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);
 
@@ -185,7 +197,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false; 
+            return false;
         }
     }
     

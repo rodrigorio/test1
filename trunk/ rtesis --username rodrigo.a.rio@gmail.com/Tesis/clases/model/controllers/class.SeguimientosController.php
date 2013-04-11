@@ -954,13 +954,15 @@ class SeguimientosController
     /**
      * Guardar Variables
      *
+     * Si es insertar hace falta el id de la unidad
+     *
      */
-    public function guardarVariables($oVariable){
+    public function guardarVariable($oVariable, $iUnidadId = ""){
         try{
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return $oVariableIntermediary->guardar($oVariable);
+            return $oVariableIntermediary->guardar($oVariable, $iUnidadId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     

@@ -392,8 +392,8 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             return;
         }
 
-        if($this->getRequest()->has('crearVariableNumerica')){
-            $this->crearVariableNumerica();
+        if($this->getRequest()->has('modificarVariableNumerica')){
+            $this->modificarVariableNumerica();
             return;
         }
 
@@ -402,8 +402,8 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             return;
         }
 
-        if($this->getRequest()->has('crearVariableCualitativa')){
-            $this->crearVariableCualitativa();
+        if($this->getRequest()->has('modificarVariableCualitativa')){
+            $this->modificarVariableCualitativa();
             return;
         } 
     }
@@ -434,6 +434,59 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
     }
 
     private function modificarVariableTexto()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iVariableId = $this->getRequest()->getPost('variableIdForm');
+            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+
+            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
+                throw new Exception("No tiene permiso para editar la variable", 401);
+            }
+
+            $oVariable->setNombre($this->getRequest()->getPost("nombre"));
+            $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            SeguimientosController::getInstance()->guardarVariable($oVariable);
+
+            $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarVariable", "1");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function crearVariableNumerica()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $oVariableNumerica = new stdClass();
+
+            $oVariableNumerica = Factory::getVariableTextoInstance($oVariableNumerica);
+
+            $oVariableNumerica->setNombre($this->getRequest()->getPost("nombre"));
+            $oVariableNumerica->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica);
+
+            $this->getJsonHelper()->setValor("agregarVariable", "1");
+            $this->getJsonHelper()->setMessage("La variable numérica se ha creado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarVariableNumerica()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
