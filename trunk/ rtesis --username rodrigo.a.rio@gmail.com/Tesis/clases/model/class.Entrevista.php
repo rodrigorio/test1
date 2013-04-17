@@ -21,7 +21,7 @@ class Entrevista{
             }
         }
     }
-    
+    private $aPreguntas = null;
     /**
      *  @param int $iId
      */
@@ -39,6 +39,17 @@ class Entrevista{
      */
     public function getId(){
         return $this->iId ;
+    }
+     public function setPreguntas($aPreguntas){
+        $this->aPreguntas = $aPreguntas;
+        return $this;
+    }
+    public function getPreguntas()
+    {
+        if($this->aPreguntass === null){
+            $this->aPreguntass = SeguimientosController::getInstance()->getPreguntasByEntrevistaId($this->iId);
+        }
+        return $this->aVariables;
     }
     /**
      * @return string $sDescripcion

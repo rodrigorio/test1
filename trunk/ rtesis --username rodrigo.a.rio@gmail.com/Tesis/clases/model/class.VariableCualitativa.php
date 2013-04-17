@@ -4,13 +4,13 @@
  *
  * @author Andres
  */
- class VariableCualitativa extends VariableAbstract
+  class VariableCualitativa extends VariableAbstract
 {
     /**
      * array objetos Modalidad, nunca esta null porque es una relacion de composicion
      */
-    private $aModalidades;
- 	
+    private $aModalidades;  	
+
  /**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
 	 * @param stdClass $oParams

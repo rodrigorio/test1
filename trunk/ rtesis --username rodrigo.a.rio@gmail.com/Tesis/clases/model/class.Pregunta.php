@@ -1,12 +1,14 @@
 <?php
-/**
+ /**
  * @author Andres
+ * 
  */
 class Pregunta{
     
     private $iId;
     private $sDescripcion;
-     private $sTipo;
+    private $sTipo;
+    private $sRespuesta = null; 
     
 
     public function __construct(stdClass $oParams = null){
@@ -36,10 +38,19 @@ class Pregunta{
             $this->sDescripcion = $sDesccripcion;
     }
      /**
-     * @param string $sTipo
+     * @param string $sTipo 
+     * El tipo de pregunta es: "preguntas simples" o "preguntas con opciones"
      */
     public function setTipo($sTipo){
             $this->sTipo = $sTipo;
+    }
+     /**
+     * @param string $sRespuesta
+     * El campo respuesta por defecto esta en null, cuando el tipo toma el valor pregunta simple
+     *  se coloca la respuesta en este campo
+     */
+    public function setRespuesta($sRespuesta){
+            $this->sRespuesta = $sRespuesta;
     }
     /**
      *  @return int $iId
@@ -59,5 +70,11 @@ class Pregunta{
      */
     public function getTipo(){
         return $this->sTipo;
+    }
+     /**
+     * @return string $sRespuesta
+     */
+    public function getRespuesta(){
+        return $this->sRespuesta;
     }
 }

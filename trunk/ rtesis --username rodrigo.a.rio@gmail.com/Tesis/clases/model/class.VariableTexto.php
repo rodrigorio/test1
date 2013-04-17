@@ -1,11 +1,11 @@
 <?php
-/*Description of class VariableTexto
- *
- * @author Andr�s
- */
- class VariableTexto extends VariableAbstract { 	 	
+  /* Description of class VariableTexto 
+  *
+  * @author Andres 
+  */ 
+class VariableTexto extends VariableAbstract { 	 	
  	
-         /**
+     /**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
 	 * @param stdClass $oParams
 	 */
@@ -33,7 +33,6 @@
     public function setValor($sValor){
         $this->valor = $sValor;
     }
-
     /**
     * @return string $sValor
      */

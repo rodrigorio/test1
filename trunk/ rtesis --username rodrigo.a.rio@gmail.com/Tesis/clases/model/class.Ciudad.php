@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author Rodrigo A. Rio
  */
