@@ -2,7 +2,11 @@ var ejeEliminados = new Array();
 
 function tieneEjes(){
 	var ejes = $(".eje");
-	return ejes.length > 0 ? false : true;
+	if (ejes.length > 0) {
+		return false;
+	}else{
+		return true;
+	}
 }
 
 var validateFormDiagnostico = {
@@ -23,22 +27,35 @@ var validateFormDiagnostico = {
         nivel:{required:tieneEjes},
         ciclo:{required:tieneEjes},
         area:{required:tieneEjes},
-        eje:{required:tieneEjes}
+        eje:{required:tieneEjes},
+        estadoInicial:{required:tieneEjes}
     },
     messages:{
         diagnostico: mensajeValidacion("requerido"),
         nivel: mensajeValidacion("requerido"),
         ciclo: mensajeValidacion("requerido"),
         area: mensajeValidacion("requerido"),
-        eje: mensajeValidacion("requerido")
+        eje: mensajeValidacion("requerido"),
+        estadoInicial: mensajeValidacion("requerido")
     }
 };
 
+function showMsgEjeError(){
+	$('#msg_agregar_eje').show();
+    $('#msg_agregar_eje').removeClass("correcto").addClass("error");
+    $('#msg_agregar_eje .msg').html("Debe seleccionar un eje.");
+}
 var optionsAjaxFormDiagnostico = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'seguimientos/procesar-diagnostico',
-    beforeSerialize:function(){        
+    beforeSerialize:function(){
+    	var ejes = $(".eje");
+    	if (ejes.length == 0) {
+    		showMsgEjeError();
+    		return false;
+    	}
+    	
         if($("#formGuardarDiagnostico").valid() == true){
             $('#msg_form_guardarDiagnostico').hide();
             $('#msg_form_guardarDiagnostico').removeClass("correcto").removeClass("error");
@@ -62,12 +79,7 @@ var optionsAjaxFormDiagnostico = {
         }else{
         	ejeEliminados = new Array();
         	actualizarInputEjesEliminados();
-        	//$('input[name="nivelHiddenNew[]"],input[name="cicloHiddenNew[]"],input[name="areaHiddenNew[]"],input[name="ejeHiddenNew[]"],input[name="estadoInicialHiddenNew[]"]').each(function() {
-        	//	var name = $(this).attr( "name")
-        	//	name = name.replace("New","");
-        	//	$(this).attr( "name", name );
-        	//});
-        	
+      
             if(data.mensaje == undefined){
                 $('#msg_form_guardarDiagnostico .msg').html(lang['exito procesar']);
             }else{
@@ -140,6 +152,20 @@ function bindEventFormAgregarArchivo(iSeguimientoId)
 
 $(document).ready(function(){
 	
+	$( "#dialog" ).dialog({
+		 autoOpen: false,
+		 height: 100,
+		 width: 250,
+		 modal: true,
+		 closeOnEscape:true,
+		 draggable: false,
+		 resizable: false,
+		 buttons: {
+			 Ok: function() {
+				 $( this ).dialog( "close" );
+			 }
+		}
+	 });
     $("a[rel^='prettyPhoto']").prettyPhoto();
 
     //menu derecha
@@ -240,18 +266,26 @@ $(document).ready(function(){
     	var ejes= $(".eje");
     	for (var i = 0; i < ejes.length; i++) {
     	    if (ejes[i].value == $('#eje option:selected').val()) {
-    	    	alert("No puede agregar 2 veces el mismo eje.")
+    	    	$("#dialog").addClass("he100 mihe100");
+      	    	$("#dialog span").html("No puede agregar 2 veces el mismo eje.");
+    	    	$("#dialog").dialog({ title:"Error", minHeight: 100 ,maxHeight:120} );
+    	    	$("#dialog").dialog("open");
     	    	return false;
     	    }
     	}
+    	var error = false;
     	$('#msg_form_guardarDiagnostico').hide();
-    	if ($('#eje option:selected').val() == "") {
-    		 $('#msg_form_guardarDiagnostico').show();
-             $('#msg_form_guardarDiagnostico').removeClass("correcto").addClass("error");
-             $('#msg_form_guardarDiagnostico .msg').html("Debe seleccionar un eje.");
-             return false;
-    	}
+    	$('#eje option:selected, #ciclo option:selected, #area option:selected, #nivel option:selected').each(function(){
+  	    	if ($(this).val() == "") {
+	    		$(this).parent().parent().find(".error").remove();
+	    		$(this).parent().parent().append('<div htmlfor="eje" generated="true" class="error" style="display: none;">Este campo es obligatorio</div>');
+	    		$(this).parent().parent().find(".error").show();
+//	            return false;
+	            error = true;
+	    	}
+    	});
       
+    	if(error) return false;
     	var html = 
 			       " <tr id='"+$('#eje option:selected').val()+"'>"+
 			       " 	<td>"+$('#nivel option:selected').text()+"<input type='hidden'  name='nivelHiddenNew[]' value='"+$('#nivel option:selected').val()+"'/></td>"+

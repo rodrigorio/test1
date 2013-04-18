@@ -162,7 +162,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .bosh2{-moz-box-shadow:1px 2px 6px 0; box-shadow:1px 2px 6px 0; -webkit-box-shadow:1px 2px 6px 0 #333;}
 .bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
 
-.he100p{height:100% !important;}
+
 .wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important} .wi200{width:200px !important;}
 
 .he400{height:400px !important; } .he500{height:500px !important; }
@@ -849,3 +849,6 @@ p .destacado{font-weight:bold;}
     /* agrego margenes en cm para los contenedores principales */
     @page{margin:4cm 2cm 2cm 2cm;}
 }
+
+.he100p{height:100% !important;}.he100{height: 100px !important;}
+.mihe100{min-height: 100px !important;}
