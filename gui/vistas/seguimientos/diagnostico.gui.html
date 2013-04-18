@@ -85,7 +85,7 @@
                 </div>
             </div>
   
-                <div class="form_line msg_nivel">
+                <div class="msg_nivel fl_le mari3">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Nivel</span>
 		                <select name="nivel" id="nivel" >
@@ -96,7 +96,7 @@
 		                 </select>
                     </div>
                 </div>
-                 <div class="form_line msg_ciclo">
+                 <div class="msg_ciclo fl_le mari3">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Ciclo</span>
                        	<!--BeginCiclosDivBlock-->
@@ -109,7 +109,7 @@
                        	<!--EndCiclosDivBlock-->
                     </div>
                 </div>
-                 <div class="form_line msg_area">
+                 <div class="msg_area fl_le mari3">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Area</span>
                       	<!--BeginAreaDivBlock-->
@@ -122,7 +122,7 @@
 		                <!--EndAreaDivBlock-->
                     </div>
                 </div>
-                <div class="form_line msg_eje">
+                <div class="msg_eje mabo3 fl_le">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Eje tem&aacute;tico</span>
                       	<!--BeginEjeDivBlock-->
@@ -135,12 +135,14 @@
 		                <!--EndEjeDivBlock-->
                     </div>
                 </div>
-                
-				<div class="form_line msg_estadoInicial">
+                 <div style="display:none;" id='msg_agregar_eje' class="msg_form iveal cl_bo">
+                    	<span class="bs i"></span> <span class="msg"></span>
+                    </div>
+				<div class="msg_estadoInicial cl_bo">
                     <div class="inner_fwrap">
                        	<span class="fowe_bo">Estado inicial</span>
                       	<!--BeginEstadoInicialDivBlock-->
-		                <textarea cols="40" rows="5" id="estadoInicial"></textarea>
+		                <textarea cols="175" rows="5" id="estadoInicial" name="estadoInicial"></textarea>
 		                <!--EndEstadoInicialDivBlock-->
                     </div>
                 </div>
@@ -150,6 +152,7 @@
 	                        Agregar Eje
 	                    </button>
 	                </label>
+	               
 	            </div>
 	            
 	        <div id='result_ejes'>
@@ -168,6 +171,7 @@
 		        	{listaEje}
 					</tbody>
 	        	</table>	
+	        	
 	        </div>
             <div class="fl_le mabo2">
                 <label for="guardarDiagnostico" class="button buttonConfirm buttonLarge mari3">
