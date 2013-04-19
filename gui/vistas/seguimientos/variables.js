@@ -140,6 +140,77 @@ var optionsAjaxFormVariableNumerica = {
     }
 };
 
+var validateFormVariableCualitativa = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        nombre:{required:true},
+        descripcion:{required:true}
+    },
+    messages:{
+        nombre: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormVariableCualitativa = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/guardar-variable',
+    beforeSerialize:function(){
+
+        if($("#formVariableNumerica").valid() == true){
+
+            $('#msg_form_variable').hide();
+            $('#msg_form_variable').removeClass("correcto").removeClass("error");
+            $('#msg_form_variable .msg').html("");
+            setWaitingStatus('formVariableNumerica', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formVariableNumerica', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_variable .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_variable .msg').html(data.mensaje);
+            }
+            $('#msg_form_variable').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_variable .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_variable .msg').html(data.mensaje);
+            }
+            if(data.agregarVariable != undefined){
+                //el submit fue para agregar una nueva publicacion. limpio el form
+                $('#formVariableNumerica').each(function(){
+                  this.reset();
+                });
+            }
+
+            //refresco el listado actual
+            masVariables();
+            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+        }
+    }
+};
+
 function bindEventsVariableTextoForm(){
     $("#formVariableTexto").validate(validateFormVariableTexto);
     $("#formVariableTexto").ajaxForm(optionsAjaxFormVariableTexto);
@@ -177,6 +248,49 @@ function masVariables(){
             $("#listadoVariablesResult").html(data);
         }
     });
+}
+
+function eliminarVariable(iVariableId){
+    if(confirm("Se borrara la variable de la unidad de manera permanente, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"seguimientos/borrar-variable",
+            data:{
+                iVariableId:iVariableId
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    //remuevo la fila y la ficha
+                    $("."+iVariableId).hide("slow", function(){
+                        $("."+iVariableId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length){
+                    dialog.attr("title","Borrar Variable");
+                }else{
+                    dialog = $('<div id="dialog" title="Borrar Variable"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
 }
 
 $(document).ready(function(){
@@ -269,5 +383,59 @@ $(document).ready(function(){
     $(".borrarVariable").live('click', function(){
         var iVariableId = $(this).attr("rel");
         eliminarVariable(iVariableId);
+    });
+
+    $("#agregarModalidad").live('click', function(){
+        $.ajax({
+            type:"POST",
+            url:"seguimientos/variables-procesar",
+            data:{
+                agregarModalidad:"1"
+            },
+            beforeSend: function(){
+                setWaitingStatus('listadoModalidades', true);
+            },
+            success:function(data){
+                if($("#noRecordsModalidades").length){
+                    $("#noRecordsModalidades").hide("slow", function(){
+                        $("#noRecordsModalidades").remove();
+                    });
+                }
+                setWaitingStatus('listadoModalidades', false);                
+                $('#grillaModalidades').append(data);                
+            }
+        });
+    });
+
+    $(".borrarModalidad").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var modalidadHtmlId = rel[0];
+        var iModalidadId = rel[1];
+
+        //solo si la modalidad estaba guardada en db
+        if(iModalidadId != ""){
+            if(confirm("Se borrara la modalidad seleccionada en la variable, desea continuar?")){
+                $.ajax({
+                    type:"post",
+                    dataType:"jsonp",
+                    url:"seguimientos/borrar-modalidad-variable",
+                    data:{
+                        iModalidadId:iModalidadId                        
+                    },
+                    success:function(data){
+                        if(data.success != undefined && data.success == 1){
+                            $("."+modalidadHtmlId).hide("slow", function(){
+                                $("."+modalidadHtmlId).remove();
+                            });
+                        }
+                    }
+                });
+            }
+        //repito el codigo en el else por el asincronismo del ajax si es que necesitas ejecutarse.
+        }else{
+            $("."+modalidadHtmlId).hide("slow", function(){
+                $("."+modalidadHtmlId).remove();
+            });
+        }
     });
 });

@@ -62,6 +62,11 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $this->masVariables();
             return;
         }
+
+        if($this->getRequest()->has('agregarModalidad')){
+            $this->agregarModalidad();
+            return;
+        }
     }
 
     public function listar()
@@ -240,6 +245,27 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
     }
 
     /**
+     * Devuelve el html de una nueva fila en la tabla de modalidades dentro del formulario de variable cualitativa.
+     */
+    private function agregarModalidad()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        //genero un id para el array del input del form, es solo para el html.
+        $sHtmlId = uniqid();
+
+        $this->restartTemplate();
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxRowModalidad", "ModalidadBlock");
+
+        $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
+        $this->getTemplate()->set_var("iOrden", "0");
+               
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxRowModalidad', false));
+    }
+
+    /**
      * Las acciones se dividen asi por el hecho de que puede ser de utilidad activar o desactivar la creacion o la edicion de variables
      * de manera independiente.
      *
@@ -380,7 +406,55 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
 
     private function mostrarFormularioVariableCualitativaPopUp($oVariableCualitativa = null)
     {
+        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableCualitativaBlock");
 
+        //FORMULARIO CREAR
+        if($oVariableCualitativa === null){
+
+            $this->getTemplate()->unset_blocks("SubmitModificarVariableCualitativaBlock");
+            $this->getTemplate()->unset_blocks("ModalidadBlock");
+
+            $sTituloForm = "Agregar nueva variable cualitativa a la Unidad";
+
+            //valores por defecto en el agregar
+            $iVariableIdForm = "";
+            $sNombre = "";
+            $sDescripcion = "";
+
+            $iUnidadId = $this->getRequest()->getPost('unidadId');
+            $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
+
+        //FORMULARIO EDITAR
+        }else{
+
+            $sTituloForm = "Editar variable cualitativa";
+
+            $this->getTemplate()->unset_blocks("SubmitCrearVariableCualitativaBlock");
+            $this->getTemplate()->unset_blocks("NoRecordsModalidadesBlock");
+            
+            $this->getTemplate()->set_var("iVariableIdForm", $oVariableCualitativa->getId());
+
+            $sNombre = $oVariableCualitativa->getNombre();
+            $sDescripcion = $oVariableCualitativa->getDescripcion();
+
+            foreach($oVariableCualitativa->getModalidades() as $oModalidad){
+
+                $sHtmlId = uniqid();
+                $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
+                $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
+                $this->getTemplate()->set_var("iOrden", $oModalidad->getOrden());
+                $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
+
+                $this->getTemplate()->parse("ModalidadBlock", true);
+            }
+        }
+
+        $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+        $this->getTemplate()->set_var("sNombre", $sNombre);
+        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
 
     public function guardar()
@@ -533,8 +607,8 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $oVariableNumerica = new stdClass();
-            $oVariableNumerica = Factory::getVariableNumericaInstance($oVariableNumerica);
+            $oVariableCualitativa = new stdClass();
+            $oVariableCualitativa = Factory::getVariableNumericaInstance($oVariableNumerica);
 
             $oVariableNumerica->setNombre($this->getRequest()->getPost("nombre"));
             $oVariableNumerica->setDescripcion($this->getRequest()->getPost("descripcion"));
@@ -580,5 +654,76 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    public function eliminarModalidad()
+    {
+        $iModalidadId = $this->getRequest()->getParam('iModalidadId');
+
+        if(empty($iModalidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //la modalidad pertenece a una variable cualitativa creada por el usuario logueado?
+            $bModalidadUsuario = SeguimientosController::getInstance()->isModalidadVariableUsuario($iModalidadId);
+            if(!$bModalidadUsuario){
+                throw new Exception("No tiene permiso para eliminar esta modalidad", 401);
+            }
+
+            SeguimientosController::getInstance()->borrarModalidadVariable($iModalidadId);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();  
+    }
+
+    public function eliminar()
+    {
+        $iVariableId = $this->getRequest()->getPost('iVariableId');
+
+        if(empty($iVariableId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{            
+            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);                    
+
+            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
+                throw new Exception("No tiene permiso para borrar la variable", 401);
+            }
+
+            $aVariables[] = $oVariable;
+            $result = SeguimientosController::getInstance()->borrarVariables($aVariables);
+
+            $this->restartTemplate();
+
+            if($result){
+                $msg = "La variable fue eliminada de la unidad";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $msg = "Ocurrio un error, no se ha eliminado la variable de la unidad";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha eliminado la variable de la unidad";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();   
     }
 }

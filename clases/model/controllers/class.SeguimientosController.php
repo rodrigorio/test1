@@ -987,24 +987,64 @@ class SeguimientosController
     {
     	try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+
+            //si al menos una variable fue eliminada de forma logica entonces la unidad tambien se borra logicamente
+            
             return $oUnidadIntermediary->borrar($iUnidadId);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
-     * Borrar Variable
+     * recibe un array de 1 o N variables y las borra fisica o logicamente dependiendo el plazo dispuesto para la edicion de seguimientos.
      *
+     * Toda variable que tenga asociado un valor a un seguimiento en una fecha que exceda la cantidad de dias del plazo
+     * sera borrada logicamente en el sistema.
+     *
+     * El metodo esta pensado para que pueda ser utilizado tanto en la eliminacion individual de una variable
+     * como en la eliminacion de una unidad con un conjunto N de variables. 
      */
-    public function borrarVariable($iVariableId)
+    public function borrarVariables($aVariables)
     {
     	try{
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');            
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->borrar($iVariableId);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+
+    public function isModalidadVariableUsuario($iModalidadId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+            return $oModalidadIntermediary->isModalidadVariableUsuario($iModalidadId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function borrarModalidadVariable($iModalidadId)
+    {
+    	try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+
+            //si la modalidad se uso como valor de variable en seguimientos asociados el borrado es logico.
+            if($oModalidadIntermediary->isUtilizadaEnSeguimientoUsuario($iModalidadId, $iUsuarioId)){                
+                return $oModalidadIntermediary->borradoLogico($iModalidadId);
+            }else{
+                return $oModalidadIntermediary->borrar($iModalidadId);
+            }
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    
     /**
      * Asociar Unidad de variables a seguimiento 
      *

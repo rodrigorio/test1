@@ -303,5 +303,19 @@ class RutasModuloSeguimientos
                                         'action'     => 'guardar'
                                 ));
         $router->addRoute('seguimientosUnidadesGuardar', $route);
+        $route = new RegexRoute('seguimientos/borrar-variable',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'variables',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('seguimientosVariablesBorrar', $route);
+        $route = new RegexRoute('seguimientos/borrar-modalidad-variable',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'variables',
+                                        'action'     => 'eliminarModalidad'
+                                ));
+        $router->addRoute('seguimientosVariablesBorrarModalidad', $route);
     }
 }
