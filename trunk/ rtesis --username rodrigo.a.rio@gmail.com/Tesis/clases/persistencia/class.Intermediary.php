@@ -92,7 +92,7 @@ abstract class Intermediary
      * @param boolean $quotes por defecto no agrega comillas. Si los filtros ya se encuentran con scape_string no se necesitan.
      * @return string del tipo [$alias.]$filtro[nombreCampo] = '$valor' AND [$alias.]$filtro[nombreCampo2] = '$valor2' AND ...
      */
-    protected final function crearCondicionSimple($filtro, $aliasTabla = "", $quotes = false,$concatenador = "AND"){
+    protected final function crearCondicionSimple($filtro, $aliasTabla = "", $quotes = false, $concatenador = "AND"){
         if(empty($filtro)){ return ""; }
 
         foreach ($filtro as $campo => $valor){

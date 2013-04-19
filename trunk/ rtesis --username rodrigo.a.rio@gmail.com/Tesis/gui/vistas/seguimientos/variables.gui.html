@@ -270,9 +270,13 @@
             </div>
         </div>
 
-        <div class="mabo" id="listadoModalidades">
+        <div class="form_line msg_modalidades" id="listadoModalidades">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Modalidades 
+            </label>
             <!--BeginGrillaModalidadesBlock-->
-            <table class="table01 wi100p">
+            <table id="grillaModalidades" class="table01 wi100p">
                 <tr class="encabezado">
                    <td class="small iveal">Modalidad</td>
                    <td class="small iveal">Orden</td>
@@ -282,11 +286,11 @@
                 <!--BeginModalidadBlock-->
                 <tr class="{modalidadHtmlId}">
                     <td>
-                        <input class="small" type="text" name="modalidad[{modalidadHtmlId}][nombre]" id="nombre" title="Nombre Modalidad" maxlength="50" value="{sNombre}" />
-                        <input type="hidden" name="modalidad[{modalidadHtmlId}][modalidadId]" id="modalidadId" value="{iModalidadId}" />
+                        <input class="medium" type="text" name="modalidad[{modalidadHtmlId}][modalidad]" title="Nombre Modalidad" maxlength="50" value="{sModalidad}" />
+                        <input type="hidden" name="modalidad[{modalidadHtmlId}][modalidadId]" value="{iModalidadId}" />
                     </td>
                     <td>
-                        <input size="2" type="text" name="modalidad[{modalidadHtmlId}][orden]" id="orden" title="N&uacute;mero de ordenamiento" maxlength="2" value="{iOrden}" />
+                        <input size="2" type="text" name="modalidad[{modalidadHtmlId}][orden]" title="N&uacute;mero de ordenamiento" maxlength="2" value="{iOrden}" />
                     </td>
                     <td class="teal_ce">                        
                         <span title="Eliminar" rel="{modalidadHtmlId}_{iModalidadId}" class="i bs delete ihover borrarModalidad"></span>
@@ -294,16 +298,17 @@
                 </tr>
                 <!--EndModalidadBlock-->
 
-                <!--BeginNoRecordsVariablesBlock-->
-                <tr>
+                <!--BeginNoRecordsModalidadesBlock-->
+                <tr id="noRecordsModalidades">
                     <td colspan="3">Sin modalidades</td>
                 </tr>
-                <!--EndNoRecordsVariablesBlock-->
+                <!--EndNoRecordsModalidadesBlock-->
             </table>
             <!--EndGrillaModalidadesBlock-->
+            <p>Listado con las distintas modalidades que la variable puede asumir. Por ejemplo: Malo, Regular, Bueno. Utilize el n&uacute;mero de orden para ordenar la lista.</p>
         </div>
-        <div class="baco pa2">
-            <label class="button agregarModalidad">
+        <div class="baco3 bobo1 pa2 mabo3">
+            <label id="agregarModalidad" class="button">
                 <span class="i bs add"></span>
                 <span class="buttonText">Agregar Modalidad</span>
             </label>
