@@ -11,8 +11,6 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 	protected function __construct( $conn) {
 		parent::__construct($conn);
 	}
-
-
 	/**
 	 * Singleton
 	 *
@@ -90,7 +88,7 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
         
 			$sSQL =	" update ciudades ".
                     " set nombre =".$db->escape($oCiudad->getNombre(),true).", " .
-                    " provincia_id =".escape($provinciaId,false,MYSQL_TYPE_INT).
+                    " provincia_id =".escape($provinciaId,false,MYSQL_TYPE_INT)." ".
                     " where id =".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
