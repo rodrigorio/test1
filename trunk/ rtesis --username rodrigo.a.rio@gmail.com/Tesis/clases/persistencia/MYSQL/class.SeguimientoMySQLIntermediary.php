@@ -689,8 +689,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             	$oVariable = $vVariable[$i];
             	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
             		.$this->escInt($oVariable->getId()).", "
-            		.$this->escStr($oVariable->getValor()).", "
-            		.$this->escDate($oVariable->getFechaHora()).") ";
+            		.$this->escStr($oVariable->getValor()).", ";
             	if (count($vVariable) > $i+1) {
             		$sSQL .= ",";
             	}
