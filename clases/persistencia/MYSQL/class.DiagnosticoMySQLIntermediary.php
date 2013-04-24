@@ -50,7 +50,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-          
             $db->query($sSQL);
             $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
             if(empty($iRecordsTotal)){ return null; }
@@ -195,7 +194,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 
             return true;
         }catch(Exception $e){
-            throw $e;
+             throw new Exception($e->getMessage(), 0);
         }
     }
     
@@ -222,11 +221,11 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
 
             $oDiagnosticoPersonalizado->setId($iLastId);
 
-            return true;
+            return $iLastId;
         }catch(Exception $e){
             $db->rollback_transaction();
             $oDiagnosticoPersonalizado->setId(null);
-            throw $e;
+            throw new Exception($e->getMessage(), 0);
         }
     }
    
@@ -250,7 +249,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $db->execSQL($sSQL);
             $db->commit();
 
-            return true;
+            return $iLastId;
 
         }catch(Exception $e){
             $db->rollback_transaction();

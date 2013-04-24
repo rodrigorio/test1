@@ -51,11 +51,11 @@ var optionsAjaxFormDiagnostico = {
     url: 'seguimientos/procesar-diagnostico',
     beforeSerialize:function(){
     	var ejes = $(".eje");
-    	if (ejes.length == 0) {
+    	if ($("#tipoDiagnostico").val()=="SCC" && ejes.length == 0) {
     		showMsgEjeError();
     		return false;
     	}
-    	
+    	alert(1);
         if($("#formGuardarDiagnostico").valid() == true){
             $('#msg_form_guardarDiagnostico').hide();
             $('#msg_form_guardarDiagnostico').removeClass("correcto").removeClass("error");
@@ -65,10 +65,8 @@ var optionsAjaxFormDiagnostico = {
             return false;
         }
     },
-
     success:function(data){
         setWaitingStatus('tabsFormDiagnostico', false);
-        
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
                 $('#msg_form_guardarDiagnostico .msg').html(lang['error procesar']);
