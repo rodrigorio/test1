@@ -389,7 +389,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $iRecordsTotal = 0;
             $aSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
-            if(count($aSeguimientos) > 4){
+            if(count($aSeguimientos) > 2){
                 $this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
                 $this->getJsonHelper()->sendJsonAjaxResponse(); 
                 return;
@@ -1774,14 +1774,16 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions)
                  ->setFichaPersonaMenuDerechaSeguimiento($oSeguimiento->getDiscapacitado());
 
-            $this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_PERSONALIZADO_DESC);
+            
             $this->getTemplate()->set_var("subtituloSeccion", "diagnóstico");
 
             $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
 
             if($oSeguimiento->isSeguimientoPersonalizado()){
+            	$this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_PERSONALIZADO_DESC);
             	$this->formDiagnosticoPersonalizado($oSeguimiento);
             }else{
+            	$this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_SCC_DESC);
             	$this->formDiagnosticoSCC($oSeguimiento);
             }
             

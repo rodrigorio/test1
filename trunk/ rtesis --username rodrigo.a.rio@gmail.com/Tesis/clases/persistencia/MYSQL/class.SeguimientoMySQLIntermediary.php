@@ -249,7 +249,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -448,7 +447,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
             $sSQL = " INSERT INTO seguimientos_personalizados SET ".
                     " id = ".$this->escInt($iLastId).", ".
-                    " diagnostico_personalizado_id = ".$db->escape($oDiagnostico->getId(),false,MYSQL_TYPE_INT)." ";
+                    " diagnosticos_personalizado_id = ".$db->escape($oDiagnostico->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
 
