@@ -1,17 +1,14 @@
 <?php
  /**
  * @author Andres
- * 
+ * El tipo de pregunta es: "preguntas simples" o "preguntas con opciones o Multiples Choice"
  */
 class Pregunta{
     
-    private $iId;
-    private $sDescripcion;
-    private $sTipo;
-    private $sRespuesta = null; 
-    
-    private $aOpciones = null;
-    
+    protected  $iId;
+    protected  $sDescripcion;
+    private    $sRespuesta = null;     
+      
 
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -26,6 +23,11 @@ class Pregunta{
             }
         }
     }
+    /**
+     * En la clase PreguntaMC es redeclarada para devolver true.
+     */
+    public function isPreguntaMC(){ return false; }
+     
     
     /**
      *  @param int $iId
@@ -54,10 +56,7 @@ class Pregunta{
     public function setRespuesta($sRespuesta){
             $this->sRespuesta = $sRespuesta;
     }
-    public function setOpciones($aOpciones){
-        $this->aOpciones = $aOpciones;
-        return $this;
-    }
+   
     /**
      *  @return int $iId
      */
@@ -71,25 +70,13 @@ class Pregunta{
     public function getDescripcion(){
         return $this->sDescripcion;
     }
-    /**
-     * @return string $sTipo
-     */
-    public function getTipo(){
-        return $this->sTipo;
-    }
      /**
      * @return string $sRespuesta
      */
     public function getRespuesta(){
         return $this->sRespuesta;
     }
-    public function getOpciones()
-    {
-        if($this->aOpciones === null){
-            $this->aOpciones = SeguimientosController::getInstance()->getOpcionesByPreguntaId($this->iId);
-        }
-        return $this->aOpciones;
-    }
+    
     
     }
 }

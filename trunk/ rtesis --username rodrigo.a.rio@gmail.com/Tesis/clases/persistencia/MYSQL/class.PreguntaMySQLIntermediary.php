@@ -28,7 +28,7 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        p.id as iId, p.descripcion as sDescripcion, p.tipo as sTipo
+                        p.id as iId, p.descripcion as sDescripcion
                     FROM
                        preguntas p ";
             
@@ -47,7 +47,6 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             	$oPregunta 		= new stdClass();
             	$oPregunta->iId 		= $oObj->iId;
             	$oPregunta->sDescripcion	= $oObj->sDescripcion;
-            	$oPregunta->sTipo	= $oObj->sTipo;
             	$aPreguntas[]		= Factory::getPreguntaInstance($oPregunta);
             }
             return $aPreguntas;
