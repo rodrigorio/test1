@@ -57,13 +57,13 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
         }
     }
     
-	public  function insertar($oOpcion)
+	public  function insertar($oOpcion, $iPreguntaId)
    {
 		try{
 			$db = $this->conn;
 			$sSQL =	" insert into preguntas_opciones ".
-                    " set descripcion =".$db->escape($oOpcion->getDescripcion(),true).", " .
-                    " preguntas_id =".$db->escape($oCiudad->getProvincia()->getId(),false,MYSQL_TYPE_INT)." ";
+                    " set descripcion =".$db->escape($oOpcion->getDescripcion(),true)." , " .
+                    " preguntas_id =".escape($iPreguntaId,false,MYSQL_TYPE_INT)." ";
 			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
@@ -74,20 +74,15 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
 		}
 	}
     
-	public function actualizar($oCiudad)
+	public function actualizar($oOpcion, $iPreguntaId)
    {
 		try{
 			$db = $this->conn;
-		if($oCiudad->getProvincia()!= null){
-			$provinciaId = ($oCiudad->getProvincia()->getId());
-			}else {
-				$provinciaId = null;
-			}
-        
-			$sSQL =	" update ciudades ".
-                    " set nombre =".$db->escape($oCiudad->getNombre(),true).", " .
-                    " provincia_id =".escape($provinciaId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT)." " ;			 
+	        
+			$sSQL =	" update preguntas_opciones ".
+                    " set descripcion =".$db->escape($oOpcion->getDescripcion(),true).", " .
+                     " preguntas_id =".escape($iPreguntaId,false,MYSQL_TYPE_INT)." ".
+                    " where id =".$db->escape($oOpcion->getId(),false,MYSQL_TYPE_INT)." " ;			 
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
@@ -96,22 +91,22 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    public function guardar($oCiudad)
+    public function guardar($oOpcion)
     {
         try{
-			if($oCiudad->getId() != null){
-            	return $this->actualizar($oCiudad);
+			if($oOpcion->getId() != null){
+            	return $this->actualizar($oOpcion);
             }else{
-				return $this->insertar($oCiudad);
+				return $this->insertar($oOpcion);
             }
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
     }
-	public function borrar($oCiudad) {
+	public function borrar($oOpcion) {
 		try{
 			$db = $this->conn;
-			$db->execSQL("delete from ciudades where id=".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT));
+			$db->execSQL("delete from preguntas_opciones where id=".$db->escape($oOpcion->getId(),false,MYSQL_TYPE_INT));
 			$db->commit();
 
 		}catch(Exception $e){
@@ -131,7 +126,7 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        ciudades c 
+                        preguntas_opciones 
 					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);

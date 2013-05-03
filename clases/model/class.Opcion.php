@@ -6,6 +6,7 @@
 class Opcion{
 	private $iId;
 	private $sDescripcion;
+	
 		
  	/**
  	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase 
@@ -42,7 +43,7 @@ class Opcion{
     public function getId(){
         return $this->iId ;
     }
-
+  
     /**
      * @return string $sDescripcion
      */

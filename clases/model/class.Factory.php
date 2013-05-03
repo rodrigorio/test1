@@ -408,4 +408,28 @@ class Factory
         $oPasswordTemporal = new PasswordTemporal($obj);
         return $oPasswordTemporal;
     }
+    /**
+     * @param stdClass $obj
+     * @return Pregunta|null
+     */
+    public static function &getPreguntaInstance(stdClass $obj){
+        $oPregunta = new Pregunta($obj);
+        return $oPregunta;
+    }
+    /**
+     * @param stdClass $obj
+     * @return PreguntaMC|null
+     */
+    public static function &getPreguntaMCInstance(stdClass $obj){
+        $oPreguntaMC = new PreguntaMC($obj);
+        return $oPreguntaMC;
+    }
+     /**
+     * @param stdClass $obj
+     * @return Entrevista|null
+     */
+    public static function &getEntrevistaInstance(stdClass $obj){
+        $oEntrevista = new Entrevista($obj);
+        return $oEntrevista;
+    }
 }
