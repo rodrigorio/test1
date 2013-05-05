@@ -140,7 +140,7 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                         foreach($aModalidades as $oModalidad){
                             $sModalidades .= $oModalidad->getModalidad().", ";
                         }
-                        $sModalidades = substr($sModalidades, 0, -1);
+                        $sModalidades = substr($sModalidades, 0, -2);
                         $this->getTemplate()->set_var("sModalidades", $sModalidades);
                     }
 
@@ -151,9 +151,9 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->parse("VariableBlock", true);
                 }
 
+                $params[] = "id=".$iUnidadId;
                 $params[] = "masVariables=1";
                 $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $params);
-
             }else{
                 $this->getTemplate()->set_var("sNoRecords", "No hay variables cargadas en la unidad");
                 $this->getTemplate()->set_var("VariableBlock", "");
@@ -169,7 +169,7 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
     private function masVariables()
     {
         //primero me fijo que este el id de unidad
-        $iUnidadId = $this->getRequest()->getPost('unidadId');
+        $iUnidadId = $this->getRequest()->getPost('id');
         if(empty($iUnidadId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
@@ -223,7 +223,7 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                     foreach($aModalidades as $oModalidad){
                         $sModalidades .= $oModalidad->getModalidad().", ";
                     }
-                    $sModalidades = substr($sModalidades, 0, -1);
+                    $sModalidades = substr($sModalidades, 0, -2);
                     $this->getTemplate()->set_var("sModalidades", $sModalidades);
                 }
 
@@ -234,6 +234,7 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->parse("VariableBlock", true);
             }
 
+            $paramsPaginador[] = "id=".$iUnidadId;
             $paramsPaginador[] = "masVariables=1";
             $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $paramsPaginador);
         }else{
@@ -603,22 +604,51 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
     }
 
     private function crearVariableCualitativa()
-    {
+    {       
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $oVariableCualitativa = new stdClass();
-            $oVariableCualitativa = Factory::getVariableNumericaInstance($oVariableNumerica);
+            $oVariableCualitativa = Factory::getVariableCualitativaInstance($oVariableCualitativa);
 
-            $oVariableNumerica->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariableNumerica->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oVariableCualitativa->setNombre($this->getRequest()->getPost("nombre"));
+            $oVariableCualitativa->setDescripcion($this->getRequest()->getPost("descripcion"));
 
+            $vModalidad = $this->getRequest()->getPost("modalidad");
+            if( empty($vModalidad) || !is_array($vModalidad) || count($vModalidad) < 2 ){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("Deben guardarse al menos 2 modalidades");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            //listado modalidades
+            $aModalidades = array();
+            foreach($vModalidad as $modalidad){
+
+                $sModalidad = trim($modalidad['modalidad']);
+                if(empty($sModalidad)){
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->setMessage("Ninguna modalidad puede quedar vacia");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+                $iModalidadId = (empty($modalidad['modalidadId'])) ? null : $modalidad['modalidadId'];
+                $iOrden = (empty($modalidad['orden'])) ? 0 : $modalidad['orden'];
+                
+            	$oModalidad = new stdClass();
+            	$oModalidad->iId = $iModalidadId;
+            	$oModalidad->sModalidad = $sModalidad;
+                $oModalidad->iOrden = $iOrden;
+            	$aModalidades[] = Factory::getModalidadInstance($oModalidad);
+            }
+            $oVariableCualitativa->setModalidades($aModalidades);                        
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-
-            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica, $iUnidadId);
+                        
+            SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa, $iUnidadId);
 
             $this->getJsonHelper()->setValor("agregarVariable", "1");
-            $this->getJsonHelper()->setMessage("La variable numérica se ha creado con éxito");
+            $this->getJsonHelper()->setMessage("La variable cualitativa se ha creado con éxito");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
