@@ -29,7 +29,7 @@ class Modalidad
      *  @param int $iId
      */
     public function setId($iId){
-        $this->iId = (int)$iId;
+        $this->iId = $iId;
     }
 
     public function setModalidad($sModalidad){

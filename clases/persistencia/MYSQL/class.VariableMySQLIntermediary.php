@@ -96,7 +96,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
    }
 
     public function guardar($oVariable, $iUnidadId = "")
-    {
+    {                
         try{
             $db = $this->conn;
             $db->begin_transaction();
@@ -121,7 +121,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
    public  function insertar($oVariable, $iUnidadId = "")
    {
         try{
-            $sTipo = get_class($oVariable);
+            $db = $this->conn;
+            $sTipo = get_class($oVariable);            
 
             $sSQL = " insert into variables set ".
                     " nombre = ".$this->escStr($oVariable->getNombre()).", ".
@@ -130,9 +131,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
                     " unidad_id = ".$this->escInt($iUnidadId)." ";
 			 
              $this->conn->execSQL($sSQL);
-
-             if($oVariable->isVariableCualitativa()){
-                 $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+             $oVariable->setId($this->conn->insert_id());
+             
+             if($oVariable->isVariableCualitativa()){                                  
+                 $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($db);
                  $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
              }
 
@@ -142,8 +144,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
         }
     }
     
-    public function actualizar($oVariable)
-   {
+   public function actualizar($oVariable)
+   { 
         try{
             $sTipo = get_class($oVariable);
 		
@@ -154,28 +156,62 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
              $this->conn->execSQL($sSQL);
 
+             if($oVariable->isVariableCualitativa()){
+                 $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->conn);
+                 $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
+             }
+
              return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
-	public function borrar($iVariableId) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from variables where id = '".$iVariableId."'");
-			$db->commit();
 
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+    /**
+     *  En una transaccion primero se hace update de borrado logico = 1 para todas las variables que no se pueden borrar fisicamente.
+     *  Luego se utilizan los mismos ids para borrar fisicamente si y solo si borrado logico = 0.
+     *  En el caso de las variables cualitativas las modalidades se borran en cascada si el borrado es fisico.
+     *  
+     *
+     * @param string $iIds string separado por comas con todos los ids de las variables que hay que borrar (logica o fisicamente)
+     * @param integer $cantDiasExpiracion cantidad de dias del periodo en el cual se puede editar un seguimiento.
+     * Esto implica que si la variable tiene al menos una entrada por fecha con valor mayor al periodo se borra si o si logicamente.
+     */
+    public function borrarVariables($iIds, $cantDiasExpiracion)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $sSQL = " UPDATE variables SET ".
+                    " borradoLogico = '1' ".
+                    " WHERE ".
+                    " id in (SELECT DISTINCT scv.variable_id
+                             FROM seguimiento_x_contenido_variables scv 
+                             WHERE variable_id IN (".$iIds.") 
+                             AND TO_DAYS(NOW()) - TO_DAYS(scv.fechaHora) <= ".$cantDiasExpiracion.") ";
+
+            $this->conn->execSQL($sSQL);
+
+            $sSQL = " DELETE FROM variables WHERE ".
+                    " id IN (".$iIds.") AND borradoLogico = '0' ";
+            
+            $this->conn->execSQL($sSQL);
+
+            $db->commit();
+            return true;
+         
+    	}catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public function borrar($iVariableId){}
 	
-	public function actualizarCampoArray($objects, $cambios){
-		
-	}
+    public function actualizarCampoArray($objects, $cambios){}
  	
-	public function existe($filtro){
+    public function existe($filtro){
     	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);

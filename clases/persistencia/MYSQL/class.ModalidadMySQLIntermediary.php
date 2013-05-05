@@ -63,13 +63,13 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
     }
 
     public function guardarModalidadesVariableCualitativa(VariableCualitativa $oVariable)
-    {
+    {        
         try
         {
-            if(null !== $oVariable->getModalidades()){
+            if(null !== $oVariable->getModalidades()){                                
                 $db = $this->conn;
-                $db->begin_transaction();
-                foreach($oVariable->getModalidades() as $oModalidad){
+                $db->begin_transaction();                
+                foreach($oVariable->getModalidades() as $oModalidad){                    
                     if(null !== $oModalidad->getId()){
                         $this->actualizar($oModalidad);
                     }else{
@@ -98,12 +98,11 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
             $sSQL = " INSERT INTO variable_cualitativa_modalidades SET ".
                      " variables_id = '".$iVariableId."', ".
                      " modalidad = ".$this->escStr($oModalidad->getModalidad()).", ".
-                     " orden = ".$this->escInt($oModalidad->getOrden())." ";
+                     " orden = ".$this->escInt($oModalidad->getOrden())." ";           
 
-            $db->execSQL($sSQL);
-            $iLastId = $db->insert_id();
+            $this->conn->execSQL($sSQL);            
+            $oModalidad->setId($this->conn->insert_id());
             
-            $oModalidad->setId($iLastId);
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -118,8 +117,7 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
                     " orden = ".$this->escInt($oModalidad->getOrden())." ".
                     " where id = ".$this->escInt($oModalidad->getId())." ";
                     			 
-            $db->execSQL($sSQL);
-            $db->commit();
+            $this->conn->execSQL($sSQL);
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -133,7 +131,7 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
                     " borradoLogico = 1 ".
                     " where id = ".$this->escInt($iModalidadId)." ";
             $db->execSQL($sSQL);
-            $db->commit();
+            $this->conn->commit();
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

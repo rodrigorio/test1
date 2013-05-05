@@ -140,6 +140,9 @@ var optionsAjaxFormVariableNumerica = {
     }
 };
 
+/**
+ * La validacion de las modalidades se hacen del lado del server y se devuelve por ajax.
+ */
 var validateFormVariableCualitativa = {
     errorElement: "div",
     validClass: "correcto",
@@ -169,12 +172,12 @@ var optionsAjaxFormVariableCualitativa = {
     url: 'seguimientos/guardar-variable',
     beforeSerialize:function(){
 
-        if($("#formVariableNumerica").valid() == true){
+        if($("#formVariableCualitativa").valid() == true){
 
             $('#msg_form_variable').hide();
             $('#msg_form_variable').removeClass("correcto").removeClass("error");
             $('#msg_form_variable .msg').html("");
-            setWaitingStatus('formVariableNumerica', true);
+            setWaitingStatus('formVariableCualitativa', true);
 
         }else{
             return false;
@@ -182,7 +185,7 @@ var optionsAjaxFormVariableCualitativa = {
     },
 
     success:function(data){
-        setWaitingStatus('formVariableNumerica', false);
+        setWaitingStatus('formVariableCualitativa', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
@@ -199,9 +202,11 @@ var optionsAjaxFormVariableCualitativa = {
             }
             if(data.agregarVariable != undefined){
                 //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formVariableNumerica').each(function(){
-                  this.reset();
+                $('#formVariableCualitativa').each(function(){
+                  this.reset();                  
                 });
+                
+                $('.modalidad').remove();
             }
 
             //refresco el listado actual
@@ -238,7 +243,7 @@ function masVariables(){
             masVariables:"1",
             sOrderBy: sOrderBy,
             sOrder: sOrder,
-            unidadId: unidadId
+            id: unidadId
         },
         beforeSend: function(){
             setWaitingStatus('listadoVariables', true);

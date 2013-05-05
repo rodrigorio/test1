@@ -1010,12 +1010,20 @@ class SeguimientosController
     	try{
             $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');            
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return $oVariableIntermediary->borrar($iVariableId);
+
+            //genero un string con los ids separados con ',' para que se realize la transaccion en el sql.
+            $sIds = "";
+            foreach($aVariables as $oVariable){
+                $sIds .= $oVariable->getId().",";
+                $sIds = substr($sIds, 0, -1);
+            }
+            
+            return $oVariableIntermediary->borrarVariables($sIds, $cantDiasExpiracion);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
-
+    
     public function isModalidadVariableUsuario($iModalidadId)
     {
         try{
@@ -1027,6 +1035,12 @@ class SeguimientosController
         }
     }
 
+    /**
+     * En las modalidades no se tiene en cuenta el periodo de ventana en el cual se puede editar un seguimiento,
+     * porque sino habria que reemplazar la modalidad utilizada por otra antes de ser eliminada.
+     *
+     * Simplemente siempre que esta asociada con al menos un seguimiento se borra logicamente.
+     */
     public function borrarModalidadVariable($iModalidadId)
     {
     	try{
