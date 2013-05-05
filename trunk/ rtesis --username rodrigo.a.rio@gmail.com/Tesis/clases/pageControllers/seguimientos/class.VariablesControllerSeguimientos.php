@@ -664,19 +664,42 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $iVariableId = $this->getRequest()->getPost('variableIdForm');
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
 
             if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
                 throw new Exception("No tiene permiso para editar la variable", 401);
             }
+            
+            $oVariableCualitativa = SeguimientosController::getInstance()->getVariableById($iVariableId);
+          
+            $oVariableCualitativa->setNombre($this->getRequest()->getPost("nombre"));
+            $oVariableCualitativa->setDescripcion($this->getRequest()->getPost("descripcion"));
 
-            $oVariable->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $vModalidad = $this->getRequest()->getPost("modalidad");
+            if( empty($vModalidad) || !is_array($vModalidad) || count($vModalidad) < 2 ){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("Deben guardarse al menos 2 modalidades");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
 
             SeguimientosController::getInstance()->guardarVariable($oVariable);
 
+            //genero el html de la grilla de las modalidades con el id actualizado.
+            $this->restartTemplate();
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxGrillaModalidades", "GrillaModalidadesBlock");
+
+            foreach($oVariableCualitativa->getModalidades() as $oModalidad){
+                $sHtmlId = uniqid();
+                $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
+                $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
+                $this->getTemplate()->set_var("iOrden", $oModalidad->getOrden());
+                $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
+                $this->getTemplate()->parse("ModalidadBlock", true);
+            }
+                        
             $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
             $this->getJsonHelper()->setValor("modificarVariable", "1");
+            $this->getJsonHelper()->setValor("grillaModalidades", $this->getTemplate()->pparse('ajaxGrillaModalidades', false));
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){

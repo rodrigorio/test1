@@ -184,16 +184,14 @@ var optionsAjaxFormVariableCualitativa = {
         }
     },
 
-    success:function(data){
-        setWaitingStatus('formVariableCualitativa', false);
-
+    success:function(data){        
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
                 $('#msg_form_variable .msg').html(lang['error procesar']);
             }else{
                 $('#msg_form_variable .msg').html(data.mensaje);
             }
-            $('#msg_form_variable').addClass("error").fadeIn('slow');
+            $('#msg_form_variable').addClass("error");
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_variable .msg').html(lang['exito procesar']);
@@ -209,10 +207,18 @@ var optionsAjaxFormVariableCualitativa = {
                 $('.modalidad').remove();
             }
 
+            //si estoy editando una variable cualitativa refresco el listado de modalidades. necesario por ids
+            if(data.modificarVariable != undefined){
+                $("#grillaModalidadesWrapper").html(data.grillaModalidades);                    
+            }
+
             //refresco el listado actual
             masVariables();
-            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+            $('#msg_form_variable').addClass("correcto");
         }
+        
+        setWaitingStatus('formVariableCualitativa', false);
+        $('#msg_form_variable').fadeIn('slow');
     }
 };
 
