@@ -896,6 +896,21 @@ class SeguimientosController
     }
 
     /**
+     * Devuelve true si el nombre ya esta siendo utilizado para una variable
+     * dentro de la unidad
+     */
+    public function existeVariableUnidadIntegrante($sNombreVariable, $iUnidadId)
+    {
+    	try{
+            $filtro = array('v.nombre' => $sNombreVariable, 'v.unidad_id' => $iUnidadId);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return $oVariableIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Devuelve array de objetos modalidad para una variable del tipo cualitativa.
      */
     public function getModalidadesByVariableId($iVariableCualitativaId)

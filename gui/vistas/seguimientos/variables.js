@@ -360,6 +360,7 @@ $(document).ready(function(){
         var rel = $(this).attr("rel").split('_');
         var tipo = rel[0];
         var iVariableId = rel[1];
+        var unidadId = $('#unidadId').val();
 
         var titulo = "";
         switch(tipo){
@@ -374,7 +375,7 @@ $(document).ready(function(){
         //aca la unica condicion que me fijo es para bindear el javascript segun el tipo de formulario, la url es la misma.
         dialog.load(
             "seguimientos/form-editar-variable",
-            {"iVariableId":iVariableId},
+            {"iVariableId":iVariableId, "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){
                 switch(tipo){
                 case "VariableTexto":
