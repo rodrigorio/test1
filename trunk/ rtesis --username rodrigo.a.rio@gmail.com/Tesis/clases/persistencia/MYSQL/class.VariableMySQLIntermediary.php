@@ -220,7 +220,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
                         1 as existe
                     FROM
                         variables v
-                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                    WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
 
