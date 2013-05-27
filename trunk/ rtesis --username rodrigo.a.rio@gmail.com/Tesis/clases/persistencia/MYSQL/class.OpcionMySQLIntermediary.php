@@ -142,5 +142,5 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
            	return false; 
         }
     }
-}
+
 }

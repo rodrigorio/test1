@@ -61,7 +61,7 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
 			$db = $this->conn;
 			$sSQL =	" insert into preguntas ".
                     " set descripcion =".$db->escape($oPregunta->getDescripcion(),true).", " .
-                    " set tipo =".$db->escape($oPregunta->getTipo(),true)." , "
+                    " set tipo =".$db->escape($oPregunta->getTipo(),true)." , ".
 			        " entrevistas_id =".$db->escape($iEntrevistaId(),false,MYSQL_TYPE_INT)." ";
 			 
 			 $db->execSQL($sSQL);
