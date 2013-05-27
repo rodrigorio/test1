@@ -798,6 +798,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }         
     }
+
     /**
      * Obtener Unidades 
      *
@@ -949,9 +950,10 @@ class SeguimientosController
      /**
      * Obtener unidades  por id de seguimiento
      *
+     * Se utiliza para saber las unidades asociadas, las variables no tienen el valor correspondiente a una fecha
      */
     public function getUnidadesBySeguimientoId($iSeguimientoId)
-    {
+    {        
     	try{
             $filtro = array('u.id' => $iSeguimientoId);
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
@@ -966,6 +968,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
      * Guardar Variables
      *
@@ -998,14 +1001,24 @@ class SeguimientosController
      * Borrar Unidad
      *
      */
-    public function borrarUnidad($iUnidadId)
+    public function borrarUnidad($oUnidad)
     {
     	try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
 
-            //si al menos una variable fue eliminada de forma logica entonces la unidad tambien se borra logicamente
-            
-            return $oUnidadIntermediary->borrar($iUnidadId);
+            $success = true;
+            if(null !== $oUnidad->getVariables()){
+                //borro todas las variables de la unidad. si devuelve true no hubo errores.
+                $success = $this->borrarVariables($oUnidad->getVariables());
+            }
+
+            if($success){
+                //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
+                //se borra logicamente.
+                return $oUnidadIntermediary->borrar($iUnidadId);
+            }else{
+                return false;
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1085,30 +1098,38 @@ class SeguimientosController
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
-    }     
+    }
+    
     /**
      * Obtener Objetivos Personalizados
      *
+     * Se utiliza para saber los objetivos asociados a un seguimiento personalizado.
+     *
+     * Las instancias no tienen el valor correspondiente a la fecha de una entrada en particular
      */
    public function getObjetivosPersonalizados($oSeguimiento)
       {
     	try{    	    
-        	$filtro = array('op.seguimientos_personalizados_id' => $oSeguimiento->getId());
+            $filtro = array('op.seguimientos_personalizados_id' => $oSeguimiento->getId());
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
+    
    /**
-     * Obtener Objetivos Curriculares 
-     *
-     */
+    * Obtener Objetivos Curriculares
+    *
+    * Se utiliza para saber los objetivos asociados a un seguimiento SCC.
+    * Las instancias no tienen el valor correspondiente a la fecha de una entrada en particular
+    *
+    */
    public function getObjetivoAprendizaje($oSeguimiento)
       {
     	try{
-    	   	$filtro = array('sxo.seguimientos_scc_id' => $oSeguimiento->getId());    		
-    		$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $filtro = array('sxo.seguimientos_scc_id' => $oSeguimiento->getId());
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw $e;

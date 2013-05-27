@@ -4,10 +4,9 @@
  * Esta clase es redefinida para guardar las preguntas cuando el tipo es Multiples Choise 
  */
 class PreguntaMC extends Pregunta{
-    
-           
-    private $oOpcion  null;
-    private $aOpciones null;
+               
+    private $oOpcion = null;
+    private $aOpciones = null;
     
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -48,8 +47,8 @@ class PreguntaMC extends Pregunta{
      
     public function getRespuesta(){
            
-        return $this->oOpcion
-        }
+        return $this->oOpcion;
+    }
         
      /**
      * @return array $aOpciones
@@ -62,6 +61,5 @@ class PreguntaMC extends Pregunta{
             $this->aOpciones = SeguimientosController::getInstance()->getOpcionesByPreguntaId($this->iId);
         }
         return $this->aOpciones;
-    }
-       
+    }      
 }

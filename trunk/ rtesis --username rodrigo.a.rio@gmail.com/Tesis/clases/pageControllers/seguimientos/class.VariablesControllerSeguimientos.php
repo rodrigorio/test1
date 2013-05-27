@@ -685,6 +685,7 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
 
             //listado modalidades
             $aModalidades = array();
+            $aModalidadesAux = array(); //lo uso para asegurarme de que no haya dos modalidades con el mismo nombre
             foreach($vModalidad as $modalidad){
 
                 $sModalidad = trim($modalidad['modalidad']);
@@ -701,8 +702,19 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             	$oModalidad->iId = $iModalidadId;
             	$oModalidad->sModalidad = $sModalidad;
                 $oModalidad->iOrden = $iOrden;
+
+                $aModalidadesAux[] = $sModalidad;
             	$aModalidades[] = Factory::getModalidadInstance($oModalidad);
             }
+
+            //hubo al menos una repeticion en el array.
+            if(count($aModalidadesAux) != count(array_unique($aModalidadesAux))){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("No puede haber 2 modalidades con el mismo nombre");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+            
             $oVariableCualitativa->setModalidades($aModalidades);                        
                                    
             SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa, $iUnidadId);
@@ -754,6 +766,7 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
 
             //listado modalidades
             $aModalidades = array();
+            $aModalidadesAux = array(); //lo uso para asegurarme de que no haya dos modalidades con el mismo nombre
             foreach($vModalidad as $modalidad){
 
                 $sModalidad = trim($modalidad['modalidad']);
@@ -770,9 +783,19 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             	$oModalidad->iId = $iModalidadId;
             	$oModalidad->sModalidad = $sModalidad;
                 $oModalidad->iOrden = $iOrden;
-            	$aModalidades[] = Factory::getModalidadInstance($oModalidad);
+
+                $aModalidadesAux[] = $sModalidad;
+            	$aModalidades[] = Factory::getModalidadInstance($oModalidad);                
             }
-            $oVariableCualitativa->setModalidades($aModalidades);                        
+            $oVariableCualitativa->setModalidades($aModalidades);
+
+            //hubo al menos una repeticion en el array.
+            if(count($aModalidadesAux) != count(array_unique($aModalidadesAux))){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("No puede haber 2 modalidades con el mismo nombre");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
 
             SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa);
 
