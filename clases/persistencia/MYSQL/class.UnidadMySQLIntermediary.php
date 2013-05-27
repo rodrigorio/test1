@@ -170,24 +170,48 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
+    /**
+     * Si la unidad tiene al menos una variable asociada que este borrada logicamente
+     * entonces la unidad tambien se borra logicamente.
+     *
+     */
     public function borrar($iUnidadId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from unidades where id = '".$iUnidadId."'");
-            $db->commit();
-            return true;
+            
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        unidades u
+                    JOIN variables v ON u.id = v.unidad_id
+                    WHERE v.borradoLogico = 1 AND u.id = ".$this->escInt($iUnidadId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                //borra fisicamente la unidad
+                $db->execSQL("delete from unidades where id = '".$iUnidadId."'");
+                $db->commit();
+                return true;
+            }else{
+            	//borra logicamente la unidad
+                $db->execSQL("UPDATE unidades SET borradoLogico = 1 WHERE id = '".$iUnidadId."'");
+                $db->commit();
+                return true;
+            }            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 		
-	public function actualizarCampoArray($objects, $cambios){
-		
-	}
- 	
-	public function existe($filtro){
+    public function actualizarCampoArray($objects, $cambios){
+    }
+
+    public function existe($filtro){
     	try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
@@ -196,7 +220,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                         1 as existe
                     FROM
                         unidades u 
-					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                    WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);
 

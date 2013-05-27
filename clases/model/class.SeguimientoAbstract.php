@@ -24,8 +24,19 @@ abstract class SeguimientoAbstract
    protected $sDiaHorario;
    protected $dFechaCreacion;
    protected $sEstado;
-   
+
+   /**
+    * Estos atributos se usan unicamente para el caso de asociar al seguimiento.
+    * Para obtener los valores por fecha ver las referencias a traves de entrada por fecha (objeto Entrada)
+    */
    protected $aObjetivos = null;
+   protected $aUnidades = null;
+
+   /**
+    * Instancias a objetos entradas, cada entrada tendria una fecha y los valores para todas las variables
+    * y todos los objetivos del seguimiento en esa fecha.
+    */
+   protected $aEntradas = null;
    
    /*
     * array objetos Foto
@@ -45,9 +56,7 @@ abstract class SeguimientoAbstract
     protected $oAntecedentes;
 
     protected $oDiagnostico;
-
-    protected $aUnidades = null;
-    
+        
     public function __construct(){}
 
     /**
@@ -250,9 +259,49 @@ abstract class SeguimientoAbstract
         return $this;
     }
 
+    public function getEntradas($dFechaDesde = "", $dFechaHasta = "")
+    {
+        if($this->aEntradas === null){
+            $this->aEntradas = SeguimientosController::getInstance()->getEntradasBySeguimientoId($this->iId, $dFechaDesde, $dFechaHasta);
+        }
+        return $this->aEntradas;
+    }
+
+    /**
+     * Para no tener que levantar tanta info si solo se requiere ver la ultima
+     */
+    public function getUltimaEntrada()
+    {
+        $oUltimaEntrada = null;
+        $oUltimaEntrada = SeguimientosController::getInstance()->getUltimaEntradaBySeguimientoId($this->iId);
+        return $oUltimaEntrada;
+    }
+
+    /**
+     * Para no tener que levantar tanta info devuelve la entrada para una fecha determinada
+     */
+    public function getEntradaByFecha($dFecha)
+    {
+        $oEntrada = null;
+        $oEntrada = SeguimientosController::getInstance()->getEntradaPorFechaBySeguimientoId($this->iId, $dFecha);
+        return $oEntrada;
+    }
+
+    public function setEntradas($aEntradas){
+        $this->aEntradas = $aEntradas;
+        return $this;
+    }
+
+    public function addEntrada($oEntrada)
+    {
+        $this->aEntradas[] = $oEntrada;
+        return $this;
+    }
+
     abstract public function getObjetivos();
     abstract public function setObjetivos($aObjetivos);
     abstract public function addObjetivo($aObjetivo);
+    
     abstract public function getDiagnostico();
     abstract public function setDiagnostico($oDiagnostico);
 }

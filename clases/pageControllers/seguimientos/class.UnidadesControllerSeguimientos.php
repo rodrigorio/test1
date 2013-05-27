@@ -300,9 +300,11 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
         //devuelvo el dialog para confirmar el borrado de la unidad
         if($this->getRequest()->has('mostrarDialogConfirmar')){
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaInfoBlock");
             $this->getTemplate()->set_var("sTituloMsgFicha", "Unidad de Variables");
             $this->getTemplate()->set_var("sMsgFicha", "Cuidado, se eliminaran de forma permanente todas las variables y la información que haya sido guardada de los seguimientos a los que la unidad esta asociada.
+                                                        Solo se mantendrá una copia del historial para aquellos valores asignados en seguimientos hace mas de ".$cantDiasExpiracion." días.
                                                        <br>Una vez eliminada la Unidad la información guardada en las variables no podrá volver a recuperarse.");
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));
@@ -322,7 +324,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("No tiene permiso para borrar esta unidad", 401);
             }
 
-            $result = SeguimientosController::getInstance()->borrarUnidad($oUnidad->getId());
+            $result = SeguimientosController::getInstance()->borrarUnidad($oUnidad);
 
             if($result){
                 $msg = "La Unidad y las variables asociadas fueron eliminadas del sistema.";
