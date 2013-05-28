@@ -75,5 +75,7 @@ class Pregunta{
      */
     public function getRespuesta(){
         return $this->sRespuesta;
-    }           
+    }  
+    
+         
 }

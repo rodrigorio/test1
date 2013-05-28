@@ -22,19 +22,31 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
         }
         return self::$instance;
     }
-public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    /*
+     * Este obtener sirve para obtener tambien  los valores de las respuestas multiples choices cuando la entrevista este asociada a un seguimiento, para eso hay que agregar un filtro con el id de seguimiento
+     * 
+     */
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        p.id as iId, p.descripcion as sDescripcion
+                        p.id as iId, p.descripcion as sDescripcion, p.tipo as sTipoPregunta, psr.respuesta as sRespuesta
                     FROM
-                       preguntas p ";
+                       preguntas p 
+                    JOIN
+                       preguntas_simples_respuestas psr
+                    ON 
+                       p.id = psr.preguntas_id";
+                       
             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
+            /*
+             * 
+             */
 
             $db->query($sSQL);
                                               
@@ -47,13 +59,29 @@ public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrde
             	$oPregunta 		= new stdClass();
             	$oPregunta->iId 		= $oObj->iId;
             	$oPregunta->sDescripcion	= $oObj->sDescripcion;
-            	$aPreguntas[]		= Factory::getPreguntaInstance($oPregunta);
+            	
+            	switch($oObj->sTipoPregunta){
+                    case "PreguntaSimple":{
+                        $oPregunta = Factory::getPreguntaInstance($oPregunta);
+                        $oPregunta->setRespuesta($oObj->sRespuesta);
+                        break;
+                    }
+            	    case "PreguntaMC":{
+                        $oPregunta = Factory::getPreguntaMCInstance($oPregunta);
+                        $aOpciones = SeguimientosController::getInstance()->getOpcionesByPreguntaId($oObj->iId);
+                        $oPregunta->setOpciones($aOpciones);
+                        break;
+                    }
+            	} 
+            	$aPreguntas[]		= $oPregunta;
             }
             return $aPreguntas;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
+    
+       
     
 	public  function insertar($oPregunta, $iEntrevistaId)
    {

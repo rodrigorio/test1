@@ -1358,4 +1358,20 @@ class SeguimientosController
             throw $e;
         }
     }
+    /**
+     * Obtener opciones  por id de pregunta
+     *
+     */
+    public function getOpcionesByPreguntaId($iPreguntaId);
+    {
+    	try{
+            $filtro = array('p.id' => $iPreguntaId);
+            $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oOpcionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+     
 }
