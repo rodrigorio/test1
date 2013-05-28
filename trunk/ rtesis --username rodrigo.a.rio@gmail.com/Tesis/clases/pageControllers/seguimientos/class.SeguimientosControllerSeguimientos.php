@@ -63,6 +63,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "jsContent", "JsContent");
         return $this;
     }
+  	private function setJSObjetivo(){
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivo.gui.html", "jsContent", "JsContent");
+        return $this;
+    }
     private function setMenuDerechaHome()
     {
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContHomeBlock");
@@ -91,6 +95,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("hrefEditarAntecedentesSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
         $this->getTemplate()->set_var("hrefEditarDiagnosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
         $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
+        $this->getTemplate()->set_var("hrefAsociarObjetivoSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAsociarObjetivos", true));
 
         //marco los selecteds en el menu de la izq
         if(is_array($aCurrentOption)){
@@ -1464,8 +1469,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxRowFoto', false);
 
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
+                    
                 }catch(Exception $e){
-
                     $respuesta = "0;; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                     return;
@@ -2022,5 +2027,45 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
 
+    public function asociarObjetivoView()
+     {
+        try{
+        	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+	    	if(empty($iSeguimientoId)){
+	            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+	    	}
+	        
+	        $filtroSql["s.id"] 	= $iSeguimientoId;
+	        $iRecordsTotal 		= 0;
+	        $sOrderBy = $sOrder =  $iIniLimit =  $iRecordCount = null;
+	        $vSeguimientos 		= SeguimientosController::getInstance()->obtenerSeguimientos($filtroSql,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount);
+	        if(count($vSeguimientos) == 0 ){
+	            throw new Exception("No tiene permiso para este seguimiento", 401);
+	        }else{
+	            $oSeguimiento 	= $vSeguimientos[0];
+	        }
+	        $aCurrentOptions[] 	= "currentOptionSeguimiento";
+            $aCurrentOptions[] 	= "currentSubOptionAsociarObjetivoSeguimiento";
+
+            $this->setFrameTemplate()
+                 ->setJSObjetivo()
+                 ->setHeadTag()
+                 ->setMenuDerechaVerSeguimiento($aCurrentOptions)
+                 ->setFichaPersonaMenuDerechaSeguimiento($oSeguimiento->getDiscapacitado());
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+            	        
+           	$this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivo.gui.html", "pageRightInnerMainCont", "FormularioObjetivoPersonalizadoBlock");
+			$this->getTemplate()->set_var("tituloSeccion", "Objetivo");
+			$this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+			
+			$vEjesObjetivosPersonalizados = SeguimientosController::getInstance()->get
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+   		  }catch(Exception $e){
+           	//print_r($e);
+        }
+    }
     
 }

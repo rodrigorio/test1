@@ -1,0 +1,78 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/objetivo.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginFormularioObjetivoPersonalizadoBlock-->
+<div class="tabs01 grupo ui-tabs ui-widget ui-widget-content ui-corner-all" id="tabsFormDiagnostico">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+        <div class="tabs pale2 grupo" >
+        <ul class="toggleTabs ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+            <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a id="tabFormObjetivo" href="#tabFormDiagnosticoContent">Agregar Objetivo</a></li>
+        </ul>
+    </div>
+    <div class="tabContent pa2 grupo ui-tabs-panel ui-widget-content ui-corner-bottom" id="tabFormDiagnosticoContent">
+        <form id="formGuardarDiagnostico" name="formGuardarDiagnostico" action="" method="post">
+            <div class="form_line msg_diagnostico">
+                <label for="diagnostico">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Objetivo
+                </label>
+                <div>
+                    <div>
+                    	
+                         <p>Fecha: <input type="text" id="datepicker" /></p>
+                         <p>Relevancia: 
+                         	<select id="relevancia" name="relevancia">
+                         		<option value="0">Baja</option>
+                         		<option value="1">Media</option>
+                         		<option value="2">Alta</option>
+                         	</select>
+                         </p>
+                         <p>Eje: 
+							<select id="eje" name="eje">
+                         	</select>
+                         </p>
+                         <p>Evolucion: <input type="text" id="datepicker" /></p>
+                    </div>
+                </div>
+                   <label for="nombre">
+                    <span class="marca_obligatorio">&#8226;</span>
+                    Codigo
+               	   </label>
+                <div class="fwrap">
+                    <div class="inner_fwrap">
+                        <input type="text" name="codigo" id="codigo" title="Codigo" value="{sCodigo}" maxlength="100" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="fl_le mabo2">
+                <label for="guardarDiagnostico" class="button buttonConfirm buttonLarge mari3">
+                    <button id="guardarDiagnostico" type="submit" name="guardarDiagnostico" class="btn01">
+                        Guardar Objetivo
+                    </button>
+                </label>
+            </div>
+            <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{iSeguimientoId}" >
+ 			<input type="hidden" name="idDiagnostico" id="idDiagnostico" value="{iDiagnosticoId}" >
+ 			<input type="hidden" name="tipoDiagnostico" id="tipoDiagnostico" value="PERSONALIZADO" >
+            <div style="display:none;" id='msg_form_guardarDiagnostico' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+        </form>
+    </div>
+</div>
+<!--EndFormularioObjetivoPersonalizadoBlock-->
+

@@ -4,6 +4,7 @@ class ObjetivoPersonalizadoEje{
     
     private $iId;
     private $sDescripcion;
+    private $vSubejes;
     
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -32,6 +33,12 @@ class ObjetivoPersonalizadoEje{
     public function setDescripcion($sDescripcion){
         $this->sDescripcion = $sDescripcion;
     }
+    /**
+     *  @param array $vSubejes
+     */
+    public function setSubejes($vSubejes){
+        $this->vSubejes = $vSubejes;
+    }
 
     /**
      *  @return int $iId
@@ -46,4 +53,12 @@ class ObjetivoPersonalizadoEje{
     public function getDescripcion(){
         return $this->sDescripcion;
     }
+    
+    /**
+     *  @param array $vSubejes
+     */
+    public function getSubejes(){
+        return $this->vSubejes;
+    }
+    
 }
