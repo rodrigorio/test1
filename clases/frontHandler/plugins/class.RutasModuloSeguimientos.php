@@ -317,5 +317,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'eliminarModalidad'
                                 ));
         $router->addRoute('seguimientosVariablesBorrarModalidad', $route);
+        
+         $route = new RegexRoute('seguimientos/asociarObjetivoView',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'asociarObjetivoView'
+                                ));
+        $router->addRoute('seguimientosSeguimientosAsociarObjetivos', $route);
     }
 }
