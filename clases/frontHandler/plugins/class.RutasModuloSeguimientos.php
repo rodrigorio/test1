@@ -317,13 +317,23 @@ class RutasModuloSeguimientos
                                         'action'     => 'eliminarModalidad'
                                 ));
         $router->addRoute('seguimientosVariablesBorrarModalidad', $route);
-        
-         $route = new RegexRoute('seguimientos/asociarObjetivoView',
+
+        //objetivos
+        $route = new RegexRoute('seguimientos/asociarObjetivoView',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
                                         'action'     => 'asociarObjetivoView'
                                 ));
         $router->addRoute('seguimientosSeguimientosAsociarObjetivos', $route);
+        
+        //entradas
+        $route = new RegexRoute('seguimientos/entradas/calendario',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entradas',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosEntradasIndex', $route);
     }
 }

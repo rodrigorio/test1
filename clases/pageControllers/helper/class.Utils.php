@@ -41,6 +41,23 @@ class Utils{
     }
 
     /**
+     * Devuelve la diferencia en dias entre fecha desde y fecha hasta.
+     *
+     * los parametros tienen que ser en formato '2009-12-20 20:12:10'
+     *
+     * el string para formatear en ese tipo desde php es "Y-m-d H:i:s"
+     */
+    public static function dateDiffDays($dFechaDesde, $dFechaHasta)
+    {
+        $dFechaDesde = strtotime($dFechaDesde);
+        $dFechaHasta = strtotime($dFechaHasta);
+
+        $seconds_diff = $dFechaHasta - $dFechaDesde;
+
+        return floor($seconds_diff/3600/24);
+    }
+
+    /**
      * Genera un password aleatorio
      *
      */
