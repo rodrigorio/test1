@@ -1373,5 +1373,17 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+   public function getPreguntasByEntrevistaId($iEntevistaId);
+    {
+    	try{
+            $filtro = array('e.id' => $iEntrevistaId);
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $opreguntasIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
+    getPreguntasByEntrevistaId
      
 }
