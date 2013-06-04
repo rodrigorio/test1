@@ -432,4 +432,12 @@ class Factory
         $oEntrevista = new Entrevista($obj);
         return $oEntrevista;
     }
+    /**
+     * @param stdClass $obj
+     * @return Entrevista|null
+     */
+    public static function &getOpcionInstance(stdClass $obj){
+        $oOpcion = new Opcion($obj);
+        return $oOpcion;
+    }
 }

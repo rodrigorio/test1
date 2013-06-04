@@ -31,7 +31,7 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
                         e.id as iId, e.descripcion as sDescripcio
                     FROM
                        entrevistas e ";
-                    if(!empty($filtro)){     
+             if(!empty($filtro)){     
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
