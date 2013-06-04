@@ -1362,7 +1362,7 @@ class SeguimientosController
      * Obtener opciones  por id de pregunta
      *
      */
-    public function getOpcionesByPreguntaId($iPreguntaId);
+    public function getOpcionesByPreguntaId($iPreguntaId)
     {
     	try{
             $filtro = array('p.id' => $iPreguntaId);
@@ -1373,7 +1373,7 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
-   public function getPreguntasByEntrevistaId($iEntevistaId);
+   public function getPreguntasByEntrevistaId($iEntevistaId)
     {
     	try{
             $filtro = array('e.id' => $iEntrevistaId);
@@ -1384,6 +1384,6 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
-    getPreguntasByEntrevistaId
+    
      
 }
