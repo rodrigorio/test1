@@ -91,8 +91,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getTemplate()->set_var("hrefListadoSeguimientos", $this->getUrlFromRoute("seguimientosIndexIndex", true));
 
-        $this->getTemplate()->set_var("hrefVerSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosVer", true));
-        $this->getTemplate()->set_var("hrefEditarEntradasSeguimiento", $this->getUrlFromRoute("seguimientosEntradasIndex", true));
+        $this->getTemplate()->set_var("hrefVerSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosVer", true));        
         $this->getTemplate()->set_var("hrefEditarAntecedentesSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
         $this->getTemplate()->set_var("hrefEditarDiagnosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
         $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
@@ -109,7 +108,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         return $this;
     }
 
-    static function setFichaPersonaMenuDerechaSeguimiento(Templates $template, UploadHelper $oUploadHelper, $oDiscapacitado)
+    static function setFichaPersonaSeguimiento(Templates $template, UploadHelper $oUploadHelper, $oDiscapacitado)
     {
         $template->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "fichaPersona", "PageRightInnerContFichaPersonaBlock");
 
@@ -129,8 +128,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
         $template->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
         $template->set_var("scrFotoPerfilActual", $pathFotoServidorSmallSize);
-
-        return $this;
     }
     
     public function index(){
@@ -445,6 +442,84 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
+    /**
+     * Procesar funcionalidades, checks, ajax, etc.
+     */
+    public function procesar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('checkEntradasOK')){
+            $this->checkEntradasOK();
+            return;
+        }
+    }
+
+    /**
+     * Si esta habilitado para entradas devuelve success,
+     * sino devuelve falso y html para mostrar en dialog.
+     */
+    private function checkEntradasOK()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoIdForm');
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para modificar este seguimiento", 401);
+            }
+
+            //tiene al menos un objetivo, antecedentes y diagnostico seteado
+            if(SeguimientosController::getInstance()->checkEntradasOK($iSeguimientoId)){
+                $this->getJsonHelper()->setSuccess(true);
+                $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex", true)."?iSeguimientoId=".$iSeguimientoId;
+                $this->getJsonHelper()->setRedirect($redirect);                
+            }else{
+                $this->getJsonHelper()->setSuccess(false);                
+                
+                $tituloMensajeError = "Aún no se pueden cargar entradas";
+                $ficha = "MsgFichaInfoBlock";
+                $mensajeInfoError = "Para poder ingresar información por fecha en el seguimiento primero deben cargarse los Antecedentes, el Diagnóstico y al menos un Objetivo.";
+
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "mensajeCheck", $ficha);
+                $this->getTemplate()->set_var("sTituloMsgFicha", $tituloMensajeError);
+                $this->getTemplate()->set_var("sMsgFicha", $mensajeInfoError);
+
+                //Links
+                $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "itemExtraMsgFicha", "MenuVertical02Block");
+                $this->getTemplate()->set_var("idOpcion", 'opt1');
+                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
+                $this->getTemplate()->set_var("sNombreOpcion", "Editar Antecedentes");
+                $this->getTemplate()->parse("OpcionesMenu", true);
+
+                $this->getTemplate()->set_var("idOpcion", 'opt2');
+                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
+                $this->getTemplate()->set_var("sNombreOpcion", "Editar Diagnóstico");
+                $this->getTemplate()->parse("OpcionesMenu", true);
+
+                $this->getTemplate()->set_var("idOpcion", 'opt3');
+                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosSeguimientosAsociarObjetivos", true));
+                $this->getTemplate()->set_var("sNombreOpcion", "Asociar Objetivos");
+                $this->getTemplate()->parse("OpcionMenuLastOpt");
+
+                $sHtml = $this->getTemplate()->pparse('mensajeCheck', false);
+
+                $this->getJsonHelper()->setValor('html', $sHtml);
+            }
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+        }
+    }
+
     public function formModificarSeguimiento()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
@@ -568,7 +643,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions);
 
             //para que pueda ser reutilizado en otras vistas
-            SeguimientosControllerSeguimientos::setFichaPersonaMenuDerechaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
@@ -968,7 +1043,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setHeadTag()
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions);
 
-            SeguimientosControllerSeguimientos::setFichaPersonaMenuDerechaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
             
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
@@ -1782,7 +1857,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setHeadTag()
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions);
 
-            SeguimientosControllerSeguimientos::setFichaPersonaMenuDerechaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
             
             
             $this->getTemplate()->set_var("subtituloSeccion", "diagnóstico");
@@ -2032,6 +2107,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
 
+    /*
     public function asociarObjetivoView()
      {
         try{
@@ -2066,11 +2142,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 			$this->getTemplate()->set_var("tituloSeccion", "Objetivo");
 			$this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
 			
-			$vEjesObjetivosPersonalizados = SeguimientosController::getInstance()->get
+            $vEjesObjetivosPersonalizados = SeguimientosController::getInstance()->get
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
    		  }catch(Exception $e){
            	//print_r($e);
         }
     }
-    
+    */    
 }

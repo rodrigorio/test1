@@ -134,7 +134,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .tetr_ca{text-transform:capitalize}
 .lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
-.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999}
+.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
@@ -148,7 +148,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .ov_au{overflow:auto} .ov_hi{overflow:hidden}
 .zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}
 
-.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF}
+.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF} .baco5{background-color:#E9EAED}
 .ba_no, .ba_no:hover{background:none !important}
 
 .bora{-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
@@ -161,7 +161,9 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .bosh{-moz-box-shadow:0 1px 2px #333; box-shadow:0 1px 2px #333; -webkit-box-shadow:0 1px 2px #333;}
 .bosh2{-moz-box-shadow:1px 2px 6px 0; box-shadow:1px 2px 6px 0; -webkit-box-shadow:1px 2px 6px 0 #333;}
 .bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
+.bosh4{-moz-box-shadow:0px 0px 3px #000 inset; -webkit-box-shadow:0px 0px 3px #000 inset; box-shadow:0px 0px 3px #000 inset}
 
+.tesh{text-shadow:#333 1px 1px 1px}
 
 .wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important} .wi200{width:200px !important;}
 
@@ -256,6 +258,13 @@ input.medium, select.medium, textarea.medium{width:300px;}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:20px 10px; margin-right:256px; height:100%}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightContMenuTop{padding:5px 10px; overflow:auto; height:100%;}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont #pageRightInnerContNav{margin-left:-11px; margin-top:20px;}
+/* pagina contenido en 1024 que se mantiene centrado */
+#frameSeguimientos01 #page2 #header{height:45px; width:100%;}
+#frameSeguimientos01 #page2 #headerCont{margin:0 auto; width:1024px; padding-top:8px}
+#frameSeguimientos01 #page2 #body{width:100%;}
+#frameSeguimientos01 #page2 #bodyCont{min-height:600px; margin:0 auto; width:1024px;}
+#frameSeguimientos01 #page2 #bodyCont #leftCont{float:left; width:280px; padding:10px; margin-right:20px; margin-top:20px;}
+#frameSeguimientos01 #page2 #bodyCont #centerCont{float:left; width:680px; padding:10px; margin-top:20px; min-height:380px;}
 
 #popUpCont{padding:10px; position:relative; text-align:left; margin:0}
 .popUpScroll{max-height:450px; overflow:auto;}
@@ -813,6 +822,8 @@ p .destacado{font-weight:bold;}
 .ui-autocomplete .ui-state-hover{background-color:#EEEFFF}
 /* datepicker */
 .ui-datepicker{background-color:#FFF; border:1px solid #CCC; z-index:10 !important}
+.w100 .ui-datepicker{width:auto !important}
+
 
 /* botones de la parte inferior en los popups */
 .ui-button{color: #333 !important; background-color:#EEE !important; background-image:-moz-linear-gradient(top, #FFF, #CCC) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)) !important; background-image:linear-gradient(top, #FFF, #CCC) !important; border-color:#CCC #666 #666 #CCC !important; border-style: solid !important; border-width: 1px !important;

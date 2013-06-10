@@ -106,6 +106,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'ver'
                                 ));
         $router->addRoute('seguimientosSeguimientosVer', $route);
+        $route = new RegexRoute('seguimientos/procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('seguimientosSeguimientosProcesar', $route);
 
         //galeria adjuntos
         $route = new RegexRoute('seguimientos/ver-adjuntos',

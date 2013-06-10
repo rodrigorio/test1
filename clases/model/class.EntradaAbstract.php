@@ -12,8 +12,8 @@ abstract class EntradaAbstract
      */
     protected $iSeguimientoId;
     protected $dFecha;
-    protected $aObjetivos;
-    protected $aUnidades;
+    protected $aObjetivos = null;
+    protected $aUnidades = null;
     
     /**
      * La idea es que en el constructor de la entrada si el periodo de expiracion es menor
