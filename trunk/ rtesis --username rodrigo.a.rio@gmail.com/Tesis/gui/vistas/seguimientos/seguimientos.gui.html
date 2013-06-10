@@ -64,7 +64,8 @@
 
 {fichaPersona}
     
-<ul id="pageRightInnerContNav" class="m_vert menu05 cl_ri">
+<ul id="pageRightInnerContNav" class="m_vert menu05 cl_ri po_re">
+    <div class="ajax_wait30 di_no"></div>
     <li {currentOptionVerSeguimiento}>
         <a href="{hrefVerSeguimiento}?iSeguimientoId={iSeguimientoId}">
             Ver Seguimiento
@@ -75,11 +76,6 @@
             Editar Seguimiento
         </a>
         <ul class="m_vert">
-            <li {currentSubOptionEditarEntradasSeguimiento}>
-                <a href="{hrefEditarEntradasSeguimiento}?iSeguimientoId={iSeguimientoId}">
-                    Editar Entradas por fecha
-                </a>
-            </li>
             <li {currentSubOptionEditarAntecedentesSeguimiento}>
                 <a href="{hrefEditarAntecedentesSeguimiento}?iSeguimientoId={iSeguimientoId}">
                     Editar Antecedentes
@@ -93,6 +89,11 @@
             <li {currentSubOptionAsociarObjetivoSeguimiento}>
                 <a href="{hrefAsociarObjetivoSeguimiento}?iSeguimientoId={iSeguimientoId}">
                     Asociar Objetivo
+                </a>
+            </li>
+            <li {currentSubOptionEditarEntradasSeguimiento}>
+                <a id="checkSeguimientoEntradasOK" rel="{iSeguimientoId}" href="">
+                    Editar Entradas por fecha
                 </a>
             </li>
         </ul>

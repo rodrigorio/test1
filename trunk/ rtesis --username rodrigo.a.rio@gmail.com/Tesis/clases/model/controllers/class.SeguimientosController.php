@@ -1373,7 +1373,8 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
-   public function getPreguntasByEntrevistaId($iEntevistaId)
+    
+    public function getPreguntasByEntrevistaId($iEntevistaId)
     {
     	try{
             $filtro = array('e.id' => $iEntrevistaId);
@@ -1384,6 +1385,54 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
-    
-     
+
+    /**
+     * Se fija que un seguimiento tenga asociado las entidades necesarias previas a ingresar entradas por fecha
+     */
+    public function checkEntradasOK($oSeguimiento)
+    {
+        try{
+            if($oSeguimiento->getAntecedentes() === null){
+                return false;
+            }
+
+            $oDiagnostico = $oSeguimiento->getDiagnostico();
+
+            if($oDiagnostico->isDiagnosticoPersonalizado() && $oDiagnostico->getDescripcion() === null){
+                return false;
+            }
+            if($oDiagnostico->isDiagnosticoSCC() && $oDiagnostico->getEjesTematicos() === null){
+                return false;
+            }
+
+            if($oSeguimiento->getObjetivos() === null){
+                return false;
+            }
+
+            return true;
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getUltimaEntradaBySeguimiento($iSeguimientoId)
+    {
+    	try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+            
+            $sOrderBy = "scv.fechaHora"; $sOrder = "desc";
+            $filtro = array('s.id' => $iSeguimientoId);
+            $iRecordsTotal = 0;
+            
+            $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 1, 1);
+
+            if(null !== $aEntrada){
+                return $aEntrada[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }

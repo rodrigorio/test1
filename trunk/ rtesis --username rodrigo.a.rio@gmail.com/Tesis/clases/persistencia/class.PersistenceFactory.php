@@ -233,6 +233,10 @@ class PersistenceFactory {
             return(InvitacionMySQLIntermediary::getInstance($conn));
         }
     }
-
-    
+    public static function getEntradaIntermediary(IMYSQL $conn)
+    {
+        if(($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(EntradaMySQLIntermediary::getInstance($conn));
+        }
+    }    
 }
