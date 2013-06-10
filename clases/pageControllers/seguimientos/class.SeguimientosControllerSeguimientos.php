@@ -465,18 +465,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
+            
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
+            if(empty($iSeguimientoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
 
-            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoIdForm');
             $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            if($oSeguimiento === null || $oSeguimiento->getUsuarioId() != $iUsuarioId){
                 throw new Exception("No tiene permiso para modificar este seguimiento", 401);
             }
 
             //tiene al menos un objetivo, antecedentes y diagnostico seteado
-            if(SeguimientosController::getInstance()->checkEntradasOK($iSeguimientoId)){
+            if(SeguimientosController::getInstance()->checkEntradasOK($oSeguimiento)){
                 $this->getJsonHelper()->setSuccess(true);
                 $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex", true)."?iSeguimientoId=".$iSeguimientoId;
                 $this->getJsonHelper()->setRedirect($redirect);                
