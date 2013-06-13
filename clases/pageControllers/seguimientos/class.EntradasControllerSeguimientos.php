@@ -87,6 +87,14 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para ver este seguimiento", 401);
         }
+
+        //tiene al menos un objetivo, antecedentes y diagnostico seteado?
+        if(!SeguimientosController::getInstance()->checkEntradasOK($oSeguimiento)){
+            $this->getRedirectorHelper()->setCode(307);
+            $url = $this->getUrlFromRoute("seguimientosSeguimientosVer");
+            $this->getRedirectorHelper()->gotoUrl($url."?iSeguimientoId=".$iSeguimientoId);
+            return;
+        }
         
         try{            
             $this->setFrameTemplate()
