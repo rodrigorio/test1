@@ -177,24 +177,20 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
     {
         try{
             $db = $this->conn;
+            $db->begin_transaction();
 
             $sSQL = " update diagnosticos " .
                     " set descripcion = ".$this->escStr($oDiagnosticoSCC->getDescripcion())." ".
-                    " WHERE id = ".$this->escInt($oDiagnosticoSCC->getId())." ";
-            
-            if (count($oDiagnosticoSCC->getEjesTematicos())) {
-            	for ($i=0; $i< count($oDiagnosticoSCC->getEjesTematicos()); $i++) {
-            		$vEjeTematico = $oDiagnosticoSCC->getEjesTematicos();
-            		$oEjeTematico = $vEjeTematico[$i];
-           			SeguimientosController::getInstance()->guardarEjeTematico($oDiagnosticoSCC->getId(),$oEjeTematico);
-            	}
-            }
+                    " WHERE id = ".$this->escInt($oDiagnosticoSCC->getId())." ";                        
             $db->execSQL($sSQL);
-            $db->commit();
 
+            SeguimientosController::getInstance()->guardarEstadoInicial($oDiagnosticoSCC);
+            
+            $db->commit();
             return true;
         }catch(Exception $e){
-             throw new Exception($e->getMessage(), 0);
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
         }
     }
     
@@ -276,8 +272,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
-    
+        
     private function obtenerEjesXDiagnostico($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
     {
    		try{
@@ -332,7 +327,39 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
         }
     }
     
-     
+    public function isDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        diagnosticos d
+                        LEFT JOIN seguimientos_personalizados sp ON d.id = sp.diagnosticos_personalizado_id
+                        LEFT JOIN seguimientos_scc sc ON d.id = sc.diagnosticos_scc_id
+                        JOIN seguimientos s
+                            ON s.id = CASE
+                                WHEN ISNULL(sc.id) THEN sp.id
+                                WHEN ISNULL(sp.id) THEN sc.id
+                            END
+                        WHERE
+                            d.id = ".$this->escInt($iDiagnosticoId)." AND
+                            s.usuarios_id = ".$this->escInt($iUsuarioId)." ";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
     public function actualizarCampoArray($objects, $cambios){}
     public function existe($filtro){}
     

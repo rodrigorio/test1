@@ -178,16 +178,16 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
     }
 
     //estos metodos son para el abm de asociaciones de un EjeTematico a un seguimiento SCC
-    public function borrarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $sEjesTematicoId)
+    public function eliminarEstadoInicial($iEjeTematicoId, $iDiagnosticoSCCId)
     {
         try{
             $db = $this->conn;
             $db->execSQL("delete from diagnosticos_scc_x_ejes 
                           where diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId)."
-                          and ejes_id IN (".$sEjesTematicoId.")" );
+                          and ejes_id = ".$this->escInt($iEjeTematicoId) );
             $db->commit();
         }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
+            throw $e;
         }
     }
 
@@ -219,71 +219,49 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
 
-   
-    public function guardarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
+    /**
+     *  Guarda todos los ejes con estado inicial, los asocia o actualiza
+     */
+    public function guardarEstadoInicial($oDiagnosticoSCC)
     {
-        try{
-        
-            if($this->existeEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico->getId())){
-                return $this->actualizarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
-            } else {
-                return $this->insertarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
+        try
+        {
+            if(null !== $oDiagnosticoSCC->getEjesTematicos()){
+                $db = $this->conn;
+                $db->begin_transaction();
+                foreach($oDiagnosticoSCC->getEjesTematicos() as $oEjeTematico){
+                    if($this->existeEjeTematicoDiagnosticoSCC($oDiagnosticoSCC->getId(), $oEjeTematico->getId())){
+                        return $this->actualizarEstadoInicial($oDiagnosticoSCC->getId(), $oEjeTematico);
+                    }else{
+                        return $this->insertarEstadoInicial($oDiagnosticoSCC->getId(), $oEjeTematico);
+                    }                   
+                }
+                $db->commit();
             }
-        } catch (Exception $e) {
-        	
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }        
     }
-    
-    
-     /**
-     * El controlador de seguimiento con el metodo "isDiagnosticoSeguimientoUsuario" tiene que verificar que es el diagnostico de un seguimiento que haya
-     * creado el usuario que esta en sesion
-     */
-
-    public function asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico)
+           
+    public function insertarEstadoInicial($iDiagnosticoSCCId, $oEjeTematico)
     {
         try{
             $db = $this->conn;
-            $sSQL = " insert into diagnosticos_scc_x_ejes (diagnosticos_scc_id, ejes_id, estadoInicial) VALUES ";
-           
-            for ($i=0; $i< count($vEjeTematico); $i++) {
-            	$oEjeTematico = $vEjeTematico[$i];
-            	$sSQL .= " (".$this->escInt($iDiagnosticoSCCId).", "
-            		.$this->escInt($oEjeTematico->getId()).", "
-            		.$this->escStr($oEjeTematico->getEstadoInicial()).") ";
-            	if (count($vEjeTematico) > $i+1) {
-            		$sSQL .= ",";
-            	}
-            } 
-                      
-            $db->execSQL($sSQL);
-            $db->commit();
-
-        }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        }
-    }
-    
- 	public function insertarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
- 	{
-        try{
-            $db = $this->conn;
             $sSQL = " insert into diagnosticos_scc_x_ejes set ".
-            		" diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId).", ".
-            		" ejes_id = ".$this->escInt($oEjeTematico->getId()).", ".
+                    " diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId).", ".
+                    " ejes_id = ".$this->escInt($oEjeTematico->getId()).", ".
                     " estadoInicial = ".$this->escStr($oEjeTematico->getEstadoInicial())."";
 
             $db->execSQL($sSQL);
-            $db->commit();
-
-        }catch(Exception $e){
-        	 
+            return true;
+        }catch(Exception $e){        	 
             throw new Exception($e->getMessage(), 0);
         }
     }
     
-    public function actualizarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico)
+    public function actualizarEstadoInicial($iDiagnosticoSCCId, $oEjeTematico)
     {
         try{
             $db = $this->conn;
@@ -292,17 +270,16 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                     " WHERE
                        diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId)."
                       AND
-                        ejes_id = ".$this->escInt($oEjeTematico->getId());
+                       ejes_id = ".$this->escInt($oEjeTematico->getId());
 
             $db->execSQL($sSQL);
-            $db->commit();
-
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
     
-      public function isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId)
+    public function isEjeTematicoDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId)
     {
     	try{
             $db = $this->conn;

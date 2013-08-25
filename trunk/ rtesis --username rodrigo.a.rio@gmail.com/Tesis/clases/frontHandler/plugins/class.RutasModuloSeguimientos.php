@@ -326,13 +326,13 @@ class RutasModuloSeguimientos
         $router->addRoute('seguimientosVariablesBorrarModalidad', $route);
 
         //objetivos
-        $route = new RegexRoute('seguimientos/asociarObjetivoView',
+        $route = new RegexRoute('seguimientos/administrar-objetivos',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
-                                        'action'     => 'asociarObjetivoView'
+                                        'action'     => 'administrarObjetivos'
                                 ));
-        $router->addRoute('seguimientosSeguimientosAsociarObjetivos', $route);
+        $router->addRoute('seguimientosSeguimientosAdministrarObjetivos', $route);
         
         //entradas
         $route = new RegexRoute('seguimientos/entradas/calendario',

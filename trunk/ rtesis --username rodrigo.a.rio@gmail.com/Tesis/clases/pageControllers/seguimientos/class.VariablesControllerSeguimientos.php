@@ -549,11 +549,13 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
             
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
+            if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
+                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
             }
 
             $oVariable->setNombre($this->getRequest()->getPost("nombre"));
@@ -626,11 +628,13 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
             
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
+            if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
+                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
             }
 
             $oVariable->setNombre($this->getRequest()->getPost("nombre"));
@@ -668,11 +672,13 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             }
 
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
+            if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
+                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
             }
 
             $vModalidad = $this->getRequest()->getPost("modalidad");
@@ -742,17 +748,18 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             }
 
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
+            $oVariableCualitativa = SeguimientosController::getInstance()->getVariableById($iVariableId);
 
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
+            if($this->getRequest()->getPost("nombre") != $oVariableCualitativa->getNombre()){
+                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
             }
-            
-            $oVariableCualitativa = SeguimientosController::getInstance()->getVariableById($iVariableId);
-          
+                                  
             $oVariableCualitativa->setNombre($this->getRequest()->getPost("nombre"));
             $oVariableCualitativa->setDescripcion($this->getRequest()->getPost("descripcion"));
 

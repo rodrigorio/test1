@@ -17,179 +17,177 @@
 <!--EndJsContent-->
 
 <!--BeginFormularioPersonalizadoBlock-->
-<div class="tabs01 grupo" id="tabsFormDiagnostico">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <div class="tabs pale2 grupo" >
-        <ul class="toggleTabs">
-            <li><a id="tabFormDiagnostico" href="#tabFormDiagnosticoContent">Editar Diagnostico</a></li>
-        </ul>
-    </div>
-    <div class="tabContent pa2 grupo" id="tabFormDiagnosticoContent">
-        <form id="formGuardarDiagnostico" name="formGuardarDiagnostico" action="" method="post">
-            <div class="form_line msg_diagnostico">
-                <label for="diagnostico">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Diagnostico
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <textarea name="diagnostico" id="diagnostico" cols="0" rows="0">{sDiagnostico}</textarea>
-                    </div>
-                </div>
-                   <label for="nombre">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Codigo
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <input type="text" name="codigo" id="codigo" title="Codigo" value="{sCodigo}" maxlength="100" />
-                    </div>
-                </div>
-            </div>
+<div class='ficha04 bora grupo' style="width:640px;">
 
-            <div class="fl_le mabo2">
-                <label for="guardarDiagnostico" class="button buttonConfirm buttonLarge mari3">
-                    <button id="guardarDiagnostico" type="submit" name="guardarDiagnostico" class="btn01">
-                        Guardar Diagnostico
-                    </button>
-                </label>
+    <div class="titulo iveal">Editar Diagn&oacute;stico</div>
+
+    <form id="formDiagnosticoPersonalizado" name="formDiagnosticoPersonalizado" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea name="descripcion" id="descripcion" title="Descripci&oacute;n" cols="0" rows="0">{sDescripcion}</textarea>
+                </div>
             </div>
-            <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{iSeguimientoId}" >
- 			<input type="hidden" name="idDiagnostico" id="idDiagnostico" value="{iDiagnosticoId}" >
- 			<input type="hidden" name="tipoDiagnostico" id="tipoDiagnostico" value="PERSONALIZADO" >
-            <div style="display:none;" id='msg_form_guardarDiagnostico' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-        </form>
-    </div>
+        </div>
+        <div class="form_line msg_codigo">
+            <label for="codigo">
+                C&oacute;digo
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="codigo" id="codigo" title="C&oacute;digo" value="{sCodigo}" maxlength="100" />
+                </div>
+            </div>
+        </div>
+
+        <div class="fl_le mabo2">
+            <label for="guardarDiagnosticoPersonalizado" class="button buttonConfirm buttonLarge mari3">
+                <button id="guardarDiagnosticoPersonalizado" type="submit" name="guardarDiagnosticoPersonalizado" class="btn01">
+                    Guardar Diagn&oacute;stico
+                </button>
+            </label>
+        </div>        
+        <input type="hidden" name="iDiagnosticoIdForm" id="iDiagnosticoIdForm" value="{iDiagnosticoId}">
+        
+        <div style="display:none;" id='msg_form_diagnosticoPersonalizado' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
 </div>
 <!--EndFormularioPersonalizadoBlock-->
 
-<!--BeginFormularioSCCBlock-->
-<div class="tabs01 grupo" id="tabsFormDiagnostico">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <div class="tabs pale2 grupo" >
-        <ul class="toggleTabs">
-            <li><a id="tabFormDiagnostico" href="#tabFormDiagnosticoContent">Editar Diagnostico</a></li>
-        </ul>
-    </div>
-    <div class="tabContent pa2 grupo" id="tabFormDiagnosticoContent">
-        <form id="formGuardarDiagnostico" name="formGuardarDiagnostico" action="" method="post">
+<!--BeginFormularioSCCBlock-->  
+<div class='ficha04 bora grupo'>
+
+    <div class="titulo iveal">Editar Diagn&oacute;stico</div>
+
+    <form id="formDiagnosticoSCC" name="formDiagnosticoSCC" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
             
-            <div class="form_line msg_diagnostico">
-                <label for="diagnostico">
-                    <span class="marca_obligatorio">&#8226;</span>
-                    Diagnostico
-                </label>
-                <div class="fwrap">
-                    <div class="inner_fwrap">
-                        <textarea name="diagnostico" id="diagnostico" cols="0" rows="0">{sDiagnostico}</textarea>
-                    </div>
+        <div class="form_line msg_descripcion mawi4">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea name="descripcion" id="descripcion" title="Descripci&oacute;n" cols="0" rows="0">{sDescripcion}</textarea>
                 </div>
             </div>
-  
-                <div class="msg_nivel fl_le mari3">
-                    <div class="inner_fwrap">
-                       	<span class="fowe_bo">Nivel</span>
-		                <select name="nivel" id="nivel" >
-		                	<option value="">Seleccione el nivel</option>
-		                	<!--BeginNivelesListBlock-->
-		                      <option value="{iNivelId}" {sSelectedNivel}>{sNivelDescripcion}</option>
-		                	<!--EndNivelesListBlock-->
-		                 </select>
-                    </div>
-                </div>
-                 <div class="msg_ciclo fl_le mari3">
-                    <div class="inner_fwrap">
-                       	<span class="fowe_bo">Ciclo</span>
-                       	<!--BeginCiclosDivBlock-->
-		                <select name="ciclo" id="ciclo" >
-		                	<option value="">Seleccione el ciclo</option>
-		                	<!--BeginCiclosListBlock-->
-		                      <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
-		                	<!--EndCiclosListBlock-->
-		                 </select>
-                       	<!--EndCiclosDivBlock-->
-                    </div>
-                </div>
-                 <div class="msg_area fl_le mari3">
-                    <div class="inner_fwrap">
-                       	<span class="fowe_bo">Area</span>
-                      	<!--BeginAreaDivBlock-->
-		                <select name="area" id="area">
-		                	<option value="">Seleccione el area</option>
-		                	<!--BeginAreasListBlock-->
-		                      <option value="{iAreaId}" {sSelectedArea}>{sAreaDescripcion}</option>
-		                	<!--EndAreasListBlock-->
-		                 </select>
-		                <!--EndAreaDivBlock-->
-                    </div>
-                </div>
-                <div class="msg_eje mabo3 fl_le">
-                    <div class="inner_fwrap">
-                       	<span class="fowe_bo">Eje tem&aacute;tico</span>
-                      	<!--BeginEjeDivBlock-->
-		                <select name="eje" id="eje">
-		                	<option value="">Seleccione el Eje</option>
-		                	<!--BeginEjesListBlock-->
-		                      <option value="{iEjeId}" {sSelectedEje}>{sEjeDescripcion}</option>
-		                	<!--EndEjesListBlock-->
-		                 </select>
-		                <!--EndEjeDivBlock-->
-                    </div>
-                </div>
-                 <div style="display:none;" id='msg_agregar_eje' class="msg_form iveal cl_bo">
-                    	<span class="bs i"></span> <span class="msg"></span>
-                    </div>
-				<div class="msg_estadoInicial cl_bo">
-                    <div class="inner_fwrap">
-                       	<span class="fowe_bo">Estado inicial</span>
-                      	<!--BeginEstadoInicialDivBlock-->
-		                <textarea cols="175" rows="5" id="estadoInicial" name="estadoInicial"></textarea>
-		                <!--EndEstadoInicialDivBlock-->
-                    </div>
-                </div>
-                <div class="mabo2">
-	                <label for="agregarEje" class="button buttonLarge mari3">
-	                    <button id="agregarEje" type="button" name="agregarEje" class="btn01">
-	                        Agregar Eje
-	                    </button>
-	                </label>
-	               
-	            </div>
-	            
-	        <div id='result_ejes'>
-	        	<table class='table01 wi100p mabo2'>
-		        	<thead>
-			        	<tr class="encabezado">
-			               <td class="small iveal">Nivel</td>
-			               <td class="small">Ciclo</td>
-			               <td class="medium iveal">Area</td>
-			               <td class="medium iveal">Eje tem&aacute;tico</td>
-			               <td class="medium iveal">Estado inicial</td>
-			               <td class="small iveal"></td>  
-		           		</tr>
-		        	</thead>
-		        	<tbody id="contentEjesResult">
-		        	{listaEje}
-					</tbody>
-	        	</table>	
-	        	
-	        </div>
-            <div class="fl_le mabo2">
-                <label for="guardarDiagnostico" class="button buttonConfirm buttonLarge mari3">
-                    <button id="guardarDiagnostico" type="submit" name="guardarDiagnostico" class="btn01">
-                        Guardar Diagn&oacute;stico
-                    </button>
-                </label>
+        </div>
+
+        <div class="form_line msg_estadoInicial" id="listadoEstadosIniciales">            
+            <label for="">
+                <span class="marca_obligatorio">&#8226;</span>
+                Estado Inicial
+            </label>
+
+            <div id="grillaEstadosInicialesWrapper">
+            <!--BeginGrillaEstadosInicialesBlock-->
+            <table id="grillaEstadosIniciales" class="table01 wi100p">
+                <tr class="encabezado">
+                    <td class="small">Nivel</td>
+                    <td class="small">Ciclo</td>
+                    <td class="small">Area</td>
+                    <td class="small">Eje tem&aacute;tico</td>
+                    <td class="medium">Estado inicial</td>
+                    <td style="width:20px"></td>
+                </tr>
+
+                <!--BeginEstadoInicialBlock-->
+                <tr id="{estadoInicialHtmlId}" class="estadoInicial">
+                    <td>                        
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <select id="nivel_{estadoInicialHtmlId}" class="inputSelectLihe" name="estadoInicial[{estadoInicialHtmlId}][nivel]" title="Seleccione Nivel">
+                                    <option value="">Nivel:</option>
+                                    <!--BeginNivelesListBlock-->
+                                    <option value="{iNivelId}" {sSelectedNivel}>{sNivelDescripcion}</option>
+                                    <!--EndNivelesListBlock-->
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <select id="ciclo_{estadoInicialHtmlId}" class="inputSelectLihe {disabled}" name="estadoInicial[{estadoInicialHtmlId}][ciclo]" title="Seleccione Ciclo">
+                                    <option value="">Ciclo:</option>
+                                    <!--BeginCiclosListBlock-->
+                                    <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
+                                    <!--EndCiclosListBlock-->
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">  
+                                <select id="area_{estadoInicialHtmlId}" class="inputSelectLihe {disabled}" name="estadoInicial[{estadoInicialHtmlId}][area]" title="Seleccione &Aacute;rea">
+                                    <option value="">&Aacute;rea:</option>
+                                    <!--BeginAreaListBlock-->
+                                    <option value="{iAreaId}" {sSelectedArea}>{sAreaDescripcion}</option>
+                                    <!--EndAreaListBlock-->
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <select id="ejeTematico_{estadoInicialHtmlId}" class="inputSelectLihe {disabled}" name="estadoInicial[{estadoInicialHtmlId}][ejeTematico]" title="Seleccione Eje tem&aacute;tico">
+                                    <option value="">Eje:</option>
+                                    <!--BeginEjeListBlock-->
+                                    <option value="{iEjeId}" {sSelectedEje}>{sEjeDescripcion}</option>
+                                    <!--EndEjeListBlock-->
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <textarea id="estadoInicial_{estadoInicialHtmlId}" class="textAreaLihe textareaAutoGrow maxlength" name="estadoInicial[{estadoInicialHtmlId}][estadoInicial]" title="Seleccione Estado Inicial" cols="0" rows="0">{sEstadoInicial}</textarea>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="teal_ce">
+                        <span title="Eliminar" rel="{estadoInicialHtmlId}_{iEjeId}_{iDiagnosticoSCCId}" class="i bs delete ihover borrarEstadoInicial"></span>
+                    </td>
+                </tr>
+                <!--EndEstadoInicialBlock-->
+
+                <!--BeginNoRecordsEstadoInicialBlock-->
+                <tr id="noRecordsEstadoInicial">
+                    <td colspan="6">No hay estado inicial cargado para ning&uacute;n eje tem&aacute;tico</td>
+                </tr>
+                <!--EndNoRecordsEstadoInicialBlock-->
+            </table>
+            <!--EndGrillaEstadosInicialesBlock-->
             </div>
-          
-            <input type="hidden" name="idSeguimiento" id="idSeguimiento" value="{iSeguimientoId}" >
-            <input type="hidden" name="idDiagnostico" id="idDiagnostico" value="{iDiagnosticoId}" >
-			<input type='hidden' name="ejeEliminados" id="ejeEliminados" value=''/>
-			<input type="hidden" name="tipoDiagnostico" id="tipoDiagnostico" value="SCC" >
-            <div style="display:none;" id='msg_form_guardarDiagnostico' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-		    
-		
-		</form>
-    </div>
+            <p>Listado en el que puede describir el estado inicial para uno o muchos ejes tem&aacute;ticos.</p>
+        </div>
+        <div class="baco3 bobo1 pa2 mabo3">
+            <label id="agregarEstadoInicial" class="button">
+                <span class="i bs add"></span>
+                <span class="buttonText">Agregar estado inicial en eje tem&aacute;tico</span>
+            </label>
+        </div>
+        
+        <div class="fl_le mabo2">
+            <label for="guardarDiagnosticoSCC" class="button buttonConfirm buttonLarge mari3">
+                <button id="guardarDiagnosticoSCC" type="submit" name="guardarDiagnosticoSCC" class="btn01">
+                    Guardar Diagn&oacute;stico
+                </button>
+            </label>
+        </div>
+        
+        <input type="hidden" name="iDiagnosticoIdForm" id="iDiagnosticoIdForm" value="{iDiagnosticoId}" >
+        <div style="display:none;" id='msg_form_diagnosticoSCC' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
 </div>
 <!--EndFormularioSCCBlock-->

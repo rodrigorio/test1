@@ -1188,35 +1188,24 @@ class SeguimientosController
             throw new Exception($e->getMessage());
         }
     }
+    
     /**
-     * Guardar Eje Tematico
+     * Guardar Ejes Tematicos con estado inicial en un seguimiento SCC
      *
      */
-   public function guardarEjeTematico($iDiagnosticoSCCId, $oEjeTematico){
+    public function guardarEstadoInicial($oDiagnosticoSCC){
         try{
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->guardarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $oEjeTematico);
+            return $oEjeTematicoIntermediary->guardarEstadoInicial($oDiagnosticoSCC);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
-    } 
-     /**
-     * Asociar Eje Tematico
-     *
-     */
-   public function asociarEjesTematicos($iDiagnosticoSCCId, $vEjeTematico){
+    }
+            
+    public function eliminarEstadoInicial($iEjeTematicoId, $iDiagnosticoSCCId){
         try{        	        	
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->asociarEjeTematicoDiagnosticoSCC($iDiagnosticoSCCId, $vEjeTematico);
-        }catch(Exception $e){
-            throw new Exception($e->getMessage());
-        }
-    }     
-        
-    public function eliminarEjesByDiagnostico($sEjesEliminadosId, $iDiagnosticoId){
-        try{        	        	
-            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->borrarEjeTematicoDiagnosticoSCC($iDiagnosticoId, $sEjesEliminadosId);
+            return $oEjeTematicoIntermediary->eliminarEstadoInicial($iEjeTematicoId, $iDiagnosticoSCCId);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
@@ -1358,6 +1347,19 @@ class SeguimientosController
             throw $e;
         }
     }
+
+    public function isDiagnosticoUsuario($iDiagnosticoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+
+            return $oDiagnosticoIntermediary->isDiagnosticoUsuario($iDiagnosticoId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Obtener opciones  por id de pregunta
      *

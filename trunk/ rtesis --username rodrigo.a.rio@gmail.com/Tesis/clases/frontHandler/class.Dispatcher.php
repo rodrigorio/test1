@@ -3,7 +3,7 @@
 class Dispatcher
 {
     private $frontController;
-
+    
     /**
      * Array of invocation parameters to use when instantiating action controllers
      *

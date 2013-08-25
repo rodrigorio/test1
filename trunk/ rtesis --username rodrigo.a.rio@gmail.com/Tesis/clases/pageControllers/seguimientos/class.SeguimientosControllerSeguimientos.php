@@ -63,7 +63,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "jsContent", "JsContent");
         return $this;
     }
-  	private function setJSObjetivo(){
+    private function setJSObjetivo(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivo.gui.html", "jsContent", "JsContent");
         return $this;
     }
@@ -95,7 +95,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("hrefEditarAntecedentesSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
         $this->getTemplate()->set_var("hrefEditarDiagnosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
         $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
-        $this->getTemplate()->set_var("hrefAsociarObjetivoSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAsociarObjetivos", true));
+        $this->getTemplate()->set_var("hrefAdministrarObjetivosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdministrarObjetivos", true));
 
         //marco los selecteds en el menu de la izq
         if(is_array($aCurrentOption)){
@@ -498,17 +498,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 //Links
                 $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "itemExtraMsgFicha", "MenuVertical02Block");
                 $this->getTemplate()->set_var("idOpcion", 'opt1');
-                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
+                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true)."?iSeguimientoId=".$iSeguimientoId);
                 $this->getTemplate()->set_var("sNombreOpcion", "Editar Antecedentes");
                 $this->getTemplate()->parse("OpcionesMenu", true);
 
                 $this->getTemplate()->set_var("idOpcion", 'opt2');
-                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
+                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true)."?iSeguimientoId=".$iSeguimientoId);
                 $this->getTemplate()->set_var("sNombreOpcion", "Editar Diagnóstico");
                 $this->getTemplate()->parse("OpcionesMenu", true);
 
                 $this->getTemplate()->set_var("idOpcion", 'opt3');
-                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosSeguimientosAsociarObjetivos", true));
+                $this->getTemplate()->set_var("hrefOpcion", $this->getUrlFromRoute("seguimientosSeguimientosAdministrarObjetivos", true)."?iSeguimientoId=".$iSeguimientoId);
                 $this->getTemplate()->set_var("sNombreOpcion", "Asociar Objetivos");
                 $this->getTemplate()->parse("OpcionMenuLastOpt");
 
@@ -1836,17 +1836,16 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
-        
-        $filtroSql["s.id"] = $iSeguimientoId;
-        $iRecordsTotal = 0;
-        $sOrderBy = $sOrder =  $iIniLimit =  $iRecordCount = null;
-        $vSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtroSql,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount);
-        if(count($vSeguimientos) == 0 ){
-            throw new Exception("No tiene permiso para este seguimiento", 401);
-        }else{
-            $oSeguimiento = $vSeguimientos[0];
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver este seguimiento", 401);
         }
-        
+                
         try{
             $aCurrentOptions[] = "currentOptionSeguimiento";
             $aCurrentOptions[] = "currentSubOptionEditarDiagnosticoSeguimiento";
@@ -1862,9 +1861,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setMenuDerechaVerSeguimiento($aCurrentOptions);
 
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
-            
-            
-            $this->getTemplate()->set_var("subtituloSeccion", "diagnóstico");
+                        
+            $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
 
             $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
 
@@ -1874,8 +1872,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }else{
             	$this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_SCC_DESC);
             	$this->formDiagnosticoSCC($oSeguimiento);
-            }
-            
+            }            
         }catch(Exception $e){
             throw $e;
         }
@@ -1886,16 +1883,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         try{            
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioPersonalizadoBlock");
 
-            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
             $oDiagnostico = $oSeguimiento->getDiagnostico();
-            if($oDiagnostico ){
-            	$this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
-           		$this->getTemplate()->set_var("sCodigo",$oDiagnostico->getCodigo());
-           		$this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
+            if($oDiagnostico){
+            	$this->getTemplate()->set_var("sDescripcion",$oDiagnostico->getDescripcion());
+                $this->getTemplate()->set_var("sCodigo",$oDiagnostico->getCodigo());
+                $this->getTemplate()->set_var("iDiagnosticoId", $oDiagnostico->getId());
             }
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-   		  }catch(Exception $e){
-            print_r($e);
+        }catch(Exception $e){
+            throw $e;
         }
     }
 
@@ -1905,214 +1901,422 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioSCCBlock");
 
             $oDiagnostico = $oSeguimiento->getDiagnostico();
-            $iAreaId  = "";
-            $iCicloId = "";
-            $iNivelId = "";
-         	if ($oDiagnostico) {
-	            $this->getTemplate()->set_var("sDiagnostico",$oDiagnostico->getDescripcion());
-	            $this->getTemplate()->load_file_section("gui/componentes/grillas.gui.html", "listaEje", "GrillaEjesTematicos");
-	            if ($oDiagnostico->getEjesTematicos()) {
-	            	foreach ($oDiagnostico->getEjesTematicos() as $oEje) {
-	            		$this->getTemplate()->set_var("iEjeId", $oEje->getId());
-	            		$this->getTemplate()->set_var("sEjeText", $oEje->getDescripcion());
-	            		$this->getTemplate()->set_var("sEstadoInicial", $oEje->getEstadoInicial());
-	            		$this->getTemplate()->set_var("sNivelText", $oEje->getArea()->getCiclo()->getNivel()->getDescripcion());
-	            		$this->getTemplate()->set_var("sCicloText", $oEje->getArea()->getCiclo()->getDescripcion());
-	            		$this->getTemplate()->set_var("sAreaText", $oEje->getArea()->getDescripcion());
-		            	$this->getTemplate()->parse("ResultListEjes", true);
-	            	}
-		            $this->getTemplate()->parse("listaEje", false);
-	            }else{
-		            $this->getTemplate()->set_var("listaEje", "");
-	            }
-	            $this->getTemplate()->set_var("iDiagnosticoId",$oDiagnostico->getId());
-         	}
-         	$iRecordsTotal = 0;
-        	$sOrderBy 	= $sOrder = $iIniLimit = $iRecordCount = null;
-        	$filtroSql 	= array();
-         	$vNiveles 	= SeguimientosController::getInstance()->getNiveles($filtroSql, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
-         	if( $vNiveles ){
-         	  	foreach($vNiveles as $oNivel){
-         	  		if($iNivelId == $oNivel->getId()){
-         	  			 $this->getTemplate()->set_var("sSelectedNivel", "selected='selected'");
-         	  		}else{
-         	  			 $this->getTemplate()->set_var("sSelectedNivel", "");
-         	  		}
-	                $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-	                $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-	                $this->getTemplate()->parse("NivelesListBlock", true);
-            	}
-         	}
-         	
-         	$iRecordsTotal = 0;
-         	if($iNivelId!=""){
-	  			$vCiclos 	= SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-	  			foreach($vCiclos as $oCiclo){
-	  				if($iCicloId == $oCiclo->getId()){
-         	  			 $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
-         	  		}else{
-         	  			 $this->getTemplate()->set_var("sSelectedCiclo", "");
-         	  		}
-					$this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
-		            $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
-		            $this->getTemplate()->parse("CiclosListBlock", true);
-	          	}
-	         }
-   			$iRecordsTotal = 0;
-         	if($iCicloId!=""){
-	         	$vAreas 	= SeguimientosController::getInstance()->getAreasByCicloId($iCicloId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-	  			foreach($vAreas as $oArea){
-	  				if($iAreaId == $oArea->getId()){
-         	  			 $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
-         	  		}else{
-         	  			 $this->getTemplate()->set_var("sSelectedArea", "");
-         	  		}
-					$this->getTemplate()->set_var("iAreaId", $oArea->getId());
-		            $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
-		            $this->getTemplate()->parse("AreasListBlock", true);
-	          	}
-         	}
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-   		  }catch(Exception $e){
-           	//print_r($e);
-        }
-    }
-    
-    public function procesarDiagnostico(){
-        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            //$perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        	//$filtroSql["u.id"] = $perfil->getUsuario()->getId();
-        	
-            $iDiagnosticoId = $this->getRequest()->getPost('idDiagnostico');
-           // TODO Agregar validacion de pedir el diagnostico segun permiso d
-            $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
-        
-			if($oDiagnostico){
-				$sDescripcion 	= $this->getRequest()->getPost('diagnostico');
-	            if(get_class($oDiagnostico) == "DiagnosticoPersonalizado"){
-	            	$sCodigo	 	= $this->getRequest()->getPost('codigo');
-			    	$oDiagnostico->setCodigo($sCodigo);
-	            }else{
-	            	$sEjesEliminadosId	= $this->getRequest()->getPost('ejeEliminados');
-	            	if ($sEjesEliminadosId != "") {
-	            		SeguimientosController::getInstance()->eliminarEjesByDiagnostico($sEjesEliminadosId, $iDiagnosticoId);
-	            	}
-	            	$ejes	    	= $this->getRequest()->getPost('ejeHidden');
-	            	//$estadoInicial	= $this->getRequest()->getPost('estadoInicialHiddenNew');
-	            	$i = 0;
-	            	$vEjesTematicos = array();
-	            	if (count($ejes)>0) {
-		            	foreach ($ejes as $eje){
-		             		$oEjeTematico = Factory::getEjeTematicoInstance(new stdClass());
-		            		$oEjeTematico->setId($eje["id"]);
-		            		$oEjeTematico->setEstadoInicial($eje["estadoInicial"]);
-		            		$vEjesTematicos[] = $oEjeTematico;
-		            	}	
-	            	}
-	            	            	
-			    	$oDiagnostico->setEjesTematicos($vEjesTematicos);
-	            }
-	            $oDiagnostico->setDescripcion($sDescripcion);
-		        $res = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
-			}else{
-				$res = false;
-			}
-			if($res){
-				 $this->getJsonHelper()->setSuccess(true);
-			}else{
-				 $this->getJsonHelper()->setSuccess(false);
-			}
+
+            $this->getTemplate()->set_var("sDescripcion", $oDiagnostico->getDescripcion());
+            $this->getTemplate()->set_var("iDiagnosticoId", $oDiagnostico->getId());
             
+            $aEjesTematicos = $oDiagnostico->getEjesTematicos();
+
+            if($aEjesTematicos === null){
+                $this->getTemplate()->unset_blocks("EstadoInicialBlock");
+            }else{
+                //cargo todo el estado inicial para cada uno de los ejes.
+                $this->getTemplate()->unset_blocks("NoRecordsEstadoInicialBlock");
+
+                foreach($aEjesTematicos as $oEjeTematico){
+                    $sHtmlId = uniqid();
+                    $this->getTemplate()->set_var("estadoInicialHtmlId", $sHtmlId);
+                    $this->getTemplate()->set_var("iDiagnosticoSCCId", $oDiagnostico->getId());
+                    $this->getTemplate()->set_var("iEjeId", $oEjeTematico->getId());
+                    $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
+
+                    //combo niveles
+                    $iNivelId = $oEjeTematico->getArea()->getCiclo()->getNivel()->getId();
+                    $iRecordsNiveles = 0;
+                    $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+                    foreach ($aNiveles as $oNivel){                        
+                        if($iNivelId == $oNivel->getId()){
+                            $this->getTemplate()->set_var("sSelectedNivel", "selected='selected'");
+                        }
+                        $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                        $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());                       
+                        $this->getTemplate()->parse("NivelesListBlock", true);
+                        $this->getTemplate()->set_var("sSelectedNivel", "");
+                    }
+
+                    //combo ciclos                    
+                    $iCicloId = $oEjeTematico->getArea()->getCiclo()->getId();
+                    $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
+                    foreach ($aCiclos as $oCiclo){
+                        if($iCicloId == $oCiclo->getId()){
+                            $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
+                        }
+                        $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+                        $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
+                        $this->getTemplate()->parse("CiclosListBlock", true);
+                        $this->getTemplate()->set_var("sSelectedCiclo", "");
+                    }
+
+                    //combo areas
+                    $iAreaId = $oEjeTematico->getArea()->getId();
+                    $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+                    foreach ($aAreas as $oArea){
+                        if($iAreaId == $oArea->getId()){
+                            $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
+                        }
+                        $this->getTemplate()->set_var("iAreaId", $oArea->getId());
+                        $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
+                        $this->getTemplate()->parse("AreaListBlock", true);
+                        $this->getTemplate()->set_var("sSelectedArea", "");
+                    }
+
+                    //combo ejes (no es recursivo, es que para el area hay mas de un eje y tiene q listarse)
+                    $iEjeId = $oEjeTematico->getId(); //este es el que viene del foreach padre
+                    $aEjesSelect = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId);
+                    foreach ($aEjesSelect as $oEjeSelect){
+                        if($iEjeId == $oEjeSelect->getId()){
+                            $this->getTemplate()->set_var("sSelectedEje", "selected='selected'");
+                        }
+                        $this->getTemplate()->set_var("iEjeId", $oEjeSelect->getId());
+                        $this->getTemplate()->set_var("sEjeDescripcion", $oEjeSelect->getDescripcion());
+                        $this->getTemplate()->parse("EjeListBlock", true);
+                        $this->getTemplate()->set_var("sSelectedEje", "");
+                    }
+                                       
+                    $this->getTemplate()->parse("EstadoInicialBlock", true);
+                }
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
-           $this->getJsonHelper()->setMessage($e->getMessage());
-           $this->getJsonHelper()->setSuccess(false);
+            throw $e;
+        }
+    }
+	             
+    public function procesarDiagnostico()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        if($this->getRequest()->has('guardarDiagnosticoPersonalizado') ||
+           $this->getRequest()->has('guardarDiagnosticoSCC')){            
+            $this->guardarDiagnostico();
+            return;
+        }
+
+        if($this->getRequest()->has('agregarEstadoInicial')){
+            $this->agregarEstadoInicial();
+            return;
         }
         
-        $this->getJsonHelper()->sendJsonAjaxResponse($oDiagnostico);
-    }
-    
-    public function listarCiclosPorNiveles(){
-    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        try{
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ciclos", "CiclosListBlock");
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $iNivelId	    = $this->getRequest()->getPost('nivelId');
-            $iRecordsTotal 	= 0;
-        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
-  			$vCiclos 	= SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-  			$this->getTemplate()->set_var("iCicloId", "");
-            $this->getTemplate()->set_var("sCicloDescripcion", "Seleccione el ciclo");
-            $this->getTemplate()->parse("CiclosListBlock", true);	
-            if ($vCiclos) {
-            	foreach($vCiclos as $oCiclo){
-					$this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
-		            $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
-		            $this->getTemplate()->parse("CiclosListBlock", true);
-	          	}
-            }
-            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ciclos', false));
-        }catch(Exception $e){
-            $this->getAjaxHelper()->sendHtmlAjaxResponse("");
-            return;
-        }
-    }
-    
- 	 public function listarAreasPorCiclos(){
-    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        try{
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "areas", "AreasListBlock");
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $iCicloId	    = $this->getRequest()->getPost('cicloId');
-            $iRecordsTotal 	= 0;
-        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
-  			$vAreas 	= SeguimientosController::getInstance()->getAreasByCicloId($iCicloId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-			$this->getTemplate()->set_var("iAreaId", "");
-            $this->getTemplate()->set_var("sAreaDescripcion", "Seleccione el area");
-            $this->getTemplate()->parse("AreasListBlock", true);	
-            if ($vAreas) {
-	  			foreach($vAreas as $oArea){
-					$this->getTemplate()->set_var("iAreaId", $oArea->getId());
-		            $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
-		            $this->getTemplate()->parse("AreasListBlock", true);
-	          	}
-            }
-          	
-            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('areas', false));
-        }catch(Exception $e){
-            $this->getAjaxHelper()->sendHtmlAjaxResponse("");
-            return;
-        }
-    }
- 	 public function listarEjesPorArea(){
-    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        try{
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ejes", "EjesListBlock");
-            $this->getJsonHelper()->initJsonAjaxResponse();
-            $iAreaId	    = $this->getRequest()->getPost('areaId');
-            $iRecordsTotal 	= 0;
-        	$sOrderBy 	= $sOrder =  $iIniLimit =  $iRecordCount = null;
-  			$vEjes	= SeguimientosController::getInstance()->getEjesByAreaId($iAreaId,$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount );
-			$this->getTemplate()->set_var("iEjeId", "");
-            $this->getTemplate()->set_var("sEjeDescripcion", "Seleccione el eje");
-            $this->getTemplate()->parse("EjesListBlock", true);
-            if ($vEjes) {
-	  			foreach($vEjes as $oEje){
-					$this->getTemplate()->set_var("iEjeId", $oEje->getId());
-		            $this->getTemplate()->set_var("sEjeDescripcion", $oEje->getDescripcion());
-		            $this->getTemplate()->parse("EjesListBlock", true);
-	          	}
-            }
-            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ejes', false));
-        }catch(Exception $e){
-            $this->getAjaxHelper()->sendHtmlAjaxResponse("");
+        if($this->getRequest()->has('eliminarEstadoInicial')){
+            $this->eliminarEstadoInicial();
             return;
         }
     }
 
+    private function eliminarEstadoInicial()
+    {
+        $iEjeId = $this->getRequest()->getParam('iEjeId');
+        $iDiagnosticoSCCId = $this->getRequest()->getParam('iDiagnosticoSCCId');
+
+        if(empty($iEjeId) || empty($iDiagnosticoSCCId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+            //tiene el usuario permiso para modificar el diagnostico ?
+            if(!SeguimientosController::getInstance()->isDiagnosticoUsuario($iDiagnosticoSCCId)){
+                throw new Exception("No tiene permiso para editar el diagnostico", 401);
+            }
+
+            SeguimientosController::getInstance()->eliminarEstadoInicial($iEjeId, $iDiagnosticoSCCId);
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();  
+    }
+
+    private function agregarEstadoInicial()
+    {
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        
+        //genero un id para el array del input del form, es solo para el html.
+        $sHtmlId = uniqid();
+
+        $this->restartTemplate();
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ajaxRowEstadoInicial", "EstadoInicialBlock");
+
+        $this->getTemplate()->set_var("estadoInicialHtmlId", $sHtmlId);
+        $this->getTemplate()->set_var("sEstadoInicial", "");
+        $this->getTemplate()->set_var("iEjeId", "");
+        $this->getTemplate()->set_var("disabled", "disabled");
+        $this->getTemplate()->set_var("iDiagnosticoSCCId", "");
+
+        //combo niveles        
+        $iRecordsNiveles = 0;
+        $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+        foreach ($aNiveles as $oNivel){            
+            $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+            $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());            
+            $this->getTemplate()->set_var("sNivelSelected", "");
+            $this->getTemplate()->parse("NivelesListBlock", true);
+        }
+
+        $this->getJsonHelper()->setSuccess(true);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxRowEstadoInicial', false));
+        $this->getJsonHelper()->setValor("estadoInicialHtmlId", $sHtmlId);
+        $this->getJsonHelper()->sendJsonAjaxResponse();               
+    }
+
+    private function guardarDiagnostico()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            //tiene permiso para modificar el diagnostico ?
+            $iDiagnosticoId = $this->getRequest()->getPost('iDiagnosticoIdForm');
+            if(!SeguimientosController::getInstance()->isDiagnosticoUsuario($iDiagnosticoId)){
+                throw new Exception("No tiene permiso para editar el diagnostico", 401);
+            }
+
+            $oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoById($iDiagnosticoId);
+
+            if ($oDiagnostico->isDiagnosticoPersonalizado()){
+                $this->guardarDiagnosticoPersonalizado($oDiagnostico);
+                return;
+            }else{
+                $this->guardarDiagnosticoSCC($oDiagnostico);
+                return;
+            }
+        }catch(Exception $e){
+           $this->getJsonHelper()->setSuccess(false);
+           $this->getJsonHelper()->sendJsonAjaxResponse();
+        }
+    }
+
+    private function guardarDiagnosticoPersonalizado($oDiagnostico)
+    {
+        try{
+            $oDiagnostico->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oDiagnostico->setCodigo($this->getRequest()->getPost('codigo'));
+
+            SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+
+            $this->getJsonHelper()->setMessage("El diagnóstico se guardo con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+    }
+
+    private function guardarDiagnosticoSCC($oDiagnostico)
+    {
+        try{
+            $oDiagnostico->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            $vEstadoInicial = $this->getRequest()->getPost("estadoInicial");
+            if(empty($vEstadoInicial) || !is_array($vEstadoInicial)){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("Debe guardarse al menos un eje temático con estado inicial.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            //listado ejes tematicos con estado inicial
+            $aEjeTematico = array();
+            $aEjeTematicoAux = array(); //lo uso para asegurarme de que no haya ejes repetidos
+            foreach($vEstadoInicial as $estadoInicial){
+
+                $sEstadoInicial = trim($estadoInicial['estadoInicial']);
+                if(empty($sEstadoInicial)){
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->setMessage("Ningún eje puede quedar sin la descripción del estado inicial");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+                
+                $oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($estadoInicial['ejeTematico']);
+                $oEjeTematico->setEstadoInicial($sEstadoInicial);
+
+                $aEjeTematicoAux[] = $oEjeTematico->getId();
+            	$aEjeTematico[] = $oEjeTematico;
+            }
+            $oDiagnostico->setEjesTematicos($aEjeTematico);
+
+            //hubo al menos una repeticion en el array.
+            if(count($aEjeTematico) != count(array_unique($aEjeTematicoAux))){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("Solo un estado inicial por Eje Temático. No pueden repetirse.");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+            SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+
+            //genero el html de la grilla de los estados iniciales con el id actualizado.
+            $this->restartTemplate();
+
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ajaxGrillaEstadosIniciales", "GrillaEstadosInicialesBlock");
+            $this->getTemplate()->set_var("NoRecordsEstadoInicialBlock", "");
+
+            foreach($aEjeTematico as $oEjeTematico){
+                $sHtmlId = uniqid();
+                $this->getTemplate()->set_var("estadoInicialHtmlId", $sHtmlId);
+                $this->getTemplate()->set_var("iDiagnosticoSCCId", $oDiagnostico->getId());
+                $this->getTemplate()->set_var("iEjeId", $oEjeTematico->getId());
+                $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
+
+                //combo niveles
+                $iNivelId = $oEjeTematico->getArea()->getCiclo()->getNivel()->getId();
+                $iRecordsNiveles = 0;
+                $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+                foreach ($aNiveles as $oNivel){
+                    if($iNivelId == $oNivel->getId()){
+                        $this->getTemplate()->set_var("sNivelSelected", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                    $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                    $this->getTemplate()->parse("NivelesListBlock", true);
+                    $this->getTemplate()->set_var("sNivelSelected", "");
+                }
+
+                //combo ciclos
+                $iCicloId = $oEjeTematico->getArea()->getCiclo()->getId();
+                $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
+                foreach ($aCiclos as $oCiclo){
+                    if($iCicloId == $oCiclo->getId()){
+                        $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+                    $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
+                    $this->getTemplate()->parse("CiclosListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedCiclo", "");
+                }
+
+                //combo areas
+                $iAreaId = $oEjeTematico->getArea()->getId();
+                $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+                foreach ($aAreas as $oArea){
+                    if($iAreaId == $oArea->getId()){
+                        $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iAreaId", $oArea->getId());
+                    $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
+                    $this->getTemplate()->parse("AreaListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedArea", "");
+                }
+
+                //combo ejes (no es recursivo, es que para el area hay mas de un eje y tiene q listarse)
+                $iEjeId = $oEjeTematico->getId(); //este es el que viene del foreach padre
+                $aEjesSelect = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId);
+                foreach ($aEjesSelect as $oEjeSelect){
+                    if($iEjeId == $oEjeSelect->getId()){
+                        $this->getTemplate()->set_var("sSelectedEje", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iEjeId", $oEjeSelect->getId());
+                    $this->getTemplate()->set_var("sEjeDescripcion", $oEjeSelect->getDescripcion());
+                    $this->getTemplate()->parse("EjeListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedEje", "");
+                }
+
+                $this->getTemplate()->parse("EstadoInicialBlock", true);
+            }
+            
+            $this->getJsonHelper()->setMessage("El diagnóstico se ha guardado con éxito");
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxGrillaEstadosIniciales', false));
+            $this->getJsonHelper()->setValor("modificarDiagnosticoSCC", "1");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+    
+    public function listarCiclosPorNiveles()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iNivelId = $this->getRequest()->getPost("iNivelId");
+
+            if(empty($iNivelId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+            
+            $jCiclos = array();
+            $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
+            if(!empty($aCiclos)){
+                foreach($aCiclos as $oCiclo){
+                    $obj = new stdClass();
+                    $obj->iId = $oCiclo->getId();
+                    $obj->sDescripcion = $oCiclo->getDescripcion();
+                    array_push($jCiclos, $obj);
+                }
+            }
+            
+            $this->getJsonHelper()->sendJson($jCiclos);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    public function listarAreasPorCiclos()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iCicloId =  $this->getRequest()->getPost("iCicloId");
+
+            if(empty($iCicloId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $jAreas = array();
+            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+            if(!empty($aAreas)){
+                foreach($aAreas as $oArea){
+                    $obj = new stdClass();
+                    $obj->iId = $oArea->getId();
+                    $obj->sDescripcion = $oArea->getDescripcion();
+                    array_push($jAreas, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jAreas);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+ 	 
+    public function listarEjesPorArea()
+    {
+    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iAreaId =  $this->getRequest()->getPost("iAreaId");
+
+            if(empty($iAreaId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $jEjes = array();
+            $aEjes = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId);
+            if(!empty($aEjes)){
+                foreach($aEjes as $oEje){
+                    $obj = new stdClass();
+                    $obj->iId = $oEje->getId();
+                    $obj->sDescripcion = $oEje->getDescripcion();
+                    array_push($jEjes, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jEjes);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /*
-    public function asociarObjetivoView()
+    public function administrarObjetivos()
      {
         try{
         	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');

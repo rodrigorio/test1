@@ -148,6 +148,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
    { 
         try{
             $sTipo = get_class($oVariable);
+            $db = $this->conn;
+            $db->begin_transaction();
 		
             $sSQL = " update variables set ".
                     " nombre = ".$this->escStr($oVariable->getNombre()).", ".
@@ -161,8 +163,11 @@ class VariableMySQLIntermediary extends VariableIntermediary
                  $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
              }
 
-             return true;
+            $db->commit();
+            return true;
+             
         }catch(Exception $e){
+            $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }
     }

@@ -1198,8 +1198,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ciclos
             $iCicloId = $oArea->getCiclo()->getId();
-            $iRecordsCiclos = 0;
-            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
+            $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
                 $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
@@ -1250,8 +1249,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ciclos
             $iCicloId = $oEje->getArea()->getCiclo()->getId();
-            $iRecordsCiclos = 0;
-            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
+            $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
                 $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
@@ -1264,8 +1262,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo areas
             $iAreaId = $oEje->getArea()->getId();
-            $iRecordsAreas = 0;
-            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsAreas, null, null, null, null);
+            $aAreas = AdminController::getInstance()->getAreasByCicloId($iCicloId);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
                 $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
@@ -1317,8 +1314,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ciclos
             $iCicloId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getId();
-            $iRecordsCiclos = 0;
-            $aCiclos = AdminController::getInstance()->getCiclos($filtro = array(), $iRecordsCiclos, null, null, null, null);
+            $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
                 $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
@@ -1331,8 +1327,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo areas
             $iAreaId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getId();
-            $iRecordsAreas = 0;
-            $aAreas = AdminController::getInstance()->getAreas($filtro = array(), $iRecordsAreas, null, null, null, null);
+            $aAreas = AdminController::getInstance()->getAreasByCicloId($iCicloId);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
                 $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
@@ -1345,9 +1340,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             //combo ejes
             $iEjeId = $oObjetivoAprendizaje->getEjeTematico()->getId();
-            $iRecordsEjes = 0;
-            $aEjes = AdminController::getInstance()->getEjes($filtro = array(), $iRecordsEjes, null, null, null, null);
-            
+            $aEjes = AdminController::getInstance()->getEjesByAreaId($iAreaId);            
             foreach ($aEjes as $oEje){
                 $this->getTemplate()->set_var("iValueEjeTematico", $oEje->getId());
                 $this->getTemplate()->set_var("sDescripcionEjeTematico", $oEje->getDescripcion());
@@ -1379,9 +1372,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
             
             $jCiclos = array();
-            $iRecordsTotal = 0;
-            $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
-            $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
             if(!empty($aCiclos)){
                 foreach($aCiclos as $oCiclo){
                     $obj = new stdClass();
@@ -1408,9 +1399,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $jAreas = array();
-            $iRecordsTotal = 0;
-            $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
-            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
             if(!empty($aAreas)){
                 foreach($aAreas as $oArea){
                     $obj = new stdClass();
@@ -1437,9 +1426,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $jEjes = array();
-            $iRecordsTotal = 0;
-            $sOrderBy = $sOrder = $iIniLimit = $iRecordCount = null;
-            $aEjes = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount );
+            $aEjes = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId);
             if(!empty($aEjes)){
                 foreach($aEjes as $oEje){
                     $obj = new stdClass();
