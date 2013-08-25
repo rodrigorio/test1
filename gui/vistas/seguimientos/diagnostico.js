@@ -1,15 +1,4 @@
-var ejeEliminados = new Array();
-
-function tieneEjes(){
-	var ejes = $(".eje");
-	if (ejes.length > 0) {
-		return false;
-	}else{
-		return true;
-	}
-}
-
-var validateFormDiagnostico = {
+var validateFormDiagnosticoPersonalizado = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -23,294 +12,353 @@ var validateFormDiagnostico = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        diagnostico:{required:tieneEjes},
-        nivel:{required:tieneEjes},
-        ciclo:{required:tieneEjes},
-        area:{required:tieneEjes},
-        eje:{required:tieneEjes},
-        estadoInicial:{required:tieneEjes}
+        descripcion:{required:true}
     },
     messages:{
-        diagnostico: mensajeValidacion("requerido"),
-        nivel: mensajeValidacion("requerido"),
-        ciclo: mensajeValidacion("requerido"),
-        area: mensajeValidacion("requerido"),
-        eje: mensajeValidacion("requerido"),
-        estadoInicial: mensajeValidacion("requerido")
+        descripcion: mensajeValidacion("requerido")
     }
 };
 
-function showMsgEjeError(){
-	$('#msg_agregar_eje').show();
-    $('#msg_agregar_eje').removeClass("correcto").addClass("error");
-    $('#msg_agregar_eje .msg').html("Debe seleccionar un eje.");
-}
-var optionsAjaxFormDiagnostico = {
+var optionsAjaxFormDiagnosticoPersonalizado = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'seguimientos/procesar-diagnostico',
     beforeSerialize:function(){
-    	var ejes = $(".eje");
-    	if ($("#tipoDiagnostico").val()=="SCC" && ejes.length == 0) {
-    		showMsgEjeError();
-    		return false;
-    	}
-    	alert(1);
-        if($("#formGuardarDiagnostico").valid() == true){
-            $('#msg_form_guardarDiagnostico').hide();
-            $('#msg_form_guardarDiagnostico').removeClass("correcto").removeClass("error");
-            $('#msg_form_guardarDiagnostico .msg').html("");
-            setWaitingStatus('tabsFormDiagnostico', true);
+
+        if($("#formDiagnosticoPersonalizado").valid() == true){
+            $('#msg_form_diagnosticoPersonalizado').hide();
+            $('#msg_form_diagnosticoPersonalizado').removeClass("correcto").removeClass("error");
+            $('#msg_form_diagnosticoPersonalizado .msg').html("");
+            setWaitingStatus('formDiagnosticoPersonalizado', true);
         }else{
             return false;
         }
     },
     success:function(data){
-        setWaitingStatus('tabsFormDiagnostico', false);
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_guardarDiagnostico .msg').html(lang['error procesar']);
+                $('#msg_form_diagnosticoPersonalizado .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_guardarDiagnostico .msg').html(data.mensaje);
+                $('#msg_form_diagnosticoPersonalizado .msg').html(data.mensaje);
             }
-            $('#msg_form_guardarDiagnostico').addClass("error").fadeIn('slow');
+            $('#msg_form_diagnosticoPersonalizado').addClass("error");
         }else{
-        	ejeEliminados = new Array();
-        	actualizarInputEjesEliminados();
-      
             if(data.mensaje == undefined){
-                $('#msg_form_guardarDiagnostico .msg').html(lang['exito procesar']);
+                $('#msg_form_diagnosticoPersonalizado .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_guardarDiagnostico .msg').html(data.mensaje);
+                $('#msg_form_diagnosticoPersonalizado .msg').html(data.mensaje);
             }
-            $('#msg_form_guardarDiagnostico').addClass("correcto").fadeIn('slow');
+            $('#msg_form_diagnosticoPersonalizado').addClass("correcto");
         }
+
+        setWaitingStatus('formDiagnosticoPersonalizado', false);
+        $('#msg_form_diagnosticoPersonalizado').fadeIn('slow');
     }
 };
 
-function bindEventFormAgregarArchivo(iSeguimientoId)
-{
-    if($('#diagnosticoUpload').length){
-        new Ajax_upload('#diagnosticoUpload', {
-            action:'seguimientos/procesar-diagnostico',
-            data:{
-                fileDiagnosticoUpload:"1",
-                iSeguimientoId:iSeguimientoId
-            },
-            name:'archivoDiagnostico',
-            onChange:function(file , ext){
-                if(confirm("Se eliminara el archivo anterior, desea realizar esta operacion?")){
-                    return true;
-                }else{
-                    return false;
-                }
-            },
-            onSubmit:function(file , ext){
-                $('#msg_form_diagnostico').hide();
-                $('#msg_form_diagnostico').removeClass("correcto").removeClass("error");
-                $('#msg_form_diagnostico .msg').html("");
-                setWaitingStatus('tabsFormDiagnostico', true);
-                this.disable(); //solo un archivo a la vez
-            },
-            onComplete:function(file, response){
-                
-                setWaitingStatus('tabsFormDiagnostico', false);
-                this.enable();
+/**
+ * La validacion de los estados iniciales se hacen del lado del server y se devuelve por ajax.
+ */
+var validateFormDiagnosticoSCC = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        descripcion:{required:true}
+    },
+    messages:{
+        descripcion: mensajeValidacion("requerido")
+    }
+};
 
-                if(response == undefined){
-                    $('#msg_form_diagnostico .msg').html(lang['error procesar']);
-                    $('#msg_form_diagnostico').addClass("error").fadeIn('slow');
-                    return;
-                }
+var optionsAjaxDiagnosticoSCC = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/procesar-diagnostico',
+    beforeSerialize:function(){
 
-                var dataInfo = response.split(';;');
-                var resultado = dataInfo[0]; 
-                var html = dataInfo[1]; 
+        if($("#formDiagnosticoSCC").valid() == true){
 
-                if(resultado != "0" && resultado != "1"){
-                    $('#msg_form_diagnostico .msg').html(lang['error permiso']);
-                    $('#msg_form_diagnostico').addClass("info").fadeIn('slow');
-                    return;
-                }
+            $('#msg_form_diagnosticoSCC').hide();
+            $('#msg_form_diagnosticoSCC').removeClass("correcto").removeClass("error");
+            $('#msg_form_diagnosticoSCC .msg').html("");
+            setWaitingStatus('formDiagnosticoSCC', true);
 
-                if(resultado == '0'){
-                    $('#msg_form_diagnostico .msg').html(html);
-                    $('#msg_form_diagnostico').addClass("error").fadeIn('slow');
-                }else{
-                    $('#msg_form_diagnostico .msg').html(lang['exito procesar archivo']);
-                    $('#msg_form_diagnostico').addClass("correcto").fadeIn('slow');
+        }else{
+            return false;
+        }
+    },
 
-                    $('#wrapAntActual').html(html);
-                }
-                return;
+    success:function(data){
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_diagnosticoSCC .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_diagnosticoSCC .msg').html(data.mensaje);
             }
+            $('#msg_form_diagnosticoSCC').addClass("error");
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_diagnosticoSCC .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_diagnosticoSCC .msg').html(data.mensaje);
+            }
+
+            //refresco el listado de estados iniciales, necesario por ids
+            if(data.modificarDiagnosticoSCC != undefined){
+                $("#GrillaEstadosInicialesBlock").html(data.html);
+            }
+
+            $('#msg_form_diagnosticoSCC').addClass("correcto");
+        }
+
+        setWaitingStatus('formDiagnosticoSCC', false);
+        $('#msg_form_diagnosticoSCC').fadeIn('slow');
+    }
+};
+
+function bindEventsFormDiagnosticoPersonalizado(){
+    $("#formDiagnosticoPersonalizado").validate(validateFormDiagnosticoPersonalizado);
+    $("#formDiagnosticoPersonalizado").ajaxForm(optionsAjaxFormDiagnosticoPersonalizado);
+}
+
+function bindEventsFormDiagnosticoSCC(){
+    $("#formDiagnosticoSCC").validate(validateFormDiagnosticoSCC);
+    $("#formDiagnosticoSCC").ajaxForm(optionsAjaxDiagnosticoSCC);
+
+    //bindeo eventos en los selects de los estados actuales que ya estaban cargados (fila por fila)
+    if($('.estadoInicial').length){
+        $('.estadoInicial').each(function(){
+            var estadoInicialHtmlId = $(this).attr("id");
+
+            $("#nivel_"+estadoInicialHtmlId).change(function(){
+                listaCiclosByNivel($("#nivel_"+estadoInicialHtmlId+" option:selected").val(), estadoInicialHtmlId);
+            });
+
+            $("#ciclo_"+estadoInicialHtmlId).change(function(){
+                listaAreasByCiclo($("#ciclo_"+estadoInicialHtmlId+" option:selected").val(), estadoInicialHtmlId);
+            });
+
+            $("#area_"+estadoInicialHtmlId).change(function(){
+                listaEjesTematicosByArea($("#area_"+estadoInicialHtmlId+" option:selected").val(), estadoInicialHtmlId);
+            });
         });
-    }    
+    }
+}
+
+//combos con ajax formularios. le paso el id del select porque hay varias filas de estados iniciales
+function listaCiclosByNivel(idNivel, estadoInicialHtmlId){
+
+    //si el valor elegido es '' entonces marco como disabled
+    if(idNivel == ''){
+        $('#ciclo_'+estadoInicialHtmlId).addClass("disabled");
+    }else{
+        $('#ciclo_'+estadoInicialHtmlId).removeClass("disabled");
+    }
+
+    if($('#area_'+estadoInicialHtmlId).length){
+        $('#area_'+estadoInicialHtmlId).addClass("disabled");
+    }
+    if($('#ejeTematico_'+estadoInicialHtmlId).length){
+        $('#ejeTematico_'+estadoInicialHtmlId).addClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-ciclos-por-niveles",
+        data:{iNivelId:idNivel},
+        beforeSend: function(){
+            setWaitingStatus(estadoInicialHtmlId, true);
+        },
+        success:function(lista){
+            $('#ciclo_'+estadoInicialHtmlId).html("");
+
+            //los demas van vacios si es que estan en el formulario, se completan a medida que se seleccionan
+            if($('#area_'+estadoInicialHtmlId).length){
+                $('#area_'+estadoInicialHtmlId).html("");
+                $('#area_'+estadoInicialHtmlId).html(new Option('Área:', '',true));
+            }
+            if($('#ejeTematico_'+estadoInicialHtmlId).length){
+                $('#ejeTematico_'+estadoInicialHtmlId).html("");
+                $('#ejeTematico_'+estadoInicialHtmlId).html(new Option('Eje:', '',true));
+            }
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#ciclo_'+estadoInicialHtmlId).append(new Option('Ciclo:', '',true));
+                for(var i=0; i<lista.length; i++){
+                    $('#ciclo_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+                $('#ciclo_'+estadoInicialHtmlId).removeClass("disabled");
+            }else{
+                $('#ciclo_'+estadoInicialHtmlId).html(new Option('No hay ciclos cargados', '',true));
+            }
+
+            setWaitingStatus(estadoInicialHtmlId, false);
+        }
+    });
+ }
+
+function listaAreasByCiclo(idCiclo, estadoInicialHtmlId){
+
+    if(idCiclo == ''){
+        $('#area_'+estadoInicialHtmlId).addClass("disabled");
+    }else{
+        $('#area_'+estadoInicialHtmlId).removeClass("disabled");
+    }
+
+    if($('#ejeTematico_'+estadoInicialHtmlId).length){
+        $('#ejeTematico_'+estadoInicialHtmlId).addClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-areas-por-ciclos",
+        data:{iCicloId:idCiclo},
+        beforeSend: function(){
+            setWaitingStatus(estadoInicialHtmlId, true);
+        },
+        success: function(lista){
+
+            $('#area_'+estadoInicialHtmlId).html("");
+
+            if($('#ejeTematico_'+estadoInicialHtmlId).length){
+                $('#ejeTematico_'+estadoInicialHtmlId).html("");
+                $('#ejeTematico_'+estadoInicialHtmlId).html(new Option('Eje:', '',true));
+            }
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#area_'+estadoInicialHtmlId).append(new Option('Área:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#area_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+            }else{
+                $('#area_'+estadoInicialHtmlId).append(new Option('No hay áreas cargadas', '',true));
+            }
+            setWaitingStatus(estadoInicialHtmlId, false);
+        }
+    });
+}
+
+function listaEjesTematicosByArea(idArea, estadoInicialHtmlId){
+    if(idArea == ''){
+        $('#ejeTematico_'+estadoInicialHtmlId).addClass("disabled");
+    }else{
+        $('#ejeTematico_'+estadoInicialHtmlId).removeClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-ejes-por-area",
+        data:{iAreaId:idArea},
+        beforeSend: function(){
+            setWaitingStatus(estadoInicialHtmlId, true);
+        },
+        success: function(lista){
+
+            $('#ejeTematico_'+estadoInicialHtmlId).html("");
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#ejeTematico_'+estadoInicialHtmlId).append(new Option('Eje:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#ejeTematico_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+            }else{
+                $('#area_'+estadoInicialHtmlId).append(new Option('No hay ejes cargados', '',true));
+            }
+            setWaitingStatus(estadoInicialHtmlId, false);
+        }
+    });
 }
 
 $(document).ready(function(){
-	
-	$( "#dialog" ).dialog({
-		 autoOpen: false,
-		 height: 100,
-		 width: 250,
-		 modal: true,
-		 closeOnEscape:true,
-		 draggable: false,
-		 resizable: false,
-		 buttons: {
-			 Ok: function() {
-				 $( this ).dialog( "close" );
-			 }
-		}
-	 });
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    
+    if($("#formDiagnosticoPersonalizado").length){
+        bindEventsFormDiagnosticoPersonalizado();
+    }
 
-    //menu derecha
-    $("#pageRightInnerContNav li").mouseenter(function(){
-        if(!$(this).hasClass("selected")){
-            $(this).children("ul").fadeIn('slow');
+    if($("#formDiagnosticoSCC").length){
+        bindEventsFormDiagnosticoSCC();
+    }
+    
+    $("#agregarEstadoInicial").click(function(){
+        $.ajax({
+            type:"post",
+            dataType:"jsonp",            
+            url:"seguimientos/procesar-diagnostico",
+            data:{
+                agregarEstadoInicial:"1"
+            },
+            beforeSend: function(){
+                setWaitingStatus('listadoEstadosIniciales', true);
+            },
+            success:function(data){
+                if($("#noRecordsEstadoInicial").length){
+                    $("#noRecordsEstadoInicial").hide("slow", function(){
+                        $("#noRecordsEstadoInicial").remove();
+                    });
+                }
+                setWaitingStatus('listadoEstadosIniciales', false);
+                $('#grillaEstadosIniciales').append(data.html);
+
+                //bindeo eventos en los selects.
+                $("#nivel_"+data.estadoInicialHtmlId).change(function(){
+                    listaCiclosByNivel($("#nivel_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
+                });
+
+                $("#ciclo_"+data.estadoInicialHtmlId).change(function(){
+                    listaAreasByCiclo($("#ciclo_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
+                });
+
+                $("#area_"+data.estadoInicialHtmlId).change(function(){
+                    listaEjesTematicosByArea($("#area_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
+                });
+
+                $("#estadoInicial_"+data.estadoInicialHtmlId).maxlength();
+            }
+        });               
+    });
+
+    $(".borrarEstadoInicial").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var estadoInicialHtmlId = rel[0];
+        var iEjeId = rel[1];
+        var iDiagnosticoSCCId = rel[2];
+
+        //solo si el estado inicial estaba guardado en db
+        if(iEjeId != "" && iDiagnosticoSCCId != ""){
+            if(confirm("Se borrara el estado inicial seleccionado, desea continuar?")){
+                $.ajax({
+                    type:"post",
+                    dataType:"jsonp",
+                    url:"seguimientos/procesar-diagnostico",
+                    data:{
+                        eliminarEstadoInicial:"1",
+                        iEjeId:iEjeId,
+                        iDiagnosticoSCCId:iDiagnosticoSCCId
+                    },
+                    success:function(data){
+                        if(data.success != undefined && data.success == 1){
+                            $("#"+estadoInicialHtmlId).hide("slow", function(){
+                                $("#"+estadoInicialHtmlId).remove();
+                            });
+                        }
+                    }
+                });
+            }
+        //repito el codigo en el else por el asincronismo del ajax si es que necesitas ejecutarse.
+        }else{
+            $("#"+estadoInicialHtmlId).hide("slow", function(){
+                $("#"+estadoInicialHtmlId).remove();
+            });
         }
-    });
-    $("#pageRightInnerContNav li").mouseleave(function(){
-        if(!$(this).hasClass("selected")){
-            $(this).children("ul").fadeOut('slow');
-        }
-    });
-
-    $("#tabsFormDiagnostico").tabs();
-    $("#diagnostico").maxlength({maxCharacters:1000});
-
-    $("#formGuardarDiagnostico").validate(validateFormDiagnostico);
-    $("#formGuardarDiagnostico").ajaxForm(optionsAjaxFormDiagnostico);
-
-    bindEventFormAgregarArchivo($('#idSeguimiento').val());
-    
-    $("#nivel").live("change",function(){
-    	me = this;
-    	$.ajax({
-            url: "seguimientos/listar-ciclos-por-niveles",
-            type: "POST",
-            data:{
-                "nivelId":me.value
-            },
-            beforeSend: function(){
-                setWaitingStatus('ciclo', true);
-            },
-            success:function(data){
-                setWaitingStatus('ciclo', false);
-                $("#ciclo").html(data);
-                $("#area").html("<option value=''>Seleccione un area</option>");
-                
-            }
-        });
-    });
-    
-    $("#ciclo").live("change",function(){
-    	me = this;
-    	$.ajax({
-            url: "seguimientos/listar-areas-por-ciclos",
-            type: "POST",
-            data:{
-                "cicloId":me.value
-            },
-            beforeSend: function(){
-                setWaitingStatus('area', true);
-            },
-            success:function(data){
-                setWaitingStatus('area', false);
-                $("#area").html(data);
-            }
-        });
-    });
-    
-    $("#area").live("change",function(){
-    	me = this;
-    	$.ajax({
-            url: "seguimientos/listar-ejes-por-area",
-            type: "POST",
-            data:{
-                "areaId":me.value
-            },
-            beforeSend: function(){
-                setWaitingStatus('eje', true);
-            },
-            success:function(data){
-                setWaitingStatus('eje', false);
-                $("#eje").html(data);
-            }
-        });
-    });
-
-    $(".verPersona").live('click',function(){
-
-        $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
-
-        var dialog = setWaitingStatusDialog(450, $(this).html());
-        setWaitingStatus('fichaPersonaMenu', true, "16");
-        dialog.load(
-            "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
-            {},
-            function(responseText, textStatus, XMLHttpRequest){
-                setWaitingStatus('fichaPersonaMenu', false, "16");
-                bindEventsPersonaVerFicha(); //la funcion esta en personas.js
-                $("a[rel^='prettyPhoto']").prettyPhoto();
-            }
-        );
-        return false;
-    });
-    
-    $("#agregarEje").live('click',function(){
-    	var ejes= $(".eje");
-    	for (var i = 0; i < ejes.length; i++) {
-    	    if (ejes[i].value == $('#eje option:selected').val()) {
-    	    	$("#dialog").addClass("he100 mihe100");
-      	    	$("#dialog span").html("No puede agregar 2 veces el mismo eje.");
-    	    	$("#dialog").dialog({ title:"Error", minHeight: 100 ,maxHeight:120} );
-    	    	$("#dialog").dialog("open");
-    	    	return false;
-    	    }
-    	}
-    	var error = false;
-    	$('#msg_form_guardarDiagnostico').hide();
-    	$('#eje option:selected, #ciclo option:selected, #area option:selected, #nivel option:selected').each(function(){
-  	    	if ($(this).val() == "") {
-	    		$(this).parent().parent().find(".error").remove();
-	    		$(this).parent().parent().append('<div htmlfor="eje" generated="true" class="error" style="display: none;">Este campo es obligatorio</div>');
-	    		$(this).parent().parent().find(".error").show();
-//	            return false;
-	            error = true;
-	    	}
-    	});
-      
-    	if(error) return false;
-    	var html = 
-			       " <tr id='"+$('#eje option:selected').val()+"'>"+
-			       " 	<td>"+$('#nivel option:selected').text()+"<input type='hidden'  name='nivelHiddenNew[]' value='"+$('#nivel option:selected').val()+"'/></td>"+
-			       "   	<td>"+$('#ciclo option:selected').text()+"<input type='hidden'  name='cicloHiddenNew[]' value='"+$('#ciclo option:selected').val()+"'/></td>"+
-			       " 	<td>"+$('#area option:selected').text()+"<input type='hidden'  name='areaHiddenNew[]' value='"+$('#area option:selected').val()+"'/></td>"+
-			       "  	<td>"+$('#eje option:selected').text()+"<input type='hidden'  class='eje' name='ejeHidden["+$('#eje option:selected').val()+"][id]' value='"+$('#eje option:selected').val()+"'/></td>"+
-			       "	<td><div class='fwrap'><div class='inner_fwrap'><textarea rows='0' cols='0' class='textAreaLihe textareaAutoGrow defVal maxlength' onblur='editarEje(this);'>"+$('#estadoInicial').val()+"</textarea><input type='hidden'  name='ejeHidden["+$('#eje option:selected').val()+"][estadoInicial]' value='"+$('#estadoInicial').val()+"'/><input type='hidden'  name='ejeHidden["+$('#eje option:selected').val()+"][new]' value='si'/></div></div></td>"+
-			       "	<td><span onclick='eliminarEje(this)' class='i bs delete ihover' rel='2' title='Eliminar eje'></span></td>"+
-			       " </tr>";
-
-    	$("#contentEjesResult").append(html);
     });
 });
-
-function eliminarEje(eje)
-{
-	ejeEliminados.push($(eje).parent().parent().attr("id"));
-	actualizarInputEjesEliminados();
-	$(eje).parent().parent().remove();
-}
-
-function actualizarInputEjesEliminados()
-{
-	$("#ejeEliminados").val(  ejeEliminados.toString() );	
-}
-
-function editarEje(eje)
-{
-	$(eje).parent().find("input[type=hidden]").val($(eje).val());
-}

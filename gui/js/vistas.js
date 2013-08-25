@@ -376,7 +376,7 @@ $(document).ready(function(){
         }       
     });
 
-    //para las filas desplegables de una tabla.
+    //para desplegables en general.
     $(".desplegable").live("click", function(){
         var id = $(this).attr("rel");
         if($("#desplegable_" + id).css("display") == "none"){
