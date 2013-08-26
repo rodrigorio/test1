@@ -213,8 +213,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             	return false;
             }
             return true;
-    	}catch(Exception $e){
-    	
+    	}catch(Exception $e){    	
             throw new Exception($e->getMessage(), 0);
         }
     }

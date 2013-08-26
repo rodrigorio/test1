@@ -1198,7 +1198,7 @@ class SeguimientosController
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->guardarEstadoInicial($oDiagnosticoSCC);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
             
