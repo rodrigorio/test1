@@ -174,7 +174,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
      * Los ejes se guardan en el mysql de ejes.
      */
     public function actualizarSCC($oDiagnosticoSCC)
-    {
+    {        
         try{
             $db = $this->conn;
             $db->begin_transaction();
@@ -190,7 +190,7 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             return true;
         }catch(Exception $e){
             $db->rollback_transaction();
-            throw new Exception($e->getMessage(), 0);
+            throw $e;
         }
     }
     
