@@ -1917,7 +1917,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $sHtmlId = uniqid();
                     $this->getTemplate()->set_var("estadoInicialHtmlId", $sHtmlId);
                     $this->getTemplate()->set_var("iDiagnosticoSCCId", $oDiagnostico->getId());
-                    $this->getTemplate()->set_var("iEjeId", $oEjeTematico->getId());
+                    $this->getTemplate()->set_var("iEjeIdBorrar", $oEjeTematico->getId());
                     $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
 
                     //combo niveles
@@ -1974,6 +1974,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }
                                        
                     $this->getTemplate()->parse("EstadoInicialBlock", true);
+                    
+                    $aSelects = array("NivelesListBlock", "CiclosListBlock", "AreaListBlock", "EjeListBlock");
+                    $this->getTemplate()->delete_parsed_blocks($aSelects);
                 }
             }
 
@@ -2145,19 +2148,20 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
+                       
             SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
-
+           
             //genero el html de la grilla de los estados iniciales con el id actualizado.
             $this->restartTemplate();
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "ajaxGrillaEstadosIniciales", "GrillaEstadosInicialesBlock");
             $this->getTemplate()->set_var("NoRecordsEstadoInicialBlock", "");
 
-            foreach($aEjeTematico as $oEjeTematico){
+            foreach($oDiagnostico->getEjesTematicos() as $oEjeTematico){
                 $sHtmlId = uniqid();
                 $this->getTemplate()->set_var("estadoInicialHtmlId", $sHtmlId);
                 $this->getTemplate()->set_var("iDiagnosticoSCCId", $oDiagnostico->getId());
-                $this->getTemplate()->set_var("iEjeId", $oEjeTematico->getId());
+                $this->getTemplate()->set_var("iEjeIdBorrar", $oEjeTematico->getId());
                 $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
 
                 //combo niveles
@@ -2214,6 +2218,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
 
                 $this->getTemplate()->parse("EstadoInicialBlock", true);
+
+                $aSelects = array("NivelesListBlock", "CiclosListBlock", "AreaListBlock", "EjeListBlock");
+                $this->getTemplate()->delete_parsed_blocks($aSelects);
             }
             
             $this->getJsonHelper()->setMessage("El diagnóstico se ha guardado con éxito");

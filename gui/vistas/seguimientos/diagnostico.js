@@ -115,7 +115,8 @@ var optionsAjaxDiagnosticoSCC = {
 
             //refresco el listado de estados iniciales, necesario por ids
             if(data.modificarDiagnosticoSCC != undefined){
-                $("#GrillaEstadosInicialesBlock").html(data.html);
+                $("#grillaEstadosInicialesWrapper").html(data.html);
+                $("textarea.maxlength").maxlength();
             }
 
             $('#msg_form_diagnosticoSCC').addClass("correcto");
