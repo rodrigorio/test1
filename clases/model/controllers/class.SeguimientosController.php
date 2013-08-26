@@ -702,7 +702,7 @@ class SeguimientosController
 
     public function guardarDiagnostico($oDiagnostico){
         try{          
-            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);                        
             return $oDiagnosticoIntermediary->guardar($oDiagnostico);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
@@ -1194,7 +1194,7 @@ class SeguimientosController
      *
      */
     public function guardarEstadoInicial($oDiagnosticoSCC){
-        try{
+        try{            
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->guardarEstadoInicial($oDiagnosticoSCC);
         }catch(Exception $e){

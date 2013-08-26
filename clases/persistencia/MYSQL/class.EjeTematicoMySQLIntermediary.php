@@ -227,20 +227,20 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         {
             if(null !== $oDiagnosticoSCC->getEjesTematicos()){
                 $db = $this->conn;
-                $db->begin_transaction();
+                $db->begin_transaction();                
                 foreach($oDiagnosticoSCC->getEjesTematicos() as $oEjeTematico){
                     if($this->existeEjeTematicoDiagnosticoSCC($oDiagnosticoSCC->getId(), $oEjeTematico->getId())){
-                        return $this->actualizarEstadoInicial($oDiagnosticoSCC->getId(), $oEjeTematico);
+                        $this->actualizarEstadoInicial($oDiagnosticoSCC->getId(), $oEjeTematico);
                     }else{
-                        return $this->insertarEstadoInicial($oDiagnosticoSCC->getId(), $oEjeTematico);
+                        $this->insertarEstadoInicial($oDiagnosticoSCC->getId(), $oEjeTematico);
                     }                   
-                }
+                }                
                 $db->commit();
             }
-            return true;
+            return true;            
         }catch(Exception $e){
             $db->rollback_transaction();
-            throw new Exception($e->getMessage(), 0);
+            throw $e;
         }        
     }
            
