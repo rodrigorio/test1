@@ -22,7 +22,12 @@ class SeguimientoSCC extends SeguimientoAbstract
     }
 
     public function isSeguimientoSCC(){ return true; }
-    
+
+    /**
+     *
+     * Devuelve objetivos con evolucion completa si es que la tienen.
+     *
+     */
     public function getObjetivos(){
         if($this->aObjetivos === null){
             $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosAprendizaje($this->iId);
