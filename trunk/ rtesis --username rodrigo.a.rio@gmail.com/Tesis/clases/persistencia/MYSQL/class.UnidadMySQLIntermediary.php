@@ -4,7 +4,7 @@
  * @author Andr�s
  */
 class UnidadMySQLIntermediary extends UnidadIntermediary
-{
+{    
     private static $instance = null;
 
     protected function __construct( $conn) {
@@ -31,7 +31,8 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             
             $sSQL = "   SELECT SQL_CALC_FOUND_ROWS
                             u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId, 
-                            u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica
+                            u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica,
+                            u.tipoEdicion as eTipoEdicion 
                         FROM
                             unidades u 
                         LEFT JOIN
@@ -53,6 +54,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
+            }
+            if(isset($filtro['u.tipoEdicion']) && $filtro['u.tipoEdicion'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('u.tipoEdicion', $filtro['u.tipoEdicion']);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -76,6 +80,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $oUnidad->sNombre = $oObj->sNombre;
                 $oUnidad->sDescripcion = $oObj->sDescripcion;
                 $oUnidad->dFechaHora = $oObj->dFechaHora;
+                $oUnidad->eTipoEdicion = $oObj->eTipoEdicion;
 
                 //puede no tener un usuario asociado
                 if($oObj->iUsuarioId !== null){
@@ -116,7 +121,8 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                     "   nombre = ".$this->escStr($oUnidad->getNombre())." , ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
-                    "   asociacionAutomatica = '".$asociacionAutomatica."' ";
+                    "   asociacionAutomatica = '".$asociacionAutomatica."', ". 
+                    "   tipoEdicion = ".$this->escStr($oUnidad->getTipoEdicion());
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -127,6 +133,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         }
     }
 
+    /**
+     * Tipo de edicion se determina solo en crear unidad.
+     */
     public function actualizar($oUnidad)
     {
         try{
