@@ -9,7 +9,7 @@ abstract class ObjetivoAbstract
 {
     protected $iId;
     protected $sDescripcion;    
-    protected $oObjetivoRelevancia;
+    protected $oRelevancia;
     protected $dEstimacion = null;
     protected $bActivo = true;
 
@@ -40,11 +40,11 @@ abstract class ObjetivoAbstract
     }
 
     /**
-     *  @param  $oObjetivoRelevancia
+     *  @param  $oRelevancia
      *  
      */
-    public function setObjetivoRelevancia($oObjetivoRelevancia){
-        $this->oObjetivoRelevancia = $oObjetivoRelevancia;
+    public function setRelevancia($oRelevancia){
+        $this->oRelevancia = $oRelevancia;
     }
 
     /**
@@ -70,10 +70,10 @@ abstract class ObjetivoAbstract
     }
     
     /**
-     *  @return  $oObjetivoRelevancia
+     *  @return  $oRelevancia
      */
-    public function getObjetivoRelevancia(){
-        return $this->oObjetivoRelevancia;
+    public function getRelevancia(){
+        return $this->oRelevancia;
     }
 
     public function isActivo($flag = null){

@@ -23,7 +23,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion,
-                        op.objetivo_personalizado_ejes_id as iObjetivoEjeId, op.objetivo_relevancias_id as iObjetivoRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, 
+                        op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, 
                         ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia 
                     FROM
                         objetivos o
@@ -47,23 +47,24 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $aObjetivos = array();
             while($oObj = $db->oNextRecord()){
 
-                $oObjetivoPersonalizadoEje = new stdClass();
-            	$oObjetivoPersonalizadoEje->iId = $oObj->iObjetivoEjeId;
-            	$oObjetivoPersonalizadoEje->sDescripcion = $oObj->sDescripcionEje;
-                $oObjetivoPersonalizadoEje = Factory::getObjetivoPersonalizadoEjeInstance($oObjetivoPersonalizadoEje);
+                //esto esta bien asi porque los ejes de los objetivos no tienen sublista de ejes, se asocian solo los ejes hoja
+                $oEje = new stdClass();
+            	$oEje->iId = $oObj->iEjeId;
+            	$oEje->sDescripcion = $oObj->sDescripcionEje;
+                $oEje = Factory::getEjeInstance($oEje);
 
-                $oObjetivoRelevancia = new stdClass();
-            	$oObjetivoRelevancia->iId = $oObj->iObjetivoRelevanciaId;
-            	$oObjetivoRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
-                $oObjetivoRelevancia = Factory::getObjetivoRelevanciaInstance($oObjetivoRelevancia);
+                $oRelevancia = new stdClass();
+            	$oRelevancia->iId = $oObj->iRelevanciaId;
+            	$oRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
+                $oRelevancia = Factory::getRelevanciaInstance($oRelevancia);
 
             	$oObjetivo = new stdClass();
             	$oObjetivo->iId = $oObj->iId;
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->fEvolucion = $oObj->fEvolucion;
-                $oObjetivo->oObjetivoRelevancia = $oObjetivoRelevancia;
-                $oObjetivo->oObjetivoPersonalizadoEje = $oObjetivoPersonalizadoEje;
+                $oObjetivo->oRelevancia = $oRelevancia;
+                $oObjetivo->oEje = $oEje;
             	
             	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
             }
@@ -84,7 +85,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         o.id as iId, o.descripcion as sDescripcion,
                         oa.ejes_id as iEjeTematicoId,
                         sxo.evolucion as fEvolucion, sxo.estimacion as dEstimacion,
-                        sxo.objetivo_relevancias_id as iObjetivoRelevanciaId, orr.descripcion as sDescripcionRelevancia 
+                        sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia 
                     FROM
                        objetivos o 
                     JOIN
@@ -109,13 +110,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
                 $oObjetivo = new stdClass();
 
-                $oObjetivo->oObjetivoRelevancia = null;
-                if(null !== $oObj->iObjetivoRelevanciaId){
-                    $oObjetivoRelevancia = new stdClass();
-                    $oObjetivoRelevancia->iId = $oObj->iObjetivoRelevanciaId;
-                    $oObjetivoRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
-                    $oObjetivoRelevancia = Factory::getObjetivoRelevanciaInstance($oObjetivoRelevancia);
-                    $oObjetivo->oObjetivoRelevancia = $oObjetivoRelevancia;
+                $oObjetivo->oRelevancia = null;
+                if(null !== $oObj->iRelevanciaId){
+                    $oRelevancia = new stdClass();
+                    $oRelevancia->iId = $oObj->iRelevanciaId;
+                    $oRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
+                    $oRelevancia = Factory::getRelevanciaInstance($oRelevancia);
+                    $oObjetivo->oRelevancia = $oRelevancia;
                 }
                             	
             	$oObjetivo->iId = $oObj->iId;
@@ -217,7 +218,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             throw new Exception("El objetivo no tiene eje");
         }
 
-        if($oObjetivo->getObjetivoRelevancia() === null){
+        if($oObjetivo->getRelevancia() === null){
             throw new Exception("El objetivo no tiene relevancia");
         }
         
@@ -295,7 +296,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
      */
     public function guardarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo)
     {
-        if($oObjetivo->getObjetivoRelevancia() === null){
+        if($oObjetivo->getRelevancia() === null){
             throw new Exception("El objetivo no tiene relevancia");
         }
         
@@ -326,7 +327,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     " set id = ".$this->escInt($iLastId).", ".
                     " seguimientos_personalizados_id = ".$this->escInt($iSeguimientoPersonalizadoId).", ".
                     " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
-                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId()).", ".
+                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ";
 
@@ -360,7 +361,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             $sSQL = " update objetivos_personalizados set ".
                     " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getObjetivoPersonalizadoEje()->getId()).", ".
-                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId()).", ".
+                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
@@ -384,7 +385,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     " objetivos_aprendizaje_id = ".$this->escInt($oObjetivo->getId()).", ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
-                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId());
+                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getRelevancia()->getId());
             
             $db->execSQL($sSQL);
             $db->commit();
@@ -401,7 +402,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
                     " evolucion = ".$this->escFlt($oObjetivo->getEvolucion()).", ".
                     " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
-                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getObjetivoRelevancia()->getId())." ".
+                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getRelevancia()->getId())." ".
                     " WHERE
                         sxo.seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
                       AND

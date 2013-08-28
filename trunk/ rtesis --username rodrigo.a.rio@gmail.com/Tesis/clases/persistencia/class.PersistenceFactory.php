@@ -178,6 +178,12 @@ class PersistenceFactory {
             return(EjeTematicoMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getEjeIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(EjeMySQLIntermediary::getInstance($conn));
+        }
+    }
     public static function getObjetivoIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
