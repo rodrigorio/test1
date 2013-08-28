@@ -1390,6 +1390,8 @@ class SeguimientosController
 
     /**
      * Se fija que un seguimiento tenga asociado las entidades necesarias previas a ingresar entradas por fecha
+     *
+     * al menos un objetivo ACTIVO.
      */
     public function checkEntradasOK($oSeguimiento)
     {
@@ -1407,8 +1409,17 @@ class SeguimientosController
                 return false;
             }
 
+            //al menos un objetivo activo
             if($oSeguimiento->getObjetivos() === null){
                 return false;
+            }else{
+                $bAux = false;
+                foreach($oSeguimiento->getObjetivos() as $oObjetivo)
+                {
+                    if($oObjetivo->isActivo()){ $bAux = true; break;}
+                }
+
+                if(!$bAux){ return false; }
             }
 
             return true;
