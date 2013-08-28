@@ -87,11 +87,11 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
                     $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
                     $this->getTemplate()->set_var("sDescripcionVariable", $oUnidad->getDescripcion(true));
-
+                    
                     if($oUnidad->isTipoEdicionRegular()){
                         $this->getTemplate()->set_var("sTipoEdicion", "Regular");
                     }
-                    if($oUnidad->isTipoEdicionEsporadica()){
+                    if($oUnidad->isTipoEdicionEsporadica()){                        
                         $this->getTemplate()->set_var("sTipoEdicion", "Esporádica");
                     }
 
@@ -109,7 +109,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                     
                     $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("seguimientosVariablesIndex", true)."?id=".$oUnidad->getId());
 
-                    $this->getTemplate()->parse("UnidadBlock", true);
+                    $this->getTemplate()->parse("UnidadBlock", true);                    
                 }
             }else{
                 $this->getTemplate()->set_var("UnidadBlock", "");

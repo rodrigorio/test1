@@ -186,11 +186,11 @@ class Unidad{
 
     public function isTipoEdicionEsporadica()
     {
-        return $this->eTipoEdicion = self::TIPO_EDICION_ESPORADICA ? true : false;
+        return $this->eTipoEdicion == self::TIPO_EDICION_ESPORADICA ? true : false;
     }
     
     public function isTipoEdicionRegular()
     {
-        return $this->eTipoEdicion = self::TIPO_EDICION_REGULAR ? true : false;
+        return $this->eTipoEdicion == self::TIPO_EDICION_REGULAR ? true : false;
     }   
 }
