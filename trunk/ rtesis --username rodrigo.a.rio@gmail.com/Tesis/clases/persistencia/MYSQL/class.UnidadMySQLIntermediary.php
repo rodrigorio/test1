@@ -32,7 +32,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $sSQL = "   SELECT SQL_CALC_FOUND_ROWS
                             u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId, 
                             u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica,
-                            u.tipoEdicion as eTipoEdicion 
+                            u.tipoEdicion as eTipoEdicion
                         FROM
                             unidades u 
                         LEFT JOIN
