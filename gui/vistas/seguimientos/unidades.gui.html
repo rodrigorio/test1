@@ -74,6 +74,9 @@
             <!--BeginUnidadBlock-->
             <div class="fl_le mari2 mabo2 thumbEdit baco3 pa2 pale3 pari3 bora2 bosh mawi1 {iUnidadId}">
                 <h3 class="teal_ri mabo">{sNombreVariable}</h3>
+                <div class="mabo iveal">
+                    <span title="Tipo de Edici&oacute;n" class="i bs notepadEdit"></span> Tipo edici&oacute;n: <span class="fost_it">{sTipoEdicion}</span>.
+                </div>
                 <p class="fte2">{sDescripcionVariable}</p>
                 <span class="fte2 txt_imp2">Cantidad de variables: </span> {iCantidadVariables}<br>
                 <!--BeginLinkSeguimientos-->
@@ -128,6 +131,30 @@
             </div>
             <p>Ingrese una breve descripci&oacute;n que le sirva de referencia a la hora de asociar la unidad a sus seguimientos</p>
         </div>
+
+        <!--BeginSetTipoEdicionBlock-->
+        <div class="form_line msg_tipoEdicion">
+            <div class="cl_le pato2">
+                <input id="radioEdicionEsporadica" type="radio" name="tipoEdicion" value="{eTipoEdicionEsporadica}" checked="checked">
+                <label for="radioEdicionEsporadica">
+                    <span class="fowe_bo">Edici&oacute;n Espor&aacute;dica</span><br>
+                </label>
+                <p class="pabo">
+                    Las unidades de edici&oacute;n espor&aacute;dica no aparecer&aacute;n en la edici&oacute;n de entradas por fecha.<br>
+                    Use este tipo para valores que se van a editar entre 1 o 2 veces por año.<br>
+                    Por ejemplo, variables que guarden los resultados de un test de evaluaci&oacute;n.
+                </p>
+                <input id="radioEdicionRegular" type="radio" name="tipoEdicion" value="{eTipoEdicionRegular}" checked="checked">
+                <label for="radioEdicionRegular">
+                    <span class="fowe_bo">Edici&oacute;n Regular</span><br>
+                </label>
+                <p class="pabo">
+                    Cree una unidad de edici&oacute;n regular cuando los valores estar&aacute;n sujetos a cambios de manera regular.<br>
+                    Por ejemplo, valores que quiera guardar cada vez que se re&uacute;ne con la persona a la que le realiza un seguimiento.
+                </p>
+            </div>
+        </div>
+        <!--EndSetTipoEdicionBlock-->
         
         <!--BeginSubmitCrearUnidadBlock-->
         <div class="fl_le iveal mabo2">

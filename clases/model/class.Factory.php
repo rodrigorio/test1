@@ -440,12 +440,19 @@ class Factory
         $oOpcion = new Opcion($obj);
         return $oOpcion;
     }
+
     public static function &getEntradaPersonalizadaInstance(stdClass $obj){
         $oEntradaPersonalizada = new EntradaPersonalizada($obj);
         return $oEntradaPersonalizada;
     }
+
     public static function &getEntradaSCCInstance(stdClass $obj){
         $oEntradaSCC = new EntradaSCC($obj);
         return $oEntradaSCC;
+    }
+
+    public static function &getEvolucionInstance(stdClass $obj){
+        $oEvolucion = new Evolucion($obj);
+        return $oEvolucion;
     }
 }

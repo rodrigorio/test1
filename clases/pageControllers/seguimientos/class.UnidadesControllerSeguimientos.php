@@ -6,6 +6,9 @@
  */
 class UnidadesControllerSeguimientos extends PageControllerAbstract
 {
+    const TIPO_EDICION_REGULAR = "regular";
+    const TIPO_EDICION_ESPORADICA = "esporadica";
+    
     private $filtrosFormConfig = array('filtroNombreUnidad' => 'u.nombre');
 
     private function setFrameTemplate(){
@@ -85,6 +88,13 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
                     $this->getTemplate()->set_var("sDescripcionVariable", $oUnidad->getDescripcion(true));
 
+                    if($oUnidad->isTipoEdicionRegular()){
+                        $this->getTemplate()->set_var("sTipoEdicion", "Regular");
+                    }
+                    if($oUnidad->isTipoEdicionEsporadica()){
+                        $this->getTemplate()->set_var("sTipoEdicion", "Esporádica");
+                    }
+
                     //lo hago asi porque sino es re pesado obtener todas las variables, etc. solo para saber cantidad
                     list($iCantidadVariablesAsociadas, $iCantidadSeguimientosAsociados) = SeguimientosController::getInstance()->obtenerMetadatosUnidad($oUnidad->getId());
                     $this->getTemplate()->set_var("iCantidadVariables", $iCantidadVariablesAsociadas);
@@ -132,6 +142,13 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
                 $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
                 $this->getTemplate()->set_var("sDescripcionVariable", $oUnidad->getDescripcion(true));
+
+                if($oUnidad->isTipoEdicionRegular()){
+                    $this->getTemplate()->set_var("sTipoEdicion", "Regular");
+                }
+                if($oUnidad->isTipoEdicionEsporadica()){
+                    $this->getTemplate()->set_var("sTipoEdicion", "Esporádica");
+                }
 
                 //lo hago asi porque sino es re pesado obtener todas las variables, etc. solo para saber cantidad                
                 list($iCantidadVariablesAsociadas, $iCantidadSeguimientosAsociados) = SeguimientosController::getInstance()->obtenerMetadatosUnidad($oUnidad->getId());
@@ -185,6 +202,9 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
             $sTituloForm = "Agregar una nueva Unidad";
 
+            $this->getTemplate()->set_var("eTipoEdicionEsporadica", self::TIPO_EDICION_ESPORADICA);
+            $this->getTemplate()->set_var("eTipoEdicionRegular", self::TIPO_EDICION_REGULAR);
+                      
             //valores por defecto en el agregar
             $oPublicacion = null;
             $sNombre = "";
@@ -206,6 +226,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("No tiene permiso para modificar esta unidad", 401);
             }
 
+            $this->getTemplate()->unset_blocks("SetTipoEdicionBlock");
             $this->getTemplate()->unset_blocks("SubmitCrearUnidadBlock");
             $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadIdForm);
 
@@ -245,6 +266,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
             $oUnidad->sNombre = $this->getRequest()->getPost("nombre");
             $oUnidad->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oUnidad->eTipoEdicion = $this->getRequest()->getPost("tipoEdicion");
             $oUnidad->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 
             $oUnidad = Factory::getUnidadInstance($oUnidad);

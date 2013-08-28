@@ -240,6 +240,9 @@ abstract class SeguimientoAbstract
         $this->oAntecedentes = $oAntecedentes;
     }
 
+    /**
+     * Devuelve todas las unidades, las de edicion esporadica y las de edicion regular
+     */
     public function getUnidades()
     {
         if($this->aUnidades === null){

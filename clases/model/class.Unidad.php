@@ -1,13 +1,21 @@
 <?php
 
+/**
+ * Una vez establecido si es regular o esporadica no se podra editar el valor.
+ * El valor se determina solo al crear la unidad.
+ */
 class Unidad{
     
+    const TIPO_EDICION_REGULAR = "regular";
+    const TIPO_EDICION_ESPORADICA = "esporadica";
+
     private $iId;
     private $sNombre;
     private $sDescripcion;
     private $bPreCargada;
     private $dFechaHora;
     private $bAsociacionAutomatica;
+    private $eTipoEdicion;
     
     /**
      * Esta relacion se necesita porque pueden existir unidades creadas por usuario 
@@ -160,4 +168,29 @@ class Unidad{
         }
         return $this->iUsuarioId;
     }
+
+    public function setTipoEdicionEsporadica()
+    {
+        $this->eTipoEdicion = self::TIPO_EDICION_ESPORADICA;
+    }
+
+    public function setTipoEdicionRegular()
+    {
+        $this->eTipoEdicion = self::TIPO_EDICION_REGULAR;
+    }
+
+    public function getTipoEdicion()
+    {
+        return $this->eTipoEdicion;
+    }
+
+    public function isTipoEdicionEsporadica()
+    {
+        return $this->eTipoEdicion = self::TIPO_EDICION_ESPORADICA ? true : false;
+    }
+    
+    public function isTipoEdicionRegular()
+    {
+        return $this->eTipoEdicion = self::TIPO_EDICION_REGULAR ? true : false;
+    }   
 }
