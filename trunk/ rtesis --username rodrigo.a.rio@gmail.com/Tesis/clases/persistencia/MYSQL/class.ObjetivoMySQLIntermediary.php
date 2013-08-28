@@ -62,7 +62,6 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oObjetivo->iId = $oObj->iId;
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
-                $oObjetivo->fEvolucion = $oObj->fEvolucion;
                 $oObjetivo->oRelevancia = $oRelevancia;
                 $oObjetivo->oEje = $oEje;
             	
