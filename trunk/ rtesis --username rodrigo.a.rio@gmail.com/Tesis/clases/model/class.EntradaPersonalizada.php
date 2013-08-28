@@ -24,6 +24,7 @@ class EntradaPersonalizada extends EntradaAbstract
         if($cantDiasExpiracion < $dayDiff ){ $this->isEditable = false; }
     }
 
+    //en el array de 'evolucion' tendria que estar asociado a los objetivos el objeto evolucion de la fecha de la entrada!!
     public function getObjetivos()
     {
         if(null === $this->aObjetivos){

@@ -23,6 +23,11 @@ class SeguimientoPersonalizado extends SeguimientoAbstract{
 
     public function isSeguimientoPersonalizado(){ return true; }
 
+    /**
+     *
+     * Devuelve objetivos con evolucion completa si es que la tienen.
+     * 
+     */
     public function getObjetivos(){
         if($this->aObjetivos === null){
             $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizados($this->iId);

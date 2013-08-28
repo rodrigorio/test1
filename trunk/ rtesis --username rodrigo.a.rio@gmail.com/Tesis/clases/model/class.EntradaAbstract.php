@@ -1,7 +1,13 @@
 <?php
 
 /**
- * @author Rodrigo A. Rio 
+ * @author Rodrigo A. Rio
+ *
+ * Cuando se guardan las entradas se descartan los objetivos !!
+ *
+ * los objetivos se guardan de forma paralela aunque en la vista aparezca toda
+ * la info junta respecto a una fecha especifica.
+ *
  */
 abstract class EntradaAbstract
 {
@@ -35,6 +41,9 @@ abstract class EntradaAbstract
         $this->dFecha = $dFecha;
     }
 
+    /**
+     * Las unidades esporadicas no se levantan en este metodo
+     */
     public function getUnidades()
     {
         if(null === $this->aUnidades){
@@ -43,6 +52,9 @@ abstract class EntradaAbstract
         return $this->aUnidades;
     }
 
+    /**
+     * No se deberian setear unidades marcadas como de edicion esporadica
+     */
     public function setUnidades($aUnidades){
         $this->aUnidades = $aUnidades;
     }

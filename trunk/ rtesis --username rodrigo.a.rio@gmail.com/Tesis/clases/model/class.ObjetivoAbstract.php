@@ -8,10 +8,17 @@
 abstract class ObjetivoAbstract
 {
     protected $iId;
-    protected $sDescripcion;
-    protected $dEstimacion;
-    protected $fEvolucion;
+    protected $sDescripcion;    
     protected $oObjetivoRelevancia;
+    protected $dEstimacion = null;
+    protected $bActivo = true;
+
+    /**
+     * array de objetos evolucion, se generan a lo largo de las entradas por fecha
+     * aparece != cuando el objetivo esta asociado a una entrada por fecha o cuando esta asociado
+     * a un seguimiento y se quiere consultar la evolucion en un objetivo
+     */
+    protected $aEvolucion = null;
     
     /**
      *  @param int $iId
@@ -31,12 +38,7 @@ abstract class ObjetivoAbstract
     public function setEstimacion($dEstimacion){
         $this->dEstimacion = $dEstimacion;
     }
-    /**
-     *  @param date $fEvolucion
-     */
-    public function setEvolucion($fEvolucion){
-        $this->fEvolucion = $fEvolucion;
-    }
+
     /**
      *  @param  $oObjetivoRelevancia
      *  
@@ -44,7 +46,8 @@ abstract class ObjetivoAbstract
     public function setObjetivoRelevancia($oObjetivoRelevancia){
         $this->oObjetivoRelevancia = $oObjetivoRelevancia;
     }
-	/**
+
+    /**
      *  @return int $iId
      */
     public function getId(){
@@ -65,16 +68,34 @@ abstract class ObjetivoAbstract
     public function getEstimacion(){
         return $this->dEstimacion;
     }
-    /**
-     *  @return date $fEvolucion
-     */
-    public function getEvolucion(){
-        return $this->fEvolucion;
-    }
+    
     /**
      *  @return  $oObjetivoRelevancia
      */
     public function getObjetivoRelevancia(){
         return $this->oObjetivoRelevancia;
+    }
+
+    public function isActivo($flag = null){
+        if(null !== $flag){
+            $this->bActivo = $flag ? true : false;
+            return $this;
+        }else{
+            return $this->bActivo;
+        }
+    }
+
+    /**
+     * Puede que devuelva solo un objeto en el array si se esta levantando un objetivo
+     * para una entrada por fecha (objeto evolucion correspondiente a la fecha de la entrada)
+     */
+    public function getEvolucion()
+    {
+        return $this->aEvolucion;
+    }
+   
+    public function setEvolucion($aEvolucion){
+        $this->aEvolucion = $aEvolucion;
+        return $this;
     }
 }
