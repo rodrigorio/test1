@@ -6,7 +6,8 @@
  * @author Andres
  */
 class ObjetivoPersonalizado extends ObjetivoAbstract
-{	
+{
+    private $iId;
     private $oObjetivoPersonalizadoEje;
 	
     public function __construct(stdClass $oParams = null){
@@ -22,6 +23,16 @@ class ObjetivoPersonalizado extends ObjetivoAbstract
             }
         }
     }
+
+    public function getId()
+    {
+        return $this->iId;
+    }
+
+    public function setId($iId)
+    {
+        $this->iId = $iId;
+    }
     
     /**
      *  @param int $iObjetivoEjeId
@@ -35,5 +46,21 @@ class ObjetivoPersonalizado extends ObjetivoAbstract
      */
     public function getObjetivoPersonalizadoEje(){
         return $this->oObjetivoPersonalizadoEje;
-    }    
+    }
+
+    public function getEvolucion()
+    {
+    	if($this->aEvolucion === null){
+            $this->aEvolucion = SeguimientosController::getInstance()->obtenerEvolucionObjetivoPersonalizado($this->getId());
+    	}
+        return $this->aEvolucion;
+    }
+
+    /**
+     * retorna 1 objeto evolucion correspondiente a la fecha, si no existe = null
+     */
+    public function getEvolucionByDate($dFecha)
+    {
+        return SeguimientosController::getInstance()->obtenerEvolucionObjetivoPersonalizadoByDate($this->getId(), $dFecha);
+    }
 }

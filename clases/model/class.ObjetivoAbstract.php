@@ -7,7 +7,6 @@
  */
 abstract class ObjetivoAbstract
 {
-    protected $iId;
     protected $sDescripcion;    
     protected $oRelevancia;
     protected $dEstimacion = null;
@@ -15,17 +14,10 @@ abstract class ObjetivoAbstract
 
     /**
      * array de objetos evolucion, se generan a lo largo de las entradas por fecha
-     * aparece != cuando el objetivo esta asociado a una entrada por fecha o cuando esta asociado
-     * a un seguimiento y se quiere consultar la evolucion en un objetivo
+     * se cargan a demanda, para evitar sobre carga de consultas.
      */
     protected $aEvolucion = null;
     
-    /**
-     *  @param int $iId
-     */
-    public function setId($iId){
-        $this->iId = (int)$iId;
-    }
     /**
      *  @param string $sDescripcion
      */
@@ -48,11 +40,9 @@ abstract class ObjetivoAbstract
     }
 
     /**
-     *  @return int $iId
+     *  porque el objetivo personaliado tiene id normal, pero el scc es clave compuesta
      */
-    public function getId(){
-        return $this->iId;
-    }
+    abstract public function getId();
 
     public function getDescripcion($nl2br = false){
         if($nl2br){
@@ -85,17 +75,21 @@ abstract class ObjetivoAbstract
         }
     }
 
+    abstract public function getEvolucion();
+    
     /**
-     * Puede que devuelva solo un objeto en el array si se esta levantando un objetivo
-     * para una entrada por fecha (objeto evolucion correspondiente a la fecha de la entrada)
+     * retorna 1 objeto evolucion correspondiente a la fecha, si no existe = null
      */
-    public function getEvolucion()
-    {
-        return $this->aEvolucion;
-    }
+    abstract public function getEvolucionByDate($dFecha);
    
     public function setEvolucion($aEvolucion){
         $this->aEvolucion = $aEvolucion;
+        return $this;
+    }
+
+    public function addEvolucion($oEvolucion)
+    {
+        $this->aEvolucion[] = $oEvolucion;
         return $this;
     }
 }
