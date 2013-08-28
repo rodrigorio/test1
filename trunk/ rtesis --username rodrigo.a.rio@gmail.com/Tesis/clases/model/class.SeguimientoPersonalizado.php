@@ -29,7 +29,7 @@ class SeguimientoPersonalizado extends SeguimientoAbstract{
      * 
      */
     public function getObjetivos(){
-        if($this->aObjetivos === null){
+        if($this->aObjetivos === null){            
             $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizados($this->iId);
         }
         return $this->aObjetivos;

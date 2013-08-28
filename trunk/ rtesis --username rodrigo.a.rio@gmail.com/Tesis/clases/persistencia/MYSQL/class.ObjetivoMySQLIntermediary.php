@@ -14,35 +14,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         }
         return self::$instance;
     }
-	
-    public function existeObjetivoAprendizaje($filtro)
-    {
-        try{
-            $db = $this->conn;
-            $filtro = $this->escapeStringArray($filtro);
-
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        1 as existe
-                    FROM
-                        objetivos o
-                    JOIN
-                        objetivos_aprendizaje oa 
-                    WHERE ".$this->crearCondicionSimple($filtro);
-
-            $db->query($sSQL);
-
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
-            if(empty($foundRows)){
-                return false;
-            }
-            return true;
-        }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
-        }
-    }
-    
-    public final function obtenerObjetivoPersonalizado($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+	    
+    public final function obtenerObjetivosPersonalizados($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
             $db = clone ($this->conn);
@@ -50,8 +23,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion,
-                        op.objetivo_personalizado_ejes_id as iObjetivoEjeId, op.objetivo_relevancias_id as iObjetivoRelevanciaId, op.evolucion as fEvolucion, op.estimacion as dEstimacion,
-                        ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia
+                        op.objetivo_personalizado_ejes_id as iObjetivoEjeId, op.objetivo_relevancias_id as iObjetivoRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, 
+                        ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia 
                     FROM
                         objetivos o
                     JOIN
@@ -255,6 +228,33 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 return $this->asociarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo);
             }
         } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function existeObjetivoAprendizaje($filtro)
+    {
+        try{
+            $db = $this->conn;
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        objetivos o
+                    JOIN
+                        objetivos_aprendizaje oa
+                    WHERE ".$this->crearCondicionSimple($filtro);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+        }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }

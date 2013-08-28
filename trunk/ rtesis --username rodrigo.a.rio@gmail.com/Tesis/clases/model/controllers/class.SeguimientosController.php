@@ -1107,14 +1107,15 @@ class SeguimientosController
      *
      * Las instancias no tienen el valor correspondiente a la fecha de una entrada en particular
      */
-   public function getObjetivosPersonalizados($oSeguimiento)
+   public function getObjetivosPersonalizados($iSeguimientoId)
       {
     	try{    	    
-            $filtro = array('op.seguimientos_personalizados_id' => $oSeguimiento->getId());
+            $filtro = array('op.seguimientos_personalizados_id' => $iSeguimientoId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->obtenerObjetivoPersonalizado($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            return $oObjetivoIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1409,7 +1410,7 @@ class SeguimientosController
                 return false;
             }
 
-            //al menos un objetivo activo
+            //al menos un objetivo activo                        
             if($oSeguimiento->getObjetivos() === null){
                 return false;
             }else{
