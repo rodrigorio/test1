@@ -276,9 +276,9 @@ class Factory
         return $oObjetivoPersonalizado;
     }
 
-    public static function &getObjetivoPersonalizadoEjeInstance(stdClass $obj){
-        $oObjetivoPersonalizadoEje = new ObjetivoPersonalizadoEje($obj);
-        return $oObjetivoPersonalizadoEje;
+    public static function &getEjeInstance(stdClass $obj){
+        $oEje = new Eje($obj);
+        return $oEje;
     }
 
     public static function &getObjetivoRelevanciaInstance(stdClass $obj){

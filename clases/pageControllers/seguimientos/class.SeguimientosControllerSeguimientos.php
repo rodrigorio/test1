@@ -518,7 +518,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
             $this->getJsonHelper()->sendJsonAjaxResponse();
 
-        }catch(Exception $e){
+        }catch(Exception $e){            
             $this->getJsonHelper()->setSuccess(false);
             $this->getJsonHelper()->sendJsonAjaxResponse();
         }

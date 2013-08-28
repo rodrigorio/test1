@@ -1,10 +1,21 @@
 <?php
 
-class ObjetivoPersonalizadoEje{
+/**
+ * Ejes para objetivos personalizados, tienen jerarquia de un nivel.
+ *
+ * Se tratan como lista con sublistas (solo 2 niveles y no se puede tener mas de un padre)
+ */
+class Eje{
     
     private $iId;
     private $sDescripcion;
-    private $vSubejes;
+
+    /**
+     * Los ejes padres no se pueden asociar a un objetivo personalizado.
+     * Por lo tanto, si el Eje esta asociado a un objetivo este atributo permanece null.
+     * Solo tendra la lista de ejes cuando se pida TODA la lista de ejes completa.
+     */
+    private $aSubEjes = null;
     
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -34,10 +45,10 @@ class ObjetivoPersonalizadoEje{
         $this->sDescripcion = $sDescripcion;
     }
     /**
-     *  @param array $vSubejes
+     *  @param array $aSubejes
      */
-    public function setSubejes($vSubejes){
-        $this->vSubejes = $vSubejes;
+    public function setSubEjes($aSubEjes){
+        $this->aSubEjes = $aSubEjes;
     }
 
     /**
@@ -55,10 +66,10 @@ class ObjetivoPersonalizadoEje{
     }
     
     /**
-     *  @param array $vSubejes
+     *  @param array $aSubEjes
      */
     public function getSubejes(){
-        return $this->vSubejes;
+        return $this->aSubEjes;
     }
     
 }
