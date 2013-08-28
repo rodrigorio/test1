@@ -1,6 +1,6 @@
 <?php
 
-class ObjetivoRelevancia{
+class Relevancia{
     
     private $iId;
     private $sDescripcion;

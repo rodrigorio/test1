@@ -51,6 +51,11 @@ class Eje{
         $this->aSubEjes = $aSubEjes;
     }
 
+    public function addSubEje($oEje){
+        $this->aSubEjes[] = $oEje;
+        return $this;
+    }
+
     /**
      *  @return int $iId
      */

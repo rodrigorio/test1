@@ -281,9 +281,9 @@ class Factory
         return $oEje;
     }
 
-    public static function &getObjetivoRelevanciaInstance(stdClass $obj){
-        $oObjetivoRelevancia = new ObjetivoRelevancia($obj);
-        return $oObjetivoRelevancia;
+    public static function &getRelevanciaInstance(stdClass $obj){
+        $oRelevancia = new Relevancia($obj);
+        return $oRelevancia;
     }
   
     public static function &getModeracionInstance(stdClass $obj){
