@@ -7,8 +7,9 @@
  */
 abstract class ObjetivoAbstract
 {
+    protected $iId;
     protected $sDescripcion;    
-    protected $oRelevancia;
+    protected $oRelevancia = null;
     protected $dEstimacion = null;
     protected $bActivo = true;
 
@@ -17,6 +18,9 @@ abstract class ObjetivoAbstract
      * se cargan a demanda, para evitar sobre carga de consultas.
      */
     protected $aEvolucion = null;
+
+    public function isObjetivoPersonalizado(){ return false; }
+    public function isObjetivoAprendizaje(){ return false; }
     
     /**
      *  @param string $sDescripcion
@@ -39,12 +43,19 @@ abstract class ObjetivoAbstract
         $this->oRelevancia = $oRelevancia;
     }
 
-    /**
-     *  porque el objetivo personaliado tiene id normal, pero el scc es clave compuesta
-     */
-    abstract public function getId();
+    public function getId()
+    {
+        return $this->iId;
+    }
 
-    public function getDescripcion($nl2br = false){
+    public function setId($iId)
+    {
+        $this->iId = $iId;
+        return $this;
+    }
+
+    public function getDescripcion($nl2br = false)
+    {
         if($nl2br){
             return nl2br($this->sDescripcion);
         }else{

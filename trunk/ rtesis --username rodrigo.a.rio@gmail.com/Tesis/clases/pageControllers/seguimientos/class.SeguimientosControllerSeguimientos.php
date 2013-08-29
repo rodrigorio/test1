@@ -2322,46 +2322,102 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    /*
     public function administrarObjetivos()
-     {
+    {
         try{
-        	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
-	    	if(empty($iSeguimientoId)){
-	            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
-	    	}
-	        
-	        $filtroSql["s.id"] 	= $iSeguimientoId;
-	        $iRecordsTotal 		= 0;
-	        $sOrderBy = $sOrder =  $iIniLimit =  $iRecordCount = null;
-	        $vSeguimientos 		= SeguimientosController::getInstance()->obtenerSeguimientos($filtroSql,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount);
-	        if(count($vSeguimientos) == 0 ){
-	            throw new Exception("No tiene permiso para este seguimiento", 401);
-	        }else{
-	            $oSeguimiento 	= $vSeguimientos[0];
-	        }
-	        $aCurrentOptions[] 	= "currentOptionSeguimiento";
-            $aCurrentOptions[] 	= "currentSubOptionAsociarObjetivoSeguimiento";
+            /*
+            //primero me fijo que este el id de unidad
+            $iUnidadId = $this->getRequest()->getParam('id');
+            if(empty($iUnidadId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            //despues me fijo que el id sea de una unidad perteneciente al integrante logueado
+            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
+                throw new Exception("No tiene permiso para editar la unidad", 401);
+            }
+
+            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
 
             $this->setFrameTemplate()
-                 ->setJSObjetivo()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions)
-                 ->setFichaPersonaMenuDerechaSeguimiento($oSeguimiento->getDiscapacitado());
+                 ->setMenuDerecha()
+                 ->setHeadTag();
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
-            	        
-           	$this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivo.gui.html", "pageRightInnerMainCont", "FormularioObjetivoPersonalizadoBlock");
-			$this->getTemplate()->set_var("tituloSeccion", "Objetivo");
-			$this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
-			
-            $vEjesObjetivosPersonalizados = SeguimientosController::getInstance()->get
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Variables");
+            $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "pageRightInnerMainCont", "ListadoVariablesBlock");
+
+            list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
+            $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
+
+            $iRecordsTotal = 0;
+            $filtro = array('v.unidad_id' => $iUnidadId);
+            //no utilizo getVariablesByUnidadId porque necesito el filtro de los orderBy del listado.
+            $aVariables = SeguimientosController::getInstance()->getVariables($filtro, $iRecordsTotal, null, null, null, null);
+
+            $this->getTemplate()->set_var("iUnidadId", $iUnidadId);
+            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+            if(count($aVariables) > 0){
+
+                $this->getTemplate()->set_var("NoRecordsVariablesBlock", "");
+
+            	foreach ($aVariables as $oVariable){
+
+                    $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
+                    $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
+                    $this->getTemplate()->set_var("sTipoEnum", get_class($oVariable));
+                    $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
+                    $this->getTemplate()->set_var("sDescripcion", $oVariable->getDescripcion(true));
+
+                    if($oVariable->isVariableNumerica()){
+                        $this->getTemplate()->set_var("sTipo", "Variable Numérica");
+                        $iconoVariableBlock = "IconoTipoNumericaBlock";
+                        $this->getTemplate()->set_var("sModalidades", "");
+                    }
+
+                    if($oVariable->isVariableTexto()){
+                        $this->getTemplate()->set_var("sTipo", "Variable de Texto");
+                        $iconoVariableBlock = "IconoTipoTextoBlock";
+                        $this->getTemplate()->set_var("sModalidades", "");
+                    }
+
+                    if($oVariable->isVariableCualitativa()){
+                        $this->getTemplate()->set_var("sTipo", "Variable Cualitativa");
+                        $iconoVariableBlock = "IconoTipoCualitativaBlock";
+                        $sModalidades = "<strong>Modalidades: </strong> ";
+                        $aModalidades = $oVariable->getModalidades();
+                        foreach($aModalidades as $oModalidad){
+                            $sModalidades .= $oModalidad->getModalidad().", ";
+                        }
+                        $sModalidades = substr($sModalidades, 0, -2);
+                        $this->getTemplate()->set_var("sModalidades", $sModalidades);
+                    }
+
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "iconoVariable", $iconoVariableBlock);
+                    $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
+                    $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
+
+                    $this->getTemplate()->parse("VariableBlock", true);
+                }
+
+                $params[] = "id=".$iUnidadId;
+                $params[] = "masVariables=1";
+                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $params);
+            }else{
+                $this->getTemplate()->set_var("sNoRecords", "No hay variables cargadas en la unidad");
+                $this->getTemplate()->set_var("VariableBlock", "");
+            }
+
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-   		  }catch(Exception $e){
-           	//print_r($e);
+                */
+        }catch(Exception $e){
+            throw $e;
         }
+        
     }
-    */    
 }

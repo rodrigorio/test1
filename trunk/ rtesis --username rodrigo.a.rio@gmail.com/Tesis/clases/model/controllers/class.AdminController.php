@@ -1407,9 +1407,9 @@ class AdminController
     {
     	try{
             $filtro = array('o.id' => $iObjetivoAprendizajeId);
-            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aObjetivoAprendizaje = $oObjetivoAprendizajeIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, null, null, null, null);
+            $aObjetivoAprendizaje = $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro, $iRecordsTotal, null, null, null, null);
             if(null !== $aObjetivoAprendizaje){
                 return $aObjetivoAprendizaje[0];
             }else{
@@ -1423,8 +1423,8 @@ class AdminController
     public function getObjetivosAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
-            $oObjetivoAprendizajeIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoAprendizajeIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }

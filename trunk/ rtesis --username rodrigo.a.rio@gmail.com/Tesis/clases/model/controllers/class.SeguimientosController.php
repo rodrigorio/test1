@@ -1091,7 +1091,7 @@ class SeguimientosController
      * Asociar Unidad de variables a seguimiento 
      *
      */
-   public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad){
+    public function asociarSeguimientoXContenidoVariables($iSeguimientoId, $vUnidad){
         try{        	        	
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad);
@@ -1105,9 +1105,8 @@ class SeguimientosController
      *
      * Se utiliza para saber los objetivos asociados a un seguimiento personalizado.
      *
-     * Las instancias no tienen el valor correspondiente a la fecha de una entrada en particular
      */
-   public function getObjetivosPersonalizados($iSeguimientoId)
+    public function getObjetivosPersonalizadosBySeguimientoId($iSeguimientoId)
       {
     	try{    	    
             $filtro = array('op.seguimientos_personalizados_id' => $iSeguimientoId);
@@ -1120,32 +1119,44 @@ class SeguimientosController
     }
     
    /**
-    * Obtener Objetivos Curriculares
+    * Obtener Objetivos Aprendizaje
     *
     * Se utiliza para saber los objetivos asociados a un seguimiento SCC.
-    * Las instancias no tienen el valor correspondiente a la fecha de una entrada en particular
-    *
     */
-   public function getObjetivoAprendizaje($oSeguimiento)
+    public function getObjetivosAprendizajeAsociadosSeguimientoScc($iSeguimientoSCCId)
       {
     	try{
-            $filtro = array('sxo.seguimientos_scc_id' => $oSeguimiento->getId());
+            $filtro = array('sxo.seguimientos_scc_id' => $iSeguimientoSCCId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->obtenerObjetivoAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $iRecordsTotal = 0;
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
     /**
-     * Guardar Objetivos Curriculares verificar antes que sea el usuario que creo el seguimiento
-     *
+     * Devuelve objetivos aprendizaje pero TODA la lista, no tiene en cuenta el seguimiento scc
+     * (se crean y se modifican solo desde el controlador de admin)
      */
-   public function guardarObjetivoAprendizaje($oObjetivo){
+    public function getObjetivosAprendizaje()
+    {
+    	try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     *  Internamente se guarda la relacion entre seguimiento scc y objetivo aprendizaje
+     */
+    public function guardarObjetivoAprendizajeSeguimientoScc($oObjetivoAprendizaje, $iSeguimientoSCCId){
         try{        	      		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oOjetivo);
-                                   
+            return $oObjetivoIntermediary->guardarObjetivoAprendizajeSeguimientoScc($oObjetivoAprendizaje, $iSeguimientoSCCId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1157,17 +1168,20 @@ class SeguimientosController
      */
     public function guardarObjetivoPersonalizado($oObjetivo){
         try{            
-        	$oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
         }catch(Exception $e){
             throw $e;
         }
-    }  
+    }
+
     /**
-     * Borrar Objetivo personalizado verifica que sea el usuario que creo el seguimiento!!!!!
+     * Fijarse que el borrado fisico solo en el periodo de edicion de seguimientos.
      *
+     * Borrado logico seria el desactivar. que hace que, a partir de que un objetivo esta desactivado
+     * no aparece en la vista de entradas por fecha
      */
-    public function borrarObjetivo($iObjetivoId)
+    public function borrarObjetivoPersonalizado($iObjetivoId)
     {
     	try{    	    		
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
@@ -1176,6 +1190,7 @@ class SeguimientosController
             throw $e;
         }
     }
+
     /**
      * Obtener Eje Tematico
      *
