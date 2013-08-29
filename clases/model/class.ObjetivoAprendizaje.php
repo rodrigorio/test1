@@ -3,12 +3,11 @@
 class ObjetivoAprendizaje extends ObjetivoAbstract{
 	
     private $oEjeTematico;
+    
     /**
-     * Clave compuesta: objetivo aprendizaje y seguimiento scc
-     *
-     * ejemplo: array("iObjetivoAprendizajeId" => 1, "iSeguimientoSCCId" => 2);
+     * Necesario porque es clave compuesta la asociacion entre objetivo y seguimiento
      */
-    private $aId;
+    private $iSeguimientoSCCId = null;
     
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -24,16 +23,7 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
         }
     }
 
-    public function getId()
-    {
-        return $this->aId;
-    }
-
-    public function setId($iObjetivoAprendizajeId, $iSeguimientoSCCId)
-    {
-        $this->aId = array("iObjetivoAprendizajeId" => $iObjetivoAprendizajeId,
-                            "iSeguimientoSCCId" => $iSeguimientoSCCId);
-    }
+    public function isObjetivoAprendizaje(){ return true; }
     
     public function setEjeTematico($oEjeTematico){
         $this->oEjeTematico = $oEjeTematico;
@@ -46,7 +36,7 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
     public function getEvolucion()
     {
     	if($this->aEvolucion === null){
-            $this->aEvolucion = SeguimientosController::getInstance()->obtenerEvolucionObjetivoScc($this->getId());
+            $this->aEvolucion = SeguimientosController::getInstance()->obtenerEvolucionObjetivoScc($this->iId, $this->iSeguimientoSCCId);
     	}
         return $this->aEvolucion;
     }
@@ -56,6 +46,6 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
      */
     public function getEvolucionByDate($dFecha)
     {
-        return SeguimientosController::getInstance()->obtenerEvolucionObjetivoSccByDate($this->getId(), $dFecha);
+        return SeguimientosController::getInstance()->obtenerEvolucionObjetivoSccByDate($this->iId, $this->iSeguimientoSCCId, $dFecha);
     }
 }

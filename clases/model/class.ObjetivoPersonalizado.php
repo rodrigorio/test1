@@ -24,6 +24,8 @@ class ObjetivoPersonalizado extends ObjetivoAbstract
         }
     }
 
+    public function isObjetivoPersonalizado(){ return true; }
+
     public function getId()
     {
         return $this->iId;

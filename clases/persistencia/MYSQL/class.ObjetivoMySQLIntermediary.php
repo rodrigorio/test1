@@ -63,6 +63,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->oRelevancia = $oRelevancia;
+                $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEje = $oEje;
             	
             	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
@@ -74,7 +75,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         }
     }
 
-    public final function obtenerObjetivoAprendizaje($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    /**
+     * Solo devuelve objetivos aprendizaje, no tiene en cuenta las asociaciones con seguimientos scc
+     */
+    public final function obtenerObjetivosAprendizaje($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
             $db = clone ($this->conn);
@@ -82,17 +86,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion,
-                        oa.ejes_id as iEjeTematicoId,
-                        sxo.evolucion as fEvolucion, sxo.estimacion as dEstimacion,
-                        sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia 
+                        oa.ejes_id as iEjeTematicoId
                     FROM
                        objetivos o 
                     JOIN
-                       objetivos_aprendizaje oa ON o.id = oa.id
-                    LEFT JOIN
-                       seguimiento_scc_x_objetivo_aprendizaje sxo ON oa.id = sxo.objetivos_aprendizaje_id
-                    LEFT JOIN
-                       objetivo_relevancias orr ON orr.id = sxo.objetivo_relevancias_id ";
+                       objetivos_aprendizaje oa ON o.id = oa.id ";
                                              
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
@@ -108,6 +106,58 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             while($oObj = $db->oNextRecord()){
 
                 $oObjetivo = new stdClass();
+                $oObjetivo->iId = $oObj->iId;
+                $oObjetivo->sDescripcion = $oObj->sDescripcion;
+                $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
+                             
+            	$aObjetivos[] = Factory::getObjetivoAprendizajeInstance($oObjetivo);
+            }
+            
+            return $aObjetivos;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Utilizado para obtener los objetivos de aprendizaje asociados a un seguimiento scc
+     *
+     * seguramente siempre venga el filtro para todos los objetivos de un seguimiento. no hay una vista global en el sistema
+     */
+    public final function obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = clone ($this->conn);
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+                        o.id as iId, o.descripcion as sDescripcion,
+                        oa.ejes_id as iEjeTematicoId,
+                        sxo.seguimientos_scc_id as iSeguimientoSCCId, sxo.estimacion as dEstimacion, sxo.activo as bActivo,
+                        sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia
+                    FROM
+                       objetivos o
+                    JOIN
+                       objetivos_aprendizaje oa ON o.id = oa.id
+                    JOIN
+                       seguimiento_scc_x_objetivo_aprendizaje sxo ON oa.id = sxo.objetivos_aprendizaje_id
+                    JOIN
+                       objetivo_relevancias orr ON orr.id = sxo.objetivo_relevancias_id ";
+
+            if(!empty($filtro)){
+                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            }
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aObjetivos = array();
+            while($oObj = $db->oNextRecord()){
+
+                $oObjetivo = new stdClass();
 
                 $oObjetivo->oRelevancia = null;
                 if(null !== $oObj->iRelevanciaId){
@@ -117,16 +167,17 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     $oRelevancia = Factory::getRelevanciaInstance($oRelevancia);
                     $oObjetivo->oRelevancia = $oRelevancia;
                 }
-                            	
-            	$oObjetivo->iId = $oObj->iId;
-            	$oObjetivo->sDescripcion = $oObj->sDescripcion;
+
+                $oObjetivo->iId = $oObj->iId;
+                $oObjetivo->iSeguimientoSCCId = $oObj->iSeguimientoSCCId;
+                $oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
-                $oObjetivo->fEvolucion = $oObj->fEvolucion;
+                $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
-                
+
             	$aObjetivos[] = Factory::getObjetivoAprendizajeInstance($oObjetivo);
             }
-            
+
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

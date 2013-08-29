@@ -30,7 +30,7 @@ class SeguimientoSCC extends SeguimientoAbstract
      */
     public function getObjetivos(){
         if($this->aObjetivos === null){
-            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosAprendizaje($this->iId);
+            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosAprendizajeAsociadosSeguimientoScc($this->iId);
         }
         return $this->aObjetivos;
     }
