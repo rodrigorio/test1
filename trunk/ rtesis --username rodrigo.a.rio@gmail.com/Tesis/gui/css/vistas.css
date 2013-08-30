@@ -134,7 +134,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .tetr_ca{text-transform:capitalize}
 .lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
-.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC}
+.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC} .boto2{border-top:1px dashed #CCC}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
@@ -292,6 +292,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .th_vid_m i{-o-background-size: 100% 100%, auto; -moz-background-size: 100% 100%, auto; -webkit-background-size: 100% 100%, auto; background-size: 100% 100%, auto}
 .thumbEdit{position:relative; margin-bottom:30px;}
 .thumbEditMenu{position:absolute; right:0px; bottom:-25px; padding-top:10px; width:150px}
+.thumbTop{position:absolute; right:0px; top:-25px; padding-bottom:10px; width:150px}
 
 /*** OTROS ***/
 .valoracion{width:69px; height:14px; margin-bottom:-2px; display:inline-block}
@@ -387,7 +388,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 /*** COMPONENTES EN GENERAL ***/
 .info, .error, .correcto{font-weight:bold; padding:10px; text-align:left}
 .info{border:1px solid #FFCC34; background-color:#FFF4C2}
-.error{border:1px solid #FF3835; background-color:#FFC5C4}
+.error{border:1px solid #FF3835; background-color:#FFC5C4} 
 .correcto{border:1px solid #42FF35; background-color:#C8FFC4}
 .anuncio{border:1px solid #D1D1D1; background-color:#F2F2F2; padding:10px; text-align:left;}
 .anuncio strong{color:#737373}
@@ -608,7 +609,7 @@ p .destacado{font-weight:bold;}
 .desplegable{cursor:pointer} /* filas desplegables */
 
 .disabled, .ajaxdelay *{opacity:0.5; filter:alpha(opacity = 40)}
-.disabled{color:#AAA !important; cursor:default !important;}
+.disabled{color:#666 !important; cursor:default !important;}
 /* si el contenedor no tiene position relative va a parar a la punta de la pantalla (no esta mal, se puede usar) */
 .ajax_wait30, .ajax_wait16{position:absolute; top:10px; right:10px; background-repeat:no-repeat; background-position:center 25%; z-index:101; opacity:1 !important; filter:alpha(opacity = 100) !important}
 .ajax_wait30{height:27px; width:28px; background-image:url("../images/iconos/wait30trans.gif");}
@@ -860,6 +861,3 @@ p .destacado{font-weight:bold;}
     /* agrego margenes en cm para los contenedores principales */
     @page{margin:4cm 2cm 2cm 2cm;}
 }
-
-.he100p{height:100% !important;}.he100{height: 100px !important;}
-.mihe100{min-height: 100px !important;}

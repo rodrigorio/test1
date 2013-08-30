@@ -333,6 +333,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'administrarObjetivos'
                                 ));
         $router->addRoute('seguimientosSeguimientosAdministrarObjetivos', $route);
+        $route = new RegexRoute('seguimientos/objetivos-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'procesarObjetivos'
+                                ));
+        $router->addRoute('seguimientosSeguimientosProcesarObjetivos', $route);
         
         //entradas
         $route = new RegexRoute('seguimientos/entradas/calendario',

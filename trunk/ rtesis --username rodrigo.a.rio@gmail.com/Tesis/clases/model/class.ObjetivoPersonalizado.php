@@ -7,8 +7,7 @@
  */
 class ObjetivoPersonalizado extends ObjetivoAbstract
 {
-    private $iId;
-    private $oObjetivoPersonalizadoEje;
+    private $oEje;
 	
     public function __construct(stdClass $oParams = null){
     	$vArray = get_object_vars($oParams);
@@ -35,19 +34,13 @@ class ObjetivoPersonalizado extends ObjetivoAbstract
     {
         $this->iId = $iId;
     }
-    
-    /**
-     *  @param int $iObjetivoEjeId
-     */
-    public function setObjetivoPersonalizadoEje($oObjetivoPersonalizadoEje){
-        $this->oObjetivoPersonalizadoEje = $oObjetivoPersonalizadoEje;
+
+    public function setEje($oEje){
+        $this->oEje = $oEje;
     }
 
-    /**
-     *  
-     */
-    public function getObjetivoPersonalizadoEje(){
-        return $this->oObjetivoPersonalizadoEje;
+    public function getEje(){
+        return $this->oEje;
     }
 
     public function getEvolucion()

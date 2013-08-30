@@ -21,7 +21,7 @@ class Utils{
         $time = strtotime($dFecha);
         return date($formato,$time);
     }
-
+    
     /**
      * 
      * Devuelve una fecha en formato valido para sql yyyy-mm-dd HH:MM:SS

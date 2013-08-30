@@ -878,10 +878,10 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oObjetivoAprendizaje->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEjeTematico()->getArea()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionEje", $oObjetivoAprendizaje->getEjeTematico()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEje()->getArea()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionEje", $oObjetivoAprendizaje->getEje()->getDescripcion());
                                    
                     $this->getTemplate()->parse("ObjetivoAprendizajeBlock", true);
                 }
@@ -1299,7 +1299,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $oObjetivoAprendizaje = AdminController::getInstance()->getObjetivoAprendizajeById($iObjetivoAprendizajeId);
 
             //combo niveles
-            $iNivelId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getNivel()->getId();
+            $iNivelId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getId();
             $iRecordsNiveles = 0;
             $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
@@ -1313,7 +1313,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ciclos
-            $iCicloId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getCiclo()->getId();
+            $iCicloId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getId();
             $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
@@ -1326,7 +1326,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo areas
-            $iAreaId = $oObjetivoAprendizaje->getEjeTematico()->getArea()->getId();
+            $iAreaId = $oObjetivoAprendizaje->getEje()->getArea()->getId();
             $aAreas = AdminController::getInstance()->getAreasByCicloId($iCicloId);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
@@ -1339,7 +1339,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ejes
-            $iEjeId = $oObjetivoAprendizaje->getEjeTematico()->getId();
+            $iEjeId = $oObjetivoAprendizaje->getEje()->getId();
             $aEjes = AdminController::getInstance()->getEjesByAreaId($iAreaId);            
             foreach ($aEjes as $oEje){
                 $this->getTemplate()->set_var("iValueEjeTematico", $oEje->getId());
