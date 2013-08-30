@@ -28,9 +28,9 @@ class SeguimientoPersonalizado extends SeguimientoAbstract{
      * Devuelve objetivos con evolucion completa si es que la tienen.
      * 
      */
-    public function getObjetivos(){
+    public function getObjetivos($sOrderBy = null, $sOrder = null){
         if($this->aObjetivos === null){            
-            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizadosBySeguimientoId($this->iId);
+            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizadosBySeguimientoId($this->iId, $sOrderBy, $sOrder);
         }
         return $this->aObjetivos;
     }

@@ -1106,13 +1106,13 @@ class SeguimientosController
      * Se utiliza para saber los objetivos asociados a un seguimiento personalizado.
      *
      */
-    public function getObjetivosPersonalizadosBySeguimientoId($iSeguimientoId)
+    public function getObjetivosPersonalizadosBySeguimientoId($iSeguimientoId, $sOrderBy, $sOrder)
       {
     	try{    	    
             $filtro = array('op.seguimientos_personalizados_id' => $iSeguimientoId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oObjetivoIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
+            return $oObjetivoIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);
         }catch(Exception $e){
             throw $e;
         }
@@ -1123,13 +1123,13 @@ class SeguimientosController
     *
     * Se utiliza para saber los objetivos asociados a un seguimiento SCC.
     */
-    public function getObjetivosAprendizajeAsociadosSeguimientoScc($iSeguimientoSCCId)
+    public function getObjetivosAprendizajeAsociadosSeguimientoScc($iSeguimientoSCCId, $sOrderBy, $sOrder)
       {
     	try{
             $filtro = array('sxo.seguimientos_scc_id' => $iSeguimientoSCCId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, null, null, null, null);
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);
         }catch(Exception $e){
             throw $e;
         }

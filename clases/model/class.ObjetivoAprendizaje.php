@@ -29,7 +29,7 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
         $this->oEjeTematico = $oEjeTematico;
     }
 
-    public function getEjeTematico(){
+    public function getEje(){
         return $this->oEjeTematico;
     }
 

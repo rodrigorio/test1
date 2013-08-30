@@ -66,8 +66,23 @@ abstract class ObjetivoAbstract
     /**
      *  @return date $dEstimacion
      */
-    public function getEstimacion(){
-        return $this->dEstimacion;
+    public function getEstimacion($format = false){
+        if($format){
+            return Utils::fechaFormateada($this->dEstimacion, "d/m/Y");
+        }else{
+            return $this->dEstimacion;
+        }
+    }
+
+    /**
+     * Compara con la fecha actual y determina si la fecha de estimacion esta vencida
+     */
+    public function isEstimacionVencida()
+    {
+        if(time() > strtotime($this->dEstimacion)){
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -87,6 +102,7 @@ abstract class ObjetivoAbstract
     }
 
     abstract public function getEvolucion();
+    abstract public function getEje();
     
     /**
      * retorna 1 objeto evolucion correspondiente a la fecha, si no existe = null

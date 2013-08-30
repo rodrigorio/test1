@@ -38,6 +38,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by bActivo desc, $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by bActivo desc, iRelevanciaId desc ";
+            }
+
             $db->query($sSQL);
                                               
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -148,6 +154,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by bActivo desc, $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by bActivo desc, iRelevanciaId desc ";
+            }
+
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -186,7 +198,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     
     public function guardarObjetivoAprendizaje($oObjetivo)
     {       
-        if($oObjetivo->getEjeTematico() === null){
+        if($oObjetivo->getEje() === null){
             throw new Exception("El objetivo no tiene eje tematico");
         }
         
@@ -215,7 +227,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             $sSQL = " insert into objetivos_aprendizaje ".
                     " set id = ".$this->escInt($iLastId).", ".
-                    " ejes_id =".$this->escInt($oObjetivo->getEjeTematico()->getId())." ";
+                    " ejes_id =".$this->escInt($oObjetivo->getEje()->getId())." ";
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -243,7 +255,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $db->execSQL($sSQL);
 
             $sSQL = " update objetivos_aprendizaje ".
-                    " set ejes_id =".$this->escInt($oObjetivo->getEjeTematico()->getId())." ".
+                    " set ejes_id =".$this->escInt($oObjetivo->getEje()->getId())." ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
             $db->execSQL($sSQL);
