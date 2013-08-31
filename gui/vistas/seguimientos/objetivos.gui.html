@@ -50,12 +50,23 @@
         </li>
     </ul>
 
-    <label for="crearObjetivo" class="fl_ri button buttonSpecial">
-        <button id="crearObjetivo" rel="{iSeguimientoId}" type="button" name="crearObjetivo" class="btn01">
+    <!--BeginCrearObjetivoPersonalizadoBlock-->
+    <label for="crearObjetivoPersonalizado" class="fl_ri button buttonSpecial">
+        <button id="crearObjetivoPersonalizado" rel="{iSeguimientoId}" type="button" name="crearObjetivoPersonalizado" class="btn01">
             <span class="i bs add"></span>
             Crear Nuevo Objetivo
         </button>
     </label>
+    <!--EndCrearObjetivoPersonalizadoBlock-->
+
+    <!--BeginAsociarObjetivoAprendizajeBlock-->
+    <label for="asociarObjetivoAprendizaje" class="fl_ri button buttonSpecial">
+        <button id="asociarObjetivoAprendizaje" rel="{iSeguimientoId}" type="button" name="asociarObjetivoAprendizaje" class="btn01">
+            <span class="i bs add"></span>
+            Asociar objetivo de aprendizaje
+        </button>
+    </label>
+    <!--EndAsociarObjetivoAprendizajeBlock-->
 </div>
 
 <div id="listadoObjetivos" class="grupo po_re">
@@ -110,12 +121,13 @@
 </div>
 <!--EndListadoObjetivosBlock-->
 
-<!--BeginFormularioObjetivoPersonalizadoBlock-->
+<!--BeginFormularioObjetivoBlock-->
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 mi flagGreen32"></span></div>
-    <form id="formObjetivoPersonalizado" name="formObjetivoPersonalizado" action="" method="post">
+    <form id="formObjetivo" name="formObjetivo" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
+        <!--BeginEjePersonalizadoBlock-->
         <div class="form_line msg_eje">
             <label for="eje">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -136,6 +148,47 @@
                 </div>
             </div>
         </div>
+        <!--EndEjePersonalizadoBlock-->
+
+        <!--BeginObjetivoAprendizajeBlock-->
+        <div id="objetivoAprendizajeCont" class="form_line msg_objetivoAprendizaje">
+            <label for="objetivoAprendizaje">
+                <span class="marca_obligatorio">&#8226;</span>
+                Objetivo de Aprendizaje
+            </label>
+            <div class="cl_le"></div>
+            <select class="mabo2 miwi2" name="nivel" id="nivel" title="Nivel">
+                <option value="">Nivel:</option>
+                <!--BeginNivelesListBlock-->
+                <option value="{iNivelId}" {sSelectedNivel}>{sNivelDescripcion}</option>
+                <!--EndNivelesListBlock-->
+            </select>
+            <select class="mabo2 miwi2" name="ciclo" id="ciclo" title="Ciclo">
+                <option value="">Ciclo:</option>
+                <!--BeginCiclosListBlock-->
+                <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
+                <!--EndCiclosListBlock-->
+            </select>
+            <select class="mabo2 miwi2" name="area" id="area" title="&Aacute;rea">
+                <option value="">&Aacute;rea:</option>
+                <!--BeginAreaListBlock-->
+                <option value="{iAreaId}" {sSelectedArea}>{sAreaDescripcion}</option>
+                <!--EndAreaListBlock-->
+            </select>
+            <select class="mabo2 miwi2" name="eje" id="eje" title="Eje">
+                <option value="">Eje:</option>
+                <!--BeginEjeListBlock-->
+                <option value="{iEjeId}" {sSelectedEje}>{sEjeDescripcion}</option>
+                <!--EndEjeListBlock-->
+            </select>
+            <select class="mabo2 miwi2" name="objetivoAprendizaje" id="objetivoAprendizaje" title="Objetivo de Aprendizaje">
+                <option value="">Objetivo Aprendizaje:</option>
+                <!--BeginObjetivoAprendizajeListBlock-->
+                <option value="{iObjetivoAprendizajeId}" {sSelectedObjetivoAprendizaje}>{sObjetivoAprendizajeDescripcion}</option>
+                <!--EndObjetivoAprendizajeListBlock-->
+            </select>
+        </div>
+        <!--EndObjetivoAprendizajeBlock-->
         
         <div class="form_line msg_relevancia">
             <label for="radioRelevanciaAlta">
@@ -146,21 +199,21 @@
                 <ul class="fl_le m_horiz grupo">
                     <li class="iveal">
                         <span class="i mi flagYellow"></span> 
-                        <input id="radioRelevanciaAlta" type="radio" name="radioRelevanciaAlta" value="{iRelevanciaAltaId}">
+                        <input id="radioRelevanciaAlta" type="radio" name="radioRelevanciaAlta" value="{iRelevanciaAltaId}" {checkedRelevanciaAlta}>
                         <label for="radioRelevanciaAlta">
                             <span class="fowe_bo">Alta</span>
                         </label>
                     </li>
                     <li class="mari0 iveal">
                         <span class="i mi flagGreen"></span>
-                        <input id="radioRelevanciaNormal" type="radio" name="radioRelevanciaNormal" value="{iRelevanciaNormalId}" checked="checked">
+                        <input id="radioRelevanciaNormal" type="radio" name="radioRelevanciaNormal" value="{iRelevanciaNormalId}" {checkedRelevanciaNormal}>
                         <label for="radioRelevanciaNormal">
                             <span class="fowe_bo">Normal</span>
                         </label>
                     </li>
                     <li class="mari0 iveal">
                         <span class="i mi flagWhite"></span>
-                        <input id="radioRelevanciaBaja" type="radio" name="radioRelevanciaBaja" value="{iRelevanciaBajaId}">
+                        <input id="radioRelevanciaBaja" type="radio" name="radioRelevanciaBaja" value="{iRelevanciaBajaId}" {checkedRelevanciaBaja}>
                         <label for="radioRelevanciaBaja">
                             <span class="fowe_bo">Baja</span>
                         </label>
@@ -181,10 +234,20 @@
             </div>            
         </div>
 
+        <div class="form_line msg_estimacion">
+            <label for="estimacion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Estimaci&oacute;n de logro
+            </label>
+            <div class="cl_le"></div>
+            <span class="i32 bs calendar32"></span>
+            <input class="miwi2" readonly="readonly" type="text" name="estimacion" id="estimacion" title="Estimaci&oacute;n de logro" value="{dEstimacion}" />
+        </div>
+
         <!--BeginSubmitCrearObjetivoBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="crearObjetivoPersonalizado" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearObjetivoPersonalizado" type="submit" name="crearObjetivoPersonalizado" class="btn01">
+            <label for="crearObjetivo" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearObjetivo" type="submit" name="crearObjetivo" class="btn01">
                     Crear Objetivo
                 </button>
             </label>
@@ -194,8 +257,8 @@
 
         <!--BeginSubmitModificarObjetivoBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="modificarObjetivoPersonalizado" class="button buttonConfirm buttonLarge">
-                <button id="modificarObjetivoPersonalizado" type="submit" name="modificarObjetivoPersonalizado" class="btn01">
+            <label for="modificarObjetivo" class="button buttonConfirm buttonLarge">
+                <button id="modificarObjetivo" type="submit" name="modificarObjetivo" class="btn01">
                     Modificar Objetivo
                 </button>
             </label>
@@ -208,7 +271,7 @@
 
     </form>
 </div>
-<!--EndFormularioObjetivoPersonalizadoBlock-->
+<!--EndFormularioObjetivoBlock-->
 
 
 

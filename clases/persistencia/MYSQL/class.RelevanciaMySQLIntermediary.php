@@ -2,6 +2,11 @@
  
 class RelevanciaMySQLIntermediary extends RelevanciaIntermediary
 {
+
+    const RELEVANCIA_ALTA = 3;
+    const RELEVANCIA_NORMAL = 2;
+    const RELEVANCIA_BAJA = 1;
+        
     private static $instance = null;
 
     protected function __construct( $conn) {
@@ -20,6 +25,13 @@ class RelevanciaMySQLIntermediary extends RelevanciaIntermediary
             self::$instance = new self($conn);
         }
         return self::$instance;
+    }
+    
+    public function obtenerRelevancias()
+    {
+        return array('alta' => self::RELEVANCIA_ALTA,
+                     'normal' => self::RELEVANCIA_NORMAL,
+                     'baja' => self::RELEVANCIA_BAJA);
     }
 
     public final function obtener($filtro,  &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)

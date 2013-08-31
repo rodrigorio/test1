@@ -512,14 +512,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         1 as existe
                       FROM
                         seguimientos s
-                        JOIN 
-                        seguimientos_personalizados sp 
-                        ON 
-                        sp.id = s.id
-                        JOIN
-                        objetivos_personalizados op
-                        ON
-                        sp.id = op.seguimientos_personalizados_id
+                        JOIN seguimientos_personalizados sp ON sp.id = s.id
+                        JOIN objetivos_personalizados op ON sp.id = op.seguimientos_personalizados_id
                       WHERE
                         op.id = ".$this->escInt($iObjetivoId)." AND
                         s.usuarios_id = ".$this->escInt($iUsuarioId);

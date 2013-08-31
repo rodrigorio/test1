@@ -1,4 +1,4 @@
-var validateFormUnidad = {
+var validateFormObjetivoPersonalizado = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -12,27 +12,31 @@ var validateFormUnidad = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        nombre:{required:true},
-        descripcion:{required:true}
+        eje:{required:true},
+        relevancia:{required:true},
+        descripcion:{required:true},
+        estimacion:{required:true}
     },
     messages:{
-        nombre: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        eje: mensajeValidacion("requerido"),
+        relevancia: mensajeValidacion("requerido"),
+        descripcion: mensajeValidacion("requerido"),
+        estimacion: mensajeValidacion("requerido")
     }
 };
 
-var optionsAjaxFormUnidad = {
+var optionsAjaxFormObjetivo = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-unidad',
+    url: 'seguimientos/guardar-objetivo',
     beforeSerialize:function(){
 
-        if($("#formUnidad").valid() == true){
+        if($("#formObjetivo").valid() == true){
 
-            $('#msg_form_unidad').hide();
-            $('#msg_form_unidad').removeClass("correcto").removeClass("error");
-            $('#msg_form_unidad .msg').html("");
-            setWaitingStatus('formUnidad', true);
+            $('#msg_form_objetivo').hide();
+            $('#msg_form_objetivo').removeClass("correcto").removeClass("error");
+            $('#msg_form_objetivo .msg').html("");
+            setWaitingStatus('formObjetivo', true);
 
         }else{
             return false;
@@ -40,40 +44,40 @@ var optionsAjaxFormUnidad = {
     },
 
     success:function(data){
-        setWaitingStatus('formUnidad', false);
+        setWaitingStatus('formObjetivo', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_unidad .msg').html(lang['error procesar']);
+                $('#msg_form_objetivo .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_unidad .msg').html(data.mensaje);
+                $('#msg_form_objetivo .msg').html(data.mensaje);
             }
-            $('#msg_form_unidad').addClass("error").fadeIn('slow');
+            $('#msg_form_objetivo').addClass("error").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_unidad .msg').html(lang['exito procesar']);
+                $('#msg_form_objetivo .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_unidad .msg').html(data.mensaje);
+                $('#msg_form_objetivo .msg').html(data.mensaje);
             }
-            if(data.agregarUnidad != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formUnidad').each(function(){
+            if(data.agregarObjetivo != undefined){                
+                $('#formObjetivo').each(function(){
                   this.reset();
                 });
-
-                //refresco el formulario de busqueda pero elimino el filtro
-                $("#limpiarFiltro").click();
             }
+            
             //refresco el listado actual
-            $("#buscarUnidades").click();
-            $('#msg_form_unidad').addClass("correcto").fadeIn('slow');
+            $("#orderByRelevancia").click();
+            $('#msg_form_objetivo').addClass("correcto").fadeIn('slow');
         }
     }
 };
 
-function bindEventsObjetivoPersonalizadoForm(){
-    $("#formUnidad").validate(validateFormUnidad);
-    $("#formUnidad").ajaxForm(optionsAjaxFormUnidad);
+function bindEventsFormObjetivoPersonalizado(){
+    $("#formObjetivo").validate(validateFormObjetivoPersonalizado);
+    $("#formObjetivo").ajaxForm(optionsAjaxFormObjetivo);
+
+    $("#estimacion").datepicker();
+    $("#descripcion").maxlength();    
 }
 
 function masObjetivos(iSeguimientoId){
@@ -107,6 +111,20 @@ $(document).ready(function(){
         $('#sOrder').html($(this).attr('order'));
         var iSeguimientoId = $(this).attr('rel');
         masObjetivos(iSeguimientoId);
+    });
+
+    $("#crearObjetivoPersonalizado").click(function(){
+        var iSeguimientoId = $(this).attr('rel');
+        var dialog = setWaitingStatusDialog(550, "Crear Objetivo");
+        dialog.load(
+            "seguimientos/form-objetivo",
+            {"iSeguimientoId":iSeguimientoId,
+             "objetivoPersonalizado":"1"},
+            function(responseText, textStatus, XMLHttpRequest){
+                bindEventsFormObjetivoPersonalizado();
+            }
+        );
+        return false;
     });
     
 });

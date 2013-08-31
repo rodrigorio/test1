@@ -1117,6 +1117,26 @@ class SeguimientosController
             throw $e;
         }
     }
+
+    /**
+     * Devuelve un objeto personalizado completo (correponde a un seguimiento personalizado)
+     */
+    public function getObjetivoPersonalizadoById($iObjetivoId)
+    {
+    	try{
+            $filtro = array('o.id' => $iObjetivoId);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aObjetivo = $oUnidadIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aObjetivo){
+                return $aObjetivo[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
     
    /**
     * Obtener Objetivos Aprendizaje
@@ -1192,16 +1212,17 @@ class SeguimientosController
     }
 
     /**
-     * Obtener Eje Tematico
-     *
+     * Devuelve una lista de todos los ejes para objetivos personalizados
+     * cada eje puede tener una lista de subejes distinta de null. (2 niveles)
      */
-   public function getEjeTematico($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
-      {
+    public function getEjesPersonalizados()
+    {
     	try{
-            $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+            $oEjeIntermediary = PersistenceFactory::getEjeIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oEjeIntermediary->obtener($filtro = array(), $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1325,7 +1346,7 @@ class SeguimientosController
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->isObjetivoPersonalizadoUsuario($iObjetivoId,$iUsuarioId);
+            return $oObjetivoIntermediary->isObjetivoPersonalizadoUsuario($iObjetivoId, $iUsuarioId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1339,6 +1360,15 @@ class SeguimientosController
             return $oObjetivoIntermediary->isObjetivoAprendizajeUsuario($iObjetivoId,$iUsuarioId);
         }catch(Exception $e){
             throw $e;
+        }
+    }
+
+    public function obtenerArrayRelevancias(){
+        try{
+            $oRelevanciaIntermediary = PersistenceFactory::getRelevanciaIntermediary($this->db);
+            return $oRelevanciaIntermediary->obtenerRelevancias();
+        }catch(Exception $e){
+            throw new Exception($e);
         }
     }
 
