@@ -2354,9 +2354,14 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "pageRightInnerMainCont", "ListadoObjetivosBlock");
 
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $this->getTemplate()->set_var("AsociarObjetivoAprendizajeBlock", "");
+            }else{
+                $this->getTemplate()->set_var("CrearObjetivoPersonalizadoBlock", "");
+            }
+
             $iRecordsTotal = 0;
             $aObjetivos = $oSeguimiento->getObjetivos();
-
             if(count($aObjetivos) > 0){
 
                 $this->getTemplate()->set_var("NoRecordsThumbsObjetivosBlock", "");
@@ -2530,4 +2535,122 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }  
     }
+
+    public function formObjetivo()
+    {
+        try
+        {
+            if(!$this->getAjaxHelper()->isAjaxContext()){
+                throw new Exception("", 404);
+            }
+
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
+            if(empty($iSeguimientoId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para ver este seguimiento", 401);
+            }
+
+            if($this->getRequest()->has('objetivoPersonalizado')){
+                $this->mostrarFormularioObjetivoPersonalizadoPopUp();
+            }else{
+                $this->mostrarFormularioObjetivoAprendizajePopUp();
+            }
+        }catch(Exception $e){
+            throw $e;
+        }            
+    }
+
+    private function mostrarFormularioObjetivoPersonalizadoPopUp()
+    {
+        try
+        {
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "FormularioObjetivoBlock");
+
+            $this->getTemplate()->set_var("ObjetivoAprendizajeBlock", "");
+            $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
+
+            $sCheckedRelevanciaAlta = "";
+            $sCheckedRelevanciaNormal = "";
+            $sCheckedRelevanciaBaja = "";
+
+            //FORMULARIO CREAR
+            if(!$this->getRequest()->has('iObjetivoId')){
+                $sTituloForm = "Crear Objetivo";
+                
+                $iEjeId = "";
+                $sCheckedRelevanciaNormal = "checked='checked'";
+                $sDescripcion = "";
+                $dEstimacion =  "";
+                
+            //FORMULARIO EDITAR
+            }else{
+                //tiene permiso para editar este objetivo?
+                $iObjetivoId = $this->getRequest()->get('iObjetivoId');
+                
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+                $sTituloForm = "Modificar Objetivo";
+                
+                $iEjeId = $oObjetivo->getEje()->getId();
+
+                switch($oObjetivo->getRelevancia()->getDescripcion()){
+                    case "alta": $sCheckedRelevanciaAlta = "checked='checked'"; break;
+                    case "normal": $sCheckedRelevanciaNormal = "checked='checked'"; break;
+                    case "baja": $sCheckedRelevanciaBaja = "checked='checked'"; break;
+                }
+                
+                $sDescripcion = $oObjetivo->getDescripcion();
+                $dEstimacion =  $oObjetivo->getEstimacion();
+            }
+
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
+            $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);            
+            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+            
+            $this->getTemplate()->set_var("checkedRelevanciaAlta", $sCheckedRelevanciaAlta);                        
+            $this->getTemplate()->set_var("checkedRelevanciaNormal", $sCheckedRelevanciaNormal);                        
+            $this->getTemplate()->set_var("checkedRelevanciaBaja", $sCheckedRelevanciaBaja);
+            $aRelevancias = SeguimientosController::getInstance()->obtenerArrayRelevancias();
+            $this->getTemplate()->set_var("iRelevanciaAltaId", $aRelevancias['alta']);
+            $this->getTemplate()->set_var("iRelevanciaNormalId", $aRelevancias['normal']);
+            $this->getTemplate()->set_var("iRelevanciaBajaId", $aRelevancias['baja']);
+
+            $this->getTemplate()->set_var("dEstimacion", $dEstimacion);
+
+            //dropdown ejes con subejes
+            $aEjes = SeguimientosController::getInstance()->getEjesPersonalizados();
+            foreach($aEjes as $oEje){
+                $this->getTemplate()->set_var("sEjePpal", $oEje->getDescripcion());
+                foreach($oEje->getSubejes() as $oSubEje){
+                    $this->getTemplate()->set_var("sSubEje", $oSubEje->getDescripcion());
+                    $this->getTemplate()->set_var("iSubEjeValue", $oSubEje->getId());
+                    if($iEjeId == $oSubEje->getId()){
+                        $this->getTemplate()->set_var("sSelectedSubEje", "selected='selected'");
+                    }
+                    $this->getTemplate()->parse("OptionSelectEje", true);
+                    $this->getTemplate()->set_var("sSelectedSubEje", "");
+                }
+                $this->getTemplate()->parse("OptGrpSelectEje", true);
+            }
+                          
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+            
+        }catch(Exception $e){
+            throw $e;
+        }
+    }    
 }

@@ -244,5 +244,11 @@ class PersistenceFactory {
         if(($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return(EntradaMySQLIntermediary::getInstance($conn));
         }
-    }    
+    }
+    public static function getRelevanciaIntermediary(IMYSQL $conn)
+    {
+        if(($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(RelevanciaMySQLIntermediary::getInstance($conn));
+        }
+    }
 }
