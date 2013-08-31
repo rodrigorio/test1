@@ -110,6 +110,106 @@
 </div>
 <!--EndListadoObjetivosBlock-->
 
+<!--BeginFormularioObjetivoPersonalizadoBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi flagGreen32"></span></div>
+    <form id="formObjetivoPersonalizado" name="formObjetivoPersonalizado" action="" method="post">
+        <h2 class="mabo3">{sTituloForm}</h2>
+
+        <div class="form_line msg_eje">
+            <label for="eje">
+                <span class="marca_obligatorio">&#8226;</span>
+                Eje
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <select name="eje" id="eje" >
+                        <option value="">Seleccione Eje:</option>
+                        <!--BeginOptGrpSelectEje-->
+                        <optgroup label="{sEjePpal}">
+                            <!--BeginOptionSelectEje-->
+                            <option value="{iSubEjeValue}" {sSelectedSubEje}>{sSubEje}</option>
+                            <!--EndOptionSelectEje-->
+                        </optgruoup>
+                        <!--EndOptGrpSelectEje-->
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form_line msg_relevancia">
+            <label for="radioRelevanciaAlta">
+                <span class="marca_obligatorio">&#8226;</span>
+                Relevancia
+            </label>
+            <div class="cl_le pato2">
+                <ul class="fl_le m_horiz grupo">
+                    <li class="iveal">
+                        <span class="i mi flagYellow"></span> 
+                        <input id="radioRelevanciaAlta" type="radio" name="radioRelevanciaAlta" value="{iRelevanciaAltaId}">
+                        <label for="radioRelevanciaAlta">
+                            <span class="fowe_bo">Alta</span>
+                        </label>
+                    </li>
+                    <li class="mari0 iveal">
+                        <span class="i mi flagGreen"></span>
+                        <input id="radioRelevanciaNormal" type="radio" name="radioRelevanciaNormal" value="{iRelevanciaNormalId}" checked="checked">
+                        <label for="radioRelevanciaNormal">
+                            <span class="fowe_bo">Normal</span>
+                        </label>
+                    </li>
+                    <li class="mari0 iveal">
+                        <span class="i mi flagWhite"></span>
+                        <input id="radioRelevanciaBaja" type="radio" name="radioRelevanciaBaja" value="{iRelevanciaBajaId}">
+                        <label for="radioRelevanciaBaja">
+                            <span class="fowe_bo">Baja</span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del objetivo para el seguimiento">{sDescripcion}</textarea>
+                </div>
+            </div>            
+        </div>
+
+        <!--BeginSubmitCrearObjetivoBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearObjetivoPersonalizado" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearObjetivoPersonalizado" type="submit" name="crearObjetivoPersonalizado" class="btn01">
+                    Crear Objetivo
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iSeguimientoIdForm}" name="seguimientoIdForm" id="seguimientoIdForm" />
+        <!--EndSubmitCrearObjetivoBlock-->
+
+        <!--BeginSubmitModificarObjetivoBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="modificarObjetivoPersonalizado" class="button buttonConfirm buttonLarge">
+                <button id="modificarObjetivoPersonalizado" type="submit" name="modificarObjetivoPersonalizado" class="btn01">
+                    Modificar Objetivo
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iSeguimientoIdForm}" name="seguimientoIdForm" id="seguimientoIdForm" />
+        <input type="hidden" value="{iObjetivoIdForm}" name="objetivoIdForm" id="objetivoIdForm" />
+        <!--EndSubmitModificarObjetivoBlock-->
+
+        <div style="display:none;" id='msg_form_objetivo' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioObjetivoPersonalizadoBlock-->
+
 
 
 
