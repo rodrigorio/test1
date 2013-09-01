@@ -75,9 +75,9 @@ var optionsAjaxFormObjetivo = {
 function bindEventsFormObjetivoPersonalizado(){
     $("#formObjetivo").validate(validateFormObjetivoPersonalizado);
     $("#formObjetivo").ajaxForm(optionsAjaxFormObjetivo);
-
+        
+    $("#descripcion").maxlength();
     $("#estimacion").datepicker();
-    $("#descripcion").maxlength();    
 }
 
 function masObjetivos(iSeguimientoId){
@@ -104,7 +104,7 @@ function masObjetivos(iSeguimientoId){
     });
 }
 
-$(document).ready(function(){
+$(function(){
 
     $(".orderLink").live('click', function(){
         $('#sOrderBy').html($(this).attr('orderBy'));
@@ -121,10 +121,8 @@ $(document).ready(function(){
             {"iSeguimientoId":iSeguimientoId,
              "objetivoPersonalizado":"1"},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsFormObjetivoPersonalizado();
+                bindEventsFormObjetivoPersonalizado();               
             }
         );
-        return false;
-    });
-    
+    });      
 });

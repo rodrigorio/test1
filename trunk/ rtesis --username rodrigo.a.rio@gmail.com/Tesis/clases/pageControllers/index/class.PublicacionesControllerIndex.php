@@ -456,8 +456,6 @@ class PublicacionesControllerIndex extends PageControllerAbstract
                 $fValoracion = $oReview->getRating();
 
                 switch($fValoracion){
-                    case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                    case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
                     case ($fValoracion >= 1 && $fValoracion < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
                     case ($fValoracion >= 1.5 && $fValoracion < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
                     case ($fValoracion >= 2 && $fValoracion < 2.5): $valoracionBloque = 'Valoracion2Block'; break;
@@ -467,7 +465,7 @@ class PublicacionesControllerIndex extends PageControllerAbstract
                     case ($fValoracion >= 4 && $fValoracion < 4.5): $valoracionBloque = 'Valoracion4Block'; break;
                     case ($fValoracion >= 4.5 && $fValoracion < 5): $valoracionBloque = 'Valoracion4_2Block'; break;
                     case ($fValoracion >= 5): $valoracionBloque = 'Valoracion5Block'; break;
-                    default: $valoracionBloque = 'Valoracion0Block'; break;
+                    default: $valoracionBloque = 'Valoracion1Block'; break;
                 }
 
                 $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);

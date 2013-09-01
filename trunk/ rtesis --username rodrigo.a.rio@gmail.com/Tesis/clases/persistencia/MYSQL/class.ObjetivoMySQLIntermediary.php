@@ -199,7 +199,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     public function guardarObjetivoAprendizaje($oObjetivo)
     {       
         if($oObjetivo->getEje() === null){
-            throw new Exception("El objetivo no tiene eje tematico");
+            throw new Exception("El objetivo no tiene eje tematico", 0);
         }
         
         try{
@@ -277,11 +277,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     public function guardarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo)
     {
         if($oObjetivo->getObjetivoPersonalizadoEje() === null){
-            throw new Exception("El objetivo no tiene eje");
+            throw new Exception("El objetivo no tiene eje", 0);
         }
 
         if($oObjetivo->getRelevancia() === null){
-            throw new Exception("El objetivo no tiene relevancia");
+            throw new Exception("El objetivo no tiene relevancia", 0);
         }
         
         try{
@@ -359,7 +359,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     public function guardarObjetivoAprendizajeSeguimiento($iSeguimientoSCCId, $oObjetivo)
     {
         if($oObjetivo->getRelevancia() === null){
-            throw new Exception("El objetivo no tiene relevancia");
+            throw new Exception("El objetivo no tiene relevancia", 0);
         }
         
         try{

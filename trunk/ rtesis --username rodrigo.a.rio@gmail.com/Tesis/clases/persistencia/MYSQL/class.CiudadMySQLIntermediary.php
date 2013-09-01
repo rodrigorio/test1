@@ -76,28 +76,28 @@ class CiudadMySQLIntermediary extends CiudadIntermediary
 		}
 	}
     
-	public function actualizar($oCiudad)
-   {
-		try{
-			$db = $this->conn;
-		if($oCiudad->getProvincia()!= null){
-			$provinciaId = ($oCiudad->getProvincia()->getId());
-			}else {
-				$provinciaId = null;
-			}
+    public function actualizar($oCiudad)
+    {
+        try{
+            $db = $this->conn;
+            if($oCiudad->getProvincia()!= null){
+                $provinciaId = ($oCiudad->getProvincia()->getId());
+            }else{
+                $provinciaId = null;
+            }
         
-			$sSQL =	" update ciudades ".
-                    " set nombre =".$db->escape($oCiudad->getNombre(),true).", " .
-                    " provincia_id =".escape($provinciaId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT)." " ;			 
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-             
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+            $sSQL = " update ciudades ".
+                    " set nombre = ".$db->escape($oCiudad->getNombre(),true).", " .
+                    " provincia_id = ".$this->escInt($provinciaId)." ".
+                    " where id = ".$db->escape($oCiudad->getId(),false,MYSQL_TYPE_INT)." " ;
+             $db->execSQL($sSQL);
+             $db->commit();
+            
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
     public function guardar($oCiudad)
     {
         try{

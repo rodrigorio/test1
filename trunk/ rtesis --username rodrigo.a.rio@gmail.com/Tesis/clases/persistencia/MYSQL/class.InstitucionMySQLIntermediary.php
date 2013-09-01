@@ -60,18 +60,18 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             if(null !== $oInstitucion->getCiudad()){
                 $iCiudadId = $this->escInt($oInstitucion->getCiudad()->getId());
             }else{
-                $iCiudadId = 'NULL';
+                $iCiudadId = null;
             }
 
             if(null !== $oInstitucion->getUsuario()){
                 $iUsuarioId = $this->escInt($oInstitucion->getUsuario()->getId());
             }else{
-                $iUsuarioId = 'NULL';
+                $iUsuarioId = null;
             }
 
             $sSQL = " INSERT INTO instituciones ".
                     " SET nombre = ".$this->escStr($oInstitucion->getNombre()).", ".
-                    " ciudades_id = ".$iCiudadId.", ".
+                    " ciudades_id = ".$this->escInt($iCiudadId).", ".
                     " descripcion = ".$this->escStr($oInstitucion->getDescripcion()).", ".
                     " tipoInstitucion_id = ".$this->escInt($oInstitucion->getTipoInstitucionId()).", ".
                     " direccion = ".$this->escStr($oInstitucion->getDireccion()).", ".
@@ -86,7 +86,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                     " latitud = ".$this->escStr($oInstitucion->getLatitud()).", ".
                     " longitud = ".$this->escStr($oInstitucion->getLongitud()).", ".
                     " actividadesMes = ".$this->escStr($oInstitucion->getActividadesMes()).", ".
-                    " usuario_id = ".$iUsuarioId." ";
+                    " usuario_id = ".$this->escInt($iUsuarioId)." ";
 			
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
@@ -108,18 +108,18 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             if(null !== $oInstitucion->getCiudad()){
                 $iCiudadId = $this->escInt($oInstitucion->getCiudad()->getId());
             }else{
-                $iCiudadId = 'NULL';
+                $iCiudadId = null;
             }
 
             if(null !== $oInstitucion->getUsuario()){
                 $iUsuarioId = $this->escInt($oInstitucion->getUsuario()->getId());
             }else{
-                $iUsuarioId = 'NULL';
+                $iUsuarioId = null;
             }
        
             $sSQL = " UPDATE instituciones ".
                     " SET nombre = ".$this->escStr($oInstitucion->getNombre()).", ".
-                    " ciudades_id = ".$iCiudadId.", ".
+                    " ciudades_id = ".$this->escInt($iCiudadId).", ".
                     " descripcion = ".$this->escStr($oInstitucion->getDescripcion()).", ".
                     " tipoInstitucion_id = ".$this->escInt($oInstitucion->getTipoInstitucionId()).", ".
                     " direccion = ".$this->escStr($oInstitucion->getDireccion()).", ".
@@ -134,7 +134,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                     " latitud = ".$this->escStr($oInstitucion->getLatitud()).", ".
                     " longitud = ".$this->escStr($oInstitucion->getLongitud()).", ".
                     " actividadesMes = ".$this->escStr($oInstitucion->getActividadesMes()).", ".
-                    " usuario_id = ".$iUsuarioId." ".
+                    " usuario_id = ".$this->escInt($iUsuarioId)." ".
                     " where id = '".$oInstitucion->getId()."' ";
             
             $db->execSQL($sSQL);
@@ -571,8 +571,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             $db = $this->conn;
             $db->begin_transaction();
 
-            $db->execSQL("update personas set instituciones_id = null where instituciones_id = '".$iInstitucionId."'");            
-            $db->execSQL("delete from instituciones where id = '".$iInstitucionId."'");
+            $db->execSQL("update personas set instituciones_id = null where instituciones_id = ".$this->escInt($iInstitucionId));
+            $db->execSQL("delete from instituciones where id = ".$this->escInt($iInstitucionId));
 
             $db->commit();
             return true;
@@ -592,7 +592,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                         FROM
                        instituciones_tipos it ";
                     if(!empty($filtro)){     
-                    	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
+                    	$sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
                     }
             $db->query($sSQL);
 
@@ -600,7 +600,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
 
             if(empty($iRecordsTotal)){ return null; }
 
-			$vInstitucionesTipos = array();
+            $vInstitucionesTipos = array();
             while($oObj = $db->oNextRecord()){
             	$vInstitucionesTipos[] = $oObj;
             }
@@ -682,8 +682,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
                         1 as existe
                     FROM
                         institucion_solicitudes iss
-                    WHERE iss.usuarios_id = ".$iUsuarioId."
-                          AND iss.instituciones_id = ".$iInstitucionId;
+                    WHERE iss.usuarios_id = ".$this->escInt($iUsuarioId)."
+                          AND iss.instituciones_id = ".$this->escInt($iInstitucionId);
             
             $db->query($sSQL);
 
@@ -739,8 +739,8 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
             $iUsuarioId = $oSolicitud->getUsuario()->getId();
 
             $sSQL = "INSERT INTO institucion_solicitudes SET ".
-                    "   usuarios_id = ".$iUsuarioId.", ".
-                    "   instituciones_id = ".$iInstitucionId.", ".
+                    "   usuarios_id = ".$this->escInt($iUsuarioId).", ".
+                    "   instituciones_id = ".$this->escInt($iInstitucionId).", ".
                     "   mensaje = ".$this->escStr($oSolicitud->getMensaje())." ";
 
             $db->execSQL($sSQL);
@@ -765,7 +765,7 @@ class InstitucionMySQLIntermediary extends InstitucionIntermediary
         try{
             $db = $this->conn;
            
-            $db->execSQL("delete from institucion_solicitudes where instituciones_id = ".$iInstitucionId." ");
+            $db->execSQL("delete from institucion_solicitudes where instituciones_id = ".$this->escInt($iInstitucionId));
             $db->commit();
 
             return true;

@@ -70,9 +70,9 @@ input{padding:6px 4px} /* en ie7 select no es html es active-x asi que priorizar
 select{padding:5px 2px}
 input, textarea{color:#333}
 input[type="text"], input[type="password"], select{-moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
-textarea{outline:0px; vertical-align:bottom}
+textarea{resize:none; outline:0px; vertical-align:bottom}
 textarea{height:250px !important}
-.textareaAutoGrow{resize:none; overflow:hidden; height:16px !important}
+.textareaAutoGrow{overflow:hidden; height:16px !important}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
 input.small, select.small, textarea.small{width:150px;}
@@ -314,7 +314,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 /* tabs */
 .tabs .leftTabs{float:left; padding-left:10px}
 .tabs .rightTabs{float:right; padding-right:10px}
-.toggleTabs li{display:inline; border-bottom:0px !important;}
+.toggleTabs li{display:inline}
 
 /* para ubicar en posiciones absolutas */
 .topRight{top:5px; right:5px}
@@ -458,10 +458,10 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .slide02 .slideCollapsed .mi{background-position:-176px -224px}
 
 .tabs01 .tabs{border-bottom:1px solid #898989}
-.tabs01 .toggleTabs li{background:#DDD; border:1px solid #BBB; border-bottom:0px !important; -moz-border-radius:2px 2px 0 0; -webkit-border-radius:2px 2px 0 0; border-radius:2px 2px 0 0;}
-.tabs01 .toggleTabs li a{color:#333 !important}
 .tabs01 .tabContent{background:none repeat scroll 0 0 #F7F7F7 !important; border:1px solid #BBB !important; border-top:0px !important;}
-.tabs01 .ui-tabs-selected{font-weight:bold !important; border-color:#898989 !important; background-color:#F7F7F7 !important; background-image:-moz-linear-gradient(top, #FFF, #F7F7F7) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#F7F7F7)) !important; background-image:linear-gradient(top, #FFF, #F7F7F7) !important}
+.tabs01 .toggleTabs li{background:#DDD; border-color:#bbb #bbb #898989 #bbb; border-style:solid; border-width:1px; -moz-border-radius:2px 2px 0 0; -webkit-border-radius:2px 2px 0 0; border-radius:2px 2px 0 0;}
+.tabs01 .toggleTabs li a{color:#333 !important}
+.tabs01 .ui-tabs-active{font-weight:bold !important; border-color:#898989 #898989 #F7F7F7 #898989 !important; background-color:#F7F7F7 !important; background-image:-moz-linear-gradient(top, #FFF, #F7F7F7) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#F7F7F7)) !important; background-image:linear-gradient(top, #FFF, #F7F7F7) !important}
 
 /* menu ppal comunidad/seguimientos */
 ul.menu01 li a{color:#1111CC !important; text-decoration: none; font-weight:bold}
@@ -813,10 +813,13 @@ p .destacado{font-weight:bold;}
 .ui-dialog-titlebar{padding:8px; font-size:1.7em; background:#CCC url("../images/fondos/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x; color: #222; border-top:1px solid #FFF; border-bottom:1px solid #999}
 .ui-dialog-titlebar-close{padding:1px !important;}
 .ui-dialog-title{margin:0px; text-shadow:#666 1px 1px 1px}
+
 /* tabs */
 .ui-tabs{padding:0px; position:relative; overflow:hidden;}
 .ui-tabs .ui-tabs-nav{margin:0; padding:0}
+.ui-tabs .ui-tabs-nav li{margin:0 5px 0 0 !important}
 .ui-tabs .ui-tabs-panel{display:block; padding:10px; border-top:0px}
+
 /* autocomplete */
 .ui-autocomplete{max-height:200px; max-width:300px; overflow-x:hidden; overflow-y:auto; padding-right:20px; background:#FFF; border: 1px solid #CCC}
 .ui-autocomplete a{color:#333; text-decoration:none}
@@ -837,7 +840,8 @@ p .destacado{font-weight:bold;}
 .ui-icon{width:16px; height:16px; background-image: url("../images/iconos/ui-icons_222222_256x240.png")}
 .ui-widget-content .ui-icon {background-image: url("../images/iconos/ui-icons_222222_256x240.png")}
 .ui-widget-header .ui-icon {background-image: url("../images/iconos/ui-icons_222222_256x240.png")}
-.ui-state-default .ui-icon { background-image: url("../images/iconos/ui-icons_888888_256x240.png")}
+.ui-state-default .ui-icon {background-image: url("../images/iconos/ui-icons_888888_256x240.png")}
+.ui-state-hover .ui-icon {background-image: url("../images/iconos/ui-icons_222222_256x240.png")}
 
 /* positioning */
 .ui-icon-closethick{background-position:-96px -128px}

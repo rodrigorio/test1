@@ -42,7 +42,7 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->obtenerTiposSeguimientos();
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -51,7 +51,7 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->guardar($oSeguimiento);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -63,7 +63,7 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -76,7 +76,7 @@ class SeguimientosController
             return $oSeguimientoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
 
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -92,7 +92,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -107,7 +107,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -152,10 +152,9 @@ class SeguimientosController
                 }
                 $result = $oDiscapacitadoIntermediary->guardar($oDiscapacitado);
                 return array($result, false);
-            }
-            
+            }            
         }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
+            throw $e;
         }
     }
 
@@ -222,7 +221,7 @@ class SeguimientosController
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->existeModeracion($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -260,7 +259,7 @@ class SeguimientosController
                 return false;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -273,7 +272,7 @@ class SeguimientosController
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -283,7 +282,7 @@ class SeguimientosController
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -300,7 +299,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -310,7 +309,7 @@ class SeguimientosController
             $oPracticaIntermediary = PersistenceFactory::getPracticaIntermediary($this->db);
             return $oPracticaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -325,7 +324,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }        
     }
@@ -341,7 +340,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }          
     }
@@ -357,7 +356,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }          
     }
@@ -395,7 +394,7 @@ class SeguimientosController
                         
             return $result;            
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }    
     }
@@ -430,7 +429,7 @@ class SeguimientosController
             }
             $usuario->setArchivoAntecedentes(null);
             
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -446,7 +445,7 @@ class SeguimientosController
             $seguimiento->setArchivoAntecedentes(null);
 
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -459,7 +458,7 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->obtenerCantidadElementosAdjuntos($iSeguimientoId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -475,7 +474,7 @@ class SeguimientosController
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             return $oFotoIntermediary->isFotoSeguimientoUsuario($iFotoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -491,7 +490,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -506,7 +505,7 @@ class SeguimientosController
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             return $oEmbedVideoIntermediary->isEmbedVideoSeguimientoUsuario($iEmbedVideoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -521,7 +520,7 @@ class SeguimientosController
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             return $oArchivoIntermediary->isArchivoSeguimientoUsuario($iArchivoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -553,7 +552,7 @@ class SeguimientosController
                 }
                 $oSeguimiento->setFotos(null);
             }
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -580,7 +579,7 @@ class SeguimientosController
                 }
                 $oSeguimiento->setArchivos(null);
             }
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -597,7 +596,7 @@ class SeguimientosController
             return $oEmbedVideoIntermediary->guardarEmbedVideosSeguimiento($oSeguimiento);
         }catch(Exception $e){
             $oSeguimiento->setEmbedVideos(null);
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -622,7 +621,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -634,7 +633,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oDiagnosticoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -651,7 +650,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -668,7 +667,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -696,7 +695,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -705,7 +704,7 @@ class SeguimientosController
             $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);                        
             return $oDiagnosticoIntermediary->guardar($oDiagnostico);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -715,7 +714,7 @@ class SeguimientosController
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             return $oNivelIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -725,7 +724,7 @@ class SeguimientosController
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -735,7 +734,7 @@ class SeguimientosController
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -751,7 +750,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -767,7 +766,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -782,7 +781,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return  $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -795,7 +794,7 @@ class SeguimientosController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->obtenerUsuariosAsociadosPersona($iDiscapacitadoId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }         
     }
 
@@ -943,7 +942,7 @@ class SeguimientosController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -965,7 +964,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -993,7 +992,7 @@ class SeguimientosController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->guardar($oUnidad);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1020,7 +1019,7 @@ class SeguimientosController
                 return false;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1048,7 +1047,7 @@ class SeguimientosController
             
             return $oVariableIntermediary->borrarVariables($sIds, $cantDiasExpiracion);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1083,7 +1082,7 @@ class SeguimientosController
             }
             
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1096,7 +1095,7 @@ class SeguimientosController
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1244,7 +1243,7 @@ class SeguimientosController
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->eliminarEstadoInicial($iEjeTematicoId, $iDiagnosticoSCCId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }     
     
@@ -1256,7 +1255,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oDiagnosticoIntermediary->obtenerSCC($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1268,7 +1267,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oDiagnosticoIntermediary->obtenerPersonalizado($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1288,7 +1287,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1368,7 +1367,7 @@ class SeguimientosController
             $oRelevanciaIntermediary = PersistenceFactory::getRelevanciaIntermediary($this->db);
             return $oRelevanciaIntermediary->obtenerRelevancias();
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1418,7 +1417,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $oOpcionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1430,7 +1429,7 @@ class SeguimientosController
             $iRecordsTotal = 0;
             return $opreguntasIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1491,7 +1490,7 @@ class SeguimientosController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 }

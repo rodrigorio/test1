@@ -182,7 +182,7 @@ class CategoriaMySQLIntermediary extends CategoriaIntermediary
             
             return true;
     	}catch(Exception $e){
-            throw new Exception($e);
+            throw new Exception($e->getMessage(), 0);
         }
     }
        

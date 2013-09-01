@@ -49,7 +49,7 @@ class ComunidadController
             $oInvitacionIntermediary = PersistenceFactory::getInvitacionIntermediary($this->db);                        
             return $oInvitacionIntermediary->insertar($oInvitacion);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -71,7 +71,7 @@ class ComunidadController
             return $oInvitacionIntermediary->existe($filtroExiste);
             
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -88,7 +88,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -100,7 +100,7 @@ class ComunidadController
             $iDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EXPIRACION_INVITACION');
             $oInvitacionIntermediary->borrarInvitacionesExpiradasUsuario($iUsuarioId, $iDiasExpiracion);            
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -118,7 +118,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         } 
     }
     
@@ -127,7 +127,7 @@ class ComunidadController
             $oPaisIntermediary = PersistenceFactory::getPaisIntermediary($this->db);
             return $oPaisIntermediary->obtener($array, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -141,7 +141,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     public function listaProvinciasByPais($iPaisId,&$iRecordsTotal=0, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
@@ -150,7 +150,7 @@ class ComunidadController
             $oProvinciaIntermediary = PersistenceFactory::getProvinciaIntermediary($this->db);
             return $oProvinciaIntermediary ->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -164,7 +164,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -174,7 +174,7 @@ class ComunidadController
             $oCiudadIntermediary = PersistenceFactory::getCiudadIntermediary($this->db);
             return $oCiudadIntermediary->obtener($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -189,7 +189,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -248,7 +248,7 @@ class ComunidadController
                 $oModeracionIntermediary->guardarModeracionEntidad($oInstitucion);
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -257,7 +257,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->borrar($iInstitucionId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -267,7 +267,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -276,7 +276,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -291,7 +291,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oUsuarioIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }                
     }
 
@@ -303,7 +303,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oDiscapacitadoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -319,7 +319,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -328,7 +328,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -337,7 +337,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->existe($filtro);
         }catch(Exception $e){
-           throw new Exception($e->getMessage());
+           throw $e;
         }
     }
 
@@ -347,7 +347,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->listaTiposDeInstitucion($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -360,7 +360,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->existeSolicitud($iInstitucionId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -374,7 +374,7 @@ class ComunidadController
             return $oInstitucionIntermediary->guardarSolicitudes($oInstitucion);
         }catch(Exception $e){
             $oInstitucion->setSolicitudes(null);
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
        
@@ -388,7 +388,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->existeMailDb($email, $userId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }            
     }
 
@@ -398,7 +398,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->existeNombreUsuarioDb($nombreUsuario);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -410,7 +410,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             $oUsuarioIntermediary->guardar($oUsuario);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -429,7 +429,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -452,7 +452,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -461,7 +461,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -497,7 +497,7 @@ class ComunidadController
             }
             $usuario->setCurriculumVitae(null);
             
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -518,7 +518,7 @@ class ComunidadController
             $usuario->setCurriculumVitae(null);
             
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -555,7 +555,7 @@ class ComunidadController
             }
             
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -603,7 +603,7 @@ class ComunidadController
             }
             $oPersona->setFotoPerfil(null);
             
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -619,7 +619,7 @@ class ComunidadController
             $oPersona->setFotoPerfil(null);
             
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -677,7 +677,7 @@ class ComunidadController
                 return false;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -686,7 +686,7 @@ class ComunidadController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->existe($filtro);
         }catch(Exception $e){
-           throw new Exception($e->getMessage());
+           throw $e;
         }
     }
 
@@ -699,7 +699,7 @@ class ComunidadController
             $oPublicacionIntermediary->guardar($oPublicacion);
             $this->procesarModeracionFicha($oPublicacion);           
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     public function guardarReview($oReview){
@@ -708,7 +708,7 @@ class ComunidadController
             $oPublicacionIntermediary->guardarReview($oReview);
             $this->procesarModeracionFicha($oReview);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -785,7 +785,7 @@ class ComunidadController
                 }
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -794,7 +794,7 @@ class ComunidadController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -811,7 +811,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -828,7 +828,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -845,7 +845,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -855,7 +855,7 @@ class ComunidadController
             $oSoftwareIntermediary->guardar($oSoftware);
             $this->procesarModeracionFicha($oSoftware);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -869,7 +869,7 @@ class ComunidadController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->usuarioEmitioValoracion($iSoftwareId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }        
     }
@@ -881,7 +881,7 @@ class ComunidadController
             $filtro = array('f.fichas_abstractas_id' => $iFichaId);
             return $oFotoIntermediary->obtenerFotoDestacada($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }                
     }
@@ -893,7 +893,7 @@ class ComunidadController
             $filtro = array('v.fichas_abstractas_id' => $iFichaId);
             return $oEmbedVideoIntermediary->obtenerEmbedVideoDestacado($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }           
     }
@@ -909,7 +909,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oFotoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }        
     }
@@ -932,7 +932,7 @@ class ComunidadController
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             return $oFotoIntermediary->isFotoPublicacionUsuario($iFotoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }  
     }
@@ -948,7 +948,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oEmbedVideoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }        
     }
@@ -963,7 +963,7 @@ class ComunidadController
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             return $oEmbedVideoIntermediary->isEmbedVideoPublicacionUsuario($iEmbedVideoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }          
     }
@@ -979,7 +979,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oArchivoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }          
     }
@@ -994,7 +994,7 @@ class ComunidadController
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             return $oArchivoIntermediary->isArchivoPublicacionUsuario($iArchivoId, $iUsuarioId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -1014,7 +1014,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }          
     }
 
@@ -1036,7 +1036,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1045,7 +1045,7 @@ class ComunidadController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1062,7 +1062,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1079,7 +1079,7 @@ class ComunidadController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
     
@@ -1110,7 +1110,7 @@ class ComunidadController
                 }
                 $oFicha->setFotos(null);
             }                                             
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -1137,7 +1137,7 @@ class ComunidadController
                 }
                 $oFicha->setArchivos(null);
             }
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1154,7 +1154,7 @@ class ComunidadController
             return $oEmbedVideoIntermediary->guardarEmbedVideosFicha($oFicha);
         }catch(Exception $e){
             $oFicha->setEmbedVideos(null);
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1165,7 +1165,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1175,7 +1175,7 @@ class ComunidadController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->existeDocumentoUsuario($numeroDocumento);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
     
@@ -1192,7 +1192,7 @@ class ComunidadController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1207,7 +1207,7 @@ class ComunidadController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1223,7 +1223,7 @@ class ComunidadController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1240,7 +1240,7 @@ class ComunidadController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1255,7 +1255,7 @@ class ComunidadController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1271,7 +1271,7 @@ class ComunidadController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1286,7 +1286,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1300,7 +1300,7 @@ class ComunidadController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1313,7 +1313,7 @@ class ComunidadController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->obtenerCantidadElementosAdjuntos($iFichaId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1325,7 +1325,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }        
     }
@@ -1338,7 +1338,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -1351,7 +1351,7 @@ class ComunidadController
             $iRecordsTotal = 0;
             return $oComentariosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -1363,7 +1363,7 @@ class ComunidadController
             return $oComentariosIntermediary->guardarComentariosFicha($oFicha);
         }catch(Exception $e){
             $oFicha->setComentarios(null);
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -1406,7 +1406,7 @@ class ComunidadController
 
             return $result;
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }            
     }
@@ -1417,7 +1417,7 @@ class ComunidadController
             $oComentarioIntermediary = PersistenceFactory::getComentarioIntermediary($this->db);
             return $oComentarioIntermediary->borrar($iComentarioId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1427,7 +1427,7 @@ class ComunidadController
             $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
             return $oDenunciaIntermediary->obtenerRazonesDenuncia();
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1440,7 +1440,7 @@ class ComunidadController
             $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
             return $oDenunciaIntermediary->guardarDenunciasEntidad($oObj);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }        
     }
 
@@ -1452,7 +1452,7 @@ class ComunidadController
             $filtro = array('d.instituciones_id' => $iInstitucionId, 'usuarios_id' => $iUsuarioId);
             return $oDenunciaIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1464,7 +1464,7 @@ class ComunidadController
             $filtro = array('d.fichas_abstractas_id' => $iFichaId, 'usuarios_id' => $iUsuarioId);
             return $oDenunciaIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 }

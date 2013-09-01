@@ -211,7 +211,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                 return $this->insertar($oDiscapacitado);
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
+            throw $e;
         }
     }
     
@@ -248,10 +248,10 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " telefono = ".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
                     " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', ".
                     " domicilio =".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .
-                    " instituciones_id = ".$institucionId.", ".
-                    " ciudades_id = ".$ciudadId." ".
+                    " instituciones_id = ".$this->escInt($institucionId).", ".
+                    " ciudades_id = ".$this->escInt($ciudadId)." ".
                     " WHERE id = '".$oDiscapacitado->getId()."' ";
-
+             
              $db->execSQL($sSQL);
 
              $sSQL =" update discapacitados ".
@@ -262,7 +262,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", ".
                     " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", ".
                     " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
-                    " usuarios_id = ".$iUsuarioId." ".
+                    " usuarios_id = ".$this->escInt($iUsuarioId)." ".
                     " WHERE id = ".$db->escape($oDiscapacitado->getId(),false,MYSQL_TYPE_INT)." ";
 
              $db->execSQL($sSQL);
@@ -310,8 +310,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " telefono = ".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
                     " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', " .
                     " domicilio = ".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .//revisar esto
-                    " instituciones_id = ".$db->escape($institucionId,true).", ".
-                    " ciudades_id = ".$db->escape($ciudadId,true)." ";
+                    " instituciones_id = ".$this->escInt($institucionId).", ".
+                    " ciudades_id = ".$this->escInt($ciudadId)." ";
             
             $db->execSQL($sSQL);
           
@@ -326,7 +326,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", " .
                     " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", " .
                     " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
-                    " usuarios_id = ".$iUsuarioId." ";
+                    " usuarios_id = ".$this->escInt($iUsuarioId)." ";
 					
             $db->execSQL($sSQL);
             $db->commit();
@@ -393,7 +393,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $db->begin_transaction();
 
             $sSQL = " insert into discapacitados_moderacion ".
-                    " set id = '".$oDiscapacitado->getId()."', ".
+                    " set id = ".$this->escInt($oDiscapacitado->getId()).", ".
                     " nombre =".$db->encryptData($db->escape($oDiscapacitado->getNombre(),true)).", " .
                     " apellido =".$db->encryptData($db->escape($oDiscapacitado->getApellido(),true)).", " .
                     " documento_tipos_id =".$db->escape($oDiscapacitado->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
@@ -402,8 +402,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " telefono =".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
                     " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', " .
                     " domicilio =".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .//revisar esto
-                    " instituciones_id =".$db->escape($institucionId,true).", ".
-                    " ciudades_id =".$db->escape($ciudadId,true).", ".
+                    " instituciones_id = ".$this->escInt($institucionId).", ".
+                    " ciudades_id =".$this->escInt($ciudadId).", ".
                     " nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
                     " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
                     " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
@@ -411,7 +411,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", " .
                     " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", " .
                     " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
-                    " usuarios_id = ".$iUsuarioId.", ".
+                    " usuarios_id = ".$this->escInt($iUsuarioId).", ".
                     " nombreBigSize = ".$this->escStr($nombreBigSize).", ".
                     " nombreMediumSize = ".$this->escStr($nombreMediumSize).", ".
                     " nombreSmallSize = ".$this->escStr($nombreSmallSize).", ".
@@ -530,12 +530,12 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
             $db->begin_transaction();
 
             //me fijo si la foto es nueva o se mantiene la anterior.
-            $sSQL = "SELECT cambioFoto FROM discapacitados_moderacion dm WHERE dm.id = '".$iDiscapacitadoId."'";
+            $sSQL = "SELECT cambioFoto FROM discapacitados_moderacion dm WHERE dm.id = ".$this->escInt($iDiscapacitadoId);
             $db->query($sSQL);
             $result = $db->oNextRecord();
             $cambioFoto = ($result->cambioFoto == "1")?true:false;
 
-            $db->execSQL("delete from discapacitados_moderacion where id = '".$iDiscapacitadoId."'");
+            $db->execSQL("delete from discapacitados_moderacion where id = ".$this->escInt($iDiscapacitadoId));
 
             $db->commit();
 
@@ -691,7 +691,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
     public function borrar($iDiscapacitadoId){
         try{
             $db = $this->conn;
-            $db->execSQL("delete from personas where id = '".$iDiscapacitadoId."'");
+            $db->execSQL("delete from personas where id = ".$this->escInt($iDiscapacitadoId));
             $db->commit();
             return true;
         }catch(Exception $e){
@@ -714,7 +714,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                         discapacitados d
                     JOIN
                         seguimientos s ON d.id = s.discapacitados_id
-                    WHERE d.id = '".$iDiscapacitadoId."'";
+                    WHERE d.id = ".$this->escInt($iDiscapacitadoId);
 
             $db->query($sSQL);
 
