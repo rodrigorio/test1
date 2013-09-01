@@ -119,7 +119,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
             $db->commit();
             return true;
         }catch(Exception $e){
-            throw new Exception($e);
+            throw new Exception($e->getMessage(), 0);
         }
     }
 
@@ -157,7 +157,7 @@ class EspecialidadMySQLIntermediary extends EspecialidadIntermediary
             
             return true;
     	}catch(Exception $e){
-            throw new Exception($e);
+            throw new Exception($e->getMessage(), 0);
         }
     }
 

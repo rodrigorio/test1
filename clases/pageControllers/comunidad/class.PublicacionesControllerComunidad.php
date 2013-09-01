@@ -934,7 +934,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $sItemName = "";
             $sItemEventSummary = "";
             $sItemUrl = "";
-            $fRating = "";
+            $fRating = null;
             $sFuenteOriginal = "";
 
         //MODIFICAR REVIEW
@@ -1015,41 +1015,37 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->set_var("sSelectedUrl", "selected='selected'");
                 break;            
         }
-        
-        switch($fRating){
-            case ($fRating >= 0 && $fRating < 0.5): 
-                $this->getTemplate()->set_var("sSelected_0", "selected='selected'");
-                break;
-            case ($fRating >= 0.5 && $fRating < 1):
-                $this->getTemplate()->set_var("sSelected_05", "selected='selected'");
-                break;
-            case ($fRating >= 1 && $fRating < 1.5):
-                $this->getTemplate()->set_var("sSelected_1", "selected='selected'");
-                break;
-            case ($fRating >= 1.5 && $fRating < 2):
-                $this->getTemplate()->set_var("sSelected_15", "selected='selected'");
-                break;
-            case ($fRating >= 2 && $fRating < 2.5):
-                $this->getTemplate()->set_var("sSelected_2", "selected='selected'");
-                break;
-            case ($fRating >= 2.5 && $fRating < 3):
-                $this->getTemplate()->set_var("sSelected_25", "selected='selected'");
-                break;
-            case ($fRating >= 3 && $fRating < 3.5):
-                $this->getTemplate()->set_var("sSelected_3", "selected='selected'");
-                break;
-            case ($fRating >= 3.5 && $fRating < 4):
-                $this->getTemplate()->set_var("sSelected_35", "selected='selected'");
-                break;
-            case ($fRating >= 4 && $fRating < 4.5):
-                $this->getTemplate()->set_var("sSelected_4", "selected='selected'");
-                break;
-            case ($fRating >= 4.5 && $fRating < 5):
-                $this->getTemplate()->set_var("sSelected_45", "selected='selected'");
-                break;
-            case ($fRating >= 5):
-                $this->getTemplate()->set_var("sSelected_5", "selected='selected'");
-                break;
+
+        if($fRating !== null){
+            switch($fRating){
+                case ($fRating >= 1 && $fRating < 1.5):
+                    $this->getTemplate()->set_var("sSelected_1", "selected='selected'");
+                    break;
+                case ($fRating >= 1.5 && $fRating < 2):
+                    $this->getTemplate()->set_var("sSelected_15", "selected='selected'");
+                    break;
+                case ($fRating >= 2 && $fRating < 2.5):
+                    $this->getTemplate()->set_var("sSelected_2", "selected='selected'");
+                    break;
+                case ($fRating >= 2.5 && $fRating < 3):
+                    $this->getTemplate()->set_var("sSelected_25", "selected='selected'");
+                    break;
+                case ($fRating >= 3 && $fRating < 3.5):
+                    $this->getTemplate()->set_var("sSelected_3", "selected='selected'");
+                    break;
+                case ($fRating >= 3.5 && $fRating < 4):
+                    $this->getTemplate()->set_var("sSelected_35", "selected='selected'");
+                    break;
+                case ($fRating >= 4 && $fRating < 4.5):
+                    $this->getTemplate()->set_var("sSelected_4", "selected='selected'");
+                    break;
+                case ($fRating >= 4.5 && $fRating < 5):
+                    $this->getTemplate()->set_var("sSelected_45", "selected='selected'");
+                    break;
+                case ($fRating >= 5):
+                    $this->getTemplate()->set_var("sSelected_5", "selected='selected'");
+                    break;
+            }
         }
 
         $this->getTemplate()->set_var("sItemEventSummary", $sItemEventSummary);
@@ -1101,11 +1097,11 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oReview->sItemType = $this->getRequest()->getPost("itemType");
             $oReview->sItemName = $this->getRequest()->getPost("item");
             $oReview->sItemEventSummary = $this->getRequest()->getPost("itemEventSummary");
-            $oReview->sItemUrl = $this->getRequest()->getPost("itemUrl");
-            $oReview->fRating = $fRating;
+            $oReview->sItemUrl = $this->getRequest()->getPost("itemUrl");            
             $oReview->sFuenteOriginal = $this->getRequest()->getPost("fuenteOriginal");
                     
             $oReview = Factory::getReviewInstance($oReview);
+            $oReview->setRating($fRating);
 
             ComunidadController::getInstance()->guardarReview($oReview);
 
@@ -1383,8 +1379,6 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                 $fValoracion = $oReview->getRating();
 
                 switch($fValoracion){
-                    case ($fValoracion >= 0 && $fValoracion < 0.5): $valoracionBloque = 'Valoracion0Block'; break;
-                    case ($fValoracion >= 0.5 && $fValoracion < 1): $valoracionBloque = 'Valoracion0_2Block'; break;
                     case ($fValoracion >= 1 && $fValoracion < 1.5): $valoracionBloque = 'Valoracion1Block'; break;
                     case ($fValoracion >= 1.5 && $fValoracion < 2): $valoracionBloque = 'Valoracion1_2Block'; break;
                     case ($fValoracion >= 2 && $fValoracion < 2.5): $valoracionBloque = 'Valoracion2Block'; break;

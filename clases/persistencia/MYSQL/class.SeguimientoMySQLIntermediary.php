@@ -305,13 +305,13 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     public function guardar($oSeguimiento)
     {
         if($oSeguimiento->getUsuario() === null){
-            throw new Exception("El seguimiento no tiene usuario");
+            throw new Exception("El seguimiento no tiene usuario", 0);
         }
         if($oSeguimiento->getDiscapacitado() === null){
-            throw new Exception("El seguimiento no tiene discapacitado asociado");
+            throw new Exception("El seguimiento no tiene discapacitado asociado", 0);
         }
         if($oSeguimiento->getPractica() === null){
-            throw new Exception("El seguimiento no tiene practica");
+            throw new Exception("El seguimiento no tiene practica", 0);
         }
         
         try{
@@ -319,7 +319,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
                 //porque el diagnostico se crea cuando se inserta el seguimiento
                 if($oSeguimiento->getDiagnostico() === null){
-                    throw new Exception("El seguimiento no tiene diagnostico");
+                    throw new Exception("El seguimiento no tiene diagnostico", 0);
                 }
                 
                 if($oSeguimiento->isSeguimientoPersonalizado()){

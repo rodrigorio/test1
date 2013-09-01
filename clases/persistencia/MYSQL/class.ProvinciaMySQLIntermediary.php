@@ -76,28 +76,30 @@ class ProvinciaMySQLIntermediary extends ProvinciaIntermediary
 		}
 	}
     
-	public  function actualizar($oProvincia)
+    public  function actualizar($oProvincia)
     {
-		try{
-			$db = $this->conn;
-		if($oProvincia->getPais()!= null){
-			$paisId = ($oProvincia->getPais()->getId());
-			}else {
-				$paisId = null;
-			}
+        try
+        {
+            $db = $this->conn;
+            if($oProvincia->getPais() != null){
+                $paisId = ($oProvincia->getPais()->getId());
+            }else {
+                $paisId = null;
+            }
         
-			$sSQL =	" update provincias ".
-                    " set nombre =".$db->escape($oProvincia->getNombre(),true).", " .
-                    " paises_id =".escape($paisId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oProvincia->getId(),false,MYSQL_TYPE_INT)." " ;			 
-			 $db->execSQL($sSQL);
-			 $db->commit();
+            $sSQL = " update provincias ".
+                    " set nombre = ".$db->escape($oProvincia->getNombre(),true).", " .
+                    " paises_id = ".$this->escInt($paisId)." ".
+                    " where id = ".$db->escape($oProvincia->getId(),false,MYSQL_TYPE_INT)." ";
 
+            $db->execSQL($sSQL);
+            $db->commit();
              
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
     public function guardar($oProvincia)
     {
         try{

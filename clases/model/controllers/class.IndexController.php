@@ -99,7 +99,7 @@ class IndexController
 
             $oUsuarioIntermediary->borrarPasswordTemporalExpiradaUsuario($iUsuarioId, $iDiasExpiracion);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -175,7 +175,7 @@ class IndexController
             }
 
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -185,7 +185,7 @@ class IndexController
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             return $oEmbedVideoIntermediary->borrar($oEmbedVideo);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -201,7 +201,7 @@ class IndexController
                 unlink($pathServidorArchivo);
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -223,7 +223,7 @@ class IndexController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -241,7 +241,7 @@ class IndexController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -259,7 +259,7 @@ class IndexController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -277,7 +277,7 @@ class IndexController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -295,7 +295,7 @@ class IndexController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
             return false;
         }
     }
@@ -315,7 +315,7 @@ class IndexController
             $oFotoIntermediary = PersistenceFactory::getFotoIntermediary($this->db);
             return $oFotoIntermediary->actualizar($oFoto);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -334,7 +334,7 @@ class IndexController
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             return $oArchivoIntermediary->actualizar($oArchivo);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -353,7 +353,7 @@ class IndexController
             $oEmbedVideoIntermediary = PersistenceFactory::getEmbedVideoIntermediary($this->db);
             return $oEmbedVideoIntermediary->actualizar($oEmbedVideo);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 }

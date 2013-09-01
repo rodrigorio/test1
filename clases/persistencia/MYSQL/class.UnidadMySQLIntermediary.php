@@ -109,7 +109,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if($oUnidad->getUsuarioId() !== null){
                 $usuarioId = $this->escInt($oUnidad->getUsuarioId());
             }else{
-                $usuarioId = "NULL";
+                $usuarioId = null;
             }
 
             //se setean dependiendo si se inserta desde modulo de seguimientos o desde el administrador
@@ -117,7 +117,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
             
             $sSQL = " INSERT INTO unidades SET ".
-                    "   usuarios_id = ".$usuarioId.", ".
+                    "   usuarios_id = ".$this->escInt($usuarioId).", ".
                     "   nombre = ".$this->escStr($oUnidad->getNombre())." , ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
@@ -144,14 +144,14 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if($oUnidad->getUsuarioId() !== null){
                 $usuarioId = $this->escInt($oUnidad->getUsuarioId());
             }else{
-                $usuarioId = "NULL";
+                $usuarioId = null;
             }
 
             $preCargada = $oUnidad->isPreCargada() ? "1" : "0";
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
 
             $sSQL = " UPDATE unidades SET ".
-                    "   usuarios_id = ".$usuarioId.", ".
+                    "   usuarios_id = ".$this->escInt($usuarioId).", ".
                     "   nombre = ".$this->escStr($oUnidad->getNombre()).", ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".

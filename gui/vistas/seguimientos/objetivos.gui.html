@@ -2,9 +2,9 @@
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
     $LAB
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.5.1.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.8.11.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
@@ -66,7 +66,7 @@
             Asociar objetivo de aprendizaje
         </button>
     </label>
-    <!--EndAsociarObjetivoAprendizajeBlock-->
+    <!--EndAsociarObjetivoAprendizajeBlock-->   
 </div>
 
 <div id="listadoObjetivos" class="grupo po_re">
@@ -133,20 +133,17 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Eje
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <select name="eje" id="eje" >
-                        <option value="">Seleccione Eje:</option>
-                        <!--BeginOptGrpSelectEje-->
-                        <optgroup label="{sEjePpal}">
-                            <!--BeginOptionSelectEje-->
-                            <option value="{iSubEjeValue}" {sSelectedSubEje}>{sSubEje}</option>
-                            <!--EndOptionSelectEje-->
-                        </optgruoup>
-                        <!--EndOptGrpSelectEje-->
-                    </select>
-                </div>
-            </div>
+            <div class="cl_le"></div>
+            <select class="miwi2" name="eje" id="eje">
+                <option value="">Seleccione Eje:</option>
+                <!--BeginOptGrpSelectEje-->
+                <optgroup label="{sEjePpal}">
+                    <!--BeginOptionSelectEje-->
+                    <option value="{iSubEjeValue}" {sSelectedSubEje}>{sSubEje}</option>
+                    <!--EndOptionSelectEje-->
+                </optgruoup>
+                <!--EndOptGrpSelectEje-->
+            </select>
         </div>
         <!--EndEjePersonalizadoBlock-->
 
@@ -190,30 +187,30 @@
         </div>
         <!--EndObjetivoAprendizajeBlock-->
         
-        <div class="form_line msg_relevancia">
+        <div class="form_line msg_relevancia grupo">
             <label for="radioRelevanciaAlta">
                 <span class="marca_obligatorio">&#8226;</span>
                 Relevancia
             </label>
             <div class="cl_le pato2">
                 <ul class="fl_le m_horiz grupo">
-                    <li class="iveal">
+                    <li class="pa">
                         <span class="i mi flagYellow"></span> 
-                        <input id="radioRelevanciaAlta" type="radio" name="radioRelevanciaAlta" value="{iRelevanciaAltaId}" {checkedRelevanciaAlta}>
+                        <input id="radioRelevanciaAlta" type="radio" name="radioRelevancia" value="{iRelevanciaAltaId}" {checkedRelevanciaAlta}>
                         <label for="radioRelevanciaAlta">
                             <span class="fowe_bo">Alta</span>
                         </label>
                     </li>
-                    <li class="mari0 iveal">
+                    <li class="pa">
                         <span class="i mi flagGreen"></span>
-                        <input id="radioRelevanciaNormal" type="radio" name="radioRelevanciaNormal" value="{iRelevanciaNormalId}" {checkedRelevanciaNormal}>
+                        <input id="radioRelevanciaNormal" type="radio" name="radioRelevancia" value="{iRelevanciaNormalId}" {checkedRelevanciaNormal}>
                         <label for="radioRelevanciaNormal">
                             <span class="fowe_bo">Normal</span>
                         </label>
                     </li>
-                    <li class="mari0 iveal">
+                    <li class="pa">
                         <span class="i mi flagWhite"></span>
-                        <input id="radioRelevanciaBaja" type="radio" name="radioRelevanciaBaja" value="{iRelevanciaBajaId}" {checkedRelevanciaBaja}>
+                        <input id="radioRelevanciaBaja" type="radio" name="radioRelevancia" value="{iRelevanciaBajaId}" {checkedRelevanciaBaja}>
                         <label for="radioRelevanciaBaja">
                             <span class="fowe_bo">Baja</span>
                         </label>
@@ -229,19 +226,18 @@
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del objetivo para el seguimiento">{sDescripcion}</textarea>
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del objetivo para el seguimiento">{sDescripcion}</textarea>
                 </div>
             </div>            
         </div>
 
-        <div class="form_line msg_estimacion">
+        <div id="estimacionasd" class="form_line msg_estimacion">
             <label for="estimacion">
                 <span class="marca_obligatorio">&#8226;</span>
                 Estimaci&oacute;n de logro
             </label>
             <div class="cl_le"></div>
-            <span class="i32 bs calendar32"></span>
-            <input class="miwi2" readonly="readonly" type="text" name="estimacion" id="estimacion" title="Estimaci&oacute;n de logro" value="{dEstimacion}" />
+            <input readonly="readonly" type="text" name="estimacion" id="estimacion" title="Estimaci&oacute;n de logro"  value="{dEstimacion}" />
         </div>
 
         <!--BeginSubmitCrearObjetivoBlock-->

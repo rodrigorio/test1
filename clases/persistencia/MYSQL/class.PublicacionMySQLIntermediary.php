@@ -177,12 +177,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
 
             $publico = $oReview->isPublico()?"1":"0";
             $activoComentarios = $oReview->isActivoComentarios()?"1":"0";
-
-            //lo hago a mano porque sino el scape int te transforma el 0 en null tmb
             $fRating = $oReview->getRating();
-            if($fRating === null){
-                $fRating = "null";
-            }
 
             $sSQL = " insert into reviews set ".
                     " id = ".$db->escape($iLastId, false, MYSQL_TYPE_INT).", " .
@@ -195,7 +190,7 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
                     " itemName = ".$db->escape($oReview->getItemName(), true).", ".
                     " itemEventSummary = ".$db->escape($oReview->getItemEventSummary(), true).", ".
                     " itemUrl = ".$db->escape($oReview->getItemUrl(), true).", ".
-                    " rating = ".$fRating.", ".
+                    " rating = ".$this->escFlt($fRating).", ".
                     " fuenteOriginal = ".$db->escape($oReview->getFuenteOriginal(), true);
 
             $db->execSQL($sSQL);
@@ -231,9 +226,9 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             $publico = $oReview->isPublico()?"1":"0";
             $activoComentarios = $oReview->isActivoComentarios()?"1":"0";
 
-            //lo hago a mano porque sino el scape int te transforma el 0 en null tmb
+            //lo hago a mano porque sino el scape int te transforma el 0 en null tmb, aca el 0 es una valoracion
             $fRating = $oReview->getRating();
-            if($fRating === null){
+            if($fRating == null){
                 $fRating = "null";
             }
 
@@ -647,9 +642,9 @@ class PublicacionMySQLIntermediary extends PublicacionIntermediary
             $db->execSQL("delete from fichas_abstractas where id = '".$iFichaAbstractaId."'");
             $db->commit();
             return true;
-        }catch(Exception $e){
-            return false;
+        }catch(Exception $e){            
             throw new Exception($e->getMessage(), 0);
+            return false;
         }
     }
 

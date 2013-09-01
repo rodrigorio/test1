@@ -848,7 +848,7 @@ $(document).ready(function(){
                 }
             }
         })
-        .data("autocomplete")._renderItem = function(ul, item){
+        .data("uiAutocomplete")._renderItem = function(ul, item){
             return $("<li></li>")
             .data("item.autocomplete", item)
             .append("<a class='bobo1'><div class='fl_le'><img src='"+ item.sRutaFoto +"' alt='foto' ></div>" +

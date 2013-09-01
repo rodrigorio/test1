@@ -49,7 +49,7 @@ class AdminController
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -65,7 +65,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }          
     }
         
@@ -74,7 +74,7 @@ class AdminController
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->guardar($oEspecialidad);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -83,7 +83,7 @@ class AdminController
             $oEspecialidadIntermediary = PersistenceFactory::getEspecialidadIntermediary($this->db);
             return $oEspecialidadIntermediary->borrar($iEspecialidadId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -101,7 +101,7 @@ class AdminController
                 
             return $oEspecialidadIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -111,7 +111,7 @@ class AdminController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->guardar($oCategoria);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -120,7 +120,7 @@ class AdminController
             $oCategoriaIntermediary = PersistenceFactory::getCategoriaIntermediary($this->db);
             return $oCategoriaIntermediary->borrar($iCategoriaId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -136,7 +136,7 @@ class AdminController
 
             return $oCategoriaIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -146,7 +146,7 @@ class AdminController
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             return $oNivelIntermediary->guardar($oNivel);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -187,7 +187,7 @@ class AdminController
             }
             $oCategoria->setFoto(null);
 
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -203,7 +203,7 @@ class AdminController
             $oCategoria->setFoto(null);
 
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -213,7 +213,7 @@ class AdminController
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
             return $oDiscapacitadoIntermediary->obtenerModeracion($filtro,$iRecordsTotal, $sOrderBy , $sOrder , $iIniLimit , $iRecordCount );
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -241,7 +241,7 @@ class AdminController
             }
             return $result;
         }catch(Exception $e){
-            throw new Exception($e);            
+            throw $e;
         }
     }
 
@@ -271,7 +271,7 @@ class AdminController
             }
             return $result;
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -281,7 +281,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     public function getAccionById($iAccionId)
@@ -297,7 +297,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
     public function guardarAccion($oAccion)
@@ -306,7 +306,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->guardar($oAccion);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
     public function borrarAccion($oAccion)
@@ -315,7 +315,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->borrar($oAccion);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     public function existeAccion($oAccion)
@@ -325,7 +325,7 @@ class AdminController
             $oPermisosIntermediary = PersistenceFactory::getPermisosIntermediary($this->db);
             return $oPermisosIntermediary->existe($filtro);
         }catch(Exception $e){
-           throw new Exception($e);
+           throw $e;
         }        
     }
 
@@ -335,7 +335,7 @@ class AdminController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);            
             return $oUsuarioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -372,7 +372,7 @@ class AdminController
 
             return $result;
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }    
     }
     
@@ -386,7 +386,7 @@ class AdminController
             $oPerfil = $oUsuarioIntermediary->obtenerPerfil($oUsuario);
             return $oPerfil->getDescripcion();
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }                
     }
 
@@ -409,7 +409,7 @@ class AdminController
                 return false;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -422,7 +422,7 @@ class AdminController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->obtenerPerfiles();
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }            
     }
 
@@ -460,7 +460,7 @@ class AdminController
                     break;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -470,7 +470,7 @@ class AdminController
             $oUsuarioIntermediary = PersistenceFactory::getUsuarioIntermediary($this->db);
             return $oUsuarioIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -483,7 +483,7 @@ class AdminController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -496,7 +496,7 @@ class AdminController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -509,7 +509,7 @@ class AdminController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -522,7 +522,7 @@ class AdminController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -534,7 +534,7 @@ class AdminController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -546,7 +546,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oDenunciaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -558,7 +558,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oDenunciaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -571,7 +571,7 @@ class AdminController
             $oInstitucionIntermediary = PersistenceFactory::getInstitucionIntermediary($this->db);
             return $oInstitucionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -584,7 +584,7 @@ class AdminController
             $oSoftwareIntermediary = PersistenceFactory::getSoftwareIntermediary($this->db);
             return $oSoftwareIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -597,7 +597,7 @@ class AdminController
             $oPublicacionIntermediary = PersistenceFactory::getPublicacionIntermediary($this->db);
             return $oPublicacionIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     } 
 
@@ -615,7 +615,7 @@ class AdminController
             $oDenunciaIntermediary = PersistenceFactory::getDenunciaIntermediary($this->db);
             return $oDenunciaIntermediary->borrarDenunciasEntidad($oObj);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
         
     }
@@ -627,7 +627,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oInstitucionIntermediary->obtenerInstitucionesSolicitud($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iIniLimit, $iRecordCount);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -639,7 +639,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oInstitucionIntermediary->obtenerSolicitudes($filtro, $iRecordsTotal, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
     
@@ -656,7 +656,7 @@ class AdminController
                 return null;
             }
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -668,7 +668,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -680,7 +680,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oModeracionIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch (Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -697,7 +697,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -707,7 +707,7 @@ class AdminController
             $oModeracionIntermediary = PersistenceFactory::getModeracionIntermediary($this->db);
             return $oModeracionIntermediary->guardar($oModeracion);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -722,7 +722,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }  
     }
 
@@ -736,7 +736,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -754,7 +754,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->obtenerParametrosUsuarios($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -768,7 +768,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -778,7 +778,7 @@ class AdminController
             $oControladorPaginaIntermediary = PersistenceFactory::getControladorPaginaIntermediary($this->db);
             return $oControladorPaginaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -795,7 +795,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
 
@@ -812,7 +812,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -832,7 +832,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
     /**
@@ -851,7 +851,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }        
     }
     /**
@@ -870,7 +870,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -893,7 +893,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -913,7 +913,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -936,7 +936,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     
@@ -947,7 +947,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existe($filtro);
         }catch(Exception $e){
-           throw new Exception($e);
+           throw $e;
         }                
     }
     /**
@@ -960,7 +960,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existeParametroSistema($filtro);
         }catch(Exception $e){
-           throw new Exception($e);
+           throw $e;
         }                
     }
     
@@ -976,7 +976,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existeParametroControlador($filtro);
         }catch(Exception $e){
-           throw new Exception($e);
+           throw $e;
         }
     }
     
@@ -991,7 +991,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->existeParametroUsuarios($filtro);
         }catch(Exception $e){
-           throw new Exception($e);
+           throw $e;
         }
     }
     public function guardarParametro($oParametro)
@@ -1000,7 +1000,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->guardar($oParametro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         } 
     }    
     public function borrarParametro($oParametro)
@@ -1009,7 +1009,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->borrar($oParametro->getId());
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         } 
     }
     public function guardarParametroSistema($oParametroSistema)
@@ -1018,7 +1018,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->guardarParametroSistema($oParametroSistema);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }         
     }
     public function guardarParametroControlador($oParametroControlador)
@@ -1027,7 +1027,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->guardarParametroControlador($oParametroControlador);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1040,7 +1040,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->asociaParametroUsuariosSistema($oParametroUsuario);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1052,7 +1052,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->guardarParametroUsuario($oParametroUsuario);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     public function eliminarParametroSistema($oParametroSistema)
@@ -1061,7 +1061,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->borrarParametroSistema($oParametroSistema);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         } 
     }
     public function eliminarParametroControlador($oParametroControlador)
@@ -1070,7 +1070,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->borrarParametroControlador($oParametroControlador);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     public function eliminarParametroUsuario($oParametroUsuario)
@@ -1079,7 +1079,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->borrarParametroUsuario($oParametroUsuario);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1092,7 +1092,7 @@ class AdminController
             $oParametrosIntermediary = PersistenceFactory::getParametrosIntermediary($this->db);
             return $oParametrosIntermediary->eliminarAsociacionParametroUsuarios($iParametroId);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1104,7 +1104,7 @@ class AdminController
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->guardar($oEjeTematico);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
      /**
@@ -1116,7 +1116,7 @@ class AdminController
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->Borrar($oEjeTematico);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
 
@@ -1136,7 +1136,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1146,7 +1146,7 @@ class AdminController
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1166,7 +1166,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1179,7 +1179,7 @@ class AdminController
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1192,7 +1192,7 @@ class AdminController
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             return $oNivelIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -1207,7 +1207,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     
@@ -1220,7 +1220,7 @@ class AdminController
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             return $oCicloIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1236,7 +1236,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -1251,7 +1251,7 @@ class AdminController
             $iRecordsTotal = 0;
             return $aEjeTematico = $oEjeTematicoIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
      /**
@@ -1263,7 +1263,7 @@ class AdminController
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             return $oAreaIntermediary->guardar($oArea);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
      /**
@@ -1275,7 +1275,7 @@ class AdminController
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             return $oAreaIntermediary->Borrar($oArea);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1294,7 +1294,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
    /**
@@ -1306,7 +1306,7 @@ class AdminController
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             return $oCicloIntermediary->guardar($oCiclo);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
      /**
@@ -1318,7 +1318,7 @@ class AdminController
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             return $oCicloIntermediary->Borrar($oCiclo);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1337,7 +1337,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
   
@@ -1350,7 +1350,7 @@ class AdminController
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             return $oNivelIntermediary->borrar($oNivel);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1363,7 +1363,7 @@ class AdminController
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -1376,7 +1376,7 @@ class AdminController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
      /**
@@ -1396,7 +1396,7 @@ class AdminController
                 return null;
             }
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1416,7 +1416,7 @@ class AdminController
                 return null;
             }     
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1426,7 +1426,7 @@ class AdminController
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -1439,7 +1439,7 @@ class AdminController
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->guardar($oVariable);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -1451,7 +1451,7 @@ class AdminController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->guardar($oUnidad);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -1464,7 +1464,7 @@ class AdminController
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->borrar($iUnidadId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -1477,7 +1477,7 @@ class AdminController
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             return $oVariableIntermediary->borrar($iVariableId);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
   /**
@@ -1489,7 +1489,7 @@ class AdminController
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoAprendizaje($oObjetivoAprendizaje);
         }catch(Exception $e){
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
      /**
@@ -1502,7 +1502,7 @@ class AdminController
             $filtro = array('n.descripcion' => $sDescripcion);
             return $oNivelIntermediary->existe($filtro);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
      /**
@@ -1514,7 +1514,7 @@ class AdminController
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
             return $oCicloIntermediary->existeCicloByDescripcion($sDescripcion, $oNivel);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
      /**
@@ -1526,7 +1526,7 @@ class AdminController
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             return $oAreaIntermediary->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     /**
@@ -1538,7 +1538,7 @@ class AdminController
             $oEjeIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeIntermediary->verificarExisteEjeByDescripcion($sDescripcion, $oArea);
         }catch(Exception $e){
-            throw new Exception($e);
+            throw $e;
         }
     }
     

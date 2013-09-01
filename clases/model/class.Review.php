@@ -153,8 +153,20 @@ class Review extends FichaAbstract implements PublicacionesInterface
         return $this;
     }
 
+    /**
+     * Los valores permitidos son de entre 1.0 y 5.0 con un solo decimal
+     */
     public function setRating($fRating)
     {
+        if($fRating !== null){
+            $fRating = round($fRating, 1);
+            if($fRating < 1.0){
+                $fRating = null;
+            }
+            if($fRating > 5.0){
+                $fRating = 5.0;
+            }
+        }
         $this->fRating = $fRating;
         return $this;
     }

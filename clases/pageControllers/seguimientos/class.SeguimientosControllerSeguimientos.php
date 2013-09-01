@@ -654,7 +654,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
             $this->getTemplate()->set_var("subtituloSeccion", "antecedentes");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "pageRightInnerMainCont", "FormularioBlock");
-          
+
+            //$this href para hashtags de los tabs
+            $this->getTemplate()->set_var("thisHref", $this->getRequest()->getRequestUri());
+                      
             //form para ingresar uno nuevo
             $this->getUploadHelper()->setTiposValidosDocumentos();
             $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
@@ -2584,7 +2587,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             //FORMULARIO CREAR
             if(!$this->getRequest()->has('iObjetivoId')){
-                $sTituloForm = "Crear Objetivo";
+                $sTituloForm = "Crear un nuevo objetivo";
                 
                 $iEjeId = "";
                 $sCheckedRelevanciaNormal = "checked='checked'";
@@ -2601,7 +2604,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
 
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
-                $sTituloForm = "Modificar Objetivo";
+                $sTituloForm = "Modificar objetivo";
                 
                 $iEjeId = $oObjetivo->getEje()->getId();
 
@@ -2645,6 +2648,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sSelectedSubEje", "");
                 }
                 $this->getTemplate()->parse("OptGrpSelectEje", true);
+                $this->getTemplate()->delete_parsed_blocks("OptionSelectEje");
             }
                           
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));

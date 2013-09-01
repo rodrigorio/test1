@@ -87,7 +87,6 @@ if(jQuery.validator != null){
 }
 
 // DATEPICKER EN ESP //
-
 $.datepicker.regional['es'] = {clearText: 'Limpiar', clearStatus: '',
     closeText: 'Cerrar', closeStatus: '',
     prevText: '&lt;Ant', prevStatus: '',
@@ -166,7 +165,7 @@ function setWaitingStatusDialog(width, titulo, buttons){
         closeOnEscape:true,
         buttons:buttons
     });
-    return dialog;
+    return dialog;   
 }
 
 /**
@@ -387,9 +386,7 @@ $(document).ready(function(){
     });
 
     //SUPER FISH MENU
-    $(function(){
-        $('.menuList').superfish();
-    });
+    $('.menuList').superfish();
 
     // PUNTUAR PUBLICACIONES, ETC //
     if($("#puntaje").length){
@@ -434,4 +431,15 @@ $(document).ready(function(){
     $(".thumbEdit").live("mouseleave", function(){
         $(this).children(".thumbEditMenu").hide();
     });
+
+    //HACK PARA UI TABS en paginas con BASE TAG (necesario a partir de jquery.ui 1.9)
+    $.fn.__tabs = $.fn.tabs;$.fn.tabs = function (a, b, c, d, e, f){
+        var base = location.href.replace(/#.*$/, '');
+        $('ul>li>a[href^="#"]', this).each(function(){
+            var href = $(this).attr('href');
+            $(this).attr('href', base + href);
+        });
+        $(this).__tabs(a, b, c, d, e, f);
+    };
+    
 });

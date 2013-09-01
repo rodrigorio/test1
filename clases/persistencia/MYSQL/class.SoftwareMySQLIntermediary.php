@@ -50,7 +50,7 @@ class SoftwareMySQLIntermediary extends SoftwareIntermediary
 
             return true;
     	}catch(Exception $e){
-            throw new Exception($e);
+            throw new Exception($e->getMessage(), 0);
         }
     }
 	

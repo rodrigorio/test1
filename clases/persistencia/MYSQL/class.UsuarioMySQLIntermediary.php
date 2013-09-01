@@ -105,7 +105,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = $this->generateSelectUuarios(). "
+            $sSQL = $this->generateSelectUsuarios(). "
 
                         e.id as iEspecialidadId,
                         e.nombre as sEspecialidadNombre, 
@@ -252,7 +252,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL =  $this->generateSelectUuarios(). "
+            $sSQL =  $this->generateSelectUsuarios(). "
             
                         pe.descripcion as sPerfilDescripcion
                     FROM
@@ -647,19 +647,19 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(null != $oUsuario->getCiudad()){
                 $ciudadId = $this->escInt($oUsuario->getCiudad()->getId());
             }else{
-                $ciudadId = 'null';
+                $ciudadId = null;
             }
 
             if(null != $oUsuario->getInstitucion()){
                 $institucionId = $this->escInt($oUsuario->getInstitucion()->getId());
             }else{
-                $institucionId = 'null';
+                $institucionId = null;
             }
 
             if(null != $oUsuario->getEspecialidad()){
                 $especialidadId = $this->escInt($oUsuario->getEspecialidad()->getId());
             }else{
-                $especialidadId = 'null';
+                $especialidadId = null;
             }
 
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
@@ -679,8 +679,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .
                     " fax =".$db->encryptData($db->escape($oUsuario->getFax(),true)).", " .
                     " domicilio =".$db->encryptData($db->escape($oUsuario->getDomicilio(),true)).", " .
-                    " instituciones_id =".$institucionId.", ".
-                    " ciudades_id =".$ciudadId.", ".
+                    " instituciones_id = ".$this->escInt($institucionId).", ".
+                    " ciudades_id = ".$this->escInt($ciudadId).", ".
                     " ciudadOrigen =".$db->encryptData($db->escape($oUsuario->getCiudadOrigen(),true)).", " .
                     " codigoPostal =".$db->encryptData($db->escape($oUsuario->getCodigoPostal(),true)).", " .
                     " empresa =".$db->encryptData($db->escape($oUsuario->getEmpresa(),true)).", " .
@@ -692,7 +692,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $sSQL =" update usuarios ".
                    " set sitioWeb = ".$db->encryptData($db->escape($oUsuario->getSitioWeb(),true)).", " .
-                   " especialidades_id = ".$especialidadId.", ".
+                   " especialidades_id = ".$this->escInt($especialidadId).", ".
                    " cargoInstitucion = ".$this->escStr($oUsuario->getCargoInstitucion()).", ".
                    " biografia = ".$db->encryptData($this->escStr($oUsuario->getBiografia())).", ".
                    " universidadCarrera = ".$this->escStr($oUsuario->getUniversidadCarrera()).", ".
@@ -734,19 +734,19 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if($oUsuario->getCiudad() != null){
                 $ciudadId = $this->escInt($oUsuario->getCiudad()->getId());
             }else{
-                $ciudadId = 'null';
+                $ciudadId = null;
             }
 
             if($oUsuario->getInstitucion() != null){
                 $institucionId = $this->escInt($oUsuario->getInstitucion()->getId());
             }else{
-                $institucionId = 'null';
+                $institucionId = null;
             }
 
             if($oUsuario->getEspecialidad() != null){
                 $especialidadId = $this->escInt($oUsuario->getEspecialidad()->getId());
             }else{
-                $especialidadId = 'null';
+                $especialidadId = null;
             }
             
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
@@ -769,8 +769,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .
             " fax =".$db->encryptData($db->escape($oUsuario->getFax(),true)).", " .
             " domicilio =".$db->encryptData($db->escape($oUsuario->getDomicilio(),true)).", " .
-            " instituciones_id = ".$institucionId.", ".
-            " ciudades_id = ".$ciudadId.", ".
+            " instituciones_id = ".$this->escInt($institucionId).", ".
+            " ciudades_id = ".$this->escInt($ciudadId).", ".
             " ciudadOrigen =".$db->encryptData($db->escape($oUsuario->getCiudadOrigen(),true)).", " .
             " codigoPostal =".$db->escape($oUsuario->getCodigoPostal(),true).", " .
             " empresa =".$db->encryptData($db->escape($oUsuario->getEmpresa(),true)).", " .
@@ -788,7 +788,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = " insert into usuarios set ".
                     " id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT).", " .
                     " sitioWeb = ".$db->encryptData($db->escape($oUsuario->getSitioWeb(),true)).", " .
-                    " especialidades_id = ".$especialidadId.", ".
+                    " especialidades_id = ".$this->escInt($especialidadId).", ".
                     " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
                     " cargoInstitucion = ".$this->escStr($oUsuario->getCargoInstitucion()).", ".
                     " biografia = ".$db->encryptData($this->escStr($oUsuario->getBiografia())).", ".
@@ -1112,7 +1112,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
     public function actualizarCampoArray($objects, $cambios){}
     
-    private function generateSelectUuarios(){
+    private function generateSelectUsuarios(){
     	$db = $this->conn;
       	$sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         p.id as iId, 
@@ -1151,7 +1151,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
                         f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo, 
                ";
       	return $sSQL;
     }
