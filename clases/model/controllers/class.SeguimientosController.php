@@ -1201,7 +1201,7 @@ class SeguimientosController
             $filtro = array('oa.ejes_id' => $iEjeId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }

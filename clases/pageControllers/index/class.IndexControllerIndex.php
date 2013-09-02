@@ -284,16 +284,18 @@ class IndexControllerIndex extends PageControllerAbstract
             
             $iPaisId = $this->getRequest()->getPost("iPaisId");
 
+            if(empty($iPaisId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $vListaProvincias = ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
             $result = array();
-            if($iPaisId != 0){
-                $vListaProvincias = ComunidadController::getInstance()->listaProvinciasByPais($iPaisId);
-                if(count($vListaProvincias)>0){
-                    foreach($vListaProvincias as $oProvincia){
-                        $obj = new stdClass();
-                        $obj->id = $oProvincia->getId();
-                        $obj->sNombre = $oProvincia->getNombre();
-                        array_push($result,$obj);
-                    }
+            if(!empty($vListaProvincias)){
+                foreach($vListaProvincias as $oProvincia){
+                    $obj = new stdClass();
+                    $obj->id = $oProvincia->getId();
+                    $obj->sNombre = $oProvincia->getNombre();
+                    array_push($result,$obj);
                 }
             }
 
@@ -310,10 +312,15 @@ class IndexControllerIndex extends PageControllerAbstract
     	 try{
             $this->getJsonHelper()->initJsonAjaxResponse();
             
-            $iProvinciaId =  $this->getRequest()->getPost("iProvinciaId");
+            $iProvinciaId = $this->getRequest()->getPost("iProvinciaId");
+
+            if(empty($iProvinciaId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $vListaCiudades = ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
             $result = array();
-            if($iProvinciaId != 0){
-                $vListaCiudades	= ComunidadController::getInstance()->listaCiudadByProvincia($iProvinciaId);
+            if(!empty($vListaCiudades)){
                 foreach($vListaCiudades as $oCiudad){
                     $obj = new stdClass();
                     $obj->id = $oCiudad->getId();

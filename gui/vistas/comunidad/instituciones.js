@@ -1,11 +1,20 @@
+function resetSelect(select, defaultOpt){
+    if(select.length){
+        select.addClass("disabled");
+        select.html("");
+        select.append(new Option(defaultOpt, '',true));
+    }
+}
+
 function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idContenedor){
-    //si el valor elegido es '' entonces marco como disabled
+    resetSelect($('#'+idSelectCiudad), 'Elija Ciudad:');
+
     if(idPais == ''){
-        $('#'+idSelectProvincia).addClass("disabled");
+        resetSelect($('#'+idSelectProvincia), 'Elija Provincia:');
+        return;
     }else{
         $('#'+idSelectProvincia).removeClass("disabled");
     }
-    $('#'+idSelectCiudad).addClass("disabled");
 
     $.ajax({
         type: "POST",
@@ -15,11 +24,7 @@ function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idCont
             setWaitingStatus(idContenedor, true);
         },
         success: function(lista){
-
             $('#'+idSelectProvincia).html("");
-            //dejo vacio el de ciudad si cambio de pais hasta que elija una provincia
-            $('#'+idSelectCiudad).html("");
-            $('#'+idSelectCiudad).html(new Option('Elija Ciudad:', '',true));
             if(lista.length != undefined && lista.length > 0){
                 $('#'+idSelectProvincia).append(new Option('Elija Provincia:', '',true));
                 for(var i=0;i<lista.length;i++){
@@ -35,10 +40,12 @@ function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idCont
 
 function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
     if(idProvincia == ''){
-        $('#'+idSelectCiudad).addClass("disabled");
+        resetSelect($('#'+idSelectCiudad), 'Elija Ciudad:');
+        return;
     }else{
         $('#'+idSelectCiudad).removeClass("disabled");
     }
+
     $.ajax({
         type: "POST",
         url: "ciudadesByProvincia",
@@ -47,7 +54,6 @@ function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
             setWaitingStatus(idContenedor, true);
         },
         success: function(lista){
-
             $('#'+idSelectCiudad).html("");
             if(lista.length != undefined && lista.length > 0){
                 $('#'+idSelectCiudad).append(new Option('Elija Ciudad:', '',true));
