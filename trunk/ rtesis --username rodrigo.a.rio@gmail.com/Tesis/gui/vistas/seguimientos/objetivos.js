@@ -77,7 +77,14 @@ function bindEventsFormObjetivoPersonalizado(){
     $("#formObjetivo").ajaxForm(optionsAjaxFormObjetivo);
         
     $("#descripcion").maxlength();
-    $("#estimacion").datepicker();
+
+    //solo permitido fechas a partir del dia posterior al actual
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate()+1);
+    $("#estimacion").datepicker({
+        minDate: tomorrow
+    });
 }
 
 function masObjetivos(iSeguimientoId){

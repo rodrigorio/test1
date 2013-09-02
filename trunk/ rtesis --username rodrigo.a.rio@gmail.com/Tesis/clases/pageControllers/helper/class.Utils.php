@@ -70,4 +70,25 @@ class Utils{
        }
        return $str;
     }
+
+    /**
+     * http://stackoverflow.com/questions/79960/how-to-truncate-a-string-in-php-to-the-word-closest-to-a-certain-number-of-chara
+     * 
+     * recorta un string a un ancho predefinido teniendo en cuenta no cortar palabras a la mitad y 
+     * new lines. Se usa para el 'ver mas'
+     *
+     */
+    public static function tokenTruncate($string, $your_desired_width){
+        $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+        $parts_count = count($parts);
+
+        $length = 0;
+        $last_part = 0;
+        for (; $last_part < $parts_count; ++$last_part) {
+            $length += strlen($parts[$last_part]);
+            if ($length > $your_desired_width) { break; }
+        }
+
+        return implode(array_slice($parts, 0, $last_part))." ...";
+    }
 }
