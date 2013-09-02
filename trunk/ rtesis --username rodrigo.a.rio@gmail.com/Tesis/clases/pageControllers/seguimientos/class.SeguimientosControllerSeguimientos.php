@@ -2318,6 +2318,35 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
 
+    public function listarObjetivosAprendizajePorEje()
+    {
+    	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iEjeId =  $this->getRequest()->getPost("iEjeId");
+
+            if(empty($iEjeId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $jObjetivosAprendizaje = array();
+            $aObjetivosAprendizaje = SeguimientosController::getInstance()->getObjetivosAprendizajeByEjeId($iEjeId);
+            if(!empty($aObjetivosAprendizaje)){
+                foreach($aObjetivosAprendizaje as $oObjetivoAprendizaje){
+                    $obj = new stdClass();
+                    $obj->iId = $oObjetivoAprendizaje->getId();
+                    $obj->sDescripcion = $oObjetivoAprendizaje->getDescripcion();
+                    array_push($jObjetivosAprendizaje, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jObjetivosAprendizaje);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function administrarObjetivos()
     {
         try
@@ -2582,16 +2611,16 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
 
             if($this->getRequest()->has('objetivoPersonalizado')){
-                $this->mostrarFormularioObjetivoPersonalizadoPopUp();
+                $this->mostrarFormularioObjetivoPersonalizadoPopUp($iSeguimientoId);
             }else{
-                $this->mostrarFormularioObjetivoAprendizajePopUp();
+                $this->mostrarFormularioObjetivoAprendizajePopUp($iSeguimientoId);
             }
         }catch(Exception $e){
             throw $e;
         }            
     }
 
-    private function mostrarFormularioObjetivoPersonalizadoPopUp()
+    private function mostrarFormularioObjetivoPersonalizadoPopUp($iSeguimientoId)
     {
         try
         {
@@ -2599,7 +2628,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "FormularioObjetivoBlock");
 
             $this->getTemplate()->set_var("ObjetivoAprendizajeBlock", "");
-            $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
 
             $sCheckedRelevanciaAlta = "";
             $sCheckedRelevanciaNormal = "";
@@ -2608,6 +2636,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             //FORMULARIO CREAR
             if(!$this->getRequest()->has('iObjetivoId')){
                 $sTituloForm = "Crear un nuevo objetivo";
+                $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
                 
                 $iEjeId = "";
                 $sCheckedRelevanciaNormal = "checked='checked'";
@@ -2625,6 +2654,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
                 $sTituloForm = "Modificar objetivo";
+                $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
                 
                 $iEjeId = $oObjetivo->getEje()->getId();
 
@@ -2673,6 +2703,151 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                           
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
             
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function mostrarFormularioObjetivoAprendizajePopUp($iSeguimientoId)
+    {
+        try
+        {
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "FormularioObjetivoBlock");
+
+            $this->getTemplate()->set_var("EjePersonalizadoBlock", "");
+
+            $sCheckedRelevanciaAlta = "";
+            $sCheckedRelevanciaNormal = "";
+            $sCheckedRelevanciaBaja = "";
+
+            //FORMULARIO CREAR
+            if(!$this->getRequest()->has('iObjetivoId')){
+                $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
+                $sTituloForm = "Crear un nuevo objetivo";
+
+                $sCheckedRelevanciaNormal = "checked='checked'";
+                $sDescripcion = "";
+                $dEstimacion =  "";
+
+                //combo niveles
+                $iRecordsNiveles = 0;
+                $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+                foreach ($aNiveles as $oNivel){
+                    $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                    $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                    $this->getTemplate()->parse("NivelesListBlock", true);
+                }
+                
+            //FORMULARIO EDITAR
+            }else{
+                //tiene permiso para editar este objetivo?
+                $iObjetivoId = $this->getRequest()->get('iObjetivoId');
+
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+                $sTituloForm = "Modificar objetivo";
+                $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
+
+                switch($oObjetivo->getRelevancia()->getDescripcion()){
+                    case "alta": $sCheckedRelevanciaAlta = "checked='checked'"; break;
+                    case "normal": $sCheckedRelevanciaNormal = "checked='checked'"; break;
+                    case "baja": $sCheckedRelevanciaBaja = "checked='checked'"; break;
+                }
+
+                $sDescripcion = $oObjetivo->getDescripcion();
+                $dEstimacion =  $oObjetivo->getEstimacion();
+
+                //lleno los selects con los valores actuales.
+                $oEjeTematico = $oObjetivo->getEje();
+
+                $iNivelId = $oEjeTematico->getArea()->getCiclo()->getNivel()->getId();
+                $iRecordsNiveles = 0;
+                $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+                foreach ($aNiveles as $oNivel){
+                    if($iNivelId == $oNivel->getId()){
+                        $this->getTemplate()->set_var("sSelectedNivel", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
+                    $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
+                    $this->getTemplate()->parse("NivelesListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedNivel", "");
+                }
+
+                //combo ciclos
+                $iCicloId = $oEjeTematico->getArea()->getCiclo()->getId();
+                $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
+                foreach ($aCiclos as $oCiclo){
+                    if($iCicloId == $oCiclo->getId()){
+                        $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
+                    $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
+                    $this->getTemplate()->parse("CiclosListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedCiclo", "");
+                }
+
+                //combo areas
+                $iAreaId = $oEjeTematico->getArea()->getId();
+                $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+                foreach ($aAreas as $oArea){
+                    if($iAreaId == $oArea->getId()){
+                        $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iAreaId", $oArea->getId());
+                    $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
+                    $this->getTemplate()->parse("AreaListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedArea", "");
+                }
+
+                //combo ejes 
+                $iEjeId = $oEjeTematico->getId(); 
+                $aEjesSelect = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId);
+                foreach ($aEjesSelect as $oEjeSelect){
+                    if($iEjeId == $oEjeSelect->getId()){
+                        $this->getTemplate()->set_var("sSelectedEje", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iEjeId", $oEjeSelect->getId());
+                    $this->getTemplate()->set_var("sEjeDescripcion", $oEjeSelect->getDescripcion());
+                    $this->getTemplate()->parse("EjeListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedEje", "");
+                }
+
+                //combo objetivos aprendizaje
+                $iObjetivoId = $oObjetivo->getId();
+                $aObjetivosSelect = SeguimientosController::getInstance()->getObjetivosAprendizajeByEjeId($iEjeId);
+                foreach ($aObjetivosSelect as $oObjetivoSelect){
+                    if($iObjetivoId == $oObjetivoSelect->getId()){
+                        $this->getTemplate()->set_var("sSelectedObjetivoAprendizaje", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oEjeSelect->getId());
+                    $this->getTemplate()->set_var("sObjetivoAprendizajeDescripcion", $oEjeSelect->getDescripcion());
+                    $this->getTemplate()->parse("ObjetivoAprendizajeListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedObjetivoAprendizaje", "");
+                }                
+            }
+
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
+            $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
+            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
+            $this->getTemplate()->set_var("checkedRelevanciaAlta", $sCheckedRelevanciaAlta);
+            $this->getTemplate()->set_var("checkedRelevanciaNormal", $sCheckedRelevanciaNormal);
+            $this->getTemplate()->set_var("checkedRelevanciaBaja", $sCheckedRelevanciaBaja);
+            $aRelevancias = SeguimientosController::getInstance()->obtenerArrayRelevancias();
+            $this->getTemplate()->set_var("iRelevanciaAltaId", $aRelevancias['alta']);
+            $this->getTemplate()->set_var("iRelevanciaNormalId", $aRelevancias['normal']);
+            $this->getTemplate()->set_var("iRelevanciaBajaId", $aRelevancias['baja']);
+
+            $this->getTemplate()->set_var("dEstimacion", $dEstimacion);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+
         }catch(Exception $e){
             throw $e;
         }

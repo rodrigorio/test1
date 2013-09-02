@@ -1154,6 +1154,28 @@ class SeguimientosController
         }
     }
 
+   /**
+    * obtener un objetivo de aprendizaje asociado a un seguimiento scc (completo, con relevancia, estimacion, etc)
+    *
+    */
+    public function getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoSCCId, $iObjetivoId)
+      {
+    	try{
+            $filtro = array('sxo.seguimientos_scc_id' => $iSeguimientoSCCId, 
+                            'sxo.objetivos_aprendizaje_id' => $iObjetivoId);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aObjetivo = $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aObjetivo){
+                return $aObjetivo[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Devuelve objetivos aprendizaje pero TODA la lista, no tiene en cuenta el seguimiento scc
      * (se crean y se modifican solo desde el controlador de admin)
@@ -1161,6 +1183,22 @@ class SeguimientosController
     public function getObjetivosAprendizaje()
     {
     	try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * lo mismo que getObjetivosAprendizaje() solo que con el filtro de todos los objetivos dentro de un eje determinado
+     * esto se usa para el select de creacion/modificacion de objetivo de aprendizaje
+     */
+    public function getObjetivosAprendizajeByEjeId($iEjeId)
+    {
+    	try{
+            $filtro = array('oa.ejes_id' => $iEjeId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro = array(), $iRecordsTotal, null, null, null, null);
