@@ -1191,6 +1191,23 @@ class SeguimientosController
         }
     }
 
+    public function getObjetivoAprendizajeById($iObjetivoAprendizajeId)
+    {
+    	try{
+            $filtro = array('o.id' => $iObjetivoAprendizajeId);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aObjetivo = $oObjetivoIntermediary->obtenerObjetivosAprendizaje($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aObjetivo){
+                return $aObjetivo[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * lo mismo que getObjetivosAprendizaje() solo que con el filtro de todos los objetivos dentro de un eje determinado
      * esto se usa para el select de creacion/modificacion de objetivo de aprendizaje

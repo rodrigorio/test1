@@ -375,11 +375,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
             $db->execSQL($sSQL);
+            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
 
             $sSQL = " update objetivos_personalizados set ".
                     " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getEje()->getId()).", ".
                     " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".                    
-                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion())." ".
+                    " estimacion = '".$dEstimacion."' ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
             $db->execSQL($sSQL);
@@ -447,11 +448,14 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     {
         try{
             $db = $this->conn;
+
+            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
+
             $sSQL = " insert into seguimiento_scc_x_objetivo_aprendizaje ".
                     " set seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId).", ".
                     " objetivos_aprendizaje_id = ".$this->escInt($oObjetivo->getId()).", ".                    
-                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
-                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getRelevancia()->getId());
+                    " estimacion = '".$dEstimacion."', ".
+                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId());
             
             $db->execSQL($sSQL);
             $db->commit();
@@ -468,11 +472,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     {
         try{
             $activo = $oObjetivo->isActivo() ? "1" : "0";
+            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
 
             $db = $this->conn;
             $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
-                    " estimacion = ".$this->escDate($oObjetivo->getEstimacion()).", ".
-                    " objetivo_relevancias_id ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".
+                    " estimacion = '".$dEstimacion."', ".
+                    " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".
                     " activo = ".$activo." ".
                     " WHERE
                         sxo.seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)."

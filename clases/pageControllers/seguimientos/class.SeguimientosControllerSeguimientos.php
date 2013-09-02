@@ -2930,4 +2930,42 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
+
+    private function guardarObjetivoAprendizaje($iSeguimientoId)
+    {
+        if($this->getRequest()->has('crearObjetivo')){
+            $this->asociarObjetivoAprendizaje($iSeguimientoId);
+            return;
+        }
+
+        if($this->getRequest()->has('modificarObjetivo')){
+            $this->modificarObjetivoAprendizaje($iSeguimientoId);
+            return;
+        }
+    }
+
+    private function asociarObjetivoAprendizaje($iSeguimientoId)
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $oObjetivoAprendizaje = SeguimientosController::getInstance()->getObjetivoAprendizajeById($this->getRequest()->getPost("objetivoAprendizaje"));
+            $oRelevancia = SeguimientosController::getInstance()->getRelevanciaById($this->getRequest()->getPost("relevancia"));
+
+            $oObjetivoAprendizaje->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oObjetivoAprendizaje->setRelevancia($oRelevancia);
+            $oObjetivoAprendizaje->setEstimacion($this->getRequest()->getPost("estimacion"));
+
+            SeguimientosController::getInstance()->guardarObjetivoAprendizajeSeguimientoScc($oObjetivoAprendizaje, $iSeguimientoId);
+
+            $this->getJsonHelper()->setValor("agregarObjetivo", "1");
+            $this->getJsonHelper()->setMessage("El objetivo se ha asociado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){            
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
 }
