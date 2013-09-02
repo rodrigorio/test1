@@ -609,21 +609,23 @@ function borrarObjetivoAprendizaje(iObjetivoAprendizajeId){
     }
 }
 
+function resetSelect(select, defaultOpt){
+    if(select.length){
+        select.addClass("disabled");
+        select.html("");
+        select.append(new Option(defaultOpt, '',true));
+    }
+}
+
 //combos con ajax formularios
 function listaCiclosByNivel(idNivel, formId){
-
-    //si el valor elegido es '' entonces marco como disabled
+    resetSelect($('#area'), 'Elija Área:');
+    resetSelect($('#ejeTematico'), 'Elija Eje Temático:');
     if(idNivel == ''){
-        $('#ciclo').addClass("disabled");
+        resetSelect($('#ciclo'), 'Elija Ciclo:');
+        return;
     }else{
         $('#ciclo').removeClass("disabled");
-    }
-
-    if($("#area").length){
-        $('#area').addClass("disabled");
-    }
-    if($("#ejeTematico").length){
-        $('#ejeTematico').addClass("disabled");
     }
     
     $.ajax({
@@ -635,17 +637,6 @@ function listaCiclosByNivel(idNivel, formId){
         },
         success:function(lista){
             $('#ciclo').html("");
-
-            //los demas van vacios si es que estan en el formulario, se completan a medida que se seleccionan
-            if($("#area").length){
-                $('#area').html("");
-                $('#area').html(new Option('Elija Área:', '',true));
-            }
-            if($("#ejeTematico").length){
-                $('#ejeTematico').html("");
-                $('#ejeTematico').html(new Option('Elija Eje Temático:', '',true));
-            }
-
             if(lista.length != undefined && lista.length > 0){
                 $('#ciclo').append(new Option('Elija Ciclo:', '',true));
                 for(var i=0; i<lista.length; i++){
@@ -654,23 +645,19 @@ function listaCiclosByNivel(idNivel, formId){
                 $('#ciclo').removeClass("disabled");
             }else{
                 $('#ciclo').html(new Option('No hay ciclos cargados', '',true));
-            }
-            
+            }            
             setWaitingStatus(formId, false);
         }
     });
  }
 
 function listaAreasByCiclo(idCiclo, formId){
-    
+    resetSelect($('#ejeTematico'), 'Elija Eje Temático:');
     if(idCiclo == ''){
-        $('#area').addClass("disabled");
+        resetSelect($('#area'), 'Elija Área:');
+        return;
     }else{
         $('#area').removeClass("disabled");
-    }
-
-    if($("#ejeTematico").length){
-        $('#ejeTematico').addClass("disabled");
     }
     
     $.ajax({
@@ -681,14 +668,7 @@ function listaAreasByCiclo(idCiclo, formId){
             setWaitingStatus(formId, true);
         },
         success: function(lista){
-
             $('#area').html("");
-
-            if($("#ejeTematico").length){
-                $('#ejeTematico').html("");
-                $('#ejeTematico').html(new Option('Elija Eje Temático:', '',true));
-            }
-
             if(lista.length != undefined && lista.length > 0){
                 $('#area').append(new Option('Elija Área:', '',true));
                 for(var i=0;i<lista.length;i++){
@@ -704,7 +684,8 @@ function listaAreasByCiclo(idCiclo, formId){
 
 function listaEjesTematicosByArea(idArea, formId){
     if(idArea == ''){
-        $('#ejeTematico').addClass("disabled");
+        resetSelect($('#ejeTematico'), 'Elija Eje Temático:');
+        return;
     }else{
         $('#ejeTematico').removeClass("disabled");
     }

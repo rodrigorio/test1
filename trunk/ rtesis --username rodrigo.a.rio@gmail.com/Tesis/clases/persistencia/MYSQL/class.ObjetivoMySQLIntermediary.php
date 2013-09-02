@@ -101,7 +101,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
-
+            
             $db->query($sSQL);
                                               
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");

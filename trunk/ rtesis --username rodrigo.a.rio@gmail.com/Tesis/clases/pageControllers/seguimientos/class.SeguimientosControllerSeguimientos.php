@@ -2724,11 +2724,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             //FORMULARIO CREAR
             if(!$this->getRequest()->has('iObjetivoId')){
                 $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
+
                 $sTituloForm = "Crear un nuevo objetivo";
 
                 $sCheckedRelevanciaNormal = "checked='checked'";
                 $sDescripcion = "";
                 $dEstimacion =  "";
+                $disabled = "disabled"; //para desactivar los selects en la creacion
 
                 //combo niveles
                 $iRecordsNiveles = 0;
@@ -2760,6 +2762,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                 $sDescripcion = $oObjetivo->getDescripcion();
                 $dEstimacion =  $oObjetivo->getEstimacion();
+                $disabled = "";
 
                 //lleno los selects con los valores actuales.
                 $oEjeTematico = $oObjetivo->getEje();
@@ -2835,6 +2838,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
             $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+            $this->getTemplate()->set_var("disabled", $disabled);
 
             $this->getTemplate()->set_var("checkedRelevanciaAlta", $sCheckedRelevanciaAlta);
             $this->getTemplate()->set_var("checkedRelevanciaNormal", $sCheckedRelevanciaNormal);

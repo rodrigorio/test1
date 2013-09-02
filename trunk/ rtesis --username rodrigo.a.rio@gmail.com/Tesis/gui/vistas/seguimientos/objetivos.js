@@ -128,8 +128,8 @@ function bindEventsFormObjetivoAprendizaje(){
     $("#area").change(function(){
         listaEjesTematicosByArea($("#area option:selected").val());
     });
-    $("#objetivoAprendizaje").change(function(){
-        listaObjetivosAprendizajeByEjeTematico($("#objetivoAprendizaje option:selected").val());
+    $("#eje").change(function(){
+        listaObjetivosAprendizajeByEjeTematico($("#eje option:selected").val());
     });
 
     $("#descripcion").maxlength();
@@ -143,24 +143,26 @@ function bindEventsFormObjetivoAprendizaje(){
     });
 }
 
+function resetSelect(select, defaultOpt){
+    if(select.length){
+        select.addClass("disabled");
+        select.html("");
+        select.append(new Option(defaultOpt, '',true));
+    }
+}
+
 //combos para el formulario de objetivo de aprendizaje
 function listaCiclosByNivel(idNivel){
+    resetSelect($('#area'), 'Área:');
+    resetSelect($('#eje'), 'Eje:');
+    resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
 
     //si el valor elegido es '' entonces marco como disabled
     if(idNivel == ''){
-        $('#ciclo').addClass("disabled");
+        resetSelect($('#ciclo'), 'Ciclo:');
+        return;
     }else{
         $('#ciclo').removeClass("disabled");
-    }
-
-    if($('#area').length){
-        $('#area').addClass("disabled");
-    }
-    if($('#ejeTematico').length){
-        $('#ejeTematico').addClass("disabled");
-    }
-    if($('#objetivoAprendizaje').length){
-        $('#objetivoAprendizaje').addClass("disabled");
     }
 
     $.ajax({
@@ -172,21 +174,6 @@ function listaCiclosByNivel(idNivel){
         },
         success:function(lista){
             $('#ciclo').html("");
-
-            //los demas van vacios si es que estan en el formulario, se completan a medida que se seleccionan
-            if($('#area').length){
-                $('#area').html("");
-                $('#area').html(new Option('Área:', '',true));
-            }
-            if($('#ejeTematico').length){
-                $('#ejeTematico').html("");
-                $('#ejeTematico').html(new Option('Eje:', '',true));
-            }
-            if($('#objetivoAprendizaje').length){
-                $('#objetivoAprendizaje').html("");
-                $('#objetivoAprendizaje').html(new Option('Objetivo Aprendizaje:', '',true));
-            }
-
             if(lista.length != undefined && lista.length > 0){
                 $('#ciclo').append(new Option('Ciclo:', '',true));
                 for(var i=0; i<lista.length; i++){
@@ -196,26 +183,21 @@ function listaCiclosByNivel(idNivel){
             }else{
                 $('#ciclo').html(new Option('No hay ciclos cargados', '',true));
             }
-
             setWaitingStatus("objetivoAprendizajeCont", false);
         }
     });
  }
 
 function listaAreasByCiclo(idCiclo){
-
+    resetSelect($('#eje'), 'Eje:');
+    resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
+    
     if(idCiclo == ''){
-        $('#area').addClass("disabled");
+        resetSelect($('#area'), 'Área:');
+        return;
     }else{
         $('#area').removeClass("disabled");
     }
-
-    if($('#ejeTematico').length){
-        $('#ejeTematico').addClass("disabled");
-    }
-    if($('#objetivoAprendizaje').length){
-        $('#objetivoAprendizaje').addClass("disabled");
-    }    
     
     $.ajax({
         type: "POST",
@@ -225,18 +207,7 @@ function listaAreasByCiclo(idCiclo){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },
         success: function(lista){
-
             $('#area').html("");
-
-            if($('#ejeTematico').length){
-                $('#ejeTematico').html("");
-                $('#ejeTematico').html(new Option('Eje:', '',true));
-            }
-            if($('#objetivoAprendizaje').length){
-                $('#objetivoAprendizaje').html("");
-                $('#objetivoAprendizaje').html(new Option('Objetivo Aprendizaje:', '',true));
-            }
-
             if(lista.length != undefined && lista.length > 0){
                 $('#area').append(new Option('Área:', '',true));
                 for(var i=0;i<lista.length;i++){
@@ -251,16 +222,14 @@ function listaAreasByCiclo(idCiclo){
 }
 
 function listaEjesTematicosByArea(idArea){
+    resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
     if(idArea == ''){
-        $('#ejeTematico').addClass("disabled");
+        resetSelect($('#eje'), 'Eje:');
+        return;
     }else{
-        $('#ejeTematico').removeClass("disabled");
+        $('#eje').removeClass("disabled");
     }
-
-    if($('#objetivoAprendizaje').length){
-        $('#objetivoAprendizaje').addClass("disabled");
-    } 
-
+    
     $.ajax({
         type: "POST",
         url: "seguimientos/listar-ejes-por-area",
@@ -269,21 +238,14 @@ function listaEjesTematicosByArea(idArea){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },
         success: function(lista){
-
-            $('#ejeTematico').html("");
-
-            if($('#objetivoAprendizaje').length){
-                $('#objetivoAprendizaje').html("");
-                $('#objetivoAprendizaje').html(new Option('Objetivo Aprendizaje:', '',true));
-            }
-
+            $('#eje').html("");
             if(lista.length != undefined && lista.length > 0){
-                $('#ejeTematico').append(new Option('Eje:', '',true));
+                $('#eje').append(new Option('Eje:', '',true));
                 for(var i=0;i<lista.length;i++){
-                    $('#ejeTematico').append(new Option(lista[i].sDescripcion, lista[i].iId));
+                    $('#eje').append(new Option(lista[i].sDescripcion, lista[i].iId));
                 }
             }else{
-                $('#ejeTematico').append(new Option('No hay ejes cargados', '',true));
+                $('#eje').append(new Option('No hay ejes cargados', '',true));
             }
             setWaitingStatus("objetivoAprendizajeCont", false);
         }
@@ -291,8 +253,10 @@ function listaEjesTematicosByArea(idArea){
 }
 
 function listaObjetivosAprendizajeByEjeTematico(idEje){
+    
     if(idEje == ''){
-        $('#objetivoAprendizaje').addClass("disabled");
+        resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
+        return;
     }else{
         $('#objetivoAprendizaje').removeClass("disabled");
     }
@@ -305,9 +269,7 @@ function listaObjetivosAprendizajeByEjeTematico(idEje){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },
         success: function(lista){
-
             $('#objetivoAprendizaje').html("");
-
             if(lista.length != undefined && lista.length > 0){
                 $('#objetivoAprendizaje').append(new Option('Objetivo Aprendizaje:', '',true));
                 for(var i=0;i<lista.length;i++){
