@@ -273,7 +273,7 @@ function listaEjesTematicosByArea(idArea, estadoInicialHtmlId){
                     $('#ejeTematico_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
                 }
             }else{
-                $('#area_'+estadoInicialHtmlId).append(new Option('No hay ejes cargados', '',true));
+                $('#ejeTematico_'+estadoInicialHtmlId).append(new Option('No hay ejes cargados', '',true));
             }
             setWaitingStatus(estadoInicialHtmlId, false);
         }

@@ -193,7 +193,9 @@ class RutasModuloSeguimientos
                                         'controller' => 'personas',
                                         'action'     => 'ver'
                                 ));
-        $router->addRoute('seguimientosPersonasVer', $route);            
+        $router->addRoute('seguimientosPersonasVer', $route);
+
+        //diagnostico
         $route = new RegexRoute('seguimientos/editar-diagnostico',
                                 array(
                                         'module' => 'seguimientos',
@@ -207,7 +209,9 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'procesarDiagnostico'
                                 ));
-        $router->addRoute('seguimientosProcesarDiagnostico', $route);          
+        $router->addRoute('seguimientosProcesarDiagnostico', $route);
+
+        //objetivo aprendizaje
         $route = new RegexRoute('seguimientos/listar-ciclos-por-niveles',
                                 array(
                                         'module' => 'seguimientos',
@@ -229,6 +233,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'listarEjesPorArea'
                                 ));
         $router->addRoute('seguimientosListarEjePorArea', $route);
+        $route = new RegexRoute('seguimientos/listar-objetivos-aprendizaje-por-eje',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'listarObjetivosAprendizajePorEje'
+                                ));
+        $router->addRoute('seguimientosListarObjetivosAprendizajePorEje', $route);
 
         //unidades
         $route = new RegexRoute('seguimientos/listar-unidades',
