@@ -2412,13 +2412,23 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+
+                    //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+                    $sDescripcionObjetivo = $oObjetivo->getDescripcion();
+                    if(strlen($sDescripcionObjetivo) > 150){
+                        $sDescripcionObjetivo = Utils::tokenTruncate($sDescripcionObjetivo, 150);
+                        $sDescripcionObjetivo = nl2br($sDescripcionObjetivo);
+                    }else{
+                        $this->getTemplate()->set_var("LinkVerMasBlock", "");
+                    }
+                    $this->getTemplate()->set_var("sDescripcionObjetivo", $sDescripcionObjetivo);
                     
                     $this->getTemplate()->parse("ObjetivoBlock", true);
 
                     $this->getTemplate()->delete_parsed_blocks("EstimacinoExpiradaBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoActivoBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoDesactivadoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
                 }
             }else{
                 $this->getTemplate()->set_var("ObjetivoBlock", "");
@@ -2520,13 +2530,23 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+                    
+                    //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+                    $sDescripcionObjetivo = $oObjetivo->getDescripcion();
+                    if(strlen($sDescripcionObjetivo) > 150){
+                        $sDescripcionObjetivo = Utils::tokenTruncate($sDescripcionObjetivo, 150);
+                        $sDescripcionObjetivo = nl2br($sDescripcionObjetivo);
+                    }else{
+                        $this->getTemplate()->set_var("LinkVerMasBlock", "");
+                    }
+                    $this->getTemplate()->set_var("sDescripcionObjetivo", $sDescripcionObjetivo);
 
                     $this->getTemplate()->parse("ObjetivoBlock", true);
 
                     $this->getTemplate()->delete_parsed_blocks("EstimacinoExpiradaBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoActivoBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoDesactivadoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
                 }
             }else{
                 $this->getTemplate()->set_var("ObjetivoBlock", "");
@@ -2656,5 +2676,79 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
-    }    
+    }
+
+    public function guardarObjetivo()
+    {
+        try{
+            if(!$this->getAjaxHelper()->isAjaxContext()){
+                throw new Exception("", 404);
+            }
+
+            $iSeguimientoId = $this->getRequest()->getPost('seguimientoIdForm');
+            if(empty($iSeguimientoId)){
+                throw new Exception("no puede ejecutar la acción", 401);
+            }
+
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para administrar objetivos en este seguimiento", 401);
+            }
+
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $this->guardarObjetivoPersonalizado($iSeguimientoId);
+            }else{
+                $this->guardarObjetivoAprendizaje($iSeguimientoId);
+            }
+        }catch(Exception $e){
+            throw $e;
+        }                
+    }
+
+    private function guardarObjetivoPersonalizado($iSeguimientoId)
+    {
+        if($this->getRequest()->has('crearObjetivo')){
+            $this->crearObjetivoPersonalizado($iSeguimientoId);
+            return;
+        }
+
+        if($this->getRequest()->has('modificarObjetivo')){
+            $this->modificarObjetivoPersonalizado($iSeguimientoId);
+            return;
+        }  
+    }
+
+    private function crearObjetivoPersonalizado($iSeguimientoId)
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $oObjetivoPersonalizado = new stdClass();
+
+            $oEje = SeguimientosController::getInstance()->getEjePersonalizadoById($this->getRequest()->getPost("eje"));
+            $oRelevancia = SeguimientosController::getInstance()->getRelevanciaById($this->getRequest()->getPost("relevancia"));
+
+            $oObjetivoPersonalizado->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oObjetivoPersonalizado->oEje = $oEje;
+            $oObjetivoPersonalizado->oRelevancia = $oRelevancia;
+            $oObjetivoPersonalizado->dEstimacion = $this->getRequest()->getPost("estimacion");
+
+            $oObjetivoPersonalizado = Factory::getObjetivoPersonalizadoInstance($oObjetivoPersonalizado);
+            
+            SeguimientosController::getInstance()->guardarObjetivoPersonalizado($iSeguimientoId, $oObjetivoPersonalizado);
+
+            $this->getJsonHelper()->setValor("agregarObjetivo", "1");
+            $this->getJsonHelper()->setMessage("El objetivo se ha creado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
 }

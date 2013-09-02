@@ -144,6 +144,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
 .miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
 .mihe0{min-height:100px} .mihe1{min-height:200px} .mihe2{min-height:300px} .mihe3{min-height:400px} .mihe4{min-height:500px}
+.mahe0{max-height:100px} .mahe1{max-height:200px} .mahe2{max-height:300px} .mahe3{max-height:400px} .mahe4{max-height:500px}
 .fost_it{font-style:italic;}
 .ov_au{overflow:auto} .ov_hi{overflow:hidden}
 .zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}

@@ -75,7 +75,7 @@
         <!--BeginThumbsObjetivosBlock-->
 
             <!--BeginObjetivoBlock-->
-            <div class="fl_le mari2 mabo4 thumbEdit baco3 bora bosh mawi2 miwi2 {iObjetivoId}_{iSeguimientoId}">
+            <div class="fl_le thumbEdit baco3 bora bosh mawi2 miwi2 mari2 mihe0 {iObjetivoId}_{iSeguimientoId}">
                 
                 <!--BeginEstimacinoExpiradaBlock-->
                 <div class="thumbTop teal_ri iveal">
@@ -94,7 +94,12 @@
                     </div>
                     <div class="pa3 pato2">
                         <div class="mabo">Eje: <span class="fowe_bo">{sDescripcionEje}</span></div>
-                        <p class="fte2 mabo0">{sDescripcionObjetivo}</p>
+                        <p class="fte2 mabo0">
+                            {sDescripcionObjetivo}
+                            <!--BeginLinkVerMasBlock-->
+                            <a href="javascript:;" rel="{iObjetivoId}_{iSeguimientoId}" class="verObjetivo">ver m&aacute;s</a>
+                            <!--EndLinkVerMasBlock-->
+                        </p>
                     </div>
                 </div>
                 <!--BeginMenuObjetivoDesactivadoBlock-->
@@ -196,21 +201,21 @@
                 <ul class="fl_le m_horiz grupo">
                     <li class="pa">
                         <span class="i mi flagYellow"></span> 
-                        <input id="radioRelevanciaAlta" type="radio" name="radioRelevancia" value="{iRelevanciaAltaId}" {checkedRelevanciaAlta}>
+                        <input id="radioRelevanciaAlta" type="radio" name="relevancia" value="{iRelevanciaAltaId}" {checkedRelevanciaAlta}>
                         <label for="radioRelevanciaAlta">
                             <span class="fowe_bo">Alta</span>
                         </label>
                     </li>
                     <li class="pa">
                         <span class="i mi flagGreen"></span>
-                        <input id="radioRelevanciaNormal" type="radio" name="radioRelevancia" value="{iRelevanciaNormalId}" {checkedRelevanciaNormal}>
+                        <input id="radioRelevanciaNormal" type="radio" name="relevancia" value="{iRelevanciaNormalId}" {checkedRelevanciaNormal}>
                         <label for="radioRelevanciaNormal">
                             <span class="fowe_bo">Normal</span>
                         </label>
                     </li>
                     <li class="pa">
                         <span class="i mi flagWhite"></span>
-                        <input id="radioRelevanciaBaja" type="radio" name="radioRelevancia" value="{iRelevanciaBajaId}" {checkedRelevanciaBaja}>
+                        <input id="radioRelevanciaBaja" type="radio" name="relevancia" value="{iRelevanciaBajaId}" {checkedRelevanciaBaja}>
                         <label for="radioRelevanciaBaja">
                             <span class="fowe_bo">Baja</span>
                         </label>

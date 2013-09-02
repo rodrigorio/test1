@@ -347,6 +347,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'formObjetivo'
                                 ));
         $router->addRoute('seguimientosSeguimientosFormObjetivo', $route);
+        $route = new RegexRoute('seguimientos/guardar-objetivo',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'guardarObjetivo'
+                                ));
+        $router->addRoute('seguimientosSeguimientosGuardarObjetivo', $route);
         
         //entradas
         $route = new RegexRoute('seguimientos/entradas/calendario',

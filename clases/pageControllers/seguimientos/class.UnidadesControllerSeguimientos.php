@@ -85,8 +85,17 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 
             	foreach ($aUnidades as $oUnidad){
                     $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
-                    $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
-                    $this->getTemplate()->set_var("sDescripcionVariable", $oUnidad->getDescripcion(true));
+                    $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+
+                    //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+                    $sDescripcionUnidad = $oUnidad->getDescripcion();
+                    if(strlen($sDescripcionUnidad) > 150){
+                        $sDescripcionUnidad = Utils::tokenTruncate($sDescripcionUnidad, 150);
+                        $sDescripcionUnidad = nl2br($sDescripcionUnidad);
+                    }else{
+                        $this->getTemplate()->set_var("LinkVerMasBlock", "");
+                    }
+                    $this->getTemplate()->set_var("sDescripcionUnidad", $sDescripcionUnidad);
                     
                     if($oUnidad->isTipoEdicionRegular()){
                         $this->getTemplate()->set_var("sTipoEdicion", "Regular");
@@ -109,7 +118,8 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                     
                     $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("seguimientosVariablesIndex", true)."?id=".$oUnidad->getId());
 
-                    $this->getTemplate()->parse("UnidadBlock", true);                    
+                    $this->getTemplate()->parse("UnidadBlock", true);
+                    $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
                 }
             }else{
                 $this->getTemplate()->set_var("UnidadBlock", "");
@@ -141,7 +151,17 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             foreach($aUnidades as $oUnidad){
                 $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
                 $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
-                $this->getTemplate()->set_var("sDescripcionVariable", $oUnidad->getDescripcion(true));
+
+                //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+                $sDescripcionUnidad = $oUnidad->getDescripcion();
+                if(strlen($sDescripcionUnidad) > 150){
+                    $sDescripcionUnidad = Utils::tokenTruncate($sDescripcionUnidad, 150);
+                    $sDescripcionUnidad = nl2br($sDescripcionUnidad);
+                }else{
+                    $this->getTemplate()->set_var("LinkVerMasBlock", "");
+                }
+                $this->getTemplate()->set_var("sDescripcionUnidad", $sDescripcionUnidad);
+
 
                 if($oUnidad->isTipoEdicionRegular()){
                     $this->getTemplate()->set_var("sTipoEdicion", "Regular");
@@ -164,6 +184,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("seguimientosVariablesIndex", true)."?id=".$oUnidad->getId());
 
                 $this->getTemplate()->parse("UnidadBlock", true);
+                $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
             }
         }else{
             $this->getTemplate()->set_var("UnidadBlock", "");

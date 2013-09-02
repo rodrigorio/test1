@@ -1183,12 +1183,12 @@ class SeguimientosController
     
     /**
      * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento
-     *
      */
-    public function guardarObjetivoPersonalizado($oObjetivo){
+    public function guardarObjetivoPersonalizado($iSeguimientoId, $oObjetivo)
+    {
         try{            
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->guardarObjetivoPersonalizado($oOjetivo);
+            return $oObjetivoIntermediary->guardarObjetivoPersonalizadoSeguimiento($iSeguimientoId, $oObjetivo);
         }catch(Exception $e){
             throw $e;
         }
@@ -1220,6 +1220,23 @@ class SeguimientosController
             $oEjeIntermediary = PersistenceFactory::getEjeIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oEjeIntermediary->obtener($filtro = array(), $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getEjePersonalizadoById($iEjeId)
+    {
+    	try{
+            $filtro = array('ope.id' => $iEjeId);
+            $oEjeIntermediary = PersistenceFactory::getEjeIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aEje = $oEjeIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEje){
+                return $aEje[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw $e;
         }
@@ -1272,7 +1289,7 @@ class SeguimientosController
     }
     
     /**
-     *  Obtiene el eje tematico ById
+     *  Obtiene el eje tematico By Id
      */
     public function getEjeTematicoById($iEjeTematicoId)
     {
@@ -1366,6 +1383,23 @@ class SeguimientosController
         try{
             $oRelevanciaIntermediary = PersistenceFactory::getRelevanciaIntermediary($this->db);
             return $oRelevanciaIntermediary->obtenerRelevancias();
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getRelevanciaById($iRelevanciaId)
+    {
+    	try{
+            $filtro = array('objr.id' => $iRelevanciaId);
+            $oRelevanciaIntermediary = PersistenceFactory::getRelevanciaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aRelevancia = $oRelevanciaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aRelevancia){
+                return $aRelevancia[0];
+            }else{
+                return null;
+            }
         }catch(Exception $e){
             throw $e;
         }

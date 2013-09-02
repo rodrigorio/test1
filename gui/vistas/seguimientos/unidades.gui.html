@@ -72,15 +72,20 @@
         <!--BeginThumbsUnidadesBlock-->
         <div class="fost_it pato2 pabo2">Cantidad unidades filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
             <!--BeginUnidadBlock-->
-            <div class="fl_le mari2 mabo2 thumbEdit baco3 bora bosh mawi2 miwi2 {iUnidadId}">
+            <div class="fl_le mari2 thumbEdit baco3 bora bosh mawi2 miwi2 mihe1 {iUnidadId}">
                 <div class="grupo baco1 bobo1 bora4 pa2 pabo mabo2">
                     <div class="fl_le mari3 mabo iveal fte2">
                         <span title="Tipo de Edici&oacute;n" class="i bs notepad"></span> <span class="fost_it">{sTipoEdicion}</span>
                     </div>
-                    <h3 class="fl_ri">{sNombreVariable}</h3>
+                    <h3 class="fl_ri">{sNombreUnidad}</h3>
                 </div>
                 <div class="pa2">
-                    <p class="fte2">{sDescripcionVariable}</p>
+                    <p class="fte2">
+                        {sDescripcionUnidad}
+                        <!--BeginLinkVerMasBlock-->
+                        <a href="{hrefListarVariablesUnidad}" title="Ver Unidad Completa">ver m&aacute;s</a>
+                        <!--EndLinkVerMasBlock-->
+                    </p>
                     <span class="fte2 txt_imp2">Cantidad de variables: </span> {iCantidadVariables}<br>
                     <!--BeginLinkSeguimientos-->
                     <a class="verSeguimientosUnidad fte2" rel="{iUnidadId}" href="javascript:;">Asociada a <span class="fowe_bo">{iCantidadSeguimientos}</span> seguimientos</a>

@@ -97,6 +97,8 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("tituloSeccion", "Variables");
             $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "pageRightInnerMainCont", "ListadoVariablesBlock");
+            
+            $this->getTemplate()->set_var("sUnidadDescripcion", $oUnidad->getDescripcion(true));
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
             $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
