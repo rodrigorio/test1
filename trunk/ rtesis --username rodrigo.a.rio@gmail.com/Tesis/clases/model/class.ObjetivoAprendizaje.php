@@ -6,6 +6,8 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
     
     /**
      * Necesario porque es clave compuesta la asociacion entre objetivo y seguimiento
+     * (para obtener la evolucion a demanda, es auxiliar. para guardar una asociacion etc se pasa el seguimientoId por parametro
+     * en el metodo de controlador)
      */
     private $iSeguimientoSCCId = null;
     
