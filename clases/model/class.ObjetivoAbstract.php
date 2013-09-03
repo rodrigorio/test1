@@ -8,10 +8,19 @@
 abstract class ObjetivoAbstract
 {
     protected $iId;
-    protected $sDescripcion;    
+    protected $sDescripcion;
+    protected $dFechaCreacion;
     protected $oRelevancia = null;
     protected $dEstimacion = null;
     protected $bActivo = true;
+
+    /**
+     * Esto se setea cuando se levantan los objetos desde persistencia a traves de un metodo
+     * que calcula el controlador.
+     * Determina cuando un usuario integrante activo puede modificar el objetivo.
+     * (debido al periodo de expiracion seteado por parametro)
+     */
+    protected $isEditable = true;
 
     /**
      * array de objetos evolucion, se generan a lo largo de las entradas por fecha
@@ -21,6 +30,23 @@ abstract class ObjetivoAbstract
 
     public function isObjetivoPersonalizado(){ return false; }
     public function isObjetivoAprendizaje(){ return false; }
+
+    public function isEditable($flag = null){
+        if(null !== $flag){
+            $this->isEditable = $flag ? true : false;
+            return $this;
+        }else{
+            return $this->isEditable;
+        }
+    }
+
+    public function getFechaCreacion($format = false){
+        if($format){
+            return Utils::fechaFormateada($this->dFechaCreacion, "d/m/Y");
+        }else{
+            return $this->dFechaCreacion;
+        }
+    }
     
     /**
      *  @param string $sDescripcion

@@ -1126,7 +1126,7 @@ class SeguimientosController
             $filtro = array('o.id' => $iObjetivoId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aObjetivo = $oUnidadIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
+            $aObjetivo = $oObjetivoIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
             if(null !== $aObjetivo){
                 return $aObjetivo[0];
             }else{
@@ -1239,11 +1239,11 @@ class SeguimientosController
     /**
      * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento
      */
-    public function guardarObjetivoPersonalizado($iSeguimientoId, $oObjetivo)
+    public function guardarObjetivoPersonalizado($oObjetivo, $iSeguimientoId = null)
     {
         try{            
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->guardarObjetivoPersonalizadoSeguimiento($iSeguimientoId, $oObjetivo);
+            return $oObjetivoIntermediary->guardarObjetivoPersonalizadoSeguimiento($oObjetivo, $iSeguimientoId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1434,6 +1434,20 @@ class SeguimientosController
         }
     }
 
+    /**
+     * Devuelve true si un objetivo de aprendizaje ya esta asociado a un seguimiento SCC
+     */
+    public function existeObjetivoAprendizajeAsociadoSeguimientoSCC($iSeguimientoSCCId, $iObjetivoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->existeObjetivoAprendizajeSeguimientoSCC($iSeguimientoSCCId, $iObjetivoId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function obtenerArrayRelevancias(){
         try{
             $oRelevanciaIntermediary = PersistenceFactory::getRelevanciaIntermediary($this->db);
@@ -1581,5 +1595,32 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
         }
+    }
+
+    /**
+     * Este es un metodo generico util para determinar si una entidad sigue siendo
+     * susceptible a modificaciones dependiendo el parametro de expiracion de sistema
+     *
+     * Se utiliza por ejemplo al crear los objetivos para setear la propiedad isEditable
+     */
+    public function isEntidadEditable($dFechaCreacion)
+    {
+        $iCantDias = Utils::dateDiffDays($dFechaCreacion, date('Y-m-d h:i:s', time()));
+        $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
+        
+        if($iCantDias > $cantDiasExpiracion){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * Interfaz para obtener cantidad de dias del plazo de edicion para un seguimiento
+     * para ocultar bajo nivel a los page controllers.
+     */
+    public function getCantidadDiasExpiracionSeguimiento()
+    {
+        return FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
     }
 }

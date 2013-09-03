@@ -41,13 +41,11 @@ var validateFormObjetivoAprendizaje = {
     rules:{
         objetivoAprendizaje:{required:true},
         relevancia:{required:true},
-        descripcion:{required:true},
         estimacion:{required:true}
     },
     messages:{
         objetivoAprendizaje: mensajeValidacion("requerido"),
         relevancia: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido"),
         estimacion: mensajeValidacion("requerido")
     }
 };
@@ -321,8 +319,8 @@ $(function(){
         var dialog = setWaitingStatusDialog(550, "Crear Objetivo");
         dialog.load(
             "seguimientos/form-objetivo",
-            {"iSeguimientoId":iSeguimientoId,
-             "objetivoPersonalizado":"1"},
+            {iSeguimientoId:iSeguimientoId,
+             tipoObjetivo:"ObjetivoPersonalizado"},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsFormObjetivoPersonalizado();               
             }
@@ -331,14 +329,69 @@ $(function(){
 
     $("#asociarObjetivoAprendizaje").click(function(){
         var iSeguimientoId = $(this).attr('rel');
-        var dialog = setWaitingStatusDialog(550, "Crear Objetivo");
+        var dialog = setWaitingStatusDialog(550, "Asociar nuevo Objetivo Aprendizaje");
         dialog.load(
             "seguimientos/form-objetivo",
-            {"iSeguimientoId":iSeguimientoId,
-             "objetivoAprendizaje":"1"},
+            {iSeguimientoId:iSeguimientoId,
+             tipoObjetivo:"ObjetivoAprendizaje"},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsFormObjetivoAprendizaje();
             }
         );
-    });  
+    });
+
+    $(".editarObjetivo").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iObjetivoId = rel[0];
+        var iSeguimientoId = rel[1];
+        var tipoObjetivo = rel[2];
+        
+        var dialog = setWaitingStatusDialog(550, 'Editar Objetivo');
+
+        dialog.load(
+            "seguimientos/form-objetivo",
+            {
+                iObjetivoId:iObjetivoId,
+                iSeguimientoId:iSeguimientoId,
+                tipoObjetivo:tipoObjetivo
+            },
+            function(responseText, textStatus, XMLHttpRequest){
+                if(tipoObjetivo == 'ObjetivoAprendizaje'){
+                    bindEventsFormObjetivoPersonalizado();
+                }
+                if(tipoObjetivo == 'ObjetivoPersonalizado'){
+                    bindEventsFormObjetivoAprendizaje();
+                }
+            }
+        );
+    });
+
+    $(".toggleActivo").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iObjetivoId = rel[0];
+        var iSeguimientoId = rel[1];
+        var tipoObjetivo = rel[2];
+        var bActivo = rel[3];
+        
+        $.ajax({
+            url: "seguimientos/objetivos-procesar",
+            type: "POST",
+            data:{
+                iSeguimientoId:iSeguimientoId,
+                iObjetivoId:iObjetivoId,
+                tipoObjetivo:tipoObjetivo,
+                bActivo:bActivo,
+                toggleActivo:"1"
+            },
+            beforeSend: function(){
+                setWaitingStatus('listadoObjetivos', true);
+            },
+            success:function(data){
+                setWaitingStatus('listadoObjetivos', false);
+                if(data.success != undefined && data.success == 1){
+                    masObjetivos(iSeguimientoId);
+                }
+            }
+        });
+    });
 });
