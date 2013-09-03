@@ -293,7 +293,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .th_vid_m i{-o-background-size: 100% 100%, auto; -moz-background-size: 100% 100%, auto; -webkit-background-size: 100% 100%, auto; background-size: 100% 100%, auto}
 .thumbEdit{position:relative; margin-bottom:30px;}
 .thumbEditMenu{position:absolute; right:0px; bottom:-25px; padding-top:10px; width:150px}
-.thumbTop{position:absolute; right:0px; top:-25px; padding-bottom:10px; width:150px}
+.thumbTop{position:absolute; left:0px; top:-19px; padding-bottom:10px; width:150px}
 
 /*** OTROS ***/
 .valoracion{width:69px; height:14px; margin-bottom:-2px; display:inline-block}

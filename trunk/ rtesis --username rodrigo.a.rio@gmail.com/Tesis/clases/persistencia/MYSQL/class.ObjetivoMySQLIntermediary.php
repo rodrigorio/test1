@@ -22,8 +22,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        o.id as iId, o.descripcion as sDescripcion,
-                        op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, 
+                        o.id as iId, o.descripcion as sDescripcion, 
+                        op.fechaCreacion as dFechaCreacion, op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo,
                         ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia 
                     FROM
                         objetivos o
@@ -66,12 +66,14 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             	$oObjetivo = new stdClass();
             	$oObjetivo->iId = $oObj->iId;
+                $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
+                $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->oRelevancia = $oRelevancia;
                 $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEje = $oEje;
-            	
+                                
             	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
             }
 
@@ -91,7 +93,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        o.id as iId, o.descripcion as sDescripcion,
+                        o.id as iId, o.descripcion as sDescripcion, 
                         oa.ejes_id as iEjeTematicoId
                     FROM
                        objetivos o 
@@ -137,10 +139,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        o.id as iId, o.descripcion as sDescripcion,
+                        o.id as iId, o.descripcion as sDescripcion, 
                         oa.ejes_id as iEjeTematicoId,
                         sxo.seguimientos_scc_id as iSeguimientoSCCId, sxo.estimacion as dEstimacion, sxo.activo as bActivo,
-                        sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia
+                        sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia, 
+                        sxo.fechaCreacion as dFechaCreacion
                     FROM
                        objetivos o
                     JOIN
@@ -183,6 +186,8 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $oObjetivo->iId = $oObj->iId;
                 $oObjetivo->iSeguimientoSCCId = $oObj->iSeguimientoSCCId;
                 $oObjetivo->sDescripcion = $oObj->sDescripcion;
+                $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
+                $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
@@ -305,7 +310,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
      * No es que se crean desde el administrador y despues se asocian en una relacion NxN
      * como pasa en los objetivos de aprendizaje.
      */
-    public function guardarObjetivoPersonalizadoSeguimiento($iSeguimientoPersonalizadoId, $oObjetivo)
+    public function guardarObjetivoPersonalizadoSeguimiento($oObjetivo, $iSeguimientoPersonalizadoId = null)
     {
         if($oObjetivo->getEje() === null){
             throw new Exception("El objetivo no tiene eje", 0);
@@ -317,7 +322,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
         try{
             if($oObjetivo->getId() !== null) {
-                return $this->actualizarObjetivoSeguimientoPersonalizado($iSeguimientoPersonalizadoId, $oObjetivo);
+                return $this->actualizarObjetivoSeguimientoPersonalizado($oObjetivo);
             }else{
                 return $this->insertarObjetivoSeguimientoPersonalizado($iSeguimientoPersonalizadoId, $oObjetivo);
             }
@@ -329,6 +334,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     private function insertarObjetivoSeguimientoPersonalizado($iSeguimientoPersonalizadoId, $oObjetivo)
     {
         try{
+            $dEstimacion = $oObjetivo->getEstimacion();
+            if($dEstimacion === null){
+                throw new Exception("La fecha tiene formato incorrecto", 0);
+                return;
+            }
+
             $db = $this->conn;
             $db->begin_transaction();
 
@@ -337,9 +348,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
-
-            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
-
+            
             $sSQL = " insert into objetivos_personalizados ".
                     " set id = ".$this->escInt($iLastId).", ".
                     " seguimientos_personalizados_id = ".$this->escInt($iSeguimientoPersonalizadoId).", ".
@@ -364,9 +373,16 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
      * Antes de llegar a este metodo el controlador deberia confirmar que es un objetivo
      * de un seguimiento que pertenece al usuario que inicio sesion.
      */
-    private function actualizarObjetivoSeguimientoPersonalizado($iSeguimientoPersonalizadoId, $oObjetivo)
+    private function actualizarObjetivoSeguimientoPersonalizado($oObjetivo)
     {
         try{
+            $dEstimacion = $oObjetivo->getEstimacion();
+            if($dEstimacion === null){
+                throw new Exception("La fecha tiene formato incorrecto", 0);
+                return;
+            }
+            $activo = $oObjetivo->isActivo()?"1":"0";
+
             $db = $this->conn;
             $db->begin_transaction();
 
@@ -375,12 +391,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
             $db->execSQL($sSQL);
-            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
-
+            
             $sSQL = " update objetivos_personalizados set ".
                     " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getEje()->getId()).", ".
                     " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".                    
-                    " estimacion = '".$dEstimacion."' ".
+                    " estimacion = '".$dEstimacion."', ".
+                    " activo = ".$activo." ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
             $db->execSQL($sSQL);
@@ -449,7 +465,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         try{
             $db = $this->conn;
 
-            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
+            $dEstimacion = $oObjetivo->getEstimacion();
+            if($dEstimacion === null){
+                throw new Exception("La fecha tiene formato incorrecto", 0);
+                return;
+            }
 
             $sSQL = " insert into seguimiento_scc_x_objetivo_aprendizaje ".
                     " set seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId).", ".
@@ -460,6 +480,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $db->execSQL($sSQL);
             $db->commit();
 
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -471,8 +492,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     private function actualizarObjetivoAprendizajeSeguimientoSCC($iSeguimientoSCCId, $oObjetivo)
     {
         try{
-            $activo = $oObjetivo->isActivo() ? "1" : "0";
-            $dEstimacion = Utils::fechaAFormatoSQL($oObjetivo->getEstimacion());
+            $activo = $oObjetivo->isActivo()?"1":"0";
+
+            $dEstimacion = $oObjetivo->getEstimacion();
+            if($dEstimacion === null){
+                throw new Exception("La fecha tiene formato incorrecto", 0);
+                return;
+            }
 
             $db = $this->conn;
             $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
@@ -487,6 +513,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $db->execSQL($sSQL);
             $db->commit();
 
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }

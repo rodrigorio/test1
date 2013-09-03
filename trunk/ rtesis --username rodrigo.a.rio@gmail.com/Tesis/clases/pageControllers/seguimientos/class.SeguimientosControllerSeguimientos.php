@@ -2402,6 +2402,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
                     $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
+
+                    $this->getTemplate()->set_var("tipoObjetivo", get_class($oObjetivo));
                     
                     if(!$oObjetivo->isActivo()){
                         $this->getTemplate()->set_var("sActivoClass", "disabled");
@@ -2480,6 +2482,56 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->masObjetivos();
             return;
         }
+
+        if($this->getRequest()->has('toggleActivo')){
+            $this->toggleActivo();
+            return;
+        }        
+    }
+
+    private function toggleActivo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
+            $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+            $iObjetivoId = $this->getRequest()->getParam('iObjetivoId');
+            $bActivo = $this->getRequest()->getParam('bActivo');
+
+            if(empty($iSeguimientoId) || empty($iObjetivoId) || $bActivo == null){
+                throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+            }
+
+            if($this->getRequest()->getParam('tipoObjetivo') == "ObjetivoPersonalizado"){
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+            }else{
+                if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+            }
+
+            $bActivo = ($bActivo == "1")?true:false;
+            $oObjetivo->isActivo($bActivo);
+
+            $bSuccess = false;
+            if($oObjetivo->isObjetivoPersonalizado()){
+                $bSuccess = SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivo);
+            }
+
+            if($oObjetivo->isObjetivoAprendizaje()){
+                $bSuccess = SeguimientosController::getInstance()->guardarObjetivoAprendizajeSeguimientoScc($oObjetivo, $iSeguimientoId);
+            }
+            
+            $this->getJsonHelper()->setSuccess($bSuccess);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function masObjetivos()
@@ -2520,6 +2572,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
                     $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
+
+                    $this->getTemplate()->set_var("tipoObjetivo", get_class($oObjetivo));
 
                     if(!$oObjetivo->isActivo()){
                         $this->getTemplate()->set_var("sActivoClass", "disabled");
@@ -2609,8 +2663,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if($oSeguimiento->getUsuarioId() != $iUsuarioId){
                 throw new Exception("No tiene permiso para ver este seguimiento", 401);
             }
-
-            if($this->getRequest()->has('objetivoPersonalizado')){
+            
+            if($this->getRequest()->getParam('tipoObjetivo') == "ObjetivoPersonalizado"){
                 $this->mostrarFormularioObjetivoPersonalizadoPopUp($iSeguimientoId);
             }else{
                 $this->mostrarFormularioObjetivoAprendizajePopUp($iSeguimientoId);
@@ -2642,6 +2696,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $sCheckedRelevanciaNormal = "checked='checked'";
                 $sDescripcion = "";
                 $dEstimacion =  "";
+                $iObjetivoId = "";
                 
             //FORMULARIO EDITAR
             }else{
@@ -2653,6 +2708,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
 
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+
+                if(!$oObjetivo->isEditable()){                    
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeEdicionExpirada", "MsgFichaInfoBlock");
+                    $this->getTemplate()->set_var("sTituloMsgFicha", "Plazo de edición expirado");
+                    $this->getTemplate()->set_var("sMsgFicha", "El plazo para edición de Seguimientos y entidades relacionadas en el sistema es de "
+                                                                .SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento()." días.
+                                                                Puede desactivar el objetivo para las entradas posteriores, sin embargo la referencia permanecerá en el historial.");
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse("sMensajeEdicionExpirada"));
+                    return;
+                }
+                
                 $sTituloForm = "Modificar objetivo";
                 $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
                 
@@ -2665,11 +2731,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
                 
                 $sDescripcion = $oObjetivo->getDescripcion();
-                $dEstimacion =  $oObjetivo->getEstimacion();
+                $dEstimacion =  $oObjetivo->getEstimacion(true);
             }
 
             $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
             $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+            $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
 
             $this->getTemplate()->set_var("sTituloForm", $sTituloForm);            
             $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
@@ -2724,11 +2791,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             //FORMULARIO CREAR
             if(!$this->getRequest()->has('iObjetivoId')){
                 $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
+                $this->getTemplate()->set_var("ReadOnlyObjetivoAprendizaje", "");
 
-                $sTituloForm = "Crear un nuevo objetivo";
+                $sTituloForm = "Asociar objetivo de aprendizaje a seguimiento";
 
                 $sCheckedRelevanciaNormal = "checked='checked'";
-                $sDescripcion = "";
                 $dEstimacion =  "";
                 $disabled = "disabled"; //para desactivar los selects en la creacion
 
@@ -2740,104 +2807,65 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
                     $this->getTemplate()->parse("NivelesListBlock", true);
                 }
+
+                $iObjetivoId = "";
                 
             //FORMULARIO EDITAR
             }else{
                 //tiene permiso para editar este objetivo?
                 $iObjetivoId = $this->getRequest()->get('iObjetivoId');
 
-                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
                     throw new Exception("No tiene permiso para editar el objetivo", 401);
                 }
 
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
-                $sTituloForm = "Modificar objetivo";
+
+                if(!$oObjetivo->isEditable()){
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeEdicionExpirada", "MsgFichaInfoBlock");
+                    $this->getTemplate()->set_var("sTituloMsgFicha", "Plazo de edición expirado");
+                    $this->getTemplate()->set_var("sMsgFicha", "El plazo para edición de Seguimientos y entidades relacionadas en el sistema es de "
+                                                                .SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento()." días.
+                                                                Puede desactivar el objetivo para las entradas posteriores, sin embargo la referencia permanecerá en el historial.");
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse("sMensajeEdicionExpirada"));
+                    return;
+                }
+                
+                $sTituloForm = "Editar Objetivo de aprendizaje en Seguimiento";
                 $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
+                $this->getTemplate()->set_var("SelectsObjetivoAprendizajeBlock", "");
 
                 switch($oObjetivo->getRelevancia()->getDescripcion()){
                     case "alta": $sCheckedRelevanciaAlta = "checked='checked'"; break;
                     case "normal": $sCheckedRelevanciaNormal = "checked='checked'"; break;
                     case "baja": $sCheckedRelevanciaBaja = "checked='checked'"; break;
                 }
-
-                $sDescripcion = $oObjetivo->getDescripcion();
+                
                 $dEstimacion =  $oObjetivo->getEstimacion();
                 $disabled = "";
 
                 //lleno los selects con los valores actuales.
                 $oEjeTematico = $oObjetivo->getEje();
 
-                $iNivelId = $oEjeTematico->getArea()->getCiclo()->getNivel()->getId();
-                $iRecordsNiveles = 0;
-                $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
-                foreach ($aNiveles as $oNivel){
-                    if($iNivelId == $oNivel->getId()){
-                        $this->getTemplate()->set_var("sSelectedNivel", "selected='selected'");
-                    }
-                    $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-                    $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
-                    $this->getTemplate()->parse("NivelesListBlock", true);
-                    $this->getTemplate()->set_var("sSelectedNivel", "");
-                }
-
-                //combo ciclos
-                $iCicloId = $oEjeTematico->getArea()->getCiclo()->getId();
-                $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
-                foreach ($aCiclos as $oCiclo){
-                    if($iCicloId == $oCiclo->getId()){
-                        $this->getTemplate()->set_var("sSelectedCiclo", "selected='selected'");
-                    }
-                    $this->getTemplate()->set_var("iCicloId", $oCiclo->getId());
-                    $this->getTemplate()->set_var("sCicloDescripcion", $oCiclo->getDescripcion());
-                    $this->getTemplate()->parse("CiclosListBlock", true);
-                    $this->getTemplate()->set_var("sSelectedCiclo", "");
-                }
-
-                //combo areas
-                $iAreaId = $oEjeTematico->getArea()->getId();
-                $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
-                foreach ($aAreas as $oArea){
-                    if($iAreaId == $oArea->getId()){
-                        $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
-                    }
-                    $this->getTemplate()->set_var("iAreaId", $oArea->getId());
-                    $this->getTemplate()->set_var("sAreaDescripcion", $oArea->getDescripcion());
-                    $this->getTemplate()->parse("AreaListBlock", true);
-                    $this->getTemplate()->set_var("sSelectedArea", "");
-                }
-
-                //combo ejes 
-                $iEjeId = $oEjeTematico->getId(); 
-                $aEjesSelect = SeguimientosController::getInstance()->getEjesByAreaId($iAreaId);
-                foreach ($aEjesSelect as $oEjeSelect){
-                    if($iEjeId == $oEjeSelect->getId()){
-                        $this->getTemplate()->set_var("sSelectedEje", "selected='selected'");
-                    }
-                    $this->getTemplate()->set_var("iEjeId", $oEjeSelect->getId());
-                    $this->getTemplate()->set_var("sEjeDescripcion", $oEjeSelect->getDescripcion());
-                    $this->getTemplate()->parse("EjeListBlock", true);
-                    $this->getTemplate()->set_var("sSelectedEje", "");
-                }
-
-                //combo objetivos aprendizaje
-                $iObjetivoId = $oObjetivo->getId();
-                $aObjetivosSelect = SeguimientosController::getInstance()->getObjetivosAprendizajeByEjeId($iEjeId);
-                foreach ($aObjetivosSelect as $oObjetivoSelect){
-                    if($iObjetivoId == $oObjetivoSelect->getId()){
-                        $this->getTemplate()->set_var("sSelectedObjetivoAprendizaje", "selected='selected'");
-                    }
-                    $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oEjeSelect->getId());
-                    $this->getTemplate()->set_var("sObjetivoAprendizajeDescripcion", $oEjeSelect->getDescripcion());
-                    $this->getTemplate()->parse("ObjetivoAprendizajeListBlock", true);
-                    $this->getTemplate()->set_var("sSelectedObjetivoAprendizaje", "");
-                }                
+                $sNivelDescripcion = $oEjeTematico->getArea()->getCiclo()->getNivel()->getDescripcion();
+                $sCicloDescripcion = $oEjeTematico->getArea()->getCiclo()->getDescripcion();
+                $sAreaDescripcion = $oEjeTematico->getArea()->getDescripcion();
+                $sEjeDescripcion = $oEjeTematico->getDescripcion();
+                $sObjetivoDescripcion = $oObjetivo->getDescripcion();
+                $this->getTemplate()->set_var("sNivelDescripcion", $sNivelDescripcion);
+                $this->getTemplate()->set_var("sCicloDescripcion", $sCicloDescripcion);
+                $this->getTemplate()->set_var("sAreaDescripcion", $sAreaDescripcion);
+                $this->getTemplate()->set_var("sEjeDescripcion", $sEjeDescripcion);
+                $sObjetivoDescripcion = Utils::tokenTruncate($sObjetivoDescripcion, 300);
+                $this->getTemplate()->set_var("sObjetivoDescripcion", $sObjetivoDescripcion);
+                $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivo->getId());
             }
 
             $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
             $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+            $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
 
             $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-            $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
             $this->getTemplate()->set_var("disabled", $disabled);
 
             $this->getTemplate()->set_var("checkedRelevanciaAlta", $sCheckedRelevanciaAlta);
@@ -2914,17 +2942,60 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $oObjetivoPersonalizado->sDescripcion = $this->getRequest()->getPost("descripcion");
             $oObjetivoPersonalizado->oEje = $oEje;
             $oObjetivoPersonalizado->oRelevancia = $oRelevancia;
-            $oObjetivoPersonalizado->dEstimacion = $this->getRequest()->getPost("estimacion");
+            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));
+            $oObjetivoPersonalizado->dEstimacion = $dEstimacion;
 
             $oObjetivoPersonalizado = Factory::getObjetivoPersonalizadoInstance($oObjetivoPersonalizado);
             
-            SeguimientosController::getInstance()->guardarObjetivoPersonalizado($iSeguimientoId, $oObjetivoPersonalizado);
+            SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivoPersonalizado, $iSeguimientoId);
 
             $this->getJsonHelper()->setValor("agregarObjetivo", "1");
             $this->getJsonHelper()->setMessage("El objetivo se ha creado con éxito");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function modificarObjetivoPersonalizado($iSeguimientoId)
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iObjetivoId = $this->getRequest()->getPost('objetivoIdForm');
+           
+            if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                throw new Exception("No tiene permiso para administrar objetivos en este seguimiento", 401);
+            }
+            
+            $oObjetivoPersonalizado = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+                        
+            if(!$oObjetivoPersonalizado->isEditable()){
+                $this->getJsonHelper()->setMessage("El plazo para editar el objetivo ha expirado.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oEje = SeguimientosController::getInstance()->getEjePersonalizadoById($this->getRequest()->getPost("eje"));
+            $oRelevancia = SeguimientosController::getInstance()->getRelevanciaById($this->getRequest()->getPost("relevancia"));
+
+            $oObjetivoPersonalizado->setRelevancia($oRelevancia);
+            $oObjetivoPersonalizado->setEje($oEje);
+            $oObjetivoPersonalizado->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));
+            $oObjetivoPersonalizado->setEstimacion($dEstimacion);
+
+            SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivoPersonalizado);
+
+            $this->getJsonHelper()->setValor("modificarObjetivo", "1");
+            $this->getJsonHelper()->setMessage("Los cambios se han guardado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){            
             $this->getJsonHelper()->setSuccess(false);
         }
 
@@ -2950,11 +3021,19 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $oObjetivoAprendizaje = SeguimientosController::getInstance()->getObjetivoAprendizajeById($this->getRequest()->getPost("objetivoAprendizaje"));
-            $oRelevancia = SeguimientosController::getInstance()->getRelevanciaById($this->getRequest()->getPost("relevancia"));
 
-            $oObjetivoAprendizaje->setDescripcion($this->getRequest()->getPost("descripcion"));
+            //primero me fijo si el objetivo de aprendizaje ya esta asociado
+            if(SeguimientosController::getInstance()->existeObjetivoAprendizajeAsociadoSeguimientoSCC($iSeguimientoId, $oObjetivoAprendizaje->getId())){
+                $this->getJsonHelper()->setMessage("El objetivo ya esta asociado al seguimiento");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oRelevancia = SeguimientosController::getInstance()->getRelevanciaById($this->getRequest()->getPost("relevancia"));
             $oObjetivoAprendizaje->setRelevancia($oRelevancia);
-            $oObjetivoAprendizaje->setEstimacion($this->getRequest()->getPost("estimacion"));
+            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));
+            $oObjetivoAprendizaje->setEstimacion($dEstimacion);
 
             SeguimientosController::getInstance()->guardarObjetivoAprendizajeSeguimientoScc($oObjetivoAprendizaje, $iSeguimientoId);
 
@@ -2963,6 +3042,49 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){            
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    /**
+     * El objetivo asociado no cambia, lo que se modifica es la estimacino y la relevancia.
+     *
+     * Descripcion esta precargada
+     */
+    private function modificarObjetivoAprendizaje($iSeguimientoId)
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iObjetivoId = $this->getRequest()->getPost('objetivoIdForm');
+
+            if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
+                throw new Exception("No tiene permiso para editar el objetivo", 401);
+            }
+
+            $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+
+            if(!$oObjetivo->isEditable()){
+                $this->getJsonHelper()->setMessage("El plazo para editar el objetivo ha expirado.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oRelevancia = SeguimientosController::getInstance()->getRelevanciaById($this->getRequest()->getPost("relevancia"));
+            $oObjetivo->setRelevancia($oRelevancia);
+            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));
+            $oObjetivo->setEstimacion($dEstimacion);
+
+            SeguimientosController::getInstance()->guardarObjetivoAprendizajeSeguimientoScc($oObjetivo, $iSeguimientoId);
+
+            $this->getJsonHelper()->setValor("modificarObjetivo", "1");
+            $this->getJsonHelper()->setMessage("Los cambios se han guardado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
 

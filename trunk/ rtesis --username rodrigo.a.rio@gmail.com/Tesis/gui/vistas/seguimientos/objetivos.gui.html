@@ -78,7 +78,7 @@
             <div class="fl_le thumbEdit baco3 bora bosh mawi2 miwi2 mari2 mihe0 {iObjetivoId}_{iSeguimientoId}">
                 
                 <!--BeginEstimacinoExpiradaBlock-->
-                <div class="thumbTop teal_ri iveal">
+                <div class="thumbTop teal_le">
                     <span class="fost_it fte2">Estimaci&oacute;n Vencida</span> <span title="El Objetivo ha llegado a la fecha estimada de finalizaci&oacute;n" class="i bs warning"></span>
                 </div>
                 <!--EndEstimacinoExpiradaBlock-->
@@ -97,22 +97,22 @@
                         <p class="fte2 mabo0">
                             {sDescripcionObjetivo}
                             <!--BeginLinkVerMasBlock-->
-                            <a href="javascript:;" rel="{iObjetivoId}_{iSeguimientoId}" class="verObjetivo">ver m&aacute;s</a>
+                            <a href="javascript:;" rel="{iObjetivoId}_{iSeguimientoId}_{tipoSeguimiento}" class="verObjetivo">ver m&aacute;s</a>
                             <!--EndLinkVerMasBlock-->
                         </p>
                     </div>
                 </div>
                 <!--BeginMenuObjetivoDesactivadoBlock-->
                 <div style="display:none;" class="thumbEditMenu teal_ri iveal">
-                    <span class="fte2" style="color:#333;">Reactivar Objetivo</span> <span title="Reactivar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}" class="i mi continue ihover activarObjetivo"></span>
+                    <span class="fte2" style="color:#333;">Reactivar Objetivo</span> <span title="Reactivar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}_1" class="i mi continue ihover toggleActivo"></span>
                 </div>
                 <!--EndMenuObjetivoDesactivadoBlock-->
                 <!--BeginMenuObjetivoActivoBlock-->
                 <div style="display:none" class="thumbEditMenu teal_ri">                    
-                    <span title="Ver Objetivo Completo" rel="{iObjetivoId}_{iSeguimientoId}" class="i mi expand ihover verObjetivo"></span>
-                    <span title="Editar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}" class="i bs edit ihover editarObjetivo"></span>
-                    <span title="Eliminar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}" class="i bs delete ihover borrarObjetivo"></span>
-                    <span title="Desactivar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}" class="i bs stop ihover DesactivarObjetivo"></span>
+                    <span title="Ver Objetivo Completo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i mi expand ihover verObjetivo"></span>
+                    <span title="Editar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i bs edit ihover editarObjetivo"></span>
+                    <span title="Eliminar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i bs delete ihover borrarObjetivo"></span>
+                    <span title="Desactivar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}_0" class="i bs stop ihover toggleActivo"></span>
                 </div>
                 <!--EndMenuObjetivoActivoBlock-->
             </div>
@@ -150,6 +150,17 @@
                 <!--EndOptGrpSelectEje-->
             </select>
         </div>
+        <div class="form_line msg_descripcion">
+            <label for="descripcion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Descripci&oacute;n
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del objetivo para el seguimiento">{sDescripcion}</textarea>
+                </div>
+            </div>
+        </div>
         <!--EndEjePersonalizadoBlock-->
 
         <!--BeginObjetivoAprendizajeBlock-->
@@ -159,36 +170,50 @@
                 Objetivo de Aprendizaje
             </label>
             <div class="cl_le"></div>
-            <select class="mabo2 miwi2" name="nivel" id="nivel" title="Nivel">
-                <option value="">Nivel:</option>
-                <!--BeginNivelesListBlock-->
-                <option value="{iNivelId}" {sSelectedNivel}>{sNivelDescripcion}</option>
-                <!--EndNivelesListBlock-->
-            </select>
-            <select class="mabo2 miwi2 {disabled}" name="ciclo" id="ciclo" title="Ciclo">
-                <option value="">Ciclo:</option>
-                <!--BeginCiclosListBlock-->
-                <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
-                <!--EndCiclosListBlock-->
-            </select>
-            <select class="mabo2 miwi2 {disabled}" name="area" id="area" title="&Aacute;rea">
-                <option value="">&Aacute;rea:</option>
-                <!--BeginAreaListBlock-->
-                <option value="{iAreaId}" {sSelectedArea}>{sAreaDescripcion}</option>
-                <!--EndAreaListBlock-->
-            </select>
-            <select class="mabo2 miwi2 {disabled}" name="eje" id="eje" title="Eje">
-                <option value="">Eje:</option>
-                <!--BeginEjeListBlock-->
-                <option value="{iEjeId}" {sSelectedEje}>{sEjeDescripcion}</option>
-                <!--EndEjeListBlock-->
-            </select>
-            <select class="miwi3 {disabled}" name="objetivoAprendizaje" id="objetivoAprendizaje" title="Objetivo de Aprendizaje">
-                <option value="">Objetivo Aprendizaje:</option>
-                <!--BeginObjetivoAprendizajeListBlock-->
-                <option value="{iObjetivoAprendizajeId}" {sSelectedObjetivoAprendizaje}>{sObjetivoAprendizajeDescripcion}</option>
-                <!--EndObjetivoAprendizajeListBlock-->
-            </select>
+            <!--BeginSelectsObjetivoAprendizajeBlock-->
+                <select class="mabo2 miwi2" name="nivel" id="nivel" title="Nivel">
+                    <option value="">Nivel:</option>
+                    <!--BeginNivelesListBlock-->
+                    <option value="{iNivelId}" {sSelectedNivel}>{sNivelDescripcion}</option>
+                    <!--EndNivelesListBlock-->
+                </select>
+                <select class="mabo2 miwi2 {disabled}" name="ciclo" id="ciclo" title="Ciclo">
+                    <option value="">Ciclo:</option>
+                    <!--BeginCiclosListBlock-->
+                    <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
+                    <!--EndCiclosListBlock-->
+                </select>
+                <select class="mabo2 miwi2 {disabled}" name="area" id="area" title="&Aacute;rea">
+                    <option value="">&Aacute;rea:</option>
+                    <!--BeginAreaListBlock-->
+                    <option value="{iAreaId}" {sSelectedArea}>{sAreaDescripcion}</option>
+                    <!--EndAreaListBlock-->
+                </select>
+                <select class="mabo2 miwi2 {disabled}" name="eje" id="eje" title="Eje">
+                    <option value="">Eje:</option>
+                    <!--BeginEjeListBlock-->
+                    <option value="{iEjeId}" {sSelectedEje}>{sEjeDescripcion}</option>
+                    <!--EndEjeListBlock-->
+                </select>
+                <div class="fwrap mabo2">
+                    <div class="inner_fwrap">
+                        <select class="{disabled}" name="objetivoAprendizaje" id="objetivoAprendizaje" title="Objetivo de Aprendizaje">
+                            <option value="">Objetivo Aprendizaje:</option>
+                            <!--BeginObjetivoAprendizajeListBlock-->
+                            <option value="{iObjetivoAprendizajeId}" {sSelectedObjetivoAprendizaje}>{sObjetivoAprendizajeDescripcion}</option>
+                            <!--EndObjetivoAprendizajeListBlock-->
+                        </select>
+                    </div>
+                </div>
+            <!--EndSelectsObjetivoAprendizajeBlock-->
+            <!--BeginReadOnlyObjetivoAprendizaje-->
+                <input value="{sNivelDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="nivel" id="nivel" title="Nivel">
+                <input value="{sCicloDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="ciclo" id="ciclo" title="Ciclo">
+                <input value="{sAreaDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="area" id="area" title="&Aacute;rea">
+                <input value="{sEjeDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="eje" id="eje" title="Eje Tem&aacute;tico">
+                <div class="cl_le"></div>
+                <textarea class="pa miwi3 mabo2 readonly mahe0" rows="0" cols="0" id="objAprendizaje" name="objAprendizaje" title="Objetivo de Aprendizaje">{sObjetivoDescripcion}</textarea>               
+            <!--EndReadOnlyObjetivoAprendizaje-->
         </div>
         <!--EndObjetivoAprendizajeBlock-->
         
@@ -224,18 +249,6 @@
             </div>
         </div>
         
-        <div class="form_line msg_descripcion">
-            <label for="descripcion">
-                <span class="marca_obligatorio">&#8226;</span>
-                Descripci&oacute;n
-            </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del objetivo para el seguimiento">{sDescripcion}</textarea>
-                </div>
-            </div>            
-        </div>
-
         <div id="estimacionasd" class="form_line msg_estimacion">
             <label for="estimacion">
                 <span class="marca_obligatorio">&#8226;</span>
