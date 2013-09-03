@@ -2407,9 +2407,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     
                     if(!$oObjetivo->isActivo()){
                         $this->getTemplate()->set_var("sActivoClass", "disabled");
+                        $this->getTemplate()->set_var("calendarClass", "calendar");
                         $this->getTemplate()->set_var("MenuObjetivoActivoBlock", "");
                     }else{
                         $this->getTemplate()->set_var("sActivoClass", "");
+                        $this->getTemplate()->set_var("calendarClass", "calendarEdit ihover");
                         $this->getTemplate()->set_var("MenuObjetivoDesactivadoBlock", "");
                     }
 
@@ -2487,6 +2489,101 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->toggleActivo();
             return;
         }        
+        
+        if($this->getRequest()->has('recronogramaForm')){
+            $this->recronogramaForm();
+            return;
+        }
+        
+        if($this->getRequest()->has('modificarEstimacion')){
+            $this->modificarEstimacion();
+            return;
+        }
+    }
+
+    private function recronogramaForm()
+    {
+        try
+        {
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
+            $iObjetivoId = $this->getRequest()->getParam('iObjetivoId');
+            $tipoObjetivo = $this->getRequest()->getParam('tipoObjetivo');
+
+            if(empty($iSeguimientoId) || empty($iObjetivoId) || empty($tipoObjetivo)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+            }
+
+            if($this->getRequest()->getParam('tipoObjetivo') == "ObjetivoPersonalizado"){
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+            }else{
+                if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+            }
+
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "FormularioRecronogramaBlock");
+
+            $dEstimacion = $oObjetivo->getEstimacion(true);
+
+            $this->getTemplate()->set_var("tipoObjetivoIdForm", $tipoObjetivo);
+            $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+            $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
+            $this->getTemplate()->set_var("dEstimacion", $dEstimacion);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function modificarEstimacion()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iSeguimientoId = $this->getRequest()->getPost('seguimientoIdForm');
+            $iObjetivoId = $this->getRequest()->getPost('objetivoIdForm');
+            $tipoObjetivoIdForm = $this->getRequest()->getPost('tipoObjetivoIdForm');
+
+            if(empty($iSeguimientoId) || empty($iObjetivoId) || empty($tipoObjetivoIdForm)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+            }
+
+            if($tipoObjetivoIdForm == "ObjetivoPersonalizado"){
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+            }else{
+                if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+            }
+            
+            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));            
+            $oObjetivo->setEstimacion($dEstimacion);
+
+            $bSuccess = false;
+            if($oObjetivo->isObjetivoPersonalizado()){
+                $bSuccess = SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivo);
+            }
+
+            if($oObjetivo->isObjetivoAprendizaje()){
+                $bSuccess = SeguimientosController::getInstance()->guardarObjetivoAprendizajeSeguimientoScc($oObjetivo, $iSeguimientoId);
+            }
+
+            $this->getJsonHelper()->setSuccess($bSuccess);
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function toggleActivo()
@@ -2577,9 +2674,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     if(!$oObjetivo->isActivo()){
                         $this->getTemplate()->set_var("sActivoClass", "disabled");
+                        $this->getTemplate()->set_var("calendarClass", "calendar");
                         $this->getTemplate()->set_var("MenuObjetivoActivoBlock", "");
                     }else{
                         $this->getTemplate()->set_var("sActivoClass", "");
+                        $this->getTemplate()->set_var("calendarClass", "calendarEdit ihover");
                         $this->getTemplate()->set_var("MenuObjetivoDesactivadoBlock", "");
                     }
 
@@ -2718,7 +2817,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse("sMensajeEdicionExpirada"));
                     return;
                 }
-                
+
                 $sTituloForm = "Modificar objetivo";
                 $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
                 

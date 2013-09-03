@@ -89,7 +89,7 @@
                             {iconoRelevancia} <span class="fost_it tetr_ca fte2">Relevancia {sRelevancia}</span>
                         </div>
                         <div class="fl_le iveal">
-                            <span class="i bs calendar"></span> <span class="fowe_bo fte2 {expiradaClass}">Alcanzar el {dEstimacion}</span>
+                            <span rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i bs {calendarClass}"></span> <span class="fowe_bo fte2 {expiradaClass}">Alcanzar el {dEstimacion}</span>
                         </div>
                     </div>
                     <div class="pa3 pato2">
@@ -249,7 +249,7 @@
             </div>
         </div>
         
-        <div id="estimacionasd" class="form_line msg_estimacion">
+        <div class="form_line msg_estimacion">
             <label for="estimacion">
                 <span class="marca_obligatorio">&#8226;</span>
                 Estimaci&oacute;n de logro
@@ -286,6 +286,37 @@
     </form>
 </div>
 <!--EndFormularioObjetivoBlock-->
+
+<!--BeginFormularioRecronogramaBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 bs calendar32"></span></div>
+    <form id="formRecronograma" name="formRecronograma" action="" method="post">
+
+        <div class="form_line msg_estimacion">
+            <label for="estimacion">
+                <span class="marca_obligatorio">&#8226;</span>
+                Estimaci&oacute;n de logro
+            </label>
+            <div class="cl_le"></div>
+            <input readonly="readonly" type="text" name="estimacion" id="estimacion" title="Estimaci&oacute;n de logro"  value="{dEstimacion}" />
+        </div>
+
+        <div class="fl_le iveal mabo2">
+            <label for="modificarEstimacion" class="button buttonConfirm buttonLarge">
+                <button id="modificarEstimacion" type="submit" name="modificarEstimacion" class="btn01">
+                    Establecer nueva fecha
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iSeguimientoIdForm}" name="seguimientoIdForm" id="seguimientoIdForm" />
+        <input type="hidden" value="{iObjetivoIdForm}" name="objetivoIdForm" id="objetivoIdForm" />
+        <input type="hidden" value="{tipoObjetivoIdForm}" name="tipoObjetivoIdForm" id="tipoObjetivoIdForm" />
+
+        <div style="display:none;" id='msg_form_recronograma' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioRecronogramaBlock-->
 
 
 

@@ -97,6 +97,63 @@ var optionsAjaxFormObjetivo = {
     }
 };
 
+var validateFormRecronograma = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        estimacion:{required:true}
+    },
+    messages:{
+        estimacion: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormRecronograma = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/objetivos-procesar',
+    beforeSerialize:function(){
+
+        if($("#formRecronograma").valid() == true){
+
+            $('#msg_form_recronograma').hide();
+            $('#msg_form_recronograma').removeClass("correcto").removeClass("error");
+            $('#msg_form_recronograma .msg').html("");
+            setWaitingStatus('formRecronograma', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formRecronograma', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_recronograma .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_recronograma .msg').html(data.mensaje);
+            }
+            $('#msg_form_recronograma').addClass("error").fadeIn('slow');
+        }else{
+            $("#dialog").dialog("close");
+            //refresco el listado actual
+            $("#orderByRelevancia").click();            
+        }
+    }
+};
+
 function bindEventsFormObjetivoPersonalizado(){
     $("#formObjetivo").validate(validateFormObjetivoPersonalizado);
     $("#formObjetivo").ajaxForm(optionsAjaxFormObjetivo);
@@ -133,6 +190,19 @@ function bindEventsFormObjetivoAprendizaje(){
     $("#descripcion").maxlength();
 
     //solo permitido fechas a partir del dia posterior al actual
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate()+1);
+    $("#estimacion").datepicker({
+        minDate: tomorrow
+    });
+}
+
+function bindEventsFormCalendarEdit()
+{
+    $("#formRecronograma").validate(validateFormRecronograma);
+    $("#formRecronograma").ajaxForm(optionsAjaxFormRecronograma);
+
     var today = new Date();
     var tomorrow = new Date();
     tomorrow.setDate(today.getDate()+1);
@@ -393,5 +463,28 @@ $(function(){
                 }
             }
         });
+    });
+
+    //para shortcut de edicion de fecha de estimacion haciendo click en calendar
+    $(".calendarEdit").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iObjetivoId = rel[0];
+        var iSeguimientoId = rel[1];
+        var tipoObjetivo = rel[2];
+        
+        var dialog = setWaitingStatusDialog(300, 'Recronograma');
+
+        dialog.load(
+            "seguimientos/objetivos-procesar",
+            {
+                iObjetivoId:iObjetivoId,
+                iSeguimientoId:iSeguimientoId,
+                tipoObjetivo:tipoObjetivo,
+                recronogramaForm:"1"
+            },
+            function(responseText, textStatus, XMLHttpRequest){
+                bindEventsFormCalendarEdit();
+            }
+        );
     });
 });
