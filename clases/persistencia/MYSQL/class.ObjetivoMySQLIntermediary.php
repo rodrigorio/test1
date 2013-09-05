@@ -539,9 +539,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
         try{
             $db = $this->conn;
             $db->execSQL("delete from seguimiento_scc_x_objetivo_aprendizaje
-                          where seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)."
+                          where seguimientos_scc_id = ".$this->escInt($iSeguimientoSCCId)." 
                           and objetivos_aprendizaje_id = ".$this->escInt($iObjetivoId));
             $db->commit();
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
