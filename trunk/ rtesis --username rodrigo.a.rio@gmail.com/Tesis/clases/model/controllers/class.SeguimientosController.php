@@ -1250,16 +1250,26 @@ class SeguimientosController
     }
 
     /**
+     * Metodo unificado para borrar objetivos asociados a un seguimiento, tanto scc como personalizado.
+     *
+     * Sirve para eliminar fisicamente el objetivo junto con todo el historial de evolucion.
+     *
      * Fijarse que el borrado fisico solo en el periodo de edicion de seguimientos.
      *
      * Borrado logico seria el desactivar. que hace que, a partir de que un objetivo esta desactivado
-     * no aparece en la vista de entradas por fecha
+     * no aparece en la vista de entradas por fecha*
      */
-    public function borrarObjetivoPersonalizado($iObjetivoId)
+    public function borrarObjetivoSeguimiento($oObjetivo, $iSeguimientoId = null)
     {
-    	try{    	    		
+        try{
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            return $oObjetivoIntermediary->borrar($iObjetivoId);
+            $iObjetivoId = $oObjetivo->getId();
+            if($oObjetivo->isObjetivoPersonalizado()){
+                return $oObjetivoIntermediary->borrar($iObjetivoId);
+            }
+            if($oObjetivo->isObjetivoAprendizaje()){
+                return $oObjetivoIntermediary->borrarObjetivoAprendizajeSeguimientoSCC($iSeguimientoId, $iObjetivoId);
+            }
         }catch(Exception $e){
             throw $e;
         }

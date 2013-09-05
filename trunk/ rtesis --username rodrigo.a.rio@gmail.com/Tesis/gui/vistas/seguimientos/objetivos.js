@@ -375,6 +375,55 @@ function masObjetivos(iSeguimientoId){
     });
 }
 
+function eliminarObjetivo(iObjetivoId, iSeguimientoId, tipoObjetivo){
+    if(confirm("Se borrara el objetivo junto al historial de evolución de forma permanente, desea continuar?")){
+
+        $.ajax({
+            type:"post",
+            dataType: 'jsonp',
+            url:"seguimientos/objetivos-procesar",
+            data:{
+                eliminarObjetivo:"1",
+                iObjetivoId:iObjetivoId,
+                iSeguimientoId:iSeguimientoId,
+                tipoObjetivo:tipoObjetivo
+            },
+            beforeSend: function(){
+                setWaitingStatus('objetivo_'+iObjetivoId+'_'+iSeguimientoId, true);
+            },
+            success:function(data){
+                setWaitingStatus('objetivo_'+iObjetivoId+'_'+iSeguimientoId, false);
+
+                if(data.success != undefined && data.success == 1){
+                    //remuevo la ficha
+                    $('#objetivo_'+iObjetivoId+'_'+iSeguimientoId).hide("slow", function(){
+                        $('#objetivo_'+iObjetivoId+'_'+iSeguimientoId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length){ dialog.remove(); }
+                dialog = $('<div id="dialog" title="Borrar Objetivo"></div>').appendTo('body');
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
 $(function(){
 
     $(".orderLink").live('click', function(){
@@ -382,6 +431,15 @@ $(function(){
         $('#sOrder').html($(this).attr('order'));
         var iSeguimientoId = $(this).attr('rel');
         masObjetivos(iSeguimientoId);
+    });
+
+    $(".borrarObjetivo").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iObjetivoId = rel[0];
+        var iSeguimientoId = rel[1];
+        var tipoObjetivo = rel[2];
+
+        eliminarObjetivo(iObjetivoId, iSeguimientoId, tipoObjetivo);
     });
 
     $("#crearObjetivoPersonalizado").click(function(){
@@ -487,4 +545,6 @@ $(function(){
             }
         );
     });
+
+
 });

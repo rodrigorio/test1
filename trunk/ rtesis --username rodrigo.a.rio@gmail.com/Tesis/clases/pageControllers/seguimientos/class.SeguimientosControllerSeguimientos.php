@@ -2499,6 +2499,63 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->modificarEstimacion();
             return;
         }
+        
+        if($this->getRequest()->has('eliminarObjetivo')){
+            $this->eliminarObjetivo();
+            return;
+        }
+    }
+
+    /**
+     * Devuelve el contenido de un dialog: tiempo de edicion expirado / se borro el objetivo con exito
+     */
+    private function eliminarObjetivo()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
+            $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
+            $iObjetivoId = $this->getRequest()->getParam('iObjetivoId');
+            $tipoObjetivo = $this->getRequest()->getParam('tipoObjetivo');
+
+            if(empty($iSeguimientoId) || empty($iObjetivoId) || empty($tipoObjetivo)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+            }
+
+            if($this->getRequest()->getParam('tipoObjetivo') == "ObjetivoPersonalizado"){
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+            }else{
+                if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+            }
+
+            if(!$oObjetivo->isEditable()){
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeEdicionExpirada", "MsgFichaInfoBlock");
+                $this->getTemplate()->set_var("sTituloMsgFicha", "Plazo de edición expirado");
+                $this->getTemplate()->set_var("sMsgFicha", "El plazo para edición de Seguimientos y entidades relacionadas en el sistema es de "
+                                                            .SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento()." días.
+                                                            Puede desactivar el objetivo para las entradas posteriores, sin embargo la referencia permanecerá en el historial.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse("sMensajeEdicionExpirada"));
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            SeguimientosController::getInstance()->borrarObjetivoSeguimiento($oObjetivo, $iSeguimientoId);
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeExito", "MsgCorrectoBlockI32");
+            $this->getTemplate()->set_var("sMensaje", "El objetivo se ha borrado de manera exitosa.");
+            $this->getJsonHelper()->setSuccess(true);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse("sMensajeExito"));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+        }catch(Exception $e){
+            throw $e;
+        }                
     }
 
     private function recronogramaForm()
