@@ -28,6 +28,18 @@
 <span class="i mi flagYellow"></span>
 <!--EndIconoRelevanciaAltaBlock-->
 
+<!--BeginIconoRelevanciaBaja32Block-->
+<span class="i32 mi flagWhite32"></span>
+<!--EndIconoRelevanciaBajaBlock-->
+
+<!--BeginIconoRelevanciaNormal32Block-->
+<span class="i32 mi flagGreen32"></span>
+<!--EndIconoRelevanciaNormalBlock-->
+
+<!--BeginIconoRelevanciaAlta32Block-->
+<span class="i32 mi flagYellow32"></span>
+<!--EndIconoRelevanciaAltaBlock-->
+
 <!--BeginListadoObjetivosBlock-->
 <div class="baco5 bobo2 boto2 mabo4 pa2 iveal ov_hi">
     <span class="di_no" name="sOrderBy" id="sOrderBy">relevancia</span>
@@ -317,6 +329,66 @@
     </form>
 </div>
 <!--EndFormularioRecronogramaBlock-->
+
+<!--BeginVerObjetivoBlock-->
+<div class="ficha03>
+
+    <div class="contenido row">
+        <span class="i bs {calendarClass}"></span>
+        <span class="fowe_bo fte2 {expiradaClass}">Alcanzar el {dEstimacion}</span>
+
+        <!--BeginEstimacionVencida-->
+        <span title="El Objetivo ha llegado a la fecha estimada de finalizaci&oacute;n" class="i32 bs warning32"></span>
+        <!--EndEstimacionVencida-->
+        <br>
+
+        {iconoRelevancia} {sRelevancia}<br>
+
+        <!--BeginEjeTematicoBlock-->
+        {sNivel} > {sCiclo} > {sArea} > {sDescripcionEje}
+        <!--EndEjeTematicoBlock-->
+
+        <!--BeginEjePersonalizadoBlock-->
+        {sDescripcionEje}
+        <!--EndEjePersonalizadoBlock-->
+
+        <p>{sDescripcion}</p>
+    </div>
+
+    <div class="contenido">
+        <h2> evolucion </h2>
+
+        <!--BeginGrillaEvolucion-->
+        <table id="grillaEvolucion" class="table01 wi100p">
+            <tr class="encabezado">
+                <td class="small">Fecha</td>
+                <td class="">Evoluci&oacute;n</td>
+            </tr>
+            <!--BeginEvolucionFechaBlock-->
+            <tr>
+                <td>
+                    {sFecha}
+                </td>
+                <td>
+                    <div class="bora progress-bar">
+                        <div class="bora progress-bar-percentage" style="width:{fEvolucion}%"><span>{fEvolucion}/100</span></div>
+                    </div>
+                </td>
+            </tr>
+            <!--EndEvolucionFechaBlock-->
+            <!--BeginEvolucionNoRecords-->
+            <tr>
+                <td colspan="2">
+                    El objetivo a&uacute;n no tiene entradas.
+                </td>
+            </tr>
+            <!--EndEvolucionNoRecords-->
+        </table>
+        <!--EndGrillaEvolucion-->
+    </div>
+
+</div>
+<!--EndVerObjetivoBlock-->
 
 
 

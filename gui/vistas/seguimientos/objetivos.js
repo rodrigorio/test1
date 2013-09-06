@@ -441,7 +441,23 @@ $(function(){
 
         eliminarObjetivo(iObjetivoId, iSeguimientoId, tipoObjetivo);
     });
+    
+    $(".verObjetivo").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iObjetivoId = rel[0];
+        var iSeguimientoId = rel[1];
+        var tipoObjetivo = rel[2];
 
+        var dialog = setWaitingStatusDialog(550, "Ver Objetivo");
+        dialog.load(
+            "seguimientos/ver-objetivo",
+            {iSeguimientoId:iSeguimientoId,
+             iObjetivoId:iObjetivoId,
+             tipoObjetivo:tipoObjetivo},
+            function(responseText, textStatus, XMLHttpRequest){}
+        );
+    });
+    
     $("#crearObjetivoPersonalizado").click(function(){
         var iSeguimientoId = $(this).attr('rel');
         var dialog = setWaitingStatusDialog(550, "Crear Objetivo");
@@ -545,6 +561,4 @@ $(function(){
             }
         );
     });
-
-
 });

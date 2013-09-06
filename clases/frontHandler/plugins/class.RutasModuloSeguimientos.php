@@ -364,8 +364,15 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'guardarObjetivo'
                                 ));
-        $router->addRoute('seguimientosSeguimientosGuardarObjetivo', $route);
-        
+        $router->addRoute('seguimientosSeguimientosGuardarObjetivo', $route);        
+        $route = new RegexRoute('seguimientos/ver-objetivo',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'verObjetivo'
+                                ));
+        $router->addRoute('seguimientosSeguimientosVerObjetivo', $route);
+
         //entradas
         $route = new RegexRoute('seguimientos/entradas/calendario',
                                 array(
