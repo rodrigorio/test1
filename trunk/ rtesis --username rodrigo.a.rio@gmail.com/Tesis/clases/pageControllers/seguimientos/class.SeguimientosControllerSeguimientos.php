@@ -2440,7 +2440,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         }                        
                     }
                     $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
-                    $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoRelevancia"));
+                    $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
                     $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
 
                     $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
@@ -2764,7 +2764,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         }
                     }
                     $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
-                    $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoRelevancia"));
+                    $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
                     $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
 
                     $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
@@ -3245,5 +3245,84 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    public function verObjetivo()
+    {
+        try{
+            if(!$this->getAjaxHelper()->isAjaxContext()){
+                throw new Exception("", 404);
+            }
+
+            $iSeguimientoId = $this->getRequest()->getPost('seguimientoIdForm');
+            $iObjetivoId = $this->getRequest()->getPost('objetivoIdForm');
+            $tipoObjetivoIdForm = $this->getRequest()->getPost('tipoObjetivoIdForm');
+
+            if(empty($iSeguimientoId) || empty($iObjetivoId) || empty($tipoObjetivoIdForm)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+            }
+
+            if($tipoObjetivoIdForm == "ObjetivoPersonalizado"){
+                if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+            }else{
+                if(!SeguimientosController::getInstance()->isObjetivoAprendizajeUsuario($iObjetivoId)){
+                    throw new Exception("No tiene permiso para editar el objetivo", 401);
+                }
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
+            }
+
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "verObjetivoBlock");
+
+            $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+
+            if(!$oObjetivo->isEstimacionVencida()){
+                
+            }else{
+                
+            }
+
+            switch($oObjetivo->getRelevancia()->getDescripcion())
+            {
+                case "baja":{
+                    $iconoRelevanciaBlock = "IconoRelevanciaBaja32Block";
+                    break;
+                }
+                case "normal":{
+                    $iconoRelevanciaBlock = "IconoRelevanciaNormal32Block";
+                    break;
+                }
+                case "alta":{
+                    $iconoRelevanciaBlock = "IconoRelevanciaAlta32Block";
+                    break;
+                }
+            }
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
+            $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
+            $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
+
+            $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
+            
+            $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
+
+            //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+            $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+
+            //iteracion con los elementos de la evolucion
+            $aEvolucion = $oObjetivo->getEvolucion();
+            foreach($aEvolucion as $oEvolucion){
+
+            }
+
+            $this->getTemplate()->parse("VerObjetivoBlock", true);
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+            
+        }catch(Exception $e){
+            throw $e;
+        }
     }
 }
