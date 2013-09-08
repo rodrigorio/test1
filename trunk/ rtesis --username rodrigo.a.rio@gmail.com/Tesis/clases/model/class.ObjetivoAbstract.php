@@ -27,6 +27,12 @@ abstract class ObjetivoAbstract
      * se cargan a demanda, para evitar sobre carga de consultas.
      */
     protected $aEvolucion = null;
+    
+    /**
+     * este metodo es muy util para mejorar performance, aunque los objetivos no tengan 
+     * el listado completo de evolucion van a tener de fabrica el objeto Evolucion de la ultima entrada por fecha
+     */
+    protected $oUltimaEvolucion = null;
 
     public function isObjetivoPersonalizado(){ return false; }
     public function isObjetivoAprendizaje(){ return false; }
@@ -127,6 +133,14 @@ abstract class ObjetivoAbstract
         }
     }
 
+    public function isLogrado(){
+        if(null !== $this->oUltimaEvolucion){
+            return $this->oUltimaEvolucion->isObjetivoLogrado();
+        }else{
+            return false;
+        }
+    }
+
     abstract public function getEvolucion();
     abstract public function getEje();
     
@@ -138,6 +152,11 @@ abstract class ObjetivoAbstract
     public function setEvolucion($aEvolucion){
         $this->aEvolucion = $aEvolucion;
         return $this;
+    }
+
+    public function getUltimaEvolucion()
+    {
+        return $this->oUltimaEvolucion;
     }
 
     public function addEvolucion($oEvolucion)

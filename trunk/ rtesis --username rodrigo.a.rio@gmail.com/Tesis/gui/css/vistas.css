@@ -326,6 +326,11 @@ input.medium, select.medium, textarea.medium{width:300px;}
 .paginacion .activo{background-color:#666; color:#FFF; border-color:#666}
 .paginacion .activo span{font-weight:bold; text-transform:capitalize;}
 
+.progress-bar{background:#CCC; position:relative;}
+.progress-bar-percentage{background-color:#3063A5; padding:1px 0px; color:#FFF; text-align:center; height:18px;}
+.progress-bar .goal{background-color:#3AAA36 !important}
+.progress-bar-percentage span{display:inline-block; position:absolute; width:100%; left:0;}
+
 
 
 /****************************************/
@@ -597,6 +602,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 
 /*** VARIOS ***/
 .txt_cuidado{color:#F00}
+.txt_correcto{color:green}
 .txt_imp{font-weight:bold; text-transform:capitalize}
 .txt_imp2{font-weight:bold; text-transform:uppercase}
 p .destacado{font-weight:bold;}

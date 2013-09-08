@@ -2,7 +2,10 @@
 
 class Evolucion {
     private $iId;
-    private $fProgreso;
+    /**
+     * Numero entre 1 y 100
+     */
+    private $iProgreso;
     private $sComentarios;
     private $dFechaHora;
 	
@@ -62,15 +65,24 @@ class Evolucion {
         }
     }
 
-    public function setProgreso($fProgreso)
+    public function setProgreso($iProgreso)
     {
-        $this->fProgreso = $fProgreso;
+        $this->iProgreso = $iProgreso;
         return $this;
     }
 
     public function getProgreso()
     {
-        return $this->fProgreso;
+        return $this->iProgreso;
     }
 
+    /**
+     * Devuelve si el objetivo estaba logrado para la fecha de la entrada de la evolucion
+     */
+    public function isObjetivoLogrado()
+    {
+        if($this->iProgreso === null){ return false; }
+        
+        return ($this->iProgreso == 100)?true:false;
+    }
 }

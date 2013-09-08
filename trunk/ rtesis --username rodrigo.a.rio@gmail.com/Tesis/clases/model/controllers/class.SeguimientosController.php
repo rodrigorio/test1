@@ -1633,4 +1633,70 @@ class SeguimientosController
     {
         return FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
     }
+
+    public function obtenerEvolucionObjetivoScc($iObjetivoId, $iSeguimientoSCCId)
+    {
+    	try{
+            $filtro = array('oe.seg_scc_x_obj_apr_obj_id' => $iObjetivoId,
+                            'oe.seg_scc_x_obj_apr_seg_id' => $iSeguimientoSCCId);
+            
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }        
+    }
+    
+    public function obtenerEvolucionObjetivoSccByDate($iObjetivoId, $iSeguimientoSCCId, $dFecha)
+    {
+    	try{
+            $filtro = array('oe.seg_scc_x_obj_apr_obj_id' => $iObjetivoId,
+                            'oe.seg_scc_x_obj_apr_seg_id' => $iSeguimientoSCCId,
+                            'oe.fechaHora' => $dFecha);
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+
+            if(null !== $aEvolucion){
+                return $aEvolucion[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    public function obtenerEvolucionObjetivoPersonalizado($iObjetivoId)
+    {
+    	try{
+            $filtro = array('oe.objetivos_personalizados_id' => $iObjetivoId);
+
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }  
+    }
+    
+    public function obtenerEvolucionObjetivoPersonalizadoByDate($iObjetivoId, $dFecha)
+    {
+    	try{
+            $filtro = array('oe.objetivos_personalizados_id' => $iObjetivoId,
+                            'oe.fechaHora' => $dFecha);
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+
+            if(null !== $aEvolucion){
+                return $aEvolucion[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 }
