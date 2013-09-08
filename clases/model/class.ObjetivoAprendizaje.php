@@ -26,6 +26,10 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
     }
 
     public function isObjetivoAprendizaje(){ return true; }
+
+    public function getSeguimientoSCCId(){
+        return $this->iSeguimientoSCCId;
+    }
     
     public function setEjeTematico($oEjeTematico){
         $this->oEjeTematico = $oEjeTematico;

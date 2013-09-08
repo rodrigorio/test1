@@ -2402,28 +2402,39 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
                     $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
-
-                    $this->getTemplate()->set_var("tipoObjetivo", get_class($oObjetivo));
                     
+                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+                    
+                    if($oObjetivo->isLogrado()){
+                        $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
+                        $this->getTemplate()->set_var("EstimacionBlock", "");
+
+                        $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFechaHora(true));
+                    }else{
+                        $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
+                        $this->getTemplate()->set_var("FechaLogradoBlock", "");
+                        
+                        if(!$oObjetivo->isEstimacionVencida()){
+                            $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
+                            $this->getTemplate()->set_var("expiradaClass", "");
+                        }else{
+                            $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                        }                       
+                    }
+
                     if(!$oObjetivo->isActivo()){
                         $this->getTemplate()->set_var("sActivoClass", "disabled");
                         $this->getTemplate()->set_var("calendarClass", "calendar");
                         $this->getTemplate()->set_var("MenuObjetivoActivoBlock", "");
+
+                        $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
+                        $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
                     }else{
                         $this->getTemplate()->set_var("sActivoClass", "");
                         $this->getTemplate()->set_var("calendarClass", "calendarEdit ihover");
                         $this->getTemplate()->set_var("MenuObjetivoDesactivadoBlock", "");
                     }
-
-                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
-
-                    if(!$oObjetivo->isEstimacionVencida()){
-                        $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
-                        $this->getTemplate()->set_var("expiradaClass", "");
-                    }else{
-                        $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
-                    }
-                   
+                                       
                     switch($oObjetivo->getRelevancia()->getDescripcion())
                     {
                         case "baja":{
@@ -2454,10 +2465,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }else{
                         $this->getTemplate()->set_var("LinkVerMasBlock", "");
                     }
+                    
+                    $this->getTemplate()->set_var("tipoObjetivo", get_class($oObjetivo));
                     $this->getTemplate()->set_var("sDescripcionObjetivo", $sDescripcionObjetivo);
                     
                     $this->getTemplate()->parse("ObjetivoBlock", true);
 
+                    $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
+                    $this->getTemplate()->delete_parsed_blocks("ObjetivoLogradoBlock");
                     $this->getTemplate()->delete_parsed_blocks("EstimacinoExpiradaBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoActivoBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoDesactivadoBlock");
@@ -2729,23 +2745,36 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("tipoObjetivo", get_class($oObjetivo));
 
+                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+
+                    if($oObjetivo->isLogrado()){
+                        $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
+                        $this->getTemplate()->set_var("EstimacionBlock", "");
+
+                        $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFechaHora(true));
+                    }else{
+                        $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
+                        $this->getTemplate()->set_var("FechaLogradoBlock", "");
+
+                        if(!$oObjetivo->isEstimacionVencida()){
+                            $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
+                            $this->getTemplate()->set_var("expiradaClass", "");
+                        }else{
+                            $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                        }
+                    }
+
                     if(!$oObjetivo->isActivo()){
                         $this->getTemplate()->set_var("sActivoClass", "disabled");
                         $this->getTemplate()->set_var("calendarClass", "calendar");
                         $this->getTemplate()->set_var("MenuObjetivoActivoBlock", "");
+
+                        $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
+                        $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
                     }else{
                         $this->getTemplate()->set_var("sActivoClass", "");
                         $this->getTemplate()->set_var("calendarClass", "calendarEdit ihover");
                         $this->getTemplate()->set_var("MenuObjetivoDesactivadoBlock", "");
-                    }
-
-                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
-
-                    if(!$oObjetivo->isEstimacionVencida()){
-                        $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
-                        $this->getTemplate()->set_var("expiradaClass", "");
-                    }else{
-                        $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
                     }
 
                     switch($oObjetivo->getRelevancia()->getDescripcion())
@@ -2782,6 +2811,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->parse("ObjetivoBlock", true);
 
+                    $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
+                    $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
+                    $this->getTemplate()->delete_parsed_blocks("ObjetivoLogradoBlock");
                     $this->getTemplate()->delete_parsed_blocks("EstimacinoExpiradaBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoActivoBlock");
                     $this->getTemplate()->delete_parsed_blocks("MenuObjetivoDesactivadoBlock");
@@ -3254,9 +3286,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("", 404);
             }
 
-            $iSeguimientoId = $this->getRequest()->getPost('seguimientoIdForm');
-            $iObjetivoId = $this->getRequest()->getPost('objetivoIdForm');
-            $tipoObjetivoIdForm = $this->getRequest()->getPost('tipoObjetivoIdForm');
+            $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+            $iObjetivoId = $this->getRequest()->getParam('iObjetivoId');
+            $tipoObjetivoIdForm = $this->getRequest()->getParam('tipoObjetivo');
 
             if(empty($iSeguimientoId) || empty($iObjetivoId) || empty($tipoObjetivoIdForm)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
@@ -3275,14 +3307,21 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
 
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "verObjetivoBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "popUpContent", "VerObjetivoBlock");
 
             $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
 
-            if(!$oObjetivo->isEstimacionVencida()){
-                
+            if($oObjetivo->isLogrado()){
+                $this->getTemplate()->set_var("EstimacionBlock", "");
+                $this->getTemplate()->set_var("EstimacionVencida", "");
+                $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFechaHora());
             }else{
-                
+                $this->getTemplate()->set_var("FechaLogradoBlock", "");
+                if(!$oObjetivo->isEstimacionVencida()){
+                    $this->getTemplate()->set_var("EstimacionVencida", "");
+                }else{
+                    $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                }
             }
 
             switch($oObjetivo->getRelevancia()->getDescripcion())
@@ -3300,23 +3339,47 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     break;
                 }
             }
+            
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
             $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
-            $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
-
             $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
-            
-            $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
 
-            //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+            $oEje = $oObjetivo->getEje();
+            if($oObjetivo->isObjetivoPersonalizado()){
+                $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
+                $this->getTemplate()->set_var("EjeTematicoBlock", "");
+            }
+
+            if($oObjetivo->isObjetivoAprendizaje()){                                                                
+                $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
+                $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion());
+                $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
+                $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
+
+                $this->getTemplate()->set_var("EjePersonalizadoBlock", "");
+            }
+                        
             $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
 
             //iteracion con los elementos de la evolucion
             $aEvolucion = $oObjetivo->getEvolucion();
-            foreach($aEvolucion as $oEvolucion){
+            if(count($aEvolucion) > 0){
+                $this->getTemplate()->set_var("EvolucionNoRecords", "");
+                foreach($aEvolucion as $oEvolucion){
+                    $this->getTemplate()->set_var("sFecha", $oEvolucion->getFechaHora(true));
+                    $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
 
+                    if($oEvolucion->isObjetivoLogrado()){
+                        $this->getTemplate()->set_var("sGoalClass", "goal");
+                    }else{
+                        $this->getTemplate()->set_var("sGoalClass", "");
+                    }
+
+                    $this->getTemplate()->parse("EvolucionFechaBlock", true);
+                }
+            }else{
+                $this->getTemplate()->set_var("EvolucionFechaBlock", "");                
             }
-
             $this->getTemplate()->parse("VerObjetivoBlock", true);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));

@@ -21,10 +21,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
+            //adjunto la ultima evolucion para el objetivo si es que la tiene
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion, 
                         op.fechaCreacion as dFechaCreacion, op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo,
-                        ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia 
+                        ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia,
+                        e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
+                        IF(e.iProgreso = 100, '1', '0') as isLogrado
                     FROM
                         objetivos o
                     JOIN
@@ -32,16 +35,21 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     JOIN
                         objetivo_personalizado_ejes ope ON ope.id = op.objetivo_personalizado_ejes_id
                     JOIN
-                        objetivo_relevancias orr ON orr.id = op.objetivo_relevancias_id ";
+                        objetivo_relevancias orr ON orr.id = op.objetivo_relevancias_id 
+                    LEFT JOIN
+                        (SELECT oe.id as iEvolucionId , oe.progreso AS iProgreso, oe.objetivos_personalizados_id,
+                                oe.comentarios AS sComentarios, oe.fechaHora as dFechaHora 
+                         FROM objetivo_evolucion oe
+                         ORDER BY fechaHora DESC limit 1) AS e ON o.id = e.objetivos_personalizados_id ";
             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
             if(isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by bActivo desc, $sOrderBy $sOrder ";
+                $sSQL .= " order by bActivo desc, isLogrado, $sOrderBy $sOrder ";
             }else{
-                $sSQL .= " order by bActivo desc, iRelevanciaId desc ";
+                $sSQL .= " order by bActivo desc, isLogrado, iRelevanciaId desc ";
             }
 
             $db->query($sSQL);
@@ -64,6 +72,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
                 $oRelevancia = Factory::getRelevanciaInstance($oRelevancia);
 
+                $oEvolucion = new stdClass();
+                $oEvolucion->iId = $oObj->iEvolucionId;
+                $oEvolucion->iProgreso = $oObj->iProgreso;
+                $oEvolucion->sComentarios = $oObj->sComentarios;
+                $oEvolucion->dFechaHora = $oObj->dFechaHora;
+                $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
+
             	$oObjetivo = new stdClass();
             	$oObjetivo->iId = $oObj->iId;
                 $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
@@ -71,9 +86,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->oRelevancia = $oRelevancia;
+                $oObjetivo->oUltimaEvolucion = $oEvolucion;
                 $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEje = $oEje;
-                                
+                
             	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
             }
 
@@ -143,7 +159,9 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         oa.ejes_id as iEjeTematicoId,
                         sxo.seguimientos_scc_id as iSeguimientoSCCId, sxo.estimacion as dEstimacion, sxo.activo as bActivo,
                         sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia, 
-                        sxo.fechaCreacion as dFechaCreacion
+                        sxo.fechaCreacion as dFechaCreacion, 
+                        e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
+                        IF(e.iProgreso = 100, '1', '0') as isLogrado
                     FROM
                        objetivos o
                     JOIN
@@ -151,16 +169,22 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     JOIN
                        seguimiento_scc_x_objetivo_aprendizaje sxo ON oa.id = sxo.objetivos_aprendizaje_id
                     JOIN
-                       objetivo_relevancias orr ON orr.id = sxo.objetivo_relevancias_id ";
+                       objetivo_relevancias orr ON orr.id = sxo.objetivo_relevancias_id
+                    LEFT JOIN
+                        (SELECT oe.id as iEvolucionId , oe.progreso AS iProgreso,
+                                oe.seg_scc_x_obj_apr_obj_id, oe.seg_scc_x_obj_apr_seg_id, 
+                                oe.comentarios AS sComentarios, oe.fechaHora as dFechaHora
+                         FROM objetivo_evolucion oe
+                         ORDER BY fechaHora DESC limit 1) AS e ON o.id = e.seg_scc_x_obj_apr_obj_id AND sxo.seguimientos_scc_id = e.seg_scc_x_obj_apr_seg_id ";
 
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
             if(isset($sOrderBy) && isset($sOrder)){
-                $sSQL .= " order by bActivo desc, $sOrderBy $sOrder ";
+                $sSQL .= " order by bActivo desc, isLogrado, $sOrderBy $sOrder ";
             }else{
-                $sSQL .= " order by bActivo desc, iRelevanciaId desc ";
+                $sSQL .= " order by bActivo desc, isLogrado, iRelevanciaId desc ";
             }
 
             $db->query($sSQL);
@@ -183,12 +207,20 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     $oObjetivo->oRelevancia = $oRelevancia;
                 }
 
+                $oEvolucion = new stdClass();
+                $oEvolucion->iId = $oObj->iEvolucionId;
+                $oEvolucion->iProgreso = $oObj->iProgreso;
+                $oEvolucion->sComentarios = $oObj->sComentarios;
+                $oEvolucion->dFechaHora = $oObj->dFechaHora;
+                $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
+
                 $oObjetivo->iId = $oObj->iId;
                 $oObjetivo->iSeguimientoSCCId = $oObj->iSeguimientoSCCId;
                 $oObjetivo->sDescripcion = $oObj->sDescripcion;
                 $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
                 $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
+                $oObjetivo->oUltimaEvolucion = $oEvolucion;
                 $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
 
