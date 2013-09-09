@@ -211,6 +211,22 @@ class RutasModuloSeguimientos
                                 ));
         $router->addRoute('seguimientosProcesarDiagnostico', $route);
 
+        //pronostico
+        $route = new RegexRoute('seguimientos/editar-pronostico',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'editarPronostico'
+                                ));
+        $router->addRoute('seguimientosEditarPronostico', $route);
+        $route = new RegexRoute('seguimientos/procesar-pronostico',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'procesarPronostico'
+                                ));
+        $router->addRoute('seguimientosProcesarPronostico', $route);
+
         //objetivo aprendizaje
         $route = new RegexRoute('seguimientos/listar-ciclos-por-niveles',
                                 array(

@@ -138,22 +138,4 @@ $(document).ready(function(){
     $("#formGuardarAntecedentes").ajaxForm(optionsAjaxFormAntecedentes);
 
     bindEventFormAgregarArchivo($('#idSeguimiento').val());
-
-    $(".verPersona").live('click',function(){
-
-        $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
-
-        setWaitingStatus('fichaPersonaMenu', true, "16");
-        var dialog = setWaitingStatusDialog(450, $(this).html());
-        dialog.load(
-            "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
-            {},
-            function(responseText, textStatus, XMLHttpRequest){
-                setWaitingStatus('fichaPersonaMenu', false, "16");
-                bindEventsPersonaVerFicha(); //la funcion esta en personas.js
-                $("a[rel^='prettyPhoto']").prettyPhoto();
-            }
-        );
-        return false;
-    });
 });

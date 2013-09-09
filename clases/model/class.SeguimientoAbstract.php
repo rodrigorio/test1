@@ -140,8 +140,12 @@ abstract class SeguimientoAbstract
         return $this->sAntecedentes;
     }
 
-    public function getPronostico(){
-        return $this->sPronostico;
+    public function getPronostico($nl2br = false){
+        if($nl2br){
+            return nl2br($this->sPronostico);
+        }else{
+            return $this->sPronostico;
+        }
     }
 
     public function getDiaHorario(){
