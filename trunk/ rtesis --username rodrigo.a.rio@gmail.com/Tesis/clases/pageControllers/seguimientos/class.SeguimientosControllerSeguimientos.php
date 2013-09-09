@@ -67,6 +67,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "jsContent", "JsContent");
         return $this;
     }
+    private function setJSPronostico(){
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/pronostico.gui.html", "jsContent", "JsContent");
+        return $this;
+    }
+    
     private function setMenuDerechaHome()
     {
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContHomeBlock");
@@ -96,6 +101,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("hrefEditarDiagnosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
         $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
         $this->getTemplate()->set_var("hrefAdministrarObjetivosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdministrarObjetivos", true));
+        $this->getTemplate()->set_var("hrefEditarPronosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarPronostico", true));
 
         //marco los selecteds en el menu de la izq
         if(is_array($aCurrentOption)){
@@ -3387,5 +3393,96 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
+    }
+
+    public function editarPronostico()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+    	if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+    	}
+
+        try{
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $aCurrentOptions[] = "currentOptionSeguimiento";
+            $aCurrentOptions[] = "currentSubOptionEditarPronosticoSeguimiento";
+
+            $this->setFrameTemplate()
+                 ->setJSPronostico()
+                 ->setHeadTag()
+                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+
+            //para que pueda ser reutilizado en otras vistas
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            //titulo seccion
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_PERSONALIZADO_DESC);
+            }else{
+                $this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_SCC_DESC);
+            }
+
+            $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/pronostico.gui.html", "pageRightInnerMainCont", "FormularioBlock");
+
+            $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
+            $this->getTemplate()->set_var("sPronostico", $oSeguimiento->getPronostico());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    public function procesarPronostico()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+    	if($this->getRequest()->has('guardarPronostico')){
+            $this->guardarPronostico();
+            return;
+        }
+    }
+
+    private function guardarPronostico()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('idSeguimientoForm');
+
+    	if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+    	}
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para editar este seguimiento", 401);
+            }
+
+            $sPronostico = $this->getRequest()->getPost('pronostico');
+
+            $oSeguimiento->setPronostico($sPronostico);
+            $resultado = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
+
+            if($resultado){
+                $this->getJsonHelper()->setSuccess(true);
+            }else{
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+           $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }

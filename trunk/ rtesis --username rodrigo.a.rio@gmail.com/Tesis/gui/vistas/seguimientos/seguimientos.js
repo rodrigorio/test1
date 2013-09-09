@@ -692,56 +692,8 @@ function bindEventsFormModificarSeguimiento()
     $("#formModificarSeguimiento").ajaxForm(optionsAjaxFormModificarSeguimiento);
 }
 
-function checkSeguimientoEntradasOK(iSeguimientoId)
-{
-    $.ajax({
-        type:"POST",
-        url:"seguimientos/procesar",
-        data:{
-            checkEntradasOK:"1",
-            iSeguimientoId:iSeguimientoId
-        },
-        beforeSend: function(){
-            setWaitingStatus('pageRightInnerContNav', true);
-        },
-        success:function(data){
-            setWaitingStatus('pageRightInnerContNav', false);
-
-            if(data.success == undefined || data.success == 0){                
-                var dialog = $("#dialog");
-                if($("#dialog").length){
-                    dialog.attr("title","Editar Entradas");
-                }else{
-                    dialog = $('<div id="dialog" title="Editar Entradas"></div>').appendTo('body');
-                }
-                dialog.html(data.html);
-
-                dialog.dialog({
-                    position:['center', 'center'],
-                    width:400,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true,
-                    buttons:{
-                        "Aceptar": function() {
-                            $(this).dialog( "close" );
-                        }
-                    }
-                });
-            }
-
-            if(data.success == 1){
-                location = data.redirect;
-            }            
-        }
-    });
-}
-
 $(document).ready(function(){
-
-    $("a[rel^='prettyPhoto']").prettyPhoto();
-   
+       
     //Listado Seguimientos
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
@@ -875,24 +827,6 @@ $(document).ready(function(){
         return false;
     });
 
-    $(".verPersona").live('click',function(){
-
-        $.getScript(pathUrlBase+"gui/vistas/seguimientos/personas.js");
-
-        setWaitingStatus('fichaPersonaMenu', true, "16");
-        var dialog = setWaitingStatusDialog(450, $(this).html());
-        dialog.load(
-            "seguimientos/ver-persona?personaId="+$(this).attr('rel'),
-            {},
-            function(responseText, textStatus, XMLHttpRequest){
-                setWaitingStatus('fichaPersonaMenu', false, "16");
-                bindEventsPersonaVerFicha(); //la funcion esta en personas.js
-                $("a[rel^='prettyPhoto']").prettyPhoto();
-            }
-        );
-        return false;
-    });
-
     $(".modificarSeguimiento").live('click',function()
     {
         var dialog = setWaitingStatusDialog(450, "Edicion Básica");
@@ -999,12 +933,5 @@ $(document).ready(function(){
     $(".editarArchivo").live('click', function(){
         var iArchivoId = $(this).attr("rel");
         editarArchivo(iArchivoId);
-    });
-
-    /* me fijo que el seguimiento tenga antecedentes, diagnostico y al menos un objetivo asociado */
-    $("#checkSeguimientoEntradasOK").live('click', function(){
-        var iSeguimientoId = $(this).attr("rel");
-        checkSeguimientoEntradasOK(iSeguimientoId);
-        return false;
     });
 });

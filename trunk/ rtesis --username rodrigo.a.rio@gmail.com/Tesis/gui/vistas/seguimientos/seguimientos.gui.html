@@ -13,6 +13,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientosGeneral.js")
    .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientos.js");
 </script>
 <!--EndJsContent-->
@@ -94,6 +95,11 @@
             <li {currentSubOptionEditarEntradasSeguimiento}>
                 <a id="checkSeguimientoEntradasOK" rel="{iSeguimientoId}" href="javascript:;">
                     Editar Entradas por fecha
+                </a>
+            </li>
+            <li {currentSubOptionEditarPronosticoSeguimiento}>
+                <a href="{hrefEditarPronosticoSeguimiento}?iSeguimientoId={iSeguimientoId}">
+                    Editar Pron&oacute;stico
                 </a>
             </li>
         </ul>
@@ -305,12 +311,12 @@
 <!--BeginListadoSeguimientosBlock-->
 <div class="ficha01 grupo mabo2">
     <div class="encabezado">
+        <div class="der"></div>
         <div class="izq">
             <div class="icono"><span class="i32 bs search32"></span></div>
             <span class="titulo">Buscar Seguimientos</span><br>
             <span class="subtitulo">filtrar los resultados del listado</span>
-        </div>
-        <div class="der"></div>
+        </div>        
     </div>
     <div class="contenido">
         <form id="formFiltrarSeguimientos" name="formFiltrarSeguimientos" action="" method="post">
