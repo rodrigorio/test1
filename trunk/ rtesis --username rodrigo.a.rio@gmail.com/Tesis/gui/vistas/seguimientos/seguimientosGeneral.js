@@ -72,9 +72,11 @@ $(document).ready(function(){
     });
 
     /* me fijo que el seguimiento tenga antecedentes, diagnostico y al menos un objetivo asociado */
-    $("#checkSeguimientoEntradasOK").live('click', function(){
-        var iSeguimientoId = $(this).attr("rel");
-        checkSeguimientoEntradasOK(iSeguimientoId);
-        return false;
-    });
+    if($("#checkSeguimientoEntradasOK").length){
+        $("#checkSeguimientoEntradasOK").live('click', function(){
+            var iSeguimientoId = $(this).attr("rel");
+            checkSeguimientoEntradasOK(iSeguimientoId);
+            return false;
+        });
+    }
 });
