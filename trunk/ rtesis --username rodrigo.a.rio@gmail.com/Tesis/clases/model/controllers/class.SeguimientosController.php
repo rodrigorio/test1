@@ -1699,4 +1699,39 @@ class SeguimientosController
             throw $e;
         }
     }
+
+    /**
+     * Por ahora es simplemente la estimacion mas lejana de todos los objetivos activos que no esten logrados
+     */
+    public function obtenerDuracionEstimadaSeguimiento($oSeguimiento)
+    {
+        $dFecha = null;
+
+        $aObjetivos = $oSeguimiento->getObjetivos();
+        if(count($aObjetivos) > 0){
+            //me fijo en todos los objetivos del seguimiento
+            foreach($aObjetivos as $oObjetivo){
+
+                //solo considero los activos, que no esten vencidos y que no esten logrados
+                if($oObjetivo->isActivo() && !$oObjetivo->isEstimacionVencida() && !$oObjetivo->isLogrado()){
+
+                    $nextDate = strtotime($oObjetivo->getEstimacion());
+
+                    //si es la primer fecha no comparo nada
+                    if($dFecha === null){
+                        $dFecha = $nextDate;
+                        continue;
+                    }
+
+                    //si la fecha del objetivo 2 es mayor a la del objetivo 1 entonces reemplazo
+                    if($dFecha < $nextDate){
+                        $dFecha = $nextDate;
+                    }
+                }
+            }
+        }
+
+        //puedo devolver nulo o la fecha mas lejana de todos los objetivos. 
+        return ($dFecha === null)?$dFecha:date("d/m/Y", $dFecha);
+    }
 }

@@ -229,6 +229,20 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
                     $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
+                    $sDuracionEstimada = SeguimientosController::getInstance()->obtenerDuracionEstimadaSeguimiento($oSeguimiento);
+                    if($sDuracionEstimada === null){
+                        $sDuracionEstimada = "Ningún objetivo se encuentra activo y sin alcanzar.";
+                    }
+                    $this->getTemplate()->set_var("sDuracionEstimada", $sDuracionEstimada);
+
+                    $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
+                    if($oUltimaEntrada !== null){
+                        $this->getTemplate()->set_var("sUltimaModificacion", $oUltimaEntrada->getFecha(true));
+                    }else{
+                        $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
+                    }
+                    
+
                     $this->getTemplate()->parse("SeguimientoBlock", true);
             	}
 
@@ -322,6 +336,19 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
                 $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
                 $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+                $sDuracionEstimada = SeguimientosController::getInstance()->obtenerDuracionEstimadaSeguimiento($oSeguimiento);
+                if($sDuracionEstimada === null){
+                    $sDuracionEstimada = "Ningún objetivo se encuentra activo y sin alcanzar.";
+                }
+                $this->getTemplate()->set_var("sDuracionEstimada", $sDuracionEstimada);
+
+                $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
+                if($oUltimaEntrada !== null){
+                    $this->getTemplate()->set_var("sUltimaModificacion", $oUltimaEntrada->getFecha(true));
+                }else{
+                    $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
+                }
 
                 $this->getTemplate()->parse("SeguimientoBlock", true);                               
             }
@@ -925,6 +952,19 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
         $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
 
+        $sDuracionEstimada = SeguimientosController::getInstance()->obtenerDuracionEstimadaSeguimiento($oSeguimiento);
+        if($sDuracionEstimada === null){
+            $sDuracionEstimada = "Ningún objetivo se encuentra activo y sin alcanzar.";
+        }
+        $this->getTemplate()->set_var("sDuracionEstimada", $sDuracionEstimada);
+
+        $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
+        if($oUltimaEntrada !== null){
+            $this->getTemplate()->set_var("sUltimaModificacion", $oUltimaEntrada->getFecha(true));
+        }else{
+            $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
+        }
+
         //antecedentes
         $sAntecedentes = $oSeguimiento->getAntecedentes();
         $oAntecedentes = $oSeguimiento->getArchivoAntecedentes();
@@ -993,6 +1033,19 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("iCantidadFotos", $cantFotos);
         $this->getTemplate()->set_var("iCantidadVideos", $cantVideos);
         $this->getTemplate()->set_var("iCantidadArchivos", $cantArchivos);
+
+        $sDuracionEstimada = SeguimientosController::getInstance()->obtenerDuracionEstimadaSeguimiento($oSeguimiento);
+        if($sDuracionEstimada === null){
+            $sDuracionEstimada = "Ningún objetivo se encuentra activo y sin alcanzar.";
+        }
+        $this->getTemplate()->set_var("sDuracionEstimada", $sDuracionEstimada);
+
+        $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
+        if($oUltimaEntrada !== null){
+            $this->getTemplate()->set_var("sUltimaModificacion", $oUltimaEntrada->getFecha(true));
+        }else{
+            $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
+        }
 
         //antecedentes
         $sAntecedentes = $oSeguimiento->getAntecedentes();

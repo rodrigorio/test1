@@ -279,9 +279,7 @@ abstract class SeguimientoAbstract
      */
     public function getUltimaEntrada()
     {
-        $oUltimaEntrada = null;
-        $oUltimaEntrada = SeguimientosController::getInstance()->getUltimaEntradaBySeguimiento($this->iId);
-        return $oUltimaEntrada;
+        return SeguimientosController::getInstance()->getUltimaEntradaBySeguimiento($this->iId);
     }
 
     /**
