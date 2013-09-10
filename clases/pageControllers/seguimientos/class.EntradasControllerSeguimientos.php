@@ -112,7 +112,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
             //Si ultima entrada es null entonces no hay entradas en el seguimiento
             if($oEntrada === null){
-                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaInfoBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
                 $this->getTemplate()->set_var("sTituloMsgFicha", "Seguimiento sin entradas.");
                 $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una seleccione una fecha desde el calendario y luego elija 'Crear nueva entrada'.");
                 $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));

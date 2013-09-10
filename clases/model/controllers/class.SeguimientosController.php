@@ -393,9 +393,8 @@ class SeguimientosController
             }
                         
             return $result;            
-        }catch(Exception $e){
+        }catch(Exception $e){            
             throw $e;
-            return false;
         }    
     }
     

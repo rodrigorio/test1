@@ -508,7 +508,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             //tiene al menos un objetivo, antecedentes y diagnostico seteado
             if(SeguimientosController::getInstance()->checkEntradasOK($oSeguimiento)){
                 $this->getJsonHelper()->setSuccess(true);
-                $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex", true)."?iSeguimientoId=".$iSeguimientoId;
+                $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex")."?iSeguimientoId=".$iSeguimientoId;
                 $this->getJsonHelper()->setRedirect($redirect);                
             }else{
                 $this->getJsonHelper()->setSuccess(false);                
@@ -850,19 +850,19 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->restartTemplate();
 
             if($result){
-                    $msg = "El seguimiento fue eliminado con exito";
-                    $bloque = 'MsgCorrectoBlockI32';
-                    $this->getJsonHelper()->setSuccess(true);
+                $msg = "El seguimiento fue eliminado con exito";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true);
             }else{
-                    $msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
-                    $bloque = 'MsgErrorBlockI32';
-                    $this->getJsonHelper()->setSuccess(false);
+                $msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
             }
     
-    	}catch(Exception $e){
-    		$msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
-    		$bloque = 'MsgErrorBlockI32';
-    		$this->getJsonHelper()->setSuccess(false);
+    	}catch(Exception $e){            
+            $msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
     	}
     
     	$this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
