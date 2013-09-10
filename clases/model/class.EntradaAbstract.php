@@ -17,8 +17,11 @@ abstract class EntradaAbstract
      * los conjuntos de objetivos y unidades
      */
     protected $iSeguimientoId;
+
     protected $dFecha;
+
     protected $aObjetivos = null;
+
     protected $aUnidades = null;
     
     /**
