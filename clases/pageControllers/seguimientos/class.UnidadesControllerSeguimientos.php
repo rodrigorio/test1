@@ -120,6 +120,8 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->parse("UnidadBlock", true);
                     $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
+                    $this->getTemplate()->delete_parsed_blocks("NoLinkSeguimientos");
+                    $this->getTemplate()->delete_parsed_blocks("LinkSeguimientos");
                 }
             }else{
                 $this->getTemplate()->set_var("UnidadBlock", "");
@@ -150,8 +152,8 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
             foreach($aUnidades as $oUnidad){
                 $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
-                $this->getTemplate()->set_var("sNombreVariable", $oUnidad->getNombre());
-
+                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+                
                 //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
                 $sDescripcionUnidad = $oUnidad->getDescripcion();
                 if(strlen($sDescripcionUnidad) > 150){
@@ -185,6 +187,8 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
                 $this->getTemplate()->parse("UnidadBlock", true);
                 $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
+                $this->getTemplate()->delete_parsed_blocks("NoLinkSeguimientos");
+                $this->getTemplate()->delete_parsed_blocks("LinkSeguimientos");
             }
         }else{
             $this->getTemplate()->set_var("UnidadBlock", "");

@@ -41,6 +41,8 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
+            return null;
+            
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 

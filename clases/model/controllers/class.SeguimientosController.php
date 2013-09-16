@@ -367,7 +367,7 @@ class SeguimientosController
             $aArchivos = $oSeguimiento->getArchivos();
             
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            $result = $oSeguimientoIntermediary->borrar($oSeguimiento->getId());
+            $result = $oSeguimientoIntermediary->borrar($oSeguimiento);
             if($result){
                 //borro archivos de fotos y adjuntos en el servidor, los registros en db volaron en cascada
                 if(null != $aFotos){
@@ -1013,7 +1013,7 @@ class SeguimientosController
             if($success){
                 //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
                 //se borra logicamente.
-                return $oUnidadIntermediary->borrar($iUnidadId);
+                return $oUnidadIntermediary->borrar($oUnidad->getId());
             }else{
                 return false;
             }

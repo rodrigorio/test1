@@ -30,7 +30,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT 
                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha, 
                         scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico 
                     FROM
@@ -51,6 +51,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
             if ($iIniLimit !== null && $iRecordCount !== null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
             }
+
+            echo $sSQL; exit();
 
             $db->query($sSQL);
                                               

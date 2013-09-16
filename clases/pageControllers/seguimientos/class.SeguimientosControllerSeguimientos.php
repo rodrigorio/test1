@@ -424,7 +424,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $filtro = array("s.discapacitados_id" => $iPersonaId);
 
             $iRecordsTotal = 0;
-            $aSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtro, $iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null);
+            $aSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtro, $iRecordsTotal, null, null, null, null);
             if(count($aSeguimientos) > 2){
                 $this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
                 $this->getJsonHelper()->sendJsonAjaxResponse(); 
@@ -461,7 +461,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
             
         }catch(Exception $e){
-           $this->getJsonHelper()->setMessage($e->getMessage());
+           $this->getJsonHelper()->setMessage("Ocurrio un error, no se pudo crear el seguimiento");
            $this->getJsonHelper()->setSuccess(false);
         }
         
