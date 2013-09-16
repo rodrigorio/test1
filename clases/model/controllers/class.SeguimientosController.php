@@ -936,7 +936,8 @@ class SeguimientosController
             
             $filtro["u.usuarios_id"] = $iUsuarioId;
             $filtro["u.preCargada"] = "0";
-            $filtro["u.asociacionAutomatica"] = "0";            
+            $filtro["u.asociacionAutomatica"] = "0";
+            $filtro["u.borradoLogico"] = "0";
             
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);

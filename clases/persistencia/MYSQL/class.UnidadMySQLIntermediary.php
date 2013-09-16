@@ -52,6 +52,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.asociacionAutomatica']) && $filtro['u.asociacionAutomatica']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.asociacionAutomatica', $filtro['u.asociacionAutomatica']);
             }
+            if(isset($filtro['u.borradoLogico']) && $filtro['u.borradoLogico']!=""){
+                $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', $filtro['u.borradoLogico']);
+            }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
             }
@@ -201,17 +204,41 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
+            $db->begin_transaction();
+            
             if(empty($foundRows)){
                 //borra fisicamente la unidad
-                $db->execSQL("delete from unidades where id = '".$iUnidadId."'");
-                $db->commit();
-                return true;
+                $db->execSQL("delete from unidades where id = ".$this->escInt($iUnidadId));
             }else{
             	//borra logicamente la unidad
-                $db->execSQL("UPDATE unidades SET borradoLogico = 1 WHERE id = '".$iUnidadId."'");
-                $db->commit();
-                return true;
-            }            
+                $db->execSQL("UPDATE unidades SET borradoLogico = 1 WHERE id = ".$this->escInt($iUnidadId));
+
+                //Si el borrado es logico, entonces borro las relaciones entre unidades y seguimientos
+                //para los seguimientos que tienen la unidad asociada pero todavia no guardaron valor en ninguna variable.
+                $sSQL = " SELECT su.seguimientos_id
+                            FROM seguimiento_x_unidad su LEFT JOIN
+                            (SELECT seguimiento_id, variable_id FROM seguimiento_x_contenido_variables scv
+                             JOIN VARIABLES v ON v.id = scv.variable_id JOIN unidades u ON v.unidad_id = u.id WHERE u.id = ".$this->escInt($iUnidadId).")
+                          AS aux ON aux.seguimiento_id = su.seguimientos_id
+                          WHERE su.unidades_id = ".$this->escInt($iUnidadId)." AND ISNULL(aux.seguimiento_id) ";
+
+                //creo una lista con los ids de los seguimientos:
+                // los ids de los seguimientos q estan asociados a una unidad 'X'
+                // pero q no tienen ningun valor en ninguna de las variables en ninguna fecha (sin entradas con esa unidad)
+                $db->query($sSQL);
+                $seguimientos = "";
+                while($oObj = $db->oNextRecord()){
+                    $seguimientos .= $oObj->seguimientos_id.",";
+                }
+
+                if($seguimientos != ""){
+                    $seguimientos = substr($seguimientos, 0, -1);
+                    $db->execSQL("DELETE FROM seguimiento_x_unidad WHERE seguimientos_id IN (".$seguimientos.")");
+                }
+            }
+
+            $db->commit();
+            return true;            
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
