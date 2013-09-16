@@ -151,7 +151,11 @@ function setWaitingStatusDialog(width, titulo, buttons){
     buttons = buttons || undefined;
 
     var dialog = $("#dialog");
-    if($("#dialog").length){ dialog.remove(); }
+    if($("#dialog").length){ 
+        dialog.hide("slow", function(){
+            dialog.remove(); 
+        });
+    }
     dialog = $("<div id='dialog' title='"+titulo+"'><div class='fte3 pa2'>Cargando... <span class='ajax_wait30'></span></div></div>").appendTo('body');
 
     dialog.dialog({
@@ -161,7 +165,7 @@ function setWaitingStatusDialog(width, titulo, buttons){
         width:width,
         resizable:false,
         draggable:false,
-        modal:false,
+        modal:true,
         closeOnEscape:true,
         buttons:buttons
     });

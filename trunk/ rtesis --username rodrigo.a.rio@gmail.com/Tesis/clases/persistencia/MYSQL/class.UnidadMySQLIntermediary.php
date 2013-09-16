@@ -29,14 +29,14 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         try{
             $db = clone($this->conn);
             
-            $sSQL = "   SELECT SQL_CALC_FOUND_ROWS
+            $sSQL = "   SELECT DISTINCT SQL_CALC_FOUND_ROWS
                             u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId, 
                             u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica,
                             u.tipoEdicion as eTipoEdicion
                         FROM
                             unidades u 
                         LEFT JOIN
-                            seguimiento_x_unidad su ON u.id = su.unidad_id ";
+                            seguimiento_x_unidad su ON u.id = su.unidades_id ";
 
             $WHERE = array();
             
@@ -295,8 +295,8 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $db->query("SELECT
                             COUNT(*) as cantidad
                         FROM
-                            unidades u JOIN seguimiento_x_unidad su ON u.id = su.unidad_id 
-                            JOIN seguimientos s ON su.seguimiento_id = s.id 
+                            unidades u JOIN seguimiento_x_unidad su ON u.id = su.unidades_id
+                            JOIN seguimientos s ON su.seguimientos_id = s.id
                         WHERE
                             u.id = '".$iUnidadId."' AND 
                             s.usuarios_id = '".$iUsuarioId."'");

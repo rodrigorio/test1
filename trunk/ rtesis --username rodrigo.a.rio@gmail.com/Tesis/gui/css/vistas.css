@@ -450,7 +450,7 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .ficha05 .titulo{padding-left:0px !important; background-color:#FFF !important; border-top:none !important; font-size:1.7em !important; border-bottom:1px solid #AAA !important; padding-bottom:10px !important; margin-bottom:10px !important;}
 
 /* debajo de la ficha como un anexo */
-.anexoFicha{padding:20px 10px 10px 10px; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 3px 3px #888 inset; box-shadow:0px 3px 3px #999 inset; -webkit-box-shadow:0px 3px 3px #888 inset; border:1px solid #CCC; border-top:1px solid #333}
+.anexoFicha{background-color:#F7F7FF; padding:20px 10px 10px 10px; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 1px 1px #CCC inset; box-shadow:0px 1px 1px #CCC inset; -webkit-box-shadow:0px 1px 1px #CCC inset; border:1px solid #CCC; border-top:1px solid #999}
 .anexoFicha .titulo{padding:10px 5px; background-color:#EEE; border-top:1px dashed #DDD; border-bottom:1px dashed #DDD}
 
 .slide01{border-top:1px dashed #999; padding-top:20px;}
@@ -834,6 +834,9 @@ p .destacado{font-weight:bold;}
 /* datepicker */
 .ui-datepicker{background-color:#FFF; border:1px solid #CCC; z-index:10 !important}
 .w100 .ui-datepicker{width:auto !important}
+.ui-datepicker td{padding:2px !important; color:#CCC}
+.ui-datepicker td a{background-color:#EEEFFF; color:#333 !important; padding:2px !important}
+.ui-datepicker-today{font-weight:bold}
 
 
 /* botones de la parte inferior en los popups */

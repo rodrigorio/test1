@@ -249,6 +249,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
+            
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -450,7 +451,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " diagnosticos_personalizado_id = ".$db->escape($oDiagnostico->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
-
           
             $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.asociacionAutomatica = 1";
             $db->query($sSQL);
@@ -459,8 +459,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             }
 
             $sSQL = " insert into seguimiento_x_unidad set ".
-                    " unidad_id = ".$this->escInt($iUnidadId).", ".
-                    " seguimiento_id = ".$this->escInt($iLastId)." ";
+                    " unidades_id = ".$this->escInt($iUnidadId).", ".
+                    " seguimientos_id = ".$this->escInt($iLastId)." ";
             
 
             $db->execSQL($sSQL);
@@ -508,6 +508,16 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $sSQL =" insert into seguimientos_scc set ".
             " id=".$db->escape($iLastId,false).", " .
             " diagnosticos_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
+
+            $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.asociacionAutomatica = 1";
+            $db->query($sSQL);
+            while($oObj = $db->oNextRecord()){
+            	$iUnidadId = $oObj->iId;
+            }
+
+            $sSQL = " insert into seguimiento_x_unidad set ".
+                    " unidades_id = ".$this->escInt($iUnidadId).", ".
+                    " seguimientos_id = ".$this->escInt($iLastId)." ";
 		
             $db->execSQL($sSQL);
             $db->commit();
@@ -521,19 +531,16 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     
    public function borrar($oSeguimiento)
    {
-       //REVISAR... cuando se borra un seguimiento borrar todo lo q no desaparece x cascada.
-
-       /*
         try{
             $db = $this->conn;
             
             $db->begin_transaction();
 			
-            $iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
             $iSeguimientoId = $oSeguimiento->getId();
-			
-            $db->execSQL("delete from diagnosticos where id = '".$iDiagnosticoId."'");						            
-            $db->execSQL("delete from seguimientos where id = '".$iSeguimientoId."'");
+            $iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
+
+            $db->execSQL("delete from diagnosticos where id = ".$this->escInt($iDiagnosticoId));
+            $db->execSQL("delete from seguimientos where id = ".$this->escInt($iSeguimientoId));
                         
             $db->commit();
             return true;
@@ -541,7 +548,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-        */
     }
 
     /**
