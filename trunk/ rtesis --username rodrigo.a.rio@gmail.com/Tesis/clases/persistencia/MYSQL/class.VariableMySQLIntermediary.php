@@ -31,14 +31,9 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT 
-                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha, 
-                        scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico 
+                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha 
                     FROM
-                       variables v 
-                    LEFT JOIN
-                       seguimiento_x_contenido_variables scv
-                    ON
-                       v.id = scv.variable_id ";
+                       variables v ";
             
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
@@ -52,14 +47,83 @@ class VariableMySQLIntermediary extends VariableIntermediary
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
             }
 
-            echo $sSQL; exit();
-
             $db->query($sSQL);
                                               
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
             
             if(empty($iRecordsTotal)){ return null; }
             
+            $aVariables = array();
+            while($oObj = $db->oNextRecord()){
+            	$oVariable = new stdClass();
+            	$oVariable->iId	= $oObj->iId;
+            	$oVariable->sNombre = $oObj->sNombre;
+            	$oVariable->sDescripcion = $oObj->sDescripcion;
+                $oVariable->dFecha = $oObj->dFecha;
+
+                switch($oObj->sTipoVariable){
+                    case "VariableTexto":{
+                        $oVariable = Factory::getVariableTextoInstance($oVariable);
+                        break;
+                    }
+                    case "VariableNumerica":{
+                        $oVariable = Factory::getVariableNumericaInstance($oVariable);
+                        break;
+                    }
+                    case "VariableCualitativa":{
+                        $oVariable = Factory::getVariableCualitativaInstance($oVariable);
+                        $aModalidades = SeguimientosController::getInstance()->getModalidadesByVariableId($oObj->iId);
+                        $oVariable->setModalidades($aModalidades);
+                        break;
+                    }
+                }
+                
+            	$aVariables[] = $oVariable;
+            }
+            
+            return $aVariables;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * devuelve variables pero con el contenido por fecha
+     */
+    public final function obtenerContenido($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = clone ($this->conn);
+            $filtro = $this->escapeStringArray($filtro);
+
+            $sSQL = "SELECT
+                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha,
+                        scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico
+                    FROM
+                       variables v
+                    LEFT JOIN
+                       seguimiento_x_contenido_variables scv
+                    ON
+                       v.id = scv.variable_id ";
+
+            if(!empty($filtro)){
+                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            }
+
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }
+
+            if ($iIniLimit !== null && $iRecordCount !== null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
+            }
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
             $aVariables = array();
             while($oObj = $db->oNextRecord()){
             	$oVariable = new stdClass();
@@ -87,15 +151,15 @@ class VariableMySQLIntermediary extends VariableIntermediary
                         break;
                     }
                 }
-                
+
             	$aVariables[] = $oVariable;
             }
-            
+
             return $aVariables;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
-   }
+    }
 
     public function guardar($oVariable, $iUnidadId = "")
     {                
