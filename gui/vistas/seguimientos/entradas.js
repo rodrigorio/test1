@@ -20,13 +20,8 @@ function showEventDates(date){
 
 */
 
-function onSelect(date){
-    alert(date);
-}
-
 $(document).ready(function(){    
     $("#calendarioEntradas").datepicker({
-        maxDate:new Date,
-        onSelect:onSelect(date)
+        maxDate:new Date
     });   
 });
