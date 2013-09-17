@@ -43,7 +43,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+            $sSQL = "SELECT DISTINCT SQL_CALC_FOUND_ROWS
                           s.id as iId,
                           s.discapacitados_id as iDiscapacitadoId,
                           s.frecuenciaEncuentros as sFrecuenciaEncuentros,
@@ -81,7 +81,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     JOIN
                         personas p ON p.id = d.id
                     JOIN
-                        usuarios u ON u.id = s.usuarios_id ";
+                        usuarios u ON u.id = s.usuarios_id
+                    JOIN
+                        seguimiento_x_unidad su ON su.seguimientos_id = s.id ";
 
             $WHERE = array();
 
@@ -93,6 +95,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('p.numeroDocumento', $filtro['p.numeroDocumento']);
+            }
+            if(isset($filtro['su.unidades_id']) && $filtro['su.unidades_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('su.unidades_id', $filtro['su.unidades_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['tipo']) && $filtro['tipo'] != ""){
                 if($filtro['tipo'] == "SeguimientoSCC"){
