@@ -260,8 +260,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         } 
     }       
     
-    public function buscarSeguimientos(){
-
+    public function buscarSeguimientos()
+    {
         //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);

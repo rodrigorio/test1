@@ -58,6 +58,52 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             $this->masUnidades();
             return;
         }
+        
+        if($this->getRequest()->has('verSeguimientos')){
+            $this->verSeguimientos();
+            return;
+        }
+    }
+
+    /**
+     * Seguimientos personalizados asociados a la unidad
+     */
+    private function verSeguimientos()
+    {
+        $iUnidadId = $this->getRequest()->getParam('iUnidadId');
+        if(empty($iUnidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+        
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "ajaxSeguimientosAsociadosBlock", "VerSeguimientosAsociadosBlock");
+
+        $iRecordsTotal = 0;
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $filtroSql["u.id"] = $perfil->getUsuario()->getId();
+        $filtroSql["su.unidades_id"] = $iUnidadId;
+        $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtroSql, $iRecordsTotal, null, null, null, null);
+
+        $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+        
+        foreach ($aSeguimientos as $oSeguimiento){
+            $this->getTemplate()->set_var("sSeguimientoPersona", $oSeguimiento->getDiscapacitado()->getNombreCompleto());
+            $this->getTemplate()->set_var("sSeguimientoPersonaDNI", $oSeguimiento->getDiscapacitado()->getNumeroDocumento());
+            $this->getTemplate()->set_var("sSeguimientoFechaCreacion", Utils::fechaFormateada($oSeguimiento->getFechaCreacion()));
+
+            $sEstadoSeguimiento = $oSeguimiento->getEstado();
+            if($sEstadoSeguimiento == "activo"){
+                $this->getTemplate()->set_var("sEstadoClass", "");
+            }else{
+                $this->getTemplate()->set_var("sEstadoClass", "disabled");
+            }
+
+            $srcAvatarPersona = $this->getUploadHelper()->getDirectorioUploadFotos().$oSeguimiento->getDiscapacitado()->getNombreAvatar();
+            $this->getTemplate()->set_var("scrAvatarPersona", $srcAvatarPersona);
+
+            $this->getTemplate()->parse("SeguimientoBlock", true);
+        }
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('ajaxSeguimientosAsociadosBlock', false));
     }
 
     public function listar()

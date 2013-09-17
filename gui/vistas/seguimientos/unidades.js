@@ -173,6 +173,19 @@ $(document).ready(function(){
             }
         );
     });
+    
+    $(".verSeguimientosUnidad").live('click', function(){
+        var iUnidadId = $(this).attr("rel");
+        var dialog = setWaitingStatusDialog(550, 'Seguimientos asociados');
+        dialog.load(
+            "seguimientos/unidades-procesar",
+            {
+                verSeguimientos:"1",
+                iUnidadId:iUnidadId
+            },
+            function(responseText, textStatus, XMLHttpRequest){}
+        );
+    });
 
     $(".borrarUnidad").live('click', function(){
         var iUnidadId = $(this).attr("rel");
