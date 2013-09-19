@@ -2,7 +2,6 @@
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
 <script type="text/javascript">
     $LAB
-  //.script("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
@@ -49,6 +48,25 @@
 </div>
 <!--EndPageBodyLeftContBlock-->
 
+<!--BeginVariableTexto-->
+<div class="pa2 mabo">
+    <span title="Descripcion: {sVariableDescription}" class="fowe_bo teta_up">{sVariableNombre}</span><br>
+    <p class="mabo0">{sVariableValorTexto}</p>
+</div>
+<!--EndVariableTexto-->
+
+<!--BeginVariableNumerica-->
+<div class="pa2 mabo">
+    <span title="Descripcion: {sVariableDescription}" class="fowe_bo teta_up">{sVariableNombre}: </span>{sVariableValorNumerico}
+</div>
+<!--EndVariableNumerica-->
+
+<!--BeginVariableCualitativa-->
+<div class="pa2 mabo">
+    <span title="Descripcion: {sVariableDescription}" class="fowe_bo teta_up">{sVariableNombre}: </span>{sVariableModalidad}
+</div>
+<!--EndVariableCualitativa-->
+
 <!--BeginAmpliarEntradaBlock-->
 <div class="mabo2 grupo">
     <!--BeginTituloBlock-->
@@ -78,15 +96,81 @@
 <div class="pabo mabo3 bobo2 grupo">
     <h3 class="fl_ri">detalles entrada</h3>
 </div>
-    {msgTopEntrada}
-    
-    <!--BeginTituloBlock-->
-    <!--EndTituloBlock-->
+
+{msgTopEntrada}
+
+<div class="pabo mabo3 bobo1 grupo">
+    <h2 class="mabo2">Objetivos</h2>
+</div>
+
+<div class="fost_it pato2 pabo2">Cantidad de objetivos: <span class="fowe_bo">{iRecordsTotal}</span></div>
+<table class="table01 wi100p mabo2">
+    <tr class="encabezado">
+        <td class="big iveal">Relevancia {orderByRelevancia}</td>
+        <td class="small">Estimaci&oacute;n {orderByEstimacion}</td>
+        <td class="small iveal">Eje</td>
+        <td class="small iveal">Descripci&oacute;n</td>
+        <td class="small iveal">Evoluci&oacute;n {orderByProgreso}</td>
+    </tr>
 
     <!--BeginObjetivoBlock-->
-    <!--EndObjetivoBlock-->
+    <tr>
+        <td class="desplegable" rel="{iObjetivoId}">
+           {iconoRelevancia} <span class="fost_it tetr_ca fte2">Relevancia {sRelevancia}</span>
+        </td>
+        <td class="desplegable" rel="{iObjetivoId}">
+            <span class="i bs {calendarClass}"></span>
 
-    <!--BeginUnidadBlock-->
-    <!--EndUnidadBlock-->
+            <!--BeginEstimacionBlock-->
+            <span class="fowe_bo fte2 {expiradaClass}">Alcanzar el {dEstimacion}</span>
+            <!--EndEstimacionBlock-->
+
+            <!--BeginFechaLogradoBlock-->
+            <span class="fowe_bo fte2 txt_correcto">Logrado el {dFechaLogrado}</span>
+            <!--EndFechaLogradoBlock-->
+        </td>
+        <td class="desplegable" rel="{iObjetivoId}">
+           <span class="fte2">{sDescripcionEjeBreve}</span>
+        </td>
+        <td class="desplegable" rel="{iObjetivoId}">
+           <span class="fte2">{sDescripcionObjetivoBreve}</span>
+        </td>
+        <td class="desplegable" rel="{iObjetivoId}">
+            <div class="bora progress-bar">
+                <div class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
+            </div>
+       </td>
+    </tr>
+    <tr class="ba_no">
+        <td id="desplegable_{iObjetivoId}" class="pa0 bobo_no" colspan="6" style="display:none;">
+            <div class="anexoFicha grupo">
+                <div class="titulo grupo">
+                    <div class="fte3 fl_le">Detalles</div>
+                    <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
+                </div>
+                <span class="fte2 txt_imp2">Creado el </span> {dFechaCreacion}<br>
+                <span class="fte2 txt_imp2">Descripci&oacute;n Eje</span><br>
+                <p>{sDescripcionEje}</p>
+                <span class="fte2 txt_imp2">Descripci&oacute;n Objetivo</span><br>
+                <p>{sDescripcionObjetivo}</p>
+            </div>
+        </td>
+    </tr>
+    <!--EndObjetivoBlock-->
+</table>
+
+<div class="pabo mabo3 bobo1 grupo">
+    <h2 class="mabo2">Informe</h2>
+</div>
+
+<!--BeginUnidadBlock-->
+<div class="pa grupo bobo1 baco3">
+<h3>{sNombreUnidad}</h3>
+    <!--BeginVariableBlock-->
+    {variableBlock}
+    <!--EndVariableBlock-->
+</div>
+<!--EndUnidadBlock-->
+
 
 <!--EndAmpliarEntradaBlock-->

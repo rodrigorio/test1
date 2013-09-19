@@ -122,7 +122,14 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 return;
             }
 
-            
+            $aObjetivos = $oEntrada->getObjetivos();
+
+            if(count($aObjetivos) > 0)
+            {
+                foreach($aObjetivos as $oObjetivo){
+                    echo "hola ";
+                }
+            }
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 

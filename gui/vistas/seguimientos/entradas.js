@@ -20,7 +20,10 @@ function showEventDates(date){
 
 */
 
-$(document).ready(function(){    
+$(document).ready(function(){
+
+    $(document).tooltip();
+    
     $("#calendarioEntradas").datepicker({
         maxDate:new Date
     });   
