@@ -445,6 +445,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftwareModeracion", $cartelModeracion);
                         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                         $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                        $this->getTemplate()->set_var("class", "mabo");
                         $sMensajesSoftware = $this->getTemplate()->pparse("sMensajeSoftwareModeracion");
                     }
 
@@ -779,6 +780,7 @@ class SoftwareControllerComunidad extends PageControllerAbstract
                         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeSoftware", $cartelModeracion);
                         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                         $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                        $this->getTemplate()->set_var("class", "mabo");
                         $this->getTemplate()->parse("sMensajeSoftware", false);
                     }
 

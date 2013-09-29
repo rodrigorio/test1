@@ -901,6 +901,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucionModeracion", $cartelModeracion);
                     $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                     $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                    $this->getTemplate()->set_var("class", "mabo");
                     $sMensajesInstitucion = $this->getTemplate()->pparse("sMensajeInstitucionModeracion");
 
                     //puede agregarse un mensaje por acumulacion de denuncias.
@@ -987,6 +988,7 @@ class InstitucionesControllerComunidad extends PageControllerAbstract
                 $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeInstitucion", $cartelModeracion);
                 $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                 $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                $this->getTemplate()->set_var("class", "mabo");
                 $this->getTemplate()->parse("sMensajeInstitucion", false);
 
                 $this->getTemplate()->parse("MiInstitucionBlock", true);

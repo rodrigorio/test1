@@ -19,12 +19,11 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     {
         try{
             $db = clone ($this->conn);
-            $filtro = $this->escapeStringArray($filtro);
 
             //adjunto la ultima evolucion para el objetivo si es que la tiene
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion, 
-                        op.fechaCreacion as dFechaCreacion, op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo,
+                        op.fechaCreacion as dFechaCreacion, op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, op.fechaDesactivado as dFechaDesactivado,
                         ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia,
                         e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
                         IF(e.iProgreso = 100, '1', '0') as isLogrado
@@ -42,10 +41,23 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                          FROM objetivo_evolucion oe
                          ORDER BY fechaHora DESC limit 1) AS e ON o.id = e.objetivos_personalizados_id ";
             
-            if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+
+            if(isset($filtro['o.id']) && $filtro['o.id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('o.id', $filtro['o.id'], MYSQL_TYPE_INT);
+            }            
+            if(isset($filtro['op.seguimientos_personalizados_id']) && $filtro['op.seguimientos_personalizados_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('op.seguimientos_personalizados_id', $filtro['op.seguimientos_personalizados_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['op.fechaCreacion']) && $filtro['op.fechaCreacion'] != ""){
+                $WHERE[] = $this->crearFiltroFecha('op.fechaCreacion', null, $filtro['op.fechaCreacion']);
+            }
+            if(isset($filtro['op.fechaDesactivado']) && $filtro['op.fechaDesactivado'] != ""){
+                $WHERE[] = $this->crearFiltroFecha('op.fechaDesactivado', $filtro['op.fechaDesactivado'], null, true);
             }
 
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+            
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by bActivo desc, isLogrado, $sOrderBy $sOrder ";
             }else{
@@ -82,6 +94,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oObjetivo = new stdClass();
             	$oObjetivo->iId = $oObj->iId;
                 $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
+                $oObjetivo->dFechaDesactivado = $oObj->dFechaDesactivado;
                 $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
@@ -92,7 +105,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 
             	$aObjetivos[] = Factory::getObjetivoPersonalizadoInstance($oObjetivo);
             }
-
+            
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -152,14 +165,13 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
     {
         try{
             $db = clone ($this->conn);
-            $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion, 
                         oa.ejes_id as iEjeTematicoId,
                         sxo.seguimientos_scc_id as iSeguimientoSCCId, sxo.estimacion as dEstimacion, sxo.activo as bActivo,
                         sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia, 
-                        sxo.fechaCreacion as dFechaCreacion, 
+                        sxo.fechaCreacion as dFechaCreacion, sxo.fechaDesactivado as dFechaDesactivado,
                         e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
                         IF(e.iProgreso = 100, '1', '0') as isLogrado
                     FROM
@@ -177,9 +189,25 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                          FROM objetivo_evolucion oe
                          ORDER BY fechaHora DESC limit 1) AS e ON o.id = e.seg_scc_x_obj_apr_obj_id AND sxo.seguimientos_scc_id = e.seg_scc_x_obj_apr_seg_id ";
 
-            if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+
+            if(isset($filtro['o.id']) && $filtro['o.id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('o.id', $filtro['o.id'], MYSQL_TYPE_INT);
             }
+            if(isset($filtro['sxo.seguimientos_scc_id']) && $filtro['sxo.seguimientos_scc_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('sxo.seguimientos_scc_id', $filtro['sxo.seguimientos_scc_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['sxo.objetivos_aprendizaje_id']) && $filtro['sxo.objetivos_aprendizaje_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('sxo.objetivos_aprendizaje_id', $filtro['sxo.objetivos_aprendizaje_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['sxo.fechaCreacion']) && $filtro['sxo.fechaCreacion'] != ""){
+                $WHERE[] = $this->crearFiltroFecha('sxo.fechaCreacion', null, $filtro['sxo.fechaCreacion']);
+            }
+            if(isset($filtro['sxo.fechaDesactivado']) && $filtro['sxo.fechaDesactivado'] != ""){
+                $WHERE[] = $this->crearFiltroFecha('sxo.fechaDesactivado', $filtro['sxo.fechaDesactivado'], null);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by bActivo desc, isLogrado, $sOrderBy $sOrder ";
@@ -218,6 +246,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $oObjetivo->iSeguimientoSCCId = $oObj->iSeguimientoSCCId;
                 $oObjetivo->sDescripcion = $oObj->sDescripcion;
                 $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
+                $oObjetivo->dFechaDesactivado = $oObj->dFechaDesactivado;
                 $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
                 $oObjetivo->oUltimaEvolucion = $oEvolucion;
@@ -413,6 +442,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 throw new Exception("La fecha tiene formato incorrecto", 0);
                 return;
             }
+
+            $dFechaDesactivado = $oObjetivo->getFechaDesactivado();
+            if(null === $dFechaDesactivado){
+                $dFechaDesactivado = 'null';
+            }
+            
             $activo = $oObjetivo->isActivo()?"1":"0";
 
             $db = $this->conn;
@@ -428,6 +463,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getEje()->getId()).", ".
                     " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".                    
                     " estimacion = '".$dEstimacion."', ".
+                    " fechaDesactivado = '".$dFechaDesactivado."', ".
                     " activo = ".$activo." ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
@@ -532,9 +568,15 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 return;
             }
 
+            $dFechaDesactivado = $oObjetivo->getFechaDesactivado();
+            if(null === $dFechaDesactivado){
+                $dFechaDesactivado = 'null';
+            }
+
             $db = $this->conn;
             $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
                     " estimacion = '".$dEstimacion."', ".
+                    " fechaDesactivado = '".$dFechaDesactivado."', ".
                     " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".
                     " activo = ".$activo." ".
                     " WHERE

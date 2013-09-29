@@ -18,7 +18,7 @@ $LAB
 <!--EndJsContent-->
 
 <!--BeginPageRightInnerContBlock-->
-<ul class="m_vert menu02">
+<ul class="m_vert menu08">
     <li>
         <a id="institucionesComunidad" href="{hrefListadoInstituciones}">
             Instituciones Comunidad
@@ -253,7 +253,7 @@ $LAB
     <!--EndMapaInstitucionBlock-->    
 
     <ul class="fl_ri mabo2 mato iveal cl_bo">
-        <li><a href="{hrefImprimir}"><span class="i bs print"></span>Imprimir Instituci&oacute;n</a></li>
+        <li><a href="{hrefImprimir}"><span class="i bs print mari"></span>Imprimir Instituci&oacute;n</a></li>
     </ul>
 </div>
 
@@ -296,7 +296,7 @@ $LAB
 <!--EndFichaInstitucionBlock-->
 
 <!--BeginFormularioBlock-->
-<div class='ficha04 bora grupo' style="width:640px;">
+<div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 mc bank32"></span></div>
     
     <form id="formInstitucion" name="formInstitucion" action="" method="post">
@@ -309,22 +309,16 @@ $LAB
                 <span class="marca_obligatorio">&#8226;</span>
                 Nombre
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre de la instituci&oacute;n" maxlength="80" value="{sNombre}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="nombre" id="nombre" title="Nombre de la instituci&oacute;n" maxlength="80" value="{sNombre}" />
         </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
                 Descripci&oacute;n
             </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="defVal co maxlength textareaAutoGrow" title="Breve descripcion de la instituci&oacute;n">{sDescripcion}</textarea>
-                </div>
-            </div>
+            <br>
+            <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="co maxlength textareaAutoGrow large" placeholder="Breve descripcion de la instituci&oacute;n">{sDescripcion}</textarea>
         </div>
 
         <div class="form_line msg_tipo">
@@ -332,16 +326,13 @@ $LAB
                 <span class="marca_obligatorio">&#8226;</span>
                 Tipo de instituci&oacute;n
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <select name="tipo" id="tipo" >
-                        <option value="">Elija tipo instituci&oacute;n:</option>
-                    	<!--BeginOptionSelectTipoInstitucion-->
-                    	<option value="{iTipoInstitucionValue}" {sSelectedTipoInstitucion}>{sTipoInstitucion}</option>
-                    	<!--EndOptionSelectTipoInstitucion-->
-                    </select>
-                </div>
-            </div>
+            <br>
+            <select class="large" name="tipo" id="tipo" >
+                <option value="">Elija tipo instituci&oacute;n:</option>
+                <!--BeginOptionSelectTipoInstitucion-->
+                <option value="{iTipoInstitucionValue}" {sSelectedTipoInstitucion}>{sTipoInstitucion}</option>
+                <!--EndOptionSelectTipoInstitucion-->
+            </select>
         </div>
         
         <div class="form_line msg_cargo">
@@ -349,35 +340,26 @@ $LAB
                 <span class="marca_obligatorio">&#8226;</span>
                 Cargo instituci&oacute;n
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="cargo" id="cargo" title="Cargo que ocupa en la instituci&oacute;n" maxlength="50" value="{sCargo}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="cargo" id="cargo" title="Cargo que ocupa en la instituci&oacute;n" maxlength="50" value="{sCargo}" />
             <p>Describa el cargo que ud. ocupa en la instituci&oacute;n</p>
         </div>
         
         <div class="form_line msg_personaJuridica">
             <label for="personeriaJuridica">
                 Personer&iacute;a Jur&iacute;dica
-            </label>            
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="personeriaJuridica" id="personeriaJuridica" title="Personer&iacute;a Jur&iacute;dica" maxlength="100" value="{sPersoneriaJuridica}" />
-                </div>
-            </div>
+            </label>
+            <br>
+            <input class="large" type="text" name="personeriaJuridica" id="personeriaJuridica" title="Personer&iacute;a Jur&iacute;dica" maxlength="100" value="{sPersoneriaJuridica}" />
         </div>
         
         <div class="form_line msg_direccion">
             <label for="direccion">
                 <span class="marca_obligatorio">&#8226;</span>
                 Direcci&oacute;n
-            </label>          
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="direccion" id="direccion" title="Direcci&oacute;n" maxlength="60" value="{sDireccion}" />
-                </div>
-            </div>
+            </label>
+            <br>
+            <input class="large" type="text" name="direccion" id="direccion" title="Direcci&oacute;n" maxlength="60" value="{sDireccion}" />
             <p>Ingrese la direcci&oacute;n de la casa central. Puede especificar otras ubicaciones en 'sedes'</p>
         </div>
 
@@ -424,11 +406,8 @@ $LAB
                 <span class="marca_obligatorio">&#8226;</span>
                 Email de contacto
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="email" id="email" title="Email de la instituci&oacute;n" maxlength="50" value="{sEmail}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="email" id="email" title="Email de la instituci&oacute;n" maxlength="50" value="{sEmail}" />
         </div>
         
          <div class="form_line msg_telefono">
@@ -436,66 +415,48 @@ $LAB
                 <span class="marca_obligatorio">&#8226;</span>
                 Tel&eacute;fono de contacto
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="telefono" id="telefono" title="Tel&eacute;fono de contacto" maxlength="50" value="{sTelefono}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="telefono" id="telefono" title="Tel&eacute;fono de contacto" maxlength="50" value="{sTelefono}" />
          </div>
 
          <div class="form_line msg_sitioWeb">
             <label for="sitioWeb">
                 Sitio Web
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="sitioWeb" id="sitioWeb" title="Sitio web" maxlength="60" value="{sSitioWeb}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="sitioWeb" id="sitioWeb" title="Sitio web" maxlength="60" value="{sSitioWeb}" />
         </div>
 
         <div class="form_line msg_horariosAtencion">
             <label for="horariosAtencion">
                 Horarios de atenci&oacute;n
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="horariosAtencion" id="horariosAtencion" title="Horarios de atenci&oacute;n" maxlength="80" value="{sHorariosAtencion}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="horariosAtencion" id="horariosAtencion" title="Horarios de atenci&oacute;n" maxlength="80" value="{sHorariosAtencion}" />
         </div>
 
         <div class="form_line msg_sedes">
             <label for="sedes">
                 Sedes instituci&oacute;n
             </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="sedes" name="sedes" class="defVal co maxlength textareaAutoGrow" title="Sedes instituci&oacute;n">{sSedes}</textarea>
-                </div>
-            </div>
+            <br>
+            <textarea rows="0" cols="0" id="sedes" name="sedes" class="co maxlength textareaAutoGrow large" placeholder="Sedes instituci&oacute;n" title="Sedes instituci&oacute;n">{sSedes}</textarea>
         </div>
         
         <div class="form_line msg_autoridades">
             <label for="autoridades">
                 Autoridades
-            </label>            
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="autoridades" name="autoridades" class="defVal co maxlength textareaAutoGrow" title="Autoridades">{sAutoridades}</textarea>                    
-                </div>
-            </div>
+            </label>
+            <br>
+            <textarea rows="0" cols="0" id="autoridades" name="autoridades" class="co maxlength textareaAutoGrow large" placeholder="Autoridades" title="Autoridades">{sAutoridades}</textarea>
         </div>
 
         <div class="form_line msg_activadesMes">
             <label for="actividadesMes">
                 Actividades del mes
-            </label>                        
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="actividadesMes" name="actividadesMes" class="defVal co maxlength textareaAutoGrow" title="Actividades del mes">{sActividadesMes}</textarea>
-                </div>
-            </div>
+            </label>
+            <br>
+            <textarea rows="0" cols="0" id="actividadesMes" name="actividadesMes" class="co maxlength textareaAutoGrow large" placeholder="Actividades del mes" title="Actividades del mes">{sActividadesMes}</textarea>
         </div>
         
         <div class="form_line msg_activadesMes mabo2">

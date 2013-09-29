@@ -188,14 +188,26 @@ abstract class Intermediary
      * @param date $fechaDesde
      * @param date $fechaHasta
      */
-    protected final function crearFiltroFecha($campo, $fechaDesde = null, $fechaHasta = null){
+    protected final function crearFiltroFecha($campo, $fechaDesde = null, $fechaHasta = null, $allowNull = false){
     	$filtro = "";
     	if($fechaDesde != null && $fechaHasta != null){
-            $filtro = " date($campo) BETWEEN '".$fechaDesde."' AND '".$fechaHasta."' " ;
+            if(!$allowNull){
+                $filtro = " date($campo) BETWEEN '".$fechaDesde."' AND '".$fechaHasta."' " ;
+            }else{
+                $filtro = " (ISNULL($campo) OR (date($campo) BETWEEN '".$fechaDesde."' AND '".$fechaHasta."')) " ;
+            }
     	}elseif($fechaDesde != null){
-            $filtro = " date($campo) >= '".$fechaDesde."' ";
+            if(!$allowNull){
+                $filtro = " date($campo) >= '".$fechaDesde."' ";
+            }else{
+                $filtro = " (ISNULL($campo) OR (date($campo) >= '".$fechaDesde."')) ";
+            }
     	}elseif($fechaHasta != null){
-            $filtro = " date($campo) <= '".$fechaHasta."' ";
+            if(!$allowNull){
+                $filtro = " date($campo) <= '".$fechaHasta."' ";
+            }else{
+                $filtro = " (ISNULL($campo) OR (date($campo) <= '".$fechaHasta."')) ";
+            }
     	}
         return $filtro;
     }

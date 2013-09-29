@@ -329,6 +329,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacionModeracion", $cartelModeracion);
                         $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                         $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                        $this->getTemplate()->set_var("class", "mabo");
                         $this->getTemplate()->parse("sMensajePublicacionModeracion");
                         $sMensajesPublicacion = $this->getTemplate()->pparse("sMensajePublicacionModeracion");
                     }
@@ -657,6 +658,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajePublicacion", $cartelModeracion);
                     $this->getTemplate()->set_var("sTituloMsgFicha", $tituloModeracion);
                     $this->getTemplate()->set_var("sMsgFicha", $mensajeModeracion);
+                    $this->getTemplate()->set_var("class", "mabo");
                     $this->getTemplate()->parse("sMensajePublicacion", false);
                 }
 

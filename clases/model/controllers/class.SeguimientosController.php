@@ -1136,6 +1136,22 @@ class SeguimientosController
             throw $e;
         }
     }
+
+    public function getObjetivosPersonalizadosByEntrada($iSeguimientoId, $dFecha)
+    {        
+    	try{
+            $filtro = array(
+                'op.seguimientos_personalizados_id' => $iSeguimientoId,
+                'op.fechaCreacion' => $dFecha,
+                'op.fechaDesactivado' => $dFecha
+            );
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oObjetivoIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){            
+            throw $e;
+        }
+    }
     
    /**
     * Obtener Objetivos Aprendizaje
@@ -1146,6 +1162,22 @@ class SeguimientosController
       {
     	try{
             $filtro = array('sxo.seguimientos_scc_id' => $iSeguimientoSCCId);
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getObjetivosAprendizajeByEntrada($iSeguimientoId, $dFecha)
+    {
+    	try{
+            $filtro = array(
+                'sxo.seguimientos_scc_id' => $iSeguimientoSCCId, 
+                'sxo.fechaCreacion' => $dFecha,
+                'sxo.fechaDesactivado' => $dFecha
+            );
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);

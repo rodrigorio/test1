@@ -70,13 +70,13 @@ input{padding:6px 4px} /* en ie7 select no es html es active-x asi que priorizar
 select{padding:5px 2px}
 input, textarea{color:#333}
 input[type="text"], input[type="password"], select{-moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
-textarea{resize:none; outline:0px; vertical-align:bottom}
-textarea{height:250px !important}
+textarea{resize:none; outline:0px; vertical-align:bottom; padding:6px 4px; height:250px !important; -moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
 .textareaAutoGrow{overflow:hidden; height:16px !important}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
 input.small, select.small, textarea.small{width:150px;}
 input.medium, select.medium, textarea.medium{width:300px;}
+input.large, select.large, textarea.large{width:450px;}
 
 /* Para simular el width fluido en <textarea>, <input> y <select>
  * Nota: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
@@ -227,16 +227,16 @@ input.medium, select.medium, textarea.medium{width:300px;}
 #frameComunidad01 #page{width:100%; min-width:960px; position:relative; overflow:hidden; text-align:left; float:left;}
 #frameComunidad01 #page #pageLeft{width:245px; float:left;}
 #frameComunidad01 #page #pageRight{position:relative; margin-left:235px}
-#frameComunidad01 #page .pageRightExpanded{margin-left:10px !important;}
+#frameComunidad01 #page .pageRightExpanded{margin-left:0px !important;}
 #frameComunidad01 #page #pageLeft #pageMenuTopLeft{min-height:22px; padding:5px 10px;}
-#frameComunidad01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:5px 10px; position:relative; overflow:auto;}
+#frameComunidad01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:8px 10px; position:relative; overflow:auto;}
 #frameComunidad01 #page #pageRight #pageMenuTopRight #togleInnerCont{position:absolute; top:8px; right:10px;}
 #frameComunidad01 #page #pageRight #pageMenuTopRight li a{margin-top: -5px; padding: 10px;}
 /* tiene el hack para columnas fluidas con igual altura */
 #frameComunidad01 #page #pageLeft #pageLeftCont{padding:10px 20px 0 10px; min-height:350px; margin-bottom:-2000px; padding-bottom:2000px;}
 #frameComunidad01 #page #pageRight #pageRightCont{margin-bottom:-2000px; padding-bottom:2000px}
-#frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerCont{width:235px; float:right; padding:10px; margin-bottom:-2000px; padding-bottom:2000px}
-#frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:20px 10px; margin-right:256px; height:100%}
+#frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerCont{width:235px; float:right; padding:30px 10px; margin-bottom:-2000px; padding-bottom:2000px}
+#frameComunidad01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:30px 20px; margin-right:256px; height:100%}
 #frameComunidad01 #page #pageRight #pageRightCont #pageRightContMenuTop{padding:5px 10px; overflow:auto; height:100%;}
 
 #frameSeguimientos01 #centerHeader{width:100%; height:123px; position:relative}
@@ -247,16 +247,16 @@ input.medium, select.medium, textarea.medium{width:300px;}
 #frameSeguimientos01 #page{width:100%; min-width:960px; position:relative; overflow:hidden; text-align:left; float:left;}
 #frameSeguimientos01 #page #pageLeft{width:245px; float:left;}
 #frameSeguimientos01 #page #pageRight{position:relative; margin-left:235px}
-#frameSeguimientos01 #page .pageRightExpanded{margin-left:10px !important;}
+#frameSeguimientos01 #page .pageRightExpanded{margin-left:0px !important;}
 #frameSeguimientos01 #page #pageLeft #pageMenuTopLeft{min-height:22px; padding:5px 10px;}
-#frameSeguimientos01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:5px 10px; position:relative; overflow:auto;}
+#frameSeguimientos01 #page #pageRight #pageMenuTopRight{min-height:22px; padding:8px 10px; position:relative; overflow:auto;}
 #frameSeguimientos01 #page #pageRight #pageMenuTopRight #togleInnerCont{position:absolute; top:8px; right:10px;}
 #frameSeguimientos01 #page #pageRight #pageMenuTopRight li a{margin-top: -5px; padding: 10px;}
 /* tiene el hack para columnas fluidas con igual altura */
 #frameSeguimientos01 #page #pageLeft #pageLeftCont{padding:10px 20px 0 10px; min-height:350px; margin-bottom:-2000px; padding-bottom:2000px;}
 #frameSeguimientos01 #page #pageRight #pageRightCont{margin-bottom:-2000px; padding-bottom:2000px}
-#frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont{width:235px; float:right; padding:10px; margin-bottom:-2000px; padding-bottom:2000px}
-#frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:20px 10px; margin-right:256px; height:100%}
+#frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont{width:235px; float:right; padding:30px 10px; margin-bottom:-2000px; padding-bottom:2000px}
+#frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerMainCont{padding:30px 20px; margin-right:256px; height:100%}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightContMenuTop{padding:5px 10px; overflow:auto; height:100%;}
 #frameSeguimientos01 #page #pageRight #pageRightCont #pageRightInnerCont #pageRightInnerContNav{margin-left:-11px; margin-top:20px;}
 /* pagina contenido en 1024 que se mantiene centrado */
@@ -342,7 +342,7 @@ input.medium, select.medium, textarea.medium{width:300px;}
 
 .header01{background-color:#FFF;}
 
-.topHeader01{border-bottom:1px solid #807FFE; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
+.topHeader01{border-bottom:1px solid #93B5F9; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
 
 .subHeader01 {background: none repeat scroll 0 0 #807FFE;}
 .subHeader01 #titulo{color:#FFF; text-shadow:2px 2px 2px #333; font-size:6em; line-height:54px}
@@ -361,16 +361,14 @@ input.medium, select.medium, textarea.medium{width:300px;}
 /* pagina en template de comunidad y seguimiento */
 #frameComunidad01 .page01 {border-bottom:1px solid #CCC}
 #frameComunidad01 .page01 #pageLeft #pageMenuTopLeft{background-color:#EEEFFF}
-#frameComunidad01 .page01 #pageRight #pageMenuTopRight{background-color:#93B5F9; color:#FFF; border-radius:8px 0 0 0;}
-#frameComunidad01 .page01 #pageRight #pageRightCont{border-left:12px solid #93B5F9}
-#frameComunidad01 .page01 #pageRight #pageRightCont #pageRightInnerCont{background-color:#FFF; border-left:1px dashed #CCC}
+#frameComunidad01 .page01 #pageRight #pageMenuTopRight{background-color:#99CCFF; color:#FFF}
+#frameComunidad01 .page01 #pageRight #pageRightCont #pageRightInnerCont{background-color:#E8EAFF; border-left:1px solid #CCC}
 #frameComunidad01 .page01 #pageRight #pageRightCont #pageRightContMenuTop{border-bottom:1px solid #CCC}
 
 #frameSeguimientos01 .page01 {border-bottom:1px solid #CCC}
 #frameSeguimientos01 .page01 #pageLeft #pageMenuTopLeft{background-color:#EEEFFF}
-#frameSeguimientos01 .page01 #pageRight #pageMenuTopRight{background-color:#93B5F9; color:#FFF; border-radius:8px 0 0 0;}
-#frameSeguimientos01 .page01 #pageRight #pageRightCont{border-left:12px solid #93B5F9}
-#frameSeguimientos01 .page01 #pageRight #pageRightCont #pageRightInnerCont{background-color:#FFF; border-left:1px dashed #CCC}
+#frameSeguimientos01 .page01 #pageRight #pageMenuTopRight{background-color:#99CCFF; color:#FFF}
+#frameSeguimientos01 .page01 #pageRight #pageRightCont #pageRightInnerCont{background-color:#E8EAFF; border-left:1px solid #CCC}
 #frameSeguimientos01 .page01 #pageRight #pageRightCont #pageRightContMenuTop{border-bottom:1px solid #CCC}
 
 .topPage01{background-color:#FFF; color:#666; font-size:16px; letter-spacing: 1px;}
@@ -485,8 +483,8 @@ ul.menu01 li li:hover li ul, ul.menu01 li li.sfHover li ul{top: -999em;}
 ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu01 a{text-decoration: none}
 .menu01 a, .menu01 a:visited {color:#000;}
-.menu01 li li{background: none repeat scroll 0 0 #EEEFFF; text-align: left; border-width:0 1px 0 1px; border-style:solid; border-color:#807FFE}
-.menu01 li li:last-child{border-bottom:1px solid #807FFE}
+.menu01 li li{background: none repeat scroll 0 0 #EEEFFF; text-align: left; border-width:0 1px 0 1px; border-style:solid; border-color:#93B5F9}
+.menu01 li li:last-child{border-bottom:1px solid #93B5F9}
 .menu01 li li:hover{background: none repeat scroll 0 0 #E9E9E9;}
 .menu01 li li a{font-weight:normal !important}
 .menu01 li:hover, .menu01 li.sfHover, .menu01 a:focus, .menu01 a:hover, .menu01 a:active{outline: 0 none}
@@ -553,6 +551,10 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .menu07 a{color:#999; font-weight:bold; text-decoration:none}
 .menu07 a:hover, a.selected{color:#333}
 .menu07 li{border-top:1px solid #CCC; color:#949494; padding:7px 0px 7px 5px; text-indent:0;}
+
+.menu08 li{margin-left:-10px; background-color:#93B5F9; margin-bottom:10px;}
+.menu08 li a{color:#FFF; padding:10px 20px; display:block; font-size:1.2em; font-style:italic}
+.menu08 li a:hover{color:#333; text-decoration:none; }
 
 /* fotos */
 .thumb01{padding:5px; background-color:#FFF; border:1px solid #CCC; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}

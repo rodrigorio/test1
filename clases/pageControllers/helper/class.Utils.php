@@ -31,12 +31,12 @@ class Utils{
      */
     public static function fechaAFormatoSQL($dFecha,$time = FALSE){
     	$vFecha  = preg_split("/ /",$dFecha);
-		$vFechaD = preg_split("/(\/)|(-)/", $vFecha[0]);
-		$fechaForm = $vFechaD[2]."-".$vFechaD[1]."-".$vFechaD[0];
-		if($time){
-			$sTime	= $vFecha[1];
-			$fechaForm.= " ".$sTime;			
-		}	
+        $vFechaD = preg_split("/(\/)|(-)/", $vFecha[0]);
+        $fechaForm = $vFechaD[2]."-".$vFechaD[1]."-".$vFechaD[0];
+        if($time){
+            $sTime = $vFecha[1];
+            $fechaForm.= " ".$sTime;
+        }
     	return $fechaForm;
     }
 

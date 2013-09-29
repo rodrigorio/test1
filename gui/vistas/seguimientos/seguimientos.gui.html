@@ -19,7 +19,7 @@
 <!--EndJsContent-->
 
 <!--BeginPageRightInnerContHomeBlock-->
-<ul class="m_vert menu02 mabo3">
+<ul class="m_vert menu08 mabo3">
     <li>
         <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
             Mis seguimientos
@@ -36,7 +36,7 @@
         </a>
     </li>
 </ul>
-<div class="pa baco3">
+<div class="pa2 baco1 bora bo2">
     <h3>Seguimientos Personalizados</h3>
     <p class="fte2">Administrar asociados a seguimientos personalizados</p>
     <ul class="m_vert menu02">
@@ -126,7 +126,7 @@
 <!--EndPageRightInnerContFichaPersonaBlock-->
 
 <!--BeginFormularioCrearSeguimientoBlock-->
-<div class='ficha04 bora grupo' style="width:640px;">
+<div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 bs user32Add"></span></div>
     <form id="formCrearSeguimiento" name="formCrearSeguimiento" action="" method="post">
         <div class="ajax_wait30 di_no"></div>
@@ -161,14 +161,11 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Persona <span class="fost_it fte2 pale">(Utilice el apellido para buscar)</span>
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                     <div id='persona_loading' class="i ajax_wait16 di_no"></div>
-                     <span title="Quitar persona" id='persona_clean' class='i bs close ihover di_no'></span>
-                     <input type="text" name="persona" id="persona" title="persona" value="" />
-                     <input type="hidden" name="personaId" id="personaId" value="" />
-                </div>
-            </div>
+            <br>
+            <div id='persona_loading' class="i ajax_wait16 di_no"></div>
+            <span title="Quitar persona" id='persona_clean' class='i bs close ihover di_no'></span>
+            <input class="large" type="text" name="persona" id="persona" title="persona" value="" />
+            <input type="hidden" name="personaId" id="personaId" value="" />
             <p>
                 Ingrese el dni de la persona a la cual desea agregar un seguimiento.<br>
                 Si la persona no existe en el sistema puede <a class="agregarPersona" href="">agregar una nueva persona</a>,
@@ -180,11 +177,8 @@
             <label for="frecuencias">
                 Frecuencia de encuentros
             </label>           
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="frecuencias" id="frecuencias" title="Frecuencia de encuentros" maxlength="100" value="" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="frecuencias" id="frecuencias" title="Frecuencia de encuentros" maxlength="100" value="" />
             <p>
                 Texto de referencia que puede ingresar para recordar la frecuencia con la que se sigue a la persona.
             </p>
@@ -193,12 +187,9 @@
         <div class="form_line msg_diaHorario">
             <label for="diaHorario">
                 Dias y horarios estipulados de encuentros
-            </label>                       
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input class="" type="text" name="diaHorario" id="diaHorario" title="Dias y horarios" maxlength="100" value="" />
-                </div>
-            </div>
+            </label>
+            <br>
+            <input class="large" type="text" name="diaHorario" id="diaHorario" title="Dias y horarios" maxlength="100" value="" />
             <p>
                 Texto de referencia para recordar que dias y que horario se realizan encuentros con la persona.
             </p>
@@ -208,17 +199,14 @@
             <label for="practica">
                 <span class="marca_obligatorio">&#8226;</span>
                 Tipo de pr&aacute;ctica
-            </label>                                   
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <select name="practica" id="practica" >
-                    	<option value="">Seleccionar</option>
-                    	<!--BeginOptionPracticaBlock-->
-                    	<option value="{iPracticaId}">{sPracticaNombre}</option>
-                    	<!--EndOptionPracticaBlock-->
-                    </select>
-                </div>
-            </div>
+            </label>
+            <br>
+            <select class="large" name="practica" id="practica" >
+                <option value="">Seleccionar</option>
+                <!--BeginOptionPracticaBlock-->
+                <option value="{iPracticaId}">{sPracticaNombre}</option>
+                <!--EndOptionPracticaBlock-->
+            </select>
             <p>
                 Tipo de pr&aacute;ctica asociada al seguimiento.
             </p>

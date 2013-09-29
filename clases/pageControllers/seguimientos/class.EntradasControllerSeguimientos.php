@@ -127,7 +127,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             if(count($aObjetivos) > 0)
             {
                 foreach($aObjetivos as $oObjetivo){
-                    echo "hola ";
+                    
                 }
             }
             
