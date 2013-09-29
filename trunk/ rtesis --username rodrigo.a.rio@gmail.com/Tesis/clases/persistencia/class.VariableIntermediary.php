@@ -1,7 +1,2 @@
 <?php
-/**
- *
- * @author Andres
- */
-abstract class VariableIntermediary extends Intermediary{
-}
+abstract class VariableIntermediary extends Intermediary{}

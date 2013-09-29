@@ -15,6 +15,13 @@ abstract class ObjetivoAbstract
     protected $bActivo = true;
 
     /**
+     * Esta fecha es != null cuando el objetivo esta desactivado y guarda el dia en el que se
+     * desactivo.
+     * Es necesaria para saber que objetivos mostrar cuando se visualizan entradas
+     */
+    protected $dFechaDesactivado = null;
+
+    /**
      * Esto se setea cuando se levantan los objetos desde persistencia a traves de un metodo
      * que calcula el controlador.
      * Determina cuando un usuario integrante activo puede modificar el objetivo.
@@ -46,12 +53,27 @@ abstract class ObjetivoAbstract
         }
     }
 
-    public function getFechaCreacion($format = false){
+    public function getFechaCreacion($format = false)
+    {
         if($format){
             return Utils::fechaFormateada($this->dFechaCreacion, "d/m/Y");
         }else{
             return $this->dFechaCreacion;
         }
+    }
+
+    public function getFechaDesactivado()
+    {
+        return $this->dFechaDesactivado;
+    }
+
+    /**
+     * Setea la fecha actual como fecha de desactivado
+     */
+    public function setFechaDesactivadoHoy()
+    {
+        $today = date('Y-m-d');
+        $this->dFechaDesactivado = $today;
     }
     
     /**
@@ -124,9 +146,11 @@ abstract class ObjetivoAbstract
         return $this->oRelevancia;
     }
 
-    public function isActivo($flag = null){
+    public function isActivo($flag = null)
+    {
         if(null !== $flag){
             $this->bActivo = $flag ? true : false;
+            if(!$flag){ $this->setFechaDesactivadoHoy(); }
             return $this;
         }else{
             return $this->bActivo;
