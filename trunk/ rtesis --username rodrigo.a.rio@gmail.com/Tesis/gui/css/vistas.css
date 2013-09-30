@@ -74,9 +74,9 @@ textarea{resize:none; outline:0px; vertical-align:bottom; padding:6px 4px; heigh
 .textareaAutoGrow{overflow:hidden; height:16px !important}
 input[type="submit"], label, select, li{cursor:pointer}
 input[type="checkbox"], input[type="radio"]{padding:0px}
-input.small, select.small, textarea.small{width:150px;}
-input.medium, select.medium, textarea.medium{width:300px;}
-input.large, select.large, textarea.large{width:450px;}
+input.small, textarea.small{width:150px;} select.small{width:160px}
+input.medium, textarea.medium{width:300px;} select.medium{width:310px}
+input.large, textarea.large{width:450px;} select.large{width:460px}
 
 /* Para simular el width fluido en <textarea>, <input> y <select>
  * Nota: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
@@ -451,8 +451,8 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .anexoFicha{background-color:#F7F7FF; padding:20px 10px 10px 10px; -moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px; -moz-box-shadow:0px 1px 1px #CCC inset; box-shadow:0px 1px 1px #CCC inset; -webkit-box-shadow:0px 1px 1px #CCC inset; border:1px solid #CCC; border-top:1px solid #999}
 .anexoFicha .titulo{padding:10px 5px; background-color:#EEE; border-top:1px dashed #DDD; border-bottom:1px dashed #DDD}
 
-.slide01{border-top:1px dashed #999; padding-top:20px;}
-.slide01 .slideExpanded, .slide01 .slideCollapsed{background-color:#FFF; font-size:1.7em; cursor:pointer;}
+.slide01{border-top:1px solid #DDD; padding-top:20px;}
+.slide01 .slideExpanded, .slide01 .slideCollapsed{background-color:#FFF; cursor:pointer; font-weight:bold; text-transform:uppercase}
 .slide01 .slideExpanded .mi{background-position:-96px -224px}
 .slide01 .slideCollapsed .mi{background-position:-176px -224px}
 
@@ -523,7 +523,9 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 
 /* modulo index */
 .menu04 a{text-decoration:none; padding-left:5px; padding-right:10px; color:#999 !important}
+.menu04 a.active{font-weight:bold; cursor:auto}
 .menu04 a:hover{text-decoration:underline;}
+.menu04 a.active:hover{font-weight:bold; text-decoration:none !important}
 .menu04 li{border-right:1px solid #999}
 
 /* menu con submenu vista ampliada seguimientos */
