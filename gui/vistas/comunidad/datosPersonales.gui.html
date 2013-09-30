@@ -17,9 +17,21 @@
 </script>
 <!--EndJsContent-->
 
+<!--BeginFormulariosContBlock-->
+<ul id="formMenu" class="fl_le m_horiz menu04 grupo fte po_re">        
+    <li><a class="active" rel="basica" href="javascript:;">Información básica</a></li>
+    <li><a rel="contacto" href="javascript:;">Información Contacto</a></li>
+    <li><a rel="profesional" href="javascript:;">Perfil Profesional</a></li>
+    <li class="mari0 bori_no"><a rel="foto" href="javascript:;">Foto de Perfil</a></li>
+</ul>
+
+<div class="cl_le"></div>
+
+<div id="formCont" class="po_re pato3">{formulario}</div>
+<!--EndFormulariosContBlock-->
+
 <!--BeginFormularioInfoBasicaBlock-->
-<div class="cl_le pabo3"></div>
-<div class='ficha04 bora grupo' style="width:640px;">
+<div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
     <form id="formInfoBasica" name="formInfoBasica" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -33,12 +45,12 @@
             </label>
             <div class="cl_le"></div>
             <div class="fl_le mari2">
-                <select class="teta_up" style="width:75px" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
+                <select class="teta_up small" name="tipoDocumento" id="tipoDocumento" title="Tipo de Documento">
                     <option value="">Tipo:</option>
                     <!--BeginOptionSelectDocumento--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDocumento-->
                 </select>
             </div>
-            <input style="width:545px" class="defVal co" type="text" name="nroDocumento" id="nroDocumento" title="Numero" maxlength="8" value="{sNumeroDocumento}" />
+            <input class="co small" type="text" name="nroDocumento" id="nroDocumento" placeholder="N&uacute;mero" title="N&uacute;mero" maxlength="8" value="{sNumeroDocumento}" />
         </div>
 
         <div class="form_line msg_nombre">
@@ -46,11 +58,8 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Nombre
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre" maxlength="30" value="{sNombre}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="nombre" id="nombre" title="Nombre" maxlength="30" value="{sNombre}" />
         </div>
 
         <div class="form_line msg_apellido">
@@ -58,11 +67,8 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Apellido
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="apellido" id="apellido" title="Apellido" maxlength="40" value="{sApellido}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="apellido" id="apellido" title="Apellido" maxlength="40" value="{sApellido}" />
         </div>
 
         <div class="form_line msg_email">
@@ -70,21 +76,55 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 E-mail
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="email" id="email" title="E-mail" maxlength="70" value="{sEmail}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="email" id="email" title="E-mail" maxlength="70" value="{sEmail}" />
         </div>
 
-        <div class="form_line teal_ri">
+        <div class="form_line msg_sexo">
+            <label for="sexo">
+                <span class="marca_obligatorio">&#8226;</span>
+                Sexo
+            </label>
+            <br>
+            <select class="small" name="sexo" id="sexo" title="Sexo">
+                <option value="">Elija Sexo:</option>
+                <option {sSelectedMasculino} value="m">Masculino</option>
+                <option {sSelectedFemenino} value="f">Femenino</option>
+            </select>
+        </div>
+
+        <div class="mabo3 form_line msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
+            <label for="fechaNacimientoDia">
+                <span class="marca_obligatorio">&#8226;</span>
+                Fecha de Nacimiento
+            </label>
+            <div class="cl_le"></div>
+            <div class="fl_le mari">
+                <select class="teta_ca small" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
+                    <option value="">D&iacute;a:</option>
+                    <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
+                </select>
+            </div>
+            <div class="fl_le mari">
+                <select class="teta_ca small" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
+                    <option value="">Mes:</option>
+                    <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
+                </select>
+            </div>
+            <select class="small" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
+                <option value="">A&ntilde;o:</option>
+                <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
+            </select>
+        </div>
+
+        <div class="form_line mawi3 iveal mabo3">
             <label for="contraseniaActual">
                 <a id="toggleContrasenia" href="javascript:;">
-                    Editar Contrase&ntilde;a
+                    <span class="i bs adminEdit mari"></span>Editar Contrase&ntilde;a
                 </a>
             </label>
         </div>
-        <div id="contModificarPassword" class="di_no baco1 bora pa2 mabo2">
+        <div id="contModificarPassword" class="di_no baco1 bo2 bora pa2 mabo3 mawi3">
             <div class="form_line msg_contraseniaActual">
                 <label for="contraseniaActual">
                     <span class="marca_obligatorio">&#8226;</span>
@@ -122,43 +162,6 @@
             </div>
         </div>
 
-        <div class="form_line msg_sexo">
-            <label for="sexo">
-                <span class="marca_obligatorio">&#8226;</span>
-                Sexo
-            </label>
-            <div class="cl_le"></div>
-            <select style="width:150px" name="sexo" id="sexo" title="Sexo">
-                <option value="">Elija Sexo:</option>
-                <option {sSelectedMasculino} value="m">Masculino</option>
-                <option {sSelectedFemenino} value="f">Femenino</option>
-            </select>
-        </div>
-
-        <div class="form_line msg_fechaNacimientoDia msg_fechaNacimientoMes msg_fechaNacimientoAnio">
-            <label for="fechaNacimientoDia">
-                <span class="marca_obligatorio">&#8226;</span>
-                Fecha de Nacimiento
-            </label>
-            <div class="cl_le"></div>
-            <div class="fl_le mari2">
-                <select class="teta_ca" style="width:150px" name="fechaNacimientoDia" id="fechaNacimientoDia" title="D&iacute;a de Nacimiento">
-                    <option value="">D&iacute;a:</option>
-                    <!--BeginOptionSelectDia--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectDia-->
-                </select>
-            </div>
-            <div class="fl_le mari2">
-                <select class="teta_ca" style="width:150px" id="fechaNacimientoMes" name="fechaNacimientoMes" title="Mes de Nacimiento">
-                    <option value="">Mes:</option>
-                    <!--BeginOptionSelectMes--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectMes-->
-                </select>
-            </div>
-            <select style="width:150px" name="fechaNacimientoAnio" id="fechaNacimientoAnio" title="A&ntilde;o de Nacimiento" >
-                <option value="">A&ntilde;o:</option>
-                <!--BeginOptionSelectAnio--><option value="{iValue}" {sSelected}>{sDescripcion}</option><!--EndOptionSelectAnio-->
-            </select>
-        </div>
-
         <label for="actualizarPerfilBa" class="button buttonConfirm buttonLarge mari3">
             <button id="actualizarPerfilBa" type="submit" name="actualizarPerfilBa" class="btn01">
                 Actualizar Perfil
@@ -172,8 +175,7 @@
 <!--EndFormularioInfoBasicaBlock-->
 
 <!--BeginFormularioInfoContactoBlock-->
-<div class="cl_le pabo3"></div>
-<div class='ficha04 bora grupo' style="width:640px;">
+<div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
     <form id="formInfoContacto" name="formInfoContacto" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -187,7 +189,7 @@
                 Pa&iacute;s
             </label>
             <div class="cl_le"></div>
-            <select style="width:250px" name="pais" id="pais" title="Pais">
+            <select class="medium" name="pais" id="pais" title="Pais">
                 <option value="">Elija Pa&iacute;s:</option>
                 <!--BeginListaPaisesBlock--><option value="{iPaisId}" {sDatosPersonalesPaisSelect}>{sPaisNombre}</option><!--EndListaPaisesBlock-->
             </select>
@@ -199,7 +201,7 @@
                 Provincia
             </label>
             <div class="cl_le"></div>
-            <select style="width:250px" name="provincia" id="provincia" title="Provincia">
+            <select class="medium" name="provincia" id="provincia" title="Provincia">
                 <option value="">Elija Provincia:</option>
                 <!--BeginListaProvinciasBlock--><option value="{iProvinciaId}" {sDatosPersonalesProvinciaSelect}>{sProvinciaNombre}</option><!--EndListaProvinciasBlock-->
             </select>
@@ -211,7 +213,7 @@
                 Ciudad
             </label>
             <div class="cl_le"></div>
-            <select style="width:250px" name="ciudad" id="ciudad" title="Ciudad">
+            <select class="medium" name="ciudad" id="ciudad" title="Ciudad">
                 <option value="">Elija Ciudad:</option>
                 <!--BeginListaCiudadesBlock--><option value="{iCiudadId}" {sDatosPersonalesCiudadSelect}>{sCiudadNombre}</option><!--EndListaCiudadesBlock-->
             </select>
@@ -222,11 +224,8 @@
             <label for="ciudadOrigen">
                 Ciudad de Origen
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="ciudadOrigen" id="ciudadOrigen" title="Ciudad de Origen" maxlength="60" value="{sCiudadOrigen}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="ciudadOrigen" id="ciudadOrigen" title="Ciudad de Origen" maxlength="60" value="{sCiudadOrigen}" />
         </div>
 
         <div class="form_line msg_codigoPostal">
@@ -234,11 +233,8 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 C&oacute;digo Postal
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="codigoPostal" id="codigoPostal" title="Codigo Postal" maxlength="20" value="{sCodigoPostal}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="codigoPostal" id="codigoPostal" title="Codigo Postal" maxlength="20" value="{sCodigoPostal}" />
         </div>
 
         <div class="form_line msg_direccion">
@@ -246,11 +242,8 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Direcci&oacute;n <span style="font-style:italic">(Calle, Altura, Dpto.)</span>
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="direccion" id="direccion" title="Direccion" maxlength="60" value="{sDireccion}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="direccion" id="direccion" title="Direccion" maxlength="60" value="{sDireccion}" />
         </div>
 
         <div class="form_line msg_telefono">
@@ -258,33 +251,24 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Tel&eacute;fono de Contacto
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="telefono" id="telefono" title="Telefono" maxlength="40" value="{sTelefono}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="telefono" id="telefono" title="Telefono" maxlength="40" value="{sTelefono}" />
         </div>
 
         <div class="form_line msg_celular">
             <label for="celular">
                 Celular
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="celular" id="celular" title="Celular" maxlength="40" value="{sCelular}" />
         </div>
 
         <div class="form_line msg_fax">
             <label for="fax">
                 Fax
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="fax" id="fax" title="Fax" maxlength="40" value="{sFax}" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="fax" id="fax" title="Fax" maxlength="40" value="{sFax}" />
         </div>
 
         <label for="actualizarPerfilCo" class="button buttonConfirm buttonLarge mari3">
@@ -300,12 +284,11 @@
 <!--EndFormularioInfoContactoBlock-->
 
 <!--BeginFormularioInfoProfesionalBlock-->
-<div class="cl_le pabo3"></div>
 <div class="slide slide01">
     <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Formulario informaci&oacute;n profesional general</div>
     <div class="contenido" style="display:none">
 
-        <div class='ficha04 bora grupo' style="width:640px;">
+        <div class='ficha04 bora grupo'>
             <div class="titulo iveal"><span class="i32 bs user32Edit"></span></div>
             <form id="formInfoProfesional" name="formInfoProfesional" action="" method="post">
                 <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -316,14 +299,12 @@
                     <label for="institucion">
                         Instituci&oacute;n en la que se desempe&ntilde;a
                     </label>
-                    <div class="fwrap">
-                        <div class="inner_fwrap">
-                            <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
-                            <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
-                            <input type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
-                            <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
-                        </div>
-                    </div>
+                    <br>
+                    <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
+                    <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
+                    <input class="large" type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
+                    <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
+                    <br>
                     <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
                 </div>
 
@@ -333,11 +314,8 @@
                             <span class="marca_obligatorio">&#8226;</span>
                             Cargo que desempe&ntilde;a
                         </label>
-                        <div class="fwrap">
-                            <div class="inner_fwrap">
-                                <input type="text" name="cargoInstitucion" id="cargoInstitucion" title="Cargo que desempe&ntilde;a" maxlength="40" value="{sCargoInstitucion}" />
-                            </div>
-                        </div>
+                        <br>
+                        <input class="medium" type="text" name="cargoInstitucion" id="cargoInstitucion" title="Cargo que desempe&ntilde;a" maxlength="40" value="{sCargoInstitucion}" />
                     </div>
                 </div>
 
@@ -345,22 +323,16 @@
                     <label for="biografia">
                         Breve Biograf&iacute;a
                     </label>
-                    <div class="fwrap mabo2">
-                        <div class="inner_fwrap">
-                            <textarea rows="0" cols="0" id="biografia" name="biografia" class="co maxlength textareaAutoGrow" placeholder="Escribe unas l&iacute;neas referidas a tu persona" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
-                        </div>
-                    </div>
+                    <br>
+                    <textarea class="large" rows="0" cols="0" id="biografia" name="biografia" class="co maxlength textareaAutoGrow" placeholder="Escribe unas l&iacute;neas referidas a tu persona" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
                 </div>
 
                 <div class="form_line msg_empresa">
                     <label for="empresa">
                         Empresa
                     </label>
-                    <div class="fwrap">
-                        <div class="inner_fwrap">
-                            <input type="text" name="empresa" id="empresa" title="Empresa" maxlength="40" value="{sEmpresa}" />
-                        </div>
-                    </div>
+                    <br>
+                    <input class="large" type="text" name="empresa" id="empresa" title="Empresa" maxlength="40" value="{sEmpresa}" />
                 </div>
 
                 <div class="form_line msg_secundaria">
@@ -368,22 +340,16 @@
                         <span class="marca_obligatorio">&#8226;</span>
                         Secundaria
                     </label>
-                    <div class="fwrap">
-                        <div class="inner_fwrap">
-                            <input type="text" name="secundaria" id="secundaria" title="Secundaria" maxlength="40" value="{sSecundaria}" />
-                        </div>
-                    </div>
+                    <br>
+                    <input class="large" type="text" name="secundaria" id="secundaria" title="Secundaria" maxlength="40" value="{sSecundaria}" />
                 </div>
 
                 <div class="form_line msg_universidad">
                     <label for="universidad">
                         Universidad
                     </label>
-                    <div class="fwrap">
-                        <div class="inner_fwrap">
-                            <input type="text" name="universidad" id="universidad" title="Universidad" maxlength="40" value="{sUniversidad}" />
-                        </div>
-                    </div>
+                    <br>
+                    <input class="large" type="text" name="universidad" id="universidad" title="Universidad" maxlength="40" value="{sUniversidad}" />
                 </div>
 
                 <div id="universidadInfo" class="pale3">
@@ -392,11 +358,8 @@
                             <span class="marca_obligatorio">&#8226;</span>
                             Carrera
                         </label>
-                        <div class="fwrap">
-                            <div class="inner_fwrap">
-                                <input type="text" name="universidadCarrera" id="universidadCarrera" title="Carrera" maxlength="40" value="{sUniversidadCarrera}" />
-                            </div>
-                        </div>
+                        <br>
+                        <input class="medium" type="text" name="universidadCarrera" id="universidadCarrera" title="Carrera" maxlength="40" value="{sUniversidadCarrera}" />
                     </div>
 
                     <div class="form_line msg_carreraFinalizada">
@@ -404,8 +367,8 @@
                             <span class="marca_obligatorio">&#8226;</span>
                             Finalizada?
                         </label>
-                        <div class="cl_le"></div>
-                        <select style="width:150px" name="carreraFinalizada" id="carreraFinalizada" title="Finalizada?">
+                        <br>
+                        <select class="small" name="carreraFinalizada" id="carreraFinalizada" title="Finalizada?">
                             <option {sSelectedFinalizadaSi} value="1">S&iacute;</option>
                             <option {sSelectedFinalizadaNo} value="0">No</option>
                         </select>
@@ -416,11 +379,8 @@
                     <label for="sitioWeb">
                         Sitio Web / Blog
                     </label>
-                    <div class="fwrap">
-                        <div class="inner_fwrap">
-                            <input type="text" name="sitioWeb" id="sitioWeb" title="Sitio Web / Blog" maxlength="40" value="{sSitioWeb}" />
-                        </div>
-                    </div>
+                    <br>
+                    <input class="large" type="text" name="sitioWeb" id="sitioWeb" title="Sitio Web / Blog" maxlength="40" value="{sSitioWeb}" />
                 </div>
 
                 <div class="form_line msg_especialidad">
@@ -428,8 +388,8 @@
                         <span class="marca_obligatorio">&#8226;</span>
                         Especialidad <span style="font-style:italic">(&Aacute;rea de desempe&ntilde;o profesional)</span>
                     </label>
-                    <div class="cl_le"></div>
-                    <select style="width:250px" name="especialidad" id="especialidad" title="Especialidad - (&Aacute;rea de desempe&ntilde;o profesional)">
+                    <br>
+                    <select class="large" name="especialidad" id="especialidad" title="Especialidad - (&Aacute;rea de desempe&ntilde;o profesional)">
                         <option value="">Elija especialidad:</option>
                         <!--BeginListaEspecialidadesBlock--><option value="{iEspecialidadId}" {sDatosPersonalesEspecialidadSelect}>{sEspecialidadNombre}</option><!--EndListaEspecialidadesBlock-->
                     </select>
@@ -452,7 +412,7 @@
     <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Agregar Curriculum Vitae al perfil</div>
     <div class="contenido" style="display:none;">
 
-        <div id="formCurriculum" class='ficha04 bora' style="width:640px;">
+        <div id="formCurriculum" class='ficha04 bora'>
             <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
             
                 <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -514,8 +474,7 @@
 <!--EndFormularioInfoProfesionalBlock-->
 
 <!--BeginFormularioFotoPerfilBlock-->
-<div class="cl_le pabo3"></div>
-<div id="formFotoPerfil" class='ficha04 bora grupo' style="width:640px;">
+<div id="formFotoPerfil" class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
 
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
@@ -560,7 +519,7 @@
 
 <!--BeginPageRightInnerContBlock-->
 <div class="mabo3">
-    <h2 class="mabo3">Privacidad</h2>
+    <h2 class="mabo3 bobo1 pabo">Privacidad</h2>
     <div class="form_line">
         <label for="privacidadTelefonoContacto">E-MAIL</label>
         <div class="fwrap">
@@ -617,7 +576,7 @@
         </div>
     </div>
 </div>
-<h2 class="mabo3">Otras Acciones</h2>
+<h2 class="mabo3 bobo1 pabo">Otras Acciones</h2>
 <a id="cerrarCuenta" class="button" href="">
     <span class="i bs delete"></span>
     <span class="buttonText">Cerrar cuenta</span>

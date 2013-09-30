@@ -364,7 +364,22 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
      *
      */
     public function formulario()
-    {
+    {               
+        //si el request es ajax devuelvo el formulario
+        if($this->getAjaxHelper()->isAjaxContext()){
+
+            $seccion = $this->getRequest()->get('seccion');
+            switch($seccion){
+                case 'basica': $form = $this->getFormInfoBasica(); break;
+                case 'contacto': $form = $this->getFormInfoContacto();  break;
+                case 'profesional': $form = $this->getFormInfoProfesional(); break;
+                case 'foto': $form = $this->getFormFotoPerfil();  break;
+            }
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($form);
+            return;
+        }
+        
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
 
@@ -400,44 +415,15 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var($aPrivacidad['fax']."FaxSelected", "selected = 'selected' ");
         $this->getTemplate()->set_var($aPrivacidad['curriculum']."CurriculumSelected", "selected = 'selected' ");
 
-        //menu con los distintos formularios (info basica, info contacto, etc)
-        $this->getTemplate()->load_file_section("gui/componentes/menues.gui.html", "pageRightInnerMainCont", "MenuHorizontal02Block");
-        $this->getTemplate()->set_var("idOpcion", 'optFormInfoBasica');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=basica');
-        $this->getTemplate()->set_var("sNombreOpcion", "Información básica");
-        $this->getTemplate()->parse("OpcionesMenu", true);
-
-        $this->getTemplate()->set_var("idOpcion", 'optFormInfoContacto');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=contacto');
-        $this->getTemplate()->set_var("sNombreOpcion", "Información Contacto");
-        $this->getTemplate()->parse("OpcionesMenu", true);
-
-        $this->getTemplate()->set_var("idOpcion", 'optFormPerfilProfesional');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=profesional');
-        $this->getTemplate()->set_var("sNombreOpcion", "Perfil Profesional");
-        $this->getTemplate()->parse("OpcionesMenu", true);
-
-        $this->getTemplate()->set_var("idOpcion", 'optFormFotoPerfil');
-        $this->getTemplate()->set_var("hrefOpcion", $this->getRequest()->getBaseUrl().'/comunidad/datos-personales?seccion=foto');
-        $this->getTemplate()->set_var("sNombreOpcion", "Foto de Perfil");
-        $this->getTemplate()->parse("OpcionMenuLastOpt");
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormulariosContBlock");
+        $this->getTemplate()->set_var("formulario", $this->getFormInfoBasica());
         
-        //contenido ppal, carga formulario dependiendo una variable por get
-        $seccion = $this->getRequest()->get('seccion');
-        switch($seccion){
-            case 'basica': $this->formInfoBasica(); break;
-            case 'contacto': $this->formInfoContacto();  break;
-            case 'profesional': $this->formInfoProfesional(); break;
-            case 'foto': $this->formFotoPerfil();  break;
-            default: $this->formInfoBasica(); break;
-        }
-
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
     }
 
-    private function formInfoBasica()
+    private function getFormInfoBasica()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoBasicaBlock", true);
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "ajaxFormInfoBasica", "FormularioInfoBasicaBlock");
 
         //obtengo los valores iniciales desde el usuario
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
@@ -511,12 +497,14 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             }
             $this->getTemplate()->parse("OptionSelectAnio", true);
             $this->getTemplate()->set_var("sSelected", "");
-        }        
+        }
+
+        return $this->getTemplate()->pparse('ajaxFormInfoBasica', false);        
     }
 
-    private function formInfoContacto()
+    private function getFormInfoContacto()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoContactoBlock", true);
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "ajaxFormInfoContacto", "FormularioInfoContactoBlock");
 
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
@@ -574,11 +562,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sTelefono", $sTelefono);
         $this->getTemplate()->set_var("sCelular", $sCelular);
         $this->getTemplate()->set_var("sFax", $sFax);
+
+        return $this->getTemplate()->pparse('ajaxFormInfoContacto', false);
     }
 
-    private function formInfoProfesional()
+    private function getFormInfoProfesional()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioInfoProfesionalBlock", true);
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "ajaxFormInfoProfesional", "FormularioInfoProfesionalBlock");
 
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
@@ -661,11 +651,13 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
         $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
         $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+
+        return $this->getTemplate()->pparse('ajaxFormInfoProfesional', false);
     }
 
-    private function formFotoPerfil()
+    private function getFormFotoPerfil()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormularioFotoPerfilBlock", true);
+        $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "ajaxFormFotoPerfil", "FormularioFotoPerfilBlock");
         
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
@@ -691,6 +683,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sTiposPermitidosFoto", $this->getUploadHelper()->getStringTiposValidos());
         $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
         $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
+
+        return $this->getTemplate()->pparse('ajaxFormFotoPerfil', false);
     }
 
     public function modificarPrivacidadCampo()

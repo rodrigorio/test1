@@ -9,10 +9,6 @@ function showDialogIntegranteActivo()
     );
 }
 
-////////////////////////////////////
-// MODIFICAR PRIVACIDAD
-//////////////////////////////////
-
 function cambiarPrivacidad(campo, valor){
     var fields = "nombreCampo="+campo+"&valorPrivacidad="+valor;
     $.ajax({
@@ -27,30 +23,6 @@ function cambiarPrivacidad(campo, valor){
         }
     });
 }
-
-$("#privacidadEmail").change(function(){cambiarPrivacidad('email', $("#privacidadEmail option:selected").val());});
-$("#privacidadTelefonoContacto").change(function(){cambiarPrivacidad('telefono', $("#privacidadTelefonoContacto option:selected").val());});
-$("#privacidadMovil").change(function(){cambiarPrivacidad('celular', $("#privacidadMovil option:selected").val());});
-$("#privacidadFax").change(function(){cambiarPrivacidad('fax', $("#privacidadFax option:selected").val());});
-$("#privacidadCurriculum").change(function(){cambiarPrivacidad('curriculum', $("#privacidadCurriculum option:selected").val());});
-
-//////////////////////////////////
-// FORM INFO BASICA
-//////////////////////////////////
-
-//toggle modificar contrasenia
-$("#toggleContrasenia").click(function(){
-    revelarElemento($("#contModificarPassword"));
-    return false;
-});
-
-// hints formularios
-$("#contraseniaNueva").live("focus", function(){
-    revelarElemento($("#hintContraseniaNueva"));
-});
-$("#contraseniaNueva").live("blur", function(){
-    ocultarElemento($("#hintContraseniaNueva"));
-});
 
 //ya esta el mail registrado?
 jQuery.validator.addMethod("mailDb", function(value, element){
@@ -191,7 +163,6 @@ var validateFormInfoBasica = {
         }
     }
 }
-$("#formInfoBasica").validate(validateFormInfoBasica);
 
 var optionsAjaxFormInfoBasica = {
     dataType: 'jsonp',
@@ -235,12 +206,6 @@ var optionsAjaxFormInfoBasica = {
         }
     }
 };
-$("#formInfoBasica").ajaxForm(optionsAjaxFormInfoBasica);
-
-
-//////////////////////////////////
-// FORM INFO CONTACTO
-//////////////////////////////////
 
 function resetSelect(select, defaultOpt){
     if(select.length){
@@ -312,9 +277,6 @@ function listaCiudadesByProvincia(idProvincia){
     });
 }
 
-$("#pais").change(function(){listaProvinciasByPais($("#pais option:selected").val());});
-$("#provincia").change(function(){listaCiudadesByProvincia($("#provincia option:selected").val());});
-
 //validacion y submit form info contacto
 var validateFormInfoContacto = {
     errorElement: "div",
@@ -359,7 +321,6 @@ var validateFormInfoContacto = {
         telefono: mensajeValidacion("requerido")
     }
 }
-$("#formInfoContacto").validate(validateFormInfoContacto);
 
 var optionsAjaxFormInfoContacto = {
     dataType: 'jsonp',
@@ -391,13 +352,6 @@ var optionsAjaxFormInfoContacto = {
         }
     }
 };
-$("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
-
-
-
-//////////////////////////////////
-// FORM INFO PROFESIONAL
-//////////////////////////////////
 
 //para el estado inicial del formulario
 $(document).ready(function(){
@@ -541,7 +495,6 @@ var validateFormInfoProfesional = {
         especialidad:mensajeValidacion("requerido")
     }
 }
-$("#formInfoProfesional").validate(validateFormInfoProfesional);
 
 var optionsAjaxFormInfoProfesional = {
     dataType: 'jsonp',
@@ -574,116 +527,9 @@ var optionsAjaxFormInfoProfesional = {
         }
     }
 };
-$("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
-
-
-$(document).ready(function(){
-
-    //////////////////////////////////
-    // FORM CURRICULUM VITAE /////////
-    //////////////////////////////////
-
-    //esto es porque depende la subseccion puede tirar error si el boton no esta
-    if($('#cvUpload').length){
-        //plugin ajax upload
-        new Ajax_upload('#cvUpload',{
-            action: 'comunidad/datos-personales-procesar',
-            data: {seccion:'curriculum'},
-            name: 'curriculum',
-            onSubmit : function(file , ext){
-                $('#msg_form_curriculum').hide();
-                $('#msg_form_curriculum').removeClass("correcto").removeClass("error");
-                $('#msg_form_curriculum .msg').html("");
-                setWaitingStatus('formCurriculum', true);
-                this.disable(); //solo un archivo a la vez
-            },
-            onComplete : function(file, response){
-                setWaitingStatus('formCurriculum', false);
-                this.enable();
-
-                if(response == undefined){
-                    $('#msg_form_curriculum .msg').html(lang['error procesar']);
-                    $('#msg_form_curriculum').addClass("error").fadeIn('slow');
-                    return;
-                }
-
-                var dataInfo = response.split(';');
-                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
-                var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
-
-                //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
-                if(resultado != "0" && resultado != "1"){
-                    $('#msg_form_curriculum .msg').html(lang['error permiso']);
-                    $('#msg_form_curriculum').addClass("info").fadeIn('slow');
-                    return;
-                }
-
-                if(resultado == '0'){
-                    $('#msg_form_curriculum .msg').html(html);
-                    $('#msg_form_curriculum').addClass("error").fadeIn('slow');
-                }else{
-                    $('#msg_form_curriculum .msg').html(lang['exito procesar archivo']);
-                    $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
-                    $('#wrapCvActual').html(html);                    
-                }
-                return;
-            }
-        });
-    }
-   
-    //////////////////////////////////
-    // FORM FOTO PERFIL    ///////////
-    //////////////////////////////////
-
-    if($('#fotoUpload').length){
-        new Ajax_upload('#fotoUpload', {
-            action: 'comunidad/datos-personales-procesar',
-            data: {seccion:'foto'},
-            name: 'fotoPerfil',
-            onSubmit:function(file , ext){
-                $('#msg_form_fotoPerfil').hide();
-                $('#msg_form_fotoPerfil').removeClass("correcto").removeClass("error");
-                $('#msg_form_fotoPerfil .msg').html("");
-                setWaitingStatus('formFotoPerfil', true);
-                this.disable(); //solo un archivo a la vez
-            },
-            onComplete:function(file, response){
-                setWaitingStatus('formFotoPerfil', false);
-                this.enable();
-                
-                if(response == undefined){
-                    $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
-                    $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-                    return;
-                }
-
-                var dataInfo = response.split(';');
-                var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
-                var html = dataInfo[1]; //si se proceso bien aca queda el bloque del html con el nuevo thumbnail
-
-                if(resultado != "0" && resultado != "1"){
-                    $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
-                    $('#msg_form_fotoPerfil').addClass("info").fadeIn('slow');
-                    return;
-                }
-
-                if(resultado == '0'){
-                    $('#msg_form_fotoPerfil .msg').html(html);
-                    $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
-                }else{                    
-                    $('#msg_form_fotoPerfil .msg').html(lang['exito procesar archivo']);
-                    $('#contFotoPerfilActual').html(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
-                    $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
-                }
-                return;
-            }
-        });
-    }
-});
 
 function showDialogConfirmCerrarCuenta()
-{    
+{
     var buttons = {
         "Confirmar": function(){
             //este es el dialog que confirma que la cuenta fue eliminada del sistema
@@ -710,7 +556,7 @@ function showDialogConfirmCerrarCuenta()
     }
 
     //este es el dialog que pide confirmar la accion
-    var dialog = setWaitingStatusDialog(500, "Cerrar Cuenta", buttons);    
+    var dialog = setWaitingStatusDialog(500, "Cerrar Cuenta", buttons);
     dialog.load(
         "comunidad/cerrar-cuenta",
         {confirmar:"1"},
@@ -718,8 +564,196 @@ function showDialogConfirmCerrarCuenta()
     );
 }
 
+//esto es porque depende la subseccion puede tirar error si el boton no esta
+if($('#cvUpload').length){
+    //plugin ajax upload
+    new Ajax_upload('#cvUpload',{
+        action: 'comunidad/datos-personales-procesar',
+        data: {seccion:'curriculum'},
+        name: 'curriculum',
+        onSubmit : function(file , ext){
+            $('#msg_form_curriculum').hide();
+            $('#msg_form_curriculum').removeClass("correcto").removeClass("error");
+            $('#msg_form_curriculum .msg').html("");
+            setWaitingStatus('formCurriculum', true);
+            this.disable(); //solo un archivo a la vez
+        },
+        onComplete : function(file, response){
+            setWaitingStatus('formCurriculum', false);
+            this.enable();
+
+            if(response == undefined){
+                $('#msg_form_curriculum .msg').html(lang['error procesar']);
+                $('#msg_form_curriculum').addClass("error").fadeIn('slow');
+                return;
+            }
+
+            var dataInfo = response.split(';');
+            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
+            var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
+
+            //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
+            if(resultado != "0" && resultado != "1"){
+                $('#msg_form_curriculum .msg').html(lang['error permiso']);
+                $('#msg_form_curriculum').addClass("info").fadeIn('slow');
+                return;
+            }
+
+            if(resultado == '0'){
+                $('#msg_form_curriculum .msg').html(html);
+                $('#msg_form_curriculum').addClass("error").fadeIn('slow');
+            }else{
+                $('#msg_form_curriculum .msg').html(lang['exito procesar archivo']);
+                $('#msg_form_curriculum').addClass("correcto").fadeIn('slow');
+                $('#wrapCvActual').html(html);
+            }
+            return;
+        }
+    });
+}
+
+if($('#fotoUpload').length){
+    new Ajax_upload('#fotoUpload', {
+        action: 'comunidad/datos-personales-procesar',
+        data: {seccion:'foto'},
+        name: 'fotoPerfil',
+        onSubmit:function(file , ext){
+            $('#msg_form_fotoPerfil').hide();
+            $('#msg_form_fotoPerfil').removeClass("correcto").removeClass("error");
+            $('#msg_form_fotoPerfil .msg').html("");
+            setWaitingStatus('formFotoPerfil', true);
+            this.disable(); //solo un archivo a la vez
+        },
+        onComplete:function(file, response){
+            setWaitingStatus('formFotoPerfil', false);
+            this.enable();
+
+            if(response == undefined){
+                $('#msg_form_fotoPerfil .msg').html(lang['error procesar']);
+                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+                return;
+            }
+
+            var dataInfo = response.split(';');
+            var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria, 2 = satisfactorio, paso a ser integrante activo
+            var html = dataInfo[1]; //si se proceso bien aca queda el bloque del html con el nuevo thumbnail
+
+            if(resultado != "0" && resultado != "1"){
+                $('#msg_form_fotoPerfil .msg').html(lang['error permiso']);
+                $('#msg_form_fotoPerfil').addClass("info").fadeIn('slow');
+                return;
+            }
+
+            if(resultado == '0'){
+                $('#msg_form_fotoPerfil .msg').html(html);
+                $('#msg_form_fotoPerfil').addClass("error").fadeIn('slow');
+            }else{
+                $('#msg_form_fotoPerfil .msg').html(lang['exito procesar archivo']);
+                $('#contFotoPerfilActual').html(html);
+                $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
+                $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
+            }
+            return;
+        }
+    });
+}
+
+function bindEventsFormInfoBasica()
+{
+    $("#formInfoBasica").validate(validateFormInfoBasica);
+    $("#formInfoBasica").ajaxForm(optionsAjaxFormInfoBasica);
+
+    //toggle modificar contrasenia
+    $("#toggleContrasenia").click(function(){
+        revelarElemento($("#contModificarPassword"));
+        return false;
+    });
+
+    // hints formularios
+    $("#contraseniaNueva").live("focus", function(){
+        revelarElemento($("#hintContraseniaNueva"));
+    });
+    $("#contraseniaNueva").live("blur", function(){
+        ocultarElemento($("#hintContraseniaNueva"));
+    });
+}
+function bindEventsFormContacto()
+{
+    $("#formInfoContacto").validate(validateFormInfoContacto);
+    $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
+        
+    $("#pais").change(function(){listaProvinciasByPais($("#pais option:selected").val());});
+    $("#provincia").change(function(){listaCiudadesByProvincia($("#provincia option:selected").val());});
+}
+function bindEventsFormProfesional()
+{
+    $("#formDenunciar").validate(validateFormDenunciarInstitucion);
+    $("#formDenunciar").ajaxForm(optionsAjaxFormDenunciarInstitucion);
+
+    $("textarea.maxlength").maxlength();
+}
+function bindEventsFormFoto()
+{
+    $("#formDenunciar").validate(validateFormDenunciarInstitucion);
+    $("#formDenunciar").ajaxForm(optionsAjaxFormDenunciarInstitucion);
+
+    $("textarea.maxlength").maxlength();
+}
+
 $(document).ready(function(){
+
+    if($("#formInfoBasica").length){
+        bindEventsFormInfoBasica();
+    }
+
+    $("#privacidadEmail").change(function(){cambiarPrivacidad('email', $("#privacidadEmail option:selected").val());});
+    $("#privacidadTelefonoContacto").change(function(){cambiarPrivacidad('telefono', $("#privacidadTelefonoContacto option:selected").val());});
+    $("#privacidadMovil").change(function(){cambiarPrivacidad('celular', $("#privacidadMovil option:selected").val());});
+    $("#privacidadFax").change(function(){cambiarPrivacidad('fax', $("#privacidadFax option:selected").val());});
+    $("#privacidadCurriculum").change(function(){cambiarPrivacidad('curriculum', $("#privacidadCurriculum option:selected").val());});
+    
     $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("#formMenu li a").live('click', function(){
+
+        if($(this).hasClass("active")){return false}
+
+        $("#formMenu li a.active").removeClass("active");
+        $(this).addClass("active");
+        
+        var seccion = $(this).attr("rel");
+        
+        $.ajax({
+            type: "POST",
+            url: "comunidad/datos-personales",
+            data:{
+                seccion:seccion
+            },
+            beforeSend: function(){
+                setWaitingStatus('formMenu', true);
+                $("#formCont").html("");
+            },
+            success: function(data){
+                setWaitingStatus('formMenu', false);
+                $("#formCont").append(data);
+
+                switch(seccion){
+                case "basica":
+                    bindEventsFormInfoBasica();
+                    break;
+                case "contacto":
+                    bindEventsFormContacto();
+                    break;
+                case "profesional":
+                    bindEventsFormProfesional();
+                    break;
+                case "foto":
+                    bindEventsFormFoto();
+                    break;
+                }
+            }
+        });
+    });
 
     $("#cerrarCuenta").click(function(){
         showDialogConfirmCerrarCuenta();
