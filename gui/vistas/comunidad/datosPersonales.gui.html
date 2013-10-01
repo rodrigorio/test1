@@ -295,17 +295,23 @@
 
                 <h2 class="mabo3">Informacion Profesional</h2>
 
-                <div class="form_line msg_institucion">
+                <div class="form_line large msg_institucion">
                     <label for="institucion">
                         Instituci&oacute;n en la que se desempe&ntilde;a
                     </label>
-                    <br>
-                    <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
-                    <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
-                    <input class="large" type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
-                    <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />
-                    <br>
-                    <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion"><span style="font-style:italic">Cargar una nueva instituci&oacute;n</span></a>
+                    <div class="fwrap">
+                        <div class="inner_fwrap">
+                            <div id='institucion_loading' class="i ajax_wait16 di_no"></div>
+                            <span title="Quitar instituci&oacute;n" id='institucion_clean' class='i bs close ihover di_no'></span>
+                            <input type="text" name="institucion" id="institucion" title="institucion" maxlength="40" value="{sInstitucion}" />
+                            <input type="hidden" name="institucionId" id="institucionId" value="{iInstitucionId}" />                            
+                        </div>
+                    </div>
+                    <div class="teal_ri iveal pato">
+                        <a id="crearInstitucion" target="_blank" href="comunidad/nueva-institucion">
+                            <span class="i mc bank mari"></span><span class="fte2 fost_it">Cargar una nueva instituci&oacute;n</span>
+                        </a>
+                    </div>
                 </div>
 
                 <div id="contCargoInstitucion" class="pale3">
@@ -324,7 +330,7 @@
                         Breve Biograf&iacute;a
                     </label>
                     <br>
-                    <textarea class="large" rows="0" cols="0" id="biografia" name="biografia" class="co maxlength textareaAutoGrow" placeholder="Escribe unas l&iacute;neas referidas a tu persona" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
+                    <textarea rows="0" cols="0" id="biografia" name="biografia" class="co maxlength textareaAutoGrow large" placeholder="Escribe unas l&iacute;neas referidas a tu persona" title="Escribe unas l&iacute;neas referidas a tu persona">{sBiografia}</textarea>
                 </div>
 
                 <div class="form_line msg_empresa">

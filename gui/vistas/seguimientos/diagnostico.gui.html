@@ -18,7 +18,7 @@
 <!--EndJsContent-->
 
 <!--BeginFormularioPersonalizadoBlock-->
-<div class='ficha04 bora grupo fl_le' style="width:640px;">
+<div class='ficha04 bora'>
 
     <div class="titulo iveal">Editar Diagn&oacute;stico</div>
 
@@ -30,24 +30,18 @@
                 <span class="marca_obligatorio">&#8226;</span>
                 Descripci&oacute;n
             </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea name="descripcion" id="descripcion" title="Descripci&oacute;n" cols="0" rows="0">{sDescripcion}</textarea>
-                </div>
-            </div>
+            <br>
+            <textarea class="large" name="descripcion" id="descripcion" title="Descripci&oacute;n" cols="0" rows="0">{sDescripcion}</textarea>
         </div>
         <div class="form_line msg_codigo">
             <label for="codigo">
                 C&oacute;digo
             </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="codigo" id="codigo" title="C&oacute;digo" value="{sCodigo}" maxlength="100" />
-                </div>
-            </div>
+            <br>
+            <input class="large" type="text" name="codigo" id="codigo" title="C&oacute;digo" value="{sCodigo}" maxlength="100" />
         </div>
 
-        <div class="fl_le mabo2">
+        <div class="mabo2">
             <label for="guardarDiagnosticoPersonalizado" class="button buttonConfirm buttonLarge mari3">
                 <button id="guardarDiagnosticoPersonalizado" type="submit" name="guardarDiagnosticoPersonalizado" class="btn01">
                     Guardar Diagn&oacute;stico
