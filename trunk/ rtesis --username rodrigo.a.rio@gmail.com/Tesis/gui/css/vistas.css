@@ -77,6 +77,7 @@ input[type="checkbox"], input[type="radio"]{padding:0px}
 input.small, textarea.small{width:150px;} select.small{width:160px}
 input.medium, textarea.medium{width:300px;} select.medium{width:310px}
 input.large, textarea.large{width:450px;} select.large{width:460px}
+.form_line.large{width:460px !important}
 
 /* Para simular el width fluido en <textarea>, <input> y <select>
  * Nota: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
@@ -530,7 +531,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 
 /* menu con submenu vista ampliada seguimientos */
 .menu05 li{margin-bottom:15px}
-.menu05 li a{color:#999; text-decoration:none;}
+.menu05 li a{color:#999; text-decoration:none; font-size:1.2em;}
 .menu05, .menu05 *{list-style: none outside none}
 .menu05 li a{padding:5px 0px 5px 30px}
 .menu05 li a:hover, .menu05 li.selected a{color:#333;}
