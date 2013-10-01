@@ -122,8 +122,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 return;
             }
 
-            $aObjetivos = $oEntrada->getObjetivos();
+            $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
 
+            $aObjetivos = $oEntrada->getObjetivos();
             if(count($aObjetivos) > 0)
             {
                 foreach($aObjetivos as $oObjetivo){
