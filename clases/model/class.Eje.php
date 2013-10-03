@@ -16,6 +16,11 @@ class Eje{
      * Solo tendra la lista de ejes cuando se pida TODA la lista de ejes completa.
      */
     private $aSubEjes = null;
+
+    /**
+     * Guarda una instancia de la clase Eje correspondiente al padre, si es que lo posee.
+     */
+    private $oEjePadre = null;
     
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -77,4 +82,12 @@ class Eje{
         return $this->aSubEjes;
     }
     
+    public function getEjePadre(){
+        return $this->oEjePadre;
+    }
+
+    public function setEjePadre($oEje){
+        $this->oEjePadre = $oEje;
+        return $this;
+    }
 }

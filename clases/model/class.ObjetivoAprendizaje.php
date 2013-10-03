@@ -54,4 +54,9 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
     {
         return SeguimientosController::getInstance()->obtenerEvolucionObjetivoSccByDate($this->iId, $this->iSeguimientoSCCId, $dFecha);
     }
+
+    public function getUltimaEvolucionToDate($dFecha)
+    {
+        return SeguimientosController::getInstance()->obtenerEvolucionObjetivoSccToDate($this->iId, $this->iSeguimientoSCCId, $dFecha);
+    }
 }

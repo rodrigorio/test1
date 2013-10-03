@@ -172,6 +172,11 @@ abstract class ObjetivoAbstract
      * retorna 1 objeto evolucion correspondiente a la fecha, si no existe = null
      */
     abstract public function getEvolucionByDate($dFecha);
+
+    /**
+     * retorna el objeto evolucion mas cercano a la fecha
+     */
+    abstract public function getUltimaEvolucionToDate($dFecha);
    
     public function setEvolucion($aEvolucion){
         $this->aEvolucion = $aEvolucion;

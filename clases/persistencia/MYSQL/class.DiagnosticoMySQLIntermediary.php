@@ -245,6 +245,8 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $db->execSQL($sSQL);
             $db->commit();
 
+            $oDiagnosticoSCC->setId($iLastId);
+
             return $iLastId;
 
         }catch(Exception $e){

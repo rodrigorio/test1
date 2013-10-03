@@ -45,7 +45,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        scv.fechaHora as dFecha, s.id as iSeguimientoId, 
+                        DATE(scv.fechaHora) as dFecha, s.id as iSeguimientoId,
                         IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType 
                      FROM
                         seguimientos s 

@@ -67,6 +67,18 @@
 </div>
 <!--EndVariableCualitativa-->
 
+<!--BeginIconoRelevanciaBajaBlock-->
+<span class="i mi flagWhite"></span>
+<!--EndIconoRelevanciaBajaBlock-->
+
+<!--BeginIconoRelevanciaNormalBlock-->
+<span class="i mi flagGreen"></span>
+<!--EndIconoRelevanciaNormalBlock-->
+
+<!--BeginIconoRelevanciaAltaBlock-->
+<span class="i mi flagYellow"></span>
+<!--EndIconoRelevanciaAltaBlock-->
+
 <!--BeginAmpliarEntradaBlock-->
 <div class="mabo2 grupo">
     <!--BeginTituloBlock-->
@@ -94,40 +106,41 @@
     <!--EndMenuEntradaBlock-->
 </div>
 <div class="pabo mabo3 bobo2 grupo">
-    <h3 class="fl_ri">detalles entrada</h3>
+    <h3 class="fl_ri">detalles</h3>
 </div>
 
 {msgTopEntrada}
 
+<!--BeginEntradaContBlock-->
 <div class="mabo2 bobo1 grupo">
     <h2 class="mabo2">Objetivos</h2>
 </div>
-
-<div class="fost_it pato2 pabo2">Cantidad de objetivos: <span class="fowe_bo">{iRecordsTotal}</span></div>
+<div class="fost_it pato pabo">Cantidad de objetivos: <span class="fowe_bo">{iRecordsTotal}</span></div>
 <table class="table01 wi100p mabo3">
     <tr class="encabezado">
-        <td class="big iveal">Relevancia {orderByRelevancia}</td>
-        <td class="small">Estimaci&oacute;n {orderByEstimacion}</td>
-        <td class="small iveal">Eje</td>
-        <td class="small iveal">Descripci&oacute;n</td>
+        <td class="small iveal">Relevancia {orderByRelevancia}</td>
+        <td class="small iveal">Estimaci&oacute;n {orderByEstimacion}</td>
+        <td class="small">Eje</td>
+        <td class="big">Descripci&oacute;n</td>
         <td class="small iveal">Evoluci&oacute;n {orderByProgreso}</td>
     </tr>
 
     <!--BeginObjetivoBlock-->
     <tr>
         <td class="desplegable" rel="{iObjetivoId}">
-           {iconoRelevancia} <span class="fost_it tetr_ca fte2">Relevancia {sRelevancia}</span>
+           {iconoRelevancia} <span class="fost_it tetr_ca fte2">{sRelevancia}</span>
         </td>
-        <td class="desplegable" rel="{iObjetivoId}">
-            <span class="i bs {calendarClass}"></span>
+        <td class="desplegable iveal" rel="{iObjetivoId}">
+            <span class="i bs calendar"></span>
 
             <!--BeginEstimacionBlock-->
-            <span class="fowe_bo fte2 {expiradaClass}">Alcanzar el {dEstimacion}</span>
+            <span class="fowe_bo fte2 {expiradaClass}">{dEstimacion}</span>
             <!--EndEstimacionBlock-->
 
             <!--BeginFechaLogradoBlock-->
-            <span class="fowe_bo fte2 txt_correcto">Logrado el {dFechaLogrado}</span>
+            <span class="fowe_bo fte2 txt_correcto">{dFechaLogrado}</span>
             <!--EndFechaLogradoBlock-->
+            
         </td>
         <td class="desplegable" rel="{iObjetivoId}">
            <span class="fte2">{sDescripcionEjeBreve}</span>
@@ -144,13 +157,17 @@
     <tr class="ba_no">
         <td id="desplegable_{iObjetivoId}" class="pa0 bobo_no" colspan="6" style="display:none;">
             <div class="anexoFicha grupo">
-                <div class="titulo grupo">
-                    <div class="fte3 fl_le">Detalles</div>
+                <div class="titulo mabo3 grupo">
+                    <div class="fte fost_it fl_le">Detalles</div>
                     <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
                 </div>
-                <span class="fte2 txt_imp2">Creado el </span> {dFechaCreacion}<br>
+                <span class="fte2 txt_imp2">Creado el </span><br>
+                <p>{dFechaCreacion}</p>
                 <span class="fte2 txt_imp2">Descripci&oacute;n Eje</span><br>
                 <p>{sDescripcionEje}</p>
+                <!--BeginContenidosEjeBlock-->
+                <p><span class="fowe_bo">Contenidos: </span>{sContenidosEje}</p>
+                <!--EndContenidosEjeBlock-->
                 <span class="fte2 txt_imp2">Descripci&oacute;n Objetivo</span><br>
                 <p>{sDescripcionObjetivo}</p>
             </div>
@@ -171,6 +188,7 @@
     <!--EndVariableBlock-->
 </div>
 <!--EndUnidadBlock-->
+<!--EndEntradaContBlock-->
 
 
 <!--EndAmpliarEntradaBlock-->

@@ -58,4 +58,9 @@ class ObjetivoPersonalizado extends ObjetivoAbstract
     {
         return SeguimientosController::getInstance()->obtenerEvolucionObjetivoPersonalizadoByDate($this->getId(), $dFecha);
     }
+
+    public function getUltimaEvolucionToDate($dFecha)
+    {
+        return SeguimientosController::getInstance()->obtenerEvolucionObjetivoPersonalizadoToDate($this->getId(), $dFecha);
+    }
 }

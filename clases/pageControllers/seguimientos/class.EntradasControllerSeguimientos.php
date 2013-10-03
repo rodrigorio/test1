@@ -36,10 +36,16 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sTituloSeccion", "Entradas por fecha");
     }
 
-    private function setContenidoColumnaIzquierda($oDiscapacitado)
+    private function setContenidoColumnaIzquierda($oSeguimiento)
     {
+        $oDiscapacitado = $oSeguimiento->getDiscapacitado();
+        
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageBodyLeftCont", "PageBodyLeftContBlock");
 
+        $hrefAmpliarSeguimiento = $this->getUrlFromRoute("seguimientosSeguimientosVer", true);
+        $this->getTemplate()->set_var("hrefAmpliarSeguimiento", $hrefAmpliarSeguimiento);
+        $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+        
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "fichaPersona", "PageRightInnerContFichaPersonaBlock");
 
         $this->getTemplate()->set_var("sNombrePersona", $oDiscapacitado->getNombreCompleto());
@@ -105,7 +111,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->printMsgTop();
 
             $this->setTituloSeccion();
-            $this->setContenidoColumnaIzquierda($oSeguimiento->getDiscapacitado());
+            $this->setContenidoColumnaIzquierda($oSeguimiento);
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageBodyCenterCont", "AmpliarEntradaBlock");
 
             $oEntrada = $oSeguimiento->getUltimaEntrada();
@@ -118,6 +124,8 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
                 $this->getTemplate()->set_var("sTituloMsgFicha", "Seguimiento sin entradas.");
                 $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una seleccione una fecha desde el calendario y luego elija 'Crear nueva entrada'.");
+
+                $this->getTemplate()->unset_blocks("EntradaContBlock");
                 $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
                 return;
             }
@@ -125,11 +133,96 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
 
             $aObjetivos = $oEntrada->getObjetivos();
-            if(count($aObjetivos) > 0)
-            {
-                foreach($aObjetivos as $oObjetivo){
-                    
+                       
+            $this->getTemplate()->set_var("iRecordsTotal", count($aObjetivos));
+            foreach($aObjetivos as $oObjetivo){
+                $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
+                $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
+
+                switch($oObjetivo->getRelevancia()->getDescripcion())
+                {
+                    case "baja":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaBajaBlock";
+                        break;
+                    }
+                    case "normal":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaNormalBlock";
+                        break;
+                    }
+                    case "alta":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaAltaBlock";
+                        break;
+                    }
                 }
+                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
+                $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
+                $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
+
+                if($oObjetivo->isLogrado()){
+                    $this->getTemplate()->set_var("EstimacionBlock", "");
+                    $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha());
+                }else{
+                    $this->getTemplate()->set_var("FechaLogradoBlock", "");
+                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+                    if(!$oObjetivo->isEstimacionVencida()){
+                        $this->getTemplate()->set_var("expiradaClass", "");
+                    }else{
+                        $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                    }
+                }
+
+                if($oObjetivo->isObjetivoPersonalizado()){
+                    $this->getTemplate()->set_var("sDescripcionEjeBreve", $oObjetivo->getEje()->getDescripcion());
+
+                    $sDescripcionEje = $oObjetivo->getEje()->getEjePadre()->getDescripcion()." > ".$oObjetivo->getEje()->getDescripcion();
+                    $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
+
+                    $this->getTemplate()->set_var("ContenidosEjeBlock", "");
+                }
+
+                if($oObjetivo->isObjetivoAprendizaje()){
+                    $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
+
+                    $sDescripcionEje = $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getDescripcion();
+
+                    $this->getTemplate()->set_var("sDescripcionEjeBreve", $oObjetivo->getEje()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
+                    $this->getTemplate()->set_var("sContenidosEje", $oObjetivo->getEje()->getContenidos(true));
+                }
+
+                $sDescripcionObjetivoBreve = $oObjetivo->getDescripcion();
+                if(strlen($sDescripcionObjetivoBreve) > 100){
+                    $sDescripcionObjetivoBreve = Utils::tokenTruncate($sDescripcionObjetivoBreve, 100);
+                    $sDescripcionObjetivoBreve = nl2br($sDescripcionObjetivoBreve);
+                }
+
+                $this->getTemplate()->set_var("sDescripcionObjetivoBreve", $sDescripcionObjetivoBreve);
+                $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+
+                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha());
+                if(null === $oEvolucion){
+                    $this->getTemplate()->set_var("iEvolucion", "0");
+                }else{                                   
+                    $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
+                    if($oEvolucion->isObjetivoLogrado()){
+                        $this->getTemplate()->set_var("sGoalClass", "goal");
+                    }else{
+                        $this->getTemplate()->set_var("sGoalClass", "");
+                    }
+                }
+
+                $this->getTemplate()->set_var("dFechaCreacion", $oObjetivo->getFechaCreacion(true));
+                
+                $this->getTemplate()->parse("ObjetivoBlock", true);
+
+                $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
+                $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
+                $this->getTemplate()->delete_parsed_blocks("ContenidosEjeBlock");
             }
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
