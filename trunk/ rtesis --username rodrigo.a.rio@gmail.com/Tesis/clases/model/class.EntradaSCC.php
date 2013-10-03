@@ -25,7 +25,7 @@ class EntradaSCC extends EntradaAbstract
     }
 
     public function getObjetivos()
-    {
+    {                
         if(null === $this->aObjetivos){
             $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosAprendizajeByEntrada($this->iSeguimientoId, $this->dFecha);
         }

@@ -136,7 +136,10 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
             if(isset($filtro['oe.fechaHora']) && $filtro['oe.fechaHora']!=""){
                 $WHERE[] = $this->crearFiltroSimple('oe.fechaHora', $filtro['oe.fechaHora']);
             }
-
+            if(isset($filtro['toDate']) && $filtro['toDate']!=""){
+                $WHERE[] = $this->crearFiltroFecha('oe.fechaHora', null, $filtro['toDate']);
+            }
+            
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if (isset($sOrderBy) && isset($sOrder)){
@@ -145,8 +148,9 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
                 $sSQL .= " order by fechaHora desc ";
             }
             if ($iIniLimit!==null && $iRecordCount!==null){
-                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).", ".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");

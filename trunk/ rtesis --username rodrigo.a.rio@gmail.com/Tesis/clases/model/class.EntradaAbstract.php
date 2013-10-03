@@ -34,7 +34,7 @@ abstract class EntradaAbstract
 
     public function getFecha($format = false){
         if($format){
-            return Utils::fechaFormateada($this->dFecha);
+            return Utils::fechaFormateada($this->dFecha, "d/m/Y");
         }else{
             return $this->dFecha;
         }

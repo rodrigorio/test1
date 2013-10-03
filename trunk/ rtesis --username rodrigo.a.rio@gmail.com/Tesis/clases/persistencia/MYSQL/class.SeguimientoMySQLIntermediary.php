@@ -486,7 +486,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     public function insertarSCC($oSeguimientoSCC)
     {
         try{
-
             $iUsuarioId = $oSeguimientoSCC->getUsuario()->getId();
             $iDiscapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
             $iPracticaId = $oSeguimientoSCC->getPractica()->getId();
@@ -508,11 +507,13 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $iLastId = $db->insert_id();
 			
             $oDiagnostico = Factory::getDiagnosticoSCCInstance(new stdClass());
-            $diagnosticoSCCId = SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
+            SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
 			
-            $sSQL =" insert into seguimientos_scc set ".
-            " id=".$db->escape($iLastId,false).", " .
-            " diagnosticos_scc_id=".$db->escape($diagnosticoSCCId,false,MYSQL_TYPE_INT)." " ;
+            $sSQL = " insert into seguimientos_scc set ".
+            " id = ".$this->escInt($iLastId).", ".
+            " diagnosticos_scc_id = ".$this->escInt($oDiagnostico->getId())." ";
+
+            $db->execSQL($sSQL);
 
             $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.asociacionAutomatica = 1";
             $db->query($sSQL);
@@ -543,9 +544,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 			
             $iSeguimientoId = $oSeguimiento->getId();
             $iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
-
-            $db->execSQL("delete from diagnosticos where id = ".$this->escInt($iDiagnosticoId));
+           
             $db->execSQL("delete from seguimientos where id = ".$this->escInt($iSeguimientoId));
+            $db->execSQL("delete from diagnosticos where id = ".$this->escInt($iDiagnosticoId));
                         
             $db->commit();
             return true;

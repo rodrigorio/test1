@@ -24,7 +24,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             $sSQL = "SELECT
                         o.id as iId, o.descripcion as sDescripcion, 
                         op.fechaCreacion as dFechaCreacion, op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, op.fechaDesactivado as dFechaDesactivado,
-                        ope.descripcion as sDescripcionEje, orr.descripcion as sDescripcionRelevancia,
+                        ope.descripcion as sDescripcionEje, ope.ejePadre AS iEjePadreId, orr.descripcion as sDescripcionRelevancia,
                         e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
                         IF(e.iProgreso = 100, '1', '0') as isLogrado
                     FROM
@@ -77,6 +77,9 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $oEje = new stdClass();
             	$oEje->iId = $oObj->iEjeId;
             	$oEje->sDescripcion = $oObj->sDescripcionEje;
+                if(null !== $oObj->iEjePadreId){
+                    $oEje->oEjePadre = SeguimientosController::getInstance()->getEjePersonalizadoById($oObj->iEjePadreId);
+                }                
                 $oEje = Factory::getEjeInstance($oEje);
 
                 $oRelevancia = new stdClass();
@@ -204,9 +207,9 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $WHERE[] = $this->crearFiltroFecha('sxo.fechaCreacion', null, $filtro['sxo.fechaCreacion']);
             }
             if(isset($filtro['sxo.fechaDesactivado']) && $filtro['sxo.fechaDesactivado'] != ""){
-                $WHERE[] = $this->crearFiltroFecha('sxo.fechaDesactivado', $filtro['sxo.fechaDesactivado'], null);
+                $WHERE[] = $this->crearFiltroFecha('sxo.fechaDesactivado', $filtro['sxo.fechaDesactivado'], null, true);
             }
-
+                       
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if(isset($sOrderBy) && isset($sOrder)){
@@ -255,7 +258,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
 
             	$aObjetivos[] = Factory::getObjetivoAprendizajeInstance($oObjetivo);
             }
-
+            
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

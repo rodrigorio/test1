@@ -156,16 +156,19 @@
             </div>
         </div>
 
-        <div class="form_line msg_personaId">
+        <div class="form_line large msg_personaId">
             <label for="persona">
                 <span class="marca_obligatorio">&#8226;</span>
                 Persona <span class="fost_it fte2 pale">(Utilice el apellido para buscar)</span>
             </label>
-            <br>
-            <div id='persona_loading' class="i ajax_wait16 di_no"></div>
-            <span title="Quitar persona" id='persona_clean' class='i bs close ihover di_no'></span>
-            <input class="large" type="text" name="persona" id="persona" title="persona" value="" />
-            <input type="hidden" name="personaId" id="personaId" value="" />
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <div id='persona_loading' class="i ajax_wait16 di_no"></div>
+                    <span title="Quitar persona" id='persona_clean' class='i bs close ihover di_no'></span>
+                    <input class="large" type="text" name="persona" id="persona" title="persona" value="" />
+                    <input type="hidden" name="personaId" id="personaId" value="" />
+                </div>
+            </div>
             <p>
                 Ingrese el dni de la persona a la cual desea agregar un seguimiento.<br>
                 Si la persona no existe en el sistema puede <a class="agregarPersona" href="">agregar una nueva persona</a>,
@@ -401,7 +404,7 @@
                 <td id="desplegable_{iSeguimientoId}" class="pa0 bobo_no" colspan="6" style="display:none;">
                     <div class="anexoFicha grupo">
                         <div class="titulo grupo">
-                            <div class="fte3 fl_le">Detalles</div>
+                            <div class="fte fost_it fl_le">Detalles</div>
                             <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
                         </div>
                         <br clear="all">

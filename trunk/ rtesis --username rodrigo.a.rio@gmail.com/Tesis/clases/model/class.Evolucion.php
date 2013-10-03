@@ -65,6 +65,15 @@ class Evolucion {
         }
     }
 
+    /**
+     * Devuelve solo la parte de la fecha y formateada
+     */
+    public function getFecha()
+    {
+        $dFechaFormat = $this->getFechaHora(true);
+        return strtok($dFechaFormat, " ");        
+    }
+
     public function setProgreso($iProgreso)
     {
         $this->iProgreso = $iProgreso;

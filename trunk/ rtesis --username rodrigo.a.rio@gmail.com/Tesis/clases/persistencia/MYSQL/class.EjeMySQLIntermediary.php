@@ -24,10 +24,14 @@ class EjeMySQLIntermediary extends EjeTematicoIntermediary
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
-            $db = clone ($this->conn);
+            $db = clone($this->conn);
 
-            $sSQL = "SELECT ope.id as iId, ope.descripcion as sDescripcion, opeHijo.id iSubEjeId, opeHijo.descripcion as sSubEjeDescripcion 
-                     FROM objetivo_personalizado_ejes ope LEFT JOIN objetivo_personalizado_ejes opeHijo ON ope.id = opeHijo.ejePadre ";
+            $sSQL = "SELECT 
+                        ope.id as iId, ope.descripcion as sDescripcion, ope.ejePadre as iEjePadreId, 
+                        opeHijo.id iSubEjeId, opeHijo.descripcion as sSubEjeDescripcion
+                     FROM 
+                        objetivo_personalizado_ejes ope
+                     LEFT JOIN objetivo_personalizado_ejes opeHijo ON ope.id = opeHijo.ejePadre ";
             
             $WHERE = array();
 
@@ -64,7 +68,10 @@ class EjeMySQLIntermediary extends EjeTematicoIntermediary
                     $oEje = new stdClass();
                     $oEje->iId = $oObj->iId;
                     $oEje->sDescripcion = $oObj->sDescripcion;
-                    $oEje = Factory::getEjeInstance($oEje);
+                    if(null !== $oObj->iEjePadreId){
+                        $oEje->oEjePadre = SeguimientosController::getInstance()->getEjePersonalizadoById($oObj->iEjePadreId);
+                    }
+                    $oEje = Factory::getEjeInstance($oEje);                                       
                     $aEjes[] = $oEje; //esto se puede hacer porq se guarda solo apuntador
                     $oEjeAnterior = $oEje;
                 }
