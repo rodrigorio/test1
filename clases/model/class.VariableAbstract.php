@@ -58,18 +58,18 @@
 		return $this->iId ;
 	}
     /**
-	 * @return string $sNombre
-	 */
-	public function getNombre(){
-		return $this->sNombre;
-	}
+     * @return string $sNombre
+     */
+    public function getNombre(){
+            return $this->sNombre;
+    }
 
-	/**
-	 * @return string $sDescripcion
-	 */
-	public function getDescripcion(){
-		return $this->sDescripcion;
-	}
+    /**
+     * @return string $sDescripcion
+     */
+    public function getDescripcion(){
+        return $this->sDescripcion;
+    }
 
     public function getFecha($format = false){
         if($format){

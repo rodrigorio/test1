@@ -62,7 +62,6 @@ abstract class Intermediary
     protected final function escDate($val){ return $this->conn->escape($val, true, MYSQL_TYPE_DATE); }
     protected final function escFlt($val) { return $this->conn->escape($val, false, MYSQL_TYPE_FLOAT); }
 
-
     /**
      * Este es un metodo util para casos simples.
      * Crea un string para agregar luego de la sentencia "WHERE" con la informacion de un Filtro.
@@ -145,7 +144,10 @@ abstract class Intermediary
                 case MYSQL_TYPE_FLOAT: 
                     $valor = $this->escFloat($valor);
                     break;
-                case MYSQL_TYPE_DATE: $valor = $this->escDate($valor); break;
+                case MYSQL_TYPE_DATE:
+                    $campo = " date($campo) ";
+                    $valor = $this->escDate($valor);
+                    break;
                 default: $valor = $this->escStr($valor);
             }
             $filtro = " ".$campo." = ".$valor." ";
@@ -188,25 +190,29 @@ abstract class Intermediary
      * @param date $fechaDesde
      * @param date $fechaHasta
      */
-    protected final function crearFiltroFecha($campo, $fechaDesde = null, $fechaHasta = null, $allowNull = false){
+    protected final function crearFiltroFecha($campo, $fechaDesde = null, $fechaHasta = null, $allowNull = false, $useTime = false){
     	$filtro = "";
+        $fecha = $campo;
+        if(!$useTime){
+            $fecha = " date($campo) ";
+        }
     	if($fechaDesde != null && $fechaHasta != null){
             if(!$allowNull){
-                $filtro = " date($campo) BETWEEN '".$fechaDesde."' AND '".$fechaHasta."' " ;
+                $filtro = " $fecha BETWEEN '".$fechaDesde."' AND '".$fechaHasta."' " ;
             }else{
-                $filtro = " (ISNULL($campo) OR (date($campo) BETWEEN '".$fechaDesde."' AND '".$fechaHasta."')) " ;
+                $filtro = " (ISNULL($campo) OR ($fecha BETWEEN '".$fechaDesde."' AND '".$fechaHasta."')) " ;
             }
     	}elseif($fechaDesde != null){
             if(!$allowNull){
-                $filtro = " date($campo) >= '".$fechaDesde."' ";
+                $filtro = " $fecha >= '".$fechaDesde."' ";
             }else{
-                $filtro = " (ISNULL($campo) OR (date($campo) >= '".$fechaDesde."')) ";
+                $filtro = " (ISNULL($campo) OR ($fecha >= '".$fechaDesde."')) ";
             }
     	}elseif($fechaHasta != null){
             if(!$allowNull){
-                $filtro = " date($campo) <= '".$fechaHasta."' ";
+                $filtro = " $fecha <= '".$fechaHasta."' ";
             }else{
-                $filtro = " (ISNULL($campo) OR (date($campo) <= '".$fechaHasta."')) ";
+                $filtro = " (ISNULL($campo) OR ($fecha <= '".$fechaHasta."')) ";
             }
     	}
         return $filtro;

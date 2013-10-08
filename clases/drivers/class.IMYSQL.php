@@ -94,7 +94,7 @@ class IMYSQL implements DB
      * @param string $bAutoCommit
      * @return MYSQL
      */
-    public static function getInstance($host=null, $db=null, $user=null, $pw=null, $bAutoCommit=false, $sCharset="latin1"){
+    public static function getInstance($host=null, $db=null, $user=null, $pw=null, $bAutoCommit=false, $sCharset="utf8"){
         if(!self::$singletonInstance){
             $sClass = __CLASS__;
             self::$singletonInstance = new $sClass($conn);
@@ -110,7 +110,7 @@ class IMYSQL implements DB
     * @param int $iPort
     * @param bool $bAutoCommit
     */
-    public function __construct($sHost=null, $sUser=null, $sPass=null, $sDBName=null, $iPort=3306, $bAutoCommit=false, $sCharset="latin1"){
+    public function __construct($sHost=null, $sUser=null, $sPass=null, $sDBName=null, $iPort=3306, $bAutoCommit=false, $sCharset="utf8"){
         if(!is_null($sHost) && !is_null($sDBName) && !is_null($sUser) && !is_null($sPass)){
             $this->sHost = $sHost;
             $this->sDatabase = $sDBName;
@@ -220,7 +220,8 @@ class IMYSQL implements DB
                 $sValue = str_replace(",",".",$str);
                 break;
             case MYSQL_TYPE_DATE:
-                $sValue = $this->formatDate($str,true);
+                //$sValue = $this->formatDate($str, true);
+                $sValue = $str;
                 break;
             default:
                 $sValue = mysqli_real_escape_string($this->LINK_ID,$str);

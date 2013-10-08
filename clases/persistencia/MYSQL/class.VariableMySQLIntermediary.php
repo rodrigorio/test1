@@ -94,11 +94,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
     {
         try{
             $db = clone ($this->conn);
-            $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha,
-                        scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico
+                       scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico
                     FROM
                        variables v
                     LEFT JOIN
@@ -106,14 +105,20 @@ class VariableMySQLIntermediary extends VariableIntermediary
                     ON
                        v.id = scv.variable_id ";
 
-            if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+
+            if(isset($filtro['v.unidad_id']) && $filtro['v.unidad_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('v.unidad_id', $filtro['v.unidad_id'], MYSQL_TYPE_INT);
             }
+            if(isset($filtro['scv.fechaHora']) && $filtro['scv.fechaHora'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('scv.fechaHora', $filtro['scv.fechaHora'], MYSQL_TYPE_DATE);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }
-
             if ($iIniLimit !== null && $iRecordCount !== null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
             }

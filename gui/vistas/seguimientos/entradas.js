@@ -26,5 +26,38 @@ $(document).ready(function(){
     
     $("#calendarioEntradas").datepicker({
         maxDate:new Date
-    });   
+    });
+
+    $(".expand").live("click", function(){
+       $(this).removeClass("expand").addClass("collapse");
+    });
+    $(".collapse").live("click", function(){
+       $(this).removeClass("collapse").addClass("expand");
+    });
+
+    $(".desplegable").live("mouseover", function(){
+        var elem = "title_"+$(this).attr("rel");
+        $("#"+elem).addClass("baco2");
+    });
+    $(".desplegable").live("mouseout", function(){
+        var elem = "title_"+$(this).attr("rel");
+        $("#"+elem).removeClass("baco2");
+    });
+    $("#collapseAll").live("click", function(){
+        $(".desplegables").hide();
+        $(".desplegable").removeClass("collapse").addClass("expand");
+    });
+
+    //back to top button
+    $(window).scroll(function(){
+        if($(this).scrollTop()){
+            $('#toTop').fadeIn();
+        }else{
+            $('#toTop').fadeOut();
+        }
+    });
+
+    $("#toTop").click(function(){
+       $("html, body").animate({scrollTop: 0}, 1000);
+    });
 });

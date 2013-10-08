@@ -224,9 +224,51 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
                 $this->getTemplate()->delete_parsed_blocks("ContenidosEjeBlock");
             }
-            
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
+            $aUnidades = $oEntrada->getUnidades();
+            foreach($aUnidades as $oUnidad)
+            {
+                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
+                
+                $aVariables = $oUnidad->getVariables();
+                foreach($aVariables as $oVariable){
+
+                    $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
+                    $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+                    
+                    if($oVariable->isVariableNumerica()){
+                        $variable = "VariableNumerica";
+                        $valor = $oVariable->getValor();
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableValorNumerico", $valor);
+                    }
+
+                    if($oVariable->isVariableTexto()){
+                        $variable = "VariableTexto";
+                        $valor = $oVariable->getValor(true);
+                        if(empty($valor)){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableValorTexto", $valor);
+                    }
+
+                    if($oVariable->isVariableCualitativa()){
+                        $variable = "VariableCualitativa";
+                        $valor = $oVariable->getValor();
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableModalidad", $valor);
+                    }
+                    
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variable", $variable);
+                    $this->getTemplate()->set_var("variable", $this->getTemplate()->pparse("variable"));
+                    $this->getTemplate()->delete_parsed_blocks($variable);
+                    $this->getTemplate()->parse("VariableBlock", true);
+                }
+
+                $this->getTemplate()->parse("UnidadBlock", true);
+                $this->getTemplate()->delete_parsed_blocks("VariableBlock");
+            }
+                        
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             throw $e;
         }
