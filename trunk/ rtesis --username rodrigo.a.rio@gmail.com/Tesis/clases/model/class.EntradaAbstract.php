@@ -18,7 +18,7 @@ abstract class EntradaAbstract
      */
     protected $iSeguimientoId;
 
-    protected $dFecha;
+    protected $dFechaHora;
 
     protected $aObjetivos = null;
 
@@ -32,16 +32,25 @@ abstract class EntradaAbstract
     
     protected function __construct(){}
 
-    public function getFecha($format = false){
+    public function getFechaHora($format = false){
         if($format){
-            return Utils::fechaFormateada($this->dFecha, "d/m/Y");
+            return Utils::fechaFormateada($this->dFechaHora, "d/m/Y");
         }else{
-            return $this->dFecha;
+            return $this->dFechaHora;
         }
     }
 
-    public function setFecha($dFecha){
-        $this->dFecha = $dFecha;
+    /**
+     * Devuelve solo la parte de la fecha y formateada
+     */
+    public function getFecha()
+    {
+        $dFechaFormat = $this->getFechaHora(true);
+        return strtok($dFechaFormat, " ");
+    }
+
+    public function setFecha($dFechaHora){
+        $this->dFechaHora = $dFechaHora;
     }
 
     /**
@@ -50,7 +59,7 @@ abstract class EntradaAbstract
     public function getUnidades()
     {
         if(null === $this->aUnidades){
-            $this->aUnidades = SeguimientosController::getInstance()->getUnidadesByEntrada($this->iSeguimientoId, $this->dFecha);
+            $this->aUnidades = SeguimientosController::getInstance()->getUnidadesByEntrada($this->iSeguimientoId, $this->dFechaHora);
         }
         return $this->aUnidades;
     }

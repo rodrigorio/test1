@@ -27,6 +27,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
+            //true si agrega las variables con contenido para una fecha determinada.
+            $bContenidoVariables = false;
+            
             $db = clone($this->conn);
             
             $sSQL = "   SELECT DISTINCT SQL_CALC_FOUND_ROWS
@@ -61,6 +64,14 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.tipoEdicion']) && $filtro['u.tipoEdicion'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('u.tipoEdicion', $filtro['u.tipoEdicion']);
             }
+            if(isset($filtro['su.seguimientos_id']) && $filtro['su.seguimientos_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('su.seguimientos_id', $filtro['su.seguimientos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['u.fechaHora']) && $filtro['u.fechaHora'] != ""){
+                $bContenidoVariables = true;
+                $WHERE[] = $this->crearFiltroFecha('u.fechaHora', null, $filtro['u.fechaHora'], false, true);
+            }
+
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
@@ -92,6 +103,12 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
                 $oUnidad->bPreCargada = $oObj->bPreCargada ? true : false;
                 $oUnidad->bAsociacionAutomatica = $oObj->bAsociacionAutomatica ? true : false;
+
+                if($bContenidoVariables){
+                    //agrego lista de variables con el valor correspondiente a la fecha del filtro
+                    $dFecha = strtok($filtro['u.fechaHora'], " ");
+                    $oUnidad->aVariables = SeguimientosController::getInstance()->getVariablesContenidoByUnidadId($oObj->iId, $dFecha);
+                }
 
                 $aUnidades[] = Factory::getUnidadInstance($oUnidad);
             }

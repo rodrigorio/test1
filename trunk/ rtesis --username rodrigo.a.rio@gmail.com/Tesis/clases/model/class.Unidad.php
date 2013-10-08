@@ -76,9 +76,10 @@ class Unidad{
      *  @param int $dFechaHora
      */
     public function setFechaHora($dFechaHora){
-            $this->dFechaHora = (int)$dFechaHora;
+        $this->dFechaHora = $dFechaHora;
     }
-	public function setVariables($aVariables){
+
+    public function setVariables($aVariables){
         $this->aVariables = $aVariables;
         return $this;
     }

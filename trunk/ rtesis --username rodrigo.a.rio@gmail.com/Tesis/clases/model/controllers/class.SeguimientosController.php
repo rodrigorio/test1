@@ -829,6 +829,22 @@ class SeguimientosController
     }
 
     /**
+     * Devuelve todas las unidades para una entrada.
+     * Cada una de las unidades tiene el listado completo de variables con su respectivo valor.
+     */
+    public function getUnidadesByEntrada($iSeguimientoId, $dFechaHora)
+    {
+    	try{
+            $filtro = array('su.seguimientos_id' => $iSeguimientoId, 'u.fechaHora' => $dFechaHora);
+            $iRecordsTotal = 0;
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, 'u.fechaHora', 'asc', null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Se utiliza este metodo porque es muy costoso levantar todo el array de unidades y de seguimientos
      * para saber la cantidad a la cual la unidad esta asociada.
      *
@@ -872,6 +888,21 @@ class SeguimientosController
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Devuelve array de variables para una unidad con el valor actual para una fecha en formato SQL
+     */
+    public function getVariablesContenidoByUnidadId($iUnidadId, $dFecha)
+    {
+    	try{
+            $filtro = array('v.unidad_id' => $iUnidadId, 'scv.fechaHora' => $dFecha);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oVariableIntermediary->obtenerContenido($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
