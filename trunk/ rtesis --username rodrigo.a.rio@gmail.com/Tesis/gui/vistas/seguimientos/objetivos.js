@@ -237,7 +237,7 @@ function listaCiclosByNivel(idNivel){
         type: "POST",
         url: "seguimientos/listar-ciclos-por-niveles",
         data:{iNivelId:idNivel},
-        beforeSend: function(){
+        beforeSend:function(){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },
         success:function(lista){
