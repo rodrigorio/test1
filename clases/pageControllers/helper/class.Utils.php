@@ -29,7 +29,7 @@ class Utils{
      * dd-mm-yyyy o dd/mm/yyyy
      * @param boolean $time
      */
-    public static function fechaAFormatoSQL($dFecha,$time = FALSE){
+    public static function fechaAFormatoSQL($dFecha, $time = FALSE){
     	$vFecha  = preg_split("/ /",$dFecha);
         $vFechaD = preg_split("/(\/)|(-)/", $vFecha[0]);
         $fechaForm = $vFechaD[2]."-".$vFechaD[1]."-".$vFechaD[0];

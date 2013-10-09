@@ -222,16 +222,17 @@ abstract class Intermediary
      * Recibe un array que puede tener los valores fecha desde y fecha hasta.
      * utiliza la funcion crearFiltroFecha de esta clase para crear el filtro.
      */
-    protected final function crearFiltroFechaDesdeHasta($campo, $aFechas)
+    protected final function crearFiltroFechaDesdeHasta($campo, $aFechas, $format = true)
     {
         $aFechas = array_map('trim', $aFechas);
 
-        if(array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde']){
-            $aFechas['fechaDesde'] = Utils::fechaAFormatoSQL($aFechas['fechaDesde']);
-        }
-
-        if(array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta']){
-            $aFechas['fechaHasta'] = Utils::fechaAFormatoSQL($aFechas['fechaHasta']);
+        if($format){
+            if(array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde']){
+                $aFechas['fechaDesde'] = Utils::fechaAFormatoSQL($aFechas['fechaDesde']);
+            }
+            if(array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta']){
+                $aFechas['fechaHasta'] = Utils::fechaAFormatoSQL($aFechas['fechaHasta']);
+            }
         }
                
         if(

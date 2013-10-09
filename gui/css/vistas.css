@@ -317,6 +317,7 @@ input.large, textarea.large{width:450px;} select.large{width:460px}
 .tabs .leftTabs{float:left; padding-left:10px}
 .tabs .rightTabs{float:right; padding-right:10px}
 .toggleTabs li{display:inline}
+#toTop{position:fixed; bottom:20px; left:400px; display:none;}
 
 /* para ubicar en posiciones absolutas */
 .topRight{top:5px; right:5px}
@@ -602,7 +603,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .fte5{font-size:6em; line-height:72px;}
 /* colores */
 .co{color:#333 !important} .co1{color:#999 !important}
-.co2{color:#FFF !important}
+.co2{color:#FFF !important} .co3{color:#666 !important}
 
 
 /*** VARIOS ***/
@@ -862,9 +863,7 @@ p .destacado{font-weight:bold;}
 .ui-icon-closethick{background-position:-96px -128px}
 
 /* tooltip */
-.ui-tooltip{background-color:#FFF; padding:8px; position:absolute; z-index:9999; max-width:300px; -webkit-box-shadow: 0 0 5px #aaa; box-shadow: 0 0 5px #aaa}
-body .ui-tooltip{border-width:2px;}
-#toTop{position:fixed; bottom:20px; left:400px; display:none;}
+.ui-tooltip{font-size:0.8em; font-style:italic; text-align:right; border:1px solid #999; background-color:#FFF; padding:8px; position:absolute; z-index:9999; max-width:300px; -webkit-box-shadow: 0 0 5px #aaa; box-shadow: 0 0 5px #aaa; -moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px;}
 
 /*** OVERLAYS ***/
 .ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity: .3;filter:Alpha(Opacity=30)}
