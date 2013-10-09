@@ -114,24 +114,42 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->setContenidoColumnaIzquierda($oSeguimiento);
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageBodyCenterCont", "AmpliarEntradaBlock");
 
-            $oEntrada = $oSeguimiento->getUltimaEntrada();
+            if($bUltimaEntrada){
+                $oEntrada = $oSeguimiento->getUltimaEntrada();
 
-            //Si ultima entrada es null entonces no hay entradas en el seguimiento
-            if($oEntrada === null){
-                $this->getTemplate()->unset_blocks("TituloBlock");
-                $this->getTemplate()->unset_blocks("MenuEntradaBlock");
-                
-                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
-                $this->getTemplate()->set_var("sTituloMsgFicha", "Seguimiento sin entradas.");
-                $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una seleccione una fecha desde el calendario y luego elija 'Crear nueva entrada'.");
+                //Si ultima entrada es null entonces no hay entradas en el seguimiento
+                if($oEntrada === null){
+                    $this->getTemplate()->unset_blocks("TituloBlock");
+                    $this->getTemplate()->unset_blocks("MenuEntradaBlock");
 
-                $this->getTemplate()->unset_blocks("EntradaContBlock");
-                $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-                return;
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
+                    $this->getTemplate()->set_var("sTituloMsgFicha", "Seguimiento sin entradas.");
+                    $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una seleccione una fecha desde el calendario y luego elija 'Crear nueva entrada'.");
+
+                    $this->getTemplate()->unset_blocks("EntradaContBlock");
+                    $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+                    return;
+                }
+
+                $sUltimaEntrada = $oEntrada->getFecha();
+            }else{
+                $sFechaEntrada = Utils::fechaAFormatoSQL($this->getRequest()->getParam("date"));
+                if(null === $sFechaEntrada){
+                    throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+                }
+
+                $oEntrada = $oSeguimiento->getEntradaByFecha($sFechaEntrada);
+                if($oEntrada === null){
+                    throw new Exception("No existe entrada en la fecha ".$this->getRequest()->getParam("date"), 401);
+                }
+
+                $sUltimaEntrada = $oSeguimiento->getUltimaEntrada()->getFecha();
             }
 
             $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
-
+            $this->getTemplate()->set_var("sEntradaActual", $oEntrada->getFecha());
+            $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
+                                    
             $aObjetivos = $oEntrada->getObjetivos();
                        
             $this->getTemplate()->set_var("iRecordsTotal", count($aObjetivos));
@@ -204,7 +222,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("sDescripcionObjetivoBreve", $sDescripcionObjetivoBreve);
                 $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
 
-                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha());
+                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha(true));
                 if(null === $oEvolucion){
                     $this->getTemplate()->set_var("iEvolucion", "0");
                 }else{                                   
@@ -272,5 +290,56 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
-    }           
+    }
+
+    public function procesar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('fechasEntradasMes')){
+            $this->fechasEntradasMes();
+            return;
+        }
+    }
+
+    /**
+     * Devuelve json al front con un array de fechas formato yyyy/(mm-1)/dd de un mes dado por GET
+     */
+    private function fechasEntradasMes()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+
+        $sYear = $this->getRequest()->getParam('year');
+        $sMonth = $this->getRequest()->getParam('month');
+
+        if(empty($iSeguimientoId) || empty($sYear) || empty($sMonth)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver este seguimiento", 401);
+        }
+                
+        //primer y ultima fecha del mes (inclusive)
+        $dFechaDesde = $sYear."-".$sMonth."-01";
+        $dFechaHasta = date($sYear.'-'.$sMonth.'-t');
+        $aEntradas = $oSeguimiento->getEntradas($dFechaDesde, $dFechaHasta);
+
+        $aDates = array();
+        if(count($aEntradas) > 0){
+            foreach($aEntradas as $oEntrada){
+                $sDate = str_replace("-", "/", $oEntrada->getFecha());
+                $aDates[] = $sDate;
+            }
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse()->sendJson($aDates);
+    }
 }

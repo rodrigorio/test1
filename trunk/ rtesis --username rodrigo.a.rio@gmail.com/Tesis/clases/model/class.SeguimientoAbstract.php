@@ -284,6 +284,8 @@ abstract class SeguimientoAbstract
 
     /**
      * Para no tener que levantar tanta info devuelve la entrada para una fecha determinada
+     *
+     * @param date $dFecha fecha en formato SQL valido yyyy/mm/dd
      */
     public function getEntradaByFecha($dFecha)
     {

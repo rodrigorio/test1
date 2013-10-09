@@ -41,10 +41,9 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{            
-            $db = $this->conn;
-            $filtro = $this->escapeStringArray($filtro);
+            $db = clone($this->conn);
 
-            $sSQL = "SELECT
+            $sSQL = "SELECT DISTINCT 
                         scv.fechaHora as dFechaHora, s.id as iSeguimientoId,
                         IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType 
                      FROM
@@ -55,11 +54,23 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
                         seguimientos_scc scc ON s.id = scc.id 
                      JOIN
                         seguimiento_x_contenido_variables scv ON s.id = scv.seguimiento_id 
-                    ";
+                     ";
 
-            if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+            $WHERE = array();
+
+            if(isset($filtro['s.id']) && $filtro['s.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('s.id', $filtro['s.id'], MYSQL_TYPE_INT);
+            }                        
+            if(isset($filtro['fechas']) && null !== $filtro['fechas']){
+                if(is_array($filtro['fechas'])){
+                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('scv.fechaHora', $filtro['fechas'], false);
+                }
             }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            //porque hay multiples entradas por cada N variable de cada N unidad. A mi solo me importa la entrada
+            $sSQL .= " GROUP BY DATE(scv.fechaHora) ";
 
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";

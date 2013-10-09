@@ -43,10 +43,14 @@ abstract class EntradaAbstract
     /**
      * Devuelve solo la parte de la fecha y formateada
      */
-    public function getFecha()
+    public function getFecha($format = false)
     {
-        $dFechaFormat = $this->getFechaHora(true);
-        return strtok($dFechaFormat, " ");
+        if($format){
+            $dFechaFormat = Utils::fechaFormateada($this->dFechaHora, "d/m/Y");
+            return strtok($dFechaFormat, " ");
+        }else{
+            return strtok($this->dFechaHora, " ");
+        }
     }
 
     public function setFecha($dFechaHora){

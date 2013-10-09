@@ -52,19 +52,19 @@
 <div class="pa pale3 mabo">
     <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}</span>
     <br>
-    <p class="mabo0">{sVariableValorTexto}</p>
+    <p class="mabo0 co3">{sVariableValorTexto}</p>
 </div>
 <!--EndVariableTexto-->
 
 <!--BeginVariableNumerica-->
 <div class="pa pale3 mabo">
-    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}: </span>{sVariableValorNumerico}
+    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}: </span> <span class="co3">{sVariableValorNumerico}</span>
 </div>
 <!--EndVariableNumerica-->
 
 <!--BeginVariableCualitativa-->
 <div class="pa pale3 mabo">
-    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}: </span>{sVariableModalidad}
+    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}: </span> <span class="co3">{sVariableModalidad}</span>
 </div>
 <!--EndVariableCualitativa-->
 
@@ -85,8 +85,12 @@
     <!--BeginTituloBlock-->
     <div class="fl_le">
         <h1>Entrada del {dFechaEntrada}</h1>
+        <span id="fechaEntradaActual" class="di_no">{sEntradaActual}</span>
+        <span id="fechaUltimaEntrada" class="di_no">{sUltimaEntrada}</span>
+        <span id="seguimientoId" class="di_no">{iSeguimientoId}</span>
     </div>
     <!--EndTituloBlock-->
+    
     <!--BeginMenuEntradaBlock-->
     <div class="fl_ri">
         <ul class="m_horiz mabo3 grupo">
@@ -162,15 +166,15 @@
                     <div class="fte fost_it fl_le">Detalles</div>
                     <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
                 </div>
-                <span class="fte2 txt_imp2">Creado el </span><br>
-                <p>{dFechaCreacion}</p>
+                <span class="fte2 txt_imp2">Creado el </span>
+                <p class="co3">{dFechaCreacion}</p>
                 <span class="fte2 txt_imp2">Descripci&oacute;n Eje</span><br>
-                <p>{sDescripcionEje}</p>
+                <p class="co3">{sDescripcionEje}</p>
                 <!--BeginContenidosEjeBlock-->
-                <p><span class="fowe_bo">Contenidos: </span>{sContenidosEje}</p>
+                <p class="co3"><span class="fowe_bo">Contenidos: </span>{sContenidosEje}</p>
                 <!--EndContenidosEjeBlock-->
                 <span class="fte2 txt_imp2">Descripci&oacute;n Objetivo</span><br>
-                <p>{sDescripcionObjetivo}</p>
+                <p class="co3">{sDescripcionObjetivo}</p>
             </div>
         </td>
     </tr>
