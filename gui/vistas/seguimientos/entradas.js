@@ -36,13 +36,14 @@ function Calendario(element){
         this._element.datepicker({
             defaultDate:defaultDate,
             maxDate:new Date,
-            beforeShowDay:this.mostrarEntradas,
-            onChangeMonthYear:this.getFechasEntradasMes
+            beforeShowDay:self.mostrarEntradas,
+            onChangeMonthYear:self.getFechasEntradasMes
         });
+        
         this.addEventClick();
     }
 
-    this.getFechasEntradasMes = function(year, month){                        
+    this.getFechasEntradasMes = function(year, month){        
         //agrego un 0 al mes si es un solo digito.
         month = ('0' + month).slice(-2);
         
@@ -52,9 +53,12 @@ function Calendario(element){
             url:"seguimientos/entradas/procesar",
             data:{
                 fechasEntradasMes:"1",
-                iSeguimientoId:this._seguimientoId,
+                iSeguimientoId:self._seguimientoId,
                 year:year,
                 month:month
+            },
+            beforeSend:function(){
+                setWaitingStatus("calendarWrap", true, "16");
             },
             success:function(data){                
                 //convierto a objeto date cada una de las fechas
@@ -72,6 +76,8 @@ function Calendario(element){
                 }else{
                     self._element.datepicker('refresh');
                 }
+
+                setWaitingStatus("calendarWrap", false, "16");
             }
         });
     }
