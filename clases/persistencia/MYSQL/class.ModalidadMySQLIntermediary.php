@@ -218,12 +218,13 @@ class ModalidadMySQLIntermediary extends ModalidadIntermediary
                       FROM
                         variable_cualitativa_modalidades vcm
                         JOIN variables v ON vcm.variables_id = v.id
-                        JOIN seguimiento_x_contenido_variables scv ON scv.variable_id = v.id
-                        JOIN seguimientos s ON scv.seguimiento_id = s.id 
+                        JOIN entrada_x_contenido_variables ecv ON ecv.variables_id = v.id
+                        JOIN entradas e ON e.id = ecv.entradas_id
+                        JOIN seguimientos s ON e.seguimientos_id = s.id
                       WHERE
                         vcm.id = ".$this->escInt($iModalidadId)." AND
                         s.usuarios_id = ".$this->escInt($iUsuarioId)." AND
-                        scv.valorNumerico = ".$this->escInt($iModalidadId)." ";
+                        ecv.valorNumerico = ".$this->escInt($iModalidadId)." ";
 
             $db->query($sSQL);
 

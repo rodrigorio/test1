@@ -234,10 +234,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 //para los seguimientos que tienen la unidad asociada pero todavia no guardaron valor en ninguna variable.
                 $sSQL = " SELECT su.seguimientos_id
                             FROM seguimiento_x_unidad su LEFT JOIN
-                            (SELECT seguimiento_id, variable_id FROM seguimiento_x_contenido_variables scv
-                             JOIN VARIABLES v ON v.id = scv.variable_id JOIN unidades u ON v.unidad_id = u.id WHERE u.id = ".$this->escInt($iUnidadId).")
-                          AS aux ON aux.seguimiento_id = su.seguimientos_id
-                          WHERE su.unidades_id = ".$this->escInt($iUnidadId)." AND ISNULL(aux.seguimiento_id) ";
+                            (SELECT e.seguimientos_id, variables_id FROM entrada_x_contenido_variables ecv JOIN entradas e ON e.id = ecv.entradas_id
+                             JOIN variables v ON v.id = ecv.variables_id JOIN unidades u ON v.unidad_id = u.id WHERE u.id = ".$this->escInt($iUnidadId).")
+                          AS aux ON aux.seguimientos_id = su.seguimientos_id
+                          WHERE su.unidades_id = ".$this->escInt($iUnidadId)." AND ISNULL(aux.seguimientos_id) ";
 
                 //creo una lista con los ids de los seguimientos:
                 // los ids de los seguimientos q estan asociados a una unidad 'X'
