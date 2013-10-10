@@ -832,13 +832,28 @@ class SeguimientosController
      * Devuelve todas las unidades para una entrada.
      * Cada una de las unidades tiene el listado completo de variables con su respectivo valor.
      */
-    public function getUnidadesByEntrada($iSeguimientoId, $dFechaHora)
+    public function getUnidadesByEntrada($oEntrada)
     {
     	try{
+            //primero obtengo las unidades que se crearon hasta la fecha de la entrada
+            $iSeguimientoId = $oEntrada->getSeguimientoId();
+            $dFechaHora = $oEntrada->getFechaHoraCreacion();
+
             $filtro = array('su.seguimientos_id' => $iSeguimientoId, 'u.fechaHora' => $dFechaHora);
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, 'u.fechaHora', 'asc', null, null);
+            $aUnidades = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, 'u.fechaHora', 'asc', null, null);
+
+            //ahora asigno todas las variables a cada unidad filtrando por entrada
+            if(count($aUnidades)>0){
+                foreach($aUnidades as $oUnidad){
+                    //agrego lista de variables con el valor correspondiente a la entrada                    
+                    $aVariables = $this->getVariablesContenidoByUnidadId($oEntrada->getId(), $oUnidad->getId());
+                    $oUnidad->setVariables($aVariables);
+                }
+            }
+
+            return $aUnidades;            
         }catch(Exception $e){
             throw $e;
         }
@@ -895,11 +910,12 @@ class SeguimientosController
 
     /**
      * Devuelve array de variables para una unidad con el valor actual para una fecha en formato SQL
+     * 
      */
-    public function getVariablesContenidoByUnidadId($iUnidadId, $dFecha)
+    public function getVariablesContenidoByUnidadId($iEntradaId, $iUnidadId)
     {
     	try{
-            $filtro = array('v.unidad_id' => $iUnidadId, 'e.fechaHora' => $dFecha);
+            $filtro = array('e.id' => $iEntradaId, 'v.unidad_id' => $iUnidadId);            
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oVariableIntermediary->obtenerContenido($filtro, $iRecordsTotal, null, null, null, null);
@@ -1118,19 +1134,6 @@ class SeguimientosController
     }
     
     /**
-     * Asociar Unidad de variables a seguimiento 
-     *
-     */
-    public function asociarSeguimientoXContenidoVariables($iSeguimientoId, $vUnidad){
-        try{        	        	
-            $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
-            return $oSeguimientoIntermediary->asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    
-    /**
      * Obtener Objetivos Personalizados
      *
      * Se utiliza para saber los objetivos asociados a un seguimiento personalizado.
@@ -1168,7 +1171,7 @@ class SeguimientosController
         }
     }
 
-    public function getObjetivosPersonalizadosByEntrada($iSeguimientoId, $dFecha)
+    public function getObjetivosPersonalizadosByEntrada($iSeguimientoId, $dFechaHora)
     {        
     	try{
             $filtro = array(
@@ -1675,8 +1678,8 @@ class SeguimientosController
     	try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
 
-            $sOrderBy = "e.fechaHora"; $sOrder = "desc";
-            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.fechaHora' => $dFecha);
+            $sOrderBy = "e.fecha"; $sOrder = "desc";
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.fecha' => $dFecha);
             $iRecordsTotal = 0;
 
             $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
@@ -1696,7 +1699,7 @@ class SeguimientosController
     	try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
             
-            $sOrderBy = "e.fechaHora"; $sOrder = "desc";
+            $sOrderBy = "e.fecha"; $sOrder = "desc";
             $filtro = array('e.seguimientos_id' => $iSeguimientoId);
             $iRecordsTotal = 0;
             
@@ -1713,10 +1716,25 @@ class SeguimientosController
     }
 
     /**
+     * El objeto tiene que venir COMPLETO, cuando entra aca ya tiene todas las unidades con todas las variables/valor
+     * Recordar que los objetivos se guardan por separado porque no necesariamente se modifican en todas las fechas de entrada.
+     */
+    public function guardarEntrada($oEntrada){
+        try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+            return $oSeguimientoIntermediary->guardar($oEntrada);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Este es un metodo generico util para determinar si una entidad sigue siendo
      * susceptible a modificaciones dependiendo el parametro de expiracion de sistema
      *
      * Se utiliza por ejemplo al crear los objetivos para setear la propiedad isEditable
+     *
+     * @param string $dFechaCreacion formato yyyy-mm-dd
      */
     public function isEntidadEditable($dFechaCreacion)
     {

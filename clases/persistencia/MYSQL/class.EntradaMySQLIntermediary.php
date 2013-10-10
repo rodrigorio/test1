@@ -8,7 +8,6 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         parent::__construct($conn);
     }
 
-
     /**
      * Singleton
      *
@@ -21,19 +20,55 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         }
         return self::$instance;
     }
-	
-	
-    public function insertar($oCategoria)
+		
+    public function insertar($oEntrada)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $sSQL = " INSERT INTO entradas SET ".
+                    " seguimientos_id = ".$this->escInt($oEntrada->getSeguimientoId()).", ".
+                    " fecha = ".$this->escDate($oEntrada->getFecha())." ";
+
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+
+            $sSQL = "insert into entrada_x_contenido_variables (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
+
+            for ($j=0; $j<count($vUnidad); $j++){
+                $vVariable = $vUnidad[$j]->getVariables();
+                for ($i=0; $i<count($vVariable); $i++){
+                    $oVariable = $vVariable[$i];
+                    $sSQL .= " (".$this->escInt($iLastId).", "
+                          .$this->escInt($oVariable->getId()).", ";
+
+                    if($oVariable->isVariableTexto()){
+                        $sSQL .= $this->escStr($oVariable->getValor()).", null)";
+                    }else{
+                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()).")";
+                    }
+
+                    if(count($vVariable) > $i+1){
+                        $sSQL .= ",";
+                    }
+                }
+            }
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+    
+    public  function actualizar($oEntrada)
     {
 
     }
     
-    public  function actualizar($oCategoria)
-    {
-
-    }
-    
-    public function guardar($oCategoria)
+    public function guardar($oEntrada)
     {
 
     }
@@ -44,7 +79,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT DISTINCT 
-                        e.fechaHora as dFechaHora, e.seguimientos_id as iSeguimientoId, e.guardada as bGuardada, 
+                        e.id as iId, e.fechaHoraCreacion as dFechaHoraCreacion, e.fecha as dFecha, e.seguimientos_id as iSeguimientoId, e.guardada as bGuardada,
                         IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType 
                      FROM
                         entradas e
@@ -59,12 +94,12 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             if(isset($filtro['e.seguimientos_id']) && $filtro['e.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('e.seguimientos_id', $filtro['e.seguimientos_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['e.fechaHora']) && $filtro['e.fechaHora']!=""){
-                $WHERE[] = $this->crearFiltroSimple('e.fechaHora', $filtro['e.fechaHora'], MYSQL_TYPE_DATE);
+            if(isset($filtro['e.fecha']) && $filtro['e.fecha']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.fecha', $filtro['e.fecha'], MYSQL_TYPE_DATE);
             }
             if(isset($filtro['fechas']) && null !== $filtro['fechas']){
                 if(is_array($filtro['fechas'])){
-                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('e.fechaHora', $filtro['fechas'], false);
+                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('e.fecha', $filtro['fechas'], false);
                 }
             }
 
@@ -89,7 +124,9 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $aEntradas = array();
             while($oObj = $db->oNextRecord()){
                 $oEntrada = new stdClass();
-                $oEntrada->dFechaHora = $oObj->dFechaHora;
+                $oEntrada->iId = $oObj->iId;
+                $oEntrada->dFechaHoraCreacion = $oObj->dFechaHoraCreacion;
+                $oEntrada->dFecha = $oObj->dFecha;
                 $oEntrada->iSeguimientoId = $oObj->iSeguimientoId;
                 $oEntrada->bGuardada = ($oObj->bGuardada == "1") ? true:false;
 
@@ -113,7 +150,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         }
     }
             
-    public function borrar($iCategoriaId)
+    public function borrar($iEntradaId)
     {
 
     }

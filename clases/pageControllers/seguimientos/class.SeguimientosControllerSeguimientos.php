@@ -654,8 +654,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
     
-    public function editarAntecedentes(){
-
+    public function editarAntecedentes()
+    {
         $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
@@ -718,8 +718,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-         }catch(Exception $e){
-            print_r($e);
+        }catch(Exception $e){
+            $this->getResponse()->setBody("Ocurrio un error");
         }
     }
     
@@ -740,21 +740,21 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     
     private function fileAntecedentesUpload()
     {
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $idItem = $perfil->getUsuario()->getId();
+
+        $iIdSeguimiento = $this->getRequest()->getPost('iSeguimientoId');
+        $nombreInputFile = 'archivoAntecedentes';
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
+
+        if($oSeguimiento->getUsuarioId() != $idItem){
+            throw new Exception("No tiene permiso para editar este seguimiento", 401);
+        }
+        
         try{            
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
-            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $idItem = $perfil->getUsuario()->getId();
-            
-            $iIdSeguimiento = $this->getRequest()->getPost('iSeguimientoId');
-            $nombreInputFile = 'archivoAntecedentes';
-
-            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
-            
-            if($oSeguimiento->getUsuarioId() != $idItem){
-                throw new Exception("No tiene permiso para editar este seguimiento", 401);
-            }
-			
+            			
             $this->getUploadHelper()->setTiposValidosDocumentos();
             
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){

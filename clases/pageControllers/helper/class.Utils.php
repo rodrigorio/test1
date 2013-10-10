@@ -17,9 +17,9 @@ class Utils{
 	 * @param unknown_type $dFecha
 	 * @param unknown_type $formato
 	 */
-    public static function fechaFormateada($dFecha,$formato="d/m/Y H:i:s"){
+    public static function fechaFormateada($dFecha, $formato="d/m/Y H:i:s"){
         $time = strtotime($dFecha);
-        return date($formato,$time);
+        return date($formato, $time);
     }
     
     /**

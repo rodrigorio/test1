@@ -107,11 +107,14 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             $WHERE = array();
 
+            if(isset($filtro['e.id']) && $filtro['e.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.id', $filtro['e.id'], MYSQL_TYPE_INT);
+            }
             if(isset($filtro['v.unidad_id']) && $filtro['v.unidad_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('v.unidad_id', $filtro['v.unidad_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['e.fechaHora']) && $filtro['e.fechaHora'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('e.fechaHora', $filtro['e.fechaHora'], MYSQL_TYPE_DATE);
+            if(isset($filtro['e.fechaHoraCreacion']) && $filtro['e.fechaHoraCreacion'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('e.fechaHoraCreacion', $filtro['e.fechaHoraCreacion'], MYSQL_TYPE_DATE);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -262,10 +265,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $sSQL = " UPDATE variables SET ".
                     " borradoLogico = '1' ".
                     " WHERE ".
-                    " id in (SELECT DISTINCT ecv.variable_id
-                             FROM entrada_x_contenido_variables ecv
-                             WHERE variable_id IN (".$iIds.") 
-                             AND TO_DAYS(NOW()) - TO_DAYS(scv.fechaHora) <= ".$cantDiasExpiracion.") ";
+                    " id in (SELECT DISTINCT ecv.variables_id
+                             FROM entrada_x_contenido_variables ecv JOIN entradas e ON e.id = ecv.entradas_id
+                             WHERE variables_id IN (".$iIds.")
+                             AND TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) <= ".$cantDiasExpiracion.") ";
 
             $this->conn->execSQL($sSQL);
 

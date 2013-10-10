@@ -129,10 +129,49 @@ function Calendario(element){
             location = "seguimientos/entradas/"+self._seguimientoId+"-"+date;
         }
         if(action.indexOf("crearEntrada") != -1){
-            //dialog, si acepta 
+            //son 2 peticiones ajax. 1 para el dialog de aceptar (puede dar advertencia de periodo de expiracion) y otra para crear entrada y redireccionar.
+            self.dialogCrearEntrada(self._seguimientoId, date);
         }
 
         return false;
+    }
+
+    this.dialogCrearEntrada = function(iSeguimientoId, date){
+        date = date.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1");
+
+        var buttons = {
+            "Confirmar": function(){
+                //este es el dialog que confirma que la cuenta fue eliminada del sistema
+                var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+                dialog = setWaitingStatusDialog(500, "Crear Entrada", buttonAceptar);
+                $.ajax({
+                    type:"post",
+                    dataType:'jsonp',
+                    data:{iSeguimientoId:iSeguimientoId, dFecha:date},
+                    url:"seguimientos/entradas/crear",
+                    success:function(data){
+                        dialog.html(data.html);
+                        if(data.success != undefined && data.success == 1){
+                            $(".ui-dialog-buttonset .ui-button").click(function(){
+                                //ampliar entrada creada para editar por primera vez.
+                                location = data.redirect;
+                            });
+                        }
+                    }
+                });
+            },
+            "Cancelar": function() {
+                $(this).dialog( "close" );
+            }
+        }
+
+        //este es el dialog que pide confirmar la accion
+        var dialog = setWaitingStatusDialog(500, "Crear Entrada", buttons);
+        dialog.load(
+            "seguimientos/entradas/crear",
+            {confirmar:"1", iSeguimientoId:iSeguimientoId, dFecha:date},
+            function(){}
+        );
     }
 }
 
