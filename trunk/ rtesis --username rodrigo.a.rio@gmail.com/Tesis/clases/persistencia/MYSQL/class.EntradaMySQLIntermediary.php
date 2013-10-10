@@ -44,38 +44,36 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $db = clone($this->conn);
 
             $sSQL = "SELECT DISTINCT 
-                        scv.fechaHora as dFechaHora, s.id as iSeguimientoId,
+                        e.fechaHora as dFechaHora, e.seguimientos_id as iSeguimientoId, e.guardada as bGuardada, 
                         IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType 
                      FROM
-                        seguimientos s 
+                        entradas e
                      LEFT JOIN 
-                        seguimientos_personalizados sp ON s.id = sp.id 
+                        seguimientos_personalizados sp ON e.seguimientos_id = sp.id
                      LEFT JOIN
-                        seguimientos_scc scc ON s.id = scc.id 
-                     JOIN
-                        seguimiento_x_contenido_variables scv ON s.id = scv.seguimiento_id 
+                        seguimientos_scc scc ON e.seguimientos_id = scc.id
                      ";
 
             $WHERE = array();
 
-            if(isset($filtro['s.id']) && $filtro['s.id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('s.id', $filtro['s.id'], MYSQL_TYPE_INT);
-            }                        
+            if(isset($filtro['e.seguimientos_id']) && $filtro['e.seguimientos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.seguimientos_id', $filtro['e.seguimientos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['e.fechaHora']) && $filtro['e.fechaHora']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.fechaHora', $filtro['e.fechaHora'], MYSQL_TYPE_DATE);
+            }
             if(isset($filtro['fechas']) && null !== $filtro['fechas']){
                 if(is_array($filtro['fechas'])){
-                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('scv.fechaHora', $filtro['fechas'], false);
+                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('e.fechaHora', $filtro['fechas'], false);
                 }
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
-            //porque hay multiples entradas por cada N variable de cada N unidad. A mi solo me importa la entrada
-            $sSQL .= " GROUP BY DATE(scv.fechaHora) ";
-
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }else{
-                $sSQL .= " order by scv.fechaHora desc ";
+                $sSQL .= " order by e.fechaHora desc ";
             }
 
             if ($iIniLimit !== null && $iRecordCount !== null){
@@ -93,6 +91,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
                 $oEntrada = new stdClass();
                 $oEntrada->dFechaHora = $oObj->dFechaHora;
                 $oEntrada->iSeguimientoId = $oObj->iSeguimientoId;
+                $oEntrada->bGuardada = ($oObj->bGuardada == "1") ? true:false;
 
                 if($oObj->sObjType == 'SeguimientoPersonalizado')
                 {

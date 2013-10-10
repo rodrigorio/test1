@@ -337,9 +337,7 @@ $(document).ready(function(){
     $("input.defVal").live("blur", function(){valueToggleBlur($(this),false);});
 
     $("textarea.maxlength").maxlength();
-
-    $(document).tooltip();
-    
+        
     $("textarea.defVal").live("focus", function(){
         var elemento = $(this);
         valueToggleFocus(elemento);

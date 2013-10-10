@@ -840,9 +840,15 @@ p .destacado{font-weight:bold;}
 /* datepicker */
 .ui-datepicker{background-color:#FFF; border:1px solid #CCC; z-index:10 !important}
 .w100 .ui-datepicker{width:auto !important}
+.ui-datepicker .ui-state-default{font-size:12px;}
 .ui-datepicker td{padding:2px !important; color:#CCC}
-.ui-datepicker td a{background-color:#EEEFFF; color:#333 !important; padding:2px !important}
+.ui-datepicker td a{background-color:#96F794; color:#FFF; padding:2px !important}
 .ui-datepicker-today{font-weight:bold}
+/* datepicker entradas */
+.ui-datepicker-calendar .verEntrada a{background-color:#93B5F9}
+.ui-datepicker-calendar .entradaActual a{background-color:#5B7CB2; cursor:auto !important}
+.ref_ver, .ref_crear, .ref_actual{font-size:3em; font-weight:bold;}
+.ref_ver{color:#93B5F9} .ref_crear{color:#96F794} .ref_actual{color:#5B7CB2}
 
 
 /* botones de la parte inferior en los popups */

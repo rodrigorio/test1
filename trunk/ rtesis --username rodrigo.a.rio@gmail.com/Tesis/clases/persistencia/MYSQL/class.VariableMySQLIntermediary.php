@@ -97,21 +97,21 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             $sSQL = "SELECT
                        v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha,
-                       scv.valorTexto as sValorTexto, scv.valorNumerico as sValorNumerico
+                       ecv.valorTexto as sValorTexto, ecv.valorNumerico as sValorNumerico
                     FROM
                        variables v
-                    LEFT JOIN
-                       seguimiento_x_contenido_variables scv
-                    ON
-                       v.id = scv.variable_id ";
+                    JOIN
+                       entrada_x_contenido_variables ecv ON v.id = ecv.variables_id
+                    JOIN
+                       entradas e ON ecv.entradas_id = e.id";
 
             $WHERE = array();
 
             if(isset($filtro['v.unidad_id']) && $filtro['v.unidad_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('v.unidad_id', $filtro['v.unidad_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['scv.fechaHora']) && $filtro['scv.fechaHora'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('scv.fechaHora', $filtro['scv.fechaHora'], MYSQL_TYPE_DATE);
+            if(isset($filtro['e.fechaHora']) && $filtro['e.fechaHora'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('e.fechaHora', $filtro['e.fechaHora'], MYSQL_TYPE_DATE);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -262,8 +262,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $sSQL = " UPDATE variables SET ".
                     " borradoLogico = '1' ".
                     " WHERE ".
-                    " id in (SELECT DISTINCT scv.variable_id
-                             FROM seguimiento_x_contenido_variables scv 
+                    " id in (SELECT DISTINCT ecv.variable_id
+                             FROM entrada_x_contenido_variables ecv
                              WHERE variable_id IN (".$iIds.") 
                              AND TO_DAYS(NOW()) - TO_DAYS(scv.fechaHora) <= ".$cantDiasExpiracion.") ";
 

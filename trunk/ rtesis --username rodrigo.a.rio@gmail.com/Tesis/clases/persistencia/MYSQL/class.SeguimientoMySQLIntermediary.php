@@ -681,39 +681,50 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             return false;
         }
     }
-   /**
+
+    /**
      * El controlador de seguimiento con el metodo "isDiagnosticoSeguimientoUsuario" tiene que verificar que es el diagnostico de un seguimiento que haya
      * creado el usuario que esta en sesion
      */
-
-    public function asociarSeguimientoXContenidoVariables($iSeguimientoId,$vUnidad)
+    public function asociarSeguimientoXContenidoVariables($iSeguimientoId, $vUnidad)
     {
         try{
-            $db = $this->conn;            
-            $db->begin_transaction();              
+            $db = $this->conn;
+            $db->begin_transaction();
 
-          $sSQL = "insert into seguimiento_x_contenido_variables (seguimiento_id, variable_id, valor, fechaHora) VALUES ";         
-        
-          for ($j=0; $j< count($vUnidad); $j++) { 
-            $vVariable = $vUnidad[$j]->getVariables();
-             for ($i=0; $i< count($vVariable); $i++) {
-            	$oVariable = $vVariable[$i];
-            	$sSQL .= " (".$this->escInt($iSeguimientoId).", "
-            		.$this->escInt($oVariable->getId()).", "
-            		.$this->escStr($oVariable->getValor()).", ";
-            	if (count($vVariable) > $i+1) {
-            		$sSQL .= ",";
-            	}
-           	}
-           }                             
+            $sSQL = " insert into entradas ".
+                    " set seguimientos_id = ".$this->escInt($iSeguimientoId)." ";
+            
+            $db->execSQL($sSQL);
+            $iLastId = $db->insert_id();
+            
+            $sSQL = "insert into entrada_x_contenido_variables (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
+
+            for ($j=0; $j<count($vUnidad); $j++){
+                $vVariable = $vUnidad[$j]->getVariables();
+                for ($i=0; $i<count($vVariable); $i++){
+                    $oVariable = $vVariable[$i];
+                    $sSQL .= " (".$this->escInt($iLastId).", "
+                          .$this->escInt($oVariable->getId()).", ";
+
+                    if($oVariable->isVariableTexto()){
+                        $sSQL .= $this->escStr($oVariable->getValor()).", null)";
+                    }else{
+                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()).")";
+                    }
+
+                    if(count($vVariable) > $i+1){
+                        $sSQL .= ",";
+                    }
+                }
+            }
                       
             $db->execSQL($sSQL);
             $db->commit();
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-        }
-                 
+        }                 
     }    
     
     public function actualizarCampoArray($objects, $cambios){}    

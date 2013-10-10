@@ -45,7 +45,12 @@
 </div>
 <div id="calendarWrap" class="po_re mihe1">
     <div class="ajax_wait16 di_no"></div>
-    <div id="calendarioEntradas" class="w100"></div>
+    <div id="calendarioEntradas" class="w100 mabo"></div>
+    <ul class="m_horiz">
+        <li><span class="ref_actual">&bull;</span> <span class="fte2">Actual</span></li>
+        <li><span class="ref_ver">&bull;</span> <span class="fte2">Ampliar</span></li>
+        <li><span class="ref_crear">&bull;</span> <span class="fte2">Crear</span></li>
+    </ul>
 </div>
 <!--EndPageBodyLeftContBlock-->
 
@@ -83,12 +88,13 @@
 
 <!--BeginAmpliarEntradaBlock-->
 <div class="mabo2 grupo">
+    <span id="fechaEntradaActual" class="di_no">{sEntradaActual}</span>
+    <span id="fechaUltimaEntrada" class="di_no">{sUltimaEntrada}</span>
+    <span id="seguimientoId" class="di_no">{iSeguimientoId}</span>
+    
     <!--BeginTituloBlock-->
     <div class="fl_le">
         <h1>Entrada del {dFechaEntrada}</h1>
-        <span id="fechaEntradaActual" class="di_no">{sEntradaActual}</span>
-        <span id="fechaUltimaEntrada" class="di_no">{sUltimaEntrada}</span>
-        <span id="seguimientoId" class="di_no">{iSeguimientoId}</span>
     </div>
     <!--EndTituloBlock-->
     

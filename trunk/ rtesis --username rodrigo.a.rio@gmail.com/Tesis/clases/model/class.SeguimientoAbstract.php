@@ -289,9 +289,7 @@ abstract class SeguimientoAbstract
      */
     public function getEntradaByFecha($dFecha)
     {
-        $oEntrada = null;
-        $oEntrada = SeguimientosController::getInstance()->getEntradaPorFechaBySeguimientoId($this->iId, $dFecha);
-        return $oEntrada;
+        return SeguimientosController::getInstance()->getEntradaPorFechaBySeguimientoId($this->iId, $dFecha);
     }
 
     public function setEntradas($aEntradas){

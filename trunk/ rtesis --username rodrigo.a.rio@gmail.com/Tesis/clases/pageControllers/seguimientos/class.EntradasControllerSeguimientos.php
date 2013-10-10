@@ -133,21 +133,24 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                 $sUltimaEntrada = $oEntrada->getFecha();
             }else{
-                $sFechaEntrada = Utils::fechaAFormatoSQL($this->getRequest()->getParam("date"));
+                $sFechaEntrada = Utils::fechaAFormatoSQL($this->getRequest()->getParam("sDate"));
                 if(null === $sFechaEntrada){
                     throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
                 }
-
-                $oEntrada = $oSeguimiento->getEntradaByFecha($sFechaEntrada);
+                
+                $oEntrada = $oSeguimiento->getEntradaByFecha($sFechaEntrada);                
                 if($oEntrada === null){
-                    throw new Exception("No existe entrada en la fecha ".$this->getRequest()->getParam("date"), 401);
+                    throw new Exception("No existe entrada en la fecha ".$this->getRequest()->getParam("sDate"), 401);
                 }
 
                 $sUltimaEntrada = $oSeguimiento->getUltimaEntrada()->getFecha();
             }
 
             $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
-            $this->getTemplate()->set_var("sEntradaActual", $oEntrada->getFecha());
+
+            $sEntradaActual = str_replace("-", "/", $oEntrada->getFecha());
+            $sUltimaEntrada = str_replace("-", "/", $sUltimaEntrada);
+            $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
             $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
                                     
             $aObjetivos = $oEntrada->getObjetivos();

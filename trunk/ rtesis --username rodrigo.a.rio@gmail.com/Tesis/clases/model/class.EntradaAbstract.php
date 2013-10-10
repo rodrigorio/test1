@@ -28,9 +28,35 @@ abstract class EntradaAbstract
      * La idea es que en el constructor de la entrada si el periodo de expiracion es menor
      * se setee en falso
      */
-    protected $isEditable = true;
+    protected $bEditable = true;
+
+    /**
+     * Indica si la entrada se salvo al menos 1 vez.
+     */
+    protected $bGuardada = false;
     
     protected function __construct(){}
+
+    public function isEditable($flag = null){
+        if(null !== $flag){
+            $this->bEditable = $flag ? true : false;
+            return $this;
+        }else{
+            return $this->bEditable;
+        }
+    }
+
+    /**
+     * Se guardo al menos una vez ?
+     */
+    public function isGuardada($flag = null){
+        if(null !== $flag){
+            $this->bGuardada = $flag ? true : false;
+            return $this;
+        }else{
+            return $this->bGuardada;
+        }
+    }
 
     public function getFechaHora($format = false){
         if($format){

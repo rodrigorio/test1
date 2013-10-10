@@ -899,7 +899,7 @@ class SeguimientosController
     public function getVariablesContenidoByUnidadId($iUnidadId, $dFecha)
     {
     	try{
-            $filtro = array('v.unidad_id' => $iUnidadId, 'scv.fechaHora' => $dFecha);
+            $filtro = array('v.unidad_id' => $iUnidadId, 'e.fechaHora' => $dFecha);
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oVariableIntermediary->obtenerContenido($filtro, $iRecordsTotal, null, null, null, null);
@@ -1660,7 +1660,7 @@ class SeguimientosController
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
 
             $filtroFecha = array('fechaDesde' => $dFechaDesde, 'fechaHasta' => $dFechaHasta);
-            $filtro = array('s.id' => $iSeguimientoId);
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId);
             $filtro['fechas'] = $filtroFecha;
             $iRecordsTotal = 0;
 
@@ -1670,13 +1670,34 @@ class SeguimientosController
         }            
     }
 
+    public function getEntradaPorFechaBySeguimientoId($iSeguimientoId, $dFecha)
+    {
+    	try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+
+            $sOrderBy = "e.fechaHora"; $sOrder = "desc";
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.fechaHora' => $dFecha);
+            $iRecordsTotal = 0;
+
+            $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
+
+            if(null !== $aEntrada){
+                return $aEntrada[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function getUltimaEntradaBySeguimiento($iSeguimientoId)
     {
     	try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
             
-            $sOrderBy = "scv.fechaHora"; $sOrder = "desc";
-            $filtro = array('s.id' => $iSeguimientoId);
+            $sOrderBy = "e.fechaHora"; $sOrder = "desc";
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId);
             $iRecordsTotal = 0;
             
             $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
