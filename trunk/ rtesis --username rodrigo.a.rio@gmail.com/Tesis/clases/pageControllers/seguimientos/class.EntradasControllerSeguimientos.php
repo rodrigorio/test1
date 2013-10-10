@@ -345,4 +345,49 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse()->sendJson($aDates);
     }
+
+    public function crear(){
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        try{
+            if($this->getRequest()->has('confirmar')){
+                $this->confirmar();
+                return;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }       
+    }
+
+    private function confirmar()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        $dFecha = $this->getRequest()->getParam('dFecha');
+
+        if(empty($iSeguimientoId) || empty($dFecha)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver este seguimiento", 401);
+        }
+
+        //la fecha de creacion esta fuera del periodo de edicion de seguimientos?
+        $dFechaMsg = Utils::fechaFormateada($dFecha, "d/m/Y");
+        $iCantDias = SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento();
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaHintBlock");
+        $this->getTemplate()->set_var("sTituloMsgFicha", "Crear nueva entrada en el historial del Seguimiento");
+        $this->getTemplate()->set_var("sMsgFicha", "Se creará una nueva entrada en el seguimiento el día <strong>".$dFechaMsg."</strong>.<br>
+                                                    El sistema brinda un plazo de edición de <strong>".$iCantDias."</strong> una vez creada.<br>
+                                                    Vencido el plazo la entrada no podra editarse y solo podrá eliminarse si no se ha guardado información en ella.
+                                                    Desea continuar?");
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));       
+    }
 }

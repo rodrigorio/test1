@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Rodrigo A. Rio
+ * @author Matias Velilla
  *
  * Cuando se guardan las entradas se descartan los objetivos !!
  *
@@ -11,6 +11,8 @@
  */
 abstract class EntradaAbstract
 {
+    protected $iId;
+    
     /**
      * Se asigna cuando se crean los objetos entrada.
      * No significa una referencia doble, se necesita para poder levantar on demand 
@@ -18,7 +20,15 @@ abstract class EntradaAbstract
      */
     protected $iSeguimientoId;
 
-    protected $dFechaHora;
+    /**
+     * Fecha en la que se creo una entrada (puede no coincidir con la fecha de la entrada)
+     */
+    protected $dFechaHoraCreacion;
+
+    /**
+     * Fecha de la entrada en calendario
+     */
+    protected $dFecha;
 
     protected $aObjetivos = null;
 
@@ -36,6 +46,22 @@ abstract class EntradaAbstract
     protected $bGuardada = false;
     
     protected function __construct(){}
+
+    public function getId()
+    {
+        return $this->iId;
+    }
+
+    public function setId($iId)
+    {
+        $this->iId = $iId;
+        return $this;
+    }
+
+    public function getSeguimientoId()
+    {
+        return $this->iSeguimientoId;
+    }
 
     public function isEditable($flag = null){
         if(null !== $flag){
@@ -58,29 +84,36 @@ abstract class EntradaAbstract
         }
     }
 
-    public function getFechaHora($format = false){
+    public function getFechaHoraCreacion($format = false){
         if($format){
-            return Utils::fechaFormateada($this->dFechaHora, "d/m/Y");
+            return Utils::fechaFormateada($this->dFechaHoraCreacion, "d/m/Y");
         }else{
-            return $this->dFechaHora;
+            return $this->dFechaHoraCreacion;
         }
     }
 
-    /**
-     * Devuelve solo la parte de la fecha y formateada
-     */
     public function getFecha($format = false)
     {
         if($format){
-            $dFechaFormat = Utils::fechaFormateada($this->dFechaHora, "d/m/Y");
-            return strtok($dFechaFormat, " ");
+            return Utils::fechaFormateada($this->dFecha, "d/m/Y");
         }else{
-            return strtok($this->dFechaHora, " ");
+            return $this->dFecha;
         }
     }
+    
+    public function setFechaCreacion($dFechaHoraCreacion){
+        $this->dFechaHoraCreacion = $dFechaHoraCreacion;
+    }
 
-    public function setFecha($dFechaHora){
-        $this->dFechaHora = $dFechaHora;
+    public function setFecha($dFecha){
+        $this->dFecha = $dFecha;
+    }
+
+    /**
+     * Establece fecha actual como fecha de la entrada
+     */
+    public function setFechaToday(){
+        $this->dFecha = date('Y-m-d', time());
     }
 
     /**
@@ -89,7 +122,7 @@ abstract class EntradaAbstract
     public function getUnidades()
     {
         if(null === $this->aUnidades){
-            $this->aUnidades = SeguimientosController::getInstance()->getUnidadesByEntrada($this->iSeguimientoId, $this->dFechaHora);
+            $this->aUnidades = SeguimientosController::getInstance()->getUnidadesByEntrada($this);
         }
         return $this->aUnidades;
     }

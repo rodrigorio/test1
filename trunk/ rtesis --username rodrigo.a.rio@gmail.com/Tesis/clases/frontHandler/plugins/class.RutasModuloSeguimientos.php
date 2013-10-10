@@ -409,6 +409,13 @@ class RutasModuloSeguimientos
                                 ),
                                 '');
         $router->addRoute('seguimientosEntradasAmpliar', $route);
+        $route = new RegexRoute('seguimientos/entradas/crear',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entradas',
+                                        'action'     => 'crear'
+                                ));
+        $router->addRoute('seguimientosEntradasCrear', $route);
         $route = new RegexRoute('seguimientos/entradas/procesar',
                                 array(
                                         'module' => 'seguimientos',

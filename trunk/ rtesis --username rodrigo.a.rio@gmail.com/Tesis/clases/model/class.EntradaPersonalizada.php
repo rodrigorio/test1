@@ -18,17 +18,16 @@ class EntradaPersonalizada extends EntradaAbstract
             }
         }
 
-        $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
-        //si cant dias expiracion < (fecha actual - fecha entrada) entonces no se puede editar                
-        $dayDiff = Utils::dateDiffDays($this->dFechaHora, date("Y-m-d H:i:s")); //ejemplo: '2009-12-20 20:12:10' que es la hora q viene desde el SQL
-        if($cantDiasExpiracion < $dayDiff ){ $this->bEditable = false; }
+        if(!SeguimientosController::getInstance()->isEntidadEditable($this->$dFechaHoraCreacion)){
+            $this->bEditable = false;
+        }
     }
 
     //en el array de 'evolucion' tendria que estar asociado a los objetivos el objeto evolucion de la fecha de la entrada!!
     public function getObjetivos()
     {
         if(null === $this->aObjetivos){
-            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizadosByEntrada($this->iSeguimientoId, $this->dFechaHora);
+            $this->aObjetivos = SeguimientosController::getInstance()->getObjetivosPersonalizadosByEntrada($this->iSeguimientoId, $this->dFechaHoraCreacion);
         }
         return $this->aObjetivos;
     }    
