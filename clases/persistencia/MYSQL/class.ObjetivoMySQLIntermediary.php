@@ -50,7 +50,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $WHERE[] = $this->crearFiltroSimple('op.seguimientos_personalizados_id', $filtro['op.seguimientos_personalizados_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['op.fechaCreacion']) && $filtro['op.fechaCreacion'] != ""){
-                $WHERE[] = $this->crearFiltroFecha('op.fechaCreacion', null, $filtro['op.fechaCreacion']);
+                $WHERE[] = $this->crearFiltroFecha('op.fechaCreacion', null, $filtro['op.fechaCreacion'], false, true);
             }
             if(isset($filtro['op.fechaDesactivado']) && $filtro['op.fechaDesactivado'] != ""){
                 $WHERE[] = $this->crearFiltroFecha('op.fechaDesactivado', $filtro['op.fechaDesactivado'], null, true);

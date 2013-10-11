@@ -1176,8 +1176,8 @@ class SeguimientosController
     	try{
             $filtro = array(
                 'op.seguimientos_personalizados_id' => $iSeguimientoId,
-                'op.fechaCreacion' => $dFecha,
-                'op.fechaDesactivado' => $dFecha
+                'op.fechaCreacion' => $dFechaHora,
+                'op.fechaDesactivado' => $dFechaHora
             );
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
