@@ -1204,13 +1204,13 @@ class SeguimientosController
         }
     }
 
-    public function getObjetivosAprendizajeByEntrada($iSeguimientoId, $dFecha)
+    public function getObjetivosAprendizajeByEntrada($iSeguimientoId, $dFechaHora)
     {
     	try{
             $filtro = array(
                 'sxo.seguimientos_scc_id' => $iSeguimientoId,
-                'sxo.fechaCreacion' => $dFecha, 
-                'sxo.fechaDesactivado' => $dFecha
+                'sxo.fechaCreacion' => $dFechaHora,
+                'sxo.fechaDesactivado' => $dFechaHora
             );
             
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
