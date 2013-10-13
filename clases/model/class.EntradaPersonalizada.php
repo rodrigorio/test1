@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Rodrigo A. Rio 
+ * @author Matias Velilla
  */
 class EntradaPersonalizada extends EntradaAbstract
 {
@@ -16,10 +16,6 @@ class EntradaPersonalizada extends EntradaAbstract
                     throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
                 }
             }
-        }
-
-        if(!SeguimientosController::getInstance()->isEntidadEditable($this->$dFechaHoraCreacion)){
-            $this->bEditable = false;
         }
     }
 

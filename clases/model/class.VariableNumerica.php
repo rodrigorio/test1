@@ -33,6 +33,7 @@
      *  @param float $fValor
      */
     public function setValor($fValor){
+        if(empty($fValor) || null === $fValor){ $this->valor = null; return; }
         $this->valor = floatval($fValor);
     }
 

@@ -36,6 +36,12 @@ class Unidad{
      *
      */
     private $aVariables = null;
+
+    /**
+     * Esta fecha es != null cuando la unidad esta borrada logicamente. guarda el dia en la que se borro.
+     * Es necesaria para saber que unidades mostrar cuando se visualiza una entrada.
+     */
+    protected $dFechaBorradoLogico = null;
 			
     public function __construct(stdClass $oParams = null) {
         $vArray = get_object_vars($oParams);
@@ -193,5 +199,19 @@ class Unidad{
     public function isTipoEdicionRegular()
     {
         return $this->eTipoEdicion == self::TIPO_EDICION_REGULAR ? true : false;
-    }   
+    }
+
+    public function getFechaBorradoLogico()
+    {
+        return $this->dFechaBorradoLogico;
+    }
+
+    /**
+     * Setea la fecha actual como fecha de borrado
+     */
+    public function setFechaBorradoLogico()
+    {
+        $today = date('Y-m-d');
+        $this->dFechaBorradoLogico = $today;
+    }
 }

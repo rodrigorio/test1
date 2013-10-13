@@ -53,7 +53,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $WHERE[] = $this->crearFiltroFecha('op.fechaCreacion', null, $filtro['op.fechaCreacion'], false, true);
             }
             if(isset($filtro['op.fechaDesactivado']) && $filtro['op.fechaDesactivado'] != ""){
-                $WHERE[] = $this->crearFiltroFecha('op.fechaDesactivado', $filtro['op.fechaDesactivado'], null, true);
+                $WHERE[] = $this->crearFiltroFecha('op.fechaDesactivado', $filtro['op.fechaDesactivado'], null, true, true);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
