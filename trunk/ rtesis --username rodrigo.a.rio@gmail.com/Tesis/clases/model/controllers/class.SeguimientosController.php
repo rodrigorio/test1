@@ -6,7 +6,6 @@
  */
 class SeguimientosController
 {
-    
     /**
      * @var Instancia de DB
      */
@@ -831,6 +830,9 @@ class SeguimientosController
     /**
      * Devuelve todas las unidades para una entrada.
      * Cada una de las unidades tiene el listado completo de variables con su respectivo valor.
+     * Las unidades son todas de edicion Regular. (se modifican los valores en cada entrada).
+     * Se muestran inclusive las de borrado logico porque no se pierde la informacion guardada
+     *
      */
     public function getUnidadesByEntrada($oEntrada)
     {
@@ -839,7 +841,12 @@ class SeguimientosController
             $iSeguimientoId = $oEntrada->getSeguimientoId();
             $dFechaHora = $oEntrada->getFechaHoraCreacion();
 
-            $filtro = array('su.seguimientos_id' => $iSeguimientoId, 'u.fechaHora' => $dFechaHora);
+            $filtro = array('su.seguimientos_id' => $iSeguimientoId,
+                            'u.fechaHora' => $dFechaHora,
+                            'u.tipoEdicion' => 'regular',
+                            // con esto se cuando si mostrar las unidades que se borraron logicamente
+                            'u.fechaBorradoLogico' => $dFechaHora);
+                       
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             $aUnidades = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, 'u.fechaHora', 'asc', null, null);
@@ -893,13 +900,18 @@ class SeguimientosController
     }
     
     /**
-     * Obtener variables  por id de unidad
+     * Obtener variables por id de unidad
      *
+     * @param boolean $bBorradoLogico si FALSE entonces no trae las variables que fueron borradas logicamente
      */
-    public function getVariablesByUnidadId($iUnidadId)
+    public function getVariablesByUnidadId($iUnidadId, $bBorradoLogico = true)
     {
     	try{
             $filtro = array('v.unidad_id' => $iUnidadId);
+            if(!$bBorradoLogico){
+                $filtro['v.borradoLogico'] = "0";
+            }
+            
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -910,12 +922,14 @@ class SeguimientosController
 
     /**
      * Devuelve array de variables para una unidad con el valor actual para una fecha en formato SQL
-     * 
      */
-    public function getVariablesContenidoByUnidadId($iEntradaId, $iUnidadId)
+    public function getVariablesContenidoByUnidadId($iEntradaId, $iUnidadId, $bBorradoLogico = true)
     {
     	try{
-            $filtro = array('e.id' => $iEntradaId, 'v.unidad_id' => $iUnidadId);            
+            $filtro = array('e.id' => $iEntradaId, 'v.unidad_id' => $iUnidadId);
+            if(!$bBorradoLogico){
+                $filtro['v.borradoLogico'] = "0";
+            }
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oVariableIntermediary->obtenerContenido($filtro, $iRecordsTotal, null, null, null, null);
@@ -997,19 +1011,22 @@ class SeguimientosController
      * Obtener unidades  por id de seguimiento
      *
      * Se utiliza para saber las unidades asociadas, las variables no tienen el valor correspondiente a una fecha
+     *
+     * @param boolean $bBorradoLogico Si FALSE entonces no devuelve las unidades eliminadas
      */
-    public function getUnidadesBySeguimientoId($iSeguimientoId)
+    public function getUnidadesBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sTipoEdicion = null, $sOrderBy, $sOrder)
     {        
     	try{
-            $filtro = array('u.id' => $iSeguimientoId);
+            $filtro = array('su.seguimientos_id' => $iSeguimientoId);
+            if(!$bBorradoLogico){
+                $filtro['u.borradoLogico'] = "0";
+            }
+            if(null !== $sTipoEdicion){
+                $filtro['u.tipoEdicion'] = $sTipoEdicion;
+            }
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aUnidad){
-                return $aUnidad[0];
-            }else{
-                return null;
-            }
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);
         }catch(Exception $e){
             throw $e;
         }
@@ -1716,13 +1733,89 @@ class SeguimientosController
     }
 
     /**
+     * Por ahora la regla es que cada nueva entrada tenga todas las unidades asociadas al seguimiento
+     * hasta la fecha actual y ademas que todas las unidades que ya tienen informacion de una entrada anterior y no se eliminaron logicamente
+     * se copien a los valores de la nueva entrada si el tipo de variable no es de tipo texto.
+     *
+     * esto es porq en un futuro se generaran graficos a partir de las variaciones en las variables numericas.
+     */
+    public function crearEntrada($oSeguimiento, $sFechaNuevaEntrada)
+    {
+        try{
+            //primero compruebo que la fecha de la entrada sea efectivamente posterior a la ultima entrada (si es que existe)
+            $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
+            if($oUltimaEntrada !== null){
+                $dFechaUltimaEntrada = strtotime($oUltimaEntrada->getFecha());
+                $dFechaNuevaEntrada = strtotime($sFechaNuevaEntrada);
+                if($dFechaUltimaEntrada > $dFechaNuevaEntrada){
+                    throw new Exception("La entrada tiene que ser posterior a la ultima creada.");
+                }
+            }
+
+            //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido
+            $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", "u.fechaHora", "ASC");
+            foreach($aUnidades as $oUnidad){
+
+                //si la unidad ya existe en la ultima entrada copio las variables con valor, sino levanto todas las variables sin valor
+                if($oUltimaEntrada !== null){
+                    $aUnidadesUltimaEntrada = $oUltimaEntrada->getUnidades(); // estas vienen con los valores.
+                    $bExiste = false;
+                    $iUnidadId = $oUnidad->getId();
+                    foreach($aUnidadesUltimaEntrada as $oUnidadUltimaEntrada){
+                        $iUltimaEntradaId = $oUnidadUltimaEntrada->getId();
+                        if($iUltimaEntradaId == $iUnidadId){
+                            $bExiste = true;
+                            //copio todas las variables con los valores de la ultima entrada excepto las que son de tipo texto.
+                            //SIN INCLUIR LAS QUE POSEEN BORRADO LOGICO
+                            $aVariablesUltimaEntrada = $this->getVariablesContenidoByUnidadId($oUltimaEntrada->getId(), $oUnidadUltimaEntrada->getId(), false);
+                            foreach($aVariablesUltimaEntrada as $oVariable){
+                                if($oVariable->isVariableTexto()){
+                                    $oVariable->setValor(null);
+                                }
+                                $oUnidad->addVariable($oVariable);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if($oUltimaEntrada === null || !$bExiste){
+                    //agrego todas las variables con valor == null
+                    $aVariables = $this->getVariablesByUnidadId($oUnidad->getId(), false);
+                    $oUnidad->setVariables($aVariables);
+                }
+            }
+
+            //creo el objeto Entrada propiamente dicho
+            $oEntrada = new stdClass();
+            $oEntrada->iSeguimientoId = $oSeguimiento->getId();
+            $oEntrada->dFecha = $sFechaNuevaEntrada;
+            $oEntrada->aUnidades = $aUnidades;
+            $oEntrada->bGuardada = false;
+
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $oEntrada = Factory::getEntradaPersonalizadaInstance($oEntrada);
+            }
+            if($oSeguimiento->isSeguimientoSCC()){
+                $oEntrada = Factory::getEntradaSCCInstance($oEntrada);
+            }
+
+            return $oEntrada;
+        }catch(Exception $e){
+            throw $e;
+        }            
+    }
+
+    /**
      * El objeto tiene que venir COMPLETO, cuando entra aca ya tiene todas las unidades con todas las variables/valor
      * Recordar que los objetivos se guardan por separado porque no necesariamente se modifican en todas las fechas de entrada.
      */
-    public function guardarEntrada($oEntrada){
+    public function guardarEntrada($oEntrada)
+    {
         try{
+            $oEntrada->isGuardada(true);
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
-            return $oSeguimientoIntermediary->guardar($oEntrada);
+            return $oEntradaIntermediary->guardar($oEntrada);
         }catch(Exception $e){
             throw $e;
         }

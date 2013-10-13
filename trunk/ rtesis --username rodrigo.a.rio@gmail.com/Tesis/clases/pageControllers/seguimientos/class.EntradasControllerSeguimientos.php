@@ -78,7 +78,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
      * Esta vista no es de edicion.
      */
     public function ampliar($bUltimaEntrada = false)
-    {
+    {        
         $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
 
         if(empty($iSeguimientoId)){
@@ -247,6 +247,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             }
 
             $aUnidades = $oEntrada->getUnidades();
+                        
             foreach($aUnidades as $oUnidad)
             {
                 $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
@@ -268,13 +269,14 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                     if($oVariable->isVariableTexto()){
                         $variable = "VariableTexto";
                         $valor = $oVariable->getValor(true);
-                        if(empty($valor)){ $valor = " - "; }
+                        if(null === $valor){ $valor = " - "; }
                         $this->getTemplate()->set_var("sVariableValorTexto", $valor);
                     }
 
                     if($oVariable->isVariableCualitativa()){
                         $variable = "VariableCualitativa";
-                        $valor = $oVariable->getValor();
+                        //valor en cualitativa es un objeto Modalidad
+                        $valor = $oVariable->getValorStr();
                         if(null === $valor){ $valor = " - "; }
                         $this->getTemplate()->set_var("sVariableModalidad", $valor);
                     }
@@ -346,23 +348,12 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->initJsonAjaxResponse()->sendJson($aDates);
     }
 
-    public function crear(){
+    public function crear()
+    {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
-
-        try{
-            if($this->getRequest()->has('confirmar')){
-                $this->confirmar();
-                return;
-            }
-        }catch(Exception $e){
-            throw $e;
-        }       
-    }
-
-    private function confirmar()
-    {
+        
         $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
         $dFecha = $this->getRequest()->getParam('dFecha');
 
@@ -378,13 +369,45 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             throw new Exception("No tiene permiso para ver este seguimiento", 401);
         }
 
+        //primero dialog de confirmar
+        try{
+            if($this->getRequest()->has('confirmar')){
+                $this->confirmar($dFecha);
+                return;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();                       
+        try{
+            //si confirmo, creo la entrada:
+            $oEntrada = SeguimientosController::getInstance()->crearEntrada($oSeguimiento, $dFecha);
+            SeguimientosController::getInstance()->guardarEntrada($oEntrada);
+
+            $sFechaUrl = $oEntrada->getFecha(true);
+            $sRedirect = "/seguimientos/entradas/".$iSeguimientoId."-".$sFechaUrl;
+
+            $this->getJsonHelper()->setSuccess(true)
+                                  ->setRedirect($sRedirect)
+                                  ->sendJsonAjaxResponse();
+            return;
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false)->setMessage("Ocurrio un error al tratar de crear la entrada.");
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
+        }            
+    }
+
+    private function confirmar($dFecha)
+    {
         //la fecha de creacion esta fuera del periodo de edicion de seguimientos?
         $dFechaMsg = Utils::fechaFormateada($dFecha, "d/m/Y");
         $iCantDias = SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento();
         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaHintBlock");
-        $this->getTemplate()->set_var("sTituloMsgFicha", "Crear nueva entrada en el historial del Seguimiento");
+        $this->getTemplate()->set_var("sTituloMsgFicha", "Nueva entrada en historial");
         $this->getTemplate()->set_var("sMsgFicha", "Se creará una nueva entrada en el seguimiento el día <strong>".$dFechaMsg."</strong>.<br>
-                                                    El sistema brinda un plazo de edición de <strong>".$iCantDias."</strong> una vez creada.<br>
+                                                    El sistema brinda un plazo de edición de <strong>".$iCantDias."</strong> días una vez creada.<br>
                                                     Vencido el plazo la entrada no podra editarse y solo podrá eliminarse si no se ha guardado información en ella.
                                                     Desea continuar?");
 

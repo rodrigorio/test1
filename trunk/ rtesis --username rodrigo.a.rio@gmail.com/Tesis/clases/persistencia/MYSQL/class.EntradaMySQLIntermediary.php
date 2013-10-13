@@ -34,43 +34,100 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
 
-            $sSQL = "insert into entrada_x_contenido_variables (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
+            $sSQL = "INSERT INTO entrada_x_contenido_variables (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
 
-            for ($j=0; $j<count($vUnidad); $j++){
-                $vVariable = $vUnidad[$j]->getVariables();
-                for ($i=0; $i<count($vVariable); $i++){
-                    $oVariable = $vVariable[$i];
-                    $sSQL .= " (".$this->escInt($iLastId).", "
-                          .$this->escInt($oVariable->getId()).", ";
+            $aUnidades = $oEntrada->getUnidades();
+            foreach($aUnidades as $oUnidad){
+                $aVariables = $oUnidad->getVariables();
+                foreach($aVariables as $oVariable){
+                    $sSQL .= " (".$iLastId.", ".$this->escInt($oVariable->getId()).", ";
 
                     if($oVariable->isVariableTexto()){
-                        $sSQL .= $this->escStr($oVariable->getValor()).", null)";
+                        $sSQL .= $this->escStr($oVariable->getValor()).", null),";
                     }else{
-                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()).")";
-                    }
-
-                    if(count($vVariable) > $i+1){
-                        $sSQL .= ",";
+                        $sSQL .= "null, ".$this->escInt($oVariable->getValor())."),";
                     }
                 }
             }
+            $sSQL = substr($sSQL, 0, -1);
 
             $db->execSQL($sSQL);
             $db->commit();
-
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
     
-    public  function actualizar($oEntrada)
+    public function actualizar($oEntrada)
     {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
 
+            $guardada = $oEntrada->isGuardada()?"1":"0";
+            $sSQL = " UPDATE entradas SET ".
+                    " guardada = ".$guardada." WHERE id = ".$this->escInt($oEntrada->getId());
+
+            $db->execSQL($sSQL);
+
+            //son muchas variables las que hay que actualizar asi que genero una tabla temporal y updateo con join
+            $sSQL = "CREATE TEMPORARY TABLE IF NOT EXISTS variablesTemp(
+                        `entradas_id` INT(11) NOT NULL,
+                        `variables_id` INT(11) NOT NULL,
+                        `valorTexto` TEXT,
+                        `valorNumerico` FLOAT DEFAULT NULL)";
+            $db->execSQL($sSQL);
+
+            //agrego todas las filas a actualizar en la tabla temporal
+            $sSQL = "INSERT INTO variablesTemp (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
+
+            $aUnidades = $oEntrada->getUnidades();
+            foreach($aUnidades as $oUnidad){
+                $aVariables = $oUnidad->getVariables();
+                foreach($aVariables as $oVariable){
+                    $sSQL .= " (".$this->escInt($oEntrada->getId()).", ".$this->escInt($oVariable->getId()).", ";
+
+                    if($oVariable->isVariableTexto()){
+                        $sSQL .= $this->escStr($oVariable->getValor()).", null),";
+                    }else{
+                        $sSQL .= "null, ".$this->escInt($oVariable->getValor())."),";
+                    }
+                }
+            }
+            $sSQL = substr($sSQL, 0, -1);
+
+            $db->execSQL($sSQL);
+
+            //update desde tabla temporal
+            $sSQL = "UPDATE entrada_x_contenido_variables ecv
+                    JOIN variablesTemp vt ON ecv.entradas_id = vt.entradas_id AND ecv.variables_id = vt.variables_id
+                    SET ecv.valorTexto = vt.valorTexto, ecv.valorNumerico = vt.valorNumerico";
+
+            $db->execSQL($sSQL);
+
+            //elimino la tabla temporal
+            $sSQL = "DROP TABLE variablesTemp";
+            $db->execSQL($sSQL);
+
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }            
     }
     
     public function guardar($oEntrada)
     {
-
+        try{
+            if($oEntrada->getId() != null){
+                return $this->actualizar($oEntrada);
+            }else{
+                return $this->insertar($oEntrada);
+            }
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
 
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
@@ -108,7 +165,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             if(isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }else{
-                $sSQL .= " order by e.fechaHora desc ";
+                $sSQL .= " order by e.fechaHoraCreacion desc ";
             }
 
             if ($iIniLimit !== null && $iRecordCount !== null){

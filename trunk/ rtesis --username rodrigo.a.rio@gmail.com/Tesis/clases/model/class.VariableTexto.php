@@ -31,13 +31,14 @@ class VariableTexto extends VariableAbstract {
  	 *  @param string $sValor
 	 */
     public function setValor($sValor){
+        if(empty($sValor)){ $sValor = null; }
         $this->valor = $sValor;
     }
     /**
     * @return string $sValor
      */
     public function getValor($nl2br = false){
-        if($nl2br){
+        if($nl2br && null !== $this->valor){
             return nl2br($this->valor);
         }else{
             return $this->valor;

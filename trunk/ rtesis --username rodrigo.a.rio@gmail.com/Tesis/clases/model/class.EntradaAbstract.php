@@ -35,10 +35,9 @@ abstract class EntradaAbstract
     protected $aUnidades = null;
     
     /**
-     * La idea es que en el constructor de la entrada si el periodo de expiracion es menor
-     * se setee en falso
+     * Si expiro el plazo de expiracion devuelve falso
      */
-    protected $bEditable = true;
+    protected $bEditable = null;
 
     /**
      * Indica si la entrada se salvo al menos 1 vez.
@@ -68,6 +67,13 @@ abstract class EntradaAbstract
             $this->bEditable = $flag ? true : false;
             return $this;
         }else{
+            if(null === $this->bEditable){
+                if(SeguimientosController::getInstance()->isEntidadEditable($this->dFechaHoraCreacion)){
+                    $this->bEditable = true;
+                }else{
+                    $this->bEditable = false;
+                }
+            }
             return $this->bEditable;
         }
     }

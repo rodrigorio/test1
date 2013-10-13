@@ -32,7 +32,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $sSQL = "   SELECT DISTINCT SQL_CALC_FOUND_ROWS
                             u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId, 
                             u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica,
-                            u.tipoEdicion as eTipoEdicion
+                            u.tipoEdicion as eTipoEdicion, u.fechaBorradoLogico as dFechaBorradoLogico
                         FROM
                             unidades u 
                         LEFT JOIN
@@ -67,7 +67,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.fechaHora']) && $filtro['u.fechaHora'] != ""){
                 $WHERE[] = $this->crearFiltroFecha('u.fechaHora', null, $filtro['u.fechaHora'], false, true);
             }
-
+            if(isset($filtro['u.fechaBorradoLogico']) && $filtro['u.fechaBorradoLogico'] != ""){
+                $WHERE[] = $this->crearFiltroFecha('u.fechaBorradoLogico', $filtro['u.fechaBorradoLogico'], null, true, true);
+            }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
@@ -90,6 +92,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $oUnidad->sNombre = $oObj->sNombre;
                 $oUnidad->sDescripcion = $oObj->sDescripcion;
                 $oUnidad->dFechaHora = $oObj->dFechaHora;
+                $oUnidad->dFechaBorradoLogico = $oObj->dFechaBorradoLogico;
                 $oUnidad->eTipoEdicion = $oObj->eTipoEdicion;
 
                 //puede no tener un usuario asociado

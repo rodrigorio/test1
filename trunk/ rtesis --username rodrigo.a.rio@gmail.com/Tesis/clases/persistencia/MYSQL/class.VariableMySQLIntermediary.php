@@ -153,9 +153,14 @@ class VariableMySQLIntermediary extends VariableIntermediary
                     }
                     case "VariableCualitativa":{
                         $oVariable = Factory::getVariableCualitativaInstance($oVariable);
-                        $oVariable->setValor($oObj->sValorNumerico);
                         $aModalidades = SeguimientosController::getInstance()->getModalidadesByVariableId($oObj->iId);
                         $oVariable->setModalidades($aModalidades);
+                        foreach($aModalidades as $oModalidad){
+                            if($oModalidad->getId() == $oObj->sValorNumerico){
+                                $oVariable->setValor($oModalidad);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }

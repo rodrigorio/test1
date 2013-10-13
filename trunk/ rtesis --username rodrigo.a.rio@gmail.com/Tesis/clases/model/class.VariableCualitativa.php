@@ -43,12 +43,21 @@ class VariableCualitativa extends VariableAbstract
     }
 
    /**
-    * @return int valor
-    *
-    * corresponde a la modalidad seleccionada
+    * @return Modalidad corresponde a la modalidad seleccionada
     */
     public function getValor(){
         return $this->valor;
+    }
+
+    /**
+     * Si el valor !== null entonces devuelve el string que describe la modalidad
+     */
+    public function getValorStr()
+    {
+        if($this->valor !== null){
+            return $this->valor->getModalidad();
+        }
+        return null;
     }
 
     public function getModalidades()
