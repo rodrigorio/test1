@@ -26,8 +26,8 @@
 <!--BeginPageBodyLeftContBlock-->
 <ul class="m_vert mabo2">
     <li>
-        <a id="listaSeguimientos" href="{hrefAmpliarSeguimiento}?iSeguimientoId={iSeguimientoId}">
-            Volver a vista ampliada
+        <a id="listaSeguimientos" class="iveal" href="{hrefAmpliarSeguimiento}?iSeguimientoId={iSeguimientoId}">
+            <span class="i bs arrowLeft mari"></span>Volver a vista ampliada
         </a>
     </li>
 </ul>
@@ -43,10 +43,12 @@
         <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
     </div>
 </div>
+<!--BeginBlockCrearEntradaHoy-->
 <a class="button buttonSpecial mabo2" href="javascript:;">
     <span class="i bs add"></span>
     <span class="buttonText">Crear entrada hoy {dFechaActual}</span>
 </a>
+<!--EndBlockCrearEntradaHoy-->
 <div id="calendarWrap" class="po_re mihe1">
     <div class="ajax_wait16 di_no"></div>
     <div id="calendarioEntradas" class="w100 mabo"></div>
