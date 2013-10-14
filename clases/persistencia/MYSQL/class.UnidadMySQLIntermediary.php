@@ -160,6 +160,11 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $usuarioId = null;
             }
 
+            $dFechaBorradoLogico = $oUnidad->getFechaBorradoLogico();
+            if(null === $dFechaBorradoLogico){
+                $dFechaBorradoLogico = 'null';
+            }
+
             $preCargada = $oUnidad->isPreCargada() ? "1" : "0";
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
 
@@ -168,7 +173,8 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                     "   nombre = ".$this->escStr($oUnidad->getNombre()).", ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
-                    "   asociacionAutomatica = '".$asociacionAutomatica."' ".
+                    "   asociacionAutomatica = '".$asociacionAutomatica."', ".
+                    "   fechaBorradoLogico = '".$dFechaBorradoLogico."' ".
                     " WHERE id = ".$this->escInt($oUnidad->getId())." ";
             
             $db->execSQL($sSQL);
@@ -198,10 +204,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
      * entonces la unidad tambien se borra logicamente.
      *
      */
-    public function borrar($iUnidadId)
+    public function borrar($oUnidadId)
     {
         try{
-            $db = $this->conn;
+            $db = $this->conn;           
             
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
@@ -221,7 +227,8 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $db->execSQL("delete from unidades where id = ".$this->escInt($iUnidadId));
             }else{
             	//borra logicamente la unidad
-                $db->execSQL("UPDATE unidades SET borradoLogico = 1 WHERE id = ".$this->escInt($iUnidadId));
+                $dFechaBorradoLogico = $oUnidadId->getFechaBorradoLogico();
+                $db->execSQL("UPDATE unidades SET borradoLogico = 1, fechaBorradoLogico = '".$dFechaBorradoLogico."' WHERE id = ".$this->escInt($iUnidadId));
 
                 //Si el borrado es logico, entonces borro las relaciones entre unidades y seguimientos
                 //para los seguimientos que tienen la unidad asociada pero todavia no guardaron valor en ninguna variable.

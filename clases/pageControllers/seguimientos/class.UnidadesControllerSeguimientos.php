@@ -417,6 +417,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("No tiene permiso para borrar esta unidad", 401);
             }
 
+            $oUnidad->setFechaBorradoLogicoHoy();
             $result = SeguimientosController::getInstance()->borrarUnidad($oUnidad);
 
             if($result){

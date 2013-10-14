@@ -209,7 +209,7 @@ class Unidad{
     /**
      * Setea la fecha actual como fecha de borrado
      */
-    public function setFechaBorradoLogico()
+    public function setFechaBorradoLogicoHoy()
     {
         $today = date('Y-m-d');
         $this->dFechaBorradoLogico = $today;

@@ -1078,7 +1078,7 @@ class SeguimientosController
             if($success){
                 //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
                 //se borra logicamente.
-                return $oUnidadIntermediary->borrar($oUnidad->getId());
+                return $oUnidadIntermediary->borrar($oUnidad);
             }else{
                 return false;
             }
@@ -1815,7 +1815,6 @@ class SeguimientosController
         try{            
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
             $result = $oEntradaIntermediary->guardar($oEntrada);
-            $oEntrada->isGuardada(true);
             return $result;
         }catch(Exception $e){
             throw $e;

@@ -1458,11 +1458,11 @@ class AdminController
      * Borrar Unidad
      *
      */
-    public function borrarUnidad($iUnidadId)
+    public function borrarUnidad($oUnidad)
     {
     	try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->borrar($iUnidadId);
+            return $oUnidadIntermediary->borrar($oUnidad);
         }catch(Exception $e){
             throw $e;
         }
