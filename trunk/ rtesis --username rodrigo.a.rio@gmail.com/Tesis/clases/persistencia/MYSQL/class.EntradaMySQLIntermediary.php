@@ -73,11 +73,13 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $db = $this->conn;
             $db->begin_transaction();
 
-            $guardada = $oEntrada->isGuardada()?"1":"0";
-            $sSQL = " UPDATE entradas SET ".
-                    " guardada = ".$guardada." WHERE id = ".$this->escInt($oEntrada->getId());
+            if(!$oEntrada->isGuardada()){
+                $sSQL = " UPDATE entradas SET ".
+                        " guardada = '1' WHERE id = ".$this->escInt($oEntrada->getId());
+                $db->execSQL($sSQL);
 
-            $db->execSQL($sSQL);
+                $oEntrada->isGuardada(true);
+            }
 
             //son muchas variables las que hay que actualizar asi que genero una tabla temporal y updateo con join
             $sSQL = "CREATE TEMPORARY TABLE IF NOT EXISTS variablesTemp(
@@ -119,6 +121,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $db->execSQL($sSQL);
 
             $db->commit();
+           
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
