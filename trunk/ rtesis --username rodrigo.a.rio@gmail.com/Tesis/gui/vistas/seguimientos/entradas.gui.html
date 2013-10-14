@@ -31,7 +31,7 @@
         </a>
     </li>
 </ul>
-<div id="fichaPersonaMenu" class="pa2 mabo3 po_re grupo baco1 bo2 bora">
+<div id="fichaPersonaMenu" class="pa2 mabo2 po_re grupo baco1 bo2 bora">
     <div class="ajax_wait16 di_no"></div>
     <div class="fl_le teal_le mari2">
         <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_s thumb01 mabo">
@@ -43,6 +43,10 @@
         <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
     </div>
 </div>
+<a class="button buttonSpecial mabo2" href="javascript:;">
+    <span class="i bs add"></span>
+    <span class="buttonText">Crear entrada hoy {dFechaActual}</span>
+</a>
 <div id="calendarWrap" class="po_re mihe1">
     <div class="ajax_wait16 di_no"></div>
     <div id="calendarioEntradas" class="w100 mabo"></div>
@@ -101,18 +105,22 @@
     <!--BeginMenuEntradaBlock-->
     <div class="fl_ri">
         <ul class="m_horiz mabo3 grupo">
+            <!--BeginEditarEntradaBlock-->
             <li>
                 <a class="button editarEntrada" href="javascript:;">
                     <span class="i bs calendarEdit"></span>
                     <span class="buttonText">Editar Entrada</span>
                 </a>
             </li>
+            <!--EndEditarEntradaBlock-->
+            <!--BeginEliminarEntradaBlock-->
             <li class="mari0">
                 <a class="button eliminarEntrada" href="javascript:;">
                     <span class="i bs calendarRemove"></span>
                     <span class="buttonText">Eliminar Entrada</span>
                 </a>
             </li>
+            <!--EndEliminarEntradaBlock-->
         </ul>        
     </div>
     <!--EndMenuEntradaBlock-->
