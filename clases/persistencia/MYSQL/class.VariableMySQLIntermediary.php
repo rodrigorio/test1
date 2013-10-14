@@ -116,6 +116,9 @@ class VariableMySQLIntermediary extends VariableIntermediary
             if(isset($filtro['e.fechaHoraCreacion']) && $filtro['e.fechaHoraCreacion'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('e.fechaHoraCreacion', $filtro['e.fechaHoraCreacion'], MYSQL_TYPE_DATE);
             }
+            if(isset($filtro['v.borradoLogico']) && $filtro['v.borradoLogico']!=""){
+                $WHERE[] = $this->crearFiltroSimple('v.borradoLogico', $filtro['v.borradoLogico']);
+            }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 

@@ -22,7 +22,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
     }
 		
     public function insertar($oEntrada)
-    {
+    {        
         try{
             $db = $this->conn;
             $db->begin_transaction();
@@ -38,14 +38,20 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $aUnidades = $oEntrada->getUnidades();
             foreach($aUnidades as $oUnidad){
+
                 $aVariables = $oUnidad->getVariables();
+                
                 foreach($aVariables as $oVariable){
                     $sSQL .= " (".$iLastId.", ".$this->escInt($oVariable->getId()).", ";
 
                     if($oVariable->isVariableTexto()){
                         $sSQL .= $this->escStr($oVariable->getValor()).", null),";
-                    }else{
-                        $sSQL .= "null, ".$this->escInt($oVariable->getValor())."),";
+                    }
+                    if($oVariable->isVariableNumerica()){
+                        $sSQL .= "null, ".$this->escFlt($oVariable->getValor())."),";
+                    }
+                    if($oVariable->isVariableCualitativa()){
+                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()->getId())."),";
                     }
                 }
             }
@@ -53,6 +59,8 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $db->execSQL($sSQL);
             $db->commit();
+
+            $oEntrada->setId($iLastId);            
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

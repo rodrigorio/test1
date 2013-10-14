@@ -100,7 +100,7 @@ class Unidad{
     
     public function addVariable($oVariable)
     {
-        $this->aVarible[] = $oVariable;
+        $this->aVariables[] = $oVariable;
         return $this;
     }
     

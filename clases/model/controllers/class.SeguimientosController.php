@@ -1757,7 +1757,7 @@ class SeguimientosController
             foreach($aUnidades as $oUnidad){
 
                 //si la unidad ya existe en la ultima entrada copio las variables con valor, sino levanto todas las variables sin valor
-                if($oUltimaEntrada !== null){
+                if($oUltimaEntrada !== null){                    
                     $aUnidadesUltimaEntrada = $oUltimaEntrada->getUnidades(); // estas vienen con los valores.
                     $bExiste = false;
                     $iUnidadId = $oUnidad->getId();
@@ -1799,7 +1799,7 @@ class SeguimientosController
             if($oSeguimiento->isSeguimientoSCC()){
                 $oEntrada = Factory::getEntradaSCCInstance($oEntrada);
             }
-
+            
             return $oEntrada;
         }catch(Exception $e){
             throw $e;
@@ -1812,10 +1812,11 @@ class SeguimientosController
      */
     public function guardarEntrada($oEntrada)
     {
-        try{
-            $oEntrada->isGuardada(true);
+        try{            
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
-            return $oEntradaIntermediary->guardar($oEntrada);
+            $result = $oEntradaIntermediary->guardar($oEntrada);
+            $oEntrada->isGuardada(true);
+            return $result;
         }catch(Exception $e){
             throw $e;
         }
