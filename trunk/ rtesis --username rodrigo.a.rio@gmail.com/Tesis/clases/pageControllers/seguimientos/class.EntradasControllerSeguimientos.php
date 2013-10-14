@@ -382,13 +382,20 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->initJsonAjaxResponse();                       
         try{
             //si confirmo, creo la entrada:
-            $oEntrada = SeguimientosController::getInstance()->crearEntrada($oSeguimiento, $dFecha);
+            $oEntrada = SeguimientosController::getInstance()->crearEntrada($oSeguimiento, $dFecha);            
             SeguimientosController::getInstance()->guardarEntrada($oEntrada);
 
             $sFechaUrl = $oEntrada->getFecha(true);
             $sRedirect = "/seguimientos/entradas/".$iSeguimientoId."-".$sFechaUrl;
 
+            //mensaje de creacion exitosa
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaCorrectoBlock");
+            $this->getTemplate()->set_var("sTituloMsgFicha", "Creación exitosa");
+            $this->getTemplate()->set_var("sMsgFicha", "Se mantendrán los valores de la última entrada en las variables numéricas y cualitativas. Tenga en cuenta que las variaciones en estas variables son utilizadas para generación de gráficos.");
+            $html = $this->getTemplate()->pparse('html', false);
+
             $this->getJsonHelper()->setSuccess(true)
+                                  ->setValor("html", $html)
                                   ->setRedirect($sRedirect)
                                   ->sendJsonAjaxResponse();
             return;
