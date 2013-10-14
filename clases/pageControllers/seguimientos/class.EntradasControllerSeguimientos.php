@@ -152,7 +152,14 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $sUltimaEntrada = str_replace("-", "/", $sUltimaEntrada);
             $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
             $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
-                                    
+
+            if(!$oEntrada->isEditable()){
+                $this->getTemplate()->set_var("EditarEntradaBlock", "");
+                if($oEntrada->isGuardada()){
+                    $this->getTemplate()->set_var("EliminarEntradaBlock", "");
+                }
+            }
+                                                            
             $aObjetivos = $oEntrada->getObjetivos();
                        
             $this->getTemplate()->set_var("iRecordsTotal", count($aObjetivos));
