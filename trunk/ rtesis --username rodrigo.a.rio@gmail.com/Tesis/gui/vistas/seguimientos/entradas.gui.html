@@ -44,7 +44,7 @@
     </div>
 </div>
 <!--BeginBlockCrearEntradaHoy-->
-<a class="button buttonSpecial mabo2" href="javascript:;">
+<a class="button buttonLarge buttonSpecial mabo2" href="javascript:;">
     <span class="i bs add"></span>
     <span class="buttonText">Crear entrada hoy {dFechaActual}</span>
 </a>
@@ -105,7 +105,8 @@
     <!--EndTituloBlock-->
     
     <!--BeginMenuEntradaBlock-->
-    <div class="fl_ri">
+    <div id="menuEntrada" class="fl_ri">
+        <div class="ajax_wait16 di_no"></div>
         <ul class="m_horiz mabo3 grupo">
             <!--BeginEditarEntradaBlock-->
             <li>
@@ -117,7 +118,7 @@
             <!--EndEditarEntradaBlock-->
             <!--BeginEliminarEntradaBlock-->
             <li class="mari0">
-                <a class="button eliminarEntrada" href="javascript:;">
+                <a rel="{iEntradaId}" id="eliminarEntrada" class="button" href="javascript:;">
                     <span class="i bs calendarRemove"></span>
                     <span class="buttonText">Eliminar Entrada</span>
                 </a>

@@ -220,7 +220,14 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             
     public function borrar($iEntradaId)
     {
-
+        try{
+            $db = $this->conn;
+            $db->execSQL("DELETE FROM entradas WHERE id = ".$this->escInt($iEntradaId));
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
 	
     public function existe($filtro)

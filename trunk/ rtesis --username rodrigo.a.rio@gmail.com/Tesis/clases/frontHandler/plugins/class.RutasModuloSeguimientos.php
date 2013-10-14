@@ -423,5 +423,12 @@ class RutasModuloSeguimientos
                                         'action'     => 'procesar'
                                 ));
         $router->addRoute('seguimientosEntradasProcesar', $route);
+        $route = new RegexRoute('seguimientos/entradas/eliminar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entradas',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('seguimientosEntradasEliminar', $route);
     }
 }

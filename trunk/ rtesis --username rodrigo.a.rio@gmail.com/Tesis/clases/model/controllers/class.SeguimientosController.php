@@ -1670,6 +1670,23 @@ class SeguimientosController
         }
     }
 
+    public function getEntradaById($iEntradaId)
+    {
+    	try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+            $filtro = array('e.id' => $iEntradaId);
+            $iRecordsTotal = 0;
+            $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEntrada){
+                return $aEntrada[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Devuelve lista completa de entradas para un seguimiento, los objetos son livianos.
      * puede setearse un periodo de entre fechas como filtro.
@@ -1816,6 +1833,15 @@ class SeguimientosController
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
             $result = $oEntradaIntermediary->guardar($oEntrada);
             return $result;
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function borrarEntrada($iEntradaId){
+        try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+            return $oEntradaIntermediary->borrar($iEntradaId);
         }catch(Exception $e){
             throw $e;
         }
