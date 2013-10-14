@@ -175,6 +175,50 @@ function Calendario(element){
     }
 }
 
+function eliminarEntrada(iEntradaId){
+    $.ajax({
+        type:"post",
+        dataType: 'jsonp',
+        url:"seguimientos/entradas/eliminar",
+        data:{
+            confirmo:"0",
+            iEntradaId:iEntradaId
+        },
+        beforeSend: function(){
+            setWaitingStatus('menuEntrada', true, "16");
+        },
+        success:function(data){
+            setWaitingStatus('menuEntrada', false, "16");
+
+            if(data.success != undefined && data.success == 1){
+                //remuevo la ficha
+                $('#objetivo_'+iObjetivoId+'_'+iSeguimientoId).hide("slow", function(){
+                    $('#objetivo_'+iObjetivoId+'_'+iSeguimientoId).remove();
+                });
+            }
+
+            var dialog = $("#dialog");
+            if($("#dialog").length){ dialog.remove(); }
+            dialog = $('<div id="dialog" title="Borrar Objetivo"></div>').appendTo('body');
+            dialog.html(data.html);
+
+            dialog.dialog({
+                position:['center', 'center'],
+                width:400,
+                resizable:false,
+                draggable:false,
+                modal:false,
+                closeOnEscape:true,
+                buttons:{
+                    "Aceptar": function() {
+                        $(this).dialog( "close" );
+                    }
+                }
+            });
+        }
+    });
+}
+
 $(document).ready(function(){
 
     var calendario = new Calendario($("#calendarioEntradas"));
@@ -212,5 +256,10 @@ $(document).ready(function(){
     });
     $("#toTop").click(function(){
        $("html, body").animate({scrollTop: 0}, 1000);
+    });
+
+    $("#eliminarEntrada").live('click', function(){
+        var iEntradaId = $(this).attr("rel");
+        eliminarEntrada(iEntradaId);
     });
 });

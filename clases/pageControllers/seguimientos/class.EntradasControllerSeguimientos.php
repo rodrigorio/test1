@@ -143,20 +143,20 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 }
             }
 
-            $sUltimaEntrada = $oSeguimiento->getUltimaEntrada()->getFecha();
-            $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
-            
-            if(strtotime($sUltimaEntrada) == date()){
-                echo "entro entro";
+            $result = Utils::dateDiffDays($oSeguimiento->getUltimaEntrada()->getFecha(), date('Y-m-d'));
+            if($result == 0){
                 $this->getTemplate()->set_var("BlockCrearEntradaHoy", "");
             }
 
             $sEntradaActual = str_replace("-", "/", $oEntrada->getFecha());
-            $sUltimaEntrada = str_replace("-", "/", $sUltimaEntrada);
+            $sUltimaEntrada = str_replace("-", "/", $oSeguimiento->getUltimaEntrada()->getFecha(true));
+            $sFechaActual = strtok(date("d/m/Y"), " ");
             $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
             $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
-            $this->getTemplate()->set_var("dFechaActual", Utils::fechaFormateada(date("Y-m-d")));
-
+            $this->getTemplate()->set_var("dFechaActual", $sFechaActual);
+            $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));       
+            $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
+            
             if(!$oEntrada->isEditable()){
                 $this->getTemplate()->set_var("EditarEntradaBlock", "");
                 if($oEntrada->isGuardada()){
@@ -430,5 +430,78 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                                                     Desea continuar?");
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));       
+    }
+
+    public function eliminar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        $iEntradaId = $this->getRequest()->getParam("iEntradaId");
+        if(null === $iEntradaId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEntrada = SeguimientosController::getInstance()->getEntradaById($iEntradaId);
+        if($oEntrada === null){
+            throw new Exception("No existe la entrada para el identificador seleccionado", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($oEntrada->getSeguimientoId());
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para eliminar esta entrada", 401);
+        }
+
+        //me fijo periodo de expiracion
+        if(!$oEntrada->isEditable() && $oEntrada->isGuardada()){
+            throw new Exception("La entrada no se puede eliminar, periodo de edicion expirado", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        
+        $bConfirmo = $this->getRequest()->getParam("confirmo") == "1"?true:false;
+        //si se edito al menos 1 vez devuelvo el dialog de confirmacion, el otro flag es para mostrar solo una vez (viene del js)
+        if($oEntrada->isGuardada() && !$bConfirmo){
+            $dFechaEntrada = $oEntrada->getFecha(true);
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaInfoBlock");
+            $this->getTemplate()->set_var("sTituloMsgFicha", "Eliminar contenidos entrada");
+            $this->getTemplate()->set_var("sMsgFicha", "Se eliminará de forma permanente toda la información ingresada en el día ".$dFechaEntrada.". Desea continuar?");
+
+            $this->getJsonHelper()->setSuccess(true)
+                                  ->setValor("html", $this->getTemplate()->pparse('html', false))
+                                  ->setValor("confirmar", "1")
+                                  ->sendJsonAjaxResponse();
+            return;
+        }
+               
+        //elimino la entrada
+        try{
+            $result = SeguimientosController::getInstance()->borrarEntrada($iEntradaId);
+
+            if($result){
+                //redirecciono a la ultima entrada
+                $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex")."?iSeguimientoId=".$iSeguimientoId;
+                
+                $msg = "La entrada para el dia ".$oEntrada->getFecha(true)." junto a toda la información asociada, fue eliminada del sistema.";
+                $bloque = 'MsgCorrectoBlockI32';
+                $this->getJsonHelper()->setSuccess(true)
+                                      ->setRedirect($redirect);
+            }else{
+                $msg = "Ocurrio un error, no se ha podido eliminar la Entrada del sistema.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+        }catch(Exception $e){
+            $msg = "Ocurrio un error, no se ha eliminado la Entrada del sistema.";
+            $bloque = 'MsgErrorBlockI32';
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+        $this->getTemplate()->set_var("sMensaje", $msg);
+        $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }
