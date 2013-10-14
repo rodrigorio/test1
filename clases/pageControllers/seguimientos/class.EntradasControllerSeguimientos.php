@@ -114,8 +114,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->setContenidoColumnaIzquierda($oSeguimiento);
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageBodyCenterCont", "AmpliarEntradaBlock");
 
+            $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
             if($bUltimaEntrada){
-                $oEntrada = $oSeguimiento->getUltimaEntrada();
+                $oEntrada = $oUltimaEntrada;
 
                 //Si ultima entrada es null entonces no hay entradas en el seguimiento
                 if($oEntrada === null){
@@ -130,8 +131,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                     $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
                     return;
                 }
-
-                $sUltimaEntrada = $oEntrada->getFecha();
             }else{
                 $sFechaEntrada = Utils::fechaAFormatoSQL($this->getRequest()->getParam("sDate"));
                 if(null === $sFechaEntrada){
@@ -142,16 +141,21 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 if($oEntrada === null){
                     throw new Exception("No existe entrada en la fecha ".$this->getRequest()->getParam("sDate"), 401);
                 }
-
-                $sUltimaEntrada = $oSeguimiento->getUltimaEntrada()->getFecha();
             }
 
+            $sUltimaEntrada = $oSeguimiento->getUltimaEntrada()->getFecha();
             $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
+            
+            if(strtotime($sUltimaEntrada) == date()){
+                echo "entro entro";
+                $this->getTemplate()->set_var("BlockCrearEntradaHoy", "");
+            }
 
             $sEntradaActual = str_replace("-", "/", $oEntrada->getFecha());
             $sUltimaEntrada = str_replace("-", "/", $sUltimaEntrada);
             $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
             $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
+            $this->getTemplate()->set_var("dFechaActual", Utils::fechaFormateada(date("Y-m-d")));
 
             if(!$oEntrada->isEditable()){
                 $this->getTemplate()->set_var("EditarEntradaBlock", "");
