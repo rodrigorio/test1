@@ -88,6 +88,7 @@ var optionsAjaxFormObjetivo = {
                 $('#formObjetivo').each(function(){
                   this.reset();
                 });
+                resetObjetivosAprendizaje();
             }
             
             //refresco el listado actual
@@ -218,13 +219,16 @@ function resetSelect(select, defaultOpt){
         select.append(new Option(defaultOpt, '',true));
     }
 }
+function resetObjetivosAprendizaje(){
+    $('#objetivoAprendizajeDiv').html("");
+    $('#objetivoAprendizaje').val("");
+}
 
 //combos para el formulario de objetivo de aprendizaje
 function listaCiclosByNivel(idNivel){
     resetSelect($('#area'), 'Área:');
     resetSelect($('#eje'), 'Eje:');
-    resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
-
+    resetObjetivosAprendizaje();
     //si el valor elegido es '' entonces marco como disabled
     if(idNivel == ''){
         resetSelect($('#ciclo'), 'Ciclo:');
@@ -258,8 +262,7 @@ function listaCiclosByNivel(idNivel){
 
 function listaAreasByCiclo(idCiclo){
     resetSelect($('#eje'), 'Eje:');
-    resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
-    
+    resetObjetivosAprendizaje();
     if(idCiclo == ''){
         resetSelect($('#area'), 'Área:');
         return;
@@ -290,7 +293,7 @@ function listaAreasByCiclo(idCiclo){
 }
 
 function listaEjesTematicosByArea(idArea){
-    resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
+    resetObjetivosAprendizaje();
     if(idArea == ''){
         resetSelect($('#eje'), 'Eje:');
         return;
@@ -321,12 +324,9 @@ function listaEjesTematicosByArea(idArea){
 }
 
 function listaObjetivosAprendizajeByEjeTematico(idEje){
-    
+    resetObjetivosAprendizaje();
     if(idEje == ''){
-        resetSelect($('#objetivoAprendizaje'), 'Objetivo Aprendizaje:');
         return;
-    }else{
-        $('#objetivoAprendizaje').removeClass("disabled");
     }
 
     $.ajax({
@@ -337,16 +337,22 @@ function listaObjetivosAprendizajeByEjeTematico(idEje){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },
         success: function(lista){
-            $('#objetivoAprendizaje').html("");
+            $('#objetivoAprendizajeDiv').html("");
             if(lista.length != undefined && lista.length > 0){
-                $('#objetivoAprendizaje').append(new Option('Objetivo Aprendizaje:', '',true));
-                for(var i=0;i<lista.length;i++){
-                    $('#objetivoAprendizaje').append(new Option(lista[i].sDescripcion, lista[i].iId));
-                }
+                $('#objetivoAprendizajeDiv').html(lista);
             }else{
-                $('#objetivoAprendizaje').append(new Option('No hay objetivos cargados', '',true));
+                $('#objetivoAprendizajeDiv').html('No hay objetivos cargados');
             }
             setWaitingStatus("objetivoAprendizajeCont", false);
+
+            $("#objetivoAprendizajeDiv .obj_aprendizaje").each(function(i, el) {
+                $(el).live('click',function(ev) {
+                    $("#objetivoAprendizajeDiv .celdaActiva").removeClass('celdaActiva');
+                    $(this).toggleClass('celdaActiva');
+                    $('#objetivoAprendizaje').val( $(this).attr('id'));
+                    $('#formObjetivo [for="objetivoAprendizaje"]').css("display","none");
+            });
+    });
         }
     });
 }

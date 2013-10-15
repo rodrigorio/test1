@@ -222,12 +222,8 @@
                 </select>
                 <div class="fwrap mabo2">
                     <div class="inner_fwrap">
-                        <select class="{disabled}" name="objetivoAprendizaje" id="objetivoAprendizaje" title="Objetivo de Aprendizaje">
-                            <option value="">Objetivo Aprendizaje:</option>
-                            <!--BeginObjetivoAprendizajeListBlock-->
-                            <option value="{iObjetivoAprendizajeId}" {sSelectedObjetivoAprendizaje}>{sObjetivoAprendizajeDescripcion}</option>
-                            <!--EndObjetivoAprendizajeListBlock-->
-                        </select>
+                        <div id="objetivoAprendizajeDiv" class="mihe1 mahe1 ov_au"></div>
+                        <input type="hidden" value="" name="objetivoAprendizaje" id="objetivoAprendizaje" />
                     </div>
                 </div>
             <!--EndSelectsObjetivoAprendizajeBlock-->
@@ -419,4 +415,11 @@
 
 
 
-
+<!--BeginObjetivosAprendizaListBlock-->
+    <!--BeginListadoBlock-->
+        <div id="{iObjetivoAprendizajeId}" class="obj_aprendizaje pa baco3 bobo1 mabo" >{sObjetivoAprendizajeDescripcion}</div>
+    <!--EndListadoBlock--> 
+    <!--BeginListadoNoRecordsBlock-->
+        <div class="pa baco3 bobo1 mabo" >No se encontraron objetivos para este eje</div>
+    <!--EndListadoNoRecordsBlock--> 
+<!--EndObjetivosAprendizaListBlock-->

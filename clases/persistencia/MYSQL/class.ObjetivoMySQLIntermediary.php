@@ -135,7 +135,6 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
-            
             $db->query($sSQL);
                                               
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -144,7 +143,6 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             
             $aObjetivos = array();
             while($oObj = $db->oNextRecord()){
-
                 $oObjetivo = new stdClass();
                 $oObjetivo->iId = $oObj->iId;
                 $oObjetivo->sDescripcion = $oObj->sDescripcion;
@@ -152,7 +150,6 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                              
             	$aObjetivos[] = Factory::getObjetivoAprendizajeInstance($oObjetivo);
             }
-            
             return $aObjetivos;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
