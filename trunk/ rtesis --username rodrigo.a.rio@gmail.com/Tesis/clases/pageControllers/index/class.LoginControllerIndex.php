@@ -97,7 +97,6 @@ class LoginControllerIndex extends PageControllerAbstract
         $pathInfo = $this->getRequest()->getPathInfo();
         if($pathInfo != '/login'){
             $nextFormUrl = $this->getRequest()->get('REQUEST_URI');
-            $nextFormUrl = str_replace($nextFormUrl, "",$pathInfo);
         }
         return $nextFormUrl;
     }
