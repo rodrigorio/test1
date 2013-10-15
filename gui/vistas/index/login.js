@@ -62,7 +62,7 @@ var optionsAjaxFormLogin = {
         }
     },
 
-    success:function(data){        
+    success:function(data){ 
         if(data.success == undefined || data.success == 0){
             //si se produjo error muestro el mensaje
             var mensaje = data.mensaje;
