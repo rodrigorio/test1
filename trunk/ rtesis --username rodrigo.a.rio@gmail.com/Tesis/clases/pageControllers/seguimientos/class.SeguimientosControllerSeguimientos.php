@@ -2389,18 +2389,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $jObjetivosAprendizaje = array();
             $aObjetivosAprendizaje = SeguimientosController::getInstance()->getObjetivosAprendizajeByEjeId($iEjeId);
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "ListObjetivosAprendizajes", "ObjetivosAprendizaListBlock");
             if(!empty($aObjetivosAprendizaje)){
                 foreach($aObjetivosAprendizaje as $oObjetivoAprendizaje){
-                    $obj = new stdClass();
-                    $obj->iId = $oObjetivoAprendizaje->getId();
-                    $obj->sDescripcion = $oObjetivoAprendizaje->getDescripcion();
-                    array_push($jObjetivosAprendizaje, $obj);
+                    $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
+                    $this->getTemplate()->set_var("sObjetivoAprendizajeDescripcion", $oObjetivoAprendizaje->getDescripcion());
+                    $this->getTemplate()->parse("ListadoBlock", true);
                 }
+                $this->getTemplate()->set_var("ListadoNoRecordsBlock","");
+            }else{
+                $this->getTemplate()->set_var("ListadoBlock", "");
+                $this->getTemplate()->parse("ListadoNoRecordsBlock",false);
             }
-
-            $this->getJsonHelper()->sendJson($jObjetivosAprendizaje);
+               
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse("ListObjetivosAprendizajes"));
+ 
         }catch(Exception $e){
             throw $e;
         }
