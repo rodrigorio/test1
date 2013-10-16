@@ -93,6 +93,10 @@ class Utils{
     }
 
   
-
+    public static function convertTagsHTMLtoString($sString){
+        $sDescripcion = htmlspecialchars($sString);
+        $sDescripcion = preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@', '<a href="$1" target="_blank">$1</a>',$sDescripcion);
+        return $sDescripcion;
+    }
 
 }
