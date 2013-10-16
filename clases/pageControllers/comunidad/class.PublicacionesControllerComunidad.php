@@ -834,7 +834,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-
+            
             $oPublicacion = new stdClass();
 
             $oPublicacion->sTitulo = $this->getRequest()->getPost("titulo");
@@ -842,7 +842,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oPublicacion->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $oPublicacion->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
             $oPublicacion->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
-            $oPublicacion->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $sDescripcion = preg_replace("#http://([A-z0-9./-]+)#", '<a href="$1">$0</a>', $this->getRequest()->getPost("descripcion")); 
+            $oPublicacion->sDescripcion = $sDescripcion;
             $oPublicacion->sKeywords = $this->getRequest()->getPost("keywords");            
             $oPublicacion->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 
