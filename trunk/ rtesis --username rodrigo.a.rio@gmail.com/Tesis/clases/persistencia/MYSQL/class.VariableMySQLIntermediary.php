@@ -142,10 +142,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
             	$oVariable->sNombre = $oObj->sNombre;
             	$oVariable->sDescripcion = $oObj->sDescripcion;
                 $oVariable->dFecha = $oObj->dFecha;
-
+                
                 switch($oObj->sTipoVariable){
                     case "VariableTexto":{
-                        $oVariable = Factory::getVariableTextoInstance($oVariable);
+                        $oVariable = Factory::getVariableTextoInstance($oVariable);                        
                         $oVariable->setValor($oObj->sValorTexto);
                         break;
                     }
@@ -170,7 +170,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             	$aVariables[] = $oVariable;
             }
-
+            
             return $aVariables;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

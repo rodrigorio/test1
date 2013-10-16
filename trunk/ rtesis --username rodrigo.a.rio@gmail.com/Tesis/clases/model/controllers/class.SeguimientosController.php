@@ -837,12 +837,12 @@ class SeguimientosController
     public function getUnidadesByEntrada($oEntrada)
     {
     	try{
-            //primero obtengo las unidades que se crearon hasta la fecha de la entrada
+            //primero obtengo las unidades que se ASOCIARON hasta la fecha/hora de la entrada
             $iSeguimientoId = $oEntrada->getSeguimientoId();
             $dFechaHora = $oEntrada->getFechaHoraCreacion();
 
             $filtro = array('su.seguimientos_id' => $iSeguimientoId,
-                            'u.fechaHora' => $dFechaHora,
+                            'su.fechaHora' => $dFechaHora,
                             'u.tipoEdicion' => 'regular',
                             // con esto se cuando si mostrar las unidades que se borraron logicamente
                             'u.fechaBorradoLogico' => $dFechaHora);
@@ -1838,10 +1838,14 @@ class SeguimientosController
         }
     }
 
-    public function borrarEntrada($iEntradaId){
+    /**
+     * Si hay evolucion cargada para cualquiera de los objetivos en el dia de la entrada las borro.
+     * No necesariamente se guarda una evolucion en cada nueva entrada.
+     */
+    public function borrarEntrada($oEntrada){
         try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
-            return $oEntradaIntermediary->borrar($iEntradaId);
+            return $oEntradaIntermediary->borrar($oEntrada->getId());
         }catch(Exception $e){
             throw $e;
         }
