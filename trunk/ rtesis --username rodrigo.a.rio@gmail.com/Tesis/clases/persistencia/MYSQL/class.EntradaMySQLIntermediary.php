@@ -22,9 +22,9 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
     }
 		
     public function insertar($oEntrada)
-    {        
-        try{
-            $db = $this->conn;
+    {
+        $db = $this->conn;
+        try{            
             $db->begin_transaction();
 
             $sSQL = " INSERT INTO entradas SET ".
@@ -63,6 +63,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $oEntrada->setId($iLastId);            
             return true;
         }catch(Exception $e){
+            $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }
     }
@@ -124,6 +125,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
            
             return true;
         }catch(Exception $e){
+            $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }            
     }
@@ -218,11 +220,11 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         }
     }
             
-    public function borrar($iEntradaId)
+    public function borrar($oEntrada)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("DELETE FROM entradas WHERE id = ".$this->escInt($iEntradaId));
+            $db->execSQL("DELETE FROM entradas WHERE id = ".$this->escInt($oEntrada->getId()));
             $db->commit();
             return true;
         }catch(Exception $e){

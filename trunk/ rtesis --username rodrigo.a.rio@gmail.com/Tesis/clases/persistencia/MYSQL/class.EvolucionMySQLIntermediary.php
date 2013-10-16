@@ -93,6 +93,7 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
             }
 
             $sSQL .= " progreso = ".$this->escInt($oEvolucion->getProgreso()).", ".
+                     " entradas_id = ".$this->escInt($oEvolucion->getEntrada()->getId()).", ".
                      " comentarios = ".$this->escStr($oEvolucion->getComentarios());
 
             $db->execSQL($sSQL);
@@ -115,9 +116,12 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         oe.id as iId, oe.progreso as iProgreso, 
-                        oe.comentarios as sComentarios, oe.fechaHora as dFechaHora 
+                        oe.comentarios as sComentarios, 
+                        oe.entradas_id as iEntradaId 
                     FROM
-                        objetivo_evolucion oe ";
+                        objetivo_evolucion oe
+                    JOIN
+                        entradas e ON oe.entradas_id = e.id ";
 
             $WHERE = array();
             
@@ -133,11 +137,14 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
             if(isset($filtro['oe.seg_scc_x_obj_apr_seg_id']) && $filtro['oe.seg_scc_x_obj_apr_seg_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('oe.seg_scc_x_obj_apr_seg_id', $filtro['oe.seg_scc_x_obj_apr_seg_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['oe.fechaHora']) && $filtro['oe.fechaHora']!=""){
-                $WHERE[] = $this->crearFiltroSimple('oe.fechaHora', $filtro['oe.fechaHora']);
+            if(isset($filtro['e.fecha']) && $filtro['e.fecha']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.fecha', $filtro['e.fecha'], MYSQL_TYPE_DATE);
+            }
+            if(isset($filtro['oe.entradas_id']) && $filtro['oe.entradas_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('oe.entradas_id', $filtro['oe.entradas_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['toDate']) && $filtro['toDate']!=""){
-                $WHERE[] = $this->crearFiltroFecha('oe.fechaHora', null, $filtro['toDate']);
+                $WHERE[] = $this->crearFiltroFecha('e.fecha', null, $filtro['toDate']);
             }
             
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -145,7 +152,7 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }else{
-                $sSQL .= " order by fechaHora desc ";
+                $sSQL .= " order by e.fecha desc ";
             }
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).", ".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
@@ -162,8 +169,8 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
                 $oEvolucion = new stdClass();
                 $oEvolucion->iId = $oObj->iId;
                 $oEvolucion->iProgreso = $oObj->iProgreso;
+                $oEvolucion->iEntradaId = $oObj->iEntradaId;
                 $oEvolucion->sComentarios = $oObj->sComentarios;
-                $oEvolucion->dFechaHora = $oObj->dFechaHora;
 
                 $aEvolucion[] = Factory::getEvolucionInstance($oEvolucion);
            }

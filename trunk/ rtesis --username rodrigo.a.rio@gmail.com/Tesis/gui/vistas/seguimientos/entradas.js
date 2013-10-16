@@ -262,6 +262,7 @@ $(document).ready(function(){
     calendario.init();
 
     $(".desplegables").tooltip();
+    $(".evolucionDescripcion").tooltip();
     
     $(".expand").live("click", function(){
        $(this).removeClass("expand").addClass("collapse");

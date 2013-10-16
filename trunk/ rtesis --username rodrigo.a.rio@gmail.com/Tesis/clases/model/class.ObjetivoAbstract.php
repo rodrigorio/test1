@@ -174,7 +174,7 @@ abstract class ObjetivoAbstract
     abstract public function getEvolucionByDate($dFecha);
 
     /**
-     * retorna el objeto evolucion mas cercano a la fecha
+     * retorna el objeto evolucion mas cercano o igual a la fecha pasada por parametro
      */
     abstract public function getUltimaEvolucionToDate($dFecha);
    

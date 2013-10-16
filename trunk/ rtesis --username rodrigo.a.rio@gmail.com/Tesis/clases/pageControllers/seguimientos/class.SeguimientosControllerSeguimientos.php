@@ -2472,7 +2472,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
                         $this->getTemplate()->set_var("EstimacionBlock", "");
 
-                        $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFechaHora(true));
+                        $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
                     }else{
                         $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
                         $this->getTemplate()->set_var("FechaLogradoBlock", "");
@@ -3381,7 +3381,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if($oObjetivo->isLogrado()){
                 $this->getTemplate()->set_var("EstimacionBlock", "");
                 $this->getTemplate()->set_var("EstimacionVencida", "");
-                $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFechaHora());
+                $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
             }else{
                 $this->getTemplate()->set_var("FechaLogradoBlock", "");
                 if(!$oObjetivo->isEstimacionVencida()){
@@ -3433,7 +3433,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if(count($aEvolucion) > 0){
                 $this->getTemplate()->set_var("EvolucionNoRecords", "");
                 foreach($aEvolucion as $oEvolucion){
-                    $this->getTemplate()->set_var("sFecha", $oEvolucion->getFechaHora(true));
+                    $sFecha = $oEvolucion->getFecha(true);
+                    $hrefEntradaSeguimiento = $this->getRequest()->getBaseUrl()."/seguimientos/entradas/".$iSeguimientoId."-".$sFecha;
+                    $this->getTemplate()->set_var("hrefEntradaSeguimiento", $hrefEntradaSeguimiento);
+                    $this->getTemplate()->set_var("sFecha", $sFecha);
                     $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
 
                     if($oEvolucion->isObjetivoLogrado()){
