@@ -1845,7 +1845,7 @@ class SeguimientosController
     public function borrarEntrada($oEntrada){
         try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
-            return $oEntradaIntermediary->borrar($oEntrada->getId());
+            return $oEntradaIntermediary->borrar($oEntrada);
         }catch(Exception $e){
             throw $e;
         }
@@ -1899,7 +1899,7 @@ class SeguimientosController
     	try{
             $filtro = array('oe.seg_scc_x_obj_apr_obj_id' => $iObjetivoId,
                             'oe.seg_scc_x_obj_apr_seg_id' => $iSeguimientoSCCId,
-                            'oe.fechaHora' => $dFecha);
+                            'e.fecha' => $dFecha);
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
             $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -1923,7 +1923,7 @@ class SeguimientosController
 
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, "fechaHora", "desc", 0, 1);
+            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, "e.fecha", "desc", 0, 1);
 
             if(null !== $aEvolucion){
                 return $aEvolucion[0];
@@ -1952,7 +1952,7 @@ class SeguimientosController
     {
     	try{
             $filtro = array('oe.objetivos_personalizados_id' => $iObjetivoId,
-                            'oe.fechaHora' => $dFecha);
+                            'e.fecha' => $dFecha);
             
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
@@ -1979,7 +1979,7 @@ class SeguimientosController
 
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
-            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, "fechaHora", "desc", 0, 1);
+            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, "e.fecha", "desc", 0, 1);
 
             if(null !== $aEvolucion){
                 return $aEvolucion[0];

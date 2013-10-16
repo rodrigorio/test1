@@ -192,7 +192,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                 if($oObjetivo->isLogrado()){
                     $this->getTemplate()->set_var("EstimacionBlock", "");
-                    $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha());
+                    $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
                 }else{
                     $this->getTemplate()->set_var("FechaLogradoBlock", "");
                     $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
@@ -236,9 +236,10 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("sDescripcionObjetivoBreve", $sDescripcionObjetivoBreve);
                 $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
 
-                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha(true));
+                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha());
                 if(null === $oEvolucion){
                     $this->getTemplate()->set_var("iEvolucion", "0");
+                    $this->getTemplate()->set_var("VerComentariosEvolucionBlock", "");
                 }else{                                   
                     $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
                     if($oEvolucion->isObjetivoLogrado()){
@@ -246,6 +247,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                     }else{
                         $this->getTemplate()->set_var("sGoalClass", "");
                     }
+                    $this->getTemplate()->set_var("sEvolucionComentarios", $oEvolucion->getComentarios());
                 }
 
                 $this->getTemplate()->set_var("dFechaCreacion", $oObjetivo->getFechaCreacion(true));
@@ -255,6 +257,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
                 $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
                 $this->getTemplate()->delete_parsed_blocks("ContenidosEjeBlock");
+                $this->getTemplate()->delete_parsed_blocks("VerComentariosEvolucionBlock");
             }
 
             $aUnidades = $oEntrada->getUnidades();                        

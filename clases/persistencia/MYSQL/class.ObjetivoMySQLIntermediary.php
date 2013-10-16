@@ -25,7 +25,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         o.id as iId, o.descripcion as sDescripcion, 
                         op.fechaCreacion as dFechaCreacion, op.objetivo_personalizado_ejes_id as iEjeId, op.objetivo_relevancias_id as iRelevanciaId, op.estimacion as dEstimacion, op.activo as bActivo, op.fechaDesactivado as dFechaDesactivado,
                         ope.descripcion as sDescripcionEje, ope.ejePadre AS iEjePadreId, orr.descripcion as sDescripcionRelevancia,
-                        e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
+                        e.iProgreso, e.sComentarios, e.iEntradaId, e.iEvolucionId,
                         IF(e.iProgreso = 100, '1', '0') as isLogrado
                     FROM
                         objetivos o
@@ -37,9 +37,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         objetivo_relevancias orr ON orr.id = op.objetivo_relevancias_id 
                     LEFT JOIN
                         (SELECT oe.id as iEvolucionId , oe.progreso AS iProgreso, oe.objetivos_personalizados_id,
-                                oe.comentarios AS sComentarios, oe.fechaHora as dFechaHora 
+                                oe.comentarios AS sComentarios, e.id AS iEntradaId
                          FROM objetivo_evolucion oe
-                         ORDER BY fechaHora DESC limit 1) AS e ON o.id = e.objetivos_personalizados_id ";
+                         JOIN entradas e ON oe.entradas_id = e.id 
+                         ORDER BY e.fecha DESC limit 1) AS e ON o.id = e.objetivos_personalizados_id ";
             
             $WHERE = array();
 
@@ -91,7 +92,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $oEvolucion->iId = $oObj->iEvolucionId;
                 $oEvolucion->iProgreso = $oObj->iProgreso;
                 $oEvolucion->sComentarios = $oObj->sComentarios;
-                $oEvolucion->dFechaHora = $oObj->dFechaHora;
+                $oEvolucion->iEntradaId = $oObj->iEntradaId;
                 $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
 
             	$oObjetivo = new stdClass();
@@ -172,7 +173,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         sxo.seguimientos_scc_id as iSeguimientoSCCId, sxo.estimacion as dEstimacion, sxo.activo as bActivo,
                         sxo.objetivo_relevancias_id as iRelevanciaId, orr.descripcion as sDescripcionRelevancia, 
                         sxo.fechaCreacion as dFechaCreacion, sxo.fechaDesactivado as dFechaDesactivado,
-                        e.iProgreso, e.sComentarios, e.dFechaHora, e.iEvolucionId,
+                        e.iProgreso, e.sComentarios, e.iEntradaId, e.iEvolucionId,
                         IF(e.iProgreso = 100, '1', '0') as isLogrado
                     FROM
                        objetivos o
@@ -185,9 +186,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     LEFT JOIN
                         (SELECT oe.id as iEvolucionId , oe.progreso AS iProgreso,
                                 oe.seg_scc_x_obj_apr_obj_id, oe.seg_scc_x_obj_apr_seg_id, 
-                                oe.comentarios AS sComentarios, oe.fechaHora as dFechaHora
+                                oe.comentarios AS sComentarios, e.id AS iEntradaId
                          FROM objetivo_evolucion oe
-                         ORDER BY fechaHora DESC limit 1) AS e ON o.id = e.seg_scc_x_obj_apr_obj_id AND sxo.seguimientos_scc_id = e.seg_scc_x_obj_apr_seg_id ";
+                         JOIN entradas e ON oe.entradas_id = e.id 
+                         ORDER BY e.fecha DESC limit 1) AS e ON o.id = e.seg_scc_x_obj_apr_obj_id AND sxo.seguimientos_scc_id = e.seg_scc_x_obj_apr_seg_id ";
 
             $WHERE = array();
 
@@ -239,7 +241,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $oEvolucion->iId = $oObj->iEvolucionId;
                 $oEvolucion->iProgreso = $oObj->iProgreso;
                 $oEvolucion->sComentarios = $oObj->sComentarios;
-                $oEvolucion->dFechaHora = $oObj->dFechaHora;
+                $oEvolucion->iEntradaId = $oObj->iEntradaId;
                 $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
 
                 $oObjetivo->iId = $oObj->iId;

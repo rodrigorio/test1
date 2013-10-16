@@ -31,7 +31,7 @@
         </a>
     </li>
 </ul>
-<div id="fichaPersonaMenu" class="pa2 mabo2 po_re grupo baco1 bo2 bora">
+<div id="fichaPersonaMenu" class="pa2 mabo3 po_re grupo baco1 bo2 bora">
     <div class="ajax_wait16 di_no"></div>
     <div class="fl_le teal_le mari2">
         <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_s thumb01 mabo">
@@ -44,7 +44,7 @@
     </div>
 </div>
 <!--BeginBlockCrearEntradaHoy-->
-<a id="crearEntradaHoy" rel="{iSeguimientoId}_{dFechaActual}" class="button buttonLarge buttonSpecial mabo2" href="javascript:;">
+<a id="crearEntradaHoy" rel="{iSeguimientoId}_{dFechaActual}" class="button buttonLarge buttonSpecial mabo3" href="javascript:;">
     <span class="i bs add"></span>
     <span class="buttonText">Crear entrada hoy {dFechaActual}</span>
 </a>
@@ -171,10 +171,13 @@
         <td class="desplegable" rel="{iObjetivoId}">
            <span class="fte2">{sDescripcionObjetivoBreve}</span>
         </td>
-        <td class="desplegable" rel="{iObjetivoId}">
+        <td class="desplegable teal_ce" rel="{iObjetivoId}">
             <div class="bora progress-bar">
                 <div class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
             </div>
+            <!--BeginVerComentariosEvolucionBlock-->
+            <span class="evolucionDescripcion fte2 fowe_bo" title="{sEvolucionComentarios}">Rese&ntilde;a</span>
+            <!--EndVerComentariosEvolucionBlock-->
        </td>
     </tr>
     <tr class="ba_no">

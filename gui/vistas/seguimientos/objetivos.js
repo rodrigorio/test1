@@ -431,7 +431,7 @@ function eliminarObjetivo(iObjetivoId, iSeguimientoId, tipoObjetivo){
 }
 
 $(function(){
-
+    
     $(".orderLink").live('click', function(){
         $('#sOrderBy').html($(this).attr('orderBy'));
         $('#sOrder').html($(this).attr('order'));
@@ -460,7 +460,9 @@ $(function(){
             {iSeguimientoId:iSeguimientoId,
              iObjetivoId:iObjetivoId,
              tipoObjetivo:tipoObjetivo},
-            function(responseText, textStatus, XMLHttpRequest){}
+            function(responseText, textStatus, XMLHttpRequest){
+                $(".tooltip").tooltip();
+            }
         );
     });
     

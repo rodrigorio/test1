@@ -7,7 +7,11 @@ class Evolucion {
      */
     private $iProgreso;
     private $sComentarios;
-    private $dFechaHora;
+    /**
+     * Siempre asociado a una entrada
+     */
+    private $oEntrada;
+    private $iEntradaId;
 	
     public function __construct(stdClass $oParams = null){
             $vArray = get_object_vars($oParams);
@@ -23,24 +27,56 @@ class Evolucion {
             }
     }
 
+    public function getEntrada(){
+        if((null == $this->oEntrada) && (null != $this->iEntradaId)){
+            $this->oEntrada = SeguimientosController::getInstance()->getEntradaById($this->iEntradaId);
+        }
+        return $this->oEntrada;
+    }
+
+    public function setEntradaId($iEntradaId){
+        $this->iEntradaId = $iEntradaId;
+        if(!empty($iEntradaId) && null !== $this->oEntrada && $this->oEntrada->getId() != $iEntradaId){
+            $this->oEntrada = SeguimientosController::getInstance()->getEntradaById($iEntradaId);
+        }
+    }
+
+    public function getEntradaId()
+    {
+        return $this->iEntradaId;
+    }
+
+    public function getFecha($format = false)
+    {
+        $dFecha = $this->getEntrada()->getFecha();
+        if($format){
+            return Utils::fechaFormateada($dFecha, "d/m/Y");
+        }else{
+            return $dFecha;
+        }
+    }
+
     /**
      *  @param int $iId
      */
     public function setId($iId){
             $this->iId = (int)$iId;
     }
+    
     /**
      * @param string $sDescripcion
      */
     public function setComentarios($sComentarios){
             $this->sComentarios = $sComentarios;
     }
+
     /**
      *  @return int $iId
      */
     public function getId(){
             return $this->iId ;
     }
+
     /**
      * @return string $sComentarios
      */
@@ -50,28 +86,6 @@ class Evolucion {
         }else{
             return $this->sComentarios;
         }
-    }
-
-    public function setFechaHora($dFechaHora){
-        $this->dFechaHora = $dFechaHora;
-        return $this;
-    }
-    
-    public function getFechaHora($format = false){
-        if($format){
-            return Utils::fechaFormateada($this->dFechaHora);
-        }else{
-            return $this->dFechaHora;
-        }
-    }
-
-    /**
-     * Devuelve solo la parte de la fecha y formateada
-     */
-    public function getFecha()
-    {
-        $dFechaFormat = $this->getFechaHora(true);
-        return strtok($dFechaFormat, " ");        
     }
 
     public function setProgreso($iProgreso)
