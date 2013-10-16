@@ -442,7 +442,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oComentario = new stdClass();
             $oComentario = Factory::getComentarioInstance($oComentario);
 
-            $oComentario->setDescripcion($this->getRequest()->getPost("comentario"));           
+            $oComentario->setDescripcion(Utils::convertTagsHTMLtoString($this->getRequest()->getPost("comentario")));           
             $oComentario->setUsuario($oUsuario);
 
             $oFicha->addComentario($oComentario);
@@ -842,8 +842,8 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oPublicacion->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $oPublicacion->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
             $oPublicacion->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
-            $sDescripcion = preg_replace("#http://([A-z0-9./-]+)#", '<a href="$1">$0</a>', $this->getRequest()->getPost("descripcion")); 
-            $oPublicacion->sDescripcion = $sDescripcion;
+            
+            $oPublicacion->sDescripcion = Utils::convertTagsHTMLtoString($this->getRequest()->getPost("descripcion"));
             $oPublicacion->sKeywords = $this->getRequest()->getPost("keywords");            
             $oPublicacion->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 
@@ -882,7 +882,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $oPublicacion->setTitulo($this->getRequest()->getPost("titulo"));
             $oPublicacion->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
-            $oPublicacion->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oPublicacion->setDescripcion(Utils::convertTagsHTMLtoString($this->getRequest()->getPost("descripcion")));
             $oPublicacion->setKeywords($this->getRequest()->getPost("keywords"));
             $oPublicacion->isActivo($bActivo);
             $oPublicacion->isPublico($bPublico);
@@ -1088,7 +1088,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
             $oReview->bActivo = ($this->getRequest()->getPost("activo") == "1")?true:false;
             $oReview->bPublico = ($this->getRequest()->getPost("publico") == "1")?true:false;
             $oReview->bActivoComentarios = ($this->getRequest()->getPost("activoComentarios") == "1")?true:false;
-            $oReview->sDescripcion = $this->getRequest()->getPost("descripcion");
+            $oReview->sDescripcion = Utils::convertTagsHTMLtoString($this->getRequest()->getPost("descripcion"));
             $oReview->sKeywords = $this->getRequest()->getPost("keywords");
             $oReview->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 
@@ -1139,7 +1139,7 @@ class PublicacionesControllerComunidad extends PageControllerAbstract
 
             $oReview->setTitulo($this->getRequest()->getPost("titulo"));
             $oReview->setDescripcionBreve($this->getRequest()->getPost("descripcionBreve"));
-            $oReview->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oReview->setDescripcion(Utils::convertTagsHTMLtoString($this->getRequest()->getPost("descripcion")));
             $oReview->setKeywords($this->getRequest()->getPost("keywords"));
             $oReview->isActivo($bActivo);
             $oReview->isPublico($bPublico);
