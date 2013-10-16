@@ -141,7 +141,6 @@ function Calendario(element){
 
         var buttons = {
             "Confirmar": function(){
-                //este es el dialog que confirma que la cuenta fue eliminada del sistema
                 var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
                 dialog = setWaitingStatusDialog(500, "Crear Entrada", buttonAceptar);
                 $.ajax({
@@ -175,7 +174,36 @@ function Calendario(element){
     }
 }
 
-function eliminarEntrada(iEntradaId){
+function eliminarEntrada(iEntradaId)
+{
+    var buttons = {
+        "Confirmar": function(){
+            var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+            dialog = setWaitingStatusDialog(500, "Eliminar Entrada", buttonAceptar);
+            $.ajax({
+                type:"post",
+                dataType:'jsonp',
+                data:{
+                    confirmo:"1",
+                    iEntradaId:iEntradaId
+                },
+                url:"seguimientos/entradas/eliminar",
+                success:function(data){
+                    dialog.html(data.html);
+                    if(data.success != undefined && data.success == 1){
+                        $(".ui-dialog-buttonset .ui-button").click(function(){
+                            //ampliar entrada creada para editar por primera vez.
+                            location = data.redirect;
+                        });
+                    }
+                }
+            });
+        },
+        "Cancelar": function() {
+            $(this).dialog( "close" );
+        }
+    }
+    
     $.ajax({
         type:"post",
         dataType: 'jsonp',
@@ -190,31 +218,40 @@ function eliminarEntrada(iEntradaId){
         success:function(data){
             setWaitingStatus('menuEntrada', false, "16");
 
-            if(data.success != undefined && data.success == 1){
-                //remuevo la ficha
-                $('#objetivo_'+iObjetivoId+'_'+iSeguimientoId).hide("slow", function(){
-                    $('#objetivo_'+iObjetivoId+'_'+iSeguimientoId).remove();
-                });
-            }
-
             var dialog = $("#dialog");
             if($("#dialog").length){ dialog.remove(); }
-            dialog = $('<div id="dialog" title="Borrar Objetivo"></div>').appendTo('body');
+            dialog = $('<div id="dialog" title="Eliminar Entrada"></div>').appendTo('body');
             dialog.html(data.html);
 
-            dialog.dialog({
-                position:['center', 'center'],
-                width:400,
-                resizable:false,
-                draggable:false,
-                modal:false,
-                closeOnEscape:true,
-                buttons:{
-                    "Aceptar": function() {
-                        $(this).dialog( "close" );
-                    }
+            if(data.success != undefined && data.success == 1 && data.confirmar){
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:buttons
+                });
+            }else{
+                var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:buttonAceptar
+                });
+
+                if(data.success != undefined && data.success == 1){
+                    $(".ui-dialog-buttonset .ui-button").click(function(){
+                        //redirecciona a ultima entrada
+                        location = data.redirect;
+                    });
                 }
-            });
+            }
         }
     });
 }
@@ -261,5 +298,12 @@ $(document).ready(function(){
     $("#eliminarEntrada").live('click', function(){
         var iEntradaId = $(this).attr("rel");
         eliminarEntrada(iEntradaId);
+    });
+
+    $("#crearEntradaHoy").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iSeguimientoId = rel[0];
+        var dFecha = rel[1];
+        calendario.dialogCrearEntrada(iSeguimientoId, dFecha);
     });
 });

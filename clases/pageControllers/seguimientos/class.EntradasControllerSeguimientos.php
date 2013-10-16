@@ -149,7 +149,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             }
 
             $sEntradaActual = str_replace("-", "/", $oEntrada->getFecha());
-            $sUltimaEntrada = str_replace("-", "/", $oSeguimiento->getUltimaEntrada()->getFecha(true));
+            $sUltimaEntrada = str_replace("-", "/", $oSeguimiento->getUltimaEntrada()->getFecha());
             $sFechaActual = strtok(date("d/m/Y"), " ");
             $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
             $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
@@ -257,8 +257,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->delete_parsed_blocks("ContenidosEjeBlock");
             }
 
-            $aUnidades = $oEntrada->getUnidades();
-                        
+            $aUnidades = $oEntrada->getUnidades();                        
             foreach($aUnidades as $oUnidad)
             {
                 $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
@@ -465,7 +464,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         if($oEntrada->isGuardada() && !$bConfirmo){
             $dFechaEntrada = $oEntrada->getFecha(true);
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaInfoBlock");
-            $this->getTemplate()->set_var("sTituloMsgFicha", "Eliminar contenidos entrada");
+            $this->getTemplate()->set_var("sTituloMsgFicha", "Contenidos entrada");
             $this->getTemplate()->set_var("sMsgFicha", "Se eliminará de forma permanente toda la información ingresada en el día ".$dFechaEntrada.". Desea continuar?");
 
             $this->getJsonHelper()->setSuccess(true)
@@ -474,14 +473,14 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                                   ->sendJsonAjaxResponse();
             return;
         }
-               
+
         //elimino la entrada
         try{
-            $result = SeguimientosController::getInstance()->borrarEntrada($iEntradaId);
+            $result = SeguimientosController::getInstance()->borrarEntrada($oEntrada);
 
             if($result){
                 //redirecciono a la ultima entrada
-                $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex")."?iSeguimientoId=".$iSeguimientoId;
+                $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex")."?iSeguimientoId=".$oEntrada->getSeguimientoId();
                 
                 $msg = "La entrada para el dia ".$oEntrada->getFecha(true)." junto a toda la información asociada, fue eliminada del sistema.";
                 $bloque = 'MsgCorrectoBlockI32';
@@ -502,6 +501,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
         $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
-        $this->getJsonHelper()->sendJsonAjaxResponse();
+        $this->getJsonHelper()->sendJsonAjaxResponse();         
     }
 }
