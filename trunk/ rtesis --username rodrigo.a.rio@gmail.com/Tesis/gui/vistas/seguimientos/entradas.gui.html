@@ -3,6 +3,7 @@
 <script type="text/javascript">
     $LAB
    .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tools.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
@@ -92,6 +93,119 @@
 <span class="i mi flagYellow"></span>
 <!--EndIconoRelevanciaAltaBlock-->
 
+<!--BeginEditarEntradaBlock-->
+<div class="mabo2 grupo">
+    <span id="fechaEntradaActual" class="di_no">{sEntradaActual}</span>
+    <span id="fechaUltimaEntrada" class="di_no">{sUltimaEntrada}</span>
+    <span id="seguimientoId" class="di_no">{iSeguimientoId}</span>
+
+    <div class="fl_le">
+        <h1>Entrada del {dFechaEntrada}</h1>
+    </div>
+</div>
+<div class="pabo mabo3 bobo2 grupo">
+    <h3 class="fl_ri">formulario</h3>
+</div>
+
+{msgTopEntrada}
+
+<div class="mabo2 bobo1 grupo">
+    <h2 class="mabo2">Objetivos</h2>
+</div>
+<div class="fost_it pato pabo">Cantidad de objetivos: <span class="fowe_bo">
+{iRecordsTotal}</span></div>
+<table class="table01 wi100p mabo3">
+    <tr class="encabezado">
+        <td class="small iveal">Relevancia {orderByRelevancia}</td>
+        <td class="small iveal">Estimaci&oacute;n {orderByEstimacion}</td>
+        <td class="small">Eje</td>
+        <td class="big">Descripci&oacute;n</td>
+        <td class="medium iveal">Evoluci&oacute;n {orderByProgreso}</td>
+    </tr>
+
+    <!--BeginObjetivoEditarBlock-->
+    <tr>
+        <td class="desplegable" rel="{iObjetivoId}">
+           {iconoRelevancia} <span class="fost_it tetr_ca fte2">{sRelevancia}</span>
+        </td>
+        <td class="desplegable iveal" rel="{iObjetivoId}">
+            <span class="i bs calendar"></span>
+
+            <!--BeginEstimacionEditarBlock-->
+            <span class="fowe_bo fte2 {expiradaClass}">{dEstimacion}</span>
+            <!--EndEstimacionEditarBlock-->
+
+            <!--BeginFechaLogradoEditarBlock-->
+            <span class="fowe_bo fte2 txt_correcto">{dFechaLogrado}</span>
+            <!--EndFechaLogradoEditarBlock-->
+
+        </td>
+        <td class="desplegable" rel="{iObjetivoId}">
+           <span class="fte2">{sDescripcionEjeBreve}</span>
+        </td>
+        <td class="desplegable" rel="{iObjetivoId}">
+           <span class="fte2">{sDescripcionObjetivoBreve}</span>
+        </td>
+        <td class="teal_ce" rel="{iObjetivoId}">
+            <div class="bora progress-bar fl_le" style="width:100px;">
+                <div class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
+            </div>
+            <!--BeginEditarProgresoBlock-->
+            <a rel="{iEntradaId}_{iEvolucionId}" class="editarProgresoEvolucion fte2 fowe_bo iveal di_inbl fl_le male" href="javascript:;">
+                <span class="i bs add mari"></span>editar
+            </a>
+            <!--EndEditarProgresoBlock-->
+            <!--BeginCrearEvolucionBlock-->
+            <a rel="{iEntradaId}_{iObjetivoId}" class="crearEvolucion fte2 fowe_bo iveal di_inbl fl_le male" href="javascript:;">
+                <span class="i bs add mari"></span>editar
+            </a>
+            <!--EndCrearEvolucionBlock-->
+       </td>
+    </tr>
+    <tr class="ba_no">
+        <td id="desplegable_{iObjetivoId}" class="pa0 bobo_no" colspan="6" style="display:none;">
+            <div class="anexoFicha grupo">
+                <div class="titulo mabo3 grupo">
+                    <div class="fte fost_it fl_le">Detalles</div>
+                    <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
+                </div>
+                <span class="fte2 txt_imp2">Creado el </span>
+                <p class="co3">{dFechaCreacion}</p>
+                <span class="fte2 txt_imp2">Descripci&oacute;n Eje</span><br>
+                <p class="co3">{sDescripcionEje}</p>
+                <!--BeginContenidosEjeEditarBlock-->
+                <p class="co3"><span class="fowe_bo">Contenidos: </span>{sContenidosEje}</p>
+                <!--EndContenidosEjeEditarBlock-->
+                <span class="fte2 txt_imp2">Descripci&oacute;n Objetivo</span><br>
+                <p class="co3">{sDescripcionObjetivo}</p>
+            </div>
+        </td>
+    </tr>
+    <!--EndObjetivoEditarBlock-->
+</table>
+
+<div class="mabo2 bobo1 grupo">
+    <h2 class="mabo2 fl_le">Informe</h2>
+    <div class="fl_ri">
+        <a id="collapseAll" class="fte2" href="javascript:;">Contraer todas las unidades</a>
+    </div>
+</div>
+
+<!--BeginUnidadEditarBlock-->
+<div id="title_{iUnidadId}" class="grupo baco1 pa iveal">
+    <h3 class="fl_le">{sNombreUnidad}</h3>
+    <div class="fl_ri">
+        <span rel="{iUnidadId}" class="desplegable i mi collapse ihover"></span>
+    </div>
+</div>
+<div id="desplegable_{iUnidadId}" class="desplegables pa grupo bobo1 baco3 mabo2">
+    <!--BeginVariableEditarBlock-->
+    {variable}
+    <!--EndVariableEditarBlock-->
+</div>
+<!--EndUnidadEditarBlock-->
+<!--EndEditarEntradaBlock-->
+
 <!--BeginAmpliarEntradaBlock-->
 <div class="mabo2 grupo">
     <span id="fechaEntradaActual" class="di_no">{sEntradaActual}</span>
@@ -110,7 +224,7 @@
         <ul class="m_horiz mabo3 grupo">
             <!--BeginEditarEntradaBlock-->
             <li>
-                <a class="button editarEntrada" href="javascript:;">
+                <a class="button editarEntrada" href="{hrefEditarEntrada}">
                     <span class="i bs calendarEdit"></span>
                     <span class="buttonText">Editar Entrada</span>
                 </a>
@@ -173,7 +287,7 @@
         </td>
         <td class="desplegable teal_ce" rel="{iObjetivoId}">
             <div class="bora progress-bar">
-                <div class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
+                <div id="progreso_{iEvolucionId}" class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
             </div>
             <!--BeginVerComentariosEvolucionBlock-->
             <span class="evolucionDescripcion fte2 fowe_bo" title="{sEvolucionComentarios}">Rese&ntilde;a</span>
@@ -225,3 +339,62 @@
 <!--EndEntradaContBlock-->
 
 <!--EndAmpliarEntradaBlock-->
+
+
+
+<!--BeginFormularioEvolucionBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi flagGreen32"></span></div>
+    <form id="formEvolucion" name="formEvolucion" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+        <div class="form_line msg_progreso">
+            <label for="progreso">
+                <span class="marca_obligatorio">&#8226;</span>
+                Progreso
+            </label>
+            <div class="cl_le mabo2"></div>
+            <input readonly="readonly" type="range" name="progreso" id="progreso" min="1" max="100" value="{iProgreso}" />
+        </div>
+
+        <div class="form_line msg_comentarios">
+            <label for="comentarios">
+                <span class="marca_obligatorio">&#8226;</span>
+                Comentarios
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="comentarios" name="comentarios" title="Comentarios acerca del progreso en el objetivo">{sComentarios}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!--BeginFormEditarProgresoBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="editarProgreso" class="button buttonConfirm buttonLarge">
+                <button id="editarProgreso" type="submit" name="editarProgreso" class="btn01">
+                    Guardar Progreso
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iEvolucionIdForm}" name="evolucionIdForm" id="evolucionIdForm" />
+        <!--EndFormEditarProgresoBlock-->
+
+        <!--BeginFormCrearEvolucionBlock-->
+        <div class="fl_le iveal mabo2">
+            <label for="crearEvolucion" class="button buttonConfirm buttonLarge">
+                <button id="crearEvolucion" type="submit" name="crearEvolucion" class="btn01">
+                    Guardar Progreso
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iObjetivoIdForm}" name="objetivoIdForm" id="objetivoIdForm" />
+        <!--EndFormCrearEvolucionBlock-->
+
+        <input type="hidden" value="{iSeguimientoIdForm}" name="seguimientoIdForm" id="seguimientoIdForm" />
+        <input type="hidden" value="{iEntradaIdForm}" name="entradaIdForm" id="entradaIdForm" />
+
+        <div style="display:none;" id='msg_form_evolucion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+
+    </form>
+</div>
+<!--EndFormularioEvolucionBlock-->

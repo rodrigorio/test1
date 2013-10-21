@@ -430,5 +430,19 @@ class RutasModuloSeguimientos
                                         'action'     => 'eliminar'
                                 ));
         $router->addRoute('seguimientosEntradasEliminar', $route);
+        $route = new RegexRoute('seguimientos/entradas/editar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entradas',
+                                        'action'     => 'editar'
+                                ));
+        $router->addRoute('seguimientosEntradasEditar', $route);        
+        $route = new RegexRoute('seguimientos/entradas/guardar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entradas',
+                                        'action'     => 'guardar'
+                                ));
+        $router->addRoute('seguimientosEntradasGuardar', $route);
     }
 }

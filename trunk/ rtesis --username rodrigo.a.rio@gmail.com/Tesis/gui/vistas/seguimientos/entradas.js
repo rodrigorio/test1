@@ -256,6 +256,82 @@ function eliminarEntrada(iEntradaId)
     });
 }
 
+var validateFormEvolucion = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        comentarios:{required:true},
+        progreso:{required:true}
+    },
+    messages:{
+        estimacion: mensajeValidacion("requerido"),
+        progreso: mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormEvolucion = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/entradas/guardar',
+    beforeSerialize:function(){
+        if($("#formEvolucion").valid() == true){
+
+            $('#msg_form_evolucion').hide();
+            $('#msg_form_evolucion').removeClass("correcto").removeClass("error");
+            $('#msg_form_evolucion .msg').html("");
+            setWaitingStatus('formEvolucion', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formEvolucion', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_evolucion .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_evolucion .msg').html(data.mensaje);
+            }
+            $('#msg_form_evolucion').addClass("error").fadeIn('slow');
+        }else{
+            //actualizo la barra de progreso
+            $("#progreso_"+data.evolucionId).css('width', data.progreso+'px');
+            $("#progreso_"+data.evolucionId+" span").html(data.progreso+"/100");
+            if(data.progreso == "100"){
+                $("#progreso_"+data.evolucionId).addClass("goal");
+            }else{
+                $("#progreso_"+data.evolucionId).removeClass("goal");
+            }
+
+            $("#dialog").dialog("close");
+        }
+    }
+};
+
+function bindEventsFormEvolucion()
+{
+    $("#formEvolucion").validate(validateFormEvolucion);
+    $("#formEvolucion").ajaxForm(optionsAjaxFormEvolucion);
+
+    $("#comentarios").maxlength();    
+    $("#progreso").rangeinput({
+        
+    });
+}
+   
 $(document).ready(function(){
 
     var calendario = new Calendario($("#calendarioEntradas"));
@@ -306,5 +382,47 @@ $(document).ready(function(){
         var iSeguimientoId = rel[0];
         var dFecha = rel[1];
         calendario.dialogCrearEntrada(iSeguimientoId, dFecha);
+    });
+
+    $(".editarProgresoEvolucion").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iEntradaId = rel[0];
+        var iEvolucionId = rel[1];
+
+        var dialog = setWaitingStatusDialog(500, 'Editar Progreso');
+
+        dialog.load(
+            "seguimientos/entradas/editar",
+            {
+                entrada:iEntradaId,
+                iEvolucionId:iEvolucionId,
+                formEvolucion:"1",
+                editarProgresoEvolucion:"1"
+            },
+            function(responseText, textStatus, XMLHttpRequest){
+                bindEventsFormEvolucion();
+            }
+        );
+    });
+
+    $(".crearEvolucion").live('click', function(){
+        var rel = $(this).attr("rel").split('_');
+        var iEntradaId = rel[0];
+        var iObjetivoId = rel[1];
+
+        var dialog = setWaitingStatusDialog(500, 'Editar Progreso');
+
+        dialog.load(
+            "seguimientos/entradas/editar",
+            {
+                entrada:iEntradaId,
+                iObjetivoId:iObjetivoId,
+                formEvolucion:"1",
+                crearEvolucion:"1"
+            },
+            function(responseText, textStatus, XMLHttpRequest){
+                bindEventsFormEvolucion();
+            }
+        );
     });
 });

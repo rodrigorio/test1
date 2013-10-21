@@ -162,6 +162,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 if($oEntrada->isGuardada()){
                     $this->getTemplate()->set_var("EliminarEntradaBlock", "");
                 }
+            }else{
+                $hrefEditar = $this->getUrlFromRoute("seguimientosEntradasEditar", true)."?entrada=".$oEntrada->getId();
+                $this->getTemplate()->set_var("hrefEditarEntrada", $hrefEditar);
             }
                                                             
             $aObjetivos = $oEntrada->getObjetivos();
@@ -399,7 +402,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             SeguimientosController::getInstance()->guardarEntrada($oEntrada);
 
             $sFechaUrl = $oEntrada->getFecha(true);
-            $sRedirect = "/seguimientos/entradas/".$iSeguimientoId."-".$sFechaUrl;
+            $sRedirect = "/seguimientos/entradas/editar?entrada=".$oEntrada->getId();
 
             //mensaje de creacion exitosa
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaCorrectoBlock");
@@ -505,5 +508,267 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
         $this->getJsonHelper()->sendJsonAjaxResponse();         
+    }
+
+    public function editar()
+    {        
+        $iEntradaId = $this->getRequest()->getParam("entrada");
+        if(null === $iEntradaId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEntrada = SeguimientosController::getInstance()->getEntradaById($iEntradaId);
+        if($oEntrada === null){
+            throw new Exception("No existe la entrada para el identificador seleccionado", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($oEntrada->getSeguimientoId());
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar esta entrada", 401);
+        }
+
+        //me fijo periodo de expiracion
+        if(!$oEntrada->isEditable()){
+            throw new Exception("La entrada no se puede editar, periodo de edicion expirado", 401);
+        }
+
+        //puedo devolver el formulario de edicion de evolucion para un objetivo
+        if($this->getRequest()->has('formEvolucion')){
+            $this->formEvolucion($oEntrada, $oSeguimiento);
+            return;
+        }
+
+        try{          
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            $this->setTituloSeccion();
+            $this->setContenidoColumnaIzquierda($oSeguimiento);
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageBodyCenterCont", "EditarEntradaBlock");
+
+            $result = Utils::dateDiffDays($oSeguimiento->getUltimaEntrada()->getFecha(), date('Y-m-d'));
+            if($result == 0){
+                $this->getTemplate()->set_var("BlockCrearEntradaHoy", "");
+            }
+
+            $sEntradaActual = str_replace("-", "/", $oEntrada->getFecha());
+            $sUltimaEntrada = str_replace("-", "/", $oSeguimiento->getUltimaEntrada()->getFecha());
+            $sFechaActual = strtok(date("d/m/Y"), " ");
+            $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
+            $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
+            $this->getTemplate()->set_var("dFechaActual", $sFechaActual);
+            $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
+            $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
+
+            $aObjetivos = $oEntrada->getObjetivos();
+
+            $this->getTemplate()->set_var("iRecordsTotal", count($aObjetivos));
+            foreach($aObjetivos as $oObjetivo){
+                $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
+                $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
+
+                switch($oObjetivo->getRelevancia()->getDescripcion())
+                {
+                    case "baja":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaBajaBlock";
+                        break;
+                    }
+                    case "normal":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaNormalBlock";
+                        break;
+                    }
+                    case "alta":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaAltaBlock";
+                        break;
+                    }
+                }
+                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
+                $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
+                $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
+
+                if($oObjetivo->isLogrado()){
+                    $this->getTemplate()->set_var("EstimacionEditarBlock", "");
+                    $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
+                }else{
+                    $this->getTemplate()->set_var("FechaLogradoEditarBlock", "");
+                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+                    if(!$oObjetivo->isEstimacionVencida()){
+                        $this->getTemplate()->set_var("expiradaClass", "");
+                    }else{
+                        $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                    }
+                }
+
+                if($oObjetivo->isObjetivoPersonalizado()){
+                    $this->getTemplate()->set_var("sDescripcionEjeBreve", $oObjetivo->getEje()->getDescripcion());
+
+                    $sDescripcionEje = $oObjetivo->getEje()->getEjePadre()->getDescripcion()." > ".$oObjetivo->getEje()->getDescripcion();
+                    $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
+
+                    $this->getTemplate()->set_var("ContenidosEjeEditarBlock", "");
+                }
+
+                if($oObjetivo->isObjetivoAprendizaje()){
+                    $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
+
+                    $sDescripcionEje = $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getDescripcion();
+
+                    $this->getTemplate()->set_var("sDescripcionEjeBreve", $oObjetivo->getEje()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
+                    $this->getTemplate()->set_var("sContenidosEje", $oObjetivo->getEje()->getContenidos(true));
+                }
+
+                $sDescripcionObjetivoBreve = $oObjetivo->getDescripcion();
+                if(strlen($sDescripcionObjetivoBreve) > 100){
+                    $sDescripcionObjetivoBreve = Utils::tokenTruncate($sDescripcionObjetivoBreve, 100);
+                    $sDescripcionObjetivoBreve = nl2br($sDescripcionObjetivoBreve);
+                }
+
+                $this->getTemplate()->set_var("sDescripcionObjetivoBreve", $sDescripcionObjetivoBreve);
+                $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+
+                //la evolucion puede no existir, ser de la entrada actual o provenir de una entrada anterior(evolucion mas cercana)
+                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha());                
+                if(null === $oEvolucion){
+                    $this->getTemplate()->set_var("iEvolucion", "0");
+                    $this->getTemplate()->set_var("EditarProgresoBlock", "");
+                }else{
+                    if($oEvolucion->getEntradaId() == $iEntradaId){
+                        $this->getTemplate()->set_var("CrearEvolucionBlock", "");
+                        $this->getTemplate()->set_var("iEvolucionId", $oEvolucion->getId());
+                    }else{
+                        $this->getTemplate()->set_var("EditarProgresoBlock", "");
+                    }                    
+                    $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
+                    if($oEvolucion->isObjetivoLogrado()){
+                        $this->getTemplate()->set_var("sGoalClass", "goal");
+                    }else{
+                        $this->getTemplate()->set_var("sGoalClass", "");
+                    }
+                }
+
+                $this->getTemplate()->set_var("dFechaCreacion", $oObjetivo->getFechaCreacion(true));
+
+                $this->getTemplate()->parse("ObjetivoEditarBlock", true);
+
+                $this->getTemplate()->delete_parsed_blocks("EstimacionEditarBlock");
+                $this->getTemplate()->delete_parsed_blocks("FechaLogradoEditarBlock");
+                $this->getTemplate()->delete_parsed_blocks("ContenidosEjeEditarBlock");
+                $this->getTemplate()->delete_parsed_blocks("EditarProgresoBlock");
+                $this->getTemplate()->delete_parsed_blocks("CrearEvolucionBlock");
+            }
+
+            /*
+            $aUnidades = $oEntrada->getUnidades();
+            foreach($aUnidades as $oUnidad)
+            {
+                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
+
+                $aVariables = $oUnidad->getVariables();
+                foreach($aVariables as $oVariable){
+
+                    $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
+                    $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+
+                    if($oVariable->isVariableNumerica()){
+                        $variable = "VariableNumerica";
+                        $valor = $oVariable->getValor();
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableValorNumerico", $valor);
+                    }
+
+                    if($oVariable->isVariableTexto()){
+                        $variable = "VariableTexto";
+                        $valor = $oVariable->getValor(true);
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableValorTexto", $valor);
+                    }
+
+                    if($oVariable->isVariableCualitativa()){
+                        $variable = "VariableCualitativa";
+                        //valor en cualitativa es un objeto Modalidad
+                        $valor = $oVariable->getValorStr();
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableModalidad", $valor);
+                    }
+
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variable", $variable);
+                    $this->getTemplate()->set_var("variable", $this->getTemplate()->pparse("variable"));
+                    $this->getTemplate()->delete_parsed_blocks($variable);
+                    $this->getTemplate()->parse("VariableBlock", true);
+                }
+
+                $this->getTemplate()->parse("UnidadBlock", true);
+                $this->getTemplate()->delete_parsed_blocks("VariableBlock");
+            }
+            */
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function formEvolucion($oEntrada, $oSeguimiento)
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "formEvolucion", "FormularioEvolucionBlock");
+
+        if($this->getRequest()->has('editarProgresoEvolucion')){
+            $iEvolucionId = $this->getRequest()->getParam("iEvolucionId");
+            if(null === $iEvolucionId){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            try{
+                $oEvolucion = SeguimientosController::getInstance()->getEvolucionById($iEvolucionId);
+                $iProgreso = $oEvolucion->getProgreso();
+
+                $this->getTemplate()->set_var("FormCrearEvolucionBlock", "");
+                $this->getTemplate()->set_var("sComentarios", $oEvolucion->getComentarios());
+                $this->getTemplate()->set_var("iProgreso", $oEvolucion->getProgreso());
+                $this->getTemplate()->set_var("iEvolucionIdForm", $iEvolucionId);
+                $this->getResponse()->setBody($this->getTemplate()->pparse('formEvolucion', false));
+            }catch(Exception $e){
+                throw $e;
+            }
+        }
+
+        if($this->getRequest()->has('crearEvolucion')){
+            $iObjetivoId = $this->getRequest()->getParam("iObjetivoId");
+            if(null === $iObjetivoId){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            try{
+                $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
+                $this->getTemplate()->set_var("FormEditarProgresoBlock", "");
+                $this->getTemplate()->set_var("sComentarios", "");
+
+                //levanto ultima evolucion to date, si es != null copio el ultimo progreso
+                $this->getTemplate()->set_var("iProgreso", "1");                
+            }catch(Exception $e){
+                throw $e;
+            }
+        }
+
+        $this->getTemplate()->set_var("iSeguimientoIdForm", $oSeguimiento->getId());
+        $this->getTemplate()->set_var("iEntradaIdForm", $oEntrada->getId());
+        $this->getResponse()->setBody($this->getTemplate()->pparse('formEvolucion', false));
     }
 }
