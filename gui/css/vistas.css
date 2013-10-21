@@ -880,6 +880,59 @@ p .destacado{font-weight:bold;}
 .ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity: .3;filter:Alpha(Opacity=30)}
 .ui-widget-shadow{margin:-8px 0 0 -8px; padding:8px; background:#aaaaaa url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity:.3;filter:Alpha(Opacity=30); -moz-border-radius:8px; -webkit-border-radius:8px; border-radius: 8px}
 
+/* slider root element */
+.slider {
+    background-color:#EEE; 
+    background-image:-moz-linear-gradient(top, #FFF, #CCC);
+    background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC));
+    background-image:linear-gradient(top, #FFF, #CCC);
+    border-color:#CCC #666 #666 #CCC;
+    border-style: solid; border-width: 1px;
+    -moz-box-shadow:0 1px 0px #CCC;
+    box-shadow:0 1px 0px #CCC;
+    -webkit-box-shadow:0 1px 0px #CCC;
+
+    height:18px;
+    position:relative;
+    cursor:pointer;
+    border:1px solid #CCC;
+
+    -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;
+}
+
+.progress {
+    height:9px;
+    background-color:#C5FF00;
+    display:none;
+    opacity:0.6;
+}
+.handle {
+    background:#DDD;
+    height:28px;
+    width:28px;
+    top:-7px;
+    position:absolute;
+    display:block;
+    margin-top:1px;
+    border:1px solid #AAA;
+    cursor:move;
+    -moz-box-shadow:0 0 6px #000;
+    -webkit-box-shadow:0 0 6px #000;
+    
+    -moz-border-radius:14px; -webkit-border-radius:14px; border-radius:14px;
+}
+.range {
+    border:1px inset #ddd;
+    float:left;
+    font-size:20px;
+    margin:0 0 0 15px;
+    padding:3px 0;
+    text-align:center;
+    width:50px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+
 
 /******************************/
 /*** ESTILOS PARA IMPRESION ***/

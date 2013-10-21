@@ -161,6 +161,9 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $WHERE = array();
 
+            if(isset($filtro['e.id']) && $filtro['e.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.id', $filtro['e.id'], MYSQL_TYPE_INT);
+            }
             if(isset($filtro['e.seguimientos_id']) && $filtro['e.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('e.seguimientos_id', $filtro['e.seguimientos_id'], MYSQL_TYPE_INT);
             }

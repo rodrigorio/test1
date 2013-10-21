@@ -1991,6 +1991,25 @@ class SeguimientosController
         }
     }
 
+    public function getEvolucionById($iEvolucionId)
+    {
+    	try{
+            $filtro = array('e.id' => $iEvolucionId);
+
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+
+            if(null !== $aEvolucion){
+                return $aEvolucion[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Por ahora es simplemente la estimacion mas lejana de todos los objetivos activos que no esten logrados
      */
