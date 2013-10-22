@@ -307,7 +307,7 @@ var optionsAjaxFormEvolucion = {
             }
             $('#msg_form_evolucion').addClass("error").fadeIn('slow');
         }else{
-            //actualizo la barra de progreso
+            //actualizo la celda de la evolucion para el objetivo
             $("#progreso_"+data.evolucionId).css('width', data.progreso+'px');
             $("#progreso_"+data.evolucionId+" span").html(data.progreso+"/100");
             if(data.progreso == "100"){
@@ -387,7 +387,8 @@ $(document).ready(function(){
     $(".editarProgresoEvolucion").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var iEntradaId = rel[0];
-        var iEvolucionId = rel[1];
+        var iObjetivoId = rel[1];
+        var iEvolucionId = rel[2];
 
         var dialog = setWaitingStatusDialog(500, 'Editar Progreso');
 
@@ -395,6 +396,7 @@ $(document).ready(function(){
             "seguimientos/entradas/editar",
             {
                 entrada:iEntradaId,
+                iObjetivoId:iObjetivoId,
                 iEvolucionId:iEvolucionId,
                 formEvolucion:"1",
                 editarProgresoEvolucion:"1"

@@ -146,20 +146,22 @@
         <td class="desplegable" rel="{iObjetivoId}">
            <span class="fte2">{sDescripcionObjetivoBreve}</span>
         </td>
-        <td class="teal_ce" rel="{iObjetivoId}">
-            <div class="bora progress-bar fl_le" style="width:100px;">
-                <div class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
-            </div>
-            <!--BeginEditarProgresoBlock-->
-            <a rel="{iEntradaId}_{iEvolucionId}" class="editarProgresoEvolucion fte2 fowe_bo iveal di_inbl fl_le male" href="javascript:;">
-                <span class="i bs add mari"></span>editar
-            </a>
-            <!--EndEditarProgresoBlock-->
-            <!--BeginCrearEvolucionBlock-->
-            <a rel="{iEntradaId}_{iObjetivoId}" class="crearEvolucion fte2 fowe_bo iveal di_inbl fl_le male" href="javascript:;">
-                <span class="i bs add mari"></span>editar
-            </a>
-            <!--EndCrearEvolucionBlock-->
+        <td class="teal_ce" id="evolucion_{iObjetivoId}">
+            <!--BeginProgresoEvolucionBlock-->
+                <div class="bora progress-bar fl_le" style="width:100px;">
+                    <div class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
+                </div>
+                <!--BeginEditarProgresoBlock-->
+                <a rel="{iEntradaId}_{iObjetivoId}_{iEvolucionId}" class="editarProgresoEvolucion fte2 fowe_bo iveal di_inbl fl_le male" href="javascript:;">
+                    <span class="i bs add mari"></span>editar
+                </a>
+                <!--EndEditarProgresoBlock-->
+                <!--BeginCrearEvolucionBlock-->
+                <a rel="{iEntradaId}_{iObjetivoId}" class="crearEvolucion fte2 fowe_bo iveal di_inbl fl_le male" href="javascript:;">
+                    <span class="i bs add mari"></span>editar
+                </a>
+                <!--EndCrearEvolucionBlock-->
+            <!--EndProgresoEvolucionBlock-->
        </td>
     </tr>
     <tr class="ba_no">
@@ -383,10 +385,10 @@
                     Guardar Progreso
                 </button>
             </label>
-        </div>
-        <input type="hidden" value="{iObjetivoIdForm}" name="objetivoIdForm" />
+        </div>        
         <!--EndFormCrearEvolucionBlock-->
 
+        <input type="hidden" value="{iObjetivoIdForm}" name="objetivoIdForm" />
         <input type="hidden" value="{iEntradaIdForm}" name="entradaIdForm" />
         <div style="display:none;" id='msg_form_evolucion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
 
