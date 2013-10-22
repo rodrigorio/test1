@@ -274,7 +274,7 @@ var validateFormEvolucion = {
         progreso:{required:true}
     },
     messages:{
-        estimacion: mensajeValidacion("requerido"),
+        comentarios: mensajeValidacion("requerido"),
         progreso: mensajeValidacion("requerido")
     }
 };
