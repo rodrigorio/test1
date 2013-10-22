@@ -630,6 +630,11 @@ p .destacado{font-weight:bold;}
 .ajax_wait30{height:27px; width:28px; background-image:url("../images/iconos/wait30trans.gif");}
 .ajax_wait16{height:16px; width:16px; background-image:url("../images/iconos/wait16trans.gif");}
 
+/* slider range input */
+.slider{background-color:#EEE; background-image:-moz-linear-gradient(left, #3063A5, #3AAA36); background-image:-webkit-gradient(linear, left center, right center, from(#3063A5), to(#3AAA36)); background-image:linear-gradient(left, #3063A5, #3AAA36); height:18px; position:relative; cursor:pointer; border:1px solid #FFF; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; margin:20px 0;}
+.handle{background:#FFF; height:28px; width:5px; top:-7px; position:absolute; display:block; margin-top:1px; border:1px solid #666; cursor:move; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px;}
+
+
 /*** ICONOS ***/
 .valoracion, .puntaje{background-image:url("../images/iconos/puntajes.png"); background-repeat:no-repeat}
 .puntaje{cursor:pointer}
@@ -854,8 +859,6 @@ p .destacado{font-weight:bold;}
 .ref_ver, .ref_crear, .ref_actual{font-size:3em; font-weight:bold;}
 .ref_ver{color:#93B5F9} .ref_crear{color:#96F794} .ref_actual{color:#5B7CB2}
 
-
-
 /* botones de la parte inferior en los popups */
 .ui-button{color: #333 !important; background-color:#EEE !important; background-image:-moz-linear-gradient(top, #FFF, #CCC) !important; background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC)) !important; background-image:linear-gradient(top, #FFF, #CCC) !important; border-color:#CCC #666 #666 #CCC !important; border-style: solid !important; border-width: 1px !important;
         -moz-box-shadow:0 1px 0px #CCC; box-shadow:0 1px 0px #CCC; -webkit-box-shadow:0 1px 0px #CCC; cursor: pointer; display: inline-block; font-size: 11px; font-weight: bold; line-height: normal !important; padding:2px 6px; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap}
@@ -880,58 +883,6 @@ p .destacado{font-weight:bold;}
 .ui-widget-overlay{background:#000 url("../images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity: .3;filter:Alpha(Opacity=30)}
 .ui-widget-shadow{margin:-8px 0 0 -8px; padding:8px; background:#aaaaaa url("images/fondos/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; opacity:.3;filter:Alpha(Opacity=30); -moz-border-radius:8px; -webkit-border-radius:8px; border-radius: 8px}
 
-/* slider root element */
-.slider {
-    background-color:#EEE; 
-    background-image:-moz-linear-gradient(top, #FFF, #CCC);
-    background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#CCC));
-    background-image:linear-gradient(top, #FFF, #CCC);
-    border-color:#CCC #666 #666 #CCC;
-    border-style: solid; border-width: 1px;
-    -moz-box-shadow:0 1px 0px #CCC;
-    box-shadow:0 1px 0px #CCC;
-    -webkit-box-shadow:0 1px 0px #CCC;
-
-    height:18px;
-    position:relative;
-    cursor:pointer;
-    border:1px solid #CCC;
-
-    -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;
-}
-
-.progress {
-    height:9px;
-    background-color:#C5FF00;
-    display:none;
-    opacity:0.6;
-}
-.handle {
-    background:#DDD;
-    height:28px;
-    width:28px;
-    top:-7px;
-    position:absolute;
-    display:block;
-    margin-top:1px;
-    border:1px solid #AAA;
-    cursor:move;
-    -moz-box-shadow:0 0 6px #000;
-    -webkit-box-shadow:0 0 6px #000;
-    
-    -moz-border-radius:14px; -webkit-border-radius:14px; border-radius:14px;
-}
-.range {
-    border:1px inset #ddd;
-    float:left;
-    font-size:20px;
-    margin:0 0 0 15px;
-    padding:3px 0;
-    text-align:center;
-    width:50px;
-    -moz-border-radius:5px;
-    -webkit-border-radius:5px;
-}
 
 
 /******************************/

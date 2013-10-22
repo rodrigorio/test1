@@ -755,20 +755,95 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+            }else{
+                $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($oSeguimiento->getId(), $iObjetivoId);
+            }
+
             try{
                 $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
                 $this->getTemplate()->set_var("FormEditarProgresoBlock", "");
                 $this->getTemplate()->set_var("sComentarios", "");
 
                 //levanto ultima evolucion to date, si es != null copio el ultimo progreso
-                $this->getTemplate()->set_var("iProgreso", "1");                
+                $iProgreso = "1"; //porque si se crea una evolucion es valor entre 1 y 100. solo cuando es null va un 0.
+                $oUltimaEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFechaHoraCreacion());
+                if(null !== $oUltimaEvolucion){
+                    $iProgreso = $oUltimaEvolucion->getProgreso();
+                }
+                $this->getTemplate()->set_var("iProgreso", $iProgreso);
             }catch(Exception $e){
                 throw $e;
             }
         }
 
-        $this->getTemplate()->set_var("iSeguimientoIdForm", $oSeguimiento->getId());
         $this->getTemplate()->set_var("iEntradaIdForm", $oEntrada->getId());
         $this->getResponse()->setBody($this->getTemplate()->pparse('formEvolucion', false));
+    }
+
+    /**
+     * Se guarda tanto el progreso dentro de la evolucion (form evolucion) o
+     * los valores para todas las variables de todas las unidades (form unidades)
+     */
+    public function guardar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        $iEntradaId = $this->getRequest()->getPost("entradaIdForm");
+        if(null === $iEntradaId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEntrada = SeguimientosController::getInstance()->getEntradaById($iEntradaId);
+        if($oEntrada === null){
+            throw new Exception("No existe la entrada para el identificador seleccionado", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($oEntrada->getSeguimientoId());
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar esta entrada", 401);
+        }
+
+        //me fijo periodo de expiracion
+        if(!$oEntrada->isEditable()){
+            throw new Exception("La entrada no se puede editar, periodo de edicion expirado", 401);
+        }
+        
+        if($this->getRequest()->has('editarProgreso') || $this->getRequest()->has('crearEvolucion')){
+            $this->guardarEvolucion($oEntrada, $oSeguimiento);
+            return;
+        }
+
+        //guardo todas las unidades y sus variables
+    }
+
+    private function guardarEvolucion($oEntrada, $oSeguimiento)
+    {
+        $sComentarios = $this->getRequest()->getPost("comentarios");
+        $iProgreso = $this->getRequest()->getPost("progreso");
+        
+        if($this->getRequest()->has('editarProgreso')){
+            $iEvolucionId = $this->getRequest()->getPost("evolucionIdForm");
+            
+
+        }
+
+        if($this->getRequest()->has('crearEvolucion')){
+            $iObjetivoId = $this->getRequest()->getPost("objetivoIdForm");
+            
+            
+        }
+
+        /*
+        data.evolucionId
+        data.progreso
+        data.success
+        data.mensaje
+        */
     }
 }
