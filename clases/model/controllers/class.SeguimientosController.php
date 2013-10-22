@@ -2010,6 +2010,26 @@ class SeguimientosController
         }
     }
 
+    public function actualizarEvolucion($oEvolucion)
+    {
+    	try{
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            return $oEvolucionIntermediary->actualizar($oEvolucion);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function guardarEvolucionObjetivo($oObjetivo)
+    {
+    	try{
+            $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
+            return $oEvolucionIntermediary->guardarEvolucionObjetivo($oObjetivo);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Por ahora es simplemente la estimacion mas lejana de todos los objetivos activos que no esten logrados
      */

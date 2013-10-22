@@ -103,7 +103,6 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
             $oEvolucion->setId($iLastId);
 
             return true;
-
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }

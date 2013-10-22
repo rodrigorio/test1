@@ -667,6 +667,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->delete_parsed_blocks("ContenidosEjeEditarBlock");
                 $this->getTemplate()->delete_parsed_blocks("EditarProgresoBlock");
                 $this->getTemplate()->delete_parsed_blocks("CrearEvolucionBlock");
+                $this->getTemplate()->delete_parsed_blocks("ProgresoEvolucionBlock");
             }
 
             /*
@@ -729,6 +730,11 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "formEvolucion", "FormularioEvolucionBlock");
 
+        $iObjetivoId = $this->getRequest()->getParam("iObjetivoId");
+        if(null === $iObjetivoId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
         if($this->getRequest()->has('editarProgresoEvolucion')){
             $iEvolucionId = $this->getRequest()->getParam("iEvolucionId");
             if(null === $iEvolucionId){
@@ -750,11 +756,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         }
 
         if($this->getRequest()->has('crearEvolucion')){
-            $iObjetivoId = $this->getRequest()->getParam("iObjetivoId");
-            if(null === $iObjetivoId){
-                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-            }
-
             if($oSeguimiento->isSeguimientoPersonalizado()){
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
             }else{
@@ -779,6 +780,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         }
 
         $this->getTemplate()->set_var("iEntradaIdForm", $oEntrada->getId());
+        $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
         $this->getResponse()->setBody($this->getTemplate()->pparse('formEvolucion', false));
     }
 
@@ -824,22 +826,25 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
     private function guardarEvolucion($oEntrada, $oSeguimiento)
     {
+        $iObjetivoId = $this->getRequest()->getPost("objetivoIdForm");
         $sComentarios = $this->getRequest()->getPost("comentarios");
         $iProgreso = $this->getRequest()->getPost("progreso");
         
         if($this->getRequest()->has('editarProgreso')){
             $iEvolucionId = $this->getRequest()->getPost("evolucionIdForm");
-            
 
+            $oEvolucion = SeguimientosController::getInstance()->getEvolucionById($iEvolucionId);
+            $oEvolucion->setProgreso($iProgreso);
+            $oEvolucion->setComentarios($sComentarios);
+            SeguimientosController::getInstance()->actualizarEvolucion($oEvolucion);
         }
 
         if($this->getRequest()->has('crearEvolucion')){
-            $iObjetivoId = $this->getRequest()->getPost("objetivoIdForm");
-            
-            
+                                    
         }
 
         /*
+        data.objetivoId
         data.evolucionId
         data.progreso
         data.success
