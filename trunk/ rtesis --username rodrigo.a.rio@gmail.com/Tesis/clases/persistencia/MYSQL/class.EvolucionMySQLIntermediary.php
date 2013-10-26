@@ -64,7 +64,7 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
                         
             $sSQL = " UPDATE objetivo_evolucion SET ".
                     " progreso = ".$this->escInt($oEvolucion->getProgreso()).", ".
-                    " comentarios = ".$this->escStr($oEvolucion->getDescripcion())." ".
+                    " comentarios = ".$this->escStr($oEvolucion->getComentarios())." ".
                     " WHERE id = ".$this->escInt($oEvolucion->getId());
                     
             $db->execSQL($sSQL);
