@@ -298,7 +298,6 @@ var optionsAjaxFormEvolucion = {
 
     success:function(data){
         setWaitingStatus('formEvolucion', false);
-
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
                 $('#msg_form_evolucion .msg').html(lang['error procesar']);
@@ -308,14 +307,7 @@ var optionsAjaxFormEvolucion = {
             $('#msg_form_evolucion').addClass("error").fadeIn('slow');
         }else{
             //actualizo la celda de la evolucion para el objetivo
-            $("#progreso_"+data.evolucionId).css('width', data.progreso+'px');
-            $("#progreso_"+data.evolucionId+" span").html(data.progreso+"/100");
-            if(data.progreso == "100"){
-                $("#progreso_"+data.evolucionId).addClass("goal");
-            }else{
-                $("#progreso_"+data.evolucionId).removeClass("goal");
-            }
-
+            $("#evolucion_"+data.objetivoId).html("").html(data.html);
             $("#dialog").dialog("close");
         }
     }
@@ -327,9 +319,7 @@ function bindEventsFormEvolucion()
     $("#formEvolucion").ajaxForm(optionsAjaxFormEvolucion);
 
     $("#comentarios").maxlength();    
-    $("#progreso").rangeinput({
-        
-    });
+    $("#progreso").rangeinput();
 }
    
 $(document).ready(function(){

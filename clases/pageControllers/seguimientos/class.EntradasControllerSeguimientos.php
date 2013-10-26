@@ -749,7 +749,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("sComentarios", $oEvolucion->getComentarios());
                 $this->getTemplate()->set_var("iProgreso", $oEvolucion->getProgreso());
                 $this->getTemplate()->set_var("iEvolucionIdForm", $iEvolucionId);
-                $this->getResponse()->setBody($this->getTemplate()->pparse('formEvolucion', false));
             }catch(Exception $e){
                 throw $e;
             }
@@ -763,7 +762,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             }
 
             try{
-                $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
                 $this->getTemplate()->set_var("FormEditarProgresoBlock", "");
                 $this->getTemplate()->set_var("sComentarios", "");
 
@@ -829,26 +827,61 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         $iObjetivoId = $this->getRequest()->getPost("objetivoIdForm");
         $sComentarios = $this->getRequest()->getPost("comentarios");
         $iProgreso = $this->getRequest()->getPost("progreso");
-        
-        if($this->getRequest()->has('editarProgreso')){
-            $iEvolucionId = $this->getRequest()->getPost("evolucionIdForm");
 
-            $oEvolucion = SeguimientosController::getInstance()->getEvolucionById($iEvolucionId);
-            $oEvolucion->setProgreso($iProgreso);
-            $oEvolucion->setComentarios($sComentarios);
-            SeguimientosController::getInstance()->actualizarEvolucion($oEvolucion);
+        if(empty($iProgreso) OR empty($sComentarios) OR empty($iObjetivoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        if($this->getRequest()->has('crearEvolucion')){
-                                    
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+            
+            if($this->getRequest()->has('editarProgreso')){
+                $iEvolucionId = $this->getRequest()->getPost("evolucionIdForm");
+
+                $oEvolucion = SeguimientosController::getInstance()->getEvolucionById($iEvolucionId);
+                $oEvolucion->setProgreso($iProgreso);
+                $oEvolucion->setComentarios($sComentarios);
+                SeguimientosController::getInstance()->actualizarEvolucion($oEvolucion);
+            }
+
+            if($this->getRequest()->has('crearEvolucion')){
+                //el objetivo se necesita para guardar la evolucion
+                if($oSeguimiento->isSeguimientoPersonalizado()){
+                    $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
+                }
+                if($oSeguimiento->isSeguimientoSCC()){
+                    $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeById($iObjetivoId);
+                }
+
+                $oEvolucion = new stdClass();
+                $oEvolucion->oEntrada = $oEntrada;
+                $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
+                $oEvolucion->setProgreso($iProgreso);
+                $oEvolucion->setComentarios($sComentarios);
+
+                $oObjetivo->setEvolucion(null);
+                $oObjetivo->addEvolucion($oEvolucion);
+
+                SeguimientosController::getInstance()->guardarEvolucionObjetivo($oObjetivo);
+            }
+
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "evolucion", "ProgresoEvolucionBlock");
+            $this->getTemplate()->set_var("CrearEvolucionBlock", "");
+            if($oEvolucion->isObjetivoLogrado()){
+                $this->getTemplate()->set_var("sGoalClass", "goal");
+            }
+            $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
+            $this->getTemplate()->set_var("iEvolucion", $iProgreso);
+            $this->getTemplate()->set_var("iObjetivoId", $iObjetivoId);
+            $this->getTemplate()->set_var("iEvolucionId", $oEvolucion->getId());
+                        
+            $this->getJsonHelper()->setValor("objetivoId", $iObjetivoId);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('evolucion', false));
+            $this->getJsonHelper()->setSuccess(true);            
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
         }
 
-        /*
-        data.objetivoId
-        data.evolucionId
-        data.progreso
-        data.success
-        data.mensaje
-        */
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 }
