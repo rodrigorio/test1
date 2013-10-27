@@ -81,6 +81,54 @@
 </div>
 <!--EndVariableCualitativa-->
 
+<!--BeginVariableTextoEditar-->
+<div class="form_line msg_{iVariableId}">
+    <label for="variable_{iVariableId}">
+        {sVariableNombre}
+    </label>
+    <div class="fwrap mabo2">
+        <div class="inner_fwrap">
+            <textarea class="mihe1 maxlength" rows="0" cols="0" id="variable_{iVariableId}" name="unidad[{iVariableId}][valor]" title="">{sValor}</textarea>
+            <input type="hidden" name="unidad[{iVariableId}][id]" value="{iVariableId}" />
+        </div>
+    </div>
+    <p>{sVariableDescription}</p>
+</div>
+<!--EndVariableTextoEditar-->
+
+<!--BeginVariableCualitativaEditar-->
+<div class="form_line msg_{iVariableId}">
+    <fieldset>
+        <legend>{sVariableNombre}</legend>
+        <!--BeginModalidadEditar-->
+        <div class="mabo">
+            <input class="mari veal_mi" id="modalidad_{iModalidadId}" type="radio" name="unidad[{iVariableId}][valor]" value="{iModalidadId}" {sChecked} />
+            <label for="modalidad_{iModalidadId}">
+                <span class="fowe_bo">{sModalidad}</span><br>
+            </label>
+        </div>
+        <!--EndModalidadEditar-->
+    </fieldset>
+    <p>{sVariableDescription}</p>
+    <input type="hidden" name="unidad[{iVariableId}][id]" value="{iVariableId}" />
+</div>
+<!--EndVariableCualitativaEditar-->
+
+<!--BeginVariableNumericaEditar-->
+<div class="form_line msg_{iVariableId}">
+    <label for="variable_{iVariableId}">
+        {sVariableNombre}
+    </label>
+    <div class="fwrap mabo2">
+        <div class="inner_fwrap">
+            <input type="text" name="unidad[{iVariableId}][valor]" id="variable_{iVariableId}" title="" maxlength="20" value="{sValor}" number/>
+            <input type="hidden" name="unidad[{iVariableId}][id]" value="{iVariableId}" />
+        </div>
+    </div>
+    <p>{sVariableDescription}</p>
+</div>
+<!--EndVariableNumericaEditar-->
+
 <!--BeginIconoRelevanciaBajaBlock-->
 <span class="i mi flagWhite"></span>
 <!--EndIconoRelevanciaBajaBlock-->
@@ -110,7 +158,7 @@
 {msgTopEntrada}
 
 <div class="mabo2 bobo1 grupo">
-    <h2 class="mabo2">Objetivos</h2>
+    <h2 class="mabo2">Editar progreso Objetivos</h2>
 </div>
 <div class="fost_it pato pabo">Cantidad de objetivos: <span class="fowe_bo">
 {iRecordsTotal}</span></div>
@@ -187,25 +235,33 @@
 </table>
 
 <div class="mabo2 bobo1 grupo">
-    <h2 class="mabo2 fl_le">Informe</h2>
-    <div class="fl_ri">
-        <a id="collapseAll" class="fte2" href="javascript:;">Contraer todas las unidades</a>
-    </div>
+    <h2 class="mabo2 fl_le">Editar Unidades</h2>
 </div>
 
 <!--BeginUnidadEditarBlock-->
-<div id="title_{iUnidadId}" class="grupo baco1 pa iveal">
-    <h3 class="fl_le">{sNombreUnidad}</h3>
-    <div class="fl_ri">
-        <span rel="{iUnidadId}" class="desplegable i mi collapse ihover"></span>
-    </div>
+<div id="title_{iUnidadId}" class="grupo baco1 pa2 iveal">
+    <h3 class="fl_le"><span class="i mi relationshipData mari"></span> {sNombreUnidad}</h3>
 </div>
-<div id="desplegable_{iUnidadId}" class="desplegables pa grupo bobo1 baco3 mabo2">
-    <!--BeginVariableEditarBlock-->
-    {variable}
-    <!--EndVariableEditarBlock-->
+<div class="pa2 grupo bobo1 baco3 mabo2">
+    <form id="formUnidad_{iUnidadId}" class="formUnidad" name="formUnidad_{iUnidadId}" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+        <!--BeginVariableEditarBlock-->
+        {variableEditar}
+        <!--EndVariableEditarBlock-->
+        <div class="mabo2">
+            <label for="guardarUnidad_{iUnidadId}" class="button buttonConfirm mari3">
+                <button id="guardarUnidad_{iUnidadId}" type="submit" name="guardarUnidad" class="btn01">
+                    Guardar {sNombreUnidad}
+                </button>
+            </label>
+        </div>
+        <input type="hidden" name="iEntradaIdForm" value="{iEntradaId}">
+        <input type="hidden" name="iUnidadIdForm" value="{iUnidadId}">
+        <div style="display:none;" id='msg_form_unidad_{iUnidadId}' class="msg_form iveal cl_le"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
 </div>
 <!--EndUnidadEditarBlock-->
+
 <!--EndEditarEntradaBlock-->
 
 <!--BeginAmpliarEntradaBlock-->
@@ -326,8 +382,8 @@
 </div>
 
 <!--BeginUnidadBlock-->
-<div id="title_{iUnidadId}" class="grupo baco1 pa iveal">
-    <h3 class="fl_le">{sNombreUnidad}</h3>
+<div id="title_{iUnidadId}" class="grupo baco1 pa2 iveal">
+    <h3 class="fl_le"><span class="i mi relationshipData mari"></span> {sNombreUnidad}</h3>
     <div class="fl_ri">
         <span rel="{iUnidadId}" class="desplegable i mi collapse ihover"></span>
     </div>
