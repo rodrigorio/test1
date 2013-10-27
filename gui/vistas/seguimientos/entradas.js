@@ -313,6 +313,52 @@ var optionsAjaxFormEvolucion = {
     }
 };
 
+var validateFormUnidad = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){}
+};
+
+var optionsAjaxFormUnidad = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/entradas/guardar',
+    beforeSerialize:function(){        
+        if($(this).valid() == true){
+            alert("valido");
+        }else{
+            alert("invalido");
+        }
+
+        return false;
+    },
+
+    success:function(data){
+        setWaitingStatus('formEvolucion', false);
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_evolucion .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_evolucion .msg').html(data.mensaje);
+            }
+            $('#msg_form_evolucion').addClass("error").fadeIn('slow');
+        }else{
+            //actualizo la celda de la evolucion para el objetivo
+            $("#evolucion_"+data.objetivoId).html("").html(data.html);
+            $("#dialog").dialog("close");
+        }
+    }
+};
+
 function bindEventsFormEvolucion()
 {
     $("#formEvolucion").validate(validateFormEvolucion);
@@ -417,4 +463,7 @@ $(document).ready(function(){
             }
         );
     });
+
+    $(".formUnidad").validate(validateFormUnidad);
+    $(".formUnidad").ajaxForm(optionsAjaxFormUnidad);
 });

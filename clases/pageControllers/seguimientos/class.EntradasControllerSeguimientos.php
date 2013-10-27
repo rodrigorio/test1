@@ -670,7 +670,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->delete_parsed_blocks("ProgresoEvolucionBlock");
             }
 
-            /*
             $aUnidades = $oEntrada->getUnidades();
             foreach($aUnidades as $oUnidad)
             {
@@ -682,39 +681,45 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
                     $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+                    $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
 
                     if($oVariable->isVariableNumerica()){
-                        $variable = "VariableNumerica";
-                        $valor = $oVariable->getValor();
-                        if(null === $valor){ $valor = " - "; }
-                        $this->getTemplate()->set_var("sVariableValorNumerico", $valor);
+                        $block = "VariableNumericaEditar";
+                        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
+                        $this->getTemplate()->set_var("sValor", $oVariable->getValor());
                     }
 
                     if($oVariable->isVariableTexto()){
-                        $variable = "VariableTexto";
-                        $valor = $oVariable->getValor(true);
-                        if(null === $valor){ $valor = " - "; }
-                        $this->getTemplate()->set_var("sVariableValorTexto", $valor);
+                        $block = "VariableTextoEditar";
+                        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
+                        $this->getTemplate()->set_var("sValor", $oVariable->getValor(true));
                     }
 
                     if($oVariable->isVariableCualitativa()){
-                        $variable = "VariableCualitativa";
-                        //valor en cualitativa es un objeto Modalidad
-                        $valor = $oVariable->getValorStr();
-                        if(null === $valor){ $valor = " - "; }
-                        $this->getTemplate()->set_var("sVariableModalidad", $valor);
-                    }
+                        $block = "VariableCualitativaEditar";
+                        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
 
-                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variable", $variable);
-                    $this->getTemplate()->set_var("variable", $this->getTemplate()->pparse("variable"));
-                    $this->getTemplate()->delete_parsed_blocks($variable);
-                    $this->getTemplate()->parse("VariableBlock", true);
+                        $aModalidades = $oVariable->getModalidades();
+                        foreach($aModalidades as $oModalidad){
+                            $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
+                            $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
+                            if($oModalidad->getId() == $oVariable->getValor()->getId()){
+                                $this->getTemplate()->set_var("sChecked", "checked='checked'");
+                            }                            
+                            $this->getTemplate()->parse("ModalidadEditar", true);
+                            $this->getTemplate()->set_var("sChecked", "");
+                        }
+                    }
+                    
+                    $this->getTemplate()->set_var("variableEditar", $this->getTemplate()->pparse("variableEditar"));
+                    $this->getTemplate()->delete_parsed_blocks($block);
+                    $this->getTemplate()->delete_parsed_blocks("ModalidadEditar");
+                    $this->getTemplate()->parse("VariableEditarBlock", true);
                 }
 
-                $this->getTemplate()->parse("UnidadBlock", true);
-                $this->getTemplate()->delete_parsed_blocks("VariableBlock");
+                $this->getTemplate()->parse("UnidadEditarBlock", true);
+                $this->getTemplate()->delete_parsed_blocks("VariableEditarBlock");
             }
-            */
             
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){

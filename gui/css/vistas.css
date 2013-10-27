@@ -78,6 +78,8 @@ input.small, textarea.small{width:150px;} select.small{width:160px}
 input.medium, textarea.medium{width:300px;} select.medium{width:310px}
 input.large, textarea.large{width:450px;} select.large{width:460px}
 .form_line.large{width:460px !important}
+fieldset{border:1px solid #CCC; padding:10px}
+fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 
 /* Para simular el width fluido en <textarea>, <input> y <select>
  * Nota: Los inputs wrappeados llevan padding en si mismos, textarea tiene padding porque el wrapper se lo asigna.
