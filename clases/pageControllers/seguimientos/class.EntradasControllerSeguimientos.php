@@ -566,6 +566,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
             $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
 
+            $hrefCerrarVistaEdicion = $this->getRequest()->getBaseUrl()."/seguimientos/entradas/".$oEntrada->getSeguimientoId()."-".$oEntrada->getFecha(true);
+            $this->getTemplate()->set_var("hrefCerrarVistaEdicion", $hrefCerrarVistaEdicion);
+
             $aObjetivos = $oEntrada->getObjetivos();
 
             $this->getTemplate()->set_var("iRecordsTotal", count($aObjetivos));
