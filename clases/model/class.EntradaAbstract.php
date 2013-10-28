@@ -140,6 +140,10 @@ abstract class EntradaAbstract
         $this->aUnidades = $aUnidades;
     }
 
+    public function addUnidad($oUnidad){
+        $this->aUnidades[] = $oUnidad;
+    }
+
     public function setObjetivos($aObjetivos){
         $this->aObjetivos = $aObjetivos;
     }

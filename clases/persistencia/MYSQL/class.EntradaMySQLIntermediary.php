@@ -101,9 +101,13 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
                     if($oVariable->isVariableTexto()){
                         $sSQL .= $this->escStr($oVariable->getValor()).", null),";
-                    }else{
-                        $sSQL .= "null, ".$this->escInt($oVariable->getValor())."),";
                     }
+                    if($oVariable->isVariableNumerica()){
+                        $sSQL .= "null, ".$this->escFlt($oVariable->getValor())."),";
+                    }
+                    if($oVariable->isVariableCualitativa()){
+                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()->getId())."),";
+                    }                    
                 }
             }
             $sSQL = substr($sSQL, 0, -1);

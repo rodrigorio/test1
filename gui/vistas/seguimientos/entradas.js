@@ -141,7 +141,7 @@ function Calendario(element){
 
         var buttons = {
             "Confirmar": function(){
-                var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+                var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
                 dialog = setWaitingStatusDialog(500, "Crear Entrada", buttonAceptar);
                 $.ajax({
                     type:"post",
@@ -178,7 +178,7 @@ function eliminarEntrada(iEntradaId)
 {
     var buttons = {
         "Confirmar": function(){
-            var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+            var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
             dialog = setWaitingStatusDialog(500, "Eliminar Entrada", buttonAceptar);
             $.ajax({
                 type:"post",
@@ -219,7 +219,7 @@ function eliminarEntrada(iEntradaId)
             setWaitingStatus('menuEntrada', false, "16");
 
             var dialog = $("#dialog");
-            if($("#dialog").length){ dialog.remove(); }
+            if($("#dialog").length){dialog.remove();}
             dialog = $('<div id="dialog" title="Eliminar Entrada"></div>').appendTo('body');
             dialog.html(data.html);
 
@@ -234,7 +234,7 @@ function eliminarEntrada(iEntradaId)
                     buttons:buttons
                 });
             }else{
-                var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
+                var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
                 dialog.dialog({
                     position:['center', 'center'],
                     width:400,
@@ -313,52 +313,6 @@ var optionsAjaxFormEvolucion = {
     }
 };
 
-var validateFormUnidad = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
-    },
-    highlight: function(element){},
-    unhighlight: function(element){}
-};
-
-var optionsAjaxFormUnidad = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url: 'seguimientos/entradas/guardar',
-    beforeSerialize:function(){        
-        if($(this).valid() == true){
-            alert("valido");
-        }else{
-            alert("invalido");
-        }
-
-        return false;
-    },
-
-    success:function(data){
-        setWaitingStatus('formEvolucion', false);
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_evolucion .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_evolucion .msg').html(data.mensaje);
-            }
-            $('#msg_form_evolucion').addClass("error").fadeIn('slow');
-        }else{
-            //actualizo la celda de la evolucion para el objetivo
-            $("#evolucion_"+data.objetivoId).html("").html(data.html);
-            $("#dialog").dialog("close");
-        }
-    }
-};
-
 function bindEventsFormEvolucion()
 {
     $("#formEvolucion").validate(validateFormEvolucion);
@@ -366,6 +320,65 @@ function bindEventsFormEvolucion()
 
     $("#comentarios").maxlength();    
     $("#progreso").rangeinput();
+}
+
+function submitFormUnidad(iUnidadId)
+{
+    var form = $("#formUnidad_"+iUnidadId);
+
+    form.validate({
+        errorElement: "div",
+        validClass: "correcto",
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        focusInvalid: false,
+        focusCleanup: true,
+        errorPlacement:function(error, element){
+            error.appendTo(".msg_"+element.attr("id"));
+        },
+        highlight: function(element){},
+        unhighlight: function(element){}
+    });
+
+    form.ajaxForm({
+        dataType: 'jsonp',
+        resetForm: false,
+        url: 'seguimientos/entradas/guardar',
+        beforeSerialize:function(){            
+            if(form.valid() == true){
+
+                $('#msg_form_unidad_'+iUnidadId).hide();
+                $('#msg_form_unidad_'+iUnidadId).removeClass("correcto").removeClass("error");
+                $('#msg_form_unidad_'+iUnidadId+' .msg').html("");
+                setWaitingStatus('formUnidad_'+iUnidadId, true);
+
+            }else{
+                return false;
+            }
+        },
+
+        success:function(data){
+            setWaitingStatus('formUnidad_'+iUnidadId, false);
+            if(data.success == undefined || data.success == 0){
+                if(data.mensaje == undefined){
+                    $('#msg_form_unidad_'+iUnidadId+' .msg').html(lang['error procesar']);
+                }else{
+                    $('#msg_form_unidad_'+iUnidadId+' .msg').html(data.mensaje);
+                }
+                $('#msg_form_unidad_'+iUnidadId).addClass("error").fadeIn('slow');
+            }else{
+                if(data.mensaje == undefined){
+                    $('#msg_form_unidad_'+iUnidadId+' .msg').html(lang['exito procesar']);
+                }else{
+                    $('#msg_form_unidad_'+iUnidadId+' .msg').html(data.mensaje);
+                }
+                $('#msg_form_unidad_'+iUnidadId).addClass("correcto").fadeIn('slow');
+            }
+        }
+    });
+
+    form.submit();
 }
    
 $(document).ready(function(){
@@ -464,6 +477,8 @@ $(document).ready(function(){
         );
     });
 
-    $(".formUnidad").validate(validateFormUnidad);
-    $(".formUnidad").ajaxForm(optionsAjaxFormUnidad);
+    $(".guardarUnidad").live('click', function(){
+        var iUnidadId = $(this).attr("rel");
+        submitFormUnidad(iUnidadId);
+    });  
 });

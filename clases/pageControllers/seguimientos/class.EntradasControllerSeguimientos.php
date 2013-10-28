@@ -823,8 +823,64 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->guardarEvolucion($oEntrada, $oSeguimiento);
             return;
         }
+        
+        if($this->getRequest()->has('guardarUnidad')){
+            
+            $iUnidadId = $this->getRequest()->getPost("unidadIdForm");
+            if(null === $iUnidadId){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
 
-        //guardo todas las unidades y sus variables
+            /*
+             * Guardo todas las variables para una unidad.
+             * La estrategia: Obtengo la unidad, agrego todas las variables que vienen del form,
+             * adjunto la unidad a la entrada y actualizo la entrada.
+             */
+            try{
+                $this->getJsonHelper()->initJsonAjaxResponse();
+
+                $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+
+                $vVariables = $this->getRequest()->getPost("variables");                
+                if( empty($vVariables) || !is_array($vVariables)){
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->setMessage("El formulario no tiene un formato correcto");
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+
+                $aVariables = array();
+                foreach($vVariables as $variable){
+                    $iVariableId = $variable['id'];
+                    $valor = $variable['valor'];
+
+                    $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+
+                    //si es cualitativa levanto la modalidad, sino agrego el valor de manera normal.
+                    if($oVariable->isVariableCualitativa()){
+                        $oModalidad = SeguimientosController::getInstance()->getModalidadById($valor);
+                        $oVariable->setValor($oModalidad);
+                    }else{
+                        $oVariable->setValor($valor);
+                    }
+
+                    $aVariables[] = $oVariable;
+                }
+                $oUnidad->setVariables($aVariables);
+
+                $oEntrada->setUnidades(null);
+                $oEntrada->addUnidad($oUnidad);
+                
+                SeguimientosController::getInstance()->guardarEntrada($oEntrada);
+                
+                $this->getJsonHelper()->setSuccess(true);
+                $this->getJsonHelper()->setMessage("La unidad se guardo correctamente.");                                                                  
+            }catch(Exception $e){
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+        }
     }
 
     private function guardarEvolucion($oEntrada, $oSeguimiento)
