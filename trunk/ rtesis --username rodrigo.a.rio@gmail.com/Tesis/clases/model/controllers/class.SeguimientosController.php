@@ -985,6 +985,23 @@ class SeguimientosController
         }
     }
 
+    public function getModalidadById($iModalidadId)
+    {
+    	try{
+            $filtro = array('vcm.id' => $iModalidadId);
+            $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aModalidad = $oModalidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aModalidad){
+                return $aModalidad[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Obtiene todas las unidades administrables que el usuario logueado creo
      * para asociar a sus seguimientos personalizados

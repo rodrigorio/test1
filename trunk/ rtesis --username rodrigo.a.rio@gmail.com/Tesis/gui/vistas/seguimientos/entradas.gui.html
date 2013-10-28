@@ -82,14 +82,14 @@
 <!--EndVariableCualitativa-->
 
 <!--BeginVariableTextoEditar-->
-<div class="form_line msg_{iVariableId}">
+<div class="form_line msg_variable_{iVariableId}">
     <label for="variable_{iVariableId}">
         {sVariableNombre}
     </label>
     <div class="fwrap mabo2">
         <div class="inner_fwrap">
-            <textarea class="mihe1 maxlength" rows="0" cols="0" id="variable_{iVariableId}" name="unidad[{iVariableId}][valor]" title="">{sValor}</textarea>
-            <input type="hidden" name="unidad[{iVariableId}][id]" value="{iVariableId}" />
+            <textarea class="mihe1 maxlength" rows="0" cols="0" id="variable_{iVariableId}" name="variables[{iVariableId}][valor]" title="">{sValor}</textarea>
+            <input type="hidden" name="variables[{iVariableId}][id]" value="{iVariableId}" />
         </div>
     </div>
     <p>{sVariableDescription}</p>
@@ -97,12 +97,12 @@
 <!--EndVariableTextoEditar-->
 
 <!--BeginVariableCualitativaEditar-->
-<div class="form_line msg_{iVariableId}">
+<div class="form_line msg_variable_{iVariableId}">
     <fieldset>
         <legend>{sVariableNombre}</legend>
         <!--BeginModalidadEditar-->
         <div class="mabo">
-            <input class="mari veal_mi" id="modalidad_{iModalidadId}" type="radio" name="unidad[{iVariableId}][valor]" value="{iModalidadId}" {sChecked} />
+            <input class="mari veal_mi" id="modalidad_{iModalidadId}" type="radio" name="variables[{iVariableId}][valor]" value="{iModalidadId}" {sChecked} />
             <label for="modalidad_{iModalidadId}">
                 <span class="fowe_bo">{sModalidad}</span><br>
             </label>
@@ -110,19 +110,19 @@
         <!--EndModalidadEditar-->
     </fieldset>
     <p>{sVariableDescription}</p>
-    <input type="hidden" name="unidad[{iVariableId}][id]" value="{iVariableId}" />
+    <input type="hidden" name="variables[{iVariableId}][id]" value="{iVariableId}" />
 </div>
 <!--EndVariableCualitativaEditar-->
 
 <!--BeginVariableNumericaEditar-->
-<div class="form_line msg_{iVariableId}">
+<div class="form_line msg_variable_{iVariableId}">
     <label for="variable_{iVariableId}">
         {sVariableNombre}
     </label>
     <div class="fwrap mabo2">
         <div class="inner_fwrap">
-            <input type="text" name="unidad[{iVariableId}][valor]" id="variable_{iVariableId}" title="" maxlength="20" value="{sValor}" number/>
-            <input type="hidden" name="unidad[{iVariableId}][id]" value="{iVariableId}" />
+            <input class="number" type="text" name="variables[{iVariableId}][valor]" id="variable_{iVariableId}" title="" maxlength="20" value="{sValor}" />
+            <input type="hidden" name="variables[{iVariableId}][id]" value="{iVariableId}" />
         </div>
     </div>
     <p>{sVariableDescription}</p>
@@ -250,13 +250,14 @@
         <!--EndVariableEditarBlock-->
         <div class="mabo2">
             <label for="guardarUnidad_{iUnidadId}" class="button buttonConfirm mari3">
-                <button id="guardarUnidad_{iUnidadId}" type="submit" name="guardarUnidad" class="btn01">
+                <button id="guardarUnidad_{iUnidadId}" rel="{iUnidadId}" type="button" name="guardarUnidad" class="btn01 guardarUnidad">
                     Guardar {sNombreUnidad}
                 </button>
             </label>
         </div>
-        <input type="hidden" name="iEntradaIdForm" value="{iEntradaId}">
-        <input type="hidden" name="iUnidadIdForm" value="{iUnidadId}">
+        <input type="hidden" name="guardarUnidad" value="1">
+        <input type="hidden" name="entradaIdForm" value="{iEntradaId}">
+        <input type="hidden" name="unidadIdForm" value="{iUnidadId}">
         <div style="display:none;" id='msg_form_unidad_{iUnidadId}' class="msg_form iveal cl_le"><span class="bs i"></span> <span class="msg"></span></div>
     </form>
 </div>
