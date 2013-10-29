@@ -42,6 +42,11 @@ function Calendario(element){
         });        
     }
 
+    this.cambiarMes = function(year, month){
+        month = month - 1;
+        self._element.datepicker("setDate", new Date(year,month,01));
+    }
+
     this.getFechasEntradasMes = function(year, month){        
         //agrego un 0 al mes si es un solo digito.
         month = ('0' + month).slice(-2);
@@ -386,6 +391,13 @@ $(document).ready(function(){
     var calendario = new Calendario($("#calendarioEntradas"));
     calendario.init();
 
+    $(".changeMonth").live("click", function(){
+        var rel = $(this).attr("rel").split('_');
+        var year = rel[0];
+        var month = rel[1];
+        calendario.cambiarMes(year, month);
+    });
+    
     $(".desplegables").tooltip();
     $(".evolucionDescripcion").tooltip();
     

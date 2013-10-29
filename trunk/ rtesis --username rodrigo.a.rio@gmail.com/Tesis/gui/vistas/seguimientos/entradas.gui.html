@@ -50,7 +50,7 @@
     <span class="buttonText">Crear entrada hoy {dFechaActual}</span>
 </a>
 <!--EndBlockCrearEntradaHoy-->
-<div id="calendarWrap" class="po_re mihe1">
+<div id="calendarWrap" class="po_re mihe1 grupo mabo3">
     <div class="ajax_wait16 di_no"></div>
     <div id="calendarioEntradas" class="w100 mabo"></div>
     <ul class="m_horiz">
@@ -59,6 +59,32 @@
         <li><span class="ref_crear">&bull;</span> <span class="fte2">Crear</span></li>
     </ul>
 </div>
+
+<!--BeginHistorialEntradasBlock-->
+<div id="historialEntradas" class="pa2 po_re grupo baco1 bo2 bora cl_bo">
+    <h3>Historial</h3>
+    <p class="fte2">seleccione un mes para ver en el calendario</p>
+
+    <ul class="m_vert">
+    <!--BeginYearHistorialBlock-->
+        <li>
+            <a class="di_bl pa baco3 fte fowe_bo co3 desplegable" rel="{sYear}_historial" href="javascript:;">{sYear}</a>
+            <ul id="desplegable_{sYear}_historial" class="menu07 m_vert pal2" style="display:none;">
+            <!--BeginMonthHistorialBlock-->
+                <li>
+                    <a class="teta_ca changeMonth" rel="{sYear}_{sMonthNumber}" href="javascript:;">
+                        {sMonth}
+                        <span class="male pa fte2 baco2 co2 bora2">{iCantidad}</span>
+                    </a>
+                </li>
+            <!--EndMonthHistorialBlock-->
+            </ul>
+        </li>
+    <!--EndYearHistorialBlock-->
+    </ul>
+</div>
+<!--EndHistorialEntradasBlock-->
+
 <!--EndPageBodyLeftContBlock-->
 
 <!--BeginVariableTexto-->

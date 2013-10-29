@@ -1767,6 +1767,19 @@ class SeguimientosController
     }
 
     /**
+     * Devuelve array con objetos stdClass que corresponden a la cantidad de entradas por mes x año
+     */
+    public function obtenerCantidadEntradasByMonths($iSeguimientoId)
+    {
+    	try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+            return $oEntradaIntermediary->obtenerCantidadEntradasYearMonth($iSeguimientoId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Por ahora la regla es que cada nueva entrada tenga todas las unidades asociadas al seguimiento
      * hasta la fecha actual y ademas que todas las unidades que ya tienen informacion de una entrada anterior y no se eliminaron logicamente
      * se copien a los valores de la nueva entrada si el tipo de variable no es de tipo texto.
