@@ -226,6 +226,53 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    /**
+     * Este metodo devuelve cantidad de entradas por mes en un array de objetos stdClass
+     * uno corresponde al año y el otro al mes con un atributo de la cantidad de entradas.
+     *
+     */
+    public function obtenerCantidadEntradasYearMonth($iSeguimientoId)
+    {
+        $aMeses = array('1' => 'enero', '2' => 'febrero', '3' => 'marzo', '4' => 'abril', '5' => 'mayo',
+                        '6' => 'junio', '7' => 'julio', '8' => 'agosto', '9' => 'septiembre', '10' => 'octubre',
+                        '11' => 'noviembre', '12' => 'diciembre');
+        
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = " SELECT YEAR(fecha) AS year, MONTH(fecha) AS month, COUNT(*) AS cantEntradas
+                      FROM entradas e WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)."
+                      GROUP BY YEAR(fecha), MONTH(fecha)
+                      ORDER BY year DESC, month ASC ";
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int)$db->getDBValue("select FOUND_ROWS() as list_count");
+            if(empty($iRecordsTotal)){ return null;}
+
+            $aYears = array();
+            $oLastRow = null;
+            while($oRow = $db->oNextRecord()){
+                if($oLastRow === null || $oLastRow->year != $oRow->year){
+                    $oYear = new stdClass();
+                    $oYear->year = $oRow->year;
+                    $aYears[] = $oYear; //esto se puede hacer porq se guarda solo apuntador
+                    $oLastRow = $oRow;
+                }
+                
+                $oMonth = new stdClass();
+                $oMonth->month = $aMeses[$oRow->month];
+                $oMonth->monthNumber = $oRow->month;
+                $oMonth->cantidad = $oRow->cantEntradas;
+                $oYear->months[] = $oMonth;
+            }
+
+            return $aYears; 
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
             
     public function borrar($oEntrada)
     {

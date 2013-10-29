@@ -128,6 +128,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una seleccione una fecha desde el calendario y luego elija 'Crear nueva entrada'.");
 
                     $this->getTemplate()->unset_blocks("EntradaContBlock");
+                    $this->getTemplate()->unset_blocks("HistorialEntradasBlock");
                     $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
                     return;
                 }
@@ -166,9 +167,10 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $hrefEditar = $this->getUrlFromRoute("seguimientosEntradasEditar", true)."?entrada=".$oEntrada->getId();
                 $this->getTemplate()->set_var("hrefEditarEntrada", $hrefEditar);
             }
+
+            $this->crearWidgetHistorial($iSeguimientoId);
                                                             
-            $aObjetivos = $oEntrada->getObjetivos();
-                       
+            $aObjetivos = $oEntrada->getObjetivos();                       
             $this->getTemplate()->set_var("iRecordsTotal", count($aObjetivos));
             foreach($aObjetivos as $oObjetivo){
                 $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
@@ -310,6 +312,22 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             throw $e;
+        }
+    }
+
+    private function crearWidgetHistorial($iSeguimientoId)
+    {
+        $aYears = SeguimientosController::getInstance()->obtenerCantidadEntradasByMonths($iSeguimientoId);
+        foreach($aYears as $oYear){
+            $this->getTemplate()->set_var("sYear", $oYear->year);
+            foreach($oYear->months as $oMonth){
+                $this->getTemplate()->set_var("sMonth", $oMonth->month);
+                $this->getTemplate()->set_var("sMonthNumber", $oMonth->monthNumber);
+                $this->getTemplate()->set_var("iCantidad", $oMonth->cantidad);
+                $this->getTemplate()->parse("MonthHistorialBlock", true);
+            }
+            $this->getTemplate()->parse("YearHistorialBlock", true);
+            $this->getTemplate()->delete_parsed_blocks("MonthHistorialBlock");
         }
     }
 
@@ -568,6 +586,8 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
             $hrefCerrarVistaEdicion = $this->getRequest()->getBaseUrl()."/seguimientos/entradas/".$oEntrada->getSeguimientoId()."-".$oEntrada->getFecha(true);
             $this->getTemplate()->set_var("hrefCerrarVistaEdicion", $hrefCerrarVistaEdicion);
+
+            $this->crearWidgetHistorial($oSeguimiento->getId());
 
             $aObjetivos = $oEntrada->getObjetivos();
 
