@@ -240,22 +240,22 @@
     <span class="i bs infoo"></span> Arrastre unidades desde una columna hacia la otra para realizar los cambios.
 </div>
 <div class="columnas2B">
-    <div class="col1">
+    <div class="col1 grupo">
         <h2 class="pa2 baco2 bora4 bobo3 co2">Unidades</h2>
-        <ul id="sortable1" class="pa2 baco3 bora3 mihe2 connectedSortable">
+        <ul id="sortable1" class="pa2 baco3 bora3 mihe2 grupo connectedSortable">
             <!--BeginUnidadesSinAsociar-->
-            {unidad}
+            {unidadesSinAsociar}
             <!--EndUnidadesSinAsociar-->
             <!--BeginNoRecordsSinAsociarBlock-->
-            <p class="co3 fost_it teal_ce">No hay unidades creadas para asociar al seguimiento.</p>
+            <p class="co3 fost_it teal_ce">No hay unidades para asociar al seguimiento.</p>
             <!--EndNoRecordsSinAsociarBlock-->
         </ul>
     </div>
-    <div class="col2">
+    <div class="col2 grupo">
         <h2 class="pa2 baco2 bora4 bobo3 co2">Seguimiento</h2>
-        <ul id="sortable2" class="pa2 baco3 bora3 mihe2 connectedSortable">
+        <ul id="sortable2" class="pa2 baco3 bora3 mihe2 grupo connectedSortable">
             <!--BeginUnidadesAsociadas-->
-            {unidad}
+            {unidadesAsociadas}
             <!--EndUnidadesAsociadas-->
             <!--BeginNoRecordsAsociadasBlock-->
             <p class="co3 fost_it teal_ce">El seguimiento no posee unidades asociadas.</p>
@@ -266,17 +266,14 @@
 <!--EndAsociarUnidadesBlock-->
 
 <!--BeginUnidadListadoAsociarBlock-->
-<li class="fl_le mari2 thumbEdit baco3 bora bosh mawi1 {iUnidadId}">
-    <div class="grupo baco1 bobo1 bora4 pa2 pabo mabo2">
-        <div class="fl_le mari3 mabo iveal fte2">
-            <span title="Tipo de Edici&oacute;n" class="i bs notepad"></span> <span class="fost_it">{sTipoEdicion}</span>
-        </div>
+<li class="fl_le mari2 baco3 mabo2 bora bosh mawi1 {iUnidadId}">
+    <div class="grupo baco1 bobo1 bora4 pa mabo">
         <h3 class="fl_ri">{sNombreUnidad}</h3>
     </div>
-    <div class="pa2">
+    <div class="pa">
         <p class="fte2">
             {sDescripcionUnidad}
-            <a href="{hrefListarVariablesUnidad}" title="Ver Unidad Completa">ver m&aacute;s</a>
+            <a href="javascript:;" title="Ver Unidad Completa">ver m&aacute;s</a>
         </p>
     </div>
 </li>
