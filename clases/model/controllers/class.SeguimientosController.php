@@ -1053,7 +1053,7 @@ class SeguimientosController
      *
      * @param boolean $bBorradoLogico Si FALSE entonces no devuelve las unidades eliminadas
      */
-    public function getUnidadesBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sTipoEdicion = null, $sOrderBy = null, $sOrder = null)
+    public function getUnidadesBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sTipoEdicion = null, $bAsociacionAutomatica = true, $sOrderBy = null, $sOrder = null)
     {        
     	try{
             $filtro = array('su.seguimientos_id' => $iSeguimientoId);
@@ -1062,6 +1062,9 @@ class SeguimientosController
             }
             if(null !== $sTipoEdicion){
                 $filtro['u.tipoEdicion'] = $sTipoEdicion;
+            }
+            if(!$bAsociacionAutomatica){
+                $filtro['u.asociacionAutomatica'] = "0";
             }
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             $iRecordsTotal = 0;
@@ -1822,7 +1825,7 @@ class SeguimientosController
             }
 
             //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido
-            $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", "u.fechaHora", "ASC");
+            $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", true, "u.fechaHora", "ASC");
             foreach($aUnidades as $oUnidad){
 
                 //si la unidad ya existe en la ultima entrada copio las variables con valor, sino levanto todas las variables sin valor

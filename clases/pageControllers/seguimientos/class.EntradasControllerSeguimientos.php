@@ -272,6 +272,8 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $aVariables = $oUnidad->getVariables();
 
                 //si no tiene variables la salteo. puede darse que asocio una unidad y no tiene variables
+                // TAMBIEN PUEDE SER QUE HAYA DESASOCIADO UNA UNIDAD, CREO UNA ENTRADA SIN LA UNIDAD Y DESPUES VOLVIO A ASOCIAR LA UNIDAD.
+                // ESTO HACE QUE QUEDE UN 'HUECO' EN EL QUE LA ENTRADA LEVANTA LA UNIDAD PERO NO HAY VARIABLES EN ELLA.
                 if(count($aVariables) == 0){
                     continue;
                 }
@@ -705,6 +707,8 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $aVariables = $oUnidad->getVariables();
 
                 //si no tiene variables la salteo. puede darse que asocio una unidad y no tiene variables
+                // TAMBIEN PUEDE SER QUE HAYA DESASOCIADO UNA UNIDAD, CREO UNA ENTRADA SIN LA UNIDAD Y DESPUES VOLVIO A ASOCIAR LA UNIDAD.
+                // ESTO HACE QUE QUEDE UN 'HUECO' EN EL QUE LA ENTRADA LEVANTA LA UNIDAD PERO NO HAY VARIABLES EN ELLA.
                 if(count($aVariables) == 0){
                     continue;
                 }
