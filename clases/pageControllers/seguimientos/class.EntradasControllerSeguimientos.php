@@ -269,10 +269,15 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $aUnidades = $oEntrada->getUnidades();                        
             foreach($aUnidades as $oUnidad)
             {
-                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
-                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
-                
                 $aVariables = $oUnidad->getVariables();
+
+                //si no tiene variables la salteo. puede darse que asocio una unidad y no tiene variables
+                if(count($aVariables) == 0){
+                    continue;
+                }
+
+                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());                                
                 foreach($aVariables as $oVariable){
 
                     $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
@@ -697,10 +702,15 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $aUnidades = $oEntrada->getUnidades();
             foreach($aUnidades as $oUnidad)
             {
-                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
-                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
-
                 $aVariables = $oUnidad->getVariables();
+
+                //si no tiene variables la salteo. puede darse que asocio una unidad y no tiene variables
+                if(count($aVariables) == 0){
+                    continue;
+                }
+
+                $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+                $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());                
                 foreach($aVariables as $oVariable){
 
                     $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());

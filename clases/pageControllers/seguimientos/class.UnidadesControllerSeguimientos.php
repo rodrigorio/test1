@@ -497,8 +497,42 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "pageRightInnerMainCont", "AsociarUnidadesBlock");
 
-            //...
+            //Obtengo la lista de unidades segun tipo de seguimiento que todavia no esten asociadas al seguimiento.
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $aUnidadesDisponibles = SeguimientosController::getInstance()->getUnidadesDisponiblesBySeguimientoPersonalizado($oSeguimiento);
+            }
+            if($oSeguimiento->isSeguimientoSCC()){
+                $aUnidadesDisponibles = SeguimientosController::getInstance()->getUnidadesDisponiblesBySeguimientoSCC($oSeguimiento);
+            }
 
+            if(count($aUnidadesDisponibles) > 0){
+
+                $this->getTemplate()->set_var("NoRecordsSinAsociarBlock", "");
+                $htmlUnidades = "";
+
+                foreach($aUnidadesDisponibles as $oUnidad){
+
+                    $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());                    
+                    $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+
+                    //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+                    $sDescripcionUnidad = $oUnidad->getDescripcion();
+                    if(strlen($sDescripcionUnidad) > 150){
+                        $sDescripcionUnidad = Utils::tokenTruncate($sDescripcionUnidad, 150);
+                        $sDescripcionUnidad = nl2br($sDescripcionUnidad);
+                    }
+                    $this->getTemplate()->set_var("sDescripcionUnidad", $sDescripcionUnidad);
+
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "unidad", "UnidadListadoAsociarBlock");
+                    $htmlUnidades .= $this->getTemplate()->pparse("unidad", false);
+                    $this->getTemplate()->delete_parsed_blocks("UnidadListadoAsociarBlock");                    
+                }
+
+                $this->getTemplate()->set_var("unidadesSinAsociar", $htmlUnidades);
+            }else{
+                $this->getTemplate()->set_var("UnidadesSinAsociar", "");
+            }
+                                  
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             $this->getResponse()->setBody("Ocurrio un error");
