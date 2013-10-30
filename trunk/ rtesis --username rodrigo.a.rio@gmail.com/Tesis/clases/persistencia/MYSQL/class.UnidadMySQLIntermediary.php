@@ -55,6 +55,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.borradoLogico']) && $filtro['u.borradoLogico']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', $filtro['u.borradoLogico']);
             }
+            if(isset($filtro['su.borradoLogico']) && $filtro['su.borradoLogico']!=""){
+                $WHERE[] = $this->crearFiltroSimple('su.borradoLogico', $filtro['su.borradoLogico']);
+            }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
             }
@@ -70,8 +73,11 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.fechaBorradoLogico']) && $filtro['u.fechaBorradoLogico'] != ""){
                 $WHERE[] = $this->crearFiltroFecha('u.fechaBorradoLogico', $filtro['u.fechaBorradoLogico'], null, true, true);
             }
+            if(isset($filtro['su.fechaBorradoLogico']) && $filtro['su.fechaBorradoLogico'] != ""){
+                $WHERE[] = $this->crearFiltroFecha('su.fechaBorradoLogico', $filtro['su.fechaBorradoLogico'], null, true, true);
+            }
             if(isset($filtro['notIn']) && $filtro['notIn'] != ""){
-                $WHERE[] = " u.id NOT IN (SELECT unidades_id FROM seguimiento_x_unidad WHERE seguimientos_id = ".$filtro['notIn'].") ";
+                $WHERE[] = " u.id NOT IN (SELECT unidades_id FROM seguimiento_x_unidad WHERE borradoLogico <> 1 AND seguimientos_id = ".$filtro['notIn'].") ";
             }            
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);

@@ -244,14 +244,8 @@ abstract class SeguimientoAbstract
         $this->oAntecedentes = $oAntecedentes;
     }
 
-    /**
-     * Devuelve todas las unidades, las de edicion esporadica y las de edicion regular
-     */
     public function getUnidades()
     {
-        if($this->aUnidades === null){
-            $this->aUnidades = SeguimientosController::getInstance()->getUnidadesBySeguimientoId($this->iId);
-        }
         return $this->aUnidades;
     }
 
