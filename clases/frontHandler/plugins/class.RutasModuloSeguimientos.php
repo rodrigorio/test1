@@ -300,6 +300,13 @@ class RutasModuloSeguimientos
                                         'action'     => 'eliminar'
                                 ));
         $router->addRoute('seguimientosUnidadesBorrar', $route);
+        $route = new RegexRoute('seguimientos/unidades-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'listarUnidadesPorSeguimiento'
+                                ));
+        $router->addRoute('seguimientosUnidadesListarUnidadesPorSeguimiento', $route);
 
         //variables
         $route = new RegexRoute('seguimientos/listar-variables',

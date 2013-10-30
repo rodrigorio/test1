@@ -288,6 +288,10 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .columnas2A .col1, .columnas2A .col2{width:470px; min-height:200px;}
 .columnas2A .col1{margin-right:20px}
 
+/* con porcentaje, util para pageRightInnerMainCont */
+.columnas2B .col1, .columnas2B .col2{float:left; text-align:left; width:49%; position:relative}
+.columnas2B .col1{margin-right:2%}
+
 /*** THUMBNAILS GRANDES, MEDIANOS Y CHICOS ***/
 .th_fto_m, .th_fto_s{background: none repeat scroll 0 0; display:inline-block; outline:medium none; position:relative; vertical-align: bottom; text-align:left; border-collapse:collapse; border-spacing:0; line-height:0 !important}
 .th_vid_m i, .th_fto_m i{height:120px; width:168px;} .th_fto_s i{height:48px; width:48px}

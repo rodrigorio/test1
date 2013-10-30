@@ -795,7 +795,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                 //levanto ultima evolucion to date, si es != null copio el ultimo progreso
                 $iProgreso = "1"; //porque si se crea una evolucion es valor entre 1 y 100. solo cuando es null va un 0.
-                $oUltimaEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFechaHoraCreacion());
+                $oUltimaEvolucion = $oObjetivo->getUltimaEvolucionToDate($oEntrada->getFecha());
                 if(null !== $oUltimaEvolucion){
                     $iProgreso = $oUltimaEvolucion->getProgreso();
                 }

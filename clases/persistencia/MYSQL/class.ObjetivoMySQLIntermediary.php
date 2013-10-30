@@ -35,12 +35,18 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                         objetivo_personalizado_ejes ope ON ope.id = op.objetivo_personalizado_ejes_id
                     JOIN
                         objetivo_relevancias orr ON orr.id = op.objetivo_relevancias_id 
-                    LEFT JOIN
-                        (SELECT oe.id as iEvolucionId , oe.progreso AS iProgreso, oe.objetivos_personalizados_id,
-                                oe.comentarios AS sComentarios, e.id AS iEntradaId
-                         FROM objetivo_evolucion oe
-                         JOIN entradas e ON oe.entradas_id = e.id 
-                         ORDER BY e.fecha DESC limit 1) AS e ON o.id = e.objetivos_personalizados_id ";
+                    LEFT JOIN(
+                        SELECT oe.id AS iEvolucionId, oe.progreso AS iProgreso,
+                               oe.objetivos_personalizados_id,
+                               oe.comentarios AS sComentarios, e.id AS iEntradaId
+                        FROM objetivo_evolucion oe
+                        JOIN entradas e ON oe.entradas_id = e.id
+                        JOIN(
+                            SELECT oe.objetivos_personalizados_id, MAX(e.fecha) AS fecha
+                            FROM objetivo_evolucion oe JOIN entradas e ON oe.entradas_id = e.id
+                            GROUP BY oe.objetivos_personalizados_id)
+                        AS ultimaEntrada ON (ultimaEntrada.objetivos_personalizados_id = oe.objetivos_personalizados_id AND ultimaEntrada.fecha = e.fecha))
+                    AS e ON o.id = e.objetivos_personalizados_id ";
             
             $WHERE = array();
 
@@ -73,6 +79,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             
             $aObjetivos = array();
             while($oObj = $db->oNextRecord()){
+                $oObjetivo = new stdClass();
 
                 //esto esta bien asi porque los ejes de los objetivos no tienen sublista de ejes, se asocian solo los ejes hoja
                 $oEje = new stdClass();
@@ -88,22 +95,23 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             	$oRelevancia->sDescripcion = $oObj->sDescripcionRelevancia;
                 $oRelevancia = Factory::getRelevanciaInstance($oRelevancia);
 
-                $oEvolucion = new stdClass();
-                $oEvolucion->iId = $oObj->iEvolucionId;
-                $oEvolucion->iProgreso = $oObj->iProgreso;
-                $oEvolucion->sComentarios = $oObj->sComentarios;
-                $oEvolucion->iEntradaId = $oObj->iEntradaId;
-                $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
-
-            	$oObjetivo = new stdClass();
+                if(null !== $oObj->iEvolucionId){
+                    $oEvolucion = new stdClass();
+                    $oEvolucion->iId = $oObj->iEvolucionId;
+                    $oEvolucion->iProgreso = $oObj->iProgreso;
+                    $oEvolucion->sComentarios = $oObj->sComentarios;
+                    $oEvolucion->iEntradaId = $oObj->iEntradaId;
+                    $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
+                    $oObjetivo->oUltimaEvolucion = $oEvolucion;
+                }
+            	
             	$oObjetivo->iId = $oObj->iId;
                 $oObjetivo->dFechaCreacion = $oObj->dFechaCreacion;
                 $oObjetivo->dFechaDesactivado = $oObj->dFechaDesactivado;
                 $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->sDescripcion = $oObj->sDescripcion;
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
-                $oObjetivo->oRelevancia = $oRelevancia;
-                $oObjetivo->oUltimaEvolucion = $oEvolucion;
+                $oObjetivo->oRelevancia = $oRelevancia;                
                 $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEje = $oEje;
                 

@@ -90,28 +90,27 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
      * @param array $aCurrentOption es un array que tiene que tener el nombre de las variables
      * seguin seguimientos.gui.html para marcar la opcion activa en el menu.
      */
-    private function setMenuDerechaVerSeguimiento($aCurrentOption = null)
+    static function setMenuDerechaVerSeguimiento(Templates $oTemplate, PageControllerAbstract $oPageController, $aCurrentOption = null)
     {
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContVerSeguimientoBlock");
+        $oTemplate->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContVerSeguimientoBlock");
 
-        $this->getTemplate()->set_var("hrefListadoSeguimientos", $this->getUrlFromRoute("seguimientosIndexIndex", true));
+        $oTemplate->set_var("hrefListadoSeguimientos", $oPageController->getUrlFromRoute("seguimientosIndexIndex", true));
 
-        $this->getTemplate()->set_var("hrefVerSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosVer", true));        
-        $this->getTemplate()->set_var("hrefEditarAntecedentesSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
-        $this->getTemplate()->set_var("hrefEditarDiagnosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarDiagnostico", true));
-        $this->getTemplate()->set_var("hrefVerAdjuntosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
-        $this->getTemplate()->set_var("hrefAdministrarObjetivosSeguimiento", $this->getUrlFromRoute("seguimientosSeguimientosAdministrarObjetivos", true));
-        $this->getTemplate()->set_var("hrefEditarPronosticoSeguimiento", $this->getUrlFromRoute("seguimientosEditarPronostico", true));
+        $oTemplate->set_var("hrefVerSeguimiento", $oPageController->getUrlFromRoute("seguimientosSeguimientosVer", true));
+        $oTemplate->set_var("hrefEditarAntecedentesSeguimiento", $oPageController->getUrlFromRoute("seguimientosSeguimientosEditarAntecedentes", true));
+        $oTemplate->set_var("hrefEditarDiagnosticoSeguimiento", $oPageController->getUrlFromRoute("seguimientosEditarDiagnostico", true));
+        $oTemplate->set_var("hrefVerAdjuntosSeguimiento", $oPageController->getUrlFromRoute("seguimientosSeguimientosAdjuntos", true));
+        $oTemplate->set_var("hrefAdministrarObjetivosSeguimiento", $oPageController->getUrlFromRoute("seguimientosSeguimientosAdministrarObjetivos", true));
+        $oTemplate->set_var("hrefEditarPronosticoSeguimiento", $oPageController->getUrlFromRoute("seguimientosEditarPronostico", true));
+        $oTemplate->set_var("hrefAsociarUnidadesSeguimiento", $oPageController->getUrlFromRoute("seguimientosUnidadesListarUnidadesPorSeguimiento", true));
 
         //marco los selecteds en el menu de la izq
         if(is_array($aCurrentOption)){
             foreach($aCurrentOption as $sCurrentOption)
             {
-                $this->getTemplate()->set_var($sCurrentOption, "class='selected'");
+                $oTemplate->set_var($sCurrentOption, "class='selected'");
             }
         }
-        
-        return $this;
     }
 
     static function setFichaPersonaSeguimiento(Templates $template, UploadHelper $oUploadHelper, $oDiscapacitado)
@@ -669,8 +668,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->setFrameTemplate()
                  ->setJSAntecedentes()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+                 ->setHeadTag();
+
+            self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             //para que pueda ser reutilizado en otras vistas
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
@@ -897,8 +897,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+                 ->setHeadTag();
+
+            self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
@@ -1099,8 +1100,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+                 ->setHeadTag();
+
+            self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
             
@@ -1912,8 +1914,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->setFrameTemplate()
                  ->setJSDiagnostico()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+                 ->setHeadTag();
+            
+            self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
                         
@@ -2438,8 +2441,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->setFrameTemplate()
                  ->setJSObjetivos()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+                 ->setHeadTag();
+
+            self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
 
@@ -2467,13 +2471,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
                     
                     $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
-                    
-                    if($oObjetivo->isLogrado()){
+                                        
+                    if($oObjetivo->isLogrado()){                        
                         $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
                         $this->getTemplate()->set_var("EstimacionBlock", "");
 
                         $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
-                    }else{
+                    }else{                        
                         $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
                         $this->getTemplate()->set_var("FechaLogradoBlock", "");
                         
@@ -3474,8 +3478,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->setFrameTemplate()
                  ->setJSPronostico()
-                 ->setHeadTag()
-                 ->setMenuDerechaVerSeguimiento($aCurrentOptions);
+                 ->setHeadTag();
+
+            self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             //para que pueda ser reutilizado en otras vistas
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());

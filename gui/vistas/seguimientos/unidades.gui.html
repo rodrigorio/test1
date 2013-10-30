@@ -16,6 +16,25 @@
 </script>
 <!--EndJsContent-->
 
+<!--BeginJsContentAsociarUnidades-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientosGeneral.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/asociarUnidadesSeguimiento.js");
+</script>
+<!--EndJsContentAsociarUnidades-->
+
 <!--BeginPageRightInnerContListadoUnidadesBlock-->
 <ul class="m_vert menu08 mabo3 teal_ri">
     <li>
@@ -215,3 +234,50 @@
    <!--EndSeguimientoBlock-->
 </table>
 <!--EndVerSeguimientosAsociadosBlock-->
+
+<!--BeginAsociarUnidadesBlock-->
+<div class='ficha05 bora iveal mabo2'>
+    <span class="i bs infoo"></span> Arrastre unidades desde una columna hacia la otra para realizar los cambios.
+</div>
+<div class="columnas2B">
+    <div class="col1">
+        <h2 class="pa2 baco2 bora4 bobo3 co2">Unidades</h2>
+        <ul id="sortable1" class="pa2 baco3 bora3 mihe2 connectedSortable">
+            <!--BeginUnidadesSinAsociar-->
+            {unidad}
+            <!--EndUnidadesSinAsociar-->
+            <!--BeginNoRecordsSinAsociarBlock-->
+            <p class="co3 fost_it teal_ce">No hay unidades creadas para asociar al seguimiento.</p>
+            <!--EndNoRecordsSinAsociarBlock-->
+        </ul>
+    </div>
+    <div class="col2">
+        <h2 class="pa2 baco2 bora4 bobo3 co2">Seguimiento</h2>
+        <ul id="sortable2" class="pa2 baco3 bora3 mihe2 connectedSortable">
+            <!--BeginUnidadesAsociadas-->
+            {unidad}
+            <!--EndUnidadesAsociadas-->
+            <!--BeginNoRecordsAsociadasBlock-->
+            <p class="co3 fost_it teal_ce">El seguimiento no posee unidades asociadas.</p>
+            <!--EndNoRecordsAsociadasBlock-->
+        </ul>
+    </div>
+</div>
+<!--EndAsociarUnidadesBlock-->
+
+<!--BeginUnidadListadoAsociarBlock-->
+<li class="fl_le mari2 thumbEdit baco3 bora bosh mawi1 {iUnidadId}">
+    <div class="grupo baco1 bobo1 bora4 pa2 pabo mabo2">
+        <div class="fl_le mari3 mabo iveal fte2">
+            <span title="Tipo de Edici&oacute;n" class="i bs notepad"></span> <span class="fost_it">{sTipoEdicion}</span>
+        </div>
+        <h3 class="fl_ri">{sNombreUnidad}</h3>
+    </div>
+    <div class="pa2">
+        <p class="fte2">
+            {sDescripcionUnidad}
+            <a href="{hrefListarVariablesUnidad}" title="Ver Unidad Completa">ver m&aacute;s</a>
+        </p>
+    </div>
+</li>
+<!--EndUnidadListadoAsociarBlock-->

@@ -1890,7 +1890,7 @@ class SeguimientosController
      * @param string $dFechaCreacion formato yyyy-mm-dd
      */
     public function isEntidadEditable($dFechaCreacion)
-    {
+    {                
         $iCantDias = Utils::dateDiffDays($dFechaCreacion, date('Y-m-d h:i:s', time()));
         $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
         
@@ -2024,7 +2024,7 @@ class SeguimientosController
     public function getEvolucionById($iEvolucionId)
     {
     	try{
-            $filtro = array('e.id' => $iEvolucionId);
+            $filtro = array('oe.id' => $iEvolucionId);
 
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
