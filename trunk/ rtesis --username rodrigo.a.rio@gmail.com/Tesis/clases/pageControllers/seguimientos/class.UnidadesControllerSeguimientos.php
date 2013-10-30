@@ -84,12 +84,19 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         if(empty($iUnidadId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
+
+        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oUnidad->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver esta unidad", 401);
+        }
         
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "ajaxSeguimientosAsociadosBlock", "VerSeguimientosAsociadosBlock");
 
         $iRecordsTotal = 0;
-        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $filtroSql["u.id"] = $perfil->getUsuario()->getId();
+        $filtroSql["u.id"] = $iUsuarioId;
         $filtroSql["su.unidades_id"] = $iUnidadId;
         $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtroSql, $iRecordsTotal, null, null, null, null);
 
@@ -473,9 +480,14 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
 
-        try{
-            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
-
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para administrar unidades en este seguimiento", 401);
+        }
+        
+        try{            
             $aCurrentOptions[] = "currentOptionAsociarUnidadesSeguimiento";
 
             $this->setFrameTemplate()
@@ -534,8 +546,8 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             }
 
             //Obtengo la lista de unidades asociadas al seguimiento actualmente,
-            //es el mismo conjunto que se levanta cuando se crea una entrada.
-            $aUnidadesAsociadas = SeguimientosController::getInstance()->getUnidadesBySeguimientoId($oSeguimiento->getId(), false);
+            //es el mismo conjunto que se levanta cuando se crea una entrada pero sin las unidades de asociacion automatica.
+            $aUnidadesAsociadas = SeguimientosController::getInstance()->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, null, false);
             if(count($aUnidadesAsociadas) > 0){
 
                 $this->getTemplate()->set_var("NoRecordsAsociadasBlock", "");
@@ -570,4 +582,108 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             $this->getResponse()->setBody("Ocurrio un error");
         }
     }
+
+    public function unidadesPorSeguimientoProcesar()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){
+            throw new Exception("", 404);
+        }
+
+        if($this->getRequest()->has('ampliarUnidad')){
+            $this->ampliarUnidad();
+            return;
+        }
+
+        if($this->getRequest()->has('asociarUnidadSeguimiento')){
+            $this->asociarUnidadSeguimiento();
+            return;
+        }
+
+        if($this->getRequest()->has('desasociarUnidadSeguimiento')){
+            $this->desasociarUnidadSeguimiento();
+            return;
+        }
+    }
+
+    private function ampliarUnidad()
+    {
+        $iUnidadId = $this->getRequest()->getParam('iUnidadId');
+
+        if(empty($iUnidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oUnidad->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver esta unidad", 401);
+        }
+
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "popUpContent", "AmpliarUnidadBlock");
+
+            //mostrar descripcion unidad y lista de variables.
+            $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+            $this->getTemplate()->set_var("sDescripcionUnidad", $oUnidad->getDescripcion(true));
+
+            $aVariables = SeguimientosController::getInstance()->getVariablesByUnidadId($iUnidadId, false);            
+            $this->getTemplate()->set_var("iRecordsTotal", count($aVariables));
+            if(count($aVariables) > 0){
+
+                $this->getTemplate()->set_var("iUnidadId", $iUnidadId);
+                $this->getTemplate()->set_var("NoRecordsVariablesBlock", "");
+
+            	foreach ($aVariables as $oVariable){
+
+                    $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
+                    $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
+                    $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
+                    $this->getTemplate()->set_var("sDescripcionVariable", $oVariable->getDescripcion(true));
+
+                    if($oVariable->isVariableNumerica()){
+                        $this->getTemplate()->set_var("sTipo", "Variable Numérica");
+                        $iconoVariableBlock = "IconoTipoNumericaBlock";
+                        $this->getTemplate()->set_var("sModalidades", "");
+                    }
+
+                    if($oVariable->isVariableTexto()){
+                        $this->getTemplate()->set_var("sTipo", "Variable de Texto");
+                        $iconoVariableBlock = "IconoTipoTextoBlock";
+                        $this->getTemplate()->set_var("sModalidades", "");
+                    }
+
+                    if($oVariable->isVariableCualitativa()){
+                        $this->getTemplate()->set_var("sTipo", "Variable Cualitativa");
+                        $iconoVariableBlock = "IconoTipoCualitativaBlock";
+                        $sModalidades = "<strong>Modalidades: </strong> ";
+                        $aModalidades = $oVariable->getModalidades();
+                        foreach($aModalidades as $oModalidad){
+                            $sModalidades .= $oModalidad->getModalidad().", ";
+                        }
+                        $sModalidades = substr($sModalidades, 0, -2);
+                        $this->getTemplate()->set_var("sModalidades", $sModalidades);
+                    }
+
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "iconoVariable", $iconoVariableBlock);
+                    $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
+                    $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
+
+                    $this->getTemplate()->parse("VariableBlock", true);
+                }
+            }else{
+                $this->getTemplate()->set_var("sNoRecords", "No hay variables cargadas en la unidad");
+                $this->getTemplate()->set_var("VariableBlock", "");
+            }
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            $this->getResponse()->setBody("Ocurrio un error al procesar lo solicitado");
+        }
+    }
+
+    private function asociarUnidadSeguimiento(){}
+    private function desasociarUnidadSeguimiento(){}
 }

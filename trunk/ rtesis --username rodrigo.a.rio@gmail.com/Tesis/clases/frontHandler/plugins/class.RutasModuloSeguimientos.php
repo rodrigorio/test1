@@ -307,7 +307,16 @@ class RutasModuloSeguimientos
                                         'action'     => 'listarUnidadesPorSeguimiento'
                                 ));
         $router->addRoute('seguimientosUnidadesListarUnidadesPorSeguimiento', $route);
+        $route = new RegexRoute('seguimientos/unidades-seguimiento-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'unidadesPorSeguimientoProcesar'
+                                ));
+        $router->addRoute('seguimientosUnidadesUnidadesPorSeguimientoProcesar', $route);
 
+
+        
         //variables
         $route = new RegexRoute('seguimientos/listar-variables',
                                 array(
