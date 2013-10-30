@@ -1,3 +1,9 @@
+//porque si hay muchas unidades en una columna tenes que scrollear, si no miden las dos iguales no podes hacer el drag
+$(window).load(function(){
+    var highestCol = Math.max($('#unidadesSinAsociar').height(),$('#unidadesAsociadas').height());
+    $('.equal').height(highestCol);
+});
+
 $(document).ready(function(){
     var itemclone, idx;
     $("#unidadesSinAsociar, #unidadesAsociadas").sortable({
