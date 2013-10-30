@@ -1053,7 +1053,7 @@ class SeguimientosController
      *
      * @param boolean $bBorradoLogico Si FALSE entonces no devuelve las unidades eliminadas
      */
-    public function getUnidadesBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sTipoEdicion = null, $sOrderBy, $sOrder)
+    public function getUnidadesBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sTipoEdicion = null, $sOrderBy = null, $sOrder = null)
     {        
     	try{
             $filtro = array('su.seguimientos_id' => $iSeguimientoId);

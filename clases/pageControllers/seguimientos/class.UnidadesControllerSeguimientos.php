@@ -528,10 +528,42 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->delete_parsed_blocks("UnidadListadoAsociarBlock");                    
                 }
 
-                $this->getTemplate()->set_var("unidadesSinAsociar", $htmlUnidades);
+                $this->getTemplate()->set_var("UnidadesSinAsociar", $htmlUnidades);
             }else{
                 $this->getTemplate()->set_var("UnidadesSinAsociar", "");
             }
+
+            //Obtengo la lista de unidades asociadas al seguimiento actualmente,
+            //es el mismo conjunto que se levanta cuando se crea una entrada.
+            $aUnidadesAsociadas = SeguimientosController::getInstance()->getUnidadesBySeguimientoId($oSeguimiento->getId(), false);
+            if(count($aUnidadesAsociadas) > 0){
+
+                $this->getTemplate()->set_var("NoRecordsAsociadasBlock", "");
+                $htmlUnidades = "";
+
+                foreach($aUnidadesAsociadas as $oUnidad){
+
+                    $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
+                    $this->getTemplate()->set_var("sNombreUnidad", $oUnidad->getNombre());
+
+                    //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
+                    $sDescripcionUnidad = $oUnidad->getDescripcion();
+                    if(strlen($sDescripcionUnidad) > 150){
+                        $sDescripcionUnidad = Utils::tokenTruncate($sDescripcionUnidad, 150);
+                        $sDescripcionUnidad = nl2br($sDescripcionUnidad);
+                    }
+                    $this->getTemplate()->set_var("sDescripcionUnidad", $sDescripcionUnidad);
+
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "unidad", "UnidadListadoAsociarBlock");
+                    $htmlUnidades .= $this->getTemplate()->pparse("unidad", false);
+                    $this->getTemplate()->delete_parsed_blocks("UnidadListadoAsociarBlock");
+                }
+
+                $this->getTemplate()->set_var("UnidadesAsociadas", $htmlUnidades);
+            }else{
+                $this->getTemplate()->set_var("UnidadesAsociadas", "");
+            }
+            
                                   
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
