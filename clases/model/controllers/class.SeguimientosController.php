@@ -848,6 +848,28 @@ class SeguimientosController
             throw $e;
         }
     }
+    
+    /**
+     * Todas las unidades sin asociar disponibles para asignar a un seguimiento personalizado
+     */
+    public function getUnidadesDisponiblesBySeguimientoSCC($oSeguimiento)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();            
+            $filtro = array('u.usuarios_id' => $iUsuarioId,
+                            'notIn' => $oSeguimiento->getId(),
+                            'u.preCargada' => '1',
+                            'u.asociacionAutomatica' => '0',
+                            'u.borradoLogico' => '0'
+                            );
+                       
+            $iRecordsTotal = 0;
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);            
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 
     /**
      * Devuelve todas las unidades para una entrada.
@@ -867,7 +889,8 @@ class SeguimientosController
                             'su.fechaHora' => $dFechaHora,
                             'u.tipoEdicion' => 'regular',
                             // con esto se cuando si mostrar las unidades que se borraron logicamente
-                            'u.fechaBorradoLogico' => $dFechaHora);
+                            'u.fechaBorradoLogico' => $dFechaHora,
+                            'su.fechaBorradoLogico' => $dFechaHora);
                        
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
@@ -1046,8 +1069,8 @@ class SeguimientosController
         }
     }
 
-     /**
-     * Obtener unidades  por id de seguimiento
+    /**
+     * Obtener unidades por id de seguimiento
      *
      * Se utiliza para saber las unidades asociadas, las variables no tienen el valor correspondiente a una fecha
      *
@@ -1058,7 +1081,9 @@ class SeguimientosController
     	try{
             $filtro = array('su.seguimientos_id' => $iSeguimientoId);
             if(!$bBorradoLogico){
+                //no tiene que estar borrada la unidad ni la asociacion unidad_x_seguimiento
                 $filtro['u.borradoLogico'] = "0";
+                $filtro['su.borradoLogico'] = "0";
             }
             if(null !== $sTipoEdicion){
                 $filtro['u.tipoEdicion'] = $sTipoEdicion;
@@ -1824,7 +1849,9 @@ class SeguimientosController
                 }
             }
 
-            //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido
+            //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido.
+            //el borrado logico no tiene que estar en la unidad ni en la asociacion.
+            //(Porque se puede eliminar una unidad para todos los seguimientos o quitar la asociacion desde el drag and drop.)
             $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", true, "u.fechaHora", "ASC");
             foreach($aUnidades as $oUnidad){
 
