@@ -77,7 +77,7 @@ class EvolucionMySQLIntermediary extends EvolucionIntermediary
     }
 
     public function insertarAsociado($oEvolucion, $oObjetivo)
-    {
+    {        
         try{
             $db = $this->conn;
             

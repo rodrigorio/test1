@@ -30,6 +30,10 @@ class ObjetivoAprendizaje extends ObjetivoAbstract{
     public function getSeguimientoSCCId(){
         return $this->iSeguimientoSCCId;
     }
+
+    public function setSeguimientoSCCId($iSeguimientoId){
+        $this->iSeguimientoSCCId = $iSeguimientoId;
+    }
     
     public function setEjeTematico($oEjeTematico){
         $this->oEjeTematico = $oEjeTematico;
