@@ -81,7 +81,7 @@ class ComentarioMySQLIntermediary extends ComentarioIntermediary
 			$db = $this->conn;
 		        
 			$sSQL =	" update comentarios ".
-                    " set fecha = '".$oComentario->getFecha()."', ".
+                    " set fecha = ".$this->escDate($oComentario->getFecha()).", ".
                     " descripcion =".$db->escape($oComentario->getDescripcion(),true).", " .
 			        " valoracion =".$db->escape($oComentario->getValoracion(),false,MYSQL_TYPE_FLOAT).", " .
                     " where id =".$db->escape($oComentario->getId(),false,MYSQL_TYPE_INT)." " ;			 

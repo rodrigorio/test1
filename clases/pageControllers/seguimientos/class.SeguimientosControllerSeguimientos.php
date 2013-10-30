@@ -2755,9 +2755,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $oObjetivo->isActivo($bActivo);
             if(!$bActivo){
                 $oObjetivo->setFechaDesactivadoHoy();
+            }else{
+                $oObjetivo->setFechaDesactivado(null);
             }
             
-
             $bSuccess = false;
             if($oObjetivo->isObjetivoPersonalizado()){
                 $bSuccess = SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivo);

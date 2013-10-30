@@ -453,17 +453,12 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
      * de un seguimiento que pertenece al usuario que inicio sesion.
      */
     private function actualizarObjetivoSeguimientoPersonalizado($oObjetivo)
-    {
+    {                
         try{
             $dEstimacion = $oObjetivo->getEstimacion();
             if($dEstimacion === null){
                 throw new Exception("La fecha tiene formato incorrecto", 0);
                 return;
-            }
-
-            $dFechaDesactivado = $oObjetivo->getFechaDesactivado();
-            if(null === $dFechaDesactivado){
-                $dFechaDesactivado = 'null';
             }
             
             $activo = $oObjetivo->isActivo()?"1":"0";
@@ -481,7 +476,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     " objetivo_personalizado_ejes_id = ".$this->escInt($oObjetivo->getEje()->getId()).", ".
                     " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".                    
                     " estimacion = '".$dEstimacion."', ".
-                    " fechaDesactivado = '".$dFechaDesactivado."', ".
+                    " fechaDesactivado = ".$this->escDate($oObjetivo->getFechaDesactivado()).", ".
                     " activo = ".$activo." ".
                     " where id = ".$this->escInt($oObjetivo->getId())." ";
 
@@ -586,15 +581,10 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 return;
             }
 
-            $dFechaDesactivado = $oObjetivo->getFechaDesactivado();
-            if(null === $dFechaDesactivado){
-                $dFechaDesactivado = 'null';
-            }
-
             $db = $this->conn;
             $sSQL = " update seguimiento_scc_x_objetivo_aprendizaje sxo set ".
                     " estimacion = '".$dEstimacion."', ".
-                    " fechaDesactivado = '".$dFechaDesactivado."', ".
+                    " fechaDesactivado = ".$this->escDate($oObjetivo->getFechaDesactivado()).", ".
                     " objetivo_relevancias_id = ".$this->escInt($oObjetivo->getRelevancia()->getId()).", ".
                     " activo = ".$activo." ".
                     " WHERE

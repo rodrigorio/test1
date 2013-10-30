@@ -566,7 +566,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " documento_tipos_id = ".$this->escInt($oObj->iTipoDocumentoId).", ".
                     " numeroDocumento = ".$this->escStr($oObj->sNumeroDocumento).", " .
                     " sexo = ".$this->escStr($oObj->sSexo).", " .
-                    " fechaNacimiento = '".$oObj->dFechaNacimiento."' ".
+                    " fechaNacimiento = ".$this->escDate($oObj->dFechaNacimiento)." ".
                     " WHERE id = ".$this->escInt($oObj->iInvitadoId)." ";
             
             $db->execSQL($sSQL);
@@ -673,7 +673,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".
+                    " fechaNacimiento = ".$this->escDate($oUsuario->getFechaNacimiento()).", ".                   
                     " email =".$db->encryptData($db->escape($oUsuario->getEmail(),true)).", " .
                     " telefono =".$db->encryptData($db->escape($oUsuario->getTelefono(),true)).", " .
                     " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .
@@ -763,7 +763,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(),false,MYSQL_TYPE_INT).", ".
             " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
             " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-            " fechaNacimiento = '".$oUsuario->getFechaNacimiento()."',".
+            " fechaNacimiento = ".$this->escDate($oUsuario->getFechaNacimiento()).", ".
             " email =".$db->encryptData($db->escape($oUsuario->getEmail(),true)).", " .
             " telefono =".$db->encryptData($db->escape($oUsuario->getTelefono(),true)).", " .
             " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .

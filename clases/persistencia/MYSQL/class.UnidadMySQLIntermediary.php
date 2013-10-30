@@ -163,11 +163,6 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $usuarioId = null;
             }
 
-            $dFechaBorradoLogico = $oUnidad->getFechaBorradoLogico();
-            if(null === $dFechaBorradoLogico){
-                $dFechaBorradoLogico = 'null';
-            }
-
             $preCargada = $oUnidad->isPreCargada() ? "1" : "0";
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
 
@@ -177,7 +172,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
                     "   asociacionAutomatica = '".$asociacionAutomatica."', ".
-                    "   fechaBorradoLogico = '".$dFechaBorradoLogico."' ".
+                    "   fechaBorradoLogico = ".$this->escDate($oUnidad->getFechaBorradoLogico())." ".
                     " WHERE id = ".$this->escInt($oUnidad->getId())." ";
             
             $db->execSQL($sSQL);
@@ -231,7 +226,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             }else{
             	//borra logicamente la unidad
                 $dFechaBorradoLogico = $oUnidadId->getFechaBorradoLogico();
-                $db->execSQL("UPDATE unidades SET borradoLogico = 1, fechaBorradoLogico = '".$dFechaBorradoLogico."' WHERE id = ".$this->escInt($iUnidadId));
+                $db->execSQL("UPDATE unidades SET borradoLogico = 1, fechaBorradoLogico = ".$this->escDate($dFechaBorradoLogico)." WHERE id = ".$this->escInt($iUnidadId));
 
                 //Si el borrado es logico, entonces borro las relaciones entre unidades y seguimientos
                 //para los seguimientos que tienen la unidad asociada pero todavia no guardaron valor en ninguna variable.

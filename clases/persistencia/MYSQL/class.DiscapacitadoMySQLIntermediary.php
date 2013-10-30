@@ -246,7 +246,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " numeroDocumento = ".$db->escape($oDiscapacitado->getNumeroDocumento(),true).", " .
                     " sexo = ".$db->escape($oDiscapacitado->getSexo(),true).", " .
                     " telefono = ".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
-                    " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', ".
+                    " fechaNacimiento = ".$this->escDate($oDiscapacitado->getFechaNacimiento()).", ".
                     " domicilio =".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .
                     " instituciones_id = ".$this->escInt($institucionId).", ".
                     " ciudades_id = ".$this->escInt($ciudadId)." ".
@@ -257,8 +257,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
              $sSQL =" update discapacitados ".
                     " set nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
                     " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
-                    " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
-                    " fechaNacimientoMadre = '".$oDiscapacitado->getFechaNacimientoMadre()."', ".
+                    " fechaNacimientoPadre = ".$this->escDate($oDiscapacitado->getFechaNacimientoPadre()).", ".
+                    " fechaNacimientoMadre = ".$this->escDate($oDiscapacitado->getFechaNacimientoMadre()).", ".
                     " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", ".
                     " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", ".
                     " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
@@ -308,7 +308,7 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " numeroDocumento = ".$db->escape($oDiscapacitado->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo = ".$db->escape($oDiscapacitado->getSexo(),true).", " .
                     " telefono = ".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
-                    " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', " .
+                    " fechaNacimiento = ".$this->escDate($oDiscapacitado->getFechaNacimiento()).", " .
                     " domicilio = ".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .//revisar esto
                     " instituciones_id = ".$this->escInt($institucionId).", ".
                     " ciudades_id = ".$this->escInt($ciudadId)." ";
@@ -321,8 +321,8 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " id = ".$db->escape($iLastId,false).", " .
                     " nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
                     " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
-                    " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
-                    " fechaNacimientoMadre = '".$oDiscapacitado->getFechaNacimientoMadre()."', ".
+                    " fechaNacimientoPadre = ".$this->escDate($oDiscapacitado->getFechaNacimientoPadre()).", ".
+                    " fechaNacimientoMadre = ".$this->escDate($oDiscapacitado->getFechaNacimientoMadre()).", ".
                     " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", " .
                     " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", " .
                     " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
@@ -400,14 +400,14 @@ class DiscapacitadoMySQLIntermediary extends DiscapacitadoIntermediary
                     " numeroDocumento =".$db->escape($oDiscapacitado->getNumeroDocumento(),false,MYSQL_TYPE_INT).", " .
                     " sexo =".$db->escape($oDiscapacitado->getSexo(),true).", " .
                     " telefono =".$db->encryptData($db->escape($oDiscapacitado->getTelefono(),true)).", " .
-                    " fechaNacimiento = '".$oDiscapacitado->getFechaNacimiento()."', " .
+                    " fechaNacimiento = ".$this->escDate($oDiscapacitado->getFechaNacimiento()).", ".
                     " domicilio =".$db->encryptData($db->escape($oDiscapacitado->getDomicilio(),true)).", " .//revisar esto
                     " instituciones_id = ".$this->escInt($institucionId).", ".
                     " ciudades_id =".$this->escInt($ciudadId).", ".
                     " nombreApellidoPadre=".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoPadre(),true)).", " .
                     " nombreApellidoMadre =".$db->encryptData($db->escape($oDiscapacitado->getNombreApellidoMadre(),true)).", ".
-                    " fechaNacimientoPadre = '".$oDiscapacitado->getFechaNacimientoPadre()."', ".
-                    " fechaNacimientoMadre = '".$oDiscapacitado->getFechaNacimientoMadre()."', ".
+                    " fechaNacimientoPadre = ".$this->escDate($oDiscapacitado->getFechaNacimientoPadre()).", ".
+                    " fechaNacimientoMadre = ".$this->escDate($oDiscapacitado->getFechaNacimientoMadre()).", ".
                     " ocupacionPadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionPadre(),true)).", " .
                     " ocupacionMadre =".$db->encryptData($db->escape($oDiscapacitado->getOcupacionMadre(),true)).", " .
                     " nombreHermanos =".$db->encryptData($db->escape($oDiscapacitado->getNombreHermanos(),true)).", ".
