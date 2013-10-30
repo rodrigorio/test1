@@ -109,7 +109,7 @@ class ArchivoMySQLIntermediary extends ArchivoIntermediary
                     " descripcion = ".$this->escStr($oArchivo->getDescripcion()).", ".
                     " tipoMime = ".$this->escStr($oArchivo->getTipoMime()).", " .
                     " tamanio = ".$this->escInt($oArchivo->getTamanio()).", " .
-                    " fechaAlta = '".$oArchivo->getFechaAlta()."', ".
+                    " fechaAlta = ".$this->escDate($oArchivo->getFechaAlta()).", ".
                     " orden = ".$iOrden.", " .
                     " titulo = ".$this->escStr($oArchivo->getTitulo()).", " .
                     " tipo = ".$this->escStr($oArchivo->getTipo())." ".

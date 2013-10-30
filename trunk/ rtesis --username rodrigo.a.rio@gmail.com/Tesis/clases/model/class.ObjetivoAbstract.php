@@ -67,6 +67,12 @@ abstract class ObjetivoAbstract
         return $this->dFechaDesactivado;
     }
 
+    public function setFechaDesactivado($dateTime)
+    {
+        $this->dFechaDesactivado = $dateTime;
+        return $this;
+    }
+
     /**
      * Setea la fecha actual como fecha de desactivado
      */

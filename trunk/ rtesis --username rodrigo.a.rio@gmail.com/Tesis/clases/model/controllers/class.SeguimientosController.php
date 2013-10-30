@@ -1231,7 +1231,7 @@ class SeguimientosController
     }
 
     public function getObjetivosPersonalizadosByEntrada($iSeguimientoId, $dFechaHora)
-    {        
+    {
     	try{
             $filtro = array(
                 'op.seguimientos_personalizados_id' => $iSeguimientoId,
