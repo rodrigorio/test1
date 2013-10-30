@@ -152,6 +152,7 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .fost_it{font-style:italic;}
 .ov_au{overflow:auto} .ov_hi{overflow:hidden}
 .zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}
+.cu_mo{cursor:move !important}
 
 .baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF} .baco5{background-color:#E9EAED}
 .ba_no, .ba_no:hover{background:none !important}
