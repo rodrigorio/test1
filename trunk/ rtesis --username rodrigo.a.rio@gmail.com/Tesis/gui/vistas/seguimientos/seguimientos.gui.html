@@ -65,7 +65,7 @@
 
 {fichaPersona}
     
-<ul id="pageRightInnerContNav" class="m_vert menu05 cl_ri po_re">
+<ul id="pageRightInnerContNav" class="m_vert menu05 cl_ri po_re mihe2">
     <div class="ajax_wait30 di_no"></div>
     <li {currentOptionVerSeguimiento}>
         <a href="{hrefVerSeguimiento}?iSeguimientoId={iSeguimientoId}">
@@ -103,6 +103,11 @@
                 </a>
             </li>
         </ul>
+    </li>
+    <li {currentOptionAsociarUnidadesSeguimiento}>
+        <a href="{hrefAsociarUnidadesSeguimiento}?iSeguimientoId={iSeguimientoId}">
+            Asociar Unidades
+        </a>
     </li>
     <li {currentOptionVerAdjuntosSeguimiento}>
         <a href="{hrefVerAdjuntosSeguimiento}?iSeguimientoId={iSeguimientoId}">

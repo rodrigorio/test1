@@ -839,19 +839,7 @@ $(document).ready(function(){
         );
         return false;
     });
-    
-    //menu derecha
-    $("#pageRightInnerContNav li").mouseenter(function(){
-        if(!$(this).hasClass("selected")){
-            $(this).children("ul").fadeIn('slow');
-        }
-    });
-    $("#pageRightInnerContNav li").mouseleave(function(){
-        if(!$(this).hasClass("selected")){
-            $(this).children("ul").fadeOut('slow');
-        }
-    });   
-    
+        
     //formulario adjuntar foto, video, archivo
     $(".agregarFotoSeguimiento").live('click',function(){
 

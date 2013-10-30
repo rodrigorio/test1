@@ -30,8 +30,18 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "jsContent", "JsContent");
+        return $this;
+    }
 
+    private function setJsUnidades()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "jsContent", "JsContent");
+        return $this;
+    }
+
+    private function setJsAsociarUnidadSeguimiento()
+    {
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "jsContent", "JsContentAsociarUnidades");
         return $this;
     }
 
@@ -66,7 +76,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
     }
 
     /**
-     * Seguimientos personalizados asociados a la unidad
+     * Seguimientos personalizados asociados a la unidad, se usa en la vista de administrar unidades seg personalizados
      */
     private function verSeguimientos()
     {
@@ -111,6 +121,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         try{
             $this->setFrameTemplate()
                  ->setMenuDerecha()
+                 ->setJsUnidades()
                  ->setHeadTag();
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
@@ -441,5 +452,56 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    /**
+     * Esta vista lista las unidades asociadas a un seguimiento y permite administrarlas mediante drag and drop.
+     * La idea es que en la columna izquierda esten las unidades que actualmente no se asociaron,
+     * en la columna derecha las que actualmente se asociaron al seguimiento.
+     *
+     * En la lista de unidades aparecen tanto las esporadicas como regulares.
+     *
+     * Si el seguimiento es SCC solo se muestran las precargadas desde el administrador.
+     *
+     * No se muestran las unidades de asociacion automatica
+     *
+     */
+    public function listarUnidadesPorSeguimiento()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+    	if(empty($iSeguimientoId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+    	}
+
+        try{
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+
+            $aCurrentOptions[] = "currentOptionAsociarUnidadesSeguimiento";
+
+            $this->setFrameTemplate()
+                 ->setJsAsociarUnidadSeguimiento()
+                 ->setHeadTag();
+
+            SeguimientosControllerSeguimientos::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
+
+            //para que pueda ser reutilizado en otras vistas
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            $this->getTemplate()->set_var("tituloSeccion", "Asociar unidades a Seguimiento");
+            $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
+            $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
+
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "pageRightInnerMainCont", "AsociarUnidadesBlock");
+
+            //...
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            $this->getResponse()->setBody("Ocurrio un error");
+        }
     }
 }
