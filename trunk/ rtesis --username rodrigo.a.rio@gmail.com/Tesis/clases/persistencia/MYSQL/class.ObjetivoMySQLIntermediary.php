@@ -196,8 +196,14 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                                 oe.seg_scc_x_obj_apr_obj_id, oe.seg_scc_x_obj_apr_seg_id, 
                                 oe.comentarios AS sComentarios, e.id AS iEntradaId
                          FROM objetivo_evolucion oe
-                         JOIN entradas e ON oe.entradas_id = e.id 
-                         ORDER BY e.fecha DESC limit 1) AS e ON o.id = e.seg_scc_x_obj_apr_obj_id AND sxo.seguimientos_scc_id = e.seg_scc_x_obj_apr_seg_id ";
+                         JOIN entradas e ON oe.entradas_id = e.id
+                         JOIN(
+                            SELECT oe.seg_scc_x_obj_apr_obj_id, oe.seg_scc_x_obj_apr_seg_id, MAX(e.fecha) AS fecha
+                            FROM objetivo_evolucion oe JOIN entradas e ON oe.entradas_id = e.id
+                            GROUP BY oe.seg_scc_x_obj_apr_obj_id, oe.seg_scc_x_obj_apr_seg_id) AS ultimaEntrada ON(
+                                ultimaEntrada.seg_scc_x_obj_apr_obj_id = oe.seg_scc_x_obj_apr_obj_id AND ultimaEntrada.seg_scc_x_obj_apr_seg_id = oe.seg_scc_x_obj_apr_obj_id AND ultimaEntrada.fecha = e.fecha
+                            )
+                         ) AS e ON o.id = e.seg_scc_x_obj_apr_obj_id AND sxo.seguimientos_scc_id = e.seg_scc_x_obj_apr_seg_id ";
 
             $WHERE = array();
 
@@ -224,7 +230,7 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
             }else{
                 $sSQL .= " order by bActivo desc, isLogrado, iRelevanciaId desc ";
             }
-
+            
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -245,12 +251,15 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                     $oObjetivo->oRelevancia = $oRelevancia;
                 }
 
-                $oEvolucion = new stdClass();
-                $oEvolucion->iId = $oObj->iEvolucionId;
-                $oEvolucion->iProgreso = $oObj->iProgreso;
-                $oEvolucion->sComentarios = $oObj->sComentarios;
-                $oEvolucion->iEntradaId = $oObj->iEntradaId;
-                $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
+                if(null !== $oObj->iEvolucionId){
+                    $oEvolucion = new stdClass();
+                    $oEvolucion->iId = $oObj->iEvolucionId;
+                    $oEvolucion->iProgreso = $oObj->iProgreso;
+                    $oEvolucion->sComentarios = $oObj->sComentarios;
+                    $oEvolucion->iEntradaId = $oObj->iEntradaId;
+                    $oEvolucion = Factory::getEvolucionInstance($oEvolucion);
+                    $oObjetivo->oUltimaEvolucion = $oEvolucion;
+                }
 
                 $oObjetivo->iId = $oObj->iId;
                 $oObjetivo->iSeguimientoSCCId = $oObj->iSeguimientoSCCId;
@@ -259,7 +268,6 @@ class ObjetivoMySQLIntermediary extends ObjetivoIntermediary
                 $oObjetivo->dFechaDesactivado = $oObj->dFechaDesactivado;
                 $oObjetivo->isEditable = SeguimientosController::getInstance()->isEntidadEditable($oObj->dFechaCreacion);
             	$oObjetivo->dEstimacion = $oObj->dEstimacion;
-                $oObjetivo->oUltimaEvolucion = $oEvolucion;
                 $oObjetivo->bActivo = ($oObj->bActivo == "1")?true:false;
                 $oObjetivo->oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($oObj->iEjeTematicoId);
 

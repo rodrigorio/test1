@@ -2822,7 +2822,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
                         $this->getTemplate()->set_var("EstimacionBlock", "");
 
-                        $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFechaHora(true));
+                        $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
                     }else{
                         $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
                         $this->getTemplate()->set_var("FechaLogradoBlock", "");

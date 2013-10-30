@@ -114,6 +114,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             $this->setContenidoColumnaIzquierda($oSeguimiento);
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageBodyCenterCont", "AmpliarEntradaBlock");
 
+            $sFechaActual = strtok(date("d/m/Y"), " ");
+            $this->getTemplate()->set_var("dFechaActual", $sFechaActual);
+
             $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
             if($bUltimaEntrada){
                 $oEntrada = $oUltimaEntrada;
@@ -125,7 +128,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
                     $this->getTemplate()->set_var("sTituloMsgFicha", "Seguimiento sin entradas.");
-                    $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una seleccione una fecha desde el calendario y luego elija 'Crear nueva entrada'.");
+                    $this->getTemplate()->set_var("sMsgFicha", "Este seguimiento todavía no posee entradas. Para crear una nueva, seleccione una fecha desde el calendario marcada como disponible.");
 
                     $this->getTemplate()->unset_blocks("EntradaContBlock");
                     $this->getTemplate()->unset_blocks("HistorialEntradasBlock");
@@ -151,10 +154,8 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
             $sEntradaActual = str_replace("-", "/", $oEntrada->getFecha());
             $sUltimaEntrada = str_replace("-", "/", $oSeguimiento->getUltimaEntrada()->getFecha());
-            $sFechaActual = strtok(date("d/m/Y"), " ");
             $this->getTemplate()->set_var("sEntradaActual", $sEntradaActual);
-            $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
-            $this->getTemplate()->set_var("dFechaActual", $sFechaActual);
+            $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);            
             $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));       
             $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
             
@@ -935,6 +936,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 }
                 if($oSeguimiento->isSeguimientoSCC()){
                     $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeById($iObjetivoId);
+                    $oObjetivo->setSeguimientoSCCId($oSeguimiento->getId());
                 }
 
                 $oEvolucion = new stdClass();
