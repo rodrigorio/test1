@@ -674,13 +674,11 @@ class VariablesControllerSeguimientos extends PageControllerAbstract
             }
 
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                    $this->getJsonHelper()->setSuccess(false);
-                    $this->getJsonHelper()->sendJsonAjaxResponse();
-                    return;
-                }
+            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
             }
 
             $vModalidad = $this->getRequest()->getPost("modalidad");
