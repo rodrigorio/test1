@@ -751,13 +751,10 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-
-            //SeguimientosController::getInstance()->desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId);
-
+            SeguimientosController::getInstance()->desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId);
             $this->getJsonHelper()->setSuccess(true)
                                   ->sendJsonAjaxResponse();
             return;
-
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
             $this->getJsonHelper()->sendJsonAjaxResponse();

@@ -399,7 +399,20 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         }
     }
 
-    public function desasociarSeguimiento($iSeguimientoId, $iUnidadId)
+    /**
+     * devuelve true si la unidad esta asociada con al menos 1 entrada que fue guardada al menos 1 vez
+     * y que se encuentra fuera del periodo de edicion.
+     */
+    public function hasUnidadEntradasExpiradas($iSeguimientoId, $iUnidadId, $iCantDiasEdicion)
+    {
+        
+    }
+
+    /**
+     * este metodo borra fisicamente las variables de la unidad para todas las entradas dentro del periodo de edicion.
+     * tambien borra fisica o logicamente la asociacion segun corresponda el flag de borradoLogicoAsocacion.
+     */
+    public function desasociarSeguimiento($iSeguimientoId, $iUnidadId, $borradoLogicoAsociacion, $iCantDiasEdicion)
     {
         
     }
