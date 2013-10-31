@@ -1646,6 +1646,43 @@ class SeguimientosController
         }
     }
 
+    /**
+     * Si la asociacion ya existe pero esta borrada logicamente limpia el registro y la vuelve a activar.
+     * Si la asociacion no existia crea un nuevo row asociando las 2 entidades.
+     *
+     * previamente se tiene que comprobar que el seguimiento sea propiedad del usuario que inicio sesion
+     */
+    public function asociarUnidadSeguimiento($iSeguimientoId, $iUnidadId)
+    {
+        try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->asociarSeguimiento($iSeguimientoId, $iUnidadId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Este es un poquito mas complejo :)
+     *
+     * Si borro la asociacion se tiene q mantener la info.. entonces:
+     *
+     * si esta dentro del periodo de edicion borro la relacion y todas las variables en las entradas.
+     * (no hay problema si desasocio una misma unidad porque la fecha es la de la primera asociacion, con lo cual el tiempo da expirado siempre y no se borra info vieja)
+     *
+     * si el periodo de edicion se expiro (comparando la fecha en la que se asocio la unidad por primera vez) entonces prendo flag de borrado logico y la fecha de borrado logico como la actual.
+     *
+     */
+    public function desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId)
+    {
+        try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function isVariableUsuario($iVariableId)
     {
         try{
