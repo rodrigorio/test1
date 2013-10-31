@@ -593,6 +593,11 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             $this->ampliarUnidad();
             return;
         }
+        
+        if($this->getRequest()->has('dialogConfirmar')){
+            $this->dialogConfirmar();
+            return;
+        }
 
         if($this->getRequest()->has('moverUnidad')){
             if($this->getRequest()->getParam('moverUnidad') == "asociarUnidadSeguimiento"){
@@ -603,6 +608,18 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             }
             return;
         }
+    }
+
+    private function dialogConfirmar()
+    {
+        //la fecha de creacion esta fuera del periodo de edicion de seguimientos?
+        $iCantDias = SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento();
+        $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaHintBlock");
+        $this->getTemplate()->set_var("sTituloMsgFicha", "Desasociar Unidad");
+        $this->getTemplate()->set_var("sMsgFicha", "Se eliminará la asociación entre la unidad y el seguimiento.<br>
+                                                    Esta acción provocará que el contenido guardado en las entradas de los últimos <strong>".$iCantDias."</strong> días en las variables de la unidad se elimine de manera permanente.<br>
+                                                    Desea continuar?");
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));       
     }
 
     private function ampliarUnidad()

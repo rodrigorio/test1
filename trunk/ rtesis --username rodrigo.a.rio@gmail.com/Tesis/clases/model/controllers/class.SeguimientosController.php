@@ -1667,10 +1667,15 @@ class SeguimientosController
      *
      * Si borro la asociacion se tiene q mantener la info.. entonces:
      *
-     * si esta dentro del periodo de edicion borro la relacion y todas las variables en las entradas.
-     * (no hay problema si desasocio una misma unidad porque la fecha es la de la primera asociacion, con lo cual el tiempo da expirado siempre y no se borra info vieja)
+     * borro todas las variables fisicamente de las entradas que esten dentro del periodo de edicion. SIEMPRE.
+     * Por mas que sea una unidad que se asocio y desasocio varias veces.
+     * Cada vez que se quita la asociacion se borra fisicamente todo lo que esta dentro del periodo de edicion.
      *
-     * si el periodo de edicion se expiro (comparando la fecha en la que se asocio la unidad por primera vez) entonces prendo flag de borrado logico y la fecha de borrado logico como la actual.
+     * Si hay al menos 1 entrada posterior al periodo de edicion que fue guardada al menos 1 vez
+     * (ya no se puede eliminar la entrada), entonces la asociacion se borra logicamente
+     * (seteo fecha actual como borrado logico).
+     * Si una unidad se asocia y se desasocia varias veces, la fecha de asociacion es la de la primera vez.
+     * Esto hace que NUNCA se pierdan los datos de las entradas mas viejas cuando se visualizan.
      *
      */
     public function desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId)
