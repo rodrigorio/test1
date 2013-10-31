@@ -1673,16 +1673,28 @@ class SeguimientosController
      *
      * Si hay al menos 1 entrada posterior al periodo de edicion que fue guardada al menos 1 vez
      * (ya no se puede eliminar la entrada), entonces la asociacion se borra logicamente
-     * (seteo fecha actual como borrado logico).
+     * (seteo fecha actual como borrado logico). De lo contrario se borra fisicamente la asociacion tambien.
+     * 
      * Si una unidad se asocia y se desasocia varias veces, la fecha de asociacion es la de la primera vez.
      * Esto hace que NUNCA se pierdan los datos de las entradas mas viejas cuando se visualizan.
      *
+     * PD: en el caso que la asociacion se borre fisicamente, puede quedar un remanente de variables vacias
+     * correspondientes a entradas expiradas (vencio periodo de edicion) que no fueron guardadas al menos 1 vez desde que se crearon.
+     * En tal caso no es informacion basura, ya que aunque no se visualizen seran eliminadas fisicamente cuando el usuario borre dicha entrada.
+     * 
      */
     public function desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId)
     {
         try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId);
+            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();
+            
+            //devuelve true si la unidad esta asociada con al menos 1 entrada que fue guardada al menos 1 vez y que se encuentra fuera del periodo de edicion.
+            $borradoLogicoAsociacion = $oUnidadIntermediary->hasUnidadEntradasExpiradas($iSeguimientoId, $iUnidadId, $iCantDiasEdicion);
+
+            //este metodo borra fisicamente las variables de la unidad para todas las entradas dentro del periodo de edicion.
+            //tambien borra fisica o logicamente la asociacion segun corresponda el flag de borradoLogicoAsocacion.
+            return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId, $borradoLogicoAsociacion, $iCantDiasEdicion);
         }catch(Exception $e){
             throw $e;
         }
