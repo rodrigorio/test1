@@ -356,4 +356,51 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
+
+    public function asociarSeguimiento($iSeguimientoId, $iUnidadId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimiento_x_unidad su
+                      WHERE
+                        su.borradoLogico = '1' AND 
+                        su.unidades_id = ".$this->escInt($iUnidadId)." AND
+                        su.seguimientos_id = ".$this->escInt($iSeguimientoId);
+
+            $db->query($sSQL);
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                //creo una nueva asociacion                
+                $sSQL = " INSERT INTO seguimiento_x_unidad SET ".
+                        "   unidades_id = ".$this->escInt($iUnidadId).", ".
+                        "   seguimientos_id = ".$this->escInt($iSeguimientoId);
+
+                $db->execSQL($sSQL);
+                $db->commit();                
+            }else{
+                //actualizo la asociacion que ya existe
+                $sSQL = " UPDATE seguimiento_x_unidad SET ".
+                        "   borradoLogico = '0', ".
+                        "   fechaBorradoLogico = null ".
+                        " WHERE unidades_id = ".$this->escInt($iUnidadId)." AND seguimientos_id = ".$this->escInt($iSeguimientoId);
+
+                $db->execSQL($sSQL);
+                $db->commit();
+            }
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function desasociarSeguimiento($iSeguimientoId, $iUnidadId)
+    {
+        
+    }
 }

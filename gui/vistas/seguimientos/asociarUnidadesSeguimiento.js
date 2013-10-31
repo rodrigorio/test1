@@ -1,64 +1,48 @@
-function asociarUnidad()
+function asociarUnidad(unidad)
 {
+    var rel = unidad.attr("rel").split('_');
+    var iSeguimientoId = rel[0];
+    var iUnidadId = rel[1];
 
+    return moverUnidad("asociarUnidadSeguimiento", iSeguimientoId, iUnidadId);
 }
 
-function desasociarUnidad()
+function desasociarUnidad(unidad)
 {
+    var rel = unidad.attr("rel").split('_');
+    var iSeguimientoId = rel[0];
+    var iUnidadId = rel[1];
+
+    return moverUnidad("desasociarUnidadSeguimiento", iSeguimientoId, iUnidadId);
+}
+
+function moverUnidad(accion, iSeguimientoId, iUnidadId){
+    var result;
     
-}
-
-function moverUnidad(){
     $.ajax({
         type:"post",
-        dataType: 'jsonp',
-        url:"seguimientos/entradas/eliminar",
+        dataType:'jsonp',
+        url:"seguimientos/unidades-seguimiento-procesar",
         data:{
-            confirmo:"0",
-            iEntradaId:iEntradaId
+            moverUnidad:accion,
+            iSeguimientoId:iSeguimientoId,
+            iUnidadId:iUnidadId
         },
         beforeSend: function(){
-            setWaitingStatus('menuEntrada', true, "16");
+            setWaitingStatus('unidadesWrapper', true);
         },
         success:function(data){
-            setWaitingStatus('menuEntrada', false, "16");
+            setWaitingStatus('unidadesWrapper', false);
 
-            var dialog = $("#dialog");
-            if($("#dialog").length){dialog.remove();}
-            dialog = $('<div id="dialog" title="Eliminar Entrada"></div>').appendTo('body');
-            dialog.html(data.html);
-
-            if(data.success != undefined && data.success == 1 && data.confirmar){
-                dialog.dialog({
-                    position:['center', 'center'],
-                    width:400,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true,
-                    buttons:buttons
-                });
+            if(data.success != undefined && data.success == 1){
+                result = true;
             }else{
-                var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
-                dialog.dialog({
-                    position:['center', 'center'],
-                    width:400,
-                    resizable:false,
-                    draggable:false,
-                    modal:false,
-                    closeOnEscape:true,
-                    buttons:buttonAceptar
-                });
-
-                if(data.success != undefined && data.success == 1){
-                    $(".ui-dialog-buttonset .ui-button").click(function(){
-                        //redirecciona a ultima entrada
-                        location = data.redirect;
-                    });
-                }
+                result = false;
             }
         }
     });
+
+    return result;
 }
 
 $(document).ready(function(){
@@ -111,6 +95,9 @@ $(document).ready(function(){
             }
 
             //si el resultado fue false cancelo el movimiento de la unidad.
+            if(!result){
+                
+            }
 
             //Once Finish Sort, remove Clone Li from current list
             unidad.remove();

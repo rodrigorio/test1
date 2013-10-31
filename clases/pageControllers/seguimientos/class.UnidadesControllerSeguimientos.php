@@ -594,13 +594,13 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             return;
         }
 
-        if($this->getRequest()->has('asociarUnidadSeguimiento')){
-            $this->asociarUnidadSeguimiento();
-            return;
-        }
-
-        if($this->getRequest()->has('desasociarUnidadSeguimiento')){
-            $this->desasociarUnidadSeguimiento();
+        if($this->getRequest()->has('moverUnidad')){
+            if($this->getRequest()->getParam('moverUnidad') == "asociarUnidadSeguimiento"){
+                $this->asociarUnidadSeguimiento();
+            }
+            if($this->getRequest()->getParam('moverUnidad') == "desasociarUnidadSeguimiento"){
+                $this->desasociarUnidadSeguimiento();
+            }
             return;
         }
     }
@@ -684,6 +684,67 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    private function asociarUnidadSeguimiento(){}
-    private function desasociarUnidadSeguimiento(){}
+    private function asociarUnidadSeguimiento()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        $iUnidadId = $this->getRequest()->getParam('iUnidadId');
+        
+        if(empty($iSeguimientoId) || empty($iUnidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar este seguimiento", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            SeguimientosController::getInstance()->asociarUnidadSeguimiento($iSeguimientoId, $iUnidadId);
+
+            $this->getJsonHelper()->setSuccess(true)
+                                  ->sendJsonAjaxResponse();
+            return;
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
+        }            
+    }
+    
+    private function desasociarUnidadSeguimiento()
+    {
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        $iUnidadId = $this->getRequest()->getParam('iUnidadId');
+        
+        if(empty($iSeguimientoId) || empty($iUnidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar este seguimiento", 401);
+        }
+
+        $this->getJsonHelper()->initJsonAjaxResponse();
+        try{
+
+            //SeguimientosController::getInstance()->desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId);
+
+            $this->getJsonHelper()->setSuccess(true)
+                                  ->sendJsonAjaxResponse();
+            return;
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
+        }   
+    }
 }
