@@ -1,24 +1,38 @@
-function asociarUnidad(unidad)
-{
-    var rel = unidad.attr("rel").split('_');
-    var iSeguimientoId = rel[0];
-    var iUnidadId = rel[1];
-
-    return moverUnidad("asociarUnidadSeguimiento", iSeguimientoId, iUnidadId);
+function asociarUnidad(unidad){
+    moverUnidad(unidad, "asociarUnidadSeguimiento");
 }
 
 function desasociarUnidad(unidad)
 {
+    var buttons = {
+        "Confirmar": function(){
+            moverUnidad(unidad, "desasociarUnidadSeguimiento");
+            $(this).dialog( "close" );
+        },
+        "Cancelar": function(){
+            //volver a posicion inicial
+            var rel = unidad.attr("rel").split('_');
+            var iUnidadId = rel[1];
+            $("#unidad_"+iUnidadId).appendTo('#unidadesAsociadas');
+            $(this).dialog( "close" );
+        }
+    }
+
+    //este es el dialog que pide confirmar la accion
+    var dialog = setWaitingStatusDialog(500, "Asociar Unidad", buttons);
+    dialog.load(
+        "seguimientos/unidades-seguimiento-procesar",
+        {dialogConfirmar:"1"},
+        function(){}
+    );
+}
+
+function moverUnidad(unidad, accion)
+{
     var rel = unidad.attr("rel").split('_');
     var iSeguimientoId = rel[0];
     var iUnidadId = rel[1];
 
-    return moverUnidad("desasociarUnidadSeguimiento", iSeguimientoId, iUnidadId);
-}
-
-function moverUnidad(accion, iSeguimientoId, iUnidadId){
-    var result;
-    
     $.ajax({
         type:"post",
         dataType:'jsonp',
@@ -33,16 +47,19 @@ function moverUnidad(accion, iSeguimientoId, iUnidadId){
         },
         success:function(data){
             setWaitingStatus('unidadesWrapper', false);
-
-            if(data.success != undefined && data.success == 1){
-                result = true;
+            if(data.success == undefined || data.success == 0){
+                //volver a posicion inicial el li
+                $("#unidad_"+iUnidadId).appendTo('#unidadesAsociadas');
             }else{
-                result = false;
+                if(accion == "asociarUnidadSeguimiento"){
+                    $("#noRecordsAsociadas").remove();
+                }
+                if(accion == "desasociarUnidadSeguimiento"){
+                    $("#noRecordsDesasociadas").remove();
+                }
             }
         }
     });
-
-    return result;
 }
 
 $(document).ready(function(){
@@ -85,18 +102,12 @@ $(document).ready(function(){
         },
         stop: function(){
             var unidad = $(this).find("li:eq(" + idx + ")");
-            var result;
 
             if($(this).attr("id") == 'unidadesSinAsociar'){
-                result = asociarUnidad(unidad);
+                asociarUnidad(unidad);
             }
             if($(this).attr("id") == 'unidadesAsociadas'){
-                result = desasociarUnidad(unidad);
-            }
-
-            //si el resultado fue false cancelo el movimiento de la unidad.
-            if(!result){
-                
+                desasociarUnidad(unidad);
             }
 
             //Once Finish Sort, remove Clone Li from current list
