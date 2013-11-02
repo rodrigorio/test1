@@ -835,7 +835,6 @@ class SeguimientosController
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();            
             $filtro = array('u.usuarios_id' => $iUsuarioId,
-                            'notIn' => $oSeguimiento->getId(),
                             'u.preCargada' => '0',
                             'u.asociacionAutomatica' => '0',
                             'u.borradoLogico' => '0'
@@ -857,7 +856,6 @@ class SeguimientosController
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();            
             $filtro = array('u.usuarios_id' => $iUsuarioId,
-                            'notIn' => $oSeguimiento->getId(),
                             'u.preCargada' => '1',
                             'u.asociacionAutomatica' => '0',
                             'u.borradoLogico' => '0'
@@ -1072,9 +1070,8 @@ class SeguimientosController
     	try{
             $filtro = array('su.seguimientos_id' => $iSeguimientoId);
             if(!$bBorradoLogico){
-                //no tiene que estar borrada la unidad ni la asociacion unidad_x_seguimiento
+                //no tiene que estar borrada la unidad 
                 $filtro['u.borradoLogico'] = "0";
-                $filtro['su.borradoLogico'] = "0";
             }
             if(null !== $sTipoEdicion){
                 $filtro['u.tipoEdicion'] = $sTipoEdicion;
@@ -1658,20 +1655,11 @@ class SeguimientosController
      *
      * Si borro la asociacion se tiene q mantener la info.. entonces:
      *
-     * borro todas las variables fisicamente de las entradas que esten dentro del periodo de edicion. SIEMPRE.
-     * Por mas que sea una unidad que se asocio y desasocio varias veces.
-     * Cada vez que se quita la asociacion se borra fisicamente todo lo que esta dentro del periodo de edicion.
+     * borro fisicamente todas las unidades con sus respectivas variables para entradas
+     * que esten dentro del periodo de edicion
      *
-     * Si hay al menos 1 entrada posterior al periodo de edicion que fue guardada al menos 1 vez
-     * (ya no se puede eliminar la entrada), entonces la asociacion se borra logicamente
-     * (seteo fecha actual como borrado logico). De lo contrario se borra fisicamente la asociacion tambien.
-     * 
-     * Si una unidad se asocia y se desasocia varias veces, la fecha de asociacion es la de la primera vez.
-     * Esto hace que NUNCA se pierdan los datos de las entradas mas viejas cuando se visualizan.
-     *
-     * PD: en el caso que la asociacion se borre fisicamente, puede quedar un remanente de variables vacias
-     * correspondientes a entradas expiradas (vencio periodo de edicion) que no fueron guardadas al menos 1 vez desde que se crearon.
-     * En tal caso no es informacion basura, ya que aunque no se visualizen seran eliminadas fisicamente cuando el usuario borre dicha entrada.
+     * tambien borro fisicamente todas las unidades con sus respectivas variables
+     * en entradas posteriores al periodo de edicion pero que no se guardaron nunca. (solo se crearon)
      * 
      */
     public function desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId)
@@ -1895,8 +1883,6 @@ class SeguimientosController
             }
 
             //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido.
-            //el borrado logico no tiene que estar en la unidad ni en la asociacion.
-            //(Porque se puede eliminar una unidad para todos los seguimientos o quitar la asociacion desde el drag and drop.)
             $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", true, "u.fechaHora", "ASC");
             foreach($aUnidades as $oUnidad){
 
