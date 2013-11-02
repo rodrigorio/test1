@@ -53,10 +53,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $WHERE[] = $this->crearFiltroSimple('u.asociacionAutomatica', $filtro['u.asociacionAutomatica']);
             }
             if(isset($filtro['u.borradoLogico']) && $filtro['u.borradoLogico']!=""){
-                $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', $filtro['u.borradoLogico']);
+                $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', $filtro['u.borradoLogico'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['su.borradoLogico']) && $filtro['su.borradoLogico']!=""){
-                $WHERE[] = $this->crearFiltroSimple('su.borradoLogico', $filtro['su.borradoLogico']);
+                $WHERE[] = $this->crearFiltroSimple('su.borradoLogico', $filtro['su.borradoLogico'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
@@ -71,10 +71,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $WHERE[] = $this->crearFiltroFecha('u.fechaHora', null, $filtro['u.fechaHora'], false, true);
             }
             if(isset($filtro['u.fechaBorradoLogico']) && $filtro['u.fechaBorradoLogico'] != ""){
-                $WHERE[] = $this->crearFiltroFecha('u.fechaBorradoLogico', $filtro['u.fechaBorradoLogico'], null, true, true);
+                $WHERE[] = $this->crearFiltroFecha('u.fechaBorradoLogico', null, $filtro['u.fechaBorradoLogico'], true, true);
             }
             if(isset($filtro['su.fechaBorradoLogico']) && $filtro['su.fechaBorradoLogico'] != ""){
-                $WHERE[] = $this->crearFiltroFecha('su.fechaBorradoLogico', $filtro['su.fechaBorradoLogico'], null, true, true);
+                $WHERE[] = $this->crearFiltroFecha('su.fechaBorradoLogico', null, $filtro['su.fechaBorradoLogico'], true, true);
             }
             if(isset($filtro['notIn']) && $filtro['notIn'] != ""){
                 $WHERE[] = " u.id NOT IN (SELECT unidades_id FROM seguimiento_x_unidad WHERE borradoLogico <> 1 AND seguimientos_id = ".$filtro['notIn'].") ";
@@ -120,6 +120,68 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }        
+    }
+
+    /**
+     * Es uno de los principales metodos de la clase, con esto puedo lograr optimizar y sumar en performance.
+     */
+    public function obtenerUnidadesByEntrada($iEntradaId)
+    {
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "   SELECT DISTINCT SQL_CALC_FOUND_ROWS
+                            u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId,
+                            u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica,
+                            u.tipoEdicion as eTipoEdicion, u.fechaBorradoLogico as dFechaBorradoLogico
+                        FROM
+                            entrada_x_unidad eu
+                        JOIN
+                            unidades u ON eu.unidades_id = u.id
+                        LEFT JOIN
+                            seguimiento_x_unidad su ON u.id = su.unidades_id ";
+
+            $WHERE = array();
+
+            $WHERE[] = $this->crearFiltroSimple('eu.entradas_id', $iEntradaId, MYSQL_TYPE_INT);
+            $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', "0", MYSQL_TYPE_INT);
+            $WHERE[] = $this->crearFiltroSimple('su.borradoLogico', "0", MYSQL_TYPE_INT);
+            $WHERE[] = $this->crearFiltroSimple('u.tipoEdicion', "regular");
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            $sSQL .= " order by u.fechaHora asc ";
+
+            $db->query($sSQL);
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aUnidades = array();
+            while($oObj = $db->oNextRecord()){
+                $oUnidad = new stdClass();
+                $oUnidad->iId = $oObj->iId;
+                $oUnidad->sNombre = $oObj->sNombre;
+                $oUnidad->sDescripcion = $oObj->sDescripcion;
+                $oUnidad->dFechaHora = $oObj->dFechaHora;
+                $oUnidad->dFechaBorradoLogico = $oObj->dFechaBorradoLogico;
+                $oUnidad->eTipoEdicion = $oObj->eTipoEdicion;
+
+                //puede no tener un usuario asociado
+                if($oObj->iUsuarioId !== null){
+                    $oUnidad->iUsuarioId = $oObj->iUsuarioId;
+                }
+
+                $oUnidad->bPreCargada = $oObj->bPreCargada ? true : false;
+                $oUnidad->bAsociacionAutomatica = $oObj->bAsociacionAutomatica ? true : false;
+
+                $aUnidades[] = Factory::getUnidadInstance($oUnidad);
+            }
+
+            return $aUnidades;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        } 
     }
 
     public  function insertar($oUnidad)

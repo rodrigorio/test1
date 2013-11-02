@@ -33,31 +33,40 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
-
-            $sSQL = "INSERT INTO entrada_x_contenido_variables (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
-
+            
             $aUnidades = $oEntrada->getUnidades();
+
+            $sSQL1 = "INSERT INTO entrada_x_unidad (unidades_id, entradas_id) VALUES ";
+            $sSQL2 = "INSERT INTO entrada_x_contenido_variables (entradas_id, variables_id, valorTexto, valorNumerico) VALUES ";
+
             foreach($aUnidades as $oUnidad){
 
-                $aVariables = $oUnidad->getVariables();
-                
-                foreach($aVariables as $oVariable){
-                    $sSQL .= " (".$iLastId.", ".$this->escInt($oVariable->getId()).", ";
+                $sSQL1 .= "(".$this->escInt($oUnidad->getId()).", ".$iLastId."),";
 
-                    if($oVariable->isVariableTexto()){
-                        $sSQL .= $this->escStr($oVariable->getValor()).", null),";
-                    }
-                    if($oVariable->isVariableNumerica()){
-                        $sSQL .= "null, ".$this->escFlt($oVariable->getValor())."),";
-                    }
-                    if($oVariable->isVariableCualitativa()){
-                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()->getId())."),";
+                $aVariables = $oUnidad->getVariables(); //puede que la unidad este vacia
+                if(count($aVariables)>0){
+                    foreach($aVariables as $oVariable){
+                        $sSQL2 .= " (".$iLastId.", ".$this->escInt($oVariable->getId()).", ";
+
+                        if($oVariable->isVariableTexto()){
+                            $sSQL2 .= $this->escStr($oVariable->getValor()).", null),";
+                        }
+                        if($oVariable->isVariableNumerica()){
+                            $sSQL2 .= "null, ".$this->escFlt($oVariable->getValor())."),";
+                        }
+                        if($oVariable->isVariableCualitativa()){
+                            $iValor = $oVariable->getValor() ? $oVariable->getValor()->getId() : "null";
+                            $sSQL2 .= "null, ".$this->escInt($iValor)."),";
+                        }
                     }
                 }
             }
-            $sSQL = substr($sSQL, 0, -1);
+            $sSQL1 = substr($sSQL1, 0, -1);
+            $sSQL2 = substr($sSQL2, 0, -1);
 
-            $db->execSQL($sSQL);
+            $db->execSQL($sSQL1);
+            $db->execSQL($sSQL2);
+            
             $db->commit();
 
             $oEntrada->setId($iLastId);            
@@ -96,18 +105,21 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $aUnidades = $oEntrada->getUnidades();
             foreach($aUnidades as $oUnidad){
                 $aVariables = $oUnidad->getVariables();
-                foreach($aVariables as $oVariable){
-                    $sSQL .= " (".$this->escInt($oEntrada->getId()).", ".$this->escInt($oVariable->getId()).", ";
+                if(count($aVariables)>0){
+                    foreach($aVariables as $oVariable){
+                        $sSQL .= " (".$this->escInt($oEntrada->getId()).", ".$this->escInt($oVariable->getId()).", ";
 
-                    if($oVariable->isVariableTexto()){
-                        $sSQL .= $this->escStr($oVariable->getValor()).", null),";
+                        if($oVariable->isVariableTexto()){
+                            $sSQL .= $this->escStr($oVariable->getValor()).", null),";
+                        }
+                        if($oVariable->isVariableNumerica()){
+                            $sSQL .= "null, ".$this->escFlt($oVariable->getValor())."),";
+                        }
+                        if($oVariable->isVariableCualitativa()){
+                            $iValor = $oVariable->getValor() ? $oVariable->getValor()->getId() : "null";
+                            $sSQL .= "null, ".$this->escInt($iValor)."),";
+                        }
                     }
-                    if($oVariable->isVariableNumerica()){
-                        $sSQL .= "null, ".$this->escFlt($oVariable->getValor())."),";
-                    }
-                    if($oVariable->isVariableCualitativa()){
-                        $sSQL .= "null, ".$this->escInt($oVariable->getValor()->getId())."),";
-                    }                    
                 }
             }
             $sSQL = substr($sSQL, 0, -1);
