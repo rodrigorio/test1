@@ -76,10 +76,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['su.fechaBorradoLogico']) && $filtro['su.fechaBorradoLogico'] != ""){
                 $WHERE[] = $this->crearFiltroFecha('su.fechaBorradoLogico', null, $filtro['su.fechaBorradoLogico'], true, true);
             }
-            if(isset($filtro['notIn']) && $filtro['notIn'] != ""){
-                $WHERE[] = " u.id NOT IN (SELECT unidades_id FROM seguimiento_x_unidad WHERE borradoLogico <> 1 AND seguimientos_id = ".$filtro['notIn'].") ";
-            }            
-
+            
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if (isset($sOrderBy) && isset($sOrder)){
@@ -424,36 +421,13 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
     	try{
             $db = $this->conn;
 
-            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
-                        1 as existe
-                      FROM
-                        seguimiento_x_unidad su
-                      WHERE
-                        su.borradoLogico = '1' AND 
-                        su.unidades_id = ".$this->escInt($iUnidadId)." AND
-                        su.seguimientos_id = ".$this->escInt($iSeguimientoId);
+            $sSQL = " INSERT INTO seguimiento_x_unidad SET ".
+                    "   unidades_id = ".$this->escInt($iUnidadId).", ".
+                    "   seguimientos_id = ".$this->escInt($iSeguimientoId);
 
-            $db->query($sSQL);
-            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+            $db->execSQL($sSQL);
+            $db->commit();
 
-            if(empty($foundRows)){
-                //creo una nueva asociacion                
-                $sSQL = " INSERT INTO seguimiento_x_unidad SET ".
-                        "   unidades_id = ".$this->escInt($iUnidadId).", ".
-                        "   seguimientos_id = ".$this->escInt($iSeguimientoId);
-
-                $db->execSQL($sSQL);
-                $db->commit();                
-            }else{
-                //actualizo la asociacion que ya existe
-                $sSQL = " UPDATE seguimiento_x_unidad SET ".
-                        "   borradoLogico = '0', ".
-                        "   fechaBorradoLogico = null ".
-                        " WHERE unidades_id = ".$this->escInt($iUnidadId)." AND seguimientos_id = ".$this->escInt($iSeguimientoId);
-
-                $db->execSQL($sSQL);
-                $db->commit();
-            }
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
