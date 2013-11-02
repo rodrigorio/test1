@@ -837,7 +837,8 @@ class SeguimientosController
             $filtro = array('u.usuarios_id' => $iUsuarioId,
                             'u.preCargada' => '0',
                             'u.asociacionAutomatica' => '0',
-                            'u.borradoLogico' => '0'
+                            'u.borradoLogico' => '0',
+                            'noAsociado' => $oSeguimiento->getId()
                             );
                        
             $iRecordsTotal = 0;
@@ -858,7 +859,8 @@ class SeguimientosController
             $filtro = array('u.usuarios_id' => $iUsuarioId,
                             'u.preCargada' => '1',
                             'u.asociacionAutomatica' => '0',
-                            'u.borradoLogico' => '0'
+                            'u.borradoLogico' => '0',
+                            'noAsociado' => $oSeguimiento->getId()
                             );
                        
             $iRecordsTotal = 0;
@@ -1651,29 +1653,23 @@ class SeguimientosController
     }
 
     /**
-     * Este es un poquito mas complejo :)
+     * borro siempre fisicamente asociacion entre unidad y seguimiento
      *
-     * Si borro la asociacion se tiene q mantener la info.. entonces:
-     *
-     * borro fisicamente todas las unidades con sus respectivas variables para entradas
+     * tambien borro fisicamente la unidad con sus respectivas variables para entradas
      * que esten dentro del periodo de edicion
+     * (asociacion de entrada con variables de la unidad)
+     * (asociacion de entrada con unidad)
      *
-     * tambien borro fisicamente todas las unidades con sus respectivas variables
+     * tambien borro fisicamente la unidad con sus respectivas variables (se repite el caso)
      * en entradas posteriores al periodo de edicion pero que no se guardaron nunca. (solo se crearon)
-     * 
+     *
      */
     public function desasociarUnidadSeguimiento($iSeguimientoId, $iUnidadId)
     {
         try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();
-            
-            //devuelve true si la unidad esta asociada con al menos 1 entrada que fue guardada al menos 1 vez y que se encuentra fuera del periodo de edicion.
-            $borradoLogicoAsociacion = $oUnidadIntermediary->hasUnidadEntradasExpiradas($iSeguimientoId, $iUnidadId, $iCantDiasEdicion);
-
-            //este metodo borra fisicamente las variables de la unidad para todas las entradas dentro del periodo de edicion.
-            //tambien borra fisica o logicamente la asociacion segun corresponda el flag de borradoLogicoAsocacion.
-            return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId, $borradoLogicoAsociacion, $iCantDiasEdicion);
+            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();            
+            return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId, $iCantDiasEdicion);
         }catch(Exception $e){
             throw $e;
         }
