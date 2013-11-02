@@ -76,7 +76,10 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['su.fechaBorradoLogico']) && $filtro['su.fechaBorradoLogico'] != ""){
                 $WHERE[] = $this->crearFiltroFecha('su.fechaBorradoLogico', null, $filtro['su.fechaBorradoLogico'], true, true);
             }
-            
+            if(isset($filtro['noAsociado']) && $filtro['noAsociado'] != ""){
+                $WHERE[] = " u.id NOT IN (SELECT unidades_id FROM seguimiento_x_unidad WHERE seguimientos_id = ".$this->escInt($filtro['noAsociado']).") ";
+            }
+
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             if (isset($sOrderBy) && isset($sOrder)){
@@ -436,20 +439,48 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
     }
 
     /**
-     * devuelve true si la unidad esta asociada con al menos 1 entrada que fue guardada al menos 1 vez
-     * y que se encuentra fuera del periodo de edicion.
+     * borro siempre fisicamente asociacion entre unidad y seguimiento
+     *
+     * tambien borro fisicamente la unidad con sus respectivas variables para entradas
+     * que esten dentro del periodo de edicion    
+     * (asociacion de entrada con variables de la unidad)
+     * (asociacion de entrada con unidad)
+     *
+     * tambien borro fisicamente la unidad con sus respectivas variables (se repite el caso)
+     * en entradas posteriores al periodo de edicion pero que no se guardaron nunca. (solo se crearon)
+     *
      */
-    public function hasUnidadEntradasExpiradas($iSeguimientoId, $iUnidadId, $iCantDiasEdicion)
+    public function desasociarSeguimiento($iSeguimientoId, $iUnidadId, $iCantDiasEdicion)
     {
-        
-    }
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+            
+            $db->execSQL("delete from seguimiento_x_unidad where unidades_id = ".$this->escInt($iUnidadId)." and seguimientos_id = ".$this->escInt($iSeguimientoId));
 
-    /**
-     * este metodo borra fisicamente las variables de la unidad para todas las entradas dentro del periodo de edicion.
-     * tambien borra fisica o logicamente la asociacion segun corresponda el flag de borradoLogicoAsocacion.
-     */
-    public function desasociarSeguimiento($iSeguimientoId, $iUnidadId, $borradoLogicoAsociacion, $iCantDiasEdicion)
-    {
-        
+            $sSQL = " DELETE FROM entrada_x_contenido_variables
+                      WHERE entradas_id
+                        IN (SELECT e.id FROM entradas e
+                            WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)." 
+                            AND (TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) <= ".$this->escInt($iCantDiasEdicion).") 
+                            OR ((TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) > ".$this->escInt($iCantDiasEdicion).") AND guardada = 0))
+                      AND variables_id
+                        IN (SELECT v.id FROM VARIABLES v WHERE v.unidad_id = ".$this->escInt($iUnidadId).")";
+
+            $db->execSQL($sSQL);
+
+            $sSQL = " DELETE FROM entrada_x_unidad
+                      WHERE unidades_id = ".$this->escInt($iUnidadId)."
+                      AND entradas_id IN (SELECT e.id FROM entradas e
+                                          WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)."
+                                          AND (TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) <= ".$this->escInt($iCantDiasEdicion).")
+                                          OR ((TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) > ".$this->escInt($iCantDiasEdicion).") AND guardada = 0))";
+            $db->execSQL($sSQL);
+            $db->commit();
+            
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
 }
