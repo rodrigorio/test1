@@ -736,12 +736,11 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                     if($oVariable->isVariableCualitativa()){
                         $block = "VariableCualitativaEditar";
                         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
-
                         $aModalidades = $oVariable->getModalidades();
                         foreach($aModalidades as $oModalidad){
                             $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
                             $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
-                            if($oModalidad->getId() == $oVariable->getValor()->getId()){
+                            if($oVariable->getValor() !== null && $oModalidad->getId() == $oVariable->getValor()->getId()){
                                 $this->getTemplate()->set_var("sChecked", "checked='checked'");
                             }                            
                             $this->getTemplate()->parse("ModalidadEditar", true);

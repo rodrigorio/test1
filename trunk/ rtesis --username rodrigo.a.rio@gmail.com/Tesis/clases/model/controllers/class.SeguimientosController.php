@@ -877,24 +877,15 @@ class SeguimientosController
      * Las unidades son todas de edicion Regular. (se modifican los valores en cada entrada).
      * Se muestran inclusive las de borrado logico porque no se pierde la informacion guardada
      *
+     * IMPORTANTE, EN EL PAGE CONTROLLER SE TIENE QUE VERIFICAR QUE LA ENTRADA SEA DEL USUARIO LOGUEADO O QUE TENGA PERMISO
+     *
      */
     public function getUnidadesByEntrada($oEntrada)
     {
     	try{
-            //primero obtengo las unidades que se ASOCIARON hasta la fecha/hora de la entrada
-            $iSeguimientoId = $oEntrada->getSeguimientoId();
-            $dFechaHora = $oEntrada->getFechaHoraCreacion();
-
-            $filtro = array('su.seguimientos_id' => $iSeguimientoId,
-                            'su.fechaHora' => $dFechaHora,
-                            'u.tipoEdicion' => 'regular',
-                            // con esto se cuando si mostrar las unidades que se borraron logicamente
-                            'u.fechaBorradoLogico' => $dFechaHora,
-                            'su.fechaBorradoLogico' => $dFechaHora);
-                       
-            $iRecordsTotal = 0;
+            //primero obtengo las unidades asociadas a la entrada
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $aUnidades = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, 'u.fechaHora', 'asc', null, null);
+            $aUnidades = $oUnidadIntermediary->obtenerUnidadesByEntrada($oEntrada->getId());
 
             //ahora asigno todas las variables a cada unidad filtrando por entrada
             if(count($aUnidades)>0){
@@ -1923,19 +1914,24 @@ class SeguimientosController
                             //SIN INCLUIR LAS QUE POSEEN BORRADO LOGICO
                             $aVariablesUltimaEntrada = $this->getVariablesContenidoByUnidadId($oUltimaEntrada->getId(), $oUnidadUltimaEntrada->getId(), false);
                             $aIdsVariablesUltimaEntradaAux = array();
-                            foreach($aVariablesUltimaEntrada as $oVariable){
-                                if($oVariable->isVariableTexto()){
-                                    $oVariable->setValor(null);
+                            if(count($aVariablesUltimaEntrada)>0){
+                                foreach($aVariablesUltimaEntrada as $oVariable){
+                                    if($oVariable->isVariableTexto()){
+                                        $oVariable->setValor(null);
+                                    }
+                                    $oUnidad->addVariable($oVariable);
+                                    $aIdsVariablesUltimaEntradaAux[] = $oVariable->getId();
                                 }
-                                $oUnidad->addVariable($oVariable);
-                                $aIdsVariablesUltimaEntradaAux[] = $oVariable->getId();
                             }
 
                             //agrego las variables que se crearon despues de la ultima entrada con valor == null
+                            //puede que la unidad en la entrada anterior no tenga ninguna variable. tambien que en la entrada actual no tenga ninguna variable
                             $aVariablesActuales = $this->getVariablesByUnidadId($oUnidad->getId(), false);
-                            foreach($aVariablesActuales as $oVariableActual){
-                                if(!in_array($oVariableActual->getId(), $aIdsVariablesUltimaEntradaAux)){
-                                    $oUnidad->addVariable($oVariableActual);
+                            if(count($aVariablesActuales)>0){
+                                foreach($aVariablesActuales as $oVariableActual){
+                                    if(!in_array($oVariableActual->getId(), $aIdsVariablesUltimaEntradaAux)){
+                                        $oUnidad->addVariable($oVariableActual);
+                                    }
                                 }
                             }
                             break;
