@@ -55,9 +55,6 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.borradoLogico']) && $filtro['u.borradoLogico']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', $filtro['u.borradoLogico'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['su.borradoLogico']) && $filtro['su.borradoLogico']!=""){
-                $WHERE[] = $this->crearFiltroSimple('su.borradoLogico', $filtro['su.borradoLogico'], MYSQL_TYPE_INT);
-            }
             if(isset($filtro['u.nombre']) && $filtro['u.nombre'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('u.nombre', $filtro['u.nombre']);
             }
@@ -145,7 +142,6 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
             $WHERE[] = $this->crearFiltroSimple('eu.entradas_id', $iEntradaId, MYSQL_TYPE_INT);
             $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', "0", MYSQL_TYPE_INT);
-            $WHERE[] = $this->crearFiltroSimple('su.borradoLogico', "0", MYSQL_TYPE_INT);
             $WHERE[] = $this->crearFiltroSimple('u.tipoEdicion', "regular");
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
