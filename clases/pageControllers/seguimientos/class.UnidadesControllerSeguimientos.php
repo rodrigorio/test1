@@ -761,4 +761,19 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             return;
         }   
     }
+
+    public function ampliarEsporadica()
+    {
+        $iUnidadId = $this->getRequest()->getParam('iUnidadEsporadicaId');                
+        if(empty($iUnidadId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        }
+
+        if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
+            throw new Exception("No tiene permiso para editar este seguimiento", 401);
+        }
+
+
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));       
+    }
 }

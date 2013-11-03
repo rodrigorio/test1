@@ -871,6 +871,26 @@ class SeguimientosController
         }
     }
 
+    public function getUnidadesEsporadicasBySeguimientoId($oSeguimiento)
+    {
+        try{
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $precargada = "0";
+            }else{
+                $precargada = "1";
+            }            
+            $filtro = array('u.preCargada' => $precargada,
+                            'u.asociacionAutomatica' => '0',
+                            'u.tipoEdicion' => 'esporadica',
+                            'u.borradoLogico' => '0');
+            $iRecordsTotal = 0;
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Devuelve todas las unidades para una entrada.
      * Cada una de las unidades tiene el listado completo de variables con su respectivo valor.

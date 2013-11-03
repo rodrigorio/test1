@@ -112,18 +112,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
         }
     }
-
-    static function setMenuDerechaVerSeguimientoUnidadesEsporadicas(Templates $oTemplate, PageControllerAbstract $oPageController, $aUnidadesEsporadicas)
-    {
-        if(count($aUnidadesEsporadicas)>0){
-            $oTemplate->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContVerSeguimientoUnidadesEsporadicasBlock", true);
-            foreach($aUnidadesEsporadicas as $oUnidadEsporadica){
-                $this->getTemplate()->set_var("sUnidadEsporadicaNombre", $oUnidadEsporadica->getNombre());
-                $this->getTemplate()->set_var("iUnidadEsporadicaId", $oUnidadEsporadica->getId());
-                $this->getTemplate()->parse("UnidadEsporadicaButton", true);
-            }
-        }
-    }
     
     static function setFichaPersonaSeguimiento(Templates $template, UploadHelper $oUploadHelper, $oDiscapacitado)
     {
@@ -913,9 +901,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
-            //$aUnidadesEsporadicas = SeguimientosController::getInstance()->getUnidadesEsporadicasBySeguimientoId();
-            //self::setMenuDerechaVerSeguimientoUnidadesEsporadicas($this->getTemplate(), $this, $aUnidadesEsporadicas);
-
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
@@ -979,6 +964,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("sUltimaModificacion", $oUltimaEntrada->getFecha(true));
         }else{
             $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
+        }
+
+        //unidades esporadicas
+        $aUnidadesEsporadicas = SeguimientosController::getInstance()->getUnidadesEsporadicasBySeguimientoId($oSeguimiento);
+        if(count($aUnidadesEsporadicas)>0){
+            foreach($aUnidadesEsporadicas as $oUnidadEsporadica){
+                $this->getTemplate()->set_var("sUnidadEsporadicaNombre", $oUnidadEsporadica->getNombre());
+                $this->getTemplate()->set_var("iUnidadEsporadicaId", $oUnidadEsporadica->getId());
+                $this->getTemplate()->parse("UnidadEsporadicaButton", true);
+            }
+        }else{
+            $this->getTemplate()->set_var("UnidadesEsporadicasBlock", "");
         }
 
         //antecedentes
@@ -1061,6 +1058,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("sUltimaModificacion", $oUltimaEntrada->getFecha(true));
         }else{
             $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
+        }
+
+        //unidades esporadicas
+        $aUnidadesEsporadicas = SeguimientosController::getInstance()->getUnidadesEsporadicasBySeguimientoId($oSeguimiento);
+        if(count($aUnidadesEsporadicas)>0){
+            foreach($aUnidadesEsporadicas as $oUnidadEsporadica){
+                $this->getTemplate()->set_var("sUnidadEsporadicaNombre", $oUnidadEsporadica->getNombre());
+                $this->getTemplate()->set_var("iUnidadEsporadicaId", $oUnidadEsporadica->getId());
+                $this->getTemplate()->parse("UnidadEsporadicaButton", true);
+            }
+        }else{
+            $this->getTemplate()->set_var("UnidadesEsporadicasBlock", "");
         }
 
         //antecedentes

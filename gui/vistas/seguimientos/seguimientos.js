@@ -826,6 +826,25 @@ $(document).ready(function(){
         );
         return false;
     });
+    
+    $(".ampliarUnidadEsporadica").live('click',function()
+    {
+        var iUnidadEsporadicaId = $(this).attr("rel");
+        var sUnidadEsporadicaNombre = $(this).attr("title");
+        
+        $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
+        var dialog = setWaitingStatusDialog(650, sUnidadEsporadicaNombre);
+        dialog.load(
+            "seguimientos/ampliar-unidad-esporadica",
+            {
+                iUnidadEsporadicaId:iUnidadEsporadicaId
+            },
+            function(responseText, textStatus, XMLHttpRequest){
+                bindEventsCrearEntradaUnidadEsporadicaForm();
+            }
+        );
+        return false;
+    });
 
     $(".modificarSeguimiento").live('click',function()
     {
