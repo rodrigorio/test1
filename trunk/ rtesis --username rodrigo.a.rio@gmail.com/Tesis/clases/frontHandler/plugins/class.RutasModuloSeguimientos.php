@@ -314,9 +314,16 @@ class RutasModuloSeguimientos
                                         'action'     => 'unidadesPorSeguimientoProcesar'
                                 ));
         $router->addRoute('seguimientosUnidadesUnidadesPorSeguimientoProcesar', $route);
+        $route = new RegexRoute('seguimientos/ampliar-unidad-esporadica',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'unidades',
+                                        'action'     => 'ampliarEsporadica'
+                                ));
+        $router->addRoute('seguimientosUnidadesAmpliarEsporadica', $route);
 
 
-        
+
         //variables
         $route = new RegexRoute('seguimientos/listar-variables',
                                 array(

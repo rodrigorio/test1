@@ -136,6 +136,9 @@ function eliminarUnidad(iUnidadId)
     );
 }
 
+function bindEventsCrearEntradaUnidadEsporadicaForm(){
+}
+
 $(document).ready(function(){
     $("#buscarUnidades").live('click', function(){
         masUnidades();
