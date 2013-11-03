@@ -1793,7 +1793,7 @@ class SeguimientosController
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
 
             $filtroFecha = array('fechaDesde' => $dFechaDesde, 'fechaHasta' => $dFechaHasta);
-            $filtro = array('e.seguimientos_id' => $iSeguimientoId);
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.tipoEdicion' => 'regular');
             $filtro['fechas'] = $filtroFecha;
             $iRecordsTotal = 0;
 
@@ -1809,7 +1809,7 @@ class SeguimientosController
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
 
             $sOrderBy = "e.fecha"; $sOrder = "desc";
-            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.fecha' => $dFecha);
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.fecha' => $dFecha, 'e.tipoEdicion' => 'regular');
             $iRecordsTotal = 0;
 
             $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
@@ -1830,7 +1830,7 @@ class SeguimientosController
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
             
             $sOrderBy = "e.fecha"; $sOrder = "desc";
-            $filtro = array('e.seguimientos_id' => $iSeguimientoId);
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.tipoEdicion' => 'regular');
             $iRecordsTotal = 0;
             
             $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
@@ -1933,6 +1933,7 @@ class SeguimientosController
             $oEntrada->iSeguimientoId = $oSeguimiento->getId();
             $oEntrada->dFecha = $sFechaNuevaEntrada;
             $oEntrada->aUnidades = $aUnidades;
+            $oEntrada->eTipoEdicion = "regular";
             $oEntrada->bGuardada = false;
 
             if($oSeguimiento->isSeguimientoPersonalizado()){

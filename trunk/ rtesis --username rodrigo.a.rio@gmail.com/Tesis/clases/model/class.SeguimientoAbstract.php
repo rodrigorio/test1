@@ -248,7 +248,7 @@ abstract class SeguimientoAbstract
     {
         return $this->aUnidades;
     }
-
+    
     public function setUnidades($aUnidades){
         $this->aUnidades = $aUnidades;
         return $this;
