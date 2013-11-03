@@ -113,6 +113,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
     }
 
+    static function setMenuDerechaVerSeguimientoUnidadesEsporadicas(Templates $oTemplate, PageControllerAbstract $oPageController, $aUnidadesEsporadicas)
+    {
+        if(count($aUnidadesEsporadicas)>0){
+            $oTemplate->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContVerSeguimientoUnidadesEsporadicasBlock", true);
+            foreach($aUnidadesEsporadicas as $oUnidadEsporadica){
+                $this->getTemplate()->set_var("sUnidadEsporadicaNombre", $oUnidadEsporadica->getNombre());
+                $this->getTemplate()->set_var("iUnidadEsporadicaId", $oUnidadEsporadica->getId());
+                $this->getTemplate()->parse("UnidadEsporadicaButton", true);
+            }
+        }
+    }
+    
     static function setFichaPersonaSeguimiento(Templates $template, UploadHelper $oUploadHelper, $oDiscapacitado)
     {
         $template->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "fichaPersona", "PageRightInnerContFichaPersonaBlock");
@@ -900,6 +912,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                  ->setHeadTag();
 
             self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
+
+            //$aUnidadesEsporadicas = SeguimientosController::getInstance()->getUnidadesEsporadicasBySeguimientoId();
+            //self::setMenuDerechaVerSeguimientoUnidadesEsporadicas($this->getTemplate(), $this, $aUnidadesEsporadicas);
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());

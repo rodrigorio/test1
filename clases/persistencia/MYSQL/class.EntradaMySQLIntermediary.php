@@ -2,6 +2,9 @@
 
 class EntradaMySQLIntermediary extends EntradaIntermediary
 {
+    const EDICION_REGULAR = "regular";
+    const EDICION_ESPORADICA = "esporadica";
+    
     private static $instance = null;
 
     protected function __construct( $conn) {
@@ -29,6 +32,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $sSQL = " INSERT INTO entradas SET ".
                     " seguimientos_id = ".$this->escInt($oEntrada->getSeguimientoId()).", ".
+                    " tipoEdicion = ".$this->escStr($oEntrada->getTipoEdicion()).", ".
                     " fecha = ".$this->escDate($oEntrada->getFecha())." ";
 
             $db->execSQL($sSQL);
@@ -166,7 +170,8 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $sSQL = "SELECT DISTINCT 
                         e.id as iId, e.fechaHoraCreacion as dFechaHoraCreacion, e.fecha as dFecha, e.seguimientos_id as iSeguimientoId, e.guardada as bGuardada,
-                        IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType 
+                        IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType,
+                        e.tipoEdicion as eTipoEdicion
                      FROM
                         entradas e
                      LEFT JOIN 
@@ -182,6 +187,9 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             }
             if(isset($filtro['e.seguimientos_id']) && $filtro['e.seguimientos_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('e.seguimientos_id', $filtro['e.seguimientos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['e.tipoEdicion']) && $filtro['e.tipoEdicion']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.tipoEdicion', $filtro['e.tipoEdicion']);
             }
             if(isset($filtro['e.fecha']) && $filtro['e.fecha']!=""){
                 $WHERE[] = $this->crearFiltroSimple('e.fecha', $filtro['e.fecha'], MYSQL_TYPE_DATE);
@@ -214,6 +222,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             while($oObj = $db->oNextRecord()){
                 $oEntrada = new stdClass();
                 $oEntrada->iId = $oObj->iId;
+                $oEntrada->eTipoEdicion = $oObj->eTipoEdicion;
                 $oEntrada->dFechaHoraCreacion = $oObj->dFechaHoraCreacion;
                 $oEntrada->dFecha = $oObj->dFecha;
                 $oEntrada->iSeguimientoId = $oObj->iSeguimientoId;
@@ -255,6 +264,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $sSQL = " SELECT YEAR(fecha) AS year, MONTH(fecha) AS month, COUNT(*) AS cantEntradas
                       FROM entradas e WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)."
+                      AND e.tipoEdicion = ".$this->escStr(self::EDICION_REGULAR)." 
                       GROUP BY YEAR(fecha), MONTH(fecha)
                       ORDER BY year DESC, month ASC ";
 

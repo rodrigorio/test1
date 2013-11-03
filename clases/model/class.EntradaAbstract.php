@@ -11,6 +11,9 @@
  */
 abstract class EntradaAbstract
 {
+    const EDICION_REGULAR = "regular";
+    const EDICION_ESPORADICA = "esporadica";
+
     protected $iId;
     
     /**
@@ -43,6 +46,8 @@ abstract class EntradaAbstract
      * Indica si la entrada se salvo al menos 1 vez.
      */
     protected $bGuardada = false;
+
+    protected $eTipoEdicion = self::EDICION_REGULAR;
     
     protected function __construct(){}
 
@@ -60,6 +65,22 @@ abstract class EntradaAbstract
     public function getSeguimientoId()
     {
         return $this->iSeguimientoId;
+    }
+
+    public function setEdicionRegular()
+    {
+        $this->eTipoEdicion = self::EDICION_REGULAR;
+        return $this;
+    }
+
+    public function setEdicionEsporadica()
+    {
+        $this->eTipoEdicion = self::EDICION_ESPORADICA;
+        return $this;
+    }
+
+    public function getTipoEdicion(){
+        return $this->eTipoEdicion;
     }
 
     public function isEditable($flag = null){
