@@ -435,6 +435,56 @@
 
 <!--EndAmpliarEntradaBlock-->
 
+<!--BeginAmpliarEntradaEsporadicaBlock-->
+
+<!--BeginMsgTopEntradaBlock-->
+<div class="mabo2">{msgTopEntrada}</div>
+<!--EndMsgTopEntradaBlock-->
+
+<!--BeginEntradaEsporadicaBlock-->
+<div class="bobo1 mabo2">
+    <h2>Entrada del {dFechaEntrada}</h2>
+</div>
+<div class="grupo baco1 pa2 iveal">
+    <h3 class="fl_le"><span class="i mi relationshipData mari"></span> {sNombreUnidad}</h3>
+</div>
+<div class="pa grupo bobo1 baco3 mabo2">
+    <!--BeginVariableBlock-->
+    {variable}
+    <!--EndVariableBlock-->
+</div>
+<!--EndEntradaEsporadicaBlock-->
+
+<!--BeginFormCrearEntradaUnidadEsporadicaBlock-->
+<div class="baco5 bobo2 boto2 pa2 iveal ov_hi grupo po_re">
+    <!--BeginVerEntradasButtonBlock-->
+    <div class="fl_le grupo mari2 bori2 pari2">
+        <a class="button" href="hrefVerEntradasUnidadEsporadica">
+            <span class="i bs calendar mari"></span>
+            <span class="buttonText">Ver todas las fechas</span>
+        </a>
+    </div>
+    <!--EndVerEntradasButtonBlock-->
+    <span id="fechaUltimaEntrada" class="di_no">{sUltimaEntrada}</span>
+    <form class="di_inbl" id="formCrearEntradaUnidadEsporadica" name="formCrearEntradaUnidadEsporadica" action="" method="post">
+        <div class="ajax_wait16 di_no"></div>
+        <input class="fl_le inputTextLihe" readonly="readonly" type="text" name="dFecha" id="fechaFormUnidadEsporadica" title="Fecha entrada" placeholder="Fecha entrada" value="" />
+        <div class="male2 fl_le iveal">
+            <label for="crearEntradaEsporadica" class="button buttonConfirm">
+                <button id="crearEntradaEsporadica" type="submit" name="crearEntradaEsporadica" class="btn01">
+                    Crear Entrada
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iSeguimientoIdForm}" name="iSeguimientoId" id="seguimientoIdFormEsporadica" />
+        <input type="hidden" value="{iUnidadIdForm}" name="iUnidadId" id="unidadIdFormEsporadica" />
+    </form>
+    <div style="display:none;" id='msg_form_crearEntradaUnidadEsporadica' class="msg_form iveal cl_bo mabo0"><span class="bs i"></span> <span class="msg"></span></div>
+</div>
+<!--EndFormCrearEntradaUnidadEsporadicaBlock-->
+
+<!--EndAmpliarEntradaEsporadicaBlock-->
+
 
 <!--BeginFormularioEvolucionBlock-->
 <div class='ficha04 bora grupo'>
@@ -487,3 +537,4 @@
     </form>
 </div>
 <!--EndFormularioEvolucionBlock-->
+

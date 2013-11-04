@@ -95,7 +95,7 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .form_line .fwrap{margin-bottom:0 !important}
 .form_line p{font-size:0.8em; color:#666; margin-bottom:0 !important}
 /* Tamanio line-height para form elements (mas chicos, entran en un renglon) */
-.inputTextLihe{padding:3px 4px !important}
+.inputTextLihe{padding:4px !important}
 .inputSelectLihe {padding:2px 2px 2px 1px}
 .inputSelectLihe option{padding:0px !important}
 .textAreaLihe, .inputTextLihe, .inputSelectLihe{font-size:11px !important; margin:0 !important}
@@ -138,7 +138,7 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .tetr_ca{text-transform:capitalize}
 .lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
-.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC} .boto2{border-top:1px dashed #CCC}
+.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC} .boto2{border-top:1px dashed #CCC} .bori2{border-right:1px solid #CCC}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}

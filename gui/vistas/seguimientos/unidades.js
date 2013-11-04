@@ -136,7 +136,74 @@ function eliminarUnidad(iUnidadId)
     );
 }
 
+var validateFormCrearEntradaUnidadEsporadica = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){},
+    highlight: function(element){},
+    unhighlight: function(element){},
+    rules:{
+        dFecha:{required:true}
+    }
+};
+
+var optionsAjaxFormCrearEntradaUnidadEsporadica = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url:'seguimientos/entradas/crear',
+    beforeSerialize:function(){        
+        if($("#formCrearEntradaUnidadEsporadica").valid() == true){
+            $('#msg_form_crearEntradaUnidadEsporadica').hide();
+            $('#msg_form_crearEntradaUnidadEsporadica').removeClass("correcto").removeClass("error");
+            $('#msg_form_crearEntradaUnidadEsporadica .msg').html("");
+            setWaitingStatus('formCrearEntradaUnidadEsporadica', true, "16");
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formCrearEntradaUnidadEsporadica', false, "16");
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_crearEntradaUnidadEsporadica .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_crearEntradaUnidadEsporadica .msg').html(data.mensaje);
+            }
+            $('#msg_form_crearEntradaUnidadEsporadica').addClass("error").fadeIn('slow');
+        }else{
+            //cierro el dialog actual, abro otro con el mensaje de confirmacion y en el aceptar redirecciono
+            //al form de edicion de unidad
+            var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
+            dialog = setWaitingStatusDialog(500, "Crear Entrada", buttonAceptar);
+            dialog.html(data.html);
+            if(data.success != undefined && data.success == 1){
+                $(".ui-dialog-buttonset .ui-button").click(function(){
+                    //ampliar entrada creada para editar por primera vez.
+                    location = data.redirect;
+                });
+            }
+        }
+    }
+};
+
 function bindEventsCrearEntradaUnidadEsporadicaForm(){
+    var ultimaEntrada = $("#fechaUltimaEntrada").html();
+    if(ultimaEntrada != undefined && ultimaEntrada != ""){
+        ultimaEntrada = new Date(ultimaEntrada);
+    }    
+    $("#fechaFormUnidadEsporadica").datepicker({
+        minDate:ultimaEntrada,
+        maxDate:new Date
+    });
+
+    $("#formCrearEntradaUnidadEsporadica").validate(validateFormCrearEntradaUnidadEsporadica);
+    $("#formCrearEntradaUnidadEsporadica").ajaxForm(optionsAjaxFormCrearEntradaUnidadEsporadica);
 }
 
 $(document).ready(function(){
