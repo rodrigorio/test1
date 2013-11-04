@@ -829,7 +829,10 @@ $(document).ready(function(){
     
     $(".ampliarUnidadEsporadica").live('click',function()
     {
-        var iUnidadEsporadicaId = $(this).attr("rel");
+        var rel = $(this).attr("rel").split('_');
+        var iUnidadEsporadicaId = rel[0];
+        var iSeguimientoId = rel[1];
+
         var sUnidadEsporadicaNombre = $(this).attr("title");
         
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
@@ -837,7 +840,8 @@ $(document).ready(function(){
         dialog.load(
             "seguimientos/ampliar-unidad-esporadica",
             {
-                iUnidadEsporadicaId:iUnidadEsporadicaId
+                iUnidadEsporadicaId:iUnidadEsporadicaId,
+                iSeguimientoId:iSeguimientoId
             },
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsCrearEntradaUnidadEsporadicaForm();

@@ -811,7 +811,7 @@ class SeguimientosController
     }
 
    public function getUnidadById($iUnidadId)
-    {
+   {
     	try{
             $filtro = array('u.id' => $iUnidadId);
             $iRecordsTotal = 0;
@@ -1866,6 +1866,30 @@ class SeguimientosController
     }
 
     /**
+     * Devuelve ultima entrada en la que unidad fue asociada para un seguimiento
+     */
+    public function getUltimaEntradaSeguimientoByUnidadId($iSeguimientoId, $iUnidadId)
+    {
+    	try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+
+            $sOrderBy = "e.fecha"; $sOrder = "desc";
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'eu.unidades_id' => $iUnidadId);
+            $iRecordsTotal = 0;
+
+            $aEntrada = $oEntradaIntermediary->obtenerRelUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
+
+            if(null !== $aEntrada){
+                return $aEntrada[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Devuelve array con objetos stdClass que corresponden a la cantidad de entradas por mes x año
      */
     public function obtenerCantidadEntradasByMonths($iSeguimientoId)
@@ -1967,6 +1991,93 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
         }            
+    }
+
+    public function crearEntradaUnidadEsporadica($oSeguimiento, $iUnidadId, $dFecha)
+    {
+        /*
+        try{
+            //primero compruebo que la fecha de la entrada sea efectivamente posterior a la ultima entrada (si es que existe)
+            $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
+            if($oUltimaEntrada !== null){
+                $dFechaUltimaEntrada = strtotime($oUltimaEntrada->getFecha());
+                $dFechaNuevaEntrada = strtotime($sFechaNuevaEntrada);
+                if($dFechaUltimaEntrada > $dFechaNuevaEntrada){
+                    throw new Exception("La entrada tiene que ser posterior a la ultima creada.");
+                }
+            }
+
+            //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido.
+            $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", true, "u.fechaHora", "ASC");
+            foreach($aUnidades as $oUnidad){
+
+                //si la unidad ya existe en la ultima entrada copio las variables con valor, sino levanto todas las variables sin valor
+                //tener en cuenta que entra la ultima entrada y la actual se pudieron agregar variables a la unidad. (no aparecen en la entrada anterior pero se agregan en vacio)
+                if($oUltimaEntrada !== null){
+                    $aUnidadesUltimaEntrada = $oUltimaEntrada->getUnidades(); // estas vienen con los valores.
+                    $bExiste = false;
+                    $iUnidadId = $oUnidad->getId();
+                    foreach($aUnidadesUltimaEntrada as $oUnidadUltimaEntrada){
+                        $iUltimaEntradaId = $oUnidadUltimaEntrada->getId();
+                        if($iUltimaEntradaId == $iUnidadId){
+                            $bExiste = true;
+                            //copio todas las variables con los valores de la ultima entrada excepto las que son de tipo texto.
+                            //SIN INCLUIR LAS QUE POSEEN BORRADO LOGICO
+                            $aVariablesUltimaEntrada = $this->getVariablesContenidoByUnidadId($oUltimaEntrada->getId(), $oUnidadUltimaEntrada->getId(), false);
+                            $aIdsVariablesUltimaEntradaAux = array();
+                            if(count($aVariablesUltimaEntrada)>0){
+                                foreach($aVariablesUltimaEntrada as $oVariable){
+                                    if($oVariable->isVariableTexto()){
+                                        $oVariable->setValor(null);
+                                    }
+                                    $oUnidad->addVariable($oVariable);
+                                    $aIdsVariablesUltimaEntradaAux[] = $oVariable->getId();
+                                }
+                            }
+
+                            //agrego las variables que se crearon despues de la ultima entrada con valor == null
+                            //puede que la unidad en la entrada anterior no tenga ninguna variable. tambien que en la entrada actual no tenga ninguna variable
+                            $aVariablesActuales = $this->getVariablesByUnidadId($oUnidad->getId(), false);
+                            if(count($aVariablesActuales)>0){
+                                foreach($aVariablesActuales as $oVariableActual){
+                                    if(!in_array($oVariableActual->getId(), $aIdsVariablesUltimaEntradaAux)){
+                                        $oUnidad->addVariable($oVariableActual);
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if($oUltimaEntrada === null || !$bExiste){
+                    //agrego todas las variables con valor == null
+                    $aVariables = $this->getVariablesByUnidadId($oUnidad->getId(), false);
+                    $oUnidad->setVariables($aVariables);
+                }
+            }
+
+            //creo el objeto Entrada propiamente dicho
+            $oEntrada = new stdClass();
+            $oEntrada->iSeguimientoId = $oSeguimiento->getId();
+            $oEntrada->dFecha = $sFechaNuevaEntrada;
+            $oEntrada->aUnidades = $aUnidades;
+            $oEntrada->eTipoEdicion = "regular";
+            $oEntrada->bGuardada = false;
+
+            if($oSeguimiento->isSeguimientoPersonalizado()){
+                $oEntrada = Factory::getEntradaPersonalizadaInstance($oEntrada);
+            }
+            if($oSeguimiento->isSeguimientoSCC()){
+                $oEntrada = Factory::getEntradaSCCInstance($oEntrada);
+            }
+
+            return $oEntrada;
+        }catch(Exception $e){
+            throw $e;
+        }
+        */
+        return null;
     }
 
     /**

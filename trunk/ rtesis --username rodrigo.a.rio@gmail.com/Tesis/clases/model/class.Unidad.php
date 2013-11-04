@@ -214,4 +214,16 @@ class Unidad{
         $today = date('Y-m-d');
         $this->dFechaBorradoLogico = $today;
     }
+
+    /**
+     * Obtiene la ultima entrada en la que la unidad fue asociada para todas las entradas de un seguimiento del usuario.
+     * puede dar null si no se utilizo en ninguna entrada o si la unidad no tiene usuario porq es de asociacion automatica.
+     */
+    public function getUltimaEntrada($iSeguimientoId)
+    {
+        if($this->isAsociacionAutomatica()){
+            return null;
+        }
+        return SeguimientosController::getInstance()->getUltimaEntradaSeguimientoByUnidadId($iSeguimientoId, $this->iId);
+    }
 }

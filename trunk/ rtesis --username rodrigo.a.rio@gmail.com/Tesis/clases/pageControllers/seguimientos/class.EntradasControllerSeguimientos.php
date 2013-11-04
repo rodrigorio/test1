@@ -421,19 +421,32 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }
 
+        if($this->getRequest()->has('crearEntradaEsporadica')){
+            $iUnidadId = $this->getRequest()->getParam('iUnidadId');
+            if(empty($iUnidadId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+            }
+        }
+
         $this->getJsonHelper()->initJsonAjaxResponse();                       
         try{
-            //si confirmo, creo la entrada:
-            $oEntrada = SeguimientosController::getInstance()->crearEntrada($oSeguimiento, $dFecha);            
+            //si confirmo, creo la entrada. Puede ser entrada esporadica o regular. todavia no se de donde vino
+            if($this->getRequest()->has('crearEntradaEsporadica')){
+                $oEntrada = SeguimientosController::getInstance()->crearEntradaUnidadEsporadica($oSeguimiento, $iUnidadId, $dFecha);
+                $sMensaje = "La unidad se creo con éxito, luego de completar el formulario de edición podrá ver el listado de todas las fechas.";
+            }else{
+                $oEntrada = SeguimientosController::getInstance()->crearEntrada($oSeguimiento, $dFecha);
+                $sMensaje = "Se mantendrán los valores de la última entrada en las variables numéricas y cualitativas. Tenga en cuenta que las variaciones en estas variables son utilizadas para generación de gráficos.";
+            }
+            
             SeguimientosController::getInstance()->guardarEntrada($oEntrada);
-
             $sFechaUrl = $oEntrada->getFecha(true);
             $sRedirect = "/seguimientos/entradas/editar?entrada=".$oEntrada->getId();
 
             //mensaje de creacion exitosa
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaCorrectoBlock");
             $this->getTemplate()->set_var("sTituloMsgFicha", "Creación exitosa");
-            $this->getTemplate()->set_var("sMsgFicha", "Se mantendrán los valores de la última entrada en las variables numéricas y cualitativas. Tenga en cuenta que las variaciones en estas variables son utilizadas para generación de gráficos.");
+            $this->getTemplate()->set_var("sMsgFicha", $sMensaje);
             $html = $this->getTemplate()->pparse('html', false);
 
             $this->getJsonHelper()->setSuccess(true)
@@ -563,6 +576,12 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         //puedo devolver el formulario de edicion de evolucion para un objetivo
         if($this->getRequest()->has('formEvolucion')){
             $this->formEvolucion($oEntrada, $oSeguimiento);
+            return;
+        }
+
+        //puede ser una entrada con solo una unidad esporadica desvio a otra vista
+        if($oEntrada->isEsporadica()){
+            $this->editarEsporadica($oEntrada, $oSeguimiento);
             return;
         }
 
@@ -762,6 +781,12 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
+    }
+
+    private function editarEsporadica($oEntrada, $oSeguimiento)
+    {
+        echo "hola mundo editame q soy esporadica";
+        return;
     }
 
     private function formEvolucion($oEntrada, $oSeguimiento)

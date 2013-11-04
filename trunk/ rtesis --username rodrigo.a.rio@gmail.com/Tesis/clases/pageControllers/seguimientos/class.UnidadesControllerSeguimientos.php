@@ -764,8 +764,9 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
     public function ampliarEsporadica()
     {
-        $iUnidadId = $this->getRequest()->getParam('iUnidadEsporadicaId');                
-        if(empty($iUnidadId)){
+        $iUnidadId = $this->getRequest()->getParam('iUnidadEsporadicaId');
+        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
+        if(empty($iUnidadId) || empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
         }
 
@@ -773,7 +774,36 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             throw new Exception("No tiene permiso para editar este seguimiento", 401);
         }
 
+        try{
+            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('html', false));       
+            //ultima entrada en la que se asocio la unidad
+            $oEntrada = $oUnidad->getUltimaEntrada($iSeguimientoId);
+
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "popUpContent", "AmpliarEntradaEsporadicaBlock");
+
+            $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
+            $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+
+            //si $oEntrada == null, muestro el popup con el form pero con el mensaje de que no existen entradas. Sino muestro la info de la unidad
+            if($oEntrada === null){
+                $this->getTemplate()->set_var("EntradaEsporadicaBlock", "");
+                $this->getTemplate()->set_var("VerEntradasButtonBlock", "");
+
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
+                $this->getTemplate()->set_var("sTituloMsgFicha", "Unidad sin entradas.");
+                $this->getTemplate()->set_var("sMsgFicha", "Aún no se ha guardado información en esta unidad en ninguna fecha. Seleccione una fecha desde el calendario marcada como disponible.");
+            }else{
+                $this->getTemplate()->set_var("MsgTopEntradaBlock", "");
+
+                
+                $this->getTemplate()->set_var("sUltimaEntrada", "");
+            }
+
+            $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            $this->getResponse()->setBody("Ocurrio un error al procesar lo solicitado");
+        }
     }
 }

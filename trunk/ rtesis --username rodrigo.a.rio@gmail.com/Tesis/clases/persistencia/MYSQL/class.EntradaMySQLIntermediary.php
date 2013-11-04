@@ -248,6 +248,96 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         }
     }
 
+    public final function obtenerRelUnidades($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
+        try{
+            $db = clone($this->conn);
+
+            $sSQL = "SELECT DISTINCT
+                        e.id as iId, e.fechaHoraCreacion as dFechaHoraCreacion, e.fecha as dFecha, e.seguimientos_id as iSeguimientoId, e.guardada as bGuardada,
+                        IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType,
+                        e.tipoEdicion as eTipoEdicion
+                     FROM
+                        entradas e
+                     JOIN
+                        entrada_x_unidad eu ON eu.entradas_id = e.id
+                     LEFT JOIN
+                        seguimientos_personalizados sp ON e.seguimientos_id = sp.id
+                     LEFT JOIN
+                        seguimientos_scc scc ON e.seguimientos_id = scc.id
+                     ";
+
+            $WHERE = array();
+
+            if(isset($filtro['e.id']) && $filtro['e.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.id', $filtro['e.id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['e.seguimientos_id']) && $filtro['e.seguimientos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.seguimientos_id', $filtro['e.seguimientos_id'], MYSQL_TYPE_INT);
+            }
+            if(isset($filtro['e.tipoEdicion']) && $filtro['e.tipoEdicion']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.tipoEdicion', $filtro['e.tipoEdicion']);
+            }
+            if(isset($filtro['e.fecha']) && $filtro['e.fecha']!=""){
+                $WHERE[] = $this->crearFiltroSimple('e.fecha', $filtro['e.fecha'], MYSQL_TYPE_DATE);
+            }
+            if(isset($filtro['fechas']) && null !== $filtro['fechas']){
+                if(is_array($filtro['fechas'])){
+                    $WHERE[] = $this->crearFiltroFechaDesdeHasta('e.fecha', $filtro['fechas'], false);
+                }
+            }
+            if(isset($filtro['eu.unidades_id']) && $filtro['eu.unidades_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('eu.unidades_id', $filtro['eu.unidades_id'], MYSQL_TYPE_INT);
+            }
+
+            $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
+
+            if(isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by e.fechaHoraCreacion desc ";
+            }
+
+            if ($iIniLimit !== null && $iRecordCount !== null){
+                $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
+            }
+
+            $db->query($sSQL);
+
+            $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($iRecordsTotal)){ return null; }
+
+            $aEntradas = array();
+            while($oObj = $db->oNextRecord()){
+                $oEntrada = new stdClass();
+                $oEntrada->iId = $oObj->iId;
+                $oEntrada->eTipoEdicion = $oObj->eTipoEdicion;
+                $oEntrada->dFechaHoraCreacion = $oObj->dFechaHoraCreacion;
+                $oEntrada->dFecha = $oObj->dFecha;
+                $oEntrada->iSeguimientoId = $oObj->iSeguimientoId;
+                $oEntrada->bGuardada = ($oObj->bGuardada == "1") ? true:false;
+
+                if($oObj->sObjType == 'SeguimientoPersonalizado')
+                {
+                    $oEntrada = Factory::getEntradaPersonalizadaInstance($oEntrada);
+                }
+
+                if($oObj->sObjType == 'SeguimientoSCC')
+                {
+                    $oEntrada = Factory::getEntradaSCCInstance($oEntrada);
+                }
+
+            	$aEntradas[] = $oEntrada;
+            }
+
+            return $aEntradas;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
     /**
      * Este metodo devuelve cantidad de entradas por mes en un array de objetos stdClass
      * uno corresponde al año y el otro al mes con un atributo de la cantidad de entradas.

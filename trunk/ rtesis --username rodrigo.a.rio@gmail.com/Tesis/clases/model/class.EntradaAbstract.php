@@ -79,6 +79,14 @@ abstract class EntradaAbstract
         return $this;
     }
 
+    public function isEsporadica(){
+        return $this->eTipoEdicion == self::EDICION_ESPORADICA ? true:false;
+    }
+
+    public function isRegular(){
+        return $this->eTipoEdicion == self::EDICION_REGULAR ? true:false;
+    }
+
     public function getTipoEdicion(){
         return $this->eTipoEdicion;
     }
