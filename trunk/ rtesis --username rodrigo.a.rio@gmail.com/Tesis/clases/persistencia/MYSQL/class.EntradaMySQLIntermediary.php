@@ -25,7 +25,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
     }
 		
     public function insertar($oEntrada)
-    {
+    {        
         $db = $this->conn;
         try{            
             $db->begin_transaction();

@@ -882,7 +882,9 @@ class SeguimientosController
             $filtro = array('u.preCargada' => $precargada,
                             'u.asociacionAutomatica' => '0',
                             'u.tipoEdicion' => 'esporadica',
-                            'u.borradoLogico' => '0');
+                            'u.borradoLogico' => '0',
+                            'su.seguimientos_id' => $oSeguimiento->getId());
+            
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -1904,10 +1906,8 @@ class SeguimientosController
 
     /**
      * Por ahora la regla es que cada nueva entrada tenga todas las unidades asociadas al seguimiento
-     * hasta la fecha actual y ademas que todas las unidades que ya tienen informacion de una entrada anterior y no se eliminaron logicamente
-     * se copien a los valores de la nueva entrada si el tipo de variable no es de tipo texto.
-     *
-     * esto es porq en un futuro se generaran graficos a partir de las variaciones en las variables numericas.
+     * hasta la fecha actual 
+     *     
      */
     public function crearEntrada($oSeguimiento, $sFechaNuevaEntrada)
     {
@@ -1925,51 +1925,8 @@ class SeguimientosController
             //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido.
             $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", true, "u.fechaHora", "ASC");
             foreach($aUnidades as $oUnidad){
-
-                //si la unidad ya existe en la ultima entrada copio las variables con valor, sino levanto todas las variables sin valor
-                //tener en cuenta que entra la ultima entrada y la actual se pudieron agregar variables a la unidad. (no aparecen en la entrada anterior pero se agregan en vacio)
-                if($oUltimaEntrada !== null){                    
-                    $aUnidadesUltimaEntrada = $oUltimaEntrada->getUnidades(); // estas vienen con los valores.
-                    $bExiste = false;
-                    $iUnidadId = $oUnidad->getId();
-                    foreach($aUnidadesUltimaEntrada as $oUnidadUltimaEntrada){
-                        $iUltimaEntradaId = $oUnidadUltimaEntrada->getId();
-                        if($iUltimaEntradaId == $iUnidadId){
-                            $bExiste = true;
-                            //copio todas las variables con los valores de la ultima entrada excepto las que son de tipo texto.
-                            //SIN INCLUIR LAS QUE POSEEN BORRADO LOGICO
-                            $aVariablesUltimaEntrada = $this->getVariablesContenidoByUnidadId($oUltimaEntrada->getId(), $oUnidadUltimaEntrada->getId(), false);
-                            $aIdsVariablesUltimaEntradaAux = array();
-                            if(count($aVariablesUltimaEntrada)>0){
-                                foreach($aVariablesUltimaEntrada as $oVariable){
-                                    if($oVariable->isVariableTexto()){
-                                        $oVariable->setValor(null);
-                                    }
-                                    $oUnidad->addVariable($oVariable);
-                                    $aIdsVariablesUltimaEntradaAux[] = $oVariable->getId();
-                                }
-                            }
-
-                            //agrego las variables que se crearon despues de la ultima entrada con valor == null
-                            //puede que la unidad en la entrada anterior no tenga ninguna variable. tambien que en la entrada actual no tenga ninguna variable
-                            $aVariablesActuales = $this->getVariablesByUnidadId($oUnidad->getId(), false);
-                            if(count($aVariablesActuales)>0){
-                                foreach($aVariablesActuales as $oVariableActual){
-                                    if(!in_array($oVariableActual->getId(), $aIdsVariablesUltimaEntradaAux)){
-                                        $oUnidad->addVariable($oVariableActual);
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                if($oUltimaEntrada === null || !$bExiste){
-                    //agrego todas las variables con valor == null
-                    $aVariables = $this->getVariablesByUnidadId($oUnidad->getId(), false);
-                    $oUnidad->setVariables($aVariables);
-                }
+                $aVariables = $this->getVariablesByUnidadId($oUnidad->getId(), false);
+                $oUnidad->setVariables($aVariables);
             }
 
             //creo el objeto Entrada propiamente dicho
@@ -1993,12 +1950,20 @@ class SeguimientosController
         }            
     }
 
-    public function crearEntradaUnidadEsporadica($oSeguimiento, $iUnidadId, $dFecha)
-    {
-        /*
+    /**
+     *
+     * A diferencia de una entrada regular, se guarda solo 1 unidad
+     * y no se mantienen los valores de la entrada anterior.
+     *
+     *
+     */
+    public function crearEntradaUnidadEsporadica($oSeguimiento, $iUnidadId, $sFechaNuevaEntrada)
+    {        
         try{
+            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+            $oUltimaEntrada = $oUnidad->getUltimaEntrada($oSeguimiento->getId());
+            
             //primero compruebo que la fecha de la entrada sea efectivamente posterior a la ultima entrada (si es que existe)
-            $oUltimaEntrada = $oSeguimiento->getUltimaEntrada();
             if($oUltimaEntrada !== null){
                 $dFechaUltimaEntrada = strtotime($oUltimaEntrada->getFecha());
                 $dFechaNuevaEntrada = strtotime($sFechaNuevaEntrada);
@@ -2007,62 +1972,17 @@ class SeguimientosController
                 }
             }
 
-            //obtengo todas las unidades asociadas al seguimiento hasta el dia de la fecha que no tengan el flag de borrado logico prendido.
-            $aUnidades = $this->getUnidadesBySeguimientoId($oSeguimiento->getId(), false, "regular", true, "u.fechaHora", "ASC");
-            foreach($aUnidades as $oUnidad){
-
-                //si la unidad ya existe en la ultima entrada copio las variables con valor, sino levanto todas las variables sin valor
-                //tener en cuenta que entra la ultima entrada y la actual se pudieron agregar variables a la unidad. (no aparecen en la entrada anterior pero se agregan en vacio)
-                if($oUltimaEntrada !== null){
-                    $aUnidadesUltimaEntrada = $oUltimaEntrada->getUnidades(); // estas vienen con los valores.
-                    $bExiste = false;
-                    $iUnidadId = $oUnidad->getId();
-                    foreach($aUnidadesUltimaEntrada as $oUnidadUltimaEntrada){
-                        $iUltimaEntradaId = $oUnidadUltimaEntrada->getId();
-                        if($iUltimaEntradaId == $iUnidadId){
-                            $bExiste = true;
-                            //copio todas las variables con los valores de la ultima entrada excepto las que son de tipo texto.
-                            //SIN INCLUIR LAS QUE POSEEN BORRADO LOGICO
-                            $aVariablesUltimaEntrada = $this->getVariablesContenidoByUnidadId($oUltimaEntrada->getId(), $oUnidadUltimaEntrada->getId(), false);
-                            $aIdsVariablesUltimaEntradaAux = array();
-                            if(count($aVariablesUltimaEntrada)>0){
-                                foreach($aVariablesUltimaEntrada as $oVariable){
-                                    if($oVariable->isVariableTexto()){
-                                        $oVariable->setValor(null);
-                                    }
-                                    $oUnidad->addVariable($oVariable);
-                                    $aIdsVariablesUltimaEntradaAux[] = $oVariable->getId();
-                                }
-                            }
-
-                            //agrego las variables que se crearon despues de la ultima entrada con valor == null
-                            //puede que la unidad en la entrada anterior no tenga ninguna variable. tambien que en la entrada actual no tenga ninguna variable
-                            $aVariablesActuales = $this->getVariablesByUnidadId($oUnidad->getId(), false);
-                            if(count($aVariablesActuales)>0){
-                                foreach($aVariablesActuales as $oVariableActual){
-                                    if(!in_array($oVariableActual->getId(), $aIdsVariablesUltimaEntradaAux)){
-                                        $oUnidad->addVariable($oVariableActual);
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                if($oUltimaEntrada === null || !$bExiste){
-                    //agrego todas las variables con valor == null
-                    $aVariables = $this->getVariablesByUnidadId($oUnidad->getId(), false);
-                    $oUnidad->setVariables($aVariables);
-                }
-            }
+            //lo hago por aca porque no quiero las que tienen borrado logico.
+            $aVariables = $this->getVariablesByUnidadId($oUnidad->getId(), false);
+            $oUnidad->setVariables($aVariables);
+            $aUnidades[] = $oUnidad;
 
             //creo el objeto Entrada propiamente dicho
             $oEntrada = new stdClass();
             $oEntrada->iSeguimientoId = $oSeguimiento->getId();
             $oEntrada->dFecha = $sFechaNuevaEntrada;
             $oEntrada->aUnidades = $aUnidades;
-            $oEntrada->eTipoEdicion = "regular";
+            $oEntrada->eTipoEdicion = "esporadica";
             $oEntrada->bGuardada = false;
 
             if($oSeguimiento->isSeguimientoPersonalizado()){
@@ -2076,8 +1996,6 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
         }
-        */
-        return null;
     }
 
     /**
