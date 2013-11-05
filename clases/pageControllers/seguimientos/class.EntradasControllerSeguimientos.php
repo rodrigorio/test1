@@ -432,11 +432,13 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         try{
             //si confirmo, creo la entrada. Puede ser entrada esporadica o regular. todavia no se de donde vino
             if($this->getRequest()->has('crearEntradaEsporadica')){
+                //se acomoda solo esta, la otra ya viene en formato sql desde javascript
+                $dFecha = Utils::fechaAFormatoSQL($dFecha);
                 $oEntrada = SeguimientosController::getInstance()->crearEntradaUnidadEsporadica($oSeguimiento, $iUnidadId, $dFecha);
                 $sMensaje = "La unidad se creo con éxito, luego de completar el formulario de edición podrá ver el listado de todas las fechas.";
             }else{
                 $oEntrada = SeguimientosController::getInstance()->crearEntrada($oSeguimiento, $dFecha);
-                $sMensaje = "Se mantendrán los valores de la última entrada en las variables numéricas y cualitativas. Tenga en cuenta que las variaciones en estas variables son utilizadas para generación de gráficos.";
+                $sMensaje = "Tenga en cuenta que las variaciones variables numéricas o cualitativas son utilizadas para generación de gráficos.";
             }
             
             SeguimientosController::getInstance()->guardarEntrada($oEntrada);
@@ -914,16 +916,18 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 $aVariables = array();
                 foreach($vVariables as $variable){
                     $iVariableId = $variable['id'];
-                    $valor = $variable['valor'];
 
                     $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
 
                     //si es cualitativa levanto la modalidad, sino agrego el valor de manera normal.
                     if($oVariable->isVariableCualitativa()){
-                        $oModalidad = SeguimientosController::getInstance()->getModalidadById($valor);
-                        $oVariable->setValor($oModalidad);
+                        $oModalidad = null;
+                        if(isset($variable['valor'])){
+                            $oModalidad = SeguimientosController::getInstance()->getModalidadById($variable['valor']);
+                            $oVariable->setValor($oModalidad);
+                        }
                     }else{
-                        $oVariable->setValor($valor);
+                        $oVariable->setValor($variable['valor']);
                     }
 
                     $aVariables[] = $oVariable;
