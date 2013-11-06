@@ -202,6 +202,8 @@ function bindEventsCrearEntradaUnidadEsporadicaForm(){
         maxDate:new Date
     });
 
+    $(".tooltip").tooltip();
+
     $("#formCrearEntradaUnidadEsporadica").validate(validateFormCrearEntradaUnidadEsporadica);
     $("#formCrearEntradaUnidadEsporadica").ajaxForm(optionsAjaxFormCrearEntradaUnidadEsporadica);
 }

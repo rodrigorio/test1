@@ -467,5 +467,12 @@ class RutasModuloSeguimientos
                                         'action'     => 'guardar'
                                 ));
         $router->addRoute('seguimientosEntradasGuardar', $route);
+        $route = new RegexRoute('seguimientos/entradas/entradas-unidad-esporadica',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entradas',
+                                        'action'     => 'entradasUnidadEsporadica'
+                                ));
+        $router->addRoute('seguimientosEntradasEntradasUnidadEsporadica', $route);
     }
 }

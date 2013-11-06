@@ -11,6 +11,11 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         return $this;
     }
 
+    private function setFrameTemplateB(){
+        $this->getTemplate()->load_file("gui/templates/seguimientos/frame01-01.gui.html", "frame");
+        return $this;
+    }
+
     private function setHeadTag()
     {
         $front = FrontController::getInstance();
@@ -787,8 +792,95 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
     private function editarEsporadica($oEntrada, $oSeguimiento)
     {
-        echo "hola mundo editame q soy esporadica";
-        return;
+        //es solo una unidad
+        $aUnidad = $oEntrada->getUnidades();
+        $oUnidad = $aUnidad[0];
+
+        if(null === $oUnidad){
+            throw new Exception("La unidad no tiene entrada para esta fecha", 401);
+        }
+        
+        try{
+            $this->setFrameTemplateB()
+                 ->setHeadTag();
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            SeguimientosControllerSeguimientos::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, null);
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Unidad Esporádica");
+            $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
+            $this->getTemplate()->set_var("sUnidadDescripcion", $oUnidad->getDescripcion(true));
+
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageRightInnerMainCont", "EditarEntradaEsporadicaBlock");
+
+            $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+            $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
+            $this->getTemplate()->set_var("iUnidadId", $oUnidad->getId());
+            $this->getTemplate()->set_var("sNombreUnidadEsporadica", $oUnidad->getNombre());
+
+            $aVariables = $oUnidad->getVariables();
+
+            if(count($aVariables) == 0){
+                $this->getTemplate()->set_var("FormEditarEsporadicaBlock", "");
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "mensajeSinVariables", "MsgFichaInfoBlock");
+                $this->getTemplate()->set_var("sTituloMsgFicha", "Variables Unidad");
+                $this->getTemplate()->set_var("sMsgFicha", "La unidad se encuentra sin variables, no se puede generar el formulario");
+                $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+                return;
+            }
+            
+            foreach($aVariables as $oVariable){
+                $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
+                $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+                $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
+
+                if($oVariable->isVariableNumerica()){
+                    $block = "VariableNumericaEditar";
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
+                    $this->getTemplate()->set_var("sValor", $oVariable->getValor());
+                }
+
+                if($oVariable->isVariableTexto()){
+                    $block = "VariableTextoEditar";
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
+                    $this->getTemplate()->set_var("sValor", $oVariable->getValor(true));
+                }
+
+                if($oVariable->isVariableCualitativa()){
+                    $block = "VariableCualitativaEditar";
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variableEditar", $block);
+                    $aModalidades = $oVariable->getModalidades();
+                    foreach($aModalidades as $oModalidad){
+                        $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
+                        $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
+                        if($oVariable->getValor() !== null && $oModalidad->getId() == $oVariable->getValor()->getId()){
+                            $this->getTemplate()->set_var("sChecked", "checked='checked'");
+                        }
+                        $this->getTemplate()->parse("ModalidadEditar", true);
+                        $this->getTemplate()->set_var("sChecked", "");
+                    }
+                }
+
+                $this->getTemplate()->set_var("variableUnidadEsporadicaEditar", $this->getTemplate()->pparse("variableEditar"));
+                $this->getTemplate()->delete_parsed_blocks($block);
+                $this->getTemplate()->delete_parsed_blocks("ModalidadEditar");
+                $this->getTemplate()->parse("VariableUnidadEsporadicaEditarBlock", true);
+            }
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    public function entradasUnidadEsporadica()
+    {
+        echo "hola, tengo q listar todas las entradas para una unidad.";
     }
 
     private function formEvolucion($oEntrada, $oSeguimiento)
@@ -888,7 +980,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
             return;
         }
         
-        if($this->getRequest()->has('guardarUnidad')){
+        if($this->getRequest()->has('guardarUnidad') || $this->getRequest()->has('guardarUnidadEsporadica')){
             
             $iUnidadId = $this->getRequest()->getPost("unidadIdForm");
             if(null === $iUnidadId){
@@ -940,7 +1032,20 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 SeguimientosController::getInstance()->guardarEntrada($oEntrada);
                 
                 $this->getJsonHelper()->setSuccess(true);
-                $this->getJsonHelper()->setMessage("La unidad se guardo correctamente.");                                                                  
+                $this->getJsonHelper()->setMessage("La unidad se guardo correctamente.");
+
+                if($this->getRequest()->has('guardarUnidadEsporadica')){
+                    //redirecciona a la vista del listado de todas las entradas por unidad.
+                    $sRedirect = "/seguimientos/entradas/entradas-unidad-esporadica?unidad=".$oUnidad->getId();
+
+                    //como redirecciona agrego antes un dialog con mensaje de que guardo correctamente.
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgCorrectoBlockI32");
+                    $this->getTemplate()->set_var("sMensaje", "La unidad ".$oUnidad->getNombre()." se guardo correctamente.<br>Será redireccionado al listado con todas las fechas para la unidad.");
+                    
+                    $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));                 
+                    $this->getJsonHelper()->setValor("esporadica", "1");
+                    $this->getJsonHelper()->setRedirect($sRedirect);
+                }
             }catch(Exception $e){
                 $this->getJsonHelper()->setSuccess(false);
             }

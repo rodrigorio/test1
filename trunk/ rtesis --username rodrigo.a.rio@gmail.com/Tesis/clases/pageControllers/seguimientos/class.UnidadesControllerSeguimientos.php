@@ -785,6 +785,8 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
             $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
+            $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
+            $this->getTemplate()->set_var("sUnidadDescripcion", $oUnidad->getDescripcion(true));
 
             //si $oEntrada == null, muestro el popup con el form pero con el mensaje de que no existen entradas. Sino muestro la info de la unidad
             if($oEntrada === null){
@@ -795,12 +797,60 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("sTituloMsgFicha", "Unidad sin entradas.");
                 $this->getTemplate()->set_var("sMsgFicha", "Aún no se ha guardado información en esta unidad en ninguna fecha. Seleccione una fecha desde el calendario marcada como disponible.");
             }else{
-                $this->getTemplate()->set_var("MsgTopEntradaBlock", "");
+                $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
+                $sUltimaEntrada = str_replace("-", "/", $oEntrada->getFecha());
+                $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
+                $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
+                $this->getTemplate()->set_var("hrefVerEntradasUnidadEsporadica", $this->getUrlFromRoute("seguimientosEntradasEntradasUnidadEsporadica", true)."?unidad=".$oUnidad->getId());
 
+                //Esto se hace asi porque los valores de las variables se obtienen desde la llamada de la entrada
+                $aUnidades = $oEntrada->getUnidades();
+                $oUnidad = $aUnidades[0];
+                $aVariables = $oUnidad->getVariables();
+                if(count($aVariables) == 0){
+                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "MsgTopEntradaBlock", "MsgFichaInfoBlock");
+                    $this->getTemplate()->set_var("sTituloMsgFicha", "Variables Unidad");
+                    $this->getTemplate()->set_var("sMsgFicha", "La unidad se encuentra sin variables, no hay datos para ampliar.");
+                    $this->getTemplate()->set_var("EntradaEsporadicaBlock", "");
+                    $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
+                    return;
+                }else{
+                    $this->getTemplate()->set_var("MsgTopEntradaBlock", "");
+                }
                 
-                $this->getTemplate()->set_var("sUltimaEntrada", "");
-            }
+                foreach($aVariables as $oVariable){
 
+                    $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
+                    $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+
+                    if($oVariable->isVariableNumerica()){
+                        $variable = "VariableNumerica";
+                        $valor = $oVariable->getValor();
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableValorNumerico", $valor);
+                    }
+
+                    if($oVariable->isVariableTexto()){
+                        $variable = "VariableTexto";
+                        $valor = $oVariable->getValor(true);
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableValorTexto", $valor);
+                    }
+
+                    if($oVariable->isVariableCualitativa()){
+                        $variable = "VariableCualitativa";
+                        //valor en cualitativa es un objeto Modalidad
+                        $valor = $oVariable->getValorStr();
+                        if(null === $valor){ $valor = " - "; }
+                        $this->getTemplate()->set_var("sVariableModalidad", $valor);
+                    }
+
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variable", $variable);
+                    $this->getTemplate()->set_var("variable", $this->getTemplate()->pparse("variable"));
+                    $this->getTemplate()->delete_parsed_blocks($variable);
+                    $this->getTemplate()->parse("VariableBlock", true);
+                }
+            }
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             $this->getResponse()->setBody("Ocurrio un error al procesar lo solicitado");

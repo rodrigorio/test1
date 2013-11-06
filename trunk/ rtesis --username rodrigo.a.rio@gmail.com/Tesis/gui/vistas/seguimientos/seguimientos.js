@@ -832,11 +832,9 @@ $(document).ready(function(){
         var rel = $(this).attr("rel").split('_');
         var iUnidadEsporadicaId = rel[0];
         var iSeguimientoId = rel[1];
-
-        var sUnidadEsporadicaNombre = $(this).attr("title");
-        
+      
         $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
-        var dialog = setWaitingStatusDialog(650, sUnidadEsporadicaNombre);
+        var dialog = setWaitingStatusDialog(650, "Unidad Esporádica");
         dialog.load(
             "seguimientos/ampliar-unidad-esporadica",
             {
