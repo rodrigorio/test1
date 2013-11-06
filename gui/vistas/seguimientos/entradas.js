@@ -373,6 +373,30 @@ function submitFormUnidad(iUnidadId)
                 }
                 $('#msg_form_unidad_'+iUnidadId).addClass("error").fadeIn('slow');
             }else{
+                if(data.esporadica){
+                    var dialog = $("#dialog");
+                    if($("#dialog").length){dialog.remove();}
+                    dialog = $('<div id="dialog" title="Guardar Unidad"></div>').appendTo('body');
+                    dialog.html(data.html);
+                    
+                    var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
+                    dialog.dialog({
+                        position:['center', 'center'],
+                        width:400,
+                        resizable:false,
+                        draggable:false,
+                        modal:false,
+                        closeOnEscape:true,
+                        buttons:buttonAceptar
+                    });
+                    if(data.success != undefined && data.success == 1){
+                        $(".ui-dialog-buttonset .ui-button").click(function(){
+                            //redirecciona a ultima entrada
+                            location = data.redirect;
+                        });
+                    }
+                    return;
+                }
                 if(data.mensaje == undefined){
                     $('#msg_form_unidad_'+iUnidadId+' .msg').html(lang['exito procesar']);
                 }else{

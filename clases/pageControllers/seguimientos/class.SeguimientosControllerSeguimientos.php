@@ -3508,7 +3508,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             //para que pueda ser reutilizado en otras vistas
-            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+            self::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
 
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());

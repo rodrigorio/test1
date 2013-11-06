@@ -122,7 +122,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
     /**
      * Es uno de los principales metodos de la clase, con esto puedo lograr optimizar y sumar en performance.
      */
-    public function obtenerUnidadesByEntrada($iEntradaId)
+    public function obtenerUnidadesByEntrada($iEntradaId, $eTipoEdicion = 'regular')
     {
         try{
             $db = clone($this->conn);
@@ -142,7 +142,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
             $WHERE[] = $this->crearFiltroSimple('eu.entradas_id', $iEntradaId, MYSQL_TYPE_INT);
             $WHERE[] = $this->crearFiltroSimple('u.borradoLogico', "0", MYSQL_TYPE_INT);
-            $WHERE[] = $this->crearFiltroSimple('u.tipoEdicion', "regular");
+            $WHERE[] = $this->crearFiltroSimple('u.tipoEdicion', $eTipoEdicion);
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
 
             $sSQL .= " order by u.fechaHora asc ";

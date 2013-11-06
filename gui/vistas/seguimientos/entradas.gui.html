@@ -89,7 +89,7 @@
 
 <!--BeginVariableTexto-->
 <div class="pa pale3 mabo">
-    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}</span>
+    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2 tooltip">{sVariableNombre}</span>
     <br>
     <p class="mabo0 co3">{sVariableValorTexto}</p>
 </div>
@@ -97,13 +97,13 @@
 
 <!--BeginVariableNumerica-->
 <div class="pa pale3 mabo">
-    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}: </span> <span class="co3">{sVariableValorNumerico}</span>
+    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2 tooltip">{sVariableNombre}: </span> <span class="co3">{sVariableValorNumerico}</span>
 </div>
 <!--EndVariableNumerica-->
 
 <!--BeginVariableCualitativa-->
 <div class="pa pale3 mabo">
-    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2">{sVariableNombre}: </span> <span class="co3">{sVariableModalidad}</span>
+    <span title="{sVariableDescription}" class="fowe_bo teta_up fte2 tooltip">{sVariableNombre}: </span> <span class="co3">{sVariableModalidad}</span>
 </div>
 <!--EndVariableCualitativa-->
 
@@ -301,6 +301,42 @@
 
 <!--EndEditarEntradaBlock-->
 
+<!--BeginEditarEntradaEsporadicaBlock-->
+<div class="baco5 pa2 bobo2 boto2 mabo4">
+    {sUnidadDescripcion}
+</div>
+
+{mensajeSinVariables}
+
+<!--BeginFormEditarEsporadicaBlock-->
+<div class='ficha04 bora'>
+
+    <div class="titulo iveal">Editar {sNombreUnidadEsporadica}</div>
+
+    <form id="formUnidad_{iUnidadId}" name="formUnidadEsporadica" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <!--BeginVariableUnidadEsporadicaEditarBlock-->
+        {variableUnidadEsporadicaEditar}
+        <!--EndVariableUnidadEsporadicaEditarBlock-->
+
+        <div class="mabo2">
+            <label for="guardarEntradaEsporadica" class="button buttonLarge buttonConfirm mari3">
+                <button rel="{iUnidadId}" id="guardarEntradaEsporadica" type="button" name="guardarEntradaEsporadica" class="btn01 guardarUnidad">
+                    Guardar {sNombreUnidadEsporadica}
+                </button>
+            </label>
+        </div>
+        <input type="hidden" name="guardarUnidadEsporadica" value="1">
+        <input type="hidden" name="entradaIdForm" value="{iEntradaId}">
+        <input type="hidden" name="unidadIdForm" value="{iUnidadId}">
+        
+        <div style="display:none;" id='msg_form_unidad_{iUnidadId}' class="msg_form iveal cl_le"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndFormEditarEsporadicaBlock-->
+<!--EndEditarEntradaEsporadicaBlock-->
+
 <!--BeginAmpliarEntradaBlock-->
 <div class="mabo2 grupo">
     <span id="fechaEntradaActual" class="di_no">{sEntradaActual}</span>
@@ -436,19 +472,21 @@
 <!--EndAmpliarEntradaBlock-->
 
 <!--BeginAmpliarEntradaEsporadicaBlock-->
-
+<h2 class="teta_up mabo3 tesh pabo2 bobo1">{subtituloSeccion}</h2>
+<div class="baco5 pa2 bobo2 boto2 mabo3">
+    {sUnidadDescripcion}
+</div>
 <!--BeginMsgTopEntradaBlock-->
 <div class="mabo2">{msgTopEntrada}</div>
 <!--EndMsgTopEntradaBlock-->
 
 <!--BeginEntradaEsporadicaBlock-->
-<div class="bobo1 mabo2">
-    <h2>Entrada del {dFechaEntrada}</h2>
+<div class="bobo1 grupo">
+    <h2 class="mabo"><span class="i mi relationshipData mari"></span> Entrada del {dFechaEntrada}</h2>    
 </div>
-<div class="grupo baco1 pa2 iveal">
-    <h3 class="fl_le"><span class="i mi relationshipData mari"></span> {sNombreUnidad}</h3>
-</div>
-<div class="pa grupo bobo1 baco3 mabo2">
+<div class="fost_it fte2 fl_ri mabo2">posicione el cursor sobre el nombre para descripci&oacute;n de variable</div>
+
+<div class="pa grupo bobo1 baco3 mabo2 cl_bo">
     <!--BeginVariableBlock-->
     {variable}
     <!--EndVariableBlock-->
@@ -459,7 +497,7 @@
 <div class="baco5 bobo2 boto2 pa2 iveal ov_hi grupo po_re">
     <!--BeginVerEntradasButtonBlock-->
     <div class="fl_le grupo mari2 bori2 pari2">
-        <a class="button" href="hrefVerEntradasUnidadEsporadica">
+        <a class="button" href="{hrefVerEntradasUnidadEsporadica}">
             <span class="i bs calendar mari"></span>
             <span class="buttonText">Ver todas las fechas</span>
         </a>

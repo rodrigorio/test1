@@ -905,10 +905,12 @@ class SeguimientosController
     public function getUnidadesByEntrada($oEntrada)
     {
     	try{
+            $eTipoEdicion = ($oEntrada->isRegular())?'regular':'esporadica';
+            
             //primero obtengo las unidades asociadas a la entrada
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $aUnidades = $oUnidadIntermediary->obtenerUnidadesByEntrada($oEntrada->getId());
-
+            $aUnidades = $oUnidadIntermediary->obtenerUnidadesByEntrada($oEntrada->getId(), $eTipoEdicion);
+            
             //ahora asigno todas las variables a cada unidad filtrando por entrada
             if(count($aUnidades)>0){
                 foreach($aUnidades as $oUnidad){
@@ -917,7 +919,7 @@ class SeguimientosController
                     $oUnidad->setVariables($aVariables);
                 }
             }
-
+            
             return $aUnidades;            
         }catch(Exception $e){
             throw $e;
