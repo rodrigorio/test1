@@ -829,11 +829,12 @@ $(document).ready(function(){
     
     $(".ampliarUnidadEsporadica").live('click',function()
     {
+        $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
+        $.getScript(pathUrlBase+"gui/vistas/seguimientos/entradas.js");
+
         var rel = $(this).attr("rel").split('_');
         var iUnidadEsporadicaId = rel[0];
-        var iSeguimientoId = rel[1];
-      
-        $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
+        var iSeguimientoId = rel[1];      
         var dialog = setWaitingStatusDialog(650, "Unidad Esporádica");
         dialog.load(
             "seguimientos/ampliar-unidad-esporadica",
