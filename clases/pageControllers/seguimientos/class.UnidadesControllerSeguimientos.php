@@ -792,11 +792,15 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             if($oEntrada === null){
                 $this->getTemplate()->set_var("EntradaEsporadicaBlock", "");
                 $this->getTemplate()->set_var("VerEntradasButtonBlock", "");
+                $this->getTemplate()->set_var("EliminarEntradaEsporadicaButtonBlock", "");
 
                 $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
                 $this->getTemplate()->set_var("sTituloMsgFicha", "Unidad sin entradas.");
                 $this->getTemplate()->set_var("sMsgFicha", "Aún no se ha guardado información en esta unidad en ninguna fecha. Seleccione una fecha desde el calendario marcada como disponible.");
             }else{
+                if(!$oEntrada->isEditable()){
+                    $this->getTemplate()->set_var("EliminarEntradaEsporadicaButtonBlock", "");
+                }
                 $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
                 $sUltimaEntrada = str_replace("-", "/", $oEntrada->getFecha());
                 $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);

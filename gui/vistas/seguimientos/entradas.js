@@ -179,7 +179,7 @@ function Calendario(element){
     }
 }
 
-function eliminarEntrada(iEntradaId)
+function eliminarEntrada(iEntradaId, popup)
 {
     var buttons = {
         "Confirmar": function(){
@@ -195,7 +195,7 @@ function eliminarEntrada(iEntradaId)
                 url:"seguimientos/entradas/eliminar",
                 success:function(data){
                     dialog.html(data.html);
-                    if(data.success != undefined && data.success == 1){
+                    if(!popup && data.success != undefined && data.success == 1){
                         $(".ui-dialog-buttonset .ui-button").click(function(){
                             //ampliar entrada creada para editar por primera vez.
                             location = data.redirect;
@@ -250,7 +250,7 @@ function eliminarEntrada(iEntradaId)
                     buttons:buttonAceptar
                 });
 
-                if(data.success != undefined && data.success == 1){
+                if(!popup && data.success != undefined && data.success == 1){
                     $(".ui-dialog-buttonset .ui-button").click(function(){
                         //redirecciona a ultima entrada
                         location = data.redirect;
@@ -459,7 +459,13 @@ $(document).ready(function(){
 
     $("#eliminarEntrada").live('click', function(){
         var iEntradaId = $(this).attr("rel");
-        eliminarEntrada(iEntradaId);
+        var popup = false;
+        eliminarEntrada(iEntradaId, popup);
+    });    
+    $("#eliminarEntradaPopup").live('click', function(){
+        var iEntradaId = $(this).attr("rel");
+        var popup = true;
+        eliminarEntrada(iEntradaId, popup);
     });
 
     $("#crearEntradaHoy").live('click', function(){
