@@ -306,11 +306,6 @@ function eliminarVariable(iVariableId){
 
 $(document).ready(function(){
 
-    $(".close.ihover").live("click", function(){
-        var id = $(this).attr("rel");
-        $("#desplegable_" + id).hide();
-    });
-
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));

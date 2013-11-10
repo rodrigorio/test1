@@ -378,6 +378,34 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         }
     }
 
+    public function isUnidadSeguimiento($iUnidadId, $iSeguimientoId)
+    {
+    	try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimiento_x_unidad su
+                      WHERE
+                        su.unidades_id = ".$this->escInt($iUnidadId)." AND
+                        su.seguimientos_id = ".$this->escInt($iSeguimientoId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+            	return false;
+            }
+
+            return true;
+    	}catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
     /**
      * El usuario es necesario porque si es una unidad pre cargada puede estar
      * asociada a seguimientos que no sean del integrante que solicita la informacion

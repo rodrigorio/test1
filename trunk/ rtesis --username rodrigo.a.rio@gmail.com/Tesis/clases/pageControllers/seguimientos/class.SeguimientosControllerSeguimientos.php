@@ -241,7 +241,6 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
                     }
                     
-
                     $this->getTemplate()->parse("SeguimientoBlock", true);
             	}
 

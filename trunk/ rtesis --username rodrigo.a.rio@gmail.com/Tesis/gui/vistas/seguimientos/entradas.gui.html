@@ -253,7 +253,7 @@
             <div class="anexoFicha grupo">
                 <div class="titulo mabo3 grupo">
                     <div class="fte fost_it fl_le">Detalles</div>
-                    <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
+                    <span rel="{iSeguimientoId}" class="i bs close closeDesplegable ihover fl_ri"></span>
                 </div>
                 <span class="fte2 txt_imp2">Creado el </span>
                 <p class="co3">{dFechaCreacion}</p>
@@ -430,7 +430,7 @@
             <div class="anexoFicha grupo">
                 <div class="titulo mabo3 grupo">
                     <div class="fte fost_it fl_le">Detalles</div>
-                    <span rel="{iSeguimientoId}" class="i bs close ihover fl_ri"></span>
+                    <span rel="{iSeguimientoId}" class="i bs close closeDesplegable ihover fl_ri"></span>
                 </div>
                 <span class="fte2 txt_imp2">Creado el </span>
                 <p class="co3">{dFechaCreacion}</p>
@@ -494,7 +494,8 @@
 <!--EndEntradaEsporadicaBlock-->
 
 <!--BeginFormCrearEntradaUnidadEsporadicaBlock-->
-<div class="baco5 bobo2 boto2 pa2 iveal ov_hi grupo po_re">
+<div class="baco5 bobo2 boto2 pa2 iveal ov_hi grupo po_re menuEntrada">
+    <div class="ajax_wait16 di_no"></div>
     <!--BeginVerEntradasButtonBlock-->
     <div class="fl_le grupo mari2 bori2 pari2">
         <a class="button" href="{hrefVerEntradasUnidadEsporadica}">
@@ -524,8 +525,8 @@
         </div>
         <input type="hidden" value="{iSeguimientoIdForm}" name="iSeguimientoId" id="seguimientoIdFormEsporadica" />
         <input type="hidden" value="{iUnidadIdForm}" name="iUnidadId" id="unidadIdFormEsporadica" />
-    </form>
-    <div style="display:none;" id='msg_form_crearEntradaUnidadEsporadica' class="msg_form iveal cl_bo mabo0"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_crearEntradaUnidadEsporadica' class="msg_form iveal fl_le cl_bo mabo0 mato2"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>    
 </div>
 <!--EndFormCrearEntradaUnidadEsporadicaBlock-->
 
@@ -584,3 +585,96 @@
 </div>
 <!--EndFormularioEvolucionBlock-->
 
+
+<!--BeginListadoEntradasPorUnidadEsporadica-->
+<div class="baco5 pa2 bobo2 boto2 mabo3">
+    {sUnidadDescripcion}
+</div>
+
+<div id="listadoEntradasEsporadicas" class="grupo po_re mabo2">
+    <!--BeginGrillaEntradasBlock-->
+    <div class="fost_it pato2 pabo2">Cantidad Entradas: <span id="cantidadEntradas" class="fowe_bo">{iRecordsTotal}</span></div>
+    <table class="table01 wi100p mabo2">
+        <tr class="encabezado">
+           <td class="medium">Fecha</td>
+           <td class="big iveal"></td>
+        </tr>
+        <!--BeginEntradaBlock-->
+        <tr class="{iEntradaId}">
+            <td class="pale2">
+                <span class="fowe_bo">{sFecha}</span>
+            </td>
+            <td>
+                <div class="po_re grupo" id="menuEntrada_{iEntradaId}">
+                    <div class="ajax_wait16 di_no"></div>
+                    <ul class="m_horiz fl_ri po_re">
+                        <li>
+                            <a rel="{iEntradaId}" title="Ampliar" class="button desplegable" href="javascript:;">
+                                <span class="i mi expand"></span>
+                                <span class="buttonText">Ampliar</span>
+                            </a>
+                        </li>
+                        <!--BeginEditarEsporadicaButton-->
+                        <li>
+                            <a title="Editar" class="button" href="{hrefEditarEntrada}">
+                                <span class="i bs edit"></span>
+                                <span class="buttonText">Editar</span>
+                            </a>
+                        </li>
+                        <!--EndEditarEsporadicaButton-->
+                        <!--BeginEliminarEsporadicaButton-->
+                        <li class="mari0">
+                            <a rel="{iEntradaId}" title="Eliminar" class="button eliminarEntrada" href="javascript:;">
+                                <span class="i bs delete"></span>
+                                <span class="buttonText">Eliminar</span>
+                            </a>
+                        </li>
+                        <!--EndEliminarEsporadicaButton-->
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        <tr class="{iEntradaId} ba_no">
+            <td id="desplegable_{iEntradaId}" class="pa0 bobo_no" colspan="6" style="display:none;">
+                <div class="anexoFicha grupo">
+                    <div class="titulo grupo">
+                        <div class="fte fost_it fl_le">Detalles</div>
+                        <span rel="{iEntradaId}" class="i bs close closeDesplegable ihover fl_ri"></span>
+                    </div>
+                    <br clear="all">
+                    <!--BeginVariableBlock-->
+                    {variable}
+                    <!--EndVariableBlock-->
+                </div>
+            </td>
+        </tr>
+        <!--EndEntradaBlock-->
+
+        <!--BeginNoRecordsGrillaEntradasBlock-->
+        <tr>
+            <td colspan="2" class="teal_ce">{sNoRecords}</td>
+        </tr>
+        <!--EndNoRecordsGrillaEntradasBlock-->
+
+    </table>
+    <!--EndGrillaEntradasBlock-->
+</div>
+
+<div class="baco5 bobo2 boto2 pa2 iveal grupo po_re">
+    <span id="fechaUltimaEntrada" class="di_no">{sUltimaEntrada}</span>
+    <form class="di_inbl" id="formCrearEntradaUnidadEsporadica" name="formCrearEntradaUnidadEsporadica" action="" method="post">
+        <div class="ajax_wait16 di_no"></div>
+        <input class="fl_le inputTextLihe" readonly="readonly" type="text" name="dFecha" id="fechaFormUnidadEsporadica" title="Fecha entrada" placeholder="Fecha entrada" value="" />
+        <div class="male2 fl_le iveal">
+            <label for="crearEntradaEsporadica" class="button buttonConfirm">
+                <button id="crearEntradaEsporadica" type="submit" name="crearEntradaEsporadica" class="btn01">
+                    Crear Entrada
+                </button>
+            </label>
+        </div>
+        <input type="hidden" value="{iSeguimientoIdForm}" name="iSeguimientoId" id="seguimientoIdFormEsporadica" />
+        <input type="hidden" value="{iUnidadIdForm}" name="iUnidadId" id="unidadIdFormEsporadica" />
+        <div style="display:none;" id='msg_form_crearEntradaUnidadEsporadica' class="msg_form iveal fl_le cl_bo mabo0 mato2"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndListadoEntradasPorUnidadEsporadica-->

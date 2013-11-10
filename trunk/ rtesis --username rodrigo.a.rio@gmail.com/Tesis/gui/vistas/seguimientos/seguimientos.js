@@ -396,7 +396,9 @@ var optionsAjaxFormFoto = {
         }else{
             //si guardo bien directamente cierro el dialog
             if($("#dialog").length != 0){
-                $("#dialog").hide("slow").remove();
+                $("#dialog").hide("slow", function(){
+                    $("#dialog").remove();
+                });
             }
         }
     }
@@ -710,11 +712,6 @@ $(document).ready(function(){
         return false;
     });
 
-    $(".close.ihover").live("click", function(){
-        var id = $(this).attr("rel");
-        $("#desplegable_" + id).hide();
-    });
-
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
@@ -829,9 +826,6 @@ $(document).ready(function(){
     
     $(".ampliarUnidadEsporadica").live('click',function()
     {
-        $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
-        $.getScript(pathUrlBase+"gui/vistas/seguimientos/entradas.js");
-
         var rel = $(this).attr("rel").split('_');
         var iUnidadEsporadicaId = rel[0];
         var iSeguimientoId = rel[1];      
@@ -843,7 +837,11 @@ $(document).ready(function(){
                 iSeguimientoId:iSeguimientoId
             },
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsCrearEntradaUnidadEsporadicaForm();
+                $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js");
+                $.getScript(pathUrlBase+"gui/vistas/seguimientos/entradas.js",
+                    function( data, textStatus, jqxhr ){
+                        bindEventsCrearEntradaUnidadEsporadicaForm();
+                    });
             }
         );
         return false;

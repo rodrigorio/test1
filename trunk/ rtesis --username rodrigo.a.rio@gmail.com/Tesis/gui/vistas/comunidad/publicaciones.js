@@ -972,11 +972,6 @@ $(document).ready(function(){
     ////////////////
 
     //Mis publicaciones
-    $(".close.ihover").live("click", function(){
-        var id = $(this).attr("rel");
-        $("#desplegable_" + id).hide();
-    });
-
     $(".editarPublicacion").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var tipo = rel[0];
