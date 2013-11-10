@@ -196,9 +196,11 @@ function bindEventsCrearEntradaUnidadEsporadicaForm(){
     var ultimaEntrada = $("#fechaUltimaEntrada").html();
     if(ultimaEntrada != undefined && ultimaEntrada != ""){
         ultimaEntrada = new Date(ultimaEntrada);
+        //le sumo 1 dia
+        var fromDate = new Date(ultimaEntrada.getFullYear(), ultimaEntrada.getMonth(), ultimaEntrada.getDate()+1);
     }    
     $("#fechaFormUnidadEsporadica").datepicker({
-        minDate:ultimaEntrada,
+        minDate:fromDate,
         maxDate:new Date
     });
 

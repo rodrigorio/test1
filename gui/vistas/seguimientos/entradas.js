@@ -179,7 +179,7 @@ function Calendario(element){
     }
 }
 
-function eliminarEntrada(iEntradaId, popup)
+function eliminarEntrada(iEntradaId, popup, contMenu, listRow)
 {
     var buttons = {
         "Confirmar": function(){
@@ -195,11 +195,21 @@ function eliminarEntrada(iEntradaId, popup)
                 url:"seguimientos/entradas/eliminar",
                 success:function(data){
                     dialog.html(data.html);
-                    if(!popup && data.success != undefined && data.success == 1){
-                        $(".ui-dialog-buttonset .ui-button").click(function(){
-                            //ampliar entrada creada para editar por primera vez.
-                            location = data.redirect;
+                    if(listRow){
+                        //si es listado borro el <tr>
+                        $("."+iEntradaId).hide("slow", function(){
+                            $("."+iEntradaId).remove();
                         });
+                        //resto 1 en el contador
+                        var cont = parseInt($("#cantidadEntradas").html(),10) - 1;
+                        $("#cantidadEntradas").html(cont.toString());
+                    }else{
+                        if(!popup && data.success != undefined && data.success == 1){
+                            $(".ui-dialog-buttonset .ui-button").click(function(){
+                                //ampliar entrada creada para editar por primera vez.
+                                location = data.redirect;
+                            });
+                        }
                     }
                 }
             });
@@ -218,10 +228,10 @@ function eliminarEntrada(iEntradaId, popup)
             iEntradaId:iEntradaId
         },
         beforeSend: function(){
-            setWaitingStatus('menuEntrada', true, "16");
+            setWaitingStatus(contMenu, true, "16");
         },
         success:function(data){
-            setWaitingStatus('menuEntrada', false, "16");
+            setWaitingStatus(contMenu, false, "16");
 
             var dialog = $("#dialog");
             if($("#dialog").length){dialog.remove();}
@@ -460,14 +470,22 @@ $(document).ready(function(){
     $("#eliminarEntrada").live('click', function(){
         var iEntradaId = $(this).attr("rel");
         var popup = false;
-        eliminarEntrada(iEntradaId, popup);
+        var listRow = false;
+        eliminarEntrada(iEntradaId, popup, "menuEntrada", listRow);
     });    
     $("#eliminarEntradaPopup").live('click', function(){
         var iEntradaId = $(this).attr("rel");
         var popup = true;
-        eliminarEntrada(iEntradaId, popup);
+        var listRow = false;
+        eliminarEntrada(iEntradaId, popup, "menuEntrada", listRow);
     });
-
+    $(".eliminarEntrada").live('click', function(){ //listado de entradas por unidad esporadica
+        var iEntradaId = $(this).attr("rel");
+        var popup = false;
+        var listRow = true; //porq es una entrada en forma de listado
+        eliminarEntrada(iEntradaId, popup, "menuEntrada_"+iEntradaId, listRow);
+    });
+    
     $("#crearEntradaHoy").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var iSeguimientoId = rel[0];
@@ -522,5 +540,13 @@ $(document).ready(function(){
     $(".guardarUnidad").live('click', function(){
         var iUnidadId = $(this).attr("rel");
         submitFormUnidad(iUnidadId);
-    });  
+    });
+
+    //vista plana de ver todas las entradas para una unidad esporadica
+    if($("#formCrearEntradaUnidadEsporadica").length){
+        $.getScript(pathUrlBase+"gui/vistas/seguimientos/unidades.js",
+            function( data, textStatus, jqxhr ){
+                bindEventsCrearEntradaUnidadEsporadicaForm();
+            });
+    }    
 });

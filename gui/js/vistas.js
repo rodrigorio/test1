@@ -381,10 +381,14 @@ $(document).ready(function(){
     $(".desplegable").live("click", function(){
         var id = $(this).attr("rel");
         if($("#desplegable_" + id).css("display") == "none"){
-            $("#desplegable_" + id).show();
+            $("#desplegable_" + id).slideDown("slow");
         }else{
-            $("#desplegable_" + id).hide();
+            $("#desplegable_" + id).slideUp("fast");
         }
+    });
+    $(".closeDesplegable").live("click", function(){
+        var id = $(this).attr("rel");
+        $("#desplegable_" + id).slideUp("fast");
     });
 
     //SUPER FISH MENU

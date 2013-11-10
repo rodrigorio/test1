@@ -878,11 +878,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    public function entradasUnidadEsporadica()
-    {
-        echo "hola, tengo q listar todas las entradas para una unidad.";
-    }
-
     private function formEvolucion($oEntrada, $oSeguimiento)
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){
@@ -1036,7 +1031,7 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                 if($this->getRequest()->has('guardarUnidadEsporadica')){
                     //redirecciona a la vista del listado de todas las entradas por unidad.
-                    $sRedirect = "/seguimientos/entradas/entradas-unidad-esporadica?unidad=".$oUnidad->getId();
+                    $sRedirect = "/seguimientos/entradas/entradas-unidad-esporadica?unidad=".$oUnidad->getId()."&seguimiento=".$oSeguimiento->getId();
 
                     //como redirecciona agrego antes un dialog con mensaje de que guardo correctamente.
                     $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgCorrectoBlockI32");
@@ -1116,5 +1111,148 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
         }
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    /**
+     * Listar entradas de una unidad esporadica
+     */
+    public function entradasUnidadEsporadica()
+    {
+        $iUnidadId = $this->getRequest()->getParam("unidad");
+        $iSeguimientoId = $this->getRequest()->getParam("seguimiento");
+        
+        if(null === $iUnidadId || null === $iSeguimientoId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+        if($oUnidad === null || !$oUnidad->isTipoEdicionEsporadica()){
+            throw new Exception("No existe la unidad para el identificador", 401);
+        }
+
+        $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
+        if($oSeguimiento === null){
+            throw new Exception("No existe el seguimiento para el identificador", 401);
+        }
+               
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oUnidad->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ver esta unidad", 401);
+        }
+        if($oSeguimiento->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar esta entrada", 401);
+        }
+
+        //ultima comprobacion
+        if(!SeguimientosController::getInstance()->isUnidadAsociadaSeguimiento($iUnidadId, $iSeguimientoId)){
+            throw new Exception("La unidad no esta asociada al seguimiento", 401);
+        }
+                
+        try{
+            $this->setFrameTemplateB()
+                 ->setHeadTag();
+
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
+
+            SeguimientosControllerSeguimientos::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, null);
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
+
+            $this->getTemplate()->set_var("iSeguimientoId", "$iSeguimientoId");
+
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Unidad Esporádica");
+            $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
+            
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "pageRightInnerMainCont", "ListadoEntradasPorUnidadEsporadica");
+
+            $this->getTemplate()->set_var("sUnidadDescripcion", $oUnidad->getDescripcion(true));
+            $this->getTemplate()->set_var("iSeguimientoIdForm", $oSeguimiento->getId());
+            $this->getTemplate()->set_var("iUnidadIdForm", $oUnidad->getId());
+
+            $aEntradas = SeguimientosController::getInstance()->getEntradasSeguimientoByUnidadId($iSeguimientoId, $oUnidad->getId());
+            $this->getTemplate()->set_var("iRecordsTotal", count($aEntradas));
+            if(count($aEntradas) == 0){
+                $this->getTemplate()->set_var("EntradaBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "La unidad no tiene entradas");
+            }else{
+                $this->getTemplate()->set_var("NoRecordsGrillaEntradasBlock", "");
+                $first = true;
+                foreach($aEntradas as $oEntrada){
+                    //primer fecha es la ultima entrada, info que necesito para el form de nueva entrada.
+                    if($first){
+                        $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
+                        $sUltimaEntrada = str_replace("-", "/", $oEntrada->getFecha());
+                        $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
+                        $first = false;
+                    }
+
+                    $this->getTemplate()->set_var("sFecha", $oEntrada->getFecha(true));
+                    $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
+
+                    if($oEntrada->isEditable()){
+                        $hrefEditar = $this->getUrlFromRoute("seguimientosEntradasEditar", true)."?entrada=".$oEntrada->getId();
+                        $this->getTemplate()->set_var("hrefEditarEntrada", $hrefEditar);
+                    }else{
+                        if($oEntrada->isGuardada()){
+                            $this->getTemplate()->set_var("EliminarEsporadicaButton", "");
+                        }
+                        $this->getTemplate()->set_var("EditarEsporadicaButton", "");
+                    }
+                                                                                                 
+                    //Esto se hace asi porque los valores de las variables se obtienen desde la llamada de la entrada
+                    $aUnidades = $oEntrada->getUnidades();
+                    $oUnidad = $aUnidades[0];
+                    $aVariables = $oUnidad->getVariables();
+                    if(count($aVariables) == 0){
+                        continue;
+                    }
+
+                    foreach($aVariables as $oVariable){
+
+                        $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
+                        $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+                        
+                        if($oVariable->isVariableNumerica()){
+                            $variable = "VariableNumerica";
+                            $valor = $oVariable->getValor();
+                            if(null === $valor){ $valor = " - "; }
+                            $this->getTemplate()->set_var("sVariableValorNumerico", $valor);
+                        }
+
+                        if($oVariable->isVariableTexto()){
+                            $variable = "VariableTexto";
+                            $valor = $oVariable->getValor(true);
+                            if(null === $valor){ $valor = " - "; }
+                            $this->getTemplate()->set_var("sVariableValorTexto", $valor);
+                        }
+
+                        if($oVariable->isVariableCualitativa()){
+                            $variable = "VariableCualitativa";
+                            //valor en cualitativa es un objeto Modalidad
+                            $valor = $oVariable->getValorStr();
+                            if(null === $valor){ $valor = " - "; }
+                            $this->getTemplate()->set_var("sVariableModalidad", $valor);
+                        }
+
+                        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variable", $variable);
+                        $this->getTemplate()->set_var("variable", $this->getTemplate()->pparse("variable"));
+                        $this->getTemplate()->delete_parsed_blocks($variable);
+                        $this->getTemplate()->parse("VariableBlock", true);
+                    }
+
+                    $this->getTemplate()->parse("EntradaBlock", true);
+                    $this->getTemplate()->delete_parsed_blocks("VariableBlock");
+                    $this->getTemplate()->delete_parsed_blocks("EditarEsporadicaButton");
+                    $this->getTemplate()->delete_parsed_blocks("EliminarEsporadicaButton");
+                }
+            }
+            
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
+        }
     }
 }

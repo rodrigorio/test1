@@ -707,11 +707,6 @@ $(document).ready(function(){
     ////////////////
 
     //Mis aplicaciones
-    $(".close.ihover").live("click", function(){
-        var id = $(this).attr("rel");
-        $("#desplegable_" + id).hide();
-    });
-
     $(".editarSoftware").live('click', function(){
         var iSoftwareId = $(this).attr("rel");
         editarSoftware(iSoftwareId);

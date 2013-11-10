@@ -805,7 +805,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
                 $sUltimaEntrada = str_replace("-", "/", $oEntrada->getFecha());
                 $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
                 $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
-                $this->getTemplate()->set_var("hrefVerEntradasUnidadEsporadica", $this->getUrlFromRoute("seguimientosEntradasEntradasUnidadEsporadica", true)."?unidad=".$oUnidad->getId());
+                $this->getTemplate()->set_var("hrefVerEntradasUnidadEsporadica", $this->getUrlFromRoute("seguimientosEntradasEntradasUnidadEsporadica", true)."?unidad=".$oUnidad->getId()."&seguimiento=".$iSeguimientoId);
 
                 //Esto se hace asi porque los valores de las variables se obtienen desde la llamada de la entrada
                 $aUnidades = $oEntrada->getUnidades();

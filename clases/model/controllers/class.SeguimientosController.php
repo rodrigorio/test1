@@ -1661,6 +1661,19 @@ class SeguimientosController
     }
 
     /**
+     * Devuelve true si la unidad esta asociada a un seguimiento
+     */
+    public function isUnidadAsociadaSeguimiento($iUnidadId, $iSeguimientoId)
+    {
+        try{            
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->isUnidadSeguimiento($iUnidadId, $iSeguimientoId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Si la asociacion ya existe pero esta borrada logicamente limpia el registro y la vuelve a activar.
      * Si la asociacion no existia crea un nuevo row asociando las 2 entidades.
      *
@@ -1870,7 +1883,7 @@ class SeguimientosController
     }
 
     /**
-     * Devuelve ultima entrada en la que unidad fue asociada para un seguimiento
+     * Devuelve ultima entrada en la que la unidad estuvo asociada a un seguimiento
      */
     public function getUltimaEntradaSeguimientoByUnidadId($iSeguimientoId, $iUnidadId)
     {
@@ -1888,6 +1901,22 @@ class SeguimientosController
             }else{
                 return null;
             }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Devuelve todas las entradas en la que una unidad estuvo asociada para un seguimiento
+     */
+    public function getEntradasSeguimientoByUnidadId($iSeguimientoId, $iUnidadId)
+    {
+    	try{
+            $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
+            $sOrderBy = "e.fecha"; $sOrder = "desc";
+            $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'eu.unidades_id' => $iUnidadId);
+            $iRecordsTotal = 0;
+            return $oEntradaIntermediary->obtenerRelUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder);
         }catch(Exception $e){
             throw $e;
         }
@@ -1919,7 +1948,7 @@ class SeguimientosController
             if($oUltimaEntrada !== null){
                 $dFechaUltimaEntrada = strtotime($oUltimaEntrada->getFecha());
                 $dFechaNuevaEntrada = strtotime($sFechaNuevaEntrada);
-                if($dFechaUltimaEntrada > $dFechaNuevaEntrada){
+                if($dFechaUltimaEntrada >= $dFechaNuevaEntrada){
                     throw new Exception("La entrada tiene que ser posterior a la ultima creada.");
                 }
             }
@@ -1969,7 +1998,7 @@ class SeguimientosController
             if($oUltimaEntrada !== null){
                 $dFechaUltimaEntrada = strtotime($oUltimaEntrada->getFecha());
                 $dFechaNuevaEntrada = strtotime($sFechaNuevaEntrada);
-                if($dFechaUltimaEntrada > $dFechaNuevaEntrada){
+                if($dFechaUltimaEntrada >= $dFechaNuevaEntrada){
                     throw new Exception("La entrada tiene que ser posterior a la ultima creada.");
                 }
             }
