@@ -532,5 +532,103 @@ class RutasModuloAdmin
                                         'action'     => 'formularioObjetivoAprendizaje'
                                 ));
         $router->addRoute('adminObjetivosAprendizajeFormularioObjetivoAprendizaje', $route);
+
+
+        //unidades
+        $route = new RegexRoute('admin/listar-unidades',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'unidades',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminUnidadesIndex', $route);
+        $route = new RegexRoute('admin/form-crear-unidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'unidades',
+                                        'action'     => 'formCrearUnidad'
+                                ));
+        $router->addRoute('adminUnidadesFormCrearUnidad', $route);
+        $route = new RegexRoute('admin/form-editar-unidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'unidades',
+                                        'action'     => 'formEditarUnidad'
+                                ));
+        $router->addRoute('adminUnidadesFormEditarUnidad', $route);
+        $route = new RegexRoute('admin/guardar-unidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'unidades',
+                                        'action'     => 'guardarUnidad'
+                                ));
+        $router->addRoute('adminUnidadesGuardarUnidad', $route);
+        $route = new RegexRoute('admin/unidades-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'unidades',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminUnidadesProcesar', $route);
+        $route = new RegexRoute('admin/borrar-unidad',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'unidades',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('adminUnidadesBorrar', $route);
+
+
+        
+        //variables
+        $route = new RegexRoute('admin/listar-variables',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('adminVariablesIndex', $route);
+        $route = new RegexRoute('admin/form-crear-variable',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'formCrearVariable'
+                                ));
+        $router->addRoute('adminUnidadesFormCrearVariable', $route);
+        $route = new RegexRoute('admin/form-editar-variable',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'formEditarVariable'
+                                ));
+        $router->addRoute('adminUnidadesFormEditarVariable', $route);
+        $route = new RegexRoute('admin/variables-procesar',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('adminVariablesProcesar', $route);
+        $route = new RegexRoute('admin/guardar-variable',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'guardar'
+                                ));
+        $router->addRoute('adminUnidadesGuardar', $route);
+        $route = new RegexRoute('admin/borrar-variable',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('adminVariablesBorrar', $route);
+        $route = new RegexRoute('admin/borrar-modalidad-variable',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'variables',
+                                        'action'     => 'eliminarModalidad'
+                                ));
+        $router->addRoute('adminVariablesBorrarModalidad', $route);
     }
 }
