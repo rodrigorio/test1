@@ -48,74 +48,22 @@ class UnidadesControllerAdmin extends PageControllerAbstract
         }       
     }
 
-    /**
-     * Seguimientos personalizados asociados a la unidad, se usa en la vista de administrar unidades seg personalizados
-     */
-    private function verSeguimientos()
-    {
-        $iUnidadId = $this->getRequest()->getParam('iUnidadId');
-        if(empty($iUnidadId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
-        }
-
-        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
-
-        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $iUsuarioId = $perfil->getUsuario()->getId();
-        if($oUnidad->getUsuarioId() != $iUsuarioId){
-            throw new Exception("No tiene permiso para ver esta unidad", 401);
-        }
-        
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "ajaxSeguimientosAsociadosBlock", "VerSeguimientosAsociadosBlock");
-
-        $iRecordsTotal = 0;
-        $filtroSql["u.id"] = $iUsuarioId;
-        $filtroSql["su.unidades_id"] = $iUnidadId;
-        $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtroSql, $iRecordsTotal, null, null, null, null);
-
-        $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
-        
-        foreach ($aSeguimientos as $oSeguimiento){
-            $this->getTemplate()->set_var("sSeguimientoPersona", $oSeguimiento->getDiscapacitado()->getNombreCompleto());
-            $this->getTemplate()->set_var("sSeguimientoPersonaDNI", $oSeguimiento->getDiscapacitado()->getNumeroDocumento());
-            $this->getTemplate()->set_var("sSeguimientoFechaCreacion", Utils::fechaFormateada($oSeguimiento->getFechaCreacion()));
-
-            $sEstadoSeguimiento = $oSeguimiento->getEstado();
-            if($sEstadoSeguimiento == "activo"){
-                $this->getTemplate()->set_var("sEstadoClass", "");
-            }else{
-                $this->getTemplate()->set_var("sEstadoClass", "disabled");
-            }
-
-            $srcAvatarPersona = $this->getUploadHelper()->getDirectorioUploadFotos().$oSeguimiento->getDiscapacitado()->getNombreAvatar();
-            $this->getTemplate()->set_var("scrAvatarPersona", $srcAvatarPersona);
-
-            $this->getTemplate()->parse("SeguimientoBlock", true);
-        }
-
-        $this->getResponse()->setBody($this->getTemplate()->pparse('ajaxSeguimientosAsociadosBlock', false));
-    }
-
     public function listar()
     {
         try{
             $this->setFrameTemplate()
-                 ->setMenuDerecha()
-                 ->setJsUnidades()
                  ->setHeadTag();
 
-            IndexControllerSeguimientos::setCabecera($this->getTemplate());
-            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
             $this->printMsgTop();
 
-            //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Unidades de Variables");
-            $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/unidades.gui.html", "pageRightInnerMainCont", "ListadoUnidadesBlock");
-
+            $this->getTemplate()->load_file_section("gui/vistas/admin/unidades.gui.html", "widgetsContent", "HeaderBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/unidades.gui.html", "mainContent", "ListadoUnidadesBlock");
+           
             $iRecordsTotal = 0;            
-            $aUnidades = SeguimientosController::getInstance()->obtenerUnidadesPersonalizadasUsuario($filtro = array(), $iRecordsTotal, null, null, null, null);
-            $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+            $aUnidades = AdminController::getInstance()->obtenerUnidadesPrecargadasSeguimientosSCC($filtro = array(), $iRecordsTotal, null, null, null, null);
+            
             if(count($aUnidades) > 0){
 
                 $this->getTemplate()->set_var("NoRecordsThumbsUnidadesBlock", "");
@@ -144,21 +92,11 @@ class UnidadesControllerAdmin extends PageControllerAbstract
                     //lo hago asi porque sino es re pesado obtener todas las variables, etc. solo para saber cantidad
                     list($iCantidadVariablesAsociadas, $iCantidadSeguimientosAsociados) = SeguimientosController::getInstance()->obtenerMetadatosUnidad($oUnidad->getId());
                     $this->getTemplate()->set_var("iCantidadVariables", $iCantidadVariablesAsociadas);
-                    $this->getTemplate()->set_var("iCantidadSeguimientos", $iCantidadSeguimientosAsociados);
-
-                    if($iCantidadSeguimientosAsociados > 0){
-                        $this->getTemplate()->set_var("NoLinkSeguimientos", "");
-                        $this->getTemplate()->set_var("iCantidadSeguimientos", $iCantidadSeguimientosAsociados);
-                    }else{
-                        $this->getTemplate()->set_var("LinkSeguimientos", "");
-                    }
-                    
-                    $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("seguimientosVariablesIndex", true)."?id=".$oUnidad->getId());
+                                        
+                    $this->getTemplate()->set_var("hrefListarVariablesUnidad", $this->getUrlFromRoute("adminVariablesIndex", true)."?id=".$oUnidad->getId());
 
                     $this->getTemplate()->parse("UnidadBlock", true);
                     $this->getTemplate()->delete_parsed_blocks("LinkVerMasBlock");
-                    $this->getTemplate()->delete_parsed_blocks("NoLinkSeguimientos");
-                    $this->getTemplate()->delete_parsed_blocks("LinkSeguimientos");
                 }
             }else{
                 $this->getTemplate()->set_var("UnidadBlock", "");

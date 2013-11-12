@@ -111,6 +111,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("sHrefAreas", $request->getBaseTagUrl()."admin/listar-areas");
         $template->set_var("sHrefEjes", $request->getBaseTagUrl()."admin/listar-ejes");
         $template->set_var("sHrefObjetivosAprendizaje", $request->getBaseTagUrl()."admin/listar-objetivos-aprendizaje");
+        $template->set_var("sHrefUnidades", $request->getBaseTagUrl()."admin/listar-unidades");
         
         //avanzadas
         $template->set_var("sHrefAccionesPerfil", $request->getBaseTagUrl()."admin/acciones-perfil");

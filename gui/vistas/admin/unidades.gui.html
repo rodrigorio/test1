@@ -22,103 +22,157 @@
 </script>
 <!--EndJsContent-->
 
-<!--BeginPageRightInnerContListadoUnidadesBlock-->
-<ul class="m_vert menu08 mabo3 teal_ri">
-    <li>
-        <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
-            <span class="i bs arrowLeft"></span> Volver a mis seguimientos
-        </a>
-    </li>
-</ul>
-<ul class="m_vert menu08">
-    <li>
-        <a id="crearUnidad" href="javascript:;">
-            Crear nueva Unidad
-        </a>
-    </li>
-</ul>
-<!--EndPageRightInnerContListadoUnidadesBlock-->
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Unidades precargadas para Seguimientos SCC</h2>
+</header>
+<section>
+    <h3>Unidades que brinda el sistema para que los integrantes puedan asociar a los seguimientos por competencia curricular.</h3>
+</section>
+<!--EndHeaderBlock-->
+
 
 <!--BeginListadoUnidadesBlock-->
-<div class="ficha01 grupo mabo2">
-    <div class="encabezado">
-        <div class="der"></div>
-        <div class="izq">
-            <div class="icono"><span class="i32 bs search32"></span></div>
-            <span class="titulo">Buscar Unidades</span><br>
-            <span class="subtitulo">filtrar los resultados del listado</span>
-        </div>        
-    </div>
-    <div class="contenido">
-        <form id="formFiltrarUnidades" name="formFiltrarUnidades" action="" method="post">
-            <div class="fl_le mari2 mabo2">
-               <span class="fowe_bo">Nombre Unidad</span>
-               <input type="text" name="filtroNombreUnidad" id="filtroNombreUnidad"/>
-            </div>
 
-            <br clear="all" />
-
-            <label for="buscarUnidades" class="button buttonConfirm mari">
-                <button id="buscarUnidades" type="button" name="buscarUnidades" class="btn01">
-                    Buscar Unidades
-                </button>
-            </label>
-            <label for="limpiarFiltro" class="button">
-                <button id="limpiarFiltro" type="button" name="limpiarFiltro" class="btn01">
-                    Limpiar Filtro
-                </button>
-            </label>
-        </form>
-    </div>
+<!--BeginPanelAdminBlock-->
+<div id="subHeader" class="subHeader01 mabo3">
+    <a class="button-link blue" id="crearUnidad" href="javascript:;" rel="tooltip" original-title="Agregar una nueva unidad precargada al sistema">
+        Crear nueva Unidad
+    </a>
 </div>
+<!--EndPanelAdminBlock-->
 
-<div id="listadoUnidades" class="grupo po_re">
+<section id="listadoUnidades">
     <div class="ajax_wait30 di_no"></div>
-    <div id="listadoUnidadesResult">
-        <!--BeginThumbsUnidadesBlock-->
-        <div class="fost_it pato2 pabo2">Cantidad unidades filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
-            <!--BeginUnidadBlock-->
-            <div class="fl_le mari2 thumbEdit baco3 bora bosh mawi2 miwi2 mihe1 {iUnidadId}">
-                <div class="grupo baco1 bobo1 bora4 pa2 pabo mabo2">
-                    <div class="fl_le mari3 mabo iveal fte2">
-                        <span title="Tipo de Edici&oacute;n" class="i bs notepad"></span> <span class="fost_it">{sTipoEdicion}</span>
-                    </div>
-                    <h3 class="fl_ri">{sNombreUnidad}</h3>
-                </div>
-                <div class="pa2">
-                    <p class="fte2">
-                        {sDescripcionUnidad}
-                        <!--BeginLinkVerMasBlock-->
-                        <a href="{hrefListarVariablesUnidad}" title="Ver Unidad Completa">ver m&aacute;s</a>
-                        <!--EndLinkVerMasBlock-->
-                    </p>
-                    <span class="fte2 txt_imp2">Cantidad de variables: </span> {iCantidadVariables}<br>
-                    <!--BeginLinkSeguimientos-->
-                    <a class="verSeguimientosUnidad fte2" rel="{iUnidadId}" href="javascript:;">Asociada a <span class="fowe_bo">{iCantidadSeguimientos}</span> seguimientos</a>
-                    <!--EndLinkSeguimientos-->
-                    <!--BeginNoLinkSeguimientos-->
-                    <span class="fte2">Sin seguimientos asociados</span>
-                    <!--EndNoLinkSeguimientos-->
-                </div>
-                <div style="display:none" class="thumbEditMenu teal_ri">
-                    <a class="di_inbl" title="Listar Variables" href="{hrefListarVariablesUnidad}"><span class="i mi expand ihover"></span></a>
-                    <span title="Editar Unidad" rel="{iUnidadId}" class="i bs edit ihover editarUnidad"></span>
-                    <span title="Eliminar Unidad" rel="{iUnidadId}" class="i bs delete ihover borrarUnidad"></span>
-                </div>
-            </div>
-            <!--EndUnidadBlock-->
 
+    <div id="listadoUnidadesResult">
+    <!--BeginThumbsUnidadesBlock-->
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th>Nombre</th>                
+                <th>Descripci&oacute;n</th>
+                <th>Tipo Edici&oacute;n</th>
+                <th>Cantidad</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--BeginUnidadBlock-->
+            <tr class="{iUnidadId}">
+                <td>{sNombreUnidad}</td>                
+                <td class="teal_le">
+                    <p>{sDescripcionUnidad}</p>
+                    <!--BeginLinkVerMasBlock-->
+                    <a href="{hrefListarVariablesUnidad}" title="Ver Unidad Completa">ver m&aacute;s</a>
+                    <!--EndLinkVerMasBlock-->
+                </td>
+                <td>{sTipoEdicion}</td>
+                <td>{iCantidadVariables}</td>
+                <td class="teal_ce">
+                    <div class="miwi0">
+                        <a class="di_inbl" title="Listar Variables" href="{hrefListarVariablesUnidad}"><span class="i mi expand ihover"></span></a>
+                        <span title="Editar Unidad" rel="{iUnidadId}" class="i bs edit ihover editarUnidad"></span>
+                        <span title="Eliminar Unidad" rel="{iUnidadId}" class="i bs delete ihover borrarUnidad"></span>
+                    </div>
+                </td>
+            </tr>
+            <!--EndUnidadBlock-->
             <!--BeginNoRecordsThumbsUnidadesBlock-->
-            <div class="teal_ce">No hay unidades creadas.</div>
+            <tr>
+                <td colspan="5">No hay unidades.</td>
+            </tr>
             <!--EndNoRecordsThumbsUnidadesBlock-->
-        <!--EndThumbsUnidadesBlock-->
-    </div>
-</div>
-<!--EndListadoUnidadesBlock-->
+        </tbody>
+    </table>
+    <!--EndThumbsUnidadesBlock-->
+</section>
+<!--EndListadoUnidadesBlock-->       
+
 
 <!--BeginFormularioUnidadBlock-->
-<div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi relationshipData32"></span></div>
+<h1 class="teta_up mabo2">{sTituloForm}</h1>
+<form id="formUnidad" name="formUnidad" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="titulo">T&iacute;tulo</label>
+    </dt>
+    <dd>
+        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
+        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcionBreve">Descripcion Breve</label>
+    </dt>
+    <dd>
+        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
+        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
+    </dd>
+
+    <dt>
+        <label for="activo">Visible?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivo} value="1">S&iacute;</option>
+            <option {sSelectedDesactivado} value="0">No</option>
+        </select>
+        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
+    </dd>
+
+    <dt>
+        <label for="publico">Alcance Privacidad?</label>
+    </dt>
+    <dd>
+        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedPublico} value="1">El mundo</option>
+            <option {sSelectedComunidad} value="0">Solo comunidad</option>
+        </select>
+        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
+    </dd>
+
+    <dt>
+        <label for="activoComentarios">Activar Comentarios?</label>
+    </dt>
+    <dd>
+        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
+            <option value="">Seleccionar</option>
+            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
+            <option {sSelectedDesactivadoComentarios} value="0">No</option>
+        </select>
+        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Contenido Publicaci&oacute;n</label>
+    </dt>
+    <dd>
+        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
+    </dd>
+
+    <dt>
+        <label for="keywords">Palabras Clave</label>
+    </dt>
+    <dd>
+        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
+        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
+    </dd>
+
+    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
+    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
+
+    <div style="display:none"  id='msg_form_publicacion' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
+</form>
+
+
     <form id="formUnidad" name="formUnidad" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
