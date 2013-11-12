@@ -1,8 +1,6 @@
 <?php
 
 /**
- * 
- *
  * @author Matias Velilla
  */
 class AdminController
@@ -284,6 +282,7 @@ class AdminController
             throw $e;
         }
     }
+
     public function getAccionById($iAccionId)
     {
         try{
@@ -300,6 +299,7 @@ class AdminController
             throw $e;
         }        
     }
+
     public function guardarAccion($oAccion)
     {
         try{
@@ -309,6 +309,7 @@ class AdminController
             throw $e;
         }        
     }
+
     public function borrarAccion($oAccion)
     {
         try{
@@ -318,6 +319,7 @@ class AdminController
             throw $e;
         }
     }
+
     public function existeAccion($oAccion)
     {
         try{
@@ -835,6 +837,7 @@ class AdminController
             throw $e;
         }        
     }
+
     /**
      *  Devuelve un objeto de la clase ParametroSistema
      */
@@ -854,6 +857,7 @@ class AdminController
             throw $e;
         }        
     }
+
     /**
      *  Devuelve un objeto de la clase ParametroControlador
      */
@@ -950,6 +954,7 @@ class AdminController
            throw $e;
         }                
     }
+
     /**
      * Este metodo indica si un parametro se encuentra asociado al sistema o no.
      */
@@ -994,6 +999,7 @@ class AdminController
            throw $e;
         }
     }
+
     public function guardarParametro($oParametro)
     {
         try{
@@ -1002,7 +1008,8 @@ class AdminController
         }catch(Exception $e){
             throw $e;
         } 
-    }    
+    }
+
     public function borrarParametro($oParametro)
     {
         try{
@@ -1012,6 +1019,7 @@ class AdminController
             throw $e;
         } 
     }
+
     public function guardarParametroSistema($oParametroSistema)
     {
         try{
@@ -1021,6 +1029,7 @@ class AdminController
             throw $e;
         }         
     }
+
     public function guardarParametroControlador($oParametroControlador)
     {
         try{
@@ -1030,6 +1039,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      * recibe un ParametroUsuario con un valor por defecto.
      * se asocia a todos los usuarios del sistema con ese valor.
@@ -1043,6 +1053,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      * guarda una instancia de ParametroUsuario asociado a un usuario en particular
      */
@@ -1055,6 +1066,7 @@ class AdminController
             throw $e;
         }
     }
+
     public function eliminarParametroSistema($oParametroSistema)
     {
         try{
@@ -1064,6 +1076,7 @@ class AdminController
             throw $e;
         } 
     }
+
     public function eliminarParametroControlador($oParametroControlador)
     {
         try{
@@ -1073,6 +1086,7 @@ class AdminController
             throw $e;
         }
     }
+
     public function eliminarParametroUsuario($oParametroUsuario)
     {
         try{
@@ -1095,6 +1109,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      * Carga el Eje Tematico por el Admin
      *
@@ -1107,7 +1122,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+
+    /**
      *  Elimina el eje tematico
      */
     public function eliminarEjeTematico($oEjeTematico)
@@ -1195,6 +1211,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      * Obtener ciclos por id de nivel
      *
@@ -1239,6 +1256,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      * Obtener areas por id de ciclo
      *
@@ -1254,7 +1272,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+
+    /**
      * Carga el Area por el Admin
      *
      */
@@ -1266,7 +1285,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+
+    /**
      *  Elimina el area
      */
     public function eliminarArea($oArea)
@@ -1278,6 +1298,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      *  Obtiene el Ciclo ById
      */
@@ -1297,6 +1318,7 @@ class AdminController
             throw $e;
         }
     }
+
    /**
      * Carga el Ciclo por el Admin
      *
@@ -1309,7 +1331,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+
+    /**
      *  Elimina el ciclo
      */
     public function eliminarCiclo($oCiclo)
@@ -1321,6 +1344,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      *  Obtiene el nivel ById
      */
@@ -1341,7 +1365,7 @@ class AdminController
         }
     }
   
-     /**
+    /**
      *  Elimina el Nivel
      */
     public function eliminarNivel($oNivel)
@@ -1349,52 +1373,6 @@ class AdminController
         try{
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
             return $oNivelIntermediary->borrar($oNivel);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    /**
-     * Obtener Variables
-     *
-     */
-   public function getVariables($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
-      {
-    	try{
-            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    /**
-     * Obtener Unidades
-     *
-     */
-   public function getUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
-      {
-    	try{    		
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-     /**
-     * Obtener variables  por id de unidad
-     *
-     */
-    public function getVariablesByUnidadId($iUnidadId)
-    {
-    	try{
-            $filtro = array('v.unidad_id' => $iUnidadId);
-            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            $iRecordsTotal = 0;
-            $aVariable = $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aVariable){
-                return $aVariable[0];
-            }else{
-                return null;
-            }
         }catch(Exception $e){
             throw $e;
         }
@@ -1431,56 +1409,6 @@ class AdminController
     }
 
     /**
-     * Guardar Variables
-     *
-     */
-    public function guardarVariables($oVariable){
-        try{
-            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return $oVariableIntermediary->guardar($oVariable);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    /**
-     * Guardar Unidades
-     *
-     */
-    public function guardarUnidades($oUnidad){
-        try{
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->guardar($oUnidad);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    /**
-     * Borrar Unidad
-     *
-     */
-    public function borrarUnidad($oUnidad)
-    {
-    	try{
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->borrar($oUnidad);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    /**
-     * Borrar Variable
-     *
-     */
-    public function borrarVariable($iVariableId)
-    {
-    	try{
-            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
-            return $oVariableIntermediary->borrar($iVariableId);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-  /**
      * Carga el objetivo aprendizaje por el Admin
      *
      */
@@ -1492,7 +1420,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+
+    /**
      *  Verifica si existe el nivel
      */
     public function existeNivelByDescripcion($sDescripcion)
@@ -1505,7 +1434,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+    
+    /**
      *  Verifica si existe el ciclo
      */
     public function existeCicloByDescripcion($sDescripcion, $oNivel)
@@ -1517,7 +1447,8 @@ class AdminController
             throw $e;
         }
     }
-     /**
+
+    /**
      *  Verifica si existe el area
      */
     public function verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)
@@ -1529,6 +1460,7 @@ class AdminController
             throw $e;
         }
     }
+
     /**
      *  Verifica si existe el eje
      */
@@ -1541,5 +1473,23 @@ class AdminController
             throw $e;
         }
     }
-    
+
+    /**
+     * Obtiene todas las unidades precargadas que el sistema brinda para que puedan
+     * ser asociadas a los seguimientos SCC de los integrantes de la comunidad
+     *
+     */
+    public function obtenerUnidadesPrecargadasSeguimientosSCC($filtro, &$iRecordsTotal)
+    {
+    	try{            
+            $filtro["u.preCargada"] = "1";
+            $filtro["u.asociacionAutomatica"] = "0";
+            $filtro["u.borradoLogico"] = "0";
+
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 }
