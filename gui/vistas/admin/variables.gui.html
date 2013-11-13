@@ -22,38 +22,18 @@
 </script>
 <!--EndJsContent-->
 
-<!--BeginPageRightInnerContListadoVariablesBlock-->
-<ul class="m_vert menu08 mabo3 teal_ri">
-    <li>
-        <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
-            <span class="i bs arrowLeft"></span> Volver a mis seguimientos
-        </a>
-    </li>
-    <li>
-        <a id="listaUnidades" href="{hrefListadoUnidades}">
-            <span class="i bs arrowLeft"></span> Volver a mis unidades
-        </a>
-    </li>
-</ul>
-<h3 class="mabo2">Agregar nueva variable a la unidad</h3>
-<ul class="m_vert menu08 listty_no">
-    <li>
-        <a class="di_inbl"id="crearVariableTexto" href="javascript:;">
-            <span class="i mc inputText mari2"></span>Nueva variable de texto
-        </a>
-    </li>
-    <li>
-        <a id="crearVariableNumerica" href="javascript:;">
-            <span class="i mc profits mari2"></span>Nueva variable num&eacute;rica
-        </a>
-    </li>
-    <li>
-        <a id="crearVariableCualitativa" href="javascript:;">
-            <span class="i mc inputRadio mari2"></span>Nueva variable cualitativa
-        </a>
-    </li>
-</ul>
-<!--EndPageRightInnerContListadoVariablesBlock-->
+<!--BeginHeaderBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar variables precargadas en {sNombreUnidad}</h2>
+</header>
+<section>
+    <h3>Listado de variables que estar&aacute;n disponibles para todos los seguimientos SCC que tengan asociada la unidad {sNombreUnidad}</h3>
+</section>
+
+<h4>{sUnidadDescripcion}</h4>
+<!--EndHeaderBlock-->
+
 
 <!--BeginIconoTipoTextoBlock-->
 <span class="i mc inputText"></span>
@@ -68,14 +48,25 @@
 <!--EndIconoTipoCualitativaBlock-->
 
 <!--BeginListadoVariablesBlock-->
-<div class="baco5 pa2 bobo2 boto2 mabo3">
-    {sUnidadDescripcion}
+
+<!--BeginPanelAdminBlock-->
+<div id="subHeader" class="subHeader01 mabo3">
+    <a class="button-link blue" id="crearVariableTexto" href="javascript:;" rel="tooltip" original-title="Agregar una nueva variable de tipo Texto">
+        <span class="i mc inputText mari2"></span>Nueva variable de texto
+    </a>
+    <a class="button-link blue" id="crearVariableNumerica" href="javascript:;" rel="tooltip" original-title="Agregar una nueva variable de tipo Num&eacute;rica">
+        <span class="i mc profits mari2"></span>Nueva variable num&eacute;rica
+    </a>
+    <a class="button-link blue" id="crearVariableCualitativa" href="javascript:;" rel="tooltip" original-title="Agregar una nueva variable de tipo Cualitativa">
+        <span class="i mc inputRadio mari2"></span>Nueva variable cualitativa
+    </a>
 </div>
-<div id="listadoVariables" class="grupo po_re">
-    <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
-    <input type="hidden" value="" name="sOrder" id="sOrder" />
-    <input type="hidden" value="{iUnidadId}" name="unidadId" id="unidadId" />
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+<!--EndPanelAdminBlock-->
+
+<section id="listadoVariables">
+    <div class="ajax_wait30 di_no"></div>    
+    <span class="di_no" value="{iUnidadId}" name="unidadId" id="unidadId" />
+
     <div id="listadoVariablesResult">
         <!--BeginGrillaVariablesBlock-->
         <div class="fost_it pato2 pabo2">Cantidad variables: <span class="fowe_bo">{iRecordsTotal}</span></div>
