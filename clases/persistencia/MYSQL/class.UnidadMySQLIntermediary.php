@@ -101,7 +101,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 $oUnidad->dFechaBorradoLogico = $oObj->dFechaBorradoLogico;
                 $oUnidad->eTipoEdicion = $oObj->eTipoEdicion;
 
-                //puede no tener un usuario asociado
+                //puede no tener un usuario asociado si es precargada desde admin
                 if($oObj->iUsuarioId !== null){
                     $oUnidad->iUsuarioId = $oObj->iUsuarioId;
                 }

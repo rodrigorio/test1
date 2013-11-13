@@ -127,12 +127,10 @@ function bindEventsAdmin()
     }, 5000);
     
     // Notification Close Button
-    $(".close-notification").click(
-        function () {
-            $(this).parent().fadeTo(350, 0, function () {$(this).slideUp(600);});
+    $(".close-notification").live("click", function(){
+        $(this).parent().fadeTo(350, 0, function () {$(this).slideUp(600);});
             return false;
-        }
-    );
+    });
 
     // jQuery Tipsy
     $('[rel=tooltip], #main-nav span, .loader').tipsy({gravity:'s', fade:true}); // Tooltip Gravity Orientation: n | w | e | s

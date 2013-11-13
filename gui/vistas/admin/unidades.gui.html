@@ -95,289 +95,56 @@
 <h1 class="teta_up mabo2">{sTituloForm}</h1>
 <form id="formUnidad" name="formUnidad" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-
-    <dt>
-        <label for="titulo">T&iacute;tulo</label>
-    </dt>
-    <dd>
-        <input name="titulo" id="titulo" type="text" class="large" maxlength="255" value="{sTitulo}">
-        <p>El T&iacute;tulo que llevara el art&iacute;culo en los listados de la comunidad</p>
-    </dd>
-
-    <dt>
-        <label for="descripcionBreve">Descripcion Breve</label>
-    </dt>
-    <dd>
-        <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
-        <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-    </dd>
-
-    <dt>
-        <label for="activo">Visible?</label>
-    </dt>
-    <dd>
-        <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedActivo} value="1">S&iacute;</option>
-            <option {sSelectedDesactivado} value="0">No</option>
-        </select>
-        <p>Ning&uacute;n otro integrante podra ver la publicaci&oacute;n. Puede ocultar la publicaci&oacute;n mientras edita las galer&iacute;as.</p>
-    </dd>
-
-    <dt>
-        <label for="publico">Alcance Privacidad?</label>
-    </dt>
-    <dd>
-        <select class="small" name="publico" id="publico" title="Alcance Privacidad?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedPublico} value="1">El mundo</option>
-            <option {sSelectedComunidad} value="0">Solo comunidad</option>
-        </select>
-        <p>La publicaci&oacute;n puede ser vista solo por la comunidad o puede ser abierta al p&uacute;blico en general. Estas &uacute;ltimas ser&aacute;n moderadas previamente.</p>
-    </dd>
-
-    <dt>
-        <label for="activoComentarios">Activar Comentarios?</label>
-    </dt>
-    <dd>
-        <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-            <option value="">Seleccionar</option>
-            <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
-            <option {sSelectedDesactivadoComentarios} value="0">No</option>
-        </select>
-        <p>Los comentarios ser&aacute;n visibles solo para los integrantes de la comunidad</p>
-    </dd>
-
-    <dt>
-        <label for="descripcion">Contenido Publicaci&oacute;n</label>
-    </dt>
-    <dd>
-        <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
-    </dd>
-
-    <dt>
-        <label for="keywords">Palabras Clave</label>
-    </dt>
-    <dd>
-        <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
-        <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
-    </dd>
-
-    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
-    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
-
-    <div style="display:none"  id='msg_form_publicacion' class="notification">
-        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
-        <p class="msg"></p>
-    </div>
-</form>
-
-
-    <form id="formUnidad" name="formUnidad" action="" method="post">
-        <h2 class="mabo3">{sTituloForm}</h2>
-
-        <div class="form_line msg_nombre">
-            <label for="nombre">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nombre
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre Unidad de Variables" maxlength="100" value="{sNombre}" />
-                </div>
-            </div>
-            <p>El nombre que llevara el conjunto de variables que luego se asociar&aacute;n a sus seguimientos personalizados</p>
-        </div>
-        <div class="form_line msg_descripcion">
-            <label for="descripcion">
-                <span class="marca_obligatorio">&#8226;</span>
-                Descripci&oacute;n
-            </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del contenido total de la unidad de variables">{sDescripcion}</textarea>
-                </div>
-            </div>
-            <p>Ingrese una breve descripci&oacute;n que le sirva de referencia a la hora de asociar la unidad a sus seguimientos</p>
-        </div>
+        <dt>
+            <label for="nombre">Nombre</label>
+        </dt>
+        <dd>
+            <input name="nombre" id="nombre" title="Nombre Unidad de Variables" type="text" class="large" maxlength="100" value="{sNombre}">
+            <p>El nombre que llevara el conjunto de variables<br> que luego aparecera en la vista de asociar unidad a seguimiento SCC.</p>
+        </dd>
+        <dt>
+            <label for="descripcion">Descripci&oacute;n</label>
+        </dt>
+        <dd>
+            <textarea class="mihe2 large" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del contenido total de la unidad de variables">{sDescripcion}</textarea>
+            <p>Breve descripci&oacute;n que sirve de referencia a la hora de asociar la unidad a un seguimientos SCC</p>
+        </dd>
 
         <!--BeginSetTipoEdicionBlock-->
-        <div class="form_line msg_tipoEdicion">
-            <div class="cl_le pato2">
-                <input id="radioEdicionEsporadica" type="radio" name="tipoEdicion" value="{eTipoEdicionEsporadica}">
-                <label for="radioEdicionEsporadica">
-                    <span class="fowe_bo">Edici&oacute;n Espor&aacute;dica</span><br>
-                </label>
-                <p class="pabo">
-                    Las unidades de edici&oacute;n espor&aacute;dica no aparecer&aacute;n en la edici&oacute;n de entradas por fecha.<br>
-                    Use este tipo para valores que se van a editar entre 1 o 2 veces por año.<br>
-                    Por ejemplo, variables que guarden los resultados de un test de evaluaci&oacute;n.
-                </p>
-                <input id="radioEdicionRegular" type="radio" name="tipoEdicion" value="{eTipoEdicionRegular}" checked="checked">
-                <label for="radioEdicionRegular">
-                    <span class="fowe_bo">Edici&oacute;n Regular</span><br>
-                </label>
-                <p class="pabo">
-                    Cree una unidad de edici&oacute;n regular cuando los valores estar&aacute;n sujetos a cambios de manera regular.<br>
-                    Por ejemplo, valores que quiera guardar cada vez que se reuna con la persona a la que le realiza un seguimiento.<br>
-                    Las unidades marcadas como edici&oacute;n regular aparecer&aacute;n siempre que se cree una entrada por fecha en un seguimiento.
-                </p>
-            </div>
-        </div>
+        <dt>
+            <label for="tipoEdicion">Tipo de edici&oacute;n</label>
+        </dt>
+        <dd>
+            <select class="medium" name="tipoEdicion" id="tipoEdicion" title="Tipo de edici&oacute;n?">
+                <option value="">Seleccionar</option>
+                <option {sSelectedEsporadica} value="{eTipoEdicionEsporadica}">Edici&oacute;n Espor&aacute;dica</option>
+                <option {sSelectedRegular} value="{eTipoEdicionRegular}">Edici&oacute;n Regular</option>
+            </select>
+            <p class="pabo mawi3">
+                Las unidades de <strong>edici&oacute;n espor&aacute;dica</strong> no aparecer&aacute;n en la edici&oacute;n de entradas por fecha.<br>
+                Use este tipo para valores que se van a editar entre 1 o 2 veces por año.<br>
+                Por ejemplo, variables que guarden los resultados de un test de evaluaci&oacute;n.
+            </p>
+            <p class="pabo mawi3">
+                Cree una unidad de <strong>edici&oacute;n regular</strong> cuando los valores estar&aacute;n sujetos a cambios de manera regular.<br>
+                Por ejemplo, valores que quiera guardar cada vez que se reuna con la persona a la que le realiza un seguimiento.<br>
+                Las unidades marcadas como edici&oacute;n regular aparecer&aacute;n siempre que se cree una entrada por fecha en un seguimiento.
+            </p>
+        </dd>
         <!--EndSetTipoEdicionBlock-->
-        
+
         <!--BeginSubmitCrearUnidadBlock-->
-        <div class="fl_le iveal mabo2">
-            <label for="crearUnidad" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearUnidad" type="submit" name="crearUnidad" class="btn01">
-                    Crear Unidad
-                </button>
-            </label>
-        </div>
+        <button class="mabo" id="crearUnidad" name="crearUnidad" type="submit">Crear Unidad</button>
         <!--EndSubmitCrearUnidadBlock-->
 
         <!--BeginSubmitModificarUnidadBlock-->
-        <div class="fl_le iveal mabo2">
-            <label for="modificarUnidad" class="button buttonConfirm buttonLarge">
-                <button id="modificarUnidad" type="submit" name="modificarUnidad" class="btn01">
-                    Modificar Unidad
-                </button>
-            </label>
-        </div>
+        <button class="mabo" id="modificarUnidad" name="modificarUnidad" type="submit">Modificar Unidad</button>
         <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
         <!--EndSubmitModificarUnidadBlock-->
 
-        <div style="display:none;" id='msg_form_unidad' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-
-    </form>
-</div>
+        <div style="display:none"  id='msg_form_unidad' class="notification">
+            <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+            <p class="msg"></p>
+        </div>
+</form>
 <!--EndFormularioUnidadBlock-->
-
-<!--BeginVerSeguimientosAsociadosBlock-->
-<div class="fost_it pato2 pabo2">Cantidad seguimientos personalizados asociados: <span class="fowe_bo">{iRecordsTotal}</span></div>
-<table class="table01 wi100p mabo2">
-   <tr class="encabezado">
-       <td class="medium iveal">Persona</td>
-       <td class="medium">Dni</td>
-       <td class="medium iveal">Creacion</td>
-   </tr>
-   <!--BeginSeguimientoBlock-->
-   <tr class="{sEstadoClass}">
-       <td>
-            <div class="fl_le mari2 th_fto_s thumb03">
-                <i style="background-image:url('{scrAvatarPersona}')"></i>
-            </div>
-            {sSeguimientoPersona}
-       </td>
-       <td>{sSeguimientoPersonaDNI}</td>
-       <td>{sSeguimientoFechaCreacion}</td>
-   </tr>
-   <!--EndSeguimientoBlock-->
-</table>
-<!--EndVerSeguimientosAsociadosBlock-->
-
-<!--BeginAsociarUnidadesBlock-->
-<div class='ficha05 bora iveal mabo2'>
-    <span class="i bs infoo"></span> Arrastre unidades desde una columna hacia la otra para realizar los cambios.
-</div>
-<div id="unidadesWrapper" class="columnas2B grupo po_re">
-    <div class="ajax_wait30 di_no"></div>
-    <div class="col1 grupo">
-        <h2 class="pa2 baco2 bora4 bobo3 co2">Unidades sin asociar</h2>
-        <ul id="unidadesSinAsociar" class="pa2 baco3 bora3 mihe3 grupo connectedSortable">
-            <!--BeginUnidadesSinAsociar-->
-            {unidadesSinAsociar}
-            <!--EndUnidadesSinAsociar-->
-            <!--BeginNoRecordsSinAsociarBlock-->
-            <p id="noRecordsDesasociadas" class="co3 fost_it teal_ce">No hay unidades para asociar al seguimiento.</p>
-            <!--EndNoRecordsSinAsociarBlock-->
-        </ul>
-    </div>
-    <div class="col2 grupo">
-        <h2 class="pa2 baco2 bora4 bobo3 co2">Unidades en seguimiento</h2>
-        <ul id="unidadesAsociadas" class="pa2 baco3 bora3 mihe3 grupo connectedSortable">
-            <!--BeginUnidadesAsociadas-->
-            {unidadesAsociadas}
-            <!--EndUnidadesAsociadas-->
-            <!--BeginNoRecordsAsociadasBlock-->
-            <p id="noRecordsAsociadas" class="co3 fost_it teal_ce">El seguimiento no posee unidades asociadas.</p>
-            <!--EndNoRecordsAsociadasBlock-->
-        </ul>
-    </div>
-</div>
-<!--EndAsociarUnidadesBlock-->
-
-<!--BeginUnidadListadoAsociarBlock-->
-<li rel="{iSeguimientoId}_{iUnidadId}" id="unidad_{iUnidadId}" class="fl_le mari2 baco5 mabo2 bora bosh mawi1 cu_mo">
-    <div class="grupo baco1 bobo1 bora4 pa mabo">
-        <h3 class="fl_ri iveal">
-            {sNombreUnidad}
-            <span class="i mi relationshipData male"></span>
-        </h3>
-    </div>
-    <div class="pa">
-        <p class="fte2">
-            {sDescripcionUnidad}
-            <a class="ampliarUnidad" rel="{iUnidadId}" href="javascript:;" title="Ampliar Unidad">ver m&aacute;s</a>
-        </p>
-    </div>
-</li>
-<!--EndUnidadListadoAsociarBlock-->
-
-<!--BeginIconoTipoTextoBlock-->
-<span class="i mc inputText"></span>
-<!--EndIconoTipoTextoBlock-->
-
-<!--BeginIconoTipoNumericaBlock-->
-<span class="i mc profits"></span>
-<!--EndIconoTipoNumericaBlock-->
-
-<!--BeginIconoTipoCualitativaBlock-->
-<span class="i mc inputRadio"></span>
-<!--EndIconoTipoCualitativaBlock-->
-
-<!--BeginAmpliarUnidadBlock-->
-<h2 class="pabo2">{sNombreUnidad}</h2>
-<div class="pa grupo bobo1 baco3 mabo2">
-    {sDescripcionUnidad}
-</div>
-
-<div class="fost_it pato2 pabo2">Cantidad variables: <span class="fowe_bo">{iRecordsTotal}</span></div>
-<table class="table01 wi100p mabo2">
-    <tr class="encabezado">
-       <td class="iveal">Nombre</td>
-       <td class="medium iveal">Tipo</td>
-    </tr>
-    <!--BeginVariableBlock-->
-    <tr class="{iVariableId} iveal">
-        <td class="desplegable" rel="{iVariableId}">{sNombre}</td>
-        <td class="desplegable iveal" rel="{iVariableId}">
-            {iconoVariable}
-            {sTipo}
-        </td>
-    </tr>
-    <tr class="{iVariableId} ba_no">
-        <td id="desplegable_{iVariableId}" class="pa0 bobo_no" colspan="3" style="display:none;">
-            <div class="anexoFicha grupo">
-                <div class="titulo grupo">
-                    <div class="fte fost_it fl_le">Detalles</div>
-                    <span rel="{iVariableId}" class="i bs close closeDesplegable ihover fl_ri"></span>
-                </div>
-                <br clear="all">
-                <div class="fte2 mabo2">Creada en <span class="fowe_bo">{dFechaHora}</span></div>
-                <h3 class="mabo">Descripci&oacute;n</h3>
-                <p class="pale2">{sDescripcionVariable}</p>
-                {sModalidades}
-                </div>
-            </div>
-        </td>
-    </tr>
-    <!--EndVariableBlock-->
-
-    <!--BeginNoRecordsVariablesBlock-->
-    <tr>
-        <td colspan="2">{sNoRecords}</td>
-    </tr>
-    <!--EndNoRecordsVariablesBlock-->
-</table>
-<!--EndAmpliarUnidadBlock-->
