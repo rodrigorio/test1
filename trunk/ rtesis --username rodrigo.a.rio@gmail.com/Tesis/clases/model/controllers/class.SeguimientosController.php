@@ -1159,7 +1159,7 @@ class SeguimientosController
             if($success){
                 //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
                 //se borra logicamente.
-                return $oUnidadIntermediary->borrar($oUnidad);
+                return $oUnidadIntermediary->borrar($oUnidad->getId());
             }else{
                 return false;
             }

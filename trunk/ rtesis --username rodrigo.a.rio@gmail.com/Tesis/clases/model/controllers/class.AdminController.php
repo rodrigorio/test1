@@ -1537,10 +1537,38 @@ class AdminController
             if($success){
                 //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
                 //se borra logicamente.
-                return $oUnidadIntermediary->borrar($oUnidad);
+                return $oUnidadIntermediary->borrar($oUnidad->getId());
             }else{
                 return false;
             }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * recibe un array de 1 o N variables y las borra fisica o logicamente dependiendo el plazo dispuesto para la edicion de seguimientos.
+     *
+     * Toda variable que tenga asociado un valor a un seguimiento en una fecha que exceda la cantidad de dias del plazo
+     * sera borrada logicamente en el sistema.
+     *
+     * El metodo esta pensado para que pueda ser utilizado tanto en la eliminacion individual de una variable
+     * como en la eliminacion de una unidad con un conjunto N de variables.
+     */
+    public function borrarVariables($aVariables)
+    {
+    	try{
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+
+            //genero un string con los ids separados con ',' para que se realize la transaccion en el sql.
+            $sIds = "";
+            foreach($aVariables as $oVariable){
+                $sIds .= $oVariable->getId().",";
+                $sIds = substr($sIds, 0, -1);
+            }
+
+            return $oVariableIntermediary->borrarVariables($sIds, $cantDiasExpiracion);
         }catch(Exception $e){
             throw $e;
         }
