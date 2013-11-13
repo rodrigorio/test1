@@ -266,7 +266,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
      * entonces la unidad tambien se borra logicamente.
      *
      */
-    public function borrar($oUnidadId)
+    public function borrar($iUnidadId)
     {
         try{
             $db = $this->conn;           
