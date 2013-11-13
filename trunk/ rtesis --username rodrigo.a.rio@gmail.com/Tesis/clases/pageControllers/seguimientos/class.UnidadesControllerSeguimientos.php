@@ -295,7 +295,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("eTipoEdicionRegular", self::TIPO_EDICION_REGULAR);
                       
             //valores por defecto en el agregar
-            $oPublicacion = null;
+            $oUnidad = null;
             $sNombre = "";
             $sDescripcion = "";
 
@@ -323,6 +323,7 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             $sDescripcion = $oUnidad->getDescripcion();
         }
 
+        $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
         $this->getTemplate()->set_var("sNombre", $sNombre);
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
 

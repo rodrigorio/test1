@@ -1492,4 +1492,57 @@ class AdminController
             throw $e;
         }
     }
+
+    public function getUnidadById($iUnidadId)
+    {
+    	try{
+            $filtro = array('u.id' => $iUnidadId);
+            $iRecordsTotal = 0;
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aUnidad){
+                return $aUnidad[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function guardarUnidad($oUnidad){
+        try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            return $oUnidadIntermediary->guardar($oUnidad);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    /**
+     * Borrar Unidad
+     *
+     */
+    public function borrarUnidad($oUnidad)
+    {
+    	try{
+            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+
+            $success = true;
+            if(null !== $oUnidad->getVariables()){
+                //borro todas las variables de la unidad. si devuelve true no hubo errores.
+                $success = $this->borrarVariables($oUnidad->getVariables());
+            }
+
+            if($success){
+                //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
+                //se borra logicamente.
+                return $oUnidadIntermediary->borrar($oUnidad);
+            }else{
+                return false;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 }

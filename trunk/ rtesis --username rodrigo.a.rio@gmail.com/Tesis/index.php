@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Este archivo es conocido en la jerga zend como "Bootstrap file"
  */           
