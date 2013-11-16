@@ -1422,6 +1422,19 @@ class AdminController
     }
 
     /**
+     *  Elimina el eje tematico
+     */
+    public function eliminarObjetivoAprendizaje($iObjetivoAprendizajeId)
+    {
+        try{
+            $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
+            return $oObjetivoIntermediary->Borrar($iObjetivoAprendizajeId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      *  Verifica si existe el nivel
      */
     public function existeNivelByDescripcion($sDescripcion)
