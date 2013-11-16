@@ -220,7 +220,7 @@ function resetSelect(select, defaultOpt){
     }
 }
 function resetObjetivosAprendizaje(){
-    $('#objetivoAprendizajeDiv').html("");
+    $('#objetivosAprendizajeCont').html("");
     $('#objetivoAprendizaje').val("");
 }
 
@@ -337,17 +337,18 @@ function listaObjetivosAprendizajeByEjeTematico(idEje){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },
         success: function(lista){
-            $('#objetivoAprendizajeDiv').html("");
+            $('#objetivosAprendizajeCont').html("");
             if(lista.length != undefined && lista.length > 0){
-                $('#objetivoAprendizajeDiv').html(lista);
+                $('#objetivosAprendizajeCont').html(lista);
             }else{
-                $('#objetivoAprendizajeDiv').html('No hay objetivos cargados');
+                $('#objetivosAprendizajeCont').html('No hay objetivos cargados');
             }
             setWaitingStatus("objetivoAprendizajeCont", false);
 
-            $("#objetivoAprendizajeDiv .obj_aprendizaje").each(function(i, el) {
+            $("#objetivosAprendizajeCont .obj_aprendizaje").each(function(i, el) {
+                $(el).css("cursor", "pointer");
                 $(el).live('click',function(ev) {
-                    $("#objetivoAprendizajeDiv .celdaActiva").removeClass('celdaActiva');
+                    $("#objetivosAprendizajeCont .celdaActiva").removeClass('celdaActiva');
                     $(this).toggleClass('celdaActiva');
                     $('#objetivoAprendizaje').val( $(this).attr('id'));
                     $('#formObjetivo [for="objetivoAprendizaje"]').css("display","none");

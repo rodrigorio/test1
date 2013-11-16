@@ -1126,11 +1126,11 @@ class AdminController
     /**
      *  Elimina el eje tematico
      */
-    public function eliminarEjeTematico($oEjeTematico)
+    public function eliminarEjeTematico($iEjeTematicoId)
     {
         try{
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
-            return $oEjeTematicoIntermediary->Borrar($oEjeTematico);
+            return $oEjeTematicoIntermediary->Borrar($iEjeTematicoId);
         }catch(Exception $e){
             throw $e;
         }

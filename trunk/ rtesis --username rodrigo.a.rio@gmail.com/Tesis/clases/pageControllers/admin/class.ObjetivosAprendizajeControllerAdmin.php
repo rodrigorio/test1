@@ -613,7 +613,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             try{
-                $result = AdminController::getInstance()->eliminarArea($iAreaId);
+                $result = AdminController::getInstance()->eliminarEjeTematico($iEjeId);
 
                 $this->restartTemplate();
 

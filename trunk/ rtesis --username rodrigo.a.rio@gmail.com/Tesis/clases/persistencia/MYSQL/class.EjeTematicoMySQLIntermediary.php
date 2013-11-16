@@ -135,11 +135,11 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         }
     }
 
-    public function borrar($oEjeTematico)
+    public function borrar($iEjeTematicoId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from ejes where id = ".$this->escInt($oEjeTematico->getId()));
+            $db->execSQL("delete from ejes where id = ".$this->escInt($iEjeTematicoId));
             $db->commit();
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
