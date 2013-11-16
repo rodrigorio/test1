@@ -141,6 +141,7 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $db = $this->conn;
             $db->execSQL("delete from ejes where id = ".$this->escInt($iEjeTematicoId));
             $db->commit();
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
