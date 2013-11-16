@@ -5,7 +5,6 @@ class EjeTematico{
     private $iId;
     private $sDescripcion;
     private $oArea;
-    private $sContenidos;
     
     /**
      * Esta es una descripcion del estado inicial que solo estara presente
@@ -53,19 +52,6 @@ class EjeTematico{
      */
     public function getDescripcion(){
         return $this->sDescripcion;
-    }
-
-    public function getContenidos($nl2br = false){
-        if($nl2br){
-            return nl2br($this->sContenidos);
-        }else{
-            return $this->sContenidos;
-        }
-    }
-
-    public function setContenidos($sContenidos)
-    {
-        $this->sContenidos = $sContenidos;
     }
 
     public function getArea()

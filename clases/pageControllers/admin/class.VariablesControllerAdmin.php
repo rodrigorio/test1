@@ -68,7 +68,6 @@ class VariablesControllerAdmin extends PageControllerAbstract
             IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
             $this->printMsgTop();
 
-            //titulo seccion
             $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "widgetsContent", "HeaderBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "mainContent", "ListadoVariablesBlock");
             
@@ -86,7 +85,6 @@ class VariablesControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
                     $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
                     $this->getTemplate()->set_var("sTipoEnum", get_class($oVariable));
-                    $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
 
                     $sDescripcion = $oVariable->getDescripcion(true);
                     
@@ -122,8 +120,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
                     
                     $this->getTemplate()->parse("VariableBlock", true);
                 }
-            }else{
-                $this->getTemplate()->set_var("sNoRecords", "No hay variables cargadas en la unidad");
+            }else{                
                 $this->getTemplate()->set_var("VariableBlock", "");
             }
              

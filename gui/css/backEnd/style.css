@@ -1323,6 +1323,9 @@ a .i{margin-right:4px; float:left}
 .hierarchy{background-position:-80px -176px}
 .bank{background-position:-128px -176px} .bank32{background-position:-192px -32px}
 .star1{background-position:0px -160px}
+.profits{background-position:-160px -160px} .profits32{background-position:-224px -32px}
+.inputText{background-position:-144px -176px} .inputText32{background-position:-256px -32px}
+.inputRadio{background-position:-144px -160px} .inputRadio32{background-position:-288px -32px}
 .star2{width:32px !important; background-position:0px -176px}
 .star3{width:48px !important; background-position:0px -192px}
 .star4{width:64px !important; background-position:0px -208px}
