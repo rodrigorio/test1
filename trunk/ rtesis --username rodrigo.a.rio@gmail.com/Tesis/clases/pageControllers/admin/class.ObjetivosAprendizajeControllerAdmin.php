@@ -256,7 +256,6 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $sContenidos = $this->getRequest()->getPost("contenidos");
             $iAreaId = $this->getRequest()->getPost("area");
             $oArea = AdminController::getInstance()->getAreaById($iAreaId);
 
@@ -269,7 +268,6 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             
             $oEjeTematico = new stdClass();
             $oEjeTematico->sDescripcion = $sDescripcion;
-            $oEjeTematico->sContenidos = $sContenidos;
             $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
             $oEjeTematico->setArea($oArea);
             
@@ -422,7 +420,6 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
-            $sContenidos = $this->getRequest()->getPost("contenidos");
             $iEjeId = $this->getRequest()->getPost("iEjeId");
             $iAreaId = $this->getRequest()->getPost("area");
 
@@ -439,7 +436,6 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $oEje->setDescripcion($sDescripcion);
-            $oEje->setContenidos($sContenidos);
             $oEje->setArea($oArea);
 
             AdminController::getInstance()->guardarEjeTematico($oEje);

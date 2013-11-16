@@ -218,15 +218,13 @@ var validateFormEje = {
         descripcion:{required:true},
         nivel:{required:true},
         ciclo:{required:true},
-        area:{required:true},
-        contenidos:{required:true}
+        area:{required:true}
     },
     messages:{
         descripcion: mensajeValidacion("requerido"),
         nivel :mensajeValidacion("requerido"),
         ciclo :mensajeValidacion("requerido"),
-        area :mensajeValidacion("requerido"),
-        contenidos :mensajeValidacion("requerido")
+        area :mensajeValidacion("requerido")
     }
 };
 

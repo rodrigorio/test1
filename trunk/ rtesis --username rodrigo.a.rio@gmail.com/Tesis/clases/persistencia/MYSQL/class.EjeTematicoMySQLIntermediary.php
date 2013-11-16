@@ -23,7 +23,6 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
 
             $sSQL = "SELECT
                         e.id as iId, e.descripcion as sDescripcion, 
-                        e.contenidos as sContenidos, 
                         e.areas_id as iAreaId, 
                         a.descripcion as sDescripcionArea, a.ciclos_id as iCicloId,
                         c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
@@ -52,7 +51,6 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             	$oEjeTematico = new stdClass();
             	$oEjeTematico->iId = $oObj->iId;
             	$oEjeTematico->sDescripcion = $oObj->sDescripcion;
-            	$oEjeTematico->sContenidos = $oObj->sContenidos;
 
                 $oArea = new stdClass();
             	$oArea->iId = $oObj->iAreaId;
@@ -88,7 +86,6 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $db = $this->conn;
             $sSQL = " insert into ejes ".
                     " set descripcion = ".$this->escStr($oEjeTematico->getDescripcion()).", ".
-                    " contenidos = ".$this->escStr($oEjeTematico->getContenidos()).", ".
                     " areas_id = ".$this->escInt($oEjeTematico->getArea()->getId())." ";            
 			 
             $db->execSQL($sSQL);
@@ -110,7 +107,6 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
         
             $sSQL = " update ejes ".
                     " set descripcion = ".$this->escStr($oEjeTematico->getDescripcion()).", ".
-                    " contenidos = ".$this->escStr($oEjeTematico->getContenidos()).", ".
                     " areas_id = ".$this->escInt($oEjeTematico->getArea()->getId())." ".
                     " where id = ".$this->escInt($oEjeTematico->getId())." ";
 
