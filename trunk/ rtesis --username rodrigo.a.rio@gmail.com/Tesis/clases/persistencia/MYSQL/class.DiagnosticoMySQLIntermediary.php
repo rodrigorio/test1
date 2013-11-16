@@ -283,7 +283,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                     	e.id AS iId,
                     	e.descripcion as sDescripcion,
-                    	e.contenidos as sContenidos,
                     	e.areas_id as iAreaId,              
                     	dxe.ejes_id AS iId, 
                     	dxe.estadoInicial AS sEstadoInicial                    	
@@ -316,7 +315,6 @@ class DiagnosticoMySQLIntermediary extends DiagnosticoIntermediary
                 $oEjeTematico->iId = $oObj->iId;
                 $oEjeTematico->sDescripcion = $oObj->sDescripcion;
                 $oEjeTematico->oArea = SeguimientosController::getInstance()->getAreaById($oObj->iAreaId);
-                $oEjeTematico->sContenidos = $oObj->sContenidos;
                 $oEjeTematico = Factory::getEjeTematicoInstance($oEjeTematico);
                 $oEjeTematico->setEstadoInicial($oObj->sEstadoInicial);            	
                 $vEjesTematicos[] = $oEjeTematico; 

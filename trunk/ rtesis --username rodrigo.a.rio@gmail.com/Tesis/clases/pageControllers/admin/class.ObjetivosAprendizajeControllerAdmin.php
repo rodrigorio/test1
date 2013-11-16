@@ -1271,7 +1271,6 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->set_var("iEjeId", $oEje->getId());
             $this->getTemplate()->set_var("sDescripcion", $oEje->getDescripcion());
-            $this->getTemplate()->set_var("sContenidos", $oEje->getContenidos());
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 

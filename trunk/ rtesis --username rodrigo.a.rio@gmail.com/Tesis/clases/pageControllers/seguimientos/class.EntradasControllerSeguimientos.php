@@ -219,8 +219,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                     $sDescripcionEje = $oObjetivo->getEje()->getEjePadre()->getDescripcion()." > ".$oObjetivo->getEje()->getDescripcion();
                     $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
-
-                    $this->getTemplate()->set_var("ContenidosEjeBlock", "");
                 }
 
                 if($oObjetivo->isObjetivoAprendizaje()){
@@ -235,7 +233,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sDescripcionEjeBreve", $oObjetivo->getEje()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
-                    $this->getTemplate()->set_var("sContenidosEje", $oObjetivo->getEje()->getContenidos(true));
                 }
 
                 $sDescripcionObjetivoBreve = $oObjetivo->getDescripcion();
@@ -267,7 +264,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                 $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
                 $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
-                $this->getTemplate()->delete_parsed_blocks("ContenidosEjeBlock");
                 $this->getTemplate()->delete_parsed_blocks("VerComentariosEvolucionBlock");
             }
 
@@ -667,8 +663,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                     $sDescripcionEje = $oObjetivo->getEje()->getEjePadre()->getDescripcion()." > ".$oObjetivo->getEje()->getDescripcion();
                     $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
-
-                    $this->getTemplate()->set_var("ContenidosEjeEditarBlock", "");
                 }
 
                 if($oObjetivo->isObjetivoAprendizaje()){
@@ -683,7 +677,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sDescripcionEjeBreve", $oObjetivo->getEje()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
-                    $this->getTemplate()->set_var("sContenidosEje", $oObjetivo->getEje()->getContenidos(true));
                 }
 
                 $sDescripcionObjetivoBreve = $oObjetivo->getDescripcion();
@@ -721,7 +714,6 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
 
                 $this->getTemplate()->delete_parsed_blocks("EstimacionEditarBlock");
                 $this->getTemplate()->delete_parsed_blocks("FechaLogradoEditarBlock");
-                $this->getTemplate()->delete_parsed_blocks("ContenidosEjeEditarBlock");
                 $this->getTemplate()->delete_parsed_blocks("EditarProgresoBlock");
                 $this->getTemplate()->delete_parsed_blocks("CrearEvolucionBlock");
                 $this->getTemplate()->delete_parsed_blocks("ProgresoEvolucionBlock");
