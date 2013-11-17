@@ -363,7 +363,7 @@ $(document).ready(function(){
             case "VariableNumerica": titulo = "Editar variable Numérica"; break;
         }
         
-        var dialog = setWaitingStatusDialog(650, titulo);
+        var dialog = setWaitingStatusDialog(700, titulo);
 
         //desde el page controller me doy cuenta como muestro el formulario por la clase del objeto variable
         //aca la unica condicion que me fijo es para bindear el javascript segun el tipo de formulario, la url es la misma.

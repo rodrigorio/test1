@@ -87,7 +87,7 @@
                         {iconoVariable}
                         {sTipo}
                     </td>
-                    <td>{sDescripcion}</td>
+                    <td class="teal_le">{sDescripcion}</td>
                     <td class="teal_ce">
                         <span title="Editar" rel="{sTipoEnum}_{iVariableId}" class="i bs edit ihover editarVariable"></span>
                         <span title="Eliminar" rel="{iVariableId}" class="i bs delete ihover borrarVariable"></span>
@@ -208,28 +208,28 @@
     <dt id="listadoModalidades">
         <label for="">Modalidades</label>
     </dt>
-    <dd>
+    <dd class="mabo3 ov_au">
         <div id="grillaModalidadesWrapper">
             <!--BeginGrillaModalidadesBlock-->
             <table id="grillaModalidades" class="wi100p">
                 <thead>
                     <tr>
-                        <td class="small iveal">Modalidad</td>
-                        <td class="small iveal">Orden</td>
-                        <td class="small"></td>
+                        <td>Modalidad</td>
+                        <td>Orden</td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
                     <!--BeginModalidadBlock-->
                     <tr class="{modalidadHtmlId} modalidad">
                         <td>
-                            <input class="medium" type="text" name="modalidad[{modalidadHtmlId}][modalidad]" title="Nombre Modalidad" maxlength="50" value="{sModalidad}" />
+                            <input class="large" type="text" name="modalidad[{modalidadHtmlId}][modalidad]" title="Nombre Modalidad" maxlength="50" value="{sModalidad}" />
                             <input type="hidden" name="modalidad[{modalidadHtmlId}][modalidadId]" value="{iModalidadId}" />
                         </td>
                         <td>
                             <input size="2" type="text" name="modalidad[{modalidadHtmlId}][orden]" title="N&uacute;mero de ordenamiento" maxlength="2" value="{iOrden}" />
                         </td>
-                        <td class="teal_ce">
+                        <td class="iveal teal_ce">
                             <span title="Eliminar" rel="{modalidadHtmlId}_{iModalidadId}" class="i bs delete ihover borrarModalidad"></span>
                         </td>
                     </tr>
@@ -244,12 +244,14 @@
             </table>
             <!--EndGrillaModalidadesBlock-->
         </div>
-        <p>Listado con las distintas modalidades que la variable puede asumir. Por ejemplo: Malo, Regular, Bueno. Utilize el n&uacute;mero de orden para ordenar la lista.</p>
+        <p class="mabo2">Listado con las distintas modalidades que la variable puede asumir. Por ejemplo: Malo, Regular, Bueno. Utilize el n&uacute;mero de orden para ordenar la lista.</p>
+
+        <div class="fl_ri">
+            <a class="button-link blue" id="agregarModalidad" href="javascript:;" rel="tooltip" original-title="Agregar una nueva modalidad en la variable">
+                <span class="i bs add"></span> Agregar Modalidad
+            </a>
+        </div>
     </dd>
-    <button class="mabo3" id="agregarModalidad" type="submit">
-        <span class="i bs add"></span>
-        <span class="buttonText">Agregar Modalidad</span>
-    </button>
 
     <div style="display:none"  id='msg_form_variable' class="notification">
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
