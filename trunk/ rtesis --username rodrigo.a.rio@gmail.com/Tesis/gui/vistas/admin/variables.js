@@ -204,6 +204,7 @@ var optionsAjaxFormVariableCualitativa = {
             }else{
                 $('#msg_form_variable .msg').html(data.mensaje);
             }
+            
             if(data.agregarVariable != undefined){
                 //el submit fue para agregar una nueva publicacion. limpio el form
                 $('#formVariableCualitativa').each(function(){
@@ -244,7 +245,7 @@ function bindEventsVariableCualitativaForm(){
 }
 
 function masVariables(){
-    var unidadId = $('#unidadId').val();
+    var unidadId = $('#unidadId').html();
 
     $.ajax({
         type:"POST",
@@ -311,8 +312,8 @@ function eliminarVariable(iVariableId){
 $(document).ready(function(){
 
     $("#crearVariableTexto").click(function(){
-        var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(650, "Crear variable de Texto");
+        var unidadId = $('#unidadId').html();
+        var dialog = setWaitingStatusDialog(700, "Crear variable de Texto");
         dialog.load(
             "admin/form-crear-variable",
             {"formTexto":"1", "unidadId":unidadId},
@@ -324,8 +325,8 @@ $(document).ready(function(){
     });
 
     $("#crearVariableNumerica").click(function(){
-        var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(650, "Crear variable Numérica");
+        var unidadId = $('#unidadId').html();
+        var dialog = setWaitingStatusDialog(700, "Crear variable Numérica");
         dialog.load(
             "admin/form-crear-variable",
             {"formNumerica":"1", "unidadId":unidadId},
@@ -337,8 +338,8 @@ $(document).ready(function(){
     });
 
     $("#crearVariableCualitativa").click(function(){
-        var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(550, "Crear variable Cualitativa");
+        var unidadId = $('#unidadId').html();
+        var dialog = setWaitingStatusDialog(700, "Crear variable Cualitativa");
         dialog.load(
             "admin/form-crear-variable",
             {"formCualitativa":"1", "unidadId":unidadId},
@@ -353,7 +354,7 @@ $(document).ready(function(){
         var rel = $(this).attr("rel").split('_');
         var tipo = rel[0];
         var iVariableId = rel[1];
-        var unidadId = $('#unidadId').val();
+        var unidadId = $('#unidadId').html();
 
         var titulo = "";
         switch(tipo){

@@ -62,13 +62,12 @@
     <a class="button-link blue" id="crearVariableCualitativa" href="javascript:;" rel="tooltip" original-title="Agregar una nueva variable de tipo Cualitativa">
         <span class="i mc inputRadio mari2"></span>Nueva variable cualitativa
     </a>
+    <span class="di_no" name="unidadId" id="unidadId">{iUnidadId}</span>
 </div>
 <!--EndPanelAdminBlock-->
 
 <section id="listadoVariables">
-    <div class="ajax_wait30 di_no"></div>    
-    <span class="di_no" value="{iUnidadId}" name="unidadId" id="unidadId"></span>
-
+    <div class="ajax_wait30 di_no"></div>        
     <div id="listadoVariablesResult">
         <!--BeginGrillaVariablesBlock-->
         <table class="datatable">
@@ -120,7 +119,7 @@
     </dt>
     <dd>
         <input name="nombre" id="nombre" title="Nombre de la variable" type="text" class="large" maxlength="100" value="{sNombre}">
-        <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
+        <p>El nombre de la variable aparecer&aacute; en las entradas por fecha<br>de los seguimientos a los cuales la unidad este asociada.</p>
     </dd>
     <dt>
         <label for="descripcion">Descripci&oacute;n</label>
@@ -130,7 +129,10 @@
         <p>Descripci&oacute;n explicativa acerca de que significa cada valor posible en la variable</p>
     </dd>
 
-    <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo mabo2"><span class="bs i"></span> <span class="msg"></span></div>
+    <div style="display:none"  id='msg_form_variable' class="notification">
+        <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
+        <p class="msg"></p>
+    </div>
 
     <!--BeginSubmitCrearVariableTextoBlock-->
     <button class="mabo" id="crearVariableTexto" name="crearVariableTexto" type="submit">Crear Variable</button>
@@ -155,7 +157,7 @@
     </dt>
     <dd>
         <input name="nombre" id="nombre" title="Nombre de la variable" type="text" class="large" maxlength="100" value="{sNombre}">
-        <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
+        <p>El nombre de la variable aparecer&aacute; en las entradas por fecha<br>de los seguimientos a los cuales la unidad este asociada.</p>
     </dd>
     <dt>
         <label for="descripcion">Descripci&oacute;n</label>
@@ -167,14 +169,14 @@
 
     <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo mabo2"><span class="bs i"></span> <span class="msg"></span></div>
 
-    <!--BeginSubmitCrearVariableTextoBlock-->
+    <!--BeginSubmitCrearVariableNumericaBlock-->
     <button class="mabo" id="crearVariableNumerica" name="crearVariableNumerica" type="submit">Crear Variable</button>
-    <!--EndSubmitCrearVariableTextoBlock-->
+    <!--EndSubmitCrearVariableNumericaBlock-->
 
-    <!--BeginSubmitModificarVariableTextoBlock-->
+    <!--BeginSubmitModificarVariableNumericaBlock-->
     <button class="mabo" id="modificarVariableNumerica" name="modificarVariableNumerica" type="submit">Modificar Variable</button>
     <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
-    <!--EndSubmitModificarVariableTextoBlock-->
+    <!--EndSubmitModificarVariableNumericaBlock-->
 
     <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
 </form>
@@ -190,7 +192,7 @@
     </dt>
     <dd>
         <input name="nombre" id="nombre" title="Nombre de la variable" type="text" class="large" maxlength="100" value="{sNombre}">
-        <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
+        <p>El nombre de la variable aparecer&aacute; en las entradas por fecha<br>de los seguimientos a los cuales la unidad este asociada.</p>
     </dd>
     <dt>
         <label for="descripcion">Descripci&oacute;n</label>
@@ -248,14 +250,14 @@
 
     <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo mabo2"><span class="bs i"></span> <span class="msg"></span></div>
 
-    <!--BeginSubmitCrearVariableTextoBlock-->
+    <!--BeginSubmitCrearVariableCualitativaBlock-->
     <button class="mabo" id="crearVariableCualitativa" name="crearVariableCualitativa" type="submit">Crear Variable</button>
-    <!--EndSubmitCrearVariableTextoBlock-->
+    <!--EndSubmitCrearVariableCualitativaBlock-->
 
-    <!--BeginSubmitModificarVariableTextoBlock-->
+    <!--BeginSubmitModificarVariableCualitativaBlock-->
     <button class="mabo" id="modificarVariableCualitativa" name="modificarVariableCualitativa" type="submit">Modificar Variable</button>
     <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
-    <!--EndSubmitModificarVariableTextoBlock-->
+    <!--EndSubmitModificarVariableCualitativaBlock-->
 
     <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
 </form>
