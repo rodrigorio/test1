@@ -213,13 +213,13 @@
                                         <dd>
                                             <textarea class="mihe1 medium maxlength" id="mensaje_{iPublicacionId}" rows="0" cols="0" name="mensaje_{iPublicacionId}" title="Mensaje Moderaci&oacute;n"></textarea>
                                         </dd>
+
+                                        <div style="display:none"  id='msg_form_moderacion_{iPublicacionId}' class="notification">
+                                            <p class="msg"></p>
+                                        </div>
                                        
                                         <button rel="{iPublicacionId}" class="moderarSubmit mabo2" type="button">Moderar publicaci&oacute;n</button>
                                         <input type="hidden" id="moderacionId_{iPublicacionId}" name="moderacionId_{iPublicacionId}" value="{iModeracionId}">
-
-                                        <div style="display:none"  id='msg_form_moderacion_{iPublicacionId}' class="notification">                                            
-                                            <p class="msg"></p>
-                                        </div>
                                     </form>
                                 </section>
                             </article>
@@ -398,14 +398,14 @@
         <input class="medium" type="text" name="keywords" id="keywords" title="Ingrese palabras claves para la publicaci&oacute;n" maxlength="255" value="{sKeywords}" />
         <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
     </dd>
-   
-    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
-    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
 
     <div style="display:none"  id='msg_form_publicacion' class="notification">
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
+   
+    <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
+    <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
 </form>
 <!--EndFormularioPublicacionBlock-->
 
@@ -564,13 +564,13 @@
         <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
     </dd>
 
-    <button class="mabo" id="modificarReview" name="modificarReview" type="submit">Modificar Review</button>
-    <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
-
     <div style="display:none"  id='msg_form_review' class="notification">
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
+
+    <button class="mabo" id="modificarReview" name="modificarReview" type="submit">Modificar Review</button>
+    <input type="hidden" value="{iReviewIdForm}" name="reviewIdForm" id="reviewIdForm" />
 </form>
 <!--EndFormularioReviewBlock-->
 

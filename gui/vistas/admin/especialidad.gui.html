@@ -47,6 +47,10 @@
         <textarea rows="0" cols="0" id="descripcion" name="descripcion" class="mihe2 medium maxlength" title="Descripci&oacute;n">{sDescripcion}</textarea>
     </dd>
 
+    <div style="display:none"  id='msg_form_especialidad' class="notification">
+        <p class="msg"></p>
+    </div>
+
     <!--BeginSubmitCrearEspecialidadBlock-->
     <button id="crearEspecialidad" name="crearEspecialidad" type="submit">Crear Especialidad</button>
     <!--EndSubmitCrearEspecialidadBlock-->
@@ -55,10 +59,6 @@
     <button id="modificarEspecialidad" name="modificarEspecialidad" type="submit">Modificar Especialidad</button>
     <input type="hidden" name="iEspecialidadId" id="iEspecialidadId" value="{iEspecialidadId}">
     <!--EndSubmitModificarEspecialidadBlock-->
-
-    <div style="display:none"  id='msg_form_especialidad' class="notification">
-        <p class="msg"></p>
-    </div>
 </form>
 <!--EndFormEspecialidadBlock-->
 
