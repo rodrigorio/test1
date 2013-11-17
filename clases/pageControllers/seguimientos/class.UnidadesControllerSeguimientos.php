@@ -633,10 +633,13 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
         $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
 
-        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        $iUsuarioId = $perfil->getUsuario()->getId();
-        if($oUnidad->getUsuarioId() != $iUsuarioId){
-            throw new Exception("No tiene permiso para ver esta unidad", 401);
+        //la comprobacion de si pertenece al usuario es si la unidad NO es precargada (seguimientos SCC)
+        if(!$oUnidad->isPrecargada()){
+            $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+            $iUsuarioId = $perfil->getUsuario()->getId();
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para ver esta unidad", 401);
+            }
         }
 
         try{
@@ -658,7 +661,6 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
                     $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
-                    $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
                     $this->getTemplate()->set_var("sDescripcionVariable", $oVariable->getDescripcion(true));
 
                     if($oVariable->isVariableNumerica()){
@@ -718,6 +720,13 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             throw new Exception("No tiene permiso para editar este seguimiento", 401);
         }
 
+        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+        if(!$oUnidad->isPrecargada()){
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para asociar esta unidad", 401);
+            }
+        }
+
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
 
@@ -748,6 +757,13 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
         $iUsuarioId = $perfil->getUsuario()->getId();
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para editar este seguimiento", 401);
+        }
+
+        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+        if(!$oUnidad->isPrecargada()){
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para desasociar esta unidad", 401);
+            }
         }
 
         $this->getJsonHelper()->initJsonAjaxResponse();
