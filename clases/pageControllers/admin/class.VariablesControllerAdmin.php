@@ -180,6 +180,8 @@ class VariablesControllerAdmin extends PageControllerAbstract
                     $sDescripcion .= $sModalidades;
                 }
 
+                $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+
                 $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "iconoVariable", $iconoVariableBlock);
                 $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
                 $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
