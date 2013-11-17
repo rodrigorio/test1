@@ -787,13 +787,14 @@ class UnidadesControllerSeguimientos extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
         }
 
-        if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-            throw new Exception("No tiene permiso para editar este seguimiento", 401);
+        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+        if(!$oUnidad->isPrecargada()){
+            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
+                throw new Exception("No tiene permiso para editar este seguimiento", 401);
+            }
         }
 
-        try{
-            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
-
+        try{            
             //ultima entrada en la que se asocio la unidad
             $oEntrada = $oUnidad->getUltimaEntrada($iSeguimientoId);
 

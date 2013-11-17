@@ -1129,8 +1129,10 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $iUsuarioId = $perfil->getUsuario()->getId();
-        if($oUnidad->getUsuarioId() != $iUsuarioId){
-            throw new Exception("No tiene permiso para ver esta unidad", 401);
+        if(!$oUnidad->isPrecargada()){
+            if($oUnidad->getUsuarioId() != $iUsuarioId){
+                throw new Exception("No tiene permiso para ver esta unidad", 401);
+            }
         }
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para editar esta entrada", 401);
