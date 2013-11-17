@@ -1,16 +1,18 @@
 var validateFormVariableTexto = {
-    errorElement: "div",
-    validClass: "correcto",
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
     onfocusout: false,
     onkeyup: false,
     onclick: false,
     focusInvalid: false,
     focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
     },
-    highlight: function(element){},
-    unhighlight: function(element){},
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
     rules:{
         nombre:{required:true},
         descripcion:{required:true}
@@ -24,13 +26,13 @@ var validateFormVariableTexto = {
 var optionsAjaxFormVariableTexto = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-variable',
+    url: 'admin/guardar-variable',
     beforeSerialize:function(){
 
         if($("#formVariableTexto").valid() == true){
 
             $('#msg_form_variable').hide();
-            $('#msg_form_variable').removeClass("correcto").removeClass("error");
+            $('#msg_form_variable').removeClass("success").removeClass("error2");
             $('#msg_form_variable .msg').html("");
             setWaitingStatus('formVariableTexto', true);
 
@@ -48,7 +50,7 @@ var optionsAjaxFormVariableTexto = {
             }else{
                 $('#msg_form_variable .msg').html(data.mensaje);
             }
-            $('#msg_form_variable').addClass("error").fadeIn('slow');
+            $('#msg_form_variable').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_variable .msg').html(lang['exito procesar']);
@@ -64,24 +66,26 @@ var optionsAjaxFormVariableTexto = {
             
             //refresco el listado actual
             masVariables();
-            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+            $('#msg_form_variable').addClass("success").fadeIn('slow');
         }
     }
 };
 
 var validateFormVariableNumerica = {
-    errorElement: "div",
-    validClass: "correcto",
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
     onfocusout: false,
     onkeyup: false,
     onclick: false,
     focusInvalid: false,
     focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
     },
-    highlight: function(element){},
-    unhighlight: function(element){},
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
     rules:{
         nombre:{required:true},
         descripcion:{required:true}
@@ -95,13 +99,13 @@ var validateFormVariableNumerica = {
 var optionsAjaxFormVariableNumerica = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-variable',
+    url: 'admin/guardar-variable',
     beforeSerialize:function(){
 
         if($("#formVariableNumerica").valid() == true){
 
             $('#msg_form_variable').hide();
-            $('#msg_form_variable').removeClass("correcto").removeClass("error");
+            $('#msg_form_variable').removeClass("success").removeClass("error2");
             $('#msg_form_variable .msg').html("");
             setWaitingStatus('formVariableNumerica', true);
 
@@ -119,7 +123,7 @@ var optionsAjaxFormVariableNumerica = {
             }else{
                 $('#msg_form_variable .msg').html(data.mensaje);
             }
-            $('#msg_form_variable').addClass("error").fadeIn('slow');
+            $('#msg_form_variable').addClass("error2").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_variable .msg').html(lang['exito procesar']);
@@ -135,7 +139,7 @@ var optionsAjaxFormVariableNumerica = {
 
             //refresco el listado actual
             masVariables();
-            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+            $('#msg_form_variable').addClass("success").fadeIn('slow');
         }
     }
 };
@@ -144,18 +148,20 @@ var optionsAjaxFormVariableNumerica = {
  * La validacion de las modalidades se hacen del lado del server y se devuelve por ajax.
  */
 var validateFormVariableCualitativa = {
-    errorElement: "div",
-    validClass: "correcto",
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
     onfocusout: false,
     onkeyup: false,
     onclick: false,
     focusInvalid: false,
     focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
     },
-    highlight: function(element){},
-    unhighlight: function(element){},
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
     rules:{
         nombre:{required:true},
         descripcion:{required:true}
@@ -169,13 +175,13 @@ var validateFormVariableCualitativa = {
 var optionsAjaxFormVariableCualitativa = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-variable',
+    url: 'admin/guardar-variable',
     beforeSerialize:function(){
 
         if($("#formVariableCualitativa").valid() == true){
 
             $('#msg_form_variable').hide();
-            $('#msg_form_variable').removeClass("correcto").removeClass("error");
+            $('#msg_form_variable').removeClass("success").removeClass("error2");
             $('#msg_form_variable .msg').html("");
             setWaitingStatus('formVariableCualitativa', true);
 
@@ -191,7 +197,7 @@ var optionsAjaxFormVariableCualitativa = {
             }else{
                 $('#msg_form_variable .msg').html(data.mensaje);
             }
-            $('#msg_form_variable').addClass("error");
+            $('#msg_form_variable').addClass("error2");
         }else{
             if(data.mensaje == undefined){
                 $('#msg_form_variable .msg').html(lang['exito procesar']);
@@ -214,7 +220,7 @@ var optionsAjaxFormVariableCualitativa = {
 
             //refresco el listado actual
             masVariables();
-            $('#msg_form_variable').addClass("correcto");
+            $('#msg_form_variable').addClass("success");
         }
         
         setWaitingStatus('formVariableCualitativa', false);
@@ -238,25 +244,23 @@ function bindEventsVariableCualitativaForm(){
 }
 
 function masVariables(){
-    var sOrderBy = $('#sOrderBy').val();
-    var sOrder = $('#sOrder').val();
     var unidadId = $('#unidadId').val();
 
     $.ajax({
         type:"POST",
-        url:"seguimientos/variables-procesar",
+        url:"admin/variables-procesar",
         data:{
             masVariables:"1",
-            sOrderBy: sOrderBy,
-            sOrder: sOrder,
             id: unidadId
         },
         beforeSend: function(){
             setWaitingStatus('listadoVariables', true);
         },
         success:function(data){
-            setWaitingStatus('listadoVariables', false);
             $("#listadoVariablesResult").html(data);
+            //bindeo js del listado
+            $('.datatable').dataTable();
+            setWaitingStatus('listadoVariables', false);
         }
     });
 }
@@ -266,7 +270,7 @@ function eliminarVariable(iVariableId){
         $.ajax({
             type:"post",
             dataType: 'jsonp',
-            url:"seguimientos/borrar-variable",
+            url:"admin/borrar-variable",
             data:{
                 iVariableId:iVariableId
             },
@@ -306,17 +310,11 @@ function eliminarVariable(iVariableId){
 
 $(document).ready(function(){
 
-    $(".orderLink").live('click', function(){
-        $('#sOrderBy').val($(this).attr('orderBy'));
-        $('#sOrder').val($(this).attr('order'));
-        masVariables();
-    });
-
     $("#crearVariableTexto").click(function(){
         var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(550, "Crear variable de Texto");
+        var dialog = setWaitingStatusDialog(650, "Crear variable de Texto");
         dialog.load(
-            "seguimientos/form-crear-variable",
+            "admin/form-crear-variable",
             {"formTexto":"1", "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsVariableTextoForm();
@@ -327,9 +325,9 @@ $(document).ready(function(){
 
     $("#crearVariableNumerica").click(function(){
         var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(550, "Crear variable Numérica");
+        var dialog = setWaitingStatusDialog(650, "Crear variable Numérica");
         dialog.load(
-            "seguimientos/form-crear-variable",
+            "admin/form-crear-variable",
             {"formNumerica":"1", "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){                
                 bindEventsVariableNumericaForm();
@@ -342,7 +340,7 @@ $(document).ready(function(){
         var unidadId = $('#unidadId').val();
         var dialog = setWaitingStatusDialog(550, "Crear variable Cualitativa");
         dialog.load(
-            "seguimientos/form-crear-variable",
+            "admin/form-crear-variable",
             {"formCualitativa":"1", "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsVariableCualitativaForm();
@@ -364,12 +362,12 @@ $(document).ready(function(){
             case "VariableNumerica": titulo = "Editar variable Numérica"; break;
         }
         
-        var dialog = setWaitingStatusDialog(550, titulo);
+        var dialog = setWaitingStatusDialog(650, titulo);
 
         //desde el page controller me doy cuenta como muestro el formulario por la clase del objeto variable
         //aca la unica condicion que me fijo es para bindear el javascript segun el tipo de formulario, la url es la misma.
         dialog.load(
-            "seguimientos/form-editar-variable",
+            "admin/form-editar-variable",
             {"iVariableId":iVariableId, "unidadId":unidadId},
             function(responseText, textStatus, XMLHttpRequest){
                 switch(tipo){
@@ -395,7 +393,7 @@ $(document).ready(function(){
     $("#agregarModalidad").live('click', function(){
         $.ajax({
             type:"POST",
-            url:"seguimientos/variables-procesar",
+            url:"admin/variables-procesar",
             data:{
                 agregarModalidad:"1"
             },
@@ -425,7 +423,7 @@ $(document).ready(function(){
                 $.ajax({
                     type:"post",
                     dataType:"jsonp",
-                    url:"seguimientos/borrar-modalidad-variable",
+                    url:"admin/borrar-modalidad-variable",
                     data:{
                         iModalidadId:iModalidadId                        
                     },
