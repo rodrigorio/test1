@@ -139,23 +139,11 @@ class VariablesControllerAdmin extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        //despues me fijo que el id sea de una unidad perteneciente al integrante logueado
-        if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-            throw new Exception("No tiene permiso para editar la unidad", 401);
-        }
-
         $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
         
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxGrillaVariablesBlock", "GrillaVariablesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "ajaxGrillaVariablesBlock", "GrillaVariablesBlock");
 
-        list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-        $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
-
-        $filtro = array('v.unidad_id' => $iUnidadId);
-        //no utilizo getVariablesByUnidadId porque necesito el filtro de los orderBy del listado.
-        $aVariables = SeguimientosController::getInstance()->getVariables($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
-
-        $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
+        $aVariables = $oUnidad->getVariables();
         if(count($aVariables) > 0){
 
             $this->getTemplate()->set_var("NoRecordsVariablesBlock", "");
@@ -165,9 +153,9 @@ class VariablesControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
                 $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
                 $this->getTemplate()->set_var("sTipoEnum", get_class($oVariable));
-                $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
-                $this->getTemplate()->set_var("sDescripcion", $oVariable->getDescripcion(true));
 
+                $sDescripcion = $oVariable->getDescripcion(true);
+                
                 if($oVariable->isVariableNumerica()){
                     $this->getTemplate()->set_var("sTipo", "Variable Numérica");
                     $iconoVariableBlock = "IconoTipoNumericaBlock";
@@ -183,28 +171,23 @@ class VariablesControllerAdmin extends PageControllerAbstract
                 if($oVariable->isVariableCualitativa()){
                     $this->getTemplate()->set_var("sTipo", "Variable Cualitativa");
                     $iconoVariableBlock = "IconoTipoCualitativaBlock";
-                    $sModalidades = "<strong>Modalidades: </strong> ";
+                    $sModalidades = "<br><strong>Modalidades: </strong> ";
                     $aModalidades = $oVariable->getModalidades();
                     foreach($aModalidades as $oModalidad){
                         $sModalidades .= $oModalidad->getModalidad().", ";
                     }
                     $sModalidades = substr($sModalidades, 0, -2);
-                    $this->getTemplate()->set_var("sModalidades", $sModalidades);
+                    $sDescripcion .= $sModalidades;
                 }
 
-                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "iconoVariable", $iconoVariableBlock);
+                $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "iconoVariable", $iconoVariableBlock);
                 $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
                 $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
 
                 $this->getTemplate()->parse("VariableBlock", true);
             }
-
-            $paramsPaginador[] = "id=".$iUnidadId;
-            $paramsPaginador[] = "masVariables=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $paramsPaginador);
         }else{
-            $this->getTemplate()->set_var("VariableBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No se encontraron resultados");
+            $this->getTemplate()->set_var("VariableBlock", "");            
         }
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaVariablesBlock', false));
@@ -223,7 +206,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
         $sHtmlId = uniqid();
 
         $this->restartTemplate();
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxRowModalidad", "ModalidadBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "ajaxRowModalidad", "ModalidadBlock");
 
         $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
         $this->getTemplate()->set_var("iOrden", "0");
@@ -269,12 +252,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        //me fijo que la variable pertenezca a una unidad creada por el usuario.
-        if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-            throw new Exception("No tiene permiso para editar la variable", 401);
-        }
-
-        $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+        $oVariable = AdminController::getInstance()->getVariableById($iVariableId);
 
         if($oVariable->isVariableNumerica()){
             $this->mostrarFormularioVariableNumericaPopUp($oVariable);
@@ -295,7 +273,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
     private function mostrarFormularioVariableTextoPopUp($oVariableTexto = null)
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableTextoBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "popUpContent", "FormularioVariableTextoBlock");
 
         //FORMULARIO CREAR
         if($oVariableTexto === null){
@@ -334,7 +312,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
     private function mostrarFormularioVariableNumericaPopUp($oVariableNumerica = null)
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableNumericaBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "popUpContent", "FormularioVariableNumericaBlock");
 
         //FORMULARIO CREAR
         if($oVariableNumerica === null){
@@ -373,7 +351,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
     private function mostrarFormularioVariableCualitativaPopUp($oVariableCualitativa = null)
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableCualitativaBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "popUpContent", "FormularioVariableCualitativaBlock");
 
         //FORMULARIO CREAR
         if($oVariableCualitativa === null){
@@ -469,14 +447,9 @@ class VariablesControllerAdmin extends PageControllerAbstract
             $oVariableTexto = Factory::getVariableTextoInstance($oVariableTexto);
 
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-
-            //es una unidad perteneciente al usuario?
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
-            }
                         
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+            if(AdminController::getInstance()->existeVariableUnidad($this->getRequest()->getPost("nombre"), $iUnidadId)){
                 $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -486,7 +459,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
             $oVariableTexto->setNombre($this->getRequest()->getPost("nombre"));
             $oVariableTexto->setDescripcion($this->getRequest()->getPost("descripcion"));
             
-            SeguimientosController::getInstance()->guardarVariable($oVariableTexto, $iUnidadId);
+            AdminController::getInstance()->guardarVariable($oVariableTexto, $iUnidadId);
 
             $this->getJsonHelper()->setValor("agregarVariable", "1");
             $this->getJsonHelper()->setMessage("La variable de texto se ha creado con éxito");
@@ -505,17 +478,13 @@ class VariablesControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $iVariableId = $this->getRequest()->getPost('variableIdForm');
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
-
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para editar la variable", 401);
-            }
+            $oVariable = AdminController::getInstance()->getVariableById($iVariableId);
 
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
             
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
             if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                if(AdminController::getInstance()->existeVariableUnidad($this->getRequest()->getPost("nombre"), $iUnidadId)){
                     $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
                     $this->getJsonHelper()->setSuccess(false);
                     $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -526,7 +495,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
             $oVariable->setNombre($this->getRequest()->getPost("nombre"));
             $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
 
-            SeguimientosController::getInstance()->guardarVariable($oVariable);
+            AdminController::getInstance()->guardarVariable($oVariable);
 
             $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
             $this->getJsonHelper()->setValor("modificarVariable", "1");
@@ -552,20 +521,15 @@ class VariablesControllerAdmin extends PageControllerAbstract
 
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
             
-            //es una unidad perteneciente al usuario?
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
-            }
-
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+            if(AdminController::getInstance()->existeVariableUnidad($this->getRequest()->getPost("nombre"), $iUnidadId)){
                 $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica, $iUnidadId);
+            AdminController::getInstance()->guardarVariable($oVariableNumerica, $iUnidadId);
 
             $this->getJsonHelper()->setValor("agregarVariable", "1");
             $this->getJsonHelper()->setMessage("La variable numérica se ha creado con éxito");
@@ -584,17 +548,13 @@ class VariablesControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $iVariableId = $this->getRequest()->getPost('variableIdForm');
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
-
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para editar la variable", 401);
-            }
+            $oVariable = AdminController::getInstance()->getVariableById($iVariableId);
 
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
             
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
             if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                if(AdminController::getInstance()->existeVariableUnidad($this->getRequest()->getPost("nombre"), $iUnidadId)){
                     $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
                     $this->getJsonHelper()->setSuccess(false);
                     $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -605,7 +565,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
             $oVariable->setNombre($this->getRequest()->getPost("nombre"));
             $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
 
-            SeguimientosController::getInstance()->guardarVariable($oVariable);
+            AdminController::getInstance()->guardarVariable($oVariable);
 
             $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
             $this->getJsonHelper()->setValor("modificarVariable", "1");
@@ -631,13 +591,8 @@ class VariablesControllerAdmin extends PageControllerAbstract
 
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
 
-            //es una unidad perteneciente al usuario?
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
-            }
-
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+            if(AdminController::getInstance()->existeVariableUnidad($this->getRequest()->getPost("nombre"), $iUnidadId)){
                 $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -686,7 +641,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
             
             $oVariableCualitativa->setModalidades($aModalidades);                        
                                    
-            SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa, $iUnidadId);
+            AdminController::getInstance()->guardarVariable($oVariableCualitativa, $iUnidadId);
 
             $this->getJsonHelper()->setValor("agregarVariable", "1");
             $this->getJsonHelper()->setMessage("La variable cualitativa se ha creado con éxito");
@@ -706,16 +661,12 @@ class VariablesControllerAdmin extends PageControllerAbstract
 
             $iVariableId = $this->getRequest()->getPost('variableIdForm');
 
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para editar la variable", 401);
-            }
-
             $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-            $oVariableCualitativa = SeguimientosController::getInstance()->getVariableById($iVariableId);
+            $oVariableCualitativa = AdminController::getInstance()->getVariableById($iVariableId);
 
             //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
             if($this->getRequest()->getPost("nombre") != $oVariableCualitativa->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
+                if(AdminController::getInstance()->existeVariableUnidad($this->getRequest()->getPost("nombre"), $iUnidadId)){
                     $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
                     $this->getJsonHelper()->setSuccess(false);
                     $this->getJsonHelper()->sendJsonAjaxResponse();
@@ -767,11 +718,11 @@ class VariablesControllerAdmin extends PageControllerAbstract
                 return;
             }
 
-            SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa);
+            AdminController::getInstance()->guardarVariable($oVariableCualitativa);
 
             //genero el html de la grilla de las modalidades con el id actualizado.
             $this->restartTemplate();
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxGrillaModalidades", "GrillaModalidadesBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/variables.gui.html", "ajaxGrillaModalidades", "GrillaModalidadesBlock");
             $this->getTemplate()->set_var("NoRecordsModalidadesBlock", "");
 
             foreach($oVariableCualitativa->getModalidades() as $oModalidad){
@@ -805,14 +756,7 @@ class VariablesControllerAdmin extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-
-            //la modalidad pertenece a una variable cualitativa creada por el usuario logueado?
-            $bModalidadUsuario = SeguimientosController::getInstance()->isModalidadVariableUsuario($iModalidadId);
-            if(!$bModalidadUsuario){
-                throw new Exception("No tiene permiso para eliminar esta modalidad", 401);
-            }
-
-            SeguimientosController::getInstance()->borrarModalidadVariable($iModalidadId);
+            AdminController::getInstance()->borrarModalidadVariable($iModalidadId);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -832,14 +776,10 @@ class VariablesControllerAdmin extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{            
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);                    
-
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para borrar la variable", 401);
-            }
+            $oVariable = AdminController::getInstance()->getVariableById($iVariableId);
 
             $aVariables[] = $oVariable;
-            $result = SeguimientosController::getInstance()->borrarVariables($aVariables);
+            $result = AdminController::getInstance()->borrarVariables($aVariables);
 
             $this->restartTemplate();
 

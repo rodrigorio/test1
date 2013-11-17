@@ -1586,4 +1586,75 @@ class AdminController
             throw $e;
         }
     }
+
+    public function getVariableById($iVariableId)
+    {
+    	try{
+            $filtro = array('v.id' => $iVariableId);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aVariables = $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aVariables){
+                return $aVariables[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Devuelve true si el nombre ya esta siendo utilizado para una variable
+     * dentro de la unidad
+     */
+    public function existeVariableUnidad($sNombreVariable, $iUnidadId)
+    {
+    	try{
+            $filtro = array('v.nombre' => $sNombreVariable, 'v.unidad_id' => $iUnidadId);
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return $oVariableIntermediary->existe($filtro);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Guardar Variables
+     *
+     * Si es insertar hace falta el id de la unidad
+     *
+     */
+    public function guardarVariable($oVariable, $iUnidadId = ""){
+        try{
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            return $oVariableIntermediary->guardar($oVariable, $iUnidadId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * En las modalidades no se tiene en cuenta el periodo de ventana en el cual se puede editar un seguimiento,
+     * porque sino habria que reemplazar la modalidad utilizada por otra antes de ser eliminada.
+     *
+     * Simplemente siempre que esta asociada con al menos un seguimiento se borra logicamente.
+     */
+    public function borrarModalidadVariable($iModalidadId)
+    {
+    	try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
+
+            //si la modalidad se uso como valor de variable en seguimientos asociados el borrado es logico.
+            if($oModalidadIntermediary->isUtilizadaEnSeguimientoUsuario($iModalidadId, $iUsuarioId)){
+                return $oModalidadIntermediary->borradoLogico($iModalidadId);
+            }else{
+                return $oModalidadIntermediary->borrar($iModalidadId);
+            }
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 }
