@@ -856,8 +856,7 @@ class SeguimientosController
     {
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();            
-            $filtro = array('u.usuarios_id' => $iUsuarioId,
-                            'u.preCargada' => '1',
+            $filtro = array('u.preCargada' => '1',
                             'u.asociacionAutomatica' => '0',
                             'u.borradoLogico' => '0',
                             'noAsociado' => $oSeguimiento->getId()
