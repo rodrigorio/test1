@@ -130,7 +130,7 @@ var optionsAjaxFormCiclo = {
     }
 };
 
-var validateFormArea = {
+var validateFormAnio = {
     errorElement: "span",
     validClass: "valid-side-note",
     errorClass: "invalid-side-note",
@@ -154,6 +154,77 @@ var validateFormArea = {
         descripcion: mensajeValidacion("requerido"),
         nivel :mensajeValidacion("requerido"),
         ciclo :mensajeValidacion("requerido")
+    }
+};
+
+var optionsAjaxFormAnio = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'admin/procesar-anio',
+    beforeSerialize:function(){
+
+        if($("#formAnio").valid() == true){
+            $('#msg_form_anio').hide();
+            $('#msg_form_anio').removeClass("success").removeClass("error2");
+            $('#msg_form_anio .msg').html("");
+            setWaitingStatus('formAnio', true);
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formAnio', false);
+
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_anio .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_anio .msg').html(data.mensaje);
+            }
+            $('#msg_form_anio').addClass("error2").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_anio .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_anio .msg').html(data.mensaje);
+            }
+            if(data.accion == 'crearAnio'){
+                $('#formAnio').each(function(){
+                  this.reset();
+                });
+            }
+            $('#msg_form_anio').addClass("success").fadeIn('slow');
+        }
+    }
+};
+
+var validateFormArea = {
+    errorElement: "span",
+    validClass: "valid-side-note",
+    errorClass: "invalid-side-note",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    highlight: function(element, errorClass, validClass){
+        $(element).addClass("invalid");
+    },
+    unhighlight: function(element, errorClass, validClass){
+        $(element).removeClass("invalid");
+    },
+    rules:{
+        descripcion:{required:true},
+        nivel:{required:true},
+        ciclo:{required:true},
+        anio:{required:true}
+    },
+    messages:{
+        descripcion: mensajeValidacion("requerido"),
+        nivel :mensajeValidacion("requerido"),
+        ciclo :mensajeValidacion("requerido"),
+        anio :mensajeValidacion("requerido")
     }
 };
 
@@ -218,12 +289,14 @@ var validateFormEje = {
         descripcion:{required:true},
         nivel:{required:true},
         ciclo:{required:true},
+        anio:{required:true},
         area:{required:true}
     },
     messages:{
         descripcion: mensajeValidacion("requerido"),
         nivel :mensajeValidacion("requerido"),
         ciclo :mensajeValidacion("requerido"),
+        anio :mensajeValidacion("requerido"),
         area :mensajeValidacion("requerido")
     }
 };
@@ -289,6 +362,7 @@ var validateFormObjetivoAprendizaje = {
         descripcion:{required:true},
         nivel:{required:true},
         ciclo:{required:true},
+        anio:{required:true},
         area:{required:true},
         ejeTematico:{required:true}
     },
@@ -296,6 +370,7 @@ var validateFormObjetivoAprendizaje = {
         descripcion: mensajeValidacion("requerido"),
         nivel :mensajeValidacion("requerido"),
         ciclo :mensajeValidacion("requerido"),
+        anio :mensajeValidacion("requerido"),
         area :mensajeValidacion("requerido"),
         ejeTematico :mensajeValidacion("requerido")
     }
@@ -353,12 +428,24 @@ function bindEventsFormCiclo(){
     $("#formCiclo").ajaxForm(optionsAjaxFormCiclo);
 }
 
+function bindEventsFormAnio(){
+    $("#formAnio").validate(validateFormAnio);
+    $("#formAnio").ajaxForm(optionsAjaxFormAnio);
+
+    $("#nivel").change(function(){
+        listaCiclosByNivel($("#nivel option:selected").val(), "formAnio");
+    });
+}
+
 function bindEventsFormArea(){
     $("#formArea").validate(validateFormArea);
     $("#formArea").ajaxForm(optionsAjaxFormArea);
 
     $("#nivel").change(function(){
         listaCiclosByNivel($("#nivel option:selected").val(), "formArea");
+    });
+    $("#ciclo").change(function(){
+        listaAniosByCiclo($("#ciclo option:selected").val(), "formArea");
     });
 }
 
@@ -369,9 +456,11 @@ function bindEventsFormEje(){
     $("#nivel").change(function(){
         listaCiclosByNivel($("#nivel option:selected").val(), "formEje");
     });
-    
     $("#ciclo").change(function(){
-        listaAreasByCiclo($("#ciclo option:selected").val(), "formEje");
+        listaAniosByCiclo($("#ciclo option:selected").val(), "formEje");
+    });
+    $("#anio").change(function(){
+        listaAreasByAnio($("#anio option:selected").val(), "formEje");
     });
 }
 
@@ -382,11 +471,12 @@ function bindEventsFormObjetivoAprendizaje(){
     $("#nivel").change(function(){
         listaCiclosByNivel($("#nivel option:selected").val(), "formObjetivoAprendizaje");
     });
-
     $("#ciclo").change(function(){
-        listaAreasByCiclo($("#ciclo option:selected").val(), "formObjetivoAprendizaje");
+        listaAniosByCiclo($("#ciclo option:selected").val(), "formObjetivoAprendizaje");
     });
-
+    $("#anio").change(function(){
+        listaAreasByAnio($("#anio option:selected").val(), "formObjetivoAprendizaje");
+    });
     $("#area").change(function(){
         listaEjesTematicosByArea($("#area option:selected").val(), "formObjetivoAprendizaje");
     });
@@ -457,6 +547,49 @@ function borrarCiclo(iCicloId){
                     dialog.attr("title","Eliminar Ciclo");
                 }else{
                     dialog = $('<div id="dialog" title="Eliminar Ciclo"></div>').appendTo('body');
+                }
+                dialog.html(data.html);
+
+                dialog.dialog({
+                    position:['center', 'center'],
+                    width:400,
+                    resizable:false,
+                    draggable:false,
+                    modal:false,
+                    closeOnEscape:true,
+                    buttons:{
+                        "Aceptar": function() {
+                            $(this).dialog( "close" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function borrarAnio(iAnioId){
+    if(confirm("Se borrara el año del sistema, desea continuar?")){
+        $.ajax({
+            type:"post",
+            dataType:'jsonp',
+            url:"admin/procesar-anio",
+            data:{
+                iAnioId:iAnioId,
+                borrarAnio:'1'
+            },
+            success:function(data){
+                if(data.success != undefined && data.success == 1){
+                    $("."+iAnioId).hide("slow", function(){
+                        $("."+iAnioId).remove();
+                    });
+                }
+
+                var dialog = $("#dialog");
+                if($("#dialog").length != 0){
+                    dialog.attr("title","Eliminar Año");
+                }else{
+                    dialog = $('<div id="dialog" title="Eliminar Año"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
 
@@ -617,7 +750,8 @@ function resetSelect(select, defaultOpt){
 
 //combos con ajax formularios
 function listaCiclosByNivel(idNivel, formId){
-    resetSelect($('#area'), 'Elija Área:');
+    resetSelect($('#anio'), 'Elija Año:');
+    resetSelect($('#area'), 'Elija Área:');    
     resetSelect($('#ejeTematico'), 'Elija Eje Temático:');
     if(idNivel == ''){
         resetSelect($('#ciclo'), 'Elija Ciclo:');
@@ -649,9 +783,41 @@ function listaCiclosByNivel(idNivel, formId){
     });
  }
 
-function listaAreasByCiclo(idCiclo, formId){
+function listaAniosByCiclo(idCiclo, formId){
+    resetSelect($('#area'), 'Elija Área:');
     resetSelect($('#ejeTematico'), 'Elija Eje Temático:');
     if(idCiclo == ''){
+        resetSelect($('#anio'), 'Elija Año:');
+        return;
+    }else{
+        $('#anio').removeClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "admin/procesar-ciclo",
+        data:{iCicloId:idCiclo, aniosByCiclo:"1"},
+        beforeSend: function(){
+            setWaitingStatus(formId, true);
+        },
+        success: function(lista){
+            $('#anio').html("");
+            if(lista.length != undefined && lista.length > 0){
+                $('#anio').append(new Option('Elija Año:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#anio').append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+            }else{
+                $('#anio').append(new Option('No hay años cargados', '',true));
+            }
+            setWaitingStatus(formId, false);
+        }
+    });
+}
+
+function listaAreasByAnio(idAnio, formId){
+    resetSelect($('#ejeTematico'), 'Elija Eje Temático:');
+    if(idAnio == ''){
         resetSelect($('#area'), 'Elija Área:');
         return;
     }else{
@@ -660,8 +826,8 @@ function listaAreasByCiclo(idCiclo, formId){
     
     $.ajax({
         type: "POST",
-        url: "admin/procesar-ciclo",
-        data:{iCicloId:idCiclo, areasByCiclo:"1"},
+        url: "admin/procesar-anio",
+        data:{iAnioId:idAnio, areasByAnio:"1"},
         beforeSend: function(){
             setWaitingStatus(formId, true);
         },
@@ -722,6 +888,10 @@ $(document).ready(function(){
         bindEventsFormCiclo();
     }
 
+    if($("#formAnio").length){
+        bindEventsFormAnio();
+    }
+
     if($("#formArea").length){
         bindEventsFormArea();
     }
@@ -742,6 +912,11 @@ $(document).ready(function(){
     $(".borrarCiclo").live('click', function(){
         var iCicloId = $(this).attr("rel");
         borrarCiclo(iCicloId);
+    });
+
+    $(".borrarAnio").live('click', function(){
+        var iAnioId = $(this).attr("rel");
+        borrarAnio(iAnioId);
     });
 
     $(".borrarArea").live('click', function(){

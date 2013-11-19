@@ -1165,6 +1165,26 @@ class AdminController
             throw $e;
         }
     }
+
+    /**
+     *  Obtiene el año ById
+     */
+    public function getAnioById($iAnioId)
+    {
+    	try{
+            $filtro = array('a.id' => $iAnioId);
+            $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aAnios = $oAnioIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aAnios){
+                return $aAnios[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
     
     /**
      *  Obtiene el area ById
@@ -1181,6 +1201,19 @@ class AdminController
             }else{
                 return null;
             }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     *  Obtiene Años
+     */
+    public function getAnios($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
+    {
+    	try{
+            $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
+            return $oAnioIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
             throw $e;
         }
@@ -1242,16 +1275,32 @@ class AdminController
     }
 
     /**
-     * Obtener areas por id de ciclo
+     * Obtener areas por id de año
      *
      */
-    public function getAreasByCicloId($iId)
+    public function getAreasByAnioId($iAnioId)
     {
     	try{
-            $filtro = array('c.id' => $iId);
+            $filtro = array('an.id' => $iAnioId);
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Obtener años por id de ciclo
+     *
+     */
+    public function getAniosByCicloId($iCicloId)
+    {
+    	try{
+            $filtro = array('c.id' => $iCicloId);
+            $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oAnioIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
@@ -1274,7 +1323,20 @@ class AdminController
     }
 
     /**
-     * Carga el Area por el Admin
+     * Guarda el Año por el Admin
+     *
+     */
+    public function guardarAnio($oAnio){
+        try{
+            $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
+            return $oAnioIntermediary->guardar($oAnio);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Guarda el Area por el Admin
      *
      */
     public function guardarArea($oArea){
@@ -1289,11 +1351,24 @@ class AdminController
     /**
      *  Elimina el area
      */
-    public function eliminarArea($oArea)
+    public function eliminarAnio($iAnioId)
+    {
+        try{
+            $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
+            return $oAnioIntermediary->Borrar($iAnioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     *  Elimina el area
+     */
+    public function eliminarArea($iAreaId)
     {
         try{
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
-            return $oAreaIntermediary->Borrar($oArea);
+            return $oAreaIntermediary->Borrar($iAreaId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1335,11 +1410,11 @@ class AdminController
     /**
      *  Elimina el ciclo
      */
-    public function eliminarCiclo($oCiclo)
+    public function eliminarCiclo($iCicloId)
     {
         try{
             $oCicloIntermediary = PersistenceFactory::getCicloIntermediary($this->db);
-            return $oCicloIntermediary->Borrar($oCiclo);
+            return $oCicloIntermediary->Borrar($iCicloId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1368,11 +1443,11 @@ class AdminController
     /**
      *  Elimina el Nivel
      */
-    public function eliminarNivel($oNivel)
+    public function eliminarNivel($iNivelId)
     {
         try{
             $oNivelIntermediary = PersistenceFactory::getNivelIntermediary($this->db);
-            return $oNivelIntermediary->borrar($oNivel);
+            return $oNivelIntermediary->borrar($iNivelId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1464,16 +1539,29 @@ class AdminController
     /**
      *  Verifica si existe el area
      */
-    public function verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)
+    public function verificarExisteAreaByDescripcion($sDescripcion, $oAnio)
     {
         try{
             $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
-            return $oAreaIntermediary->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo);
+            return $oAreaIntermediary->verificarExisteAreaByDescripcion($sDescripcion, $oAnio);
         }catch(Exception $e){
             throw $e;
         }
     }
-
+    
+    /**
+     *  Verifica si existe el año
+     */
+    public function verificarExisteAnioByDescripcion($sDescripcion, $oCiclo)
+    {
+        try{
+            $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
+            return $oAnioIntermediary->verificarExisteAnioByDescripcion($sDescripcion, $oCiclo);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
     /**
      *  Verifica si existe el eje
      */
