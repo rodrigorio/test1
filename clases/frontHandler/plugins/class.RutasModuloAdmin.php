@@ -464,6 +464,29 @@ class RutasModuloAdmin
                                 ));
         $router->addRoute('adminObjetivosAprendizajeFormularioCiclo', $route);
 
+        //años
+        $route = new RegexRoute('admin/procesar-anio',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'procesarAnio'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeProcesarAnio', $route);
+        $route = new RegexRoute('admin/listar-anios',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'listarAnios'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeListarAnios', $route);
+        $route = new RegexRoute('admin/form-anio',
+                                array(
+                                        'module' => 'admin',
+                                        'controller' => 'objetivosAprendizaje',
+                                        'action'     => 'formularioAnio'
+                                ));
+        $router->addRoute('adminObjetivosAprendizajeFormularioAnio', $route);
+
         //areas
         $route = new RegexRoute('admin/procesar-area',
                                 array(

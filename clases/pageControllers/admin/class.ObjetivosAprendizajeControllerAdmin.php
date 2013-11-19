@@ -82,8 +82,34 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }
 
         //select con ajax
-        if($this->getRequest()->has('areasByCiclo')){
-            $this->getAreasByCiclo();
+        if($this->getRequest()->has('aniosByCiclo')){
+            $this->getAniosByCiclo();
+            return;
+        }
+    }
+
+    public function procesarAnio()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        if($this->getRequest()->has('crearAnio')){
+            $this->crearAnio();
+            return;
+        }
+
+        if($this->getRequest()->has('modificarAnio')){
+            $this->modificarAnio();
+            return;
+        }
+
+        if($this->getRequest()->has('borrarAnio')){
+            $this->borrarAnio();
+            return;
+        }
+
+        //select con ajax
+        if($this->getRequest()->has('areasByAnio')){
+            $this->getAreasByAnio();
             return;
         }
     }
@@ -217,7 +243,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
-    private function crearArea()
+    private function crearAnio()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
@@ -225,9 +251,42 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $sDescripcion = $this->getRequest()->getPost("descripcion");
             $iCicloId = $this->getRequest()->getPost("ciclo");
             $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+
+            if(AdminController::getInstance()->verificarExisteAnioByDescripcion($sDescripcion, $oCiclo)){
+                $this->getJsonHelper()->setMessage("Ya existe el año en el ciclo seleccionado.");
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oAnio = new stdClass();
+            $oAnio->sDescripcion = $sDescripcion;
+            $oAnio = Factory::getAnioInstance($oAnio);
+            $oAnio->setCiclo($oCiclo);
+
+            AdminController::getInstance()->guardarAnio($oAnio);
+            $this->getJsonHelper()->setMessage("El año fue creado con éxito dentro del ciclo");
+            $this->getJsonHelper()->setValor("accion", "crearAnio");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function crearArea()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iAnioId = $this->getRequest()->getPost("anio");
+            $oAnio = AdminController::getInstance()->getAnioById($iAnioId);
             
-            if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)){
-                $this->getJsonHelper()->setMessage("Ya existe un área con ese nombre en el ciclo seleccionado.");
+            if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oAnio)){
+                $this->getJsonHelper()->setMessage("Ya existe un área con ese nombre en el año seleccionado.");
                 $this->getJsonHelper()->setSuccess(false);
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
@@ -236,10 +295,10 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $oArea = new stdClass();
             $oArea->sDescripcion = $sDescripcion;
             $oArea = Factory::getAreaInstance($oArea);
-            $oArea->setCiclo($oCiclo);
+            $oArea->setAnio($oAnio);
 
             AdminController::getInstance()->guardarArea($oArea);
-            $this->getJsonHelper()->setMessage("El área fue creada con éxito dentro del ciclo");
+            $this->getJsonHelper()->setMessage("El área fue creada con éxito dentro del año");
             $this->getJsonHelper()->setValor("accion", "crearArea");
             $this->getJsonHelper()->setSuccess(true);
 
@@ -377,21 +436,55 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
+    private function modificarAnio()
+    {
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $sDescripcion = $this->getRequest()->getPost("descripcion");
+            $iAnioId = $this->getRequest()->getPost("iAnioId");
+            $iCicloId = $this->getRequest()->getPost("ciclo");
+            $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+            $oAnio = AdminController::getInstance()->getAnioById($iAnioId);
+
+            if(!empty($sDescripcion) && $sDescripcion !== $oAnio->getDescripcion()){
+                if(AdminController::getInstance()->verificarExisteAnioByDescripcion($sDescripcion, $oCiclo)){
+                    $this->getJsonHelper()->setMessage("Ya existe el año dentro del ciclo.");
+                    $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->sendJsonAjaxResponse();
+                    return;
+                }
+            }
+
+            $oAnio->setDescripcion($sDescripcion);
+            $oAnio->setCiclo($oCiclo);
+
+            AdminController::getInstance()->guardarAnio($oAnio);
+            $this->getJsonHelper()->setMessage("El año fue modificado con éxito dentro del ciclo");
+            $this->getJsonHelper()->setValor("accion", "modificarAnio");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
     private function modificarArea()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            $this->getJsonHelper()->initJsonAjaxResponse();
 
             $sDescripcion = $this->getRequest()->getPost("descripcion");
             $iAreaId = $this->getRequest()->getPost("iAreaId");
-            $iCicloId = $this->getRequest()->getPost("ciclo");
-            $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
+            $iAnioId = $this->getRequest()->getPost("anio");
+            $oAnio = AdminController::getInstance()->getAnioById($iAnioId);
             $oArea = AdminController::getInstance()->getAreaById($iAreaId);            
 
             if(!empty($sDescripcion) && $sDescripcion !== $oArea->getDescripcion()){
-                if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)){
-                    $this->getJsonHelper()->setMessage("Ya existe un área con ese nombre en el ciclo.");
+                if(AdminController::getInstance()->verificarExisteAreaByDescripcion($sDescripcion, $oAnio)){
+                    $this->getJsonHelper()->setMessage("Ya existe un área con ese nombre dentro del año.");
                     $this->getJsonHelper()->setSuccess(false);
                     $this->getJsonHelper()->sendJsonAjaxResponse();
                     return;
@@ -399,10 +492,10 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             $oArea->setDescripcion($sDescripcion);
-            $oArea->setCiclo($oCiclo);
+            $oArea->setAnio($oAnio);
 
             AdminController::getInstance()->guardarArea($oArea);
-            $this->getJsonHelper()->setMessage("El área fue modificada con éxito dentro del ciclo");
+            $this->getJsonHelper()->setMessage("El área fue modificada con éxito dentro del año");
             $this->getJsonHelper()->setValor("accion", "modificarArea");
             $this->getJsonHelper()->setSuccess(true);
 
@@ -489,10 +582,8 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            try{
-                $oNivel = AdminController::getInstance()->getNivelById($iNivelId);
-                
-                $result = AdminController::getInstance()->eliminarNivel($oNivel);
+            try{                
+                $result = AdminController::getInstance()->eliminarNivel($iNivelId);
 
                 $this->restartTemplate();
 
@@ -532,8 +623,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             try{
-                $oCiclo = AdminController::getInstance()->getCicloById($iCicloId);
-                $result = AdminController::getInstance()->eliminarCiclo($oCiclo);
+                $result = AdminController::getInstance()->eliminarCiclo($iCicloId);
 
                 $this->restartTemplate();
 
@@ -545,6 +635,46 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
             }catch(Exception $e){
                 $msg = "No se pudo eliminar el ciclo del sistema. Compruebe que no haya ningún área asociada.";
+                $bloque = 'MsgErrorBlockI32';
+                $this->getJsonHelper()->setSuccess(false);
+            }
+
+            $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
+            $this->getTemplate()->set_var("sMensaje", $msg);
+            $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
+
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function borrarAnio()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
+
+        $iAnioId = $this->getRequest()->getParam('iAnioId');
+        if(empty($iAnioId)){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            try{
+                $result = AdminController::getInstance()->eliminarAnio($iAnioId);
+
+                $this->restartTemplate();
+
+                if($result){
+                    $msg = "El año fue eliminado del sistema";
+                    $bloque = 'MsgCorrectoBlockI32';
+                    $this->getJsonHelper()->setSuccess(true);
+                }
+
+            }catch(Exception $e){
+                $msg = "No se pudo eliminar el año del sistema. Compruebe que no haya ningún área asociada.";
                 $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);
             }
@@ -761,6 +891,48 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }
     }
 
+    public function listarAnios()
+    {
+        try{
+            $this->setFrameTemplate()
+                 ->setHeadTag();
+
+            IndexControllerAdmin::setCabecera($this->getTemplate());
+            IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+            $this->printMsgTop();
+
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderAniosBlock");
+            $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "ListadoAniosBlock");
+
+            $this->getTemplate()->set_var("hrefCrearAnio", $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioAnio", true)."?crear=1");
+
+            $iRecordsTotal = 0;
+            $aAnios = AdminController::getInstance()->getAnios($filtro = array(), $iRecordsTotal, null, null, null, null);
+            if(count($aAnios)>0){
+                foreach ($aAnios as $oAnio){
+                    $hrefEditarAnio = $this->getUrlFromRoute("adminObjetivosAprendizajeFormularioAnio", true)."?editar=1&id=".$oAnio->getId();
+
+                    $this->getTemplate()->set_var("hrefEditarAnio", $hrefEditarAnio);
+
+                    $this->getTemplate()->set_var("iAnioId", $oAnio->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oAnio->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oAnio->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oAnio->getCiclo()->getDescripcion());
+
+                    $this->getTemplate()->parse("AnioBlock", true);
+                }
+                $this->getTemplate()->set_var("NoRecordsAniosBlock", "");
+            }else{
+                $this->getTemplate()->set_var("AnioBlock", "");
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function listarAreas()
     {
         try{
@@ -787,8 +959,9 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iAreaId", $oArea->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oArea->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oArea->getAnio()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oArea->getAnio()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionAnio", $oArea->getAnio()->getDescripcion());
 
                     $this->getTemplate()->parse("AreaBlock", true);
                 }
@@ -830,8 +1003,9 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iEjeId", $oEje->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oEje->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oEje->getArea()->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oEje->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oEje->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oEje->getArea()->getAnio()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionAnio", $oEje->getArea()->getAnio()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionArea", $oEje->getArea()->getDescripcion());
 
                     $this->getTemplate()->parse("EjeBlock", true);
@@ -874,8 +1048,9 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iObjetivoAprendizajeId", $oObjetivoAprendizaje->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oObjetivoAprendizaje->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionNivel", $oObjetivoAprendizaje->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionCiclo", $oObjetivoAprendizaje->getEje()->getArea()->getAnio()->getCiclo()->getDescripcion());
+                    $this->getTemplate()->set_var("sDescripcionAnio", $oObjetivoAprendizaje->getEje()->getArea()->getAnio()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionArea", $oObjetivoAprendizaje->getEje()->getArea()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionEje", $oObjetivoAprendizaje->getEje()->getDescripcion());
                                    
@@ -933,6 +1108,28 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
 
         if($this->getRequest()->has('crear')){
             $this->crearCicloForm();
+        }
+    }
+
+    public function formularioAnio()
+    {
+        $this->setFrameTemplate()
+             ->setHeadTag();
+
+        IndexControllerAdmin::setCabecera($this->getTemplate());
+        IndexControllerAdmin::setMenu($this->getTemplate(), "currentOptionSeguimientoSCC");
+
+        $this->printMsgTop();
+
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "widgetsContent", "HeaderAniosBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/admin/objetivosAprendizaje.gui.html", "mainContent", "FormAnioBlock");
+
+        if($this->getRequest()->has('editar')){
+            $this->editarAnioForm();
+        }
+
+        if($this->getRequest()->has('crear')){
+            $this->crearAnioForm();
         }
     }
 
@@ -1034,7 +1231,29 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
-    }  
+    }
+
+    private function crearAnioForm()
+    {
+        try{
+            $this->getTemplate()->set_var("sTituloForm", "Crear nuevo Año");
+            $this->getTemplate()->set_var("SubmitModificarAnioBlock", "");
+
+            //combo niveles
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("sNivelSelected", "");
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                $this->getTemplate()->parse("OptionSelectNivel", true);
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
     
     private function crearAreaForm()
     {
@@ -1164,6 +1383,57 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }
     }
 
+    private function editarAnioForm()
+    {
+        try{
+            $iAnioId = $this->getRequest()->getParam('id');
+
+            if(empty($iAnioId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $this->getTemplate()->set_var("sTituloForm", "Modificar Año");
+            $this->getTemplate()->set_var("SubmitCrearAnioBlock", "");
+
+            $oAnio = AdminController::getInstance()->getAnioById($iAnioId);
+
+            //combo niveles
+            $iNivelId = $oAnio->getCiclo()->getNivel()->getId();
+            $iRecordsNiveles = 0;
+            $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
+            foreach ($aNiveles as $oNivel){
+                $this->getTemplate()->set_var("iValueNivel", $oNivel->getId());
+                $this->getTemplate()->set_var("sDescripcionNivel", $oNivel->getDescripcion());
+                if($iNivelId == $oNivel->getId()){
+                    $this->getTemplate()->set_var("sNivelSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectNivel", true);
+                $this->getTemplate()->set_var("sNivelSelected", "");
+            }
+
+            //combo ciclos
+            $iCicloId = $oAnio->getCiclo()->getId();
+            $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
+            foreach ($aCiclos as $oCiclo){
+                $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
+                $this->getTemplate()->set_var("sDescripcionCiclo", $oCiclo->getDescripcion());
+                if($iCicloId == $oCiclo->getId()){
+                    $this->getTemplate()->set_var("sCicloSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectCiclo", true);
+                $this->getTemplate()->set_var("sCicloSelected", "");
+            }
+
+            $this->getTemplate()->set_var("iAnioId", $oAnio->getId());
+            $this->getTemplate()->set_var("sDescripcion", $oAnio->getDescripcion());
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     private function editarAreaForm()
     {
         try{
@@ -1179,7 +1449,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $oArea = AdminController::getInstance()->getAreaById($iAreaId);
             
             //combo niveles
-            $iNivelId = $oArea->getCiclo()->getNivel()->getId();
+            $iNivelId = $oArea->getAnio()->getCiclo()->getNivel()->getId();
             $iRecordsNiveles = 0;
             $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
@@ -1193,7 +1463,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ciclos
-            $iCicloId = $oArea->getCiclo()->getId();
+            $iCicloId = $oArea->getAnio()->getCiclo()->getId();
             $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
@@ -1203,6 +1473,19 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
                 }
                 $this->getTemplate()->parse("OptionSelectCiclo", true);
                 $this->getTemplate()->set_var("sCicloSelected", "");
+            }
+
+            //combo años
+            $iAnioId = $oArea->getAnio()->getId();
+            $aAnios = AdminController::getInstance()->getAniosByCicloId($iCicloId);
+            foreach ($aAnios as $oAnio){
+                $this->getTemplate()->set_var("iValueAnio", $oAnio->getId());
+                $this->getTemplate()->set_var("sDescripcionAnio", $oAnio->getDescripcion());
+                if($iAnioId == $oAnio->getId()){
+                    $this->getTemplate()->set_var("sAnioSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectAnio", true);
+                $this->getTemplate()->set_var("sAnioSelected", "");
             }
             
             $this->getTemplate()->set_var("iAreaId", $oArea->getId());
@@ -1230,7 +1513,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $oEje = AdminController::getInstance()->getEjeTematicoById($iEjeId);
 
             //combo niveles
-            $iNivelId = $oEje->getArea()->getCiclo()->getNivel()->getId();
+            $iNivelId = $oEje->getArea()->getAnio()->getCiclo()->getNivel()->getId();
             $iRecordsNiveles = 0;
             $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
@@ -1244,7 +1527,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ciclos
-            $iCicloId = $oEje->getArea()->getCiclo()->getId();
+            $iCicloId = $oEje->getArea()->getAnio()->getCiclo()->getId();
             $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
@@ -1256,9 +1539,22 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sCicloSelected", "");
             }
 
+            //combo años
+            $iAnioId = $oEje->getArea()->getAnio()->getId();
+            $aAnios = AdminController::getInstance()->getAniosByCicloId($iCicloId);
+            foreach ($aAnios as $oAnio){
+                $this->getTemplate()->set_var("iValueAnio", $oAnio->getId());
+                $this->getTemplate()->set_var("sDescripcionAnio", $oAnio->getDescripcion());
+                if($iAnioId == $oAnio->getId()){
+                    $this->getTemplate()->set_var("sAnioSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectAnio", true);
+                $this->getTemplate()->set_var("sAnioSelected", "");
+            }
+
             //combo areas
             $iAreaId = $oEje->getArea()->getId();
-            $aAreas = AdminController::getInstance()->getAreasByCicloId($iCicloId);
+            $aAreas = AdminController::getInstance()->getAreasByAnioId($iAnioId);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
                 $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
@@ -1294,7 +1590,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             $oObjetivoAprendizaje = AdminController::getInstance()->getObjetivoAprendizajeById($iObjetivoAprendizajeId);
 
             //combo niveles
-            $iNivelId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getNivel()->getId();
+            $iNivelId = $oObjetivoAprendizaje->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getId();
             $iRecordsNiveles = 0;
             $aNiveles = AdminController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
             foreach ($aNiveles as $oNivel){
@@ -1308,7 +1604,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
             }
 
             //combo ciclos
-            $iCicloId = $oObjetivoAprendizaje->getEje()->getArea()->getCiclo()->getId();
+            $iCicloId = $oObjetivoAprendizaje->getEje()->getArea()->getAnio()->getCiclo()->getId();
             $aCiclos = AdminController::getInstance()->getCiclosByNivelId($iNivelId);
             foreach ($aCiclos as $oCiclo){
                 $this->getTemplate()->set_var("iValueCiclo", $oCiclo->getId());
@@ -1320,9 +1616,22 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sCicloSelected", "");
             }
 
+            //combo años
+            $iAnioId = $oObjetivoAprendizaje->getEje()->getArea()->getAnio()->getId();
+            $aAnios = AdminController::getInstance()->getAniosByCicloId($iCicloId);
+            foreach ($aAnios as $oAnio){
+                $this->getTemplate()->set_var("iValueAnio", $oAnio->getId());
+                $this->getTemplate()->set_var("sDescripcionAnio", $oAnio->getDescripcion());
+                if($iAnioId == $oAnio->getId()){
+                    $this->getTemplate()->set_var("sAnioSelected", "selected='selected'");
+                }
+                $this->getTemplate()->parse("OptionSelectAnio", true);
+                $this->getTemplate()->set_var("sAnioSelected", "");
+            }
+
             //combo areas
             $iAreaId = $oObjetivoAprendizaje->getEje()->getArea()->getId();
-            $aAreas = AdminController::getInstance()->getAreasByCicloId($iCicloId);
+            $aAreas = AdminController::getInstance()->getAreasByAnioId($iAnioId);
             foreach ($aAreas as $oArea){
                 $this->getTemplate()->set_var("iValueArea", $oArea->getId());
                 $this->getTemplate()->set_var("sDescripcionArea", $oArea->getDescripcion());
@@ -1383,7 +1692,7 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
         }
     }
 
-    private function getAreasByCiclo(){
+    private function getAniosByCiclo(){
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
@@ -1393,8 +1702,35 @@ class ObjetivosAprendizajeControllerAdmin extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
+            $jAnios = array();
+            $aAnios = SeguimientosController::getInstance()->getAniosByCicloId($iCicloId);
+            if(!empty($aAnios)){
+                foreach($aAnios as $oAnio){
+                    $obj = new stdClass();
+                    $obj->iId = $oAnio->getId();
+                    $obj->sDescripcion = $oAnio->getDescripcion();
+                    array_push($jAnios, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jAnios);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    private function getAreasByAnio(){
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iAnioId =  $this->getRequest()->getPost("iAnioId");
+
+            if(empty($iAnioId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
             $jAreas = array();
-            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+            $aAreas = SeguimientosController::getInstance()->getAreasByAnioId($iAnioId);
             if(!empty($aAreas)){
                 foreach($aAreas as $oArea){
                     $obj = new stdClass();

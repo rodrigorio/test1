@@ -22,13 +22,16 @@ class AreaMySQLIntermediary extends AreaIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCicloId,  
+                        a.id as iId, a.descripcion as sDescripcion, a.anios_id as iAnioId,
+                        an.descripcion as sDescripcionAnio, an.ciclos_id as iCicloId, 
                         c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
                         n.descripcion as sDescripcionNivel
                     FROM
-                        areas a 
+                        areas a
+                    JOIN
+                    	anios an ON a.anios_id = an.id
                     JOIN 
-                    	ciclos c ON a.ciclos_id = c.id
+                    	ciclos c ON an.ciclos_id = c.id
                     JOIN
                         niveles n ON c.niveles_id = n.id ";
             
@@ -55,10 +58,16 @@ class AreaMySQLIntermediary extends AreaIntermediary
             	$oCiclo = Factory::getCicloInstance($oCiclo);
                 $oCiclo->setNivel($oNivel);
 
+            	$oAnio = new stdClass();
+            	$oAnio->iId = $oObj->iAnioId;
+            	$oAnio->sDescripcion = $oObj->sDescripcionAnio;
+            	$oAnio->oCiclo = $oCiclo;
+                $oAnio = Factory::getAnioInstance($oAnio);
+
             	$oArea = new stdClass();
             	$oArea->iId = $oObj->iId;
             	$oArea->sDescripcion = $oObj->sDescripcion;
-            	$oArea->oCiclo = $oCiclo;
+            	$oArea->oAnio = $oAnio;
             	$aAreas[] = Factory::getAreaInstance($oArea);
                 
             }
@@ -74,7 +83,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
             $db = $this->conn;
             $sSQL = " insert into areas ".
                     " set descripcion = ".$this->escStr($oArea->getDescripcion()).", ".
-                    " ciclos_id = ".$this->escInt($oArea->getCiclo()->getId())." ";
+                    " anios_id = ".$this->escInt($oArea->getAnio()->getId())." ";
 			 
             $db->execSQL($sSQL);
 
@@ -95,7 +104,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
 
             $sSQL = " update areas ".
                     " set descripcion = ".$this->escStr($oArea->getDescripcion()).", ".
-                    " ciclos_id = ".$this->escInt($oArea->getCiclo()->getId())." ".
+                    " anios_id = ".$this->escInt($oArea->getAnio()->getId())." ".
                     " where id = ".$this->escInt($oArea->getId())." ";
 
             $db->execSQL($sSQL);
@@ -108,8 +117,8 @@ class AreaMySQLIntermediary extends AreaIntermediary
 
     public function guardar($oArea)
     {
-        if(null === $oArea->getCiclo()){
-            throw new Exception("El area ".$oArea->getDescripcion()." no tiene ciclo", 0);
+        if(null === $oArea->getAnio()){
+            throw new Exception("El area ".$oArea->getDescripcion()." no tiene año", 0);
         }
         
         try{
@@ -125,12 +134,13 @@ class AreaMySQLIntermediary extends AreaIntermediary
         }
     }
 
-    public function borrar($oArea)
+    public function borrar($iAreaId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from areas where id = ".$this->escInt($oArea->getId()));
+            $db->execSQL("delete from areas where id = ".$this->escInt($iAreaId));
             $db->commit();
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -162,7 +172,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-   public function verificarExisteAreaByDescripcion($sDescripcion, $oCiclo)
+   public function verificarExisteAreaByDescripcion($sDescripcion, $oAnio)
     {
     	try{
             $db = $this->conn;
@@ -174,7 +184,7 @@ class AreaMySQLIntermediary extends AreaIntermediary
                      WHERE 
                      a.descripcion = ".$this->escStr($sDescripcion). "
                       AND 
-                     a.ciclos_id = " .$this->escInt($oCiclo->getId());
+                     a.anios_id = " .$this->escInt($oAnio->getId());
             
             $db->query($sSQL);
 

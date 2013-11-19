@@ -39,13 +39,23 @@
 </section>
 <!--EndHeaderCiclosBlock-->
 
+<!--BeginHeaderAniosBlock-->
+<article class="full-block clearfix">
+<header>
+    <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
+</header>
+<section>
+    <h3><span class="txt_imp2">A&ntilde;os</span> curriculares dentro de los ciclos utilizados en seguimientos SCC.</h3>
+</section>
+<!--EndHeaderAniosBlock-->
+
 <!--BeginHeaderAreasBlock-->
 <article class="full-block clearfix">
 <header>
     <h2>Administrar Elementos Asociados a seguimientos SCC.</h2>
 </header>
 <section>
-    <h3><span class="txt_imp2">Areas</span> curriculares dentro de los ciclos utilizados en seguimientos SCC.</h3>
+    <h3><span class="txt_imp2">&Aacute;reas</span> curriculares dentro de los a&ntilde;os utilizados en seguimientos SCC.</h3>
 </section>
 <!--EndHeaderAreasBlock-->
 
@@ -135,9 +145,9 @@
 </section>
 <!--EndListadoCiclosBlock-->
 
-<!--BeginListadoAreasBlock-->
+<!--BeginListadoAniosBlock-->
 <div class="subHeader01 mabo3">
-    <a class="button-link blue" href="{hrefCrearArea}" rel="tooltip" original-title="Crear una nueva &Aacute;rea Curricular">Crear nueva &Aacute;rea</a>
+    <a class="button-link blue" href="{hrefCrearAnio}" rel="tooltip" original-title="Crear un nuevo a&ntilde;o curricular">Crear nuevo a&ntilde;o</a>
 </div>
 <section>
     <table class="datatable">
@@ -150,11 +160,49 @@
             </tr>
         </thead>
         <tbody>
+        <!--BeginAnioBlock-->
+        <tr class="{iAnioId}">
+            <td>{sDescripcion}</td>
+            <td>{sDescripcionNivel}</td>
+            <td>{sDescripcionCiclo}</td>
+            <td class="teal_ce">
+                <a class="di_inbl" rel="tooltip" original-title="Editar A&ntilde;o" href="{hrefEditarAnio}"><span class="i bs edit ihover"></span></a>
+                <span title="Eliminar A&ntilde;o" rel="{iAnioId}" class="i bs delete ihover borrarAnio"></span>
+            </td>
+        </tr>
+        <!--EndAnioBlock-->
+        <!--BeginNoRecordsAniosBlock-->
+        <tr>
+            <td colspan="4">No hay a&ntilde;os cargados</td>
+        </tr>
+        <!--EndNoRecordsAniosBlock-->
+        </tbody>
+    </table>
+</section>
+<!--EndListadoAniosBlock-->
+
+<!--BeginListadoAreasBlock-->
+<div class="subHeader01 mabo3">
+    <a class="button-link blue" href="{hrefCrearArea}" rel="tooltip" original-title="Crear una nueva &Aacute;rea Curricular">Crear nueva &Aacute;rea</a>
+</div>
+<section>
+    <table class="datatable">
+        <thead>
+            <tr>
+            <th>Descripcion</th>
+            <th>Nivel</th>
+            <th>Ciclo</th>
+            <th>A&ntilde;o</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
         <!--BeginAreaBlock-->
         <tr class="{iAreaId}">
             <td>{sDescripcion}</td>
             <td>{sDescripcionNivel}</td>
             <td>{sDescripcionCiclo}</td>
+            <td>{sDescripcionAnio}</td>
             <td class="teal_ce">
                 <a class="di_inbl" rel="tooltip" original-title="Editar Area" href="{hrefEditarArea}"><span class="i bs edit ihover"></span></a>
                 <span title="Eliminar Area" rel="{iAreaId}" class="i bs delete ihover borrarArea"></span>
@@ -163,7 +211,7 @@
         <!--EndAreaBlock-->
         <!--BeginNoRecordsAreasBlock-->
         <tr>
-            <td colspan="4">No hay &aacute;reas cargados</td>
+            <td colspan="5">No hay &aacute;reas cargados</td>
         </tr>
         <!--EndNoRecordsAreasBlock-->
         </tbody>
@@ -182,6 +230,7 @@
                 <th>Descripcion</th>
                 <th>Nivel</th>
                 <th>Ciclo</th>
+                <th>A&ntilde;o</th>
                 <th>Area</th>
                 <th></th>
             </tr>
@@ -192,6 +241,7 @@
             <td>{sDescripcion}</td>
             <td>{sDescripcionNivel}</td>
             <td>{sDescripcionCiclo}</td>
+            <td>{sDescripcionAnio}</td>
             <td>{sDescripcionArea}</td>
             <td class="teal_ce">
                 <a class="di_inbl" rel="tooltip" original-title="Editar Eje" href="{hrefEditarEje}"><span class="i bs edit ihover"></span></a>
@@ -201,7 +251,7 @@
         <!--EndEjeBlock-->
         <!--BeginNoRecordsEjesBlock-->
         <tr>
-            <td colspan="5">No hay Ejes cargados</td>
+            <td colspan="6">No hay Ejes cargados</td>
         </tr>
         <!--EndNoRecordsEjesBlock-->
         </tbody>
@@ -220,6 +270,7 @@
             <th>Descripcion</th>
             <th>Nivel</th>
             <th>Ciclo</th>
+            <th>A&ntilde;o</th>
             <th>Area</th>
             <th>Eje Tem&aacute;tico</th>
             <th></th>
@@ -231,6 +282,7 @@
             <td>{sDescripcion}</td>
             <td>{sDescripcionNivel}</td>
             <td>{sDescripcionCiclo}</td>
+            <td>{sDescripcionAnio}</td>
             <td>{sDescripcionArea}</td>
             <td>{sDescripcionEje}</td>
             <td class="teal_ce">
@@ -241,7 +293,7 @@
         <!--EndObjetivoAprendizajeBlock-->
         <!--BeginNoRecordsObjetivoAprendizajeBlock-->
         <tr>
-            <td colspan="6">No hay Objetivos de Aprendizaje cargados</td>
+            <td colspan="7">No hay Objetivos de Aprendizaje cargados</td>
         </tr>
         <!--EndNoRecordsObjetivoAprendizajeBlock-->
         </tbody>
@@ -314,6 +366,57 @@
 </form>
 <!--EndFormCicloBlock-->
 
+<!--BeginFormAnioBlock-->
+<h1 class="teta_up">{sTituloForm}</h1>
+<form id="formAnio" name="formAnio" action="" method="post">
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+    <dt>
+        <label for="nivel">Nivel</label>
+    </dt>
+    <dd>
+        <select class="small" name="nivel" id="nivel">
+            <option value="">Elija nivel para el ciclo:</option>
+            <!--BeginOptionSelectNivel-->
+            <option value="{iValueNivel}" {sNivelSelected}>{sDescripcionNivel}</option>
+            <!--EndOptionSelectNivel-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="ciclo">Ciclo</label>
+    </dt>
+    <dd>
+        <select class="small" name="ciclo" id="ciclo">
+            <option value="">Elija ciclo para el a&ntilde;o:</option>
+            <!--BeginOptionSelectCiclo-->
+            <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
+            <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="descripcion">Descripci&oacute;n</label>
+    </dt>
+    <dd>
+        <input type="text" class="medium" name="descripcion" id="descripcion" maxlength="50" value="{sDescripcion}">
+    </dd>
+
+    <div style="display:none"  id='msg_form_anio' class="notification">
+        <p class="msg"></p>
+    </div>
+
+    <!--BeginSubmitCrearAnioBlock-->
+    <button id="crearAnio" name="crearAnio" type="submit">Crear A&ntilde;o</button>
+    <!--EndSubmitCrearAnioBlock-->
+
+    <!--BeginSubmitModificarAnioBlock-->
+    <button id="modificarAnio" name="modificarAnio" type="submit">Modificar A&ntilde;o</button>
+    <input type="hidden" name="iAnioId" id="iAnioId" value="{iAnioId}">
+    <!--EndSubmitModificarAnioBlock-->
+</form>
+<!--EndFormAnioBlock-->
+
 <!--BeginFormAreaBlock-->
 <h1 class="teta_up">{sTituloForm}</h1>
 <form id="formArea" name="formArea" action="" method="post">
@@ -336,10 +439,22 @@
     </dt>
     <dd>
         <select class="small" name="ciclo" id="ciclo">
-            <option value="">Elija ciclo para el &aacute;rea:</option>
+            <option value="">Elija ciclo para el a&ntilde;o:</option>
             <!--BeginOptionSelectCiclo-->
             <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
             <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="anio">A&ntilde;o</label>
+    </dt>
+    <dd>
+        <select class="small" name="anio" id="anio">
+            <option value="">Elija a&ntilde;o para el &aacute;rea:</option>
+            <!--BeginOptionSelectAnio-->
+            <option value="{iValueAnio}" {sAnioSelected}>{sDescripcionAnio}</option>
+            <!--EndOptionSelectAnio-->
         </select>
     </dd>
     
@@ -387,10 +502,22 @@
     </dt>
     <dd>
         <select class="small" name="ciclo" id="ciclo">
-            <option value="">Elija ciclo para el &aacute;rea:</option>
+            <option value="">Elija ciclo para el a&ntilde;o:</option>
             <!--BeginOptionSelectCiclo-->
             <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
             <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="anio">A&ntilde;o</label>
+    </dt>
+    <dd>
+        <select class="small" name="anio" id="anio">
+            <option value="">Elija a&ntilde;o para el &aacute;rea:</option>
+            <!--BeginOptionSelectAnio-->
+            <option value="{iValueAnio}" {sAnioSelected}>{sDescripcionAnio}</option>
+            <!--EndOptionSelectAnio-->
         </select>
     </dd>
 
@@ -450,10 +577,22 @@
     </dt>
     <dd>
         <select class="small" name="ciclo" id="ciclo">
-            <option value="">Elija ciclo para el &aacute;rea:</option>
+            <option value="">Elija ciclo para el a&ntilde;o:</option>
             <!--BeginOptionSelectCiclo-->
             <option value="{iValueCiclo}" {sCicloSelected}>{sDescripcionCiclo}</option>
             <!--EndOptionSelectCiclo-->
+        </select>
+    </dd>
+
+    <dt>
+        <label for="anio">A&ntilde;o</label>
+    </dt>
+    <dd>
+        <select class="small" name="anio" id="anio">
+            <option value="">Elija a&ntilde;o para el &aacute;rea:</option>
+            <!--BeginOptionSelectAnio-->
+            <option value="{iValueAnio}" {sAnioSelected}>{sDescripcionAnio}</option>
+            <!--EndOptionSelectAnio-->
         </select>
     </dd>
 

@@ -100,11 +100,11 @@ class NivelMySQLIntermediary extends NivelIntermediary
         }
     }
 
-    public function borrar($oNivel)
+    public function borrar($iNivelId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from niveles where id = ".$this->escInt($oNivel->getId()));
+            $db->execSQL("delete from niveles where id = ".$this->escInt($iNivelId));
             $db->commit();
             return true;
         }catch(Exception $e){

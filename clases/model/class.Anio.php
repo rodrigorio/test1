@@ -1,10 +1,10 @@
 <?php
 
-class Area
+class Anio
 {
     private $iId;
     private $sDescripcion;
-    private $oAnio;
+    private $oCiclo;
 	
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -35,10 +35,10 @@ class Area
     }
 
     /**
-     * @param Anio $oAnio
+     * @param Ciclo $oCiclo
      */
-    public function setAnio($oAnio){
-        $this->oAnio = $oAnio;
+    public function setCiclo($oCiclo){
+        $this->oCiclo = $oCiclo;
     }
 
     /**
@@ -56,9 +56,9 @@ class Area
     }
 
     /**
-     * @return Anio
+     * @return Ciclo
      */
-    public function getAnio(){
-        return $this->oAnio;
+    public function getCiclo(){
+        return $this->oCiclo;
     }
 }

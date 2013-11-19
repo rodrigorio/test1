@@ -1,10 +1,10 @@
 <?php
 
-class CicloMySQLIntermediary extends CicloIntermediary
+class AnioMySQLIntermediary extends AnioIntermediary
 {
     private static $instance = null;
 
-    protected function __construct( $conn) {
+    protected function __construct( $conn){
         parent::__construct($conn);
     }
 
@@ -14,81 +14,89 @@ class CicloMySQLIntermediary extends CicloIntermediary
         }
         return self::$instance;
     }
-
+	
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
-            $db = clone($this->conn);
+            $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        c.id as iId, c.descripcion as sDescripcion, c.niveles_id as iNivelesId, 
+                        a.id as iId, a.descripcion as sDescripcion, a.ciclos_id as iCicloId,  
+                        c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
                         n.descripcion as sDescripcionNivel
                     FROM
-                       ciclos c 
-                    JOIN niveles n ON c.niveles_id = n.id ";
-
+                        anios a
+                    JOIN 
+                    	ciclos c ON a.ciclos_id = c.id
+                    JOIN
+                        niveles n ON c.niveles_id = n.id ";
+            
             if(!empty($filtro)){
-                $sSQL .=" WHERE".$this->crearCondicionSimple($filtro);
+                $sSQL .= " WHERE".$this->crearCondicionSimple($filtro);
             }
 
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-
+            
             if(empty($iRecordsTotal)){ return null; }
-
-            $aCiclos = array();
+            
+            $aAnios = array();
             while($oObj = $db->oNextRecord()){
-                
-            	$oCiclo	= new stdClass();
-            	$oCiclo->iId = $oObj->iId;
-            	$oCiclo->sDescripcion = $oObj->sDescripcion;
-                
-                #WARNING en un futuro puede producir ciclos infinitos.
-                $oNivel = new stdClass();
-            	$oNivel->iId = $oObj->iNivelesId;
+
+            	$oNivel = new stdClass();
+            	$oNivel->iId = $oObj->iNivelId;
             	$oNivel->sDescripcion = $oObj->sDescripcionNivel;
-            	$oCiclo->oNivel = Factory::getNivelInstance($oNivel);
+            	$oNivel = Factory::getNivelInstance($oNivel);
+
+                $oCiclo = new stdClass();
+                $oCiclo->iId = $oObj->iCicloId;
+                $oCiclo->sDescripcion = $oObj->sDescripcionCiclo;
+            	$oCiclo = Factory::getCicloInstance($oCiclo);
+                $oCiclo->setNivel($oNivel);
+
+            	$oAnio = new stdClass();
+            	$oAnio->iId = $oObj->iId;
+            	$oAnio->sDescripcion = $oObj->sDescripcion;
+            	$oAnio->oCiclo = $oCiclo;
+            	$aAnios[] = Factory::getAnioInstance($oAnio);
                 
-            	$aCiclos[] = Factory::getCicloInstance($oCiclo);
             }
-
-            return $aCiclos;
-
+            return $aAnios;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-    public function insertar($oCiclo)
+    public  function insertar($oAnio)
     {
-        try{            
+        try{
             $db = $this->conn;
-            $sSQL = " insert into ciclos ".
-                    " set descripcion = ".$this->escStr($oCiclo->getDescripcion()).", ".
-                    " niveles_id = ".$this->escInt($oCiclo->getNivel()->getId())." ";
+            $sSQL = " insert into anios ".
+                    " set descripcion = ".$this->escStr($oAnio->getDescripcion()).", ".
+                    " ciclos_id = ".$this->escInt($oAnio->getCiclo()->getId())." ";
 			 
             $db->execSQL($sSQL);
 
             $iLastId = $db->insert_id();
-            $oCiclo->setId($iLastId);
-
+            $oAnio->setId($iLastId);
+            
             $db->commit();
-             
+
         }catch(Exception $e){
-            throw new Exception($e->getMessage(), 0);
+                throw new Exception($e->getMessage(), 0);
         }
     }
     
-    public function actualizar($oCiclo)
+    public function actualizar($oAnio)
     {
         try{
             $db = $this->conn;
-        
-            $sSQL = " update ciclos ".
-                    " set descripcion = ".$this->escStr($oCiclo->getDescripcion()).", ".
-                    " niveles_id = ".$this->escInt($oCiclo->getNivel()->getId())." ".
-                    " where id = ".$this->escInt($oCiclo->getId())." ";
+
+            $sSQL = " update anios ".
+                    " set descripcion = ".$this->escStr($oAnio->getDescripcion()).", ".
+                    " ciclos_id = ".$this->escInt($oAnio->getCiclo()->getId())." ".
+                    " where id = ".$this->escInt($oAnio->getId())." ";
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -98,28 +106,30 @@ class CicloMySQLIntermediary extends CicloIntermediary
         }
     }
 
-    public function guardar($oCiclo)
+    public function guardar($oAnio)
     {
-        if(null === $oCiclo->getNivel()){
-            throw new Exception("El ciclo ".$oCiclo->getDescripcion()." no tiene nivel", 0);
+        if(null === $oAnio->getCiclo()){
+            throw new Exception("El año ".$oAnio->getDescripcion()." no tiene ciclo", 0);
         }
         
         try{
-            if($oCiclo->getId() !== null){
-            	return $this->actualizar($oCiclo);
+            if($oAnio->getId() !== null){
+                return $this->actualizar($oAnio);
             }else{
-                return $this->insertar($oCiclo);
+                return $this->insertar($oAnio);
             }
+
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-    public function borrar($iCicloId)
+    public function borrar($iAnioId)
     {
         try{
             $db = $this->conn;
-            $db->execSQL("delete from ciclos where id = ".$this->escInt($iCicloId));
+            $db->execSQL("delete from anios where id = ".$this->escInt($iAnioId));
             $db->commit();
             return true;
         }catch(Exception $e){
@@ -128,7 +138,7 @@ class CicloMySQLIntermediary extends CicloIntermediary
     }
 	
     public function actualizarCampoArray($objects, $cambios){}
- 	
+
     public function existe($filtro)
     {
     	try{
@@ -137,9 +147,9 @@ class CicloMySQLIntermediary extends CicloIntermediary
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
-                     FROM
-                        ciclos c 
-                     WHERE ".$this->crearCondicionSimple($filtro);
+                    FROM
+                        anios a
+                    WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
 
@@ -148,13 +158,12 @@ class CicloMySQLIntermediary extends CicloIntermediary
             if(empty($foundRows)){ 
             	return false; 
             }
-
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-   public function existeCicloByDescripcion($sDescripcion, $oNivel)
+   public function verificarExisteAnioByDescripcion($sDescripcion, $oCiclo)
     {
     	try{
             $db = $this->conn;
@@ -162,11 +171,11 @@ class CicloMySQLIntermediary extends CicloIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                      FROM
-                        ciclos c 
+                        anios a
                      WHERE 
-                     c.descripcion = ".$this->escStr($sDescripcion). "
+                     a.descripcion = ".$this->escStr($sDescripcion). "
                       AND 
-                     c.niveles_id = " .$this->escInt($oNivel->getId());
+                     a.ciclos_id = " .$this->escInt($oCiclo->getId());
             
             $db->query($sSQL);
 

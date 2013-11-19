@@ -108,6 +108,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         //seguimientos SCC
         $template->set_var("sHrefNiveles", $request->getBaseTagUrl()."admin/listar-niveles");
         $template->set_var("sHrefCiclos", $request->getBaseTagUrl()."admin/listar-ciclos");
+        $template->set_var("sHrefAnios", $request->getBaseTagUrl()."admin/listar-anios");
         $template->set_var("sHrefAreas", $request->getBaseTagUrl()."admin/listar-areas");
         $template->set_var("sHrefEjes", $request->getBaseTagUrl()."admin/listar-ejes");
         $template->set_var("sHrefObjetivosAprendizaje", $request->getBaseTagUrl()."admin/listar-objetivos-aprendizaje");

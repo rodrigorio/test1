@@ -22,9 +22,9 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT
-                        e.id as iId, e.descripcion as sDescripcion, 
-                        e.areas_id as iAreaId, 
-                        a.descripcion as sDescripcionArea, a.ciclos_id as iCicloId,
+                        e.id as iId, e.descripcion as sDescripcion, e.areas_id as iAreaId,
+                        a.descripcion as sDescripcionArea, a.anios_id as iAnioId,
+                        an.descripcion as sDescripcionAnio, an.ciclos_id as iCicloId,
                         c.descripcion as sDescripcionCiclo, c.niveles_id as iNivelId,
                         n.descripcion as sDescripcionNivel
                     FROM
@@ -32,7 +32,9 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
                     JOIN 
                     	areas a ON e.areas_id = a.id
                     JOIN
-                        ciclos c ON a.ciclos_id = c.id
+                    	anios an ON a.anios_id = an.id
+                    JOIN
+                    	ciclos c ON an.ciclos_id = c.id
                     JOIN
                         niveles n ON c.niveles_id = n.id";
             
@@ -57,6 +59,11 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             	$oArea->sDescripcion = $oObj->sDescripcionArea;
                 $oArea = Factory::getAreaInstance($oArea);
 
+            	$oAnio = new stdClass();
+            	$oAnio->iId = $oObj->iAnioId;
+            	$oAnio->sDescripcion = $oObj->sDescripcionAnio;
+                $oAnio = Factory::getAnioInstance($oAnio);
+
             	$oCiclo	= new stdClass();
             	$oCiclo->iId = $oObj->iCicloId;
             	$oCiclo->sDescripcion = $oObj->sDescripcionCiclo;
@@ -68,7 +75,8 @@ class EjeTematicoMySQLIntermediary extends EjeTematicoIntermediary
             	$oNivel = Factory::getNivelInstance($oNivel);
                 
             	$oCiclo->setNivel($oNivel);
-                $oArea->setCiclo($oCiclo);
+                $oAnio->setCiclo($oCiclo);
+                $oArea->setAnio($oAnio);
                 $oEjeTematico->oArea = $oArea;
 
             	$aEjesTematicos[] = Factory::getEjeTematicoInstance($oEjeTematico);

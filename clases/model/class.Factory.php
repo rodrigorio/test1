@@ -254,6 +254,14 @@ class Factory
         $oCiclo = new Ciclo($obj);
         return $oCiclo;
     }
+   /**
+     * @param stdClass $obj
+     * @return Anio|null
+     */
+    public static function &getAnioInstance(stdClass $obj){
+        $oAnio = new Anio($obj);
+        return $oAnio;
+    }
     /**
      * @param stdClass $obj
      * @return EjeTematico|null
