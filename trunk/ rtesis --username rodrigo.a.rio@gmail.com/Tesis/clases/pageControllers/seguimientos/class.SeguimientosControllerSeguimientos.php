@@ -2002,7 +2002,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
 
                     //combo niveles
-                    $iNivelId = $oEjeTematico->getArea()->getCiclo()->getNivel()->getId();
+                    $iNivelId = $oEjeTematico->getArea()->getAnio()->getCiclo()->getNivel()->getId();
                     $iRecordsNiveles = 0;
                     $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
                     foreach ($aNiveles as $oNivel){                        
@@ -2016,7 +2016,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }
 
                     //combo ciclos                    
-                    $iCicloId = $oEjeTematico->getArea()->getCiclo()->getId();
+                    $iCicloId = $oEjeTematico->getArea()->getAnio()->getCiclo()->getId();
                     $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
                     foreach ($aCiclos as $oCiclo){
                         if($iCicloId == $oCiclo->getId()){
@@ -2028,9 +2028,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         $this->getTemplate()->set_var("sSelectedCiclo", "");
                     }
 
+                    //combo años
+                    $iAnioId = $oEjeTematico->getArea()->getAnio()->getId();
+                    $aAnios = SeguimientosController::getInstance()->getAniosByCicloId($iCicloId);
+                    foreach ($aAnios as $oAnio){
+                        if($iAnioId == $oAnio->getId()){
+                            $this->getTemplate()->set_var("sSelectedAnio", "selected='selected'");
+                        }
+                        $this->getTemplate()->set_var("iAnioId", $oAnio->getId());
+                        $this->getTemplate()->set_var("sAnioDescripcion", $oAnio->getDescripcion());
+                        $this->getTemplate()->parse("AniosListBlock", true);
+                        $this->getTemplate()->set_var("sSelectedAnio", "");
+                    }
+
                     //combo areas
                     $iAreaId = $oEjeTematico->getArea()->getId();
-                    $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+                    $aAreas = SeguimientosController::getInstance()->getAreasByAnioId($iAnioId);
                     foreach ($aAreas as $oArea){
                         if($iAreaId == $oArea->getId()){
                             $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
@@ -2344,7 +2357,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }
     }
-    
+
+    /*
+    hay que borrar las rutas que ya no se van a usar y agregar las 2 nuevas.
+    fijarse popups y todo lo relacionado a objetivo de aprendizaje, entradas, admin de obj etc.
+
+     
     public function listarAreasPorCiclos()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
@@ -2373,6 +2391,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }
     }
+    */
  	 
     public function listarEjesPorArea()
     {
