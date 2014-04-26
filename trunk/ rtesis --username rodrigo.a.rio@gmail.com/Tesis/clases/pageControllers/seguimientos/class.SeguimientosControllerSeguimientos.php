@@ -2329,7 +2329,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
     
-    public function listarCiclosPorNiveles()
+    public function listarCiclosPorNivel()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
         try{
@@ -2357,13 +2357,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }
     }
-
-    /*
-    hay que borrar las rutas que ya no se van a usar y agregar las 2 nuevas.
-    fijarse popups y todo lo relacionado a objetivo de aprendizaje, entradas, admin de obj etc.
-
-     
-    public function listarAreasPorCiclos()
+       
+    public function listarAniosPorCiclo()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
         try{
@@ -2391,7 +2386,35 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }
     }
-    */
+
+    public function listarAreasPorAnio()
+    {
+        if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $iCicloId =  $this->getRequest()->getPost("iCicloId");
+
+            if(empty($iCicloId)){
+                throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+            }
+
+            $jAreas = array();
+            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+            if(!empty($aAreas)){
+                foreach($aAreas as $oArea){
+                    $obj = new stdClass();
+                    $obj->iId = $oArea->getId();
+                    $obj->sDescripcion = $oArea->getDescripcion();
+                    array_push($jAreas, $obj);
+                }
+            }
+
+            $this->getJsonHelper()->sendJson($jAreas);
+        }catch(Exception $e){
+            throw $e;
+        }
+    } 
  	 
     public function listarEjesPorArea()
     {

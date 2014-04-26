@@ -87,6 +87,7 @@
                 <tr class="encabezado">
                     <td class="small">Nivel</td>
                     <td class="small">Ciclo</td>
+                    <td class="small">A&ntilde;o</td>
                     <td class="small">Area</td>
                     <td class="small">Eje tem&aacute;tico</td>
                     <td class="medium">Estado inicial</td>
@@ -115,6 +116,18 @@
                                     <!--BeginCiclosListBlock-->
                                     <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
                                     <!--EndCiclosListBlock-->
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fwrap">
+                            <div class="inner_fwrap">
+                                <select id="anio_{estadoInicialHtmlId}" class="inputSelectLihe {disabled}" name="estadoInicial[{estadoInicialHtmlId}][anio]" title="Seleccione A&ntilde;o">
+                                    <option value="">A&ntilde;o:</option>
+                                    <!--BeginAniosListBlock-->
+                                    <option value="{iAnioId}" {sSelectedAnio}>{sAnioDescripcion}</option>
+                                    <!--EndAniosListBlock-->
                                 </select>
                             </div>
                         </div>
@@ -158,7 +171,7 @@
 
                 <!--BeginNoRecordsEstadoInicialBlock-->
                 <tr id="noRecordsEstadoInicial">
-                    <td colspan="6">No hay estado inicial cargado para ning&uacute;n eje tem&aacute;tico</td>
+                    <td colspan="7">No hay estado inicial cargado para ning&uacute;n eje tem&aacute;tico</td>
                 </tr>
                 <!--EndNoRecordsEstadoInicialBlock-->
             </table>

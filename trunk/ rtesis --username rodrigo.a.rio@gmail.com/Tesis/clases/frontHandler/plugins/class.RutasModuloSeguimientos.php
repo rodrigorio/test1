@@ -228,27 +228,34 @@ class RutasModuloSeguimientos
         $router->addRoute('seguimientosProcesarPronostico', $route);
 
         //objetivo aprendizaje
-        $route = new RegexRoute('seguimientos/listar-ciclos-por-niveles',
+        $route = new RegexRoute('seguimientos/listar-ciclos-por-nivel',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
-                                        'action'     => 'listarCiclosPorNiveles'
+                                        'action'     => 'listarCiclosPorNivel'
                                 ));
         $router->addRoute('seguimientosListarCiclosPorNivel', $route);  
-        $route = new RegexRoute('seguimientos/listar-areas-por-ciclos',
+        $route = new RegexRoute('seguimientos/listar-anios-por-ciclo',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
-                                        'action'     => 'listarAreasPorCiclos'
+                                        'action'     => 'listarAniosPorCiclo'
                                 ));
-        $router->addRoute('seguimientosListarAreasPorCiclo', $route);  
+        $router->addRoute('seguimientosListarAniosPorCiclo', $route);
+        $route = new RegexRoute('seguimientos/listar-areas-por-anio',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'seguimientos',
+                                        'action'     => 'listarAreasPorAnio'
+                                ));
+        $router->addRoute('seguimientosListarAreasPorAnio', $route);
         $route = new RegexRoute('seguimientos/listar-ejes-por-area',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'seguimientos',
                                         'action'     => 'listarEjesPorArea'
                                 ));
-        $router->addRoute('seguimientosListarEjePorArea', $route);
+        $router->addRoute('seguimientosListarEjesPorArea', $route);
         $route = new RegexRoute('seguimientos/listar-objetivos-aprendizaje-por-eje',
                                 array(
                                         'module' => 'seguimientos',
