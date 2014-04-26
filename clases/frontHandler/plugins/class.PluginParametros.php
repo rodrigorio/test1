@@ -35,7 +35,7 @@
  * 2) Los paramatros de entidad siempre son dinamicos, los parametros estaticos unicamente son los de controlador y de sistema.
  *
  *
-    'DATABASE_HOST' => '181.168.227.211',
+    'DATABASE_HOST' => '181.168.228.197',
     'DATABASE_DRIVER' => 'IMYSQL',
     'DATABASE_USER' => 'usuariodetest',
     'DATABASE_PASSWORD' => 'usuariodetest1234',
@@ -110,10 +110,10 @@ class PluginParametros extends PluginAbstract
     {
         $sistema = array(
                        
-                        'DATABASE_HOST' => 'localhost',
+                        'DATABASE_HOST' => '181.168.228.197',
                         'DATABASE_DRIVER' => 'IMYSQL',
-                        'DATABASE_USER' => 'root',
-                        'DATABASE_PASSWORD' => '',
+                        'DATABASE_USER' => 'usuariodetest',
+                        'DATABASE_PASSWORD' => 'usuariodetest1234',
                         'DATABASE_NAME' => 'tesis',
                         'DATABASE_PORT' => '3306',
                         'DATABASE_AUTOCOMMIT' => '0',

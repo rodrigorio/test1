@@ -146,7 +146,11 @@ function bindEventsFormDiagnosticoSCC(){
             });
 
             $("#ciclo_"+estadoInicialHtmlId).change(function(){
-                listaAreasByCiclo($("#ciclo_"+estadoInicialHtmlId+" option:selected").val(), estadoInicialHtmlId);
+                listaAniosByCiclo($("#ciclo_"+estadoInicialHtmlId+" option:selected").val(), estadoInicialHtmlId);
+            });
+
+            $("#anio_"+estadoInicialHtmlId).change(function(){
+                listaAreasByAnio($("#anio_"+estadoInicialHtmlId+" option:selected").val(), estadoInicialHtmlId);
             });
 
             $("#area_"+estadoInicialHtmlId).change(function(){
@@ -166,6 +170,9 @@ function listaCiclosByNivel(idNivel, estadoInicialHtmlId){
         $('#ciclo_'+estadoInicialHtmlId).removeClass("disabled");
     }
 
+    if($('#anio_'+estadoInicialHtmlId).length){
+        $('#anio_'+estadoInicialHtmlId).addClass("disabled");
+    }
     if($('#area_'+estadoInicialHtmlId).length){
         $('#area_'+estadoInicialHtmlId).addClass("disabled");
     }
@@ -208,7 +215,7 @@ function listaCiclosByNivel(idNivel, estadoInicialHtmlId){
     });
  }
 
-function listaAreasByCiclo(idCiclo, estadoInicialHtmlId){
+function listaAniosByCiclo(idCiclo, estadoInicialHtmlId){
 
     if(idCiclo == ''){
         $('#area_'+estadoInicialHtmlId).addClass("disabled");
@@ -243,6 +250,37 @@ function listaAreasByCiclo(idCiclo, estadoInicialHtmlId){
                 }
             }else{
                 $('#area_'+estadoInicialHtmlId).append(new Option('No hay áreas cargadas', '',true));
+            }
+            setWaitingStatus(estadoInicialHtmlId, false);
+        }
+    });
+}
+
+function listaAreasByAnio(idArea, estadoInicialHtmlId){
+    if(idArea == ''){
+        $('#ejeTematico_'+estadoInicialHtmlId).addClass("disabled");
+    }else{
+        $('#ejeTematico_'+estadoInicialHtmlId).removeClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-ejes-por-area",
+        data:{iAreaId:idArea},
+        beforeSend: function(){
+            setWaitingStatus(estadoInicialHtmlId, true);
+        },
+        success: function(lista){
+
+            $('#ejeTematico_'+estadoInicialHtmlId).html("");
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#ejeTematico_'+estadoInicialHtmlId).append(new Option('Eje:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#ejeTematico_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+            }else{
+                $('#ejeTematico_'+estadoInicialHtmlId).append(new Option('No hay ejes cargados', '',true));
             }
             setWaitingStatus(estadoInicialHtmlId, false);
         }
