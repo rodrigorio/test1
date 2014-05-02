@@ -208,6 +208,12 @@
                     <option value="{iCicloId}" {sSelectedCiclo}>{sCicloDescripcion}</option>
                     <!--EndCiclosListBlock-->
                 </select>
+                <select class="mabo2 miwi2 {disabled}" name="anio" id="anio" title="A&ntilde;o">
+                    <option value="">A&ntilde;o:</option>
+                    <!--BeginAnioListBlock-->
+                    <option value="{iAnioId}" {sSelectedAnio}>{sAnioDescripcion}</option>
+                    <!--EndAnioListBlock-->
+                </select>
                 <select class="mabo2 miwi2 {disabled}" name="area" id="area" title="&Aacute;rea">
                     <option value="">&Aacute;rea:</option>
                     <!--BeginAreaListBlock-->
@@ -231,6 +237,7 @@
             <!--BeginReadOnlyObjetivoAprendizaje-->
                 <input value="{sNivelDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="nivel" id="nivel" title="Nivel">
                 <input value="{sCicloDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="ciclo" id="ciclo" title="Ciclo">
+                <input value="{sAnioDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="anio" id="area" title="A&ntilde;o">
                 <input value="{sAreaDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="area" id="area" title="&Aacute;rea">
                 <input value="{sEjeDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="eje" id="eje" title="Eje Tem&aacute;tico">
                 <div class="cl_le"></div>
@@ -375,7 +382,7 @@
 
         <!--BeginEjeTematicoBlock-->
         <div class="mabo2">
-            <span class="fowe_bo">EJE: {sNivel} &nbsp;&nbsp;>&nbsp;&nbsp; {sCiclo} &nbsp;&nbsp;>&nbsp;&nbsp; {sArea} &nbsp;&nbsp;>&nbsp;&nbsp; {sDescripcionEje}</span>
+            <span class="fowe_bo">EJE: {sNivel} &nbsp;&nbsp;>&nbsp;&nbsp; {sCiclo} &nbsp;&nbsp;>&nbsp;&nbsp; {sAnio} &nbsp;&nbsp;>&nbsp;&nbsp; {sArea} &nbsp;&nbsp;>&nbsp;&nbsp; {sDescripcionEje}</span>
         </div>
         <!--EndEjeTematicoBlock-->
 

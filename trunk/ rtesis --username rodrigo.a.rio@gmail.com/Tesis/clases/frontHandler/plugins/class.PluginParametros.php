@@ -110,7 +110,7 @@ class PluginParametros extends PluginAbstract
     {
         $sistema = array(
                        
-                        'DATABASE_HOST' => '181.168.228.197',
+                        'DATABASE_HOST' => '24.232.188.102',
                         'DATABASE_DRIVER' => 'IMYSQL',
                         'DATABASE_USER' => 'usuariodetest',
                         'DATABASE_PASSWORD' => 'usuariodetest1234',

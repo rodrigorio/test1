@@ -751,22 +751,6 @@ class SeguimientosController
             throw $e;
         }
     }
-    
-    /**
-     * Obtener areas por id de año
-     *
-     */
-    public function getAreasByAnioId($iAnioId)
-    {
-    	try{
-            $filtro = array('an.id' => $iAnioId);
-            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
-            $iRecordsTotal = 0;
-            return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
 
     /**
      * Obtener años por id de ciclo
@@ -779,6 +763,22 @@ class SeguimientosController
             $oAnioIntermediary = PersistenceFactory::getAnioIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oAnioIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+    
+    /**
+     * Obtener areas por id de año
+     *
+     */
+    public function getAreasByAnioId($iAnioId)
+    {
+    	try{
+            $filtro = array('an.id' => $iAnioId);
+            $oAreaIntermediary = PersistenceFactory::getAreaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oAreaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
