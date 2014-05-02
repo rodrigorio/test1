@@ -179,7 +179,10 @@ function bindEventsFormObjetivoAprendizaje(){
         listaCiclosByNivel($("#nivel option:selected").val());
     });
     $("#ciclo").change(function(){
-        listaAreasByCiclo($("#ciclo option:selected").val());
+        listaAniosByCiclo($("#ciclo option:selected").val());
+    });
+    $("#anio").change(function(){
+        listaAreasByAnio($("#anio option:selected").val());
     });
     $("#area").change(function(){
         listaEjesTematicosByArea($("#area option:selected").val());
@@ -226,9 +229,11 @@ function resetObjetivosAprendizaje(){
 
 //combos para el formulario de objetivo de aprendizaje
 function listaCiclosByNivel(idNivel){
+    resetSelect($('#anio'), 'Año:');
     resetSelect($('#area'), 'Área:');
     resetSelect($('#eje'), 'Eje:');
     resetObjetivosAprendizaje();
+
     //si el valor elegido es '' entonces marco como disabled
     if(idNivel == ''){
         resetSelect($('#ciclo'), 'Ciclo:');
@@ -239,7 +244,7 @@ function listaCiclosByNivel(idNivel){
 
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-ciclos-por-niveles",
+        url: "seguimientos/listar-ciclos-por-nivel",
         data:{iNivelId:idNivel},
         beforeSend:function(){
             setWaitingStatus("objetivoAprendizajeCont", true);
@@ -258,12 +263,45 @@ function listaCiclosByNivel(idNivel){
             setWaitingStatus("objetivoAprendizajeCont", false);
         }
     });
- }
+}
 
-function listaAreasByCiclo(idCiclo){
+function listaAniosByCiclo(idCiclo){
+    resetSelect($('#area'), 'Área:');
     resetSelect($('#eje'), 'Eje:');
     resetObjetivosAprendizaje();
     if(idCiclo == ''){
+        resetSelect($('#anio'), 'Año:');
+        return;
+    }else{
+        $('#anio').removeClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-anios-por-ciclo",
+        data:{iCicloId:idCiclo},
+        beforeSend: function(){
+            setWaitingStatus("objetivoAprendizajeCont", true);
+        },
+        success: function(lista){
+            $('#anio').html("");
+            if(lista.length != undefined && lista.length > 0){
+                $('#anio').append(new Option('Año:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#anio').append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+            }else{
+                $('#anio').append(new Option('No hay años cargados', '',true));
+            }
+            setWaitingStatus("objetivoAprendizajeCont", false);
+        }
+    });
+}
+
+function listaAreasByAnio(idAnio){
+    resetSelect($('#eje'), 'Eje:');
+    resetObjetivosAprendizaje();
+    if(idAnio == ''){
         resetSelect($('#area'), 'Área:');
         return;
     }else{
@@ -272,8 +310,8 @@ function listaAreasByCiclo(idCiclo){
     
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-areas-por-ciclos",
-        data:{iCicloId:idCiclo},
+        url: "seguimientos/listar-areas-por-anio",
+        data:{idAnio:idAnio},
         beforeSend: function(){
             setWaitingStatus("objetivoAprendizajeCont", true);
         },

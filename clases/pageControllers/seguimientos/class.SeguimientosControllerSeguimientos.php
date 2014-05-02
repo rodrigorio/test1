@@ -2259,7 +2259,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
 
                 //combo niveles
-                $iNivelId = $oEjeTematico->getArea()->getCiclo()->getNivel()->getId();
+                $iNivelId = $oEjeTematico->getArea()->getAnio()->getCiclo()->getNivel()->getId();
                 $iRecordsNiveles = 0;
                 $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
                 foreach ($aNiveles as $oNivel){
@@ -2273,7 +2273,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
 
                 //combo ciclos
-                $iCicloId = $oEjeTematico->getArea()->getCiclo()->getId();
+                $iCicloId = $oEjeTematico->getArea()->getAnio()->getCiclo()->getId();
                 $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
                 foreach ($aCiclos as $oCiclo){
                     if($iCicloId == $oCiclo->getId()){
@@ -2285,9 +2285,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sSelectedCiclo", "");
                 }
 
+                //combo anios
+                $iAnioId = $oEjeTematico->getArea()->getAnio()->getId();
+                $aAnios = SeguimientosController::getInstance()->getAniosByCicloId($iCicloId);
+                foreach($aAnios as $oAnio){
+                    if($iAnioId == $oAnio->getId()){
+                        $this->getTemplate()->set_var("sSelectedAnio", "selected='selected'");
+                    }
+                    $this->getTemplate()->set_var("iAnioId", $oAnio->getId());
+                    $this->getTemplate()->set_var("sAnioDescripcion", $oAnio->getDescripcion());
+                    $this->getTemplate()->parse("AniosListBlock", true);
+                    $this->getTemplate()->set_var("sSelectedAnio", "");
+                }
+
                 //combo areas
                 $iAreaId = $oEjeTematico->getArea()->getId();
-                $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+                $aAreas = SeguimientosController::getInstance()->getAreasByAnioId($iAnioId);
                 foreach ($aAreas as $oArea){
                     if($iAreaId == $oArea->getId()){
                         $this->getTemplate()->set_var("sSelectedArea", "selected='selected'");
@@ -2313,7 +2326,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                 $this->getTemplate()->parse("EstadoInicialBlock", true);
 
-                $aSelects = array("NivelesListBlock", "CiclosListBlock", "AreaListBlock", "EjeListBlock");
+                $aSelects = array("NivelesListBlock", "CiclosListBlock", "AniosListBlock", "AreaListBlock", "EjeListBlock");
                 $this->getTemplate()->delete_parsed_blocks($aSelects);
             }
             
@@ -2370,18 +2383,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            $jAreas = array();
-            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
-            if(!empty($aAreas)){
-                foreach($aAreas as $oArea){
+            $jAnios = array();
+            $aAnios = SeguimientosController::getInstance()->getAniosByCicloId($iCicloId);
+            if(!empty($aAnios)){
+                foreach($aAnios as $oAnio){
                     $obj = new stdClass();
-                    $obj->iId = $oArea->getId();
-                    $obj->sDescripcion = $oArea->getDescripcion();
-                    array_push($jAreas, $obj);
+                    $obj->iId = $oAnio->getId();
+                    $obj->sDescripcion = $oAnio->getDescripcion();
+                    array_push($jAnios, $obj);
                 }
             }
 
-            $this->getJsonHelper()->sendJson($jAreas);
+            $this->getJsonHelper()->sendJson($jAnios);
         }catch(Exception $e){
             throw $e;
         }
@@ -2393,14 +2406,14 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $iCicloId =  $this->getRequest()->getPost("iCicloId");
+            $iAnioId =  $this->getRequest()->getPost("idAnio");
 
-            if(empty($iCicloId)){
+            if(empty($iAnioId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
             $jAreas = array();
-            $aAreas = SeguimientosController::getInstance()->getAreasByCicloId($iCicloId);
+            $aAreas = SeguimientosController::getInstance()->getAreasByAnioId($iAnioId);
             if(!empty($aAreas)){
                 foreach($aAreas as $oArea){
                     $obj = new stdClass();
@@ -3172,13 +3185,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 //lleno los selects con los valores actuales.
                 $oEjeTematico = $oObjetivo->getEje();
 
-                $sNivelDescripcion = $oEjeTematico->getArea()->getCiclo()->getNivel()->getDescripcion();
-                $sCicloDescripcion = $oEjeTematico->getArea()->getCiclo()->getDescripcion();
+                $sNivelDescripcion = $oEjeTematico->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion();
+                $sCicloDescripcion = $oEjeTematico->getArea()->getAnio()->getCiclo()->getDescripcion();
+                $sAnioDescripcion = $oEjeTematico->getArea()->getAnio()->getDescripcion();
                 $sAreaDescripcion = $oEjeTematico->getArea()->getDescripcion();
                 $sEjeDescripcion = $oEjeTematico->getDescripcion();
                 $sObjetivoDescripcion = $oObjetivo->getDescripcion();
                 $this->getTemplate()->set_var("sNivelDescripcion", $sNivelDescripcion);
                 $this->getTemplate()->set_var("sCicloDescripcion", $sCicloDescripcion);
+                $this->getTemplate()->set_var("sAnioDescripcion", $sAnioDescripcion);
                 $this->getTemplate()->set_var("sAreaDescripcion", $sAreaDescripcion);
                 $this->getTemplate()->set_var("sEjeDescripcion", $sEjeDescripcion);
                 $sObjetivoDescripcion = Utils::tokenTruncate($sObjetivoDescripcion, 300);
@@ -3488,8 +3503,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
 
             if($oObjetivo->isObjetivoAprendizaje()){                                                                
-                $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
-                $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion());
+                $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion());
+                $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getDescripcion());
+                $this->getTemplate()->set_var("sAnio", $oObjetivo->getEje()->getArea()->getAnio()->getDescripcion());
                 $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
                 $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
 

@@ -222,12 +222,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 }
 
                 if($oObjetivo->isObjetivoAprendizaje()){
-                    $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion());
-                    $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
-
-                    $sDescripcionEje = $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion()." > ".
-                                       $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion()." > ".
+                    $sDescripcionEje = $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getAnio()->getDescripcion()." > ".
                                        $oObjetivo->getEje()->getArea()->getDescripcion()." > ".
                                        $oObjetivo->getEje()->getDescripcion();
 
@@ -666,12 +663,9 @@ class EntradasControllerSeguimientos extends PageControllerAbstract
                 }
 
                 if($oObjetivo->isObjetivoAprendizaje()){
-                    $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion());
-                    $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion());
-                    $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
-
-                    $sDescripcionEje = $oObjetivo->getEje()->getArea()->getCiclo()->getNivel()->getDescripcion()." > ".
-                                       $oObjetivo->getEje()->getArea()->getCiclo()->getDescripcion()." > ".
+                    $sDescripcionEje = $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getDescripcion()." > ".
+                                       $oObjetivo->getEje()->getArea()->getAnio()->getDescripcion()." > ".
                                        $oObjetivo->getEje()->getArea()->getDescripcion()." > ".
                                        $oObjetivo->getEje()->getDescripcion();
 

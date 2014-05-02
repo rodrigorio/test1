@@ -182,7 +182,7 @@ function listaCiclosByNivel(idNivel, estadoInicialHtmlId){
 
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-ciclos-por-niveles",
+        url: "seguimientos/listar-ciclos-por-nivel",
         data:{iNivelId:idNivel},
         beforeSend: function(){
             setWaitingStatus(estadoInicialHtmlId, true);
@@ -191,6 +191,10 @@ function listaCiclosByNivel(idNivel, estadoInicialHtmlId){
             $('#ciclo_'+estadoInicialHtmlId).html("");
 
             //los demas van vacios si es que estan en el formulario, se completan a medida que se seleccionan
+            if($('#anio_'+estadoInicialHtmlId).length){
+                $('#anio_'+estadoInicialHtmlId).html("");
+                $('#anio_'+estadoInicialHtmlId).html(new Option('Año:', '',true));
+            }       
             if($('#area_'+estadoInicialHtmlId).length){
                 $('#area_'+estadoInicialHtmlId).html("");
                 $('#area_'+estadoInicialHtmlId).html(new Option('Área:', '',true));
@@ -218,6 +222,53 @@ function listaCiclosByNivel(idNivel, estadoInicialHtmlId){
 function listaAniosByCiclo(idCiclo, estadoInicialHtmlId){
 
     if(idCiclo == ''){
+        $('#anio_'+estadoInicialHtmlId).addClass("disabled");
+    }else{
+        $('#anio_'+estadoInicialHtmlId).removeClass("disabled");
+    }
+
+    if($('#area_'+estadoInicialHtmlId).length){
+        $('#area_'+estadoInicialHtmlId).addClass("disabled");
+    }
+    if($('#ejeTematico_'+estadoInicialHtmlId).length){
+        $('#ejeTematico_'+estadoInicialHtmlId).addClass("disabled");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "seguimientos/listar-anios-por-ciclo",
+        data:{iCicloId:idCiclo},
+        beforeSend: function(){
+            setWaitingStatus(estadoInicialHtmlId, true);
+        },
+        success: function(lista){
+
+            $('#anio_'+estadoInicialHtmlId).html("");
+
+            if($('#area_'+estadoInicialHtmlId).length){
+                $('#area_'+estadoInicialHtmlId).html("");
+                $('#area_'+estadoInicialHtmlId).html(new Option('Área:', '',true));
+            }
+            if($('#ejeTematico_'+estadoInicialHtmlId).length){
+                $('#ejeTematico_'+estadoInicialHtmlId).html("");
+                $('#ejeTematico_'+estadoInicialHtmlId).html(new Option('Eje:', '',true));
+            }
+
+            if(lista.length != undefined && lista.length > 0){
+                $('#anio_'+estadoInicialHtmlId).append(new Option('Año:', '',true));
+                for(var i=0;i<lista.length;i++){
+                    $('#anio_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
+                }
+            }else{
+                $('#anio_'+estadoInicialHtmlId).append(new Option('No hay años cargados', '',true));
+            }
+            setWaitingStatus(estadoInicialHtmlId, false);
+        }
+    });
+}
+
+function listaAreasByAnio(idAnio, estadoInicialHtmlId){
+    if(idAnio == ''){
         $('#area_'+estadoInicialHtmlId).addClass("disabled");
     }else{
         $('#area_'+estadoInicialHtmlId).removeClass("disabled");
@@ -229,8 +280,8 @@ function listaAniosByCiclo(idCiclo, estadoInicialHtmlId){
 
     $.ajax({
         type: "POST",
-        url: "seguimientos/listar-areas-por-ciclos",
-        data:{iCicloId:idCiclo},
+        url: "seguimientos/listar-areas-por-anio",
+        data:{idAnio:idAnio},
         beforeSend: function(){
             setWaitingStatus(estadoInicialHtmlId, true);
         },
@@ -250,37 +301,6 @@ function listaAniosByCiclo(idCiclo, estadoInicialHtmlId){
                 }
             }else{
                 $('#area_'+estadoInicialHtmlId).append(new Option('No hay áreas cargadas', '',true));
-            }
-            setWaitingStatus(estadoInicialHtmlId, false);
-        }
-    });
-}
-
-function listaAreasByAnio(idArea, estadoInicialHtmlId){
-    if(idArea == ''){
-        $('#ejeTematico_'+estadoInicialHtmlId).addClass("disabled");
-    }else{
-        $('#ejeTematico_'+estadoInicialHtmlId).removeClass("disabled");
-    }
-
-    $.ajax({
-        type: "POST",
-        url: "seguimientos/listar-ejes-por-area",
-        data:{iAreaId:idArea},
-        beforeSend: function(){
-            setWaitingStatus(estadoInicialHtmlId, true);
-        },
-        success: function(lista){
-
-            $('#ejeTematico_'+estadoInicialHtmlId).html("");
-
-            if(lista.length != undefined && lista.length > 0){
-                $('#ejeTematico_'+estadoInicialHtmlId).append(new Option('Eje:', '',true));
-                for(var i=0;i<lista.length;i++){
-                    $('#ejeTematico_'+estadoInicialHtmlId).append(new Option(lista[i].sDescripcion, lista[i].iId));
-                }
-            }else{
-                $('#ejeTematico_'+estadoInicialHtmlId).append(new Option('No hay ejes cargados', '',true));
             }
             setWaitingStatus(estadoInicialHtmlId, false);
         }
@@ -352,11 +372,12 @@ $(document).ready(function(){
                 $("#nivel_"+data.estadoInicialHtmlId).change(function(){
                     listaCiclosByNivel($("#nivel_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
                 });
-
                 $("#ciclo_"+data.estadoInicialHtmlId).change(function(){
-                    listaAreasByCiclo($("#ciclo_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
+                    listaAniosByCiclo($("#ciclo_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
                 });
-
+                $("#anio_"+data.estadoInicialHtmlId).change(function(){
+                    listaAreasByAnio($("#anio_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
+                });
                 $("#area_"+data.estadoInicialHtmlId).change(function(){
                     listaEjesTematicosByArea($("#area_"+data.estadoInicialHtmlId+" option:selected").val(), data.estadoInicialHtmlId);
                 });
