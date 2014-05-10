@@ -14,7 +14,7 @@
  * LAS REDIRECCIONES SON 307, IMAGINENSE QUE SI SE DESACTIVA UN MODULO DE LA PAGINA DE LOS VISITANTES SE TIENE QUE DAR A ENTENDER
  * QUE EN UN FUTURO SE VA A PODER ACCEDER A LA ACCION, Y QUE ESTA DESACTIVADA MOMENTANEAMENTE.
  * PARA MAS INFORMACION DEL CODIGO 307 Y LOS OTROS CODIGOS VISITAR http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
- * 
+ *
  * Nuevamente la peticion puede ser Ajax, en tal caso no hay redireccion sino que se devuelve codigo de error con mensaje al .js
  *
  * Es conceptualmente correcto NO DESACTIVAR la vista que corresponde a la home de un modulo,
@@ -56,7 +56,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
      * el estado de la session porque si es destruida el plugin automaticamente redirecciona.
      */
     public function __construct()
-    {                       
+    {
         if(!Session::isDestroyed()){
             $this->historial = new SessionNamespace('historial');
         }
@@ -71,7 +71,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
      * Devuelve el ultimo RequestUri de la ultima vista mostrada con exito. Si el historial esta vacio devuelve cadena vacia.
      */
     public static function getLastRequestUri()
-    {       
+    {
         return self::$lastRequestUri;
     }
 
@@ -79,7 +79,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
     {
         return ($this->historial->server_status_code == 307) ? true : false;
     }
-    
+
     /**
      * La ultima pagina que se proceso que codigo devolvio ? 307 302, etc.
      */
@@ -99,7 +99,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
      * (por ejemplo para volver a la pagina anterior en un 404)
      */
     private function guardarVista()
-    {               
+    {
         $request = FrontController::getInstance()->getRequest();
 
         //solo guarda el ultimo requestUri si fue una ruta que el router pudo procesar
@@ -115,7 +115,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
         $this->historial->accion = $request->getActionName();
 
         //Por ultimo guardo los parametros que acompañaban a este request.
-        //NOTA IMPORTANTE: 
+        //NOTA IMPORTANTE:
         //Cuando se hace un getParam($key) al request, internamente se fija en los parametros de clase y en los $_GET y $_POST del request
         //Al pasar todos los parametros a sesion a traves de getParams() se unen TODOS los parametros:
         //Los internos (Zend los llama userland parameters) + los $_GET + los $_POST. Todos en un solo array (tienen prioridad los internos).
@@ -138,16 +138,16 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
     /**
      * Atencion, el apuntador a $request es al que llega por preDispatch() no tiene nada que ver con el que se guarda en
      * el evento dispatchLoopShutdown().
-     * 
-     * @param HttpRequest $request
+     *
+     * @param Request $request
      * @return boolean Si pudo pisar con los valores del historial
      */
     private function rutearUltimaVista(){
         $request = $this->getRequest();
-        
+
         //si poseo informacion en el historial obtengo los datos de sesion y se los copio al request nuevo.
         if(isset($this->historial->modulo) && isset($this->historial->controlador) && isset($this->historial->accion))
-        {            
+        {
             $request->setModuleName($this->historial->modulo);
             $request->setControllerName($this->historial->controlador);
             $request->setActionName($this->historial->accion);
@@ -156,7 +156,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
             }
             return true;
         }
-        
+
         //si no se modifico el request se devuelve falso
         return false;
     }
@@ -190,17 +190,17 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
                            ->setActionName('sitioOffLine')
                            ->setParam('codigoRedireccion', '307');
     }
-    
+
     /**
      * Como es un algoritmo que tiene que tener en cuenta muchas condiciones voy fijandome de lo mas general a lo mas particular.
      *
      * Si no cumple ninguna de las condiciones que redireccionan a request entonces el metodo llega al final sin modificar el request.
-     * 
-     * @param HttpRequest $request
-     * 
+     *
+     * @param Request $request
+     *
      */
-    public function preDispatch(HttpRequest $request)
-    {        
+    public function preDispatch(Request $request)
+    {
         //seteo el request para que puedan utilizar los metodos privados del plugin
         $this->setRequest($request);
 
@@ -210,24 +210,24 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
         $moduloHome = $parametros->obtener('HOME_SITIO_MODULO', true);
         $controladorHome = $parametros->obtener('HOME_SITIO_CONTROLADOR', true);
         $accionHome = $parametros->obtener('HOME_SITIO_ACCION', true);
-        
+
         //guardo el perfil (estoy en el preDispatch al menos esta cargado el perfil de los visitantes)
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
 
         //guardo el flag que indica si el modulo del request actual esta activo
         $moduloActivo = $this->esModuloActivo($request->getModuleName());
         //guardo tambien el flag que indica si el modulo de la home del sitio esta activo
-        $moduloHomeActivo = $this->esModuloActivo($moduloHome);      
-        
+        $moduloHomeActivo = $this->esModuloActivo($moduloHome);
+
         //guardo el flag acerca de si el perfil autentificado tiene permiso para despachar la accion del request actual
         //mucho cuidado que en las condiciones para php NULL es lo mismo que 0.
         //pero para nosotros null es que no tiene permiso y 0 que la accion esta desactivada. MUCHO CUIDADO
         //por eso hay que usar isset() porque hace la distincion.
         // isset(null) -> falso
         // isset(true) -> verdadero
-        // isset(false) -> verdadero        
+        // isset(false) -> verdadero
         $accionActivo = $perfil->activo($request->getKeyPermiso());
-               
+
         //primero contemplo Ajax: Si el modulo del request actual esta deshabilitado o la accion esta deshabilitada tiro error 401 al .js
         if($request->isXmlHttpRequest() && (!$moduloActivo || (isset($accionActivo) && !$accionActivo)))
         {
@@ -240,7 +240,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
                     ->setParam('codigoError', '401');
             return;
         }
-        
+
         //si el modulo del request actual es el modulo de la home de los visitantes y esta desactivado
         //redirecciono a sitio fuera de linea.
         if($request->getModuleName() == $moduloHome && !$moduloActivo)
@@ -248,7 +248,7 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
             $this->redireccionarSitioFueraDeLinea();
             return;
         }
-        
+
         //si el modulo del request actual es distinto del modulo de la home y esta desactivado
         //y tambien esta desactivado el modulo de la home redirecciono a sitio fuera de linea.
         if($request->getModuleName() != $moduloHome && !$moduloActivo && !$moduloHomeActivo)
@@ -310,10 +310,10 @@ class PluginRedireccionAccionDesactivada extends PluginAbstract
     }
 
     public function dispatchLoopShutdown()
-    {        
+    {
         //solo guardo cuando la peticion NO es ajax
         if(!FrontController::getInstance()->getRequest()->isXmlHttpRequest()){
-            //limpio la informacion anterior y guardo la nueva        
+            //limpio la informacion anterior y guardo la nueva
             $this->limpiarHistorial()
                  ->guardarVista();
         }

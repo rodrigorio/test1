@@ -3,7 +3,7 @@
 class Dispatcher
 {
     private $frontController;
-    
+
     /**
      * Array of invocation parameters to use when instantiating action controllers
      *
@@ -16,13 +16,13 @@ class Dispatcher
      * @var Response|null
      */
     protected $response = null;
-		
+
     /**
      * Current module (formatted)
      * @var string
      */
-    private $curModule;	
-	
+    private $curModule;
+
     /**
      * Constructor
      */
@@ -30,7 +30,7 @@ class Dispatcher
     {
         $this->setParams($params);
     }
-	
+
     /**
      * Formats a string into a controller name.  This is used to take a raw
      * controller name, such as one stored inside a Zend_Controller_Request_Abstract
@@ -42,10 +42,10 @@ class Dispatcher
     public function formatControllerName($unformatted)
     {
         return ucfirst($unformatted).'Controller';
-    }	
+    }
 
     /**
-     * Retrieve front controller instance    
+     * Retrieve front controller instance
      */
     public function getFrontController()
     {
@@ -60,7 +60,7 @@ class Dispatcher
         $this->frontController = $controller;
         return $this;
     }
-	
+
     /**
      * Add or modify a parameter to use when instantiating an action controller
      *
@@ -110,8 +110,8 @@ class Dispatcher
     public function getParams()
     {
         return $this->invokeParams;
-    }	
-	
+    }
+
     /**
      * Clear the controller parameter stack
      *
@@ -157,15 +157,15 @@ class Dispatcher
     {
         return $this->response;
     }
-			
+
     /**
      * Format the module name.
      */
     public function formatModuleName($unformatted)
     {
         return ucfirst($unformatted);
-    }		
-	
+    }
+
     /**
      * Format action class name
      */
@@ -180,33 +180,33 @@ class Dispatcher
     public function classToFilename($class)
     {
         return $class.'.php';
-    }	
-			
+    }
+
     /**
      * Returns TRUE if the Request object can be dispatched to a controller.
      */
-    public function isDispatchable(HttpRequest $request)
-    {			
+    public function isDispatchable(Request $request)
+    {
         //en el get del controller setea cual es el modulo actual para ese controlador (curModule)
         $className = $this->getControllerClass($request);
         if (!$className) {
             return false;
         }
 
-        $finalClass = $className;		
+        $finalClass = $className;
         $finalClass = $this->formatClassName($this->curModule, $className);
 
         //internamente llama al autoload
         return class_exists($finalClass);
-    }	
+    }
 
     /**
      * Dispatch to a controller/action
      */
-    public function dispatch(HttpRequest $request, Response $response)
+    public function dispatch(Request $request, Response $response)
     {
         $this->setResponse($response);
-        
+
         /**
          * Get controller class
          */
@@ -214,8 +214,8 @@ class Dispatcher
             throw new Exception('Invalid controller specified (' . $request->getControllerName() . ')');
         } else {
             $className = $this->getControllerClass($request);
-        }		
-		
+        }
+
         //originalmente hacia el 'include' como nosotros usamos include_path y autoload solo preparamos bien el string
         $className = $this->loadClass($className);
 
@@ -224,7 +224,7 @@ class Dispatcher
          * Esta bien que se pasen los parametros al controlador por el constructor en vez de a traves del metodo.
          * Por si mas de un metodo necesita saber con que parametros se llamo al controlador (metodos privados, etc)
          *
-         * Los parametros que extrae el router quedan en $request y se acceden a traves de los metodos de HttpRequest
+         * Los parametros que extrae el router quedan en $request y se acceden a traves de los metodos de Request
          */
         $controller = new $className($request, $this->getResponse(), $this->getParams());
         if (!($controller instanceof PageControllerInterface)){
@@ -255,17 +255,17 @@ class Dispatcher
      * Load a controller class (el new se hace en el dispatch)
      */
     public function loadClass($className)
-    {	
+    {
         $finalClass = $className;
         $finalClass = $this->formatClassName($this->curModule, $className);
 
         //evita el autoload con el false
-        if (class_exists($finalClass)){ 
+        if (class_exists($finalClass)){
             return $finalClass;
         } else {
             throw new Exception('Cannot load controller class');
         }
-		
+
         return $finalClass;
     }
 
@@ -277,19 +277,19 @@ class Dispatcher
      *
      * @return string|false Returns class name on success
      */
-    public function getControllerClass(HttpRequest $request)
+    public function getControllerClass(Request $request)
     {
         $controllerName = $request->getControllerName();
-		
+
         if (empty($controllerName)) {
             return false;
         }
 
         $className = $this->formatControllerName($controllerName);
-		
-        $module = $request->getModuleName();		
+
+        $module = $request->getModuleName();
         $this->curModule    = $module;
-		
+
         //simplifique un poco la funcion porque no vamos a usar valores por defecto, el router siempre devuelve todo
         if(empty($this->curModule)){
             throw new Exception('El objeto $request no tiene seteado el modulo despues de router->route()');
@@ -297,14 +297,14 @@ class Dispatcher
 
         return $className;
     }
-	
+
     /**
      * Return the value of the currently selected dispatch directory (as set by {@link getController()})
      */
     public function getDispatchDirectory()
     {
         return $this->curDirectory;
-    }	
+    }
 
     /**
      * Determine the action name
@@ -315,8 +315,8 @@ class Dispatcher
      *
      * @return string
      */
-    public function getActionMethod(HttpRequest $request)
+    public function getActionMethod(Request $request)
     {
         return $request->getActionName();
-    }		
+    }
 }

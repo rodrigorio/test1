@@ -1,17 +1,17 @@
 <?php
 /**
- * 
+ *
  *
  */
 class Router
-{	
+{
     private $frontController;
-	
+
     /**
      * Array of invocation parameters to use when instantiating action controllers
      */
-    private $invokeParams = array();	
-	
+    private $invokeParams = array();
+
     /**
      * Whether or not to use default routes
      *
@@ -46,7 +46,7 @@ class Router
      *
      * @var boolean
      */
-    private $useCurrentParamsAsGlobal = false;	
+    private $useCurrentParamsAsGlobal = false;
 
     /**
      * Constructor
@@ -55,7 +55,7 @@ class Router
     {
         $this->setParams($params);
     }
-	
+
     /**
      * Add or modify a parameter to use when instantiating an action controller
      */
@@ -117,7 +117,7 @@ class Router
         }
 
         return $this;
-    }	
+    }
 
     /**
      * Retrieve Front Controller
@@ -128,7 +128,7 @@ class Router
         if (null !== $this->frontController) {
             return $this-> frontController;
         }
-		
+
         $this->frontController = FrontController::getInstance();
         return $this->frontController;
     }
@@ -140,8 +140,8 @@ class Router
     {
         $this->frontController = $controller;
         return $this;
-    }		
-	
+    }
+
     /**
      * Add route to the route chain
 	 * Los nombres de las rutas no se pueden repetir y son los que van a ir dentro de la DB
@@ -162,18 +162,18 @@ class Router
         }
         return $this;
     }
-	
+
     /**
      * Remove a route from the route chain
      *
      */
     public function removeRoute($name)
     {
-        if (!isset($this->routes[$name])) {          
+        if (!isset($this->routes[$name])) {
             throw new Exception("Route $name is not defined");
         }
         unset($this->routes[$name]);
-		
+
         return $this;
     }
 
@@ -230,10 +230,10 @@ class Router
      * Find a matching route to the current PATH_INFO and inject
      * returning values to the Request object.
      */
-    public function route(HttpRequest $request)
+    public function route(Request $request)
     {
-        if (!$request instanceof HttpRequest) {
-            throw new Exception('requires a HttpRequest object');
+        if (!$request instanceof Request) {
+            throw new Exception('requires a Request object');
         }
 
         // Find the matching route
@@ -259,7 +259,7 @@ class Router
     {
         foreach ($params as $param => $value){
             $request->setParam($param, $value);
-			
+
             if ($param === $request->getModuleKey()) {
                 $request->setModuleName($value);
             }
@@ -268,7 +268,7 @@ class Router
             }
             if ($param === $request->getActionKey()) {
                 $request->setActionName($value);
-            }			
+            }
         }
-    }			
+    }
 }

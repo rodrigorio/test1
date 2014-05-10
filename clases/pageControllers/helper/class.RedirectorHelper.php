@@ -77,7 +77,7 @@ class RedirectorHelper extends HelperAbstract
     private function checkCode($code)
     {
         $code = (int)$code;
-        if ((300 > $code) || (307 < $code) || (304 == $code) || (306 == $code)) {            
+        if ((300 > $code) || (307 < $code) || (304 == $code) || (306 == $code)) {
             throw new Exception('Invalid redirect HTTP status code (' . $code  . ')');
         }
         return true;
@@ -205,7 +205,7 @@ class RedirectorHelper extends HelperAbstract
             }
             $url = $uri . '/' . ltrim($url, '/');
         }
-        
+
         $this->redirectUrl = $url;
         $this->getResponse()->setRedirect($url, $this->getCode());
     }
@@ -230,7 +230,7 @@ class RedirectorHelper extends HelperAbstract
     {
         if ($this->getPrependBase()) {
             $request = $this->getRequest();
-            if ($request instanceof HttpRequest) {
+            if ($request instanceof Request) {
                 $base = rtrim($request->getBaseUrl(), '/');
                 if (!empty($base) && ('/' != $base)) {
                     $url = $base . '/' . ltrim($url, '/');
@@ -327,7 +327,7 @@ class RedirectorHelper extends HelperAbstract
      * @return void
      */
     public function redirectAndExit()
-    {        
+    {
         if ($this->getCloseSessionOnExit()) {
             // Close session, if started
             if (class_exists('Session') && Session::isStarted()) {
@@ -336,7 +336,7 @@ class RedirectorHelper extends HelperAbstract
                 session_write_close();
             }
         }
-        
+
         $this->getResponse()->sendHeaders();
         exit();
     }

@@ -45,8 +45,8 @@ class PluginBroker extends PluginAbstract
         $response = $this->getResponse();
         if ($response) {
             $this->plugins[$stackIndex]->setResponse($response);
-        }		
-		
+        }
+
         ksort($this->plugins);
 
         return $this;
@@ -78,7 +78,7 @@ class PluginBroker extends PluginAbstract
         }
         return false;
     }
-	
+
     /**
      * Retrieve a plugin or plugins by class
      *
@@ -103,7 +103,7 @@ class PluginBroker extends PluginAbstract
             default:
                 return $found;
         }
-    }	
+    }
 
     /**
      * Set request object, and register with each plugin
@@ -111,7 +111,7 @@ class PluginBroker extends PluginAbstract
      * Se pisa el metodo de la clase abstracta porque setea el request en todos los plugins
      * Este metodo lo dispara el frontController
      */
-    public function setRequest(HttpRequest $request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
         foreach ($this->plugins as $plugin) {
@@ -167,7 +167,7 @@ class PluginBroker extends PluginAbstract
      * Called before Zend_Controller_Front begins evaluating the
      * request against its routes.
      */
-    public function routeStartup(HttpRequest $request)
+    public function routeStartup(Request $request)
     {
         foreach ($this->plugins as $plugin) {
             try {
@@ -186,7 +186,7 @@ class PluginBroker extends PluginAbstract
      * Called before an action is dispatched by Zend_Controller_Dispatcher.
      *
      */
-    public function preDispatch(HttpRequest $request)
+    public function preDispatch(Request $request)
     {
         foreach ($this->plugins as $plugin) {
             try {
@@ -205,7 +205,7 @@ class PluginBroker extends PluginAbstract
     /**
      * Called after an action is dispatched by Zend_Controller_Dispatcher.
      */
-    public function postDispatch(HttpRequest $request)
+    public function postDispatch(Request $request)
     {
         foreach ($this->plugins as $plugin) {
             try {

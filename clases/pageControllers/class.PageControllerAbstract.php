@@ -3,7 +3,7 @@
  * Se codifican todos los metodos que comparten en comun los PageControllers.
  * Tambien se declaran los metodos para que esten disponibles los helpers.
  * Los helpers se instancian solo cuando se hace el get (Agregacion).
- * 
+ *
  * @author Matias Velilla
  */
 class PageControllerAbstract implements PageControllerInterface
@@ -13,7 +13,7 @@ class PageControllerAbstract implements PageControllerInterface
     private $response;
 
     private $invokeArgs;
-    
+
     /**
      * Instancia de Templates
      */
@@ -55,14 +55,14 @@ class PageControllerAbstract implements PageControllerInterface
      */
     private $mailer = null;
 
- 
-    public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array())
+
+    public function __construct(Request $request, Response $response, array $invokeArgs = array())
     {
         $this->request = $request;
         $this->response = $response;
         $this->invokeArgs = $invokeArgs;
     }
-	    
+
     public function dispatch($action)
     {
         $this->$action();
@@ -153,7 +153,7 @@ class PageControllerAbstract implements PageControllerInterface
         }
         return $this->exportarPlanilla;
     }
-    
+
     protected final function getEmbedVideoHelper()
     {
         if(null === $this->embedVideo)
@@ -228,7 +228,7 @@ class PageControllerAbstract implements PageControllerInterface
     protected final function printMsgTop($iconos = true)
     {
         $bHayMensaje = false;
-        
+
         if (null !== $this->template)
         {
             switch(true){
@@ -244,7 +244,7 @@ class PageControllerAbstract implements PageControllerInterface
                     $msg = $this->request->getParam('msgError');
                     $bloque = ($iconos)?'MsgTopErrorBlockI32':'MsgTopErrorBlock';
                     $bHayMensaje = true;
-                    break;                    
+                    break;
                 }
                 case $this->request->has('msgCorrecto'):
                 {
@@ -270,7 +270,7 @@ class PageControllerAbstract implements PageControllerInterface
      *
      */
     protected function redireccion404()
-    {        
+    {
         //establesco titulo y mensaje de la ficha de mensaje
         switch(true){
             case $this->request->has('msgInfo'):
@@ -288,9 +288,9 @@ class PageControllerAbstract implements PageControllerInterface
             default:
                 $tituloMensajeError = "No se ha encontrado la página solicitada.";
                 $ficha = "MsgFichaInfoBlock";
-                break;                
+                break;
         }
-        
+
         $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
 
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
@@ -318,8 +318,8 @@ class PageControllerAbstract implements PageControllerInterface
         $this->getTemplate()->set_var("hrefOpcion", "javascript:history.go(-1)");
         $this->getTemplate()->set_var("sNombreOpcion", "Volver a la página anterior");
         $this->getTemplate()->parse("OpcionMenuLastOpt");
-        
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     /**
@@ -343,7 +343,7 @@ class PageControllerAbstract implements PageControllerInterface
         $iItemsForPage = $this->getRequest()->getPost("RecPerPage") ? $this->getRequest()->getPost("RecPerPage") : $iRecordPerPage ;
         $iMinLimit = ($iPage-1) * $iItemsForPage;
 
-        return array($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder);                     
+        return array($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder);
     }
 
     /**
@@ -402,13 +402,13 @@ class PageControllerAbstract implements PageControllerInterface
      * Genera los botones de ordenar ascendente y descendente segun el array $aOrderBy
      */
     protected final function initOrderBy(&$sOrderBy, $sOrder, &$aOrderBy)
-    {        
+    {
         /*
          * porque si existen los parametros al menos uno cambio de estado
          * entonces para ESA columna invierto el order.
          */
         if($sOrderBy !== null && $sOrder !== null){
-            
+
             $sOrder = ($sOrder == "asc")?"desc":"asc";
             $aOrderBy[$sOrderBy]['order'] = $sOrder;
 
@@ -439,7 +439,7 @@ class PageControllerAbstract implements PageControllerInterface
                 $paramsGet[] = $nombreFiltro."=".$this->getRequest()->getParam($nombreFiltro);
 
                 if($columnaSql != "fechaDesde" && $columnaSql != "fechaHasta"){
-                    $filtroSql[$columnaSql] = $this->getRequest()->getParam($nombreFiltro);                                    
+                    $filtroSql[$columnaSql] = $this->getRequest()->getParam($nombreFiltro);
                 }
                 if($columnaSql == "fechaDesde"){
                     $filtroSql['fecha'][$columnaSql] =  $this->getRequest()->getParam($nombreFiltro);

@@ -12,7 +12,7 @@
  *
  * Si el 404 es postDispatch se tiene que poner como siempre el dispatched en falso
  * y se tiene que limpiar el response para no caer en un ciclo infinito en el repeat del Front.
- * 
+ *
  * @author Matias Velilla
  */
 class PluginRedireccion404 extends PluginAbstract
@@ -51,14 +51,14 @@ class PluginRedireccion404 extends PluginAbstract
             if(!empty($msg)){
                 $this->getRequest()->setParam('msgInfo', $msg);
             }
-            
+
             $front->cleanResponseExceptions(404);
             return true;
         }
         return false;
     }
 
-    public function preDispatch(HttpRequest $request)
+    public function preDispatch(Request $request)
     {
         //en este caso analizo tambien el caso de una posible peticion ajax
         if($request->isXmlHttpRequest())
@@ -80,7 +80,7 @@ class PluginRedireccion404 extends PluginAbstract
         $this->requestRedireccionar404();
     }
 
-    public function postDispatch(HttpRequest $request)
+    public function postDispatch(Request $request)
     {
         $this->setRequest($request);
         if($this->requestRedireccionar404()){

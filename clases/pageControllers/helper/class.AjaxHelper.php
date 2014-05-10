@@ -7,7 +7,7 @@
 class AjaxHelper extends HelperAbstract
 {
     /**
-     * Devuelve si el contexto del HttpRequest es ajax o no
+     * Devuelve si el contexto del Request es ajax o no
      * @return boolean
      */
     public function isAjaxContext()

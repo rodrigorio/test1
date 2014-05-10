@@ -29,7 +29,7 @@ class Administrador extends PerfilAbstract
         if(empty($this->iId)){ $this->iId =  self::PERFIL_ADMINISTRADOR_ID; }
         if(empty($this->sDescripcion)){ $this->sDescripcion = self::PERFIL_ADMINISTRADOR_DESCRIPCION; }
     }
-    
+
     /**
      * Se supone que el administrador no tiene redirecciones por permisos =)
      * tiro excepcion para tener una guia al programar, si se desactiva desde index.php no sale nada.
@@ -44,7 +44,7 @@ class Administrador extends PerfilAbstract
             return array($modulo, $controlador, $accion);
         }else{
             return $parametros->obtener('PERFIL_ADMINISTRADOR_REDIRECCION_PATH');
-        }        
+        }
     }
 
     /**
@@ -52,7 +52,7 @@ class Administrador extends PerfilAbstract
      *
      * Se tendria que llamar de la siguiente manera: list($modulo,$controlador,$accion) = $administrador->getUrlRedireccionLoginDefecto();
      *
-     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma HttpRequest $request->getPathInfo()
+     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma Request $request->getPathInfo()
      */
     public function getUrlRedireccionLoginDefecto($pathInfo = false)
     {

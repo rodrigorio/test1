@@ -15,7 +15,7 @@ abstract class PluginAbstract
      *	y despues se propagan a traves de $request, $router, $dispatcher y los page controllers (a traves de dispatch() )
      */
     protected $request;
-	
+
     /**
      * @var Response
      */
@@ -27,7 +27,7 @@ abstract class PluginAbstract
      * @param Zend_Controller_Request_Abstract $request
      * @return Zend_Controller_Plugin_Abstract
      */
-    public function setRequest(HttpRequest $request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
         return $this;
@@ -78,10 +78,10 @@ abstract class PluginAbstract
      * Called before FrontController begins evaluating the
      * request against its routes.
      *
-     * @param HttpRequest $request
+     * @param Request $request
      * @return void
      */
-    public function routeStartup(HttpRequest $request)
+    public function routeStartup(Request $request)
     {}
 
     /**
@@ -95,21 +95,21 @@ abstract class PluginAbstract
      * @param  Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function preDispatch(HttpRequest $request)
+    public function preDispatch(Request $request)
     {}
 
     /**
      * Called after an action is dispatched by Zend_Controller_Dispatcher.
      *
      * This callback allows for proxy or filter behavior. By altering the
-     * request and resetting its dispatched flag 
+     * request and resetting its dispatched flag
      * (via {@link Zend_Controller_Request_Abstract::setDispatched() setDispatched(false)}),
      * a new action may be specified for dispatching.
      *
      *
      * @return void
      */
-    public function postDispatch(HttpRequest $request)
+    public function postDispatch(Request $request)
     {}
 
     /**

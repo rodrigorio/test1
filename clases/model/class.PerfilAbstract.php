@@ -6,7 +6,7 @@
 abstract class PerfilAbstract
 {
     const SEGUNDOS_EXPIRACION_PERMISOS_ACCIONES = 120; //2 minutos
-    
+
     /**
      * Instancia de Usuario
      */
@@ -56,7 +56,7 @@ abstract class PerfilAbstract
         $this->oPermisos = new SessionNamespace('permisos');
         $this->oPermisos->unsetAll();
     }
-    
+
     public function setUsuario(Usuario $oUsuario)
     {
         $this->oUsuario = $oUsuario;
@@ -148,13 +148,13 @@ abstract class PerfilAbstract
      * Por defecto devuelve Modulo/Controlador/Accion a la cual se debe redirigir el sistema luego de que un usuario solicita una accion
      * a la cual no tiene permiso ó esta desactivada.
      *
-     * Si el flag esta activado devuelve el pathInfo de la redireccion. (ver HttpRequest getPathInfo() )
+     * Si el flag esta activado devuelve el pathInfo de la redireccion. (ver Request getPathInfo() )
      */
     public function getUrlRedireccion($pathInfo = false){}
 
     /**
      * Url a la cual se redirecciona por defecto luego de realizar un login satisfactorio. Tambien formato Modulo/Controlador/Accion.
-     * Si el flag esta activado devuelve el pathInfo de la redireccion. (ver HttpRequest getPathInfo() )
+     * Si el flag esta activado devuelve el pathInfo de la redireccion. (ver Request getPathInfo() )
      */
     public function getUrlRedireccionLoginDefecto($pathInfo = false){}
 }

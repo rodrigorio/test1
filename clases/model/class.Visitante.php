@@ -40,7 +40,7 @@ class Visitante extends PerfilAbstract
      * Sin embargo, es correcto pedir siempre login cuando la redireccion es porque el perfil no posee PERMISO PARA UNA ACCION
      * (independientemente si esta activa o no)
      *
-     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma HttpRequest $request->getPathInfo()
+     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma Request $request->getPathInfo()
      *
      */
     public function getUrlRedireccion($pathInfo = false)

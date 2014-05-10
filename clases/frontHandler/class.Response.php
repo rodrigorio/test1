@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Response es la contra partida de HttpRequest.
+ * Response es la contra partida de Request.
  *
  * Se hace un request se devuelve una respuesta.
  *
@@ -13,13 +13,13 @@
  */
 class Response
 {
-    
+
     /**
      * Body content
      * @var array
      */
     private $_body = array();
-    
+
     /**
      * Exception stack
      * @var Exception
@@ -262,7 +262,7 @@ class Response
      */
     public function setHttpResponseCode($code)
     {
-        if (!is_int($code) || (100 > $code) || (599 < $code)) {            
+        if (!is_int($code) || (100 > $code) || (599 < $code)) {
             throw new Exception('Invalid HTTP response code');
         }
 
@@ -314,7 +314,7 @@ class Response
      * @return Response
      */
     public function sendHeaders()
-    {                
+    {
         // Only check if we can send headers if we have headers to send
         if (count($this->_headersRaw) || count($this->_headers) || (200 != $this->_httpResponseCode)) {
             $this->canSendHeaders(true);
@@ -322,7 +322,7 @@ class Response
             // Haven't changed the response code, and we have no headers
             return $this;
         }
-       
+
         $httpCodeSent = false;
 
         foreach ($this->_headersRaw as $header) {
@@ -342,12 +342,12 @@ class Response
                 header($header['name'] . ': ' . $header['value'], $header['replace']);
             }
         }
-        
+
         if (!$httpCodeSent) {
             header('HTTP/1.1 ' . $this->_httpResponseCode);
             $httpCodeSent = true;
         }
-                
+
         return $this;
     }
 
@@ -514,7 +514,7 @@ class Response
      * Si no se le provee codigo concatena todos los mensajes de todas las excepciones.
      *
      * En ultima instancia independientemente de si se provee un codigo especifico o no devuelve null si no hay excepciones
-     * 
+     *
      * @return string
      */
     public function getMessagesByCode($code = "")
@@ -537,7 +537,7 @@ class Response
     /**
      * Limpia excepciones por codigo si es que se provee o todas si no se provee codigo alguno.
      * La cree yo, no estaba en la clase original asi que no la busquen si llega a fallar xD.
-     * 
+     *
      * @return Response
      */
     public function cleanExceptions($code = "")
@@ -545,12 +545,12 @@ class Response
         if(!$this->isException()){
             return $this;
         }
-        
+
         if(!empty($code) && is_int($code)){
             $i = 0;
             foreach($this->getException() as $e){
                 if($e->getCode() == $code){
-                    unset($this->_exceptions[$i]);                
+                    unset($this->_exceptions[$i]);
                 }
                 $i++;
             }
@@ -639,8 +639,8 @@ class Response
                 $headers[$key] = $header['name'] . ': ' . $header['value'];
             }
         }
-        
+
         echo "<pre>"; print_r($headers); echo "</pre>";
         return;
-    }    
+    }
 }
