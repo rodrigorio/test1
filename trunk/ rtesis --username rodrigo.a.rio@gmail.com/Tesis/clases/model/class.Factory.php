@@ -132,7 +132,7 @@ class Factory
         $oArchivo = new Archivo($obj);
         return $oArchivo;
     }
-    
+
     /**
      * @param stdClass $obj
      * @return Foto|null
@@ -213,7 +213,7 @@ class Factory
         $oComentario = new Comentario($obj);
         return $oComentario;
     }
-    
+
     /**
      * @param stdClass $obj
      * @return DiagnosticoPersonalizado|null
@@ -229,7 +229,7 @@ class Factory
     public static function &getDiagnosticoSCCInstance(stdClass $obj){
         $oDiagnosticoSCC = new DiagnosticoSCC($obj);
         return $oDiagnosticoSCC;
-    }    
+    }
    /**
      * @param stdClass $obj
      * @return Area|null
@@ -293,17 +293,17 @@ class Factory
         $oRelevancia = new Relevancia($obj);
         return $oRelevancia;
     }
-  
+
     public static function &getModeracionInstance(stdClass $obj){
         $oModeracion = new Moderacion($obj);
         return $oModeracion;
-    }    
-    
+    }
+
     public static function &getSolicitudInstance(stdClass $obj){
         $oSolicitud = new Solicitud($obj);
         return $oSolicitud;
     }
-    
+
     public static function &getSoftwareInstance(stdClass $obj){
         $oSoftware = new Software($obj);
         return $oSoftware;
@@ -398,7 +398,7 @@ class Factory
         $oDenuncia = new Denuncia($obj);
         return $oDenuncia;
     }
-    
+
     /**
      * @param stdClass $obj
      * @return Invitacion|null

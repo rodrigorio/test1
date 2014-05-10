@@ -12,7 +12,7 @@ class PluginSession extends PluginAbstract
 {
     const MENSAJE_ERROR_SESSION = 'Se produjo un error en la sesion activa.';
     const MENSAJE_ERROR_SESSION_LOGIN = 'Se produjo un error en la sesion activa, debe volver a identificarse.';
-    
+
     /**
      * Se utiliza para guardar una copia de la clasa de la instancia de PerfilAbstract identificado antes de destruir la session
      * @param string $classPerfil
@@ -21,16 +21,16 @@ class PluginSession extends PluginAbstract
 
     private function startSession()
     {
-        try{           
+        try{
             //A partir del 2do request puede tirar excepcion si el userAgent cambia segun SessionValidator.
             Session::start();
-            
-            //regeneracion de id: ver (http://framework.zend.com/manual/en/zend.session.global_session_management.html)            
+
+            //regeneracion de id: ver (http://framework.zend.com/manual/en/zend.session.global_session_management.html)
             $defaultNamespace = new SessionNamespace(); //se crea en espacio por defecto
             if (!isset($defaultNamespace->initialized)) {
                 Session::regenerateId();
                 $defaultNamespace->initialized = true;
-            }           
+            }
             Session::registerValidator( new SessionValidator() );
         } catch (Exception $e){
             throw $e;
@@ -46,10 +46,10 @@ class PluginSession extends PluginAbstract
         //destruyo la session actual
         $remove_cookie = true;
         $readonly_namespaces = true;
-        Session::destroy($remove_cookie, $readonly_namespaces);        
+        Session::destroy($remove_cookie, $readonly_namespaces);
     }
-   
-    public function routeStartup(HttpRequest $request)
+
+    public function routeStartup(Request $request)
     {
         try{
             $this->startSession();
@@ -63,17 +63,17 @@ class PluginSession extends PluginAbstract
             }
 
             self::destruirSesion();
-            
+
             //no tiro excepcion para que se carguen parametros estaticos y se conecte a la DB pero en el predispatch
             //no quiero que se ejecuten cosas innecesarias ya que se destruyo la session: se redirecciona a la home o a login.
             FrontController::getInstance()->unregisterPlugin('PluginRedireccion404')
                                           ->unregisterPlugin('PluginPermisos')
                                           ->unregisterPlugin('PluginRedireccionAccionDesactivada')
-                                          ->unregisterPlugin('PluginCache');            
+                                          ->unregisterPlugin('PluginCache');
         }
     }
 
-    public function preDispatch(HttpRequest $request)
+    public function preDispatch(Request $request)
     {
         if(!Session::isDestroyed()){
             if(!SessionAutentificacion::getInstance()->estaIdentificado()){
@@ -81,7 +81,7 @@ class PluginSession extends PluginAbstract
             }
         }else{
             $this->getResponse()->setRawHeader('HTTP/1.0 401 Unauthorized');
-            $parametros = FrontController::getInstance()->getPlugin('PluginParametros'); 
+            $parametros = FrontController::getInstance()->getPlugin('PluginParametros');
             $soloSistema = true;
             //si la session se destruyo con un perfil autentificado que no era el perfil por defecto pido que se autentifique nuevamente
             if( !empty($this->classPerfilAnterior) && $this->classPerfilAnterior != 'Visitante'){
@@ -94,7 +94,7 @@ class PluginSession extends PluginAbstract
                 $homeSitioModulo = $parametros->obtener('HOME_SITIO_MODULO', $soloSistema);
                 $homeSitioControlador = $parametros->obtener('HOME_SITIO_CONTROLADOR', $soloSistema);
                 $homeSitioAccion = $parametros->obtener('HOME_SITIO_ACCION', $soloSistema);
-                
+
                 $request->setModuleName($homeSitioModulo)
                         ->setControllerName($homeSitioControlador)
                         ->setActionName($homeSitioAccion)

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Los page controllers implementan una interface en lugar de una clase abstracta por la simple razon de que 
+ * Los page controllers implementan una interface en lugar de una clase abstracta por la simple razon de que
  * las abstracciones pueden ser mucho mas especificas que generales.
  *
  * Es decir, con esto me aseguro que cumplan con el 'comando' que ejecuta el dispatcher
  * Despues con abstracciones yo puedo unificar metodos entre controladores de publicacion de Admin y de Index por ej.
  *
  *
- * En los page controllers hay metodos que facilitan el proceso de las vistas!. 
+ * En los page controllers hay metodos que facilitan el proceso de las vistas!.
  * De lo contrario usar metodos de los controllers de modelo
  */
 interface PageControllerInterface
@@ -21,20 +21,20 @@ interface PageControllerInterface
      * way to do so is to simply call parent::__construct($request, $invokeArgs).
      *
      *
-     * @param HttpRequest $request
+     * @param Request $request
      * @param array $invokeArgs Any additional invocation arguments
      * @return void
-     */	
-    public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array());
-	
+     */
+    public function __construct(Request $request, Response $response, array $invokeArgs = array());
+
     /**
      * Dispatch the requested action
      *
      * @param string $action Method name of action
      * @return void
      */
-    public function dispatch($action);	
-	
+    public function dispatch($action);
+
     /**
     * Todo controller va a tener una accion index(), por ejemplo la pagina de bienvenida o listado, etc.
     * Tambien puede ser un adapter para que exista la posibilidad de marcar la funcion por defecto de un controlador.
@@ -56,5 +56,5 @@ interface PageControllerInterface
     * y redireccionar otro metodo en index()
     *
     */
-    public function index();		
+    public function index();
 }

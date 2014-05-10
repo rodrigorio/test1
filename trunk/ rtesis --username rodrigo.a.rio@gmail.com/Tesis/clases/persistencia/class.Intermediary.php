@@ -86,7 +86,7 @@ abstract class Intermediary
      * y genera una cadena de la forma: WHERE u.nombreUsuario = 'unUsuario' AND u.contrasenia = 'unMD5cualquiera'
      *
      *
-     * @param array $filtro Puede ser directamente el $_POST de un formulario de filtro extraido de HttpRequest Si es que este no es muy complejo.
+     * @param array $filtro Puede ser directamente el $_POST de un formulario de filtro extraido de Request Si es que este no es muy complejo.
      * @param string $aliasTabla Si el campo tiene un alias se agrega "$alias." al campo
      * @param boolean $quotes por defecto no agrega comillas. Si los filtros ya se encuentran con scape_string no se necesitan.
      * @return string del tipo [$alias.]$filtro[nombreCampo] = '$valor' AND [$alias.]$filtro[nombreCampo2] = '$valor2' AND ...
@@ -114,7 +114,7 @@ abstract class Intermediary
     /**
      * Crea un string como el del metodo CrearCondicionIn pero recibe como parametro un array de $_POST (para usar con checkbox por ej)
      *
-     * @param array $arrayPost Recibe un array desde $_POST extraido con HttpRequest->getPost('nombreArray')
+     * @param array $arrayPost Recibe un array desde $_POST extraido con Request->getPost('nombreArray')
      * @param string $aliasTabla El alias de la tabla del campo si es que existe
      * @return string para aplicar luego de sentencia WHERE del tipo "[$aliasTabla.]$nombreCampo in ($filtro[0], $filtro[1], ... $filtro[n])"
      */
@@ -133,15 +133,15 @@ abstract class Intermediary
      * @param int $tipo Constante correspondiente al tipo del contenido del campo
      * @return string
      */
-    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){        
+    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){
         $filtro = "";
         if($valor != ""){
             switch($tipo){
                 case MYSQL_TYPE_STRING: $valor = $this->escStr($valor); break;
-                case MYSQL_TYPE_INT:                   
+                case MYSQL_TYPE_INT:
                     $valor = $this->escInt($valor);
                     break;
-                case MYSQL_TYPE_FLOAT: 
+                case MYSQL_TYPE_FLOAT:
                     $valor = $this->escFloat($valor);
                     break;
                 case MYSQL_TYPE_DATE:
@@ -234,17 +234,17 @@ abstract class Intermediary
                 $aFechas['fechaHasta'] = Utils::fechaAFormatoSQL($aFechas['fechaHasta']);
             }
         }
-               
+
         if(
             array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde'] &&
             array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta'])
-        {            
+        {
             return $this->crearFiltroFecha($campo, $aFechas['fechaDesde'], $aFechas['fechaHasta']);
         }
-        
+
         if(array_key_exists("fechaDesde", $aFechas) && null != $aFechas['fechaDesde'])
         {
-            return $this->crearFiltroFecha($campo, $aFechas['fechaDesde']);            
+            return $this->crearFiltroFecha($campo, $aFechas['fechaDesde']);
         }
 
         if(array_key_exists("fechaHasta", $aFechas) && null != $aFechas['fechaHasta'])

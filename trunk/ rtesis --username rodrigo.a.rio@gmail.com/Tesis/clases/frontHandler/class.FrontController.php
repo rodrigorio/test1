@@ -10,23 +10,23 @@
 class FrontController
 {
     private $baseUrl = null;
-	
+
     /**
      * Array of invocation parameters to use when instantiating action
      */
-    private $invokeParams = array();	
-	
+    private $invokeParams = array();
+
     private $dispatcher = null;
-	
+
     /**
      * Instance of PluginBroker
      */
-    private $plugins = null;	
-	
+    private $plugins = null;
+
     private $request = null;
-	
-    private $router = null;	
-	
+
+    private $router = null;
+
     private $response = null;
 
     /**
@@ -35,15 +35,15 @@ class FrontController
      * @var boolean
      */
     protected $returnResponse = false;
-	
+
     /**
      * Whether or not exceptions encountered in {@link dispatch()} should be
      * thrown or trapped in the response object
      */
     private $throwExceptions = false;
-	
+
     private static $instance = null;
-	
+
     /**
      * Constructor
      *
@@ -57,8 +57,8 @@ class FrontController
     private function __construct()
     {
         $this->plugins = new PluginBroker();
-    }	
-		
+    }
+
     /**
      * Singleton instance
      *
@@ -72,7 +72,7 @@ class FrontController
 
         return self::$instance;
     }
-	
+
     /**
      * Set request class/object
      *
@@ -80,7 +80,7 @@ class FrontController
      */
     public function setRequest($request)
     {
-        if (!$request instanceof HttpRequest) {
+        if (!$request instanceof Request) {
             throw new Exception('Invalid request class');
         }
         $this->request = $request;
@@ -93,8 +93,8 @@ class FrontController
     public function getRequest()
     {
         return $this->request;
-    }	
-	
+    }
+
     /**
      * Set router class/object
      *
@@ -109,13 +109,13 @@ class FrontController
         }
         $router->setFrontController($this);
         $this->router = $router;
-	return $this;		
+	return $this;
     }
 
     /**
      * Return the router object.
      *
-     * Instantiates a Router object if no router currently set.     
+     * Instantiates a Router object if no router currently set.
      */
     public function getRouter()
     {
@@ -123,8 +123,8 @@ class FrontController
             $this->setRouter(new Router());
         }
         return $this->router;
-    }	
-	
+    }
+
     /**
      * Set the dispatcher object.  The dispatcher is responsible for
      * instantiating the controller, and
@@ -134,8 +134,8 @@ class FrontController
     {
         $this->dispatcher = $dispatcher;
         return $this;
-    }	
-	
+    }
+
     /**
      * Return the dispatcher object.
      */
@@ -144,12 +144,12 @@ class FrontController
         /**
          * Instantiate the default dispatcher if one was not set.
          */
-        if (!$this->dispatcher instanceof Dispatcher) {            
+        if (!$this->dispatcher instanceof Dispatcher) {
             $this->dispatcher = new Dispatcher();
         }
         return $this->dispatcher;
     }
-	
+
     /**
      * Set response class/object
      *
@@ -164,7 +164,7 @@ class FrontController
      */
     public function setResponse($response)
     {
-        $response = new $response();        
+        $response = new $response();
         if (!$response instanceof Response) {
             throw new Exception('Invalid response class');
         }
@@ -211,7 +211,7 @@ class FrontController
 
         return $this->returnResponse;
     }
-	
+
     /**
      * Set the base URL used for requests
      *
@@ -243,8 +243,8 @@ class FrontController
         if((null !== ($request = $this->getRequest())) && (method_exists($request, 'setBaseUrl'))) {
             $request->setBaseUrl($base);
         }
-		
-	return $this;		
+
+	return $this;
     }
 
     /**
@@ -261,7 +261,7 @@ class FrontController
 
         return $this->baseUrl;
     }
-	
+
     /**
      * Add or modify a parameter to use when instantiating an action controller
      *
@@ -311,8 +311,8 @@ class FrontController
     public function getParams()
     {
         return $this->invokeParams;
-    }	
-	
+    }
+
     /**
      * Register a plugin.
      * @param  int $stackIndex Optional; stack index for plugin.
@@ -366,8 +366,8 @@ class FrontController
     public function getPlugins()
     {
         return $this->plugins->getPlugins();
-    }    
-	
+    }
+
     /**
      * Set the throwExceptions flag and retrieve current status
      *
@@ -385,15 +385,15 @@ class FrontController
             return $this;
         }
         return $this->throwExceptions;
-    }	
-    	
+    }
+
     /**
      * Dispatch an HTTP request to a controller/action.
      *
      */
     public function dispatch()
-    {        
-	$request = new HttpRequest();
+    {
+	    $request = new Request();
         $this->setRequest($request);
 
         /**
@@ -405,7 +405,7 @@ class FrontController
 
         $response = new Response();
         $this->setResponse($response);
-		
+
         /**
          * Register request and response objects with plugin broker
          */
@@ -418,7 +418,7 @@ class FrontController
          */
         $router = $this->getRouter();
         $router->setParams($this->getParams());
-		
+
         /**
          * Initialize dispatcher
          */
@@ -430,8 +430,8 @@ class FrontController
         try {
             /**
              * Route request to controller/action, if a router is provided
-             */	
-			
+             */
+
             /**
              * Notify plugins of router startup
              *
@@ -450,12 +450,12 @@ class FrontController
                 if ($this->throwExceptions()){
                     throw $e;
                 }
-                $this->response->setException($e);                
+                $this->response->setException($e);
             }
-														
+
             do {
                 $this->request->setDispatched(true);
-                				
+
                 /**
                  * Notify plugins of dispatch startup
                  *
@@ -510,16 +510,16 @@ class FrontController
                  *    Puede tener el permiso para eliminar, pero no para eliminar un id que no le pertenece.
                  *
                  * 3) Levantar parametros dinamicos segun los nuevos valores de request
-                 * 
+                 *
                  */
                 $this->plugins->postDispatch($this->request);
-				
+
             }while(!$this->request->isDispatched()); //si action tiro 404 o 401 entonces isDispatched = false y se ejecuta una nueva accion
         } catch (Exception $e) {
             if ($this->throwExceptions()) {
                 throw $e;
             }
-            $this->response->setException($e); 
+            $this->response->setException($e);
         }
 
         /**
@@ -537,7 +537,7 @@ class FrontController
             return $this->response;
         }
 
-        //envia headers e imprime el frame (body content)        
+        //envia headers e imprime el frame (body content)
         $this->response->sendResponse();
     }
 }

@@ -5,7 +5,7 @@
  * @author Matias Velilla
  */
 class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrategy
-{   
+{
     /**
      * Cantidad de segundos antes de que expiren los parametros dinamicos
      */
@@ -30,14 +30,14 @@ class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrat
         $this->parametrosDinamicos = new SessionNamespace('parametrosDinamicos');
     }
 
-    public function setRequest(HttpRequest $request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
         return $this;
     }
 
     private function getGrupoControladorParametro()
-    {        
+    {
         $modulo = $this->request->getModuleName();
         $controlador = $this->request->getControllerName();
         if(empty($modulo)||empty($controlador)){
@@ -68,7 +68,7 @@ class PluginParametrosDinamicosSession implements PluginParametrosDinamicosStrat
      * En sistemas donde el usuario pueda setear sus parametros, aca hay que cargar tambien los valores de los parametros de usuario.
      */
     public function cargarParametrosDinamicos()
-    {        
+    {
         $grupoControlador = $this->getGrupoControladorParametro();
         list($grupoUsuario, $iUsuarioId) = $this->getGrupoUsuarioParametro();
 

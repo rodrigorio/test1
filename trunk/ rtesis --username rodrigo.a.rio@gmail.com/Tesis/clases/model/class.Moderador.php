@@ -38,7 +38,7 @@ class Moderador extends PerfilAbstract
      * Esta funcion debe ser utilizada SOLO CON USUARIOS QUE SE ENCUENTREN LOGEADOS.
      * Si un visitante solicita una accion restringida se debe redireccionar SIEMPRE a login.
      *
-     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma HttpRequest $request->getPathInfo()     *
+     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma Request $request->getPathInfo()     *
      */
     public function getUrlRedireccion($pathInfo = false)
     {
@@ -58,7 +58,7 @@ class Moderador extends PerfilAbstract
      *
      * Se tendria que llamar de la siguiente manera: list($modulo,$controlador,$accion) = $administrador->getUrlRedireccionLoginDefecto();
      *
-     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma HttpRequest $request->getPathInfo()
+     * @return array|string 1)Modulo 2)Controlador 3) Accion o pathInfo, de la forma Request $request->getPathInfo()
      */
     public function getUrlRedireccionLoginDefecto($pathInfo = false)
     {

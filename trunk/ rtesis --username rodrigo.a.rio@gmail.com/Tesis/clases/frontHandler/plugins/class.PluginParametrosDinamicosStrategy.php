@@ -11,7 +11,7 @@
  */
 interface PluginParametrosDinamicosStrategy
 {
-    public function setRequest(HttpRequest $request);
+    public function setRequest(Request $request);
 
     /**
      * Carga todos los parametros dinamicos, los de entidad, los de controlador y los de sistema.

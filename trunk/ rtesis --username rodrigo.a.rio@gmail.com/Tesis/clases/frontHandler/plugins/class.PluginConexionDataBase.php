@@ -2,14 +2,14 @@
 /**
  * Establece una nueva conexion desde parametros estaticos y la asigna a los controladores de modelo.
  * Si no se puede establecer una conexion elimina el resto de los plugins y setea en el request una redireccion.
- * 
+ *
  * @author Matias Velilla
  */
 class PluginConexionDataBase extends PluginAbstract
 {
     private static $connected = false;
 
-    public function routeStartup(HttpRequest $request)
+    public function routeStartup(Request $request)
     {
         $front = FrontController::getInstance();
         $parametros = $front->getPlugin('PluginParametros');
@@ -28,8 +28,8 @@ class PluginConexionDataBase extends PluginAbstract
             AdminController::getInstance()->setDBDriver($oDB);
             IndexController::getInstance()->setDBDriver($oDB);
             SeguimientosController::getInstance()->setDBDriver($oDB);
-            self::$connected = true;           
-        }catch(Exception $e){                       
+            self::$connected = true;
+        }catch(Exception $e){
             self::$connected = false;
             //saco los plugins que no quiero que ya no quiero que se ejecuten
             $front->unregisterPlugin('PluginRedireccion404')
@@ -39,7 +39,7 @@ class PluginConexionDataBase extends PluginAbstract
         }
     }
 
-    public function preDispatch(HttpRequest $request)
+    public function preDispatch(Request $request)
     {
         if(!self::$connected)
         {
@@ -56,7 +56,7 @@ class PluginConexionDataBase extends PluginAbstract
     /**
      * Este flag estatico es para que las distintas clases puedan modificar su comportamiento
      * dependiendo si existe conexion a la base de datos o no.
-     * 
+     *
      * @return boolean
      */
     public static function isConnected()

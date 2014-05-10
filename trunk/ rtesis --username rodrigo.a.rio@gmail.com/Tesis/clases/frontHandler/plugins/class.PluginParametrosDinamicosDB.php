@@ -11,17 +11,17 @@ class PluginParametrosDinamicosDB implements PluginParametrosDinamicosStrategy
      * Nombre del controlador general para todo el sistema (corresponde con el contenido de los registros de la DB en tabla 'controladores_pagina')
      */
     const GRUPO_SISTEMA = 'sistema';
-    
+
     /**
      * Array con los valores de los parametros que se guardan en DB
-     * 
+     *
      * @var array
      */
     private $parametrosDinamicos = array();
 
     private $request;
 
-    public function setRequest(HttpRequest $request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
         return $this;
@@ -62,7 +62,7 @@ class PluginParametrosDinamicosDB implements PluginParametrosDinamicosStrategy
     {
         $grupoControlador = $this->getGrupoControladorParametro();
         list($grupoUsuario, $iUsuarioId) = $this->getGrupoUsuarioParametro();
-               
+
         if(!empty($grupoControlador))
         {
             $array = SysController::getInstance()->obtenerParametrosControlador($grupoControlador);

@@ -35,7 +35,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                                        'filtroPerfil' => 'u.perfiles_id',
                                        'filtroSuspendido' => 'u.activo');
 
-    public function __construct(HttpRequest $request, Response $response, array $invokeArgs = array()) {
+    public function __construct(Request $request, Response $response, array $invokeArgs = array()) {
         parent::__construct($request, $response, $invokeArgs);
 
         $this->usuariosControllerSession = new SessionNamespace('usuariosControllerSession');
@@ -74,7 +74,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     {
         try{
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            
+
             $this->setFrameTemplate()
                  ->setHeadTag();
 
@@ -90,8 +90,8 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("PanelAdminBlock", "");
             }
 
-            ///////////// ARMO LOS SELECTS DEL FORMULARIO DEL FILTRO            
-            
+            ///////////// ARMO LOS SELECTS DEL FORMULARIO DEL FILTRO
+
             //select especialidad
             $aEspecialidades = AdminController::getInstance()->obtenerEspecialidad();
             if(!empty($aEspecialidades)){
@@ -103,7 +103,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->parse("OptionFiltroEspecialidadBlock", true);
                 }
             }
-            
+
             //select perfil
             $aPerfilesSistema = AdminController::getInstance()->obtenerArrayPerfiles();
             foreach($aPerfilesSistema as $sDescripcion => $iPerfilId){
@@ -111,7 +111,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 $this->getTemplate()->set_var("sFiltroPerfil", $sDescripcion);
                 $this->getTemplate()->parse("OptionFiltroPerfilBlock", true);
             }
-            
+
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
             $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
@@ -119,7 +119,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $iRecordsTotal = 0;
             $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
-            
+
             $hrefEditarUsuario = "admin/usuarios-form";
 
             if(count($aUsuarios) > 0){
@@ -140,9 +140,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     if($oUsuario->isActivo()){
                         $this->getTemplate()->set_var("sSelectedUsuarioActivo", "selected='selected'");
                     }else{
-                        $this->getTemplate()->set_var("sSelectedUsuarioSuspendido", "selected='selected'");                        
+                        $this->getTemplate()->set_var("sSelectedUsuarioSuspendido", "selected='selected'");
                     }
-                    
+
                     $sNombreUsuario = $oUsuario->getApellido()." ".$oUsuario->getNombre();
                     $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
                     $sDocumento = $aTiposDocumentos[$oUsuario->getTipoDocumento()]." ".$oUsuario->getNumeroDocumento();
@@ -192,7 +192,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
            !$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
-        
+
         if($this->getRequest()->has('ver')){
             $this->verDatos();
             return;
@@ -202,7 +202,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->editarInformacion();
             return;
         }
-        
+
         if($this->getRequest()->has('borrarFotoPerfil')){
             $this->borrarFotoPerfil();
             return;
@@ -222,7 +222,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->checkNumeroDocumento();
             return;
         }
-        
+
         if($this->getRequest()->has('checkMailExiste')){
             $this->checkMail();
             return;
@@ -232,7 +232,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->masUsuarios();
             return;
         }
-        
+
         if($this->getRequest()->has('usuariosAutocomplete')){
             $this->usuariosAutocomplete();
             return;
@@ -270,24 +270,24 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     private function masUsuarios()
     {
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-        
+
         $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
-        
+
         $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "ajaxGrillaUsuariosBlock", "GrillaUsuariosBlock");
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-        
+
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
-        
-        $iRecordsTotal = 0;        
+
+        $iRecordsTotal = 0;
         $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
-        $hrefEditarUsuario = "admin/usuarios-form";       
+        $hrefEditarUsuario = "admin/usuarios-form";
         $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
-        
+
         if(count($aUsuarios) > 0){
 
-            $this->getTemplate()->set_var("NoRecordsUsuariosBlock", "");            
+            $this->getTemplate()->set_var("NoRecordsUsuariosBlock", "");
             $i=0;
             foreach($aUsuarios as $oUsuario){
 
@@ -336,12 +336,12 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
             $paramsPaginador[] = "masUsuarios=1";
             $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "admin/usuarios-procesar", "listadoUsuariosResult", $paramsPaginador);
-                        
+
         }else{
             $this->getTemplate()->set_var("UsuarioBlock", "");
-            $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");            
+            $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
         }
-        
+
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaUsuariosBlock', false));
     }
 
@@ -360,7 +360,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             }
         }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult); 
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
     }
 
     private function checkMail()
@@ -369,11 +369,11 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
         $iUsuarioId = $this->getRequest()->getPost('iUsuarioId');
         $email = $this->getRequest()->getPost('email');
-                
+
         if(ComunidadController::getInstance()->existeMailDb($email, $iUsuarioId)){
             $dataResult = '1';
         }
-        
+
         $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
     }
 
@@ -403,7 +403,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);            
+            $pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
             $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
             ComunidadController::getInstance()->borrarCurriculumUsuario($oUsuario, $pathServidor);
             $this->getJsonHelper()->setSuccess(true);
@@ -411,13 +411,13 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();                
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function borrarFotoPerfil()
     {
         $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
-        
+
         if(empty($iUsuarioId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
@@ -431,8 +431,8 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-        
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     public function cambiarPerfil()
@@ -444,7 +444,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         if(empty($iUsuarioId) || !$this->getRequest()->has('perfil')){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
-        
+
         $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
         AdminController::getInstance()->cambiarPerfilUsuario($oUsuario, $perfil);
     }
@@ -459,7 +459,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
-            $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);            
+            $oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
             $result = AdminController::getInstance()->cerrarCuentaIntegrante($oUsuario, $pathServidor);
 
             $this->restartTemplate();
@@ -484,7 +484,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     public function vistaImpresion()
@@ -503,7 +503,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->initOrderBy($sOrderBy = null, $sOrder = null, $this->orderByConfig);
             $iRecordsTotal = 0;
             $aUsuarios = AdminController::getInstance()->buscarUsuariosSistema($filtroSql, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit = null, $iItemsForPage = null);
-            
+
             if(count($aUsuarios) > 0){
 
                 $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
@@ -537,7 +537,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     if(null !== $oUsuario->getCargoInstitucion()){
                         $sCargo = $oUsuario->getCargoInstitucion();
                     }
-                                       
+
                     $this->getTemplate()->set_var("sDocumento", $sDocumento);
                     $this->getTemplate()->set_var("sNombre", $sNombre);
                     $this->getTemplate()->set_var("sEmail", $sEmail);
@@ -549,14 +549,14 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->parse('UsuarioPrintBlock', true);
                 }
-               
+
             }else{
                 $this->getTemplate()->set_var("UsuarioPrintBlock", "");
                 $this->getTemplate()->set_var("sNoRecords", "No hay usuarios cargados en el sistema");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-            
+
         }catch(Exception $e){
             print_r($e);
         }
@@ -578,7 +578,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                                           ->generarDescarga($oPlanilla);
                 return;
             }
-            
+
             $aHeadColumns = array(
                 "Tipo Documento",
                 "Numero Documento",
@@ -648,7 +648,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
             //genero el archivo y la descarga
             list($nombreArchivo, $tipoMimeArchivo, $nombreServidorArchivo) = $this->getExportarPlanillaHelper()->generarArchivo($iUsuarioId);
-            
+
             $oArchivo = new stdClass();
             $oArchivo->sNombre = $nombreArchivo;
             $oArchivo->sNombreServidor = $nombreServidorArchivo;
@@ -664,7 +664,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                 unset($this->usuariosControllerSession->oPlanilla);
             }
             $this->usuariosControllerSession->oPlanilla = $oPlanilla;
-                        
+
         }catch(Exception $e){
             unset($this->usuariosControllerSession->oPlanilla);
             throw new Exception($e->getMessage());
@@ -687,7 +687,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $aMeses = array('01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril', '05' => 'Mayo',
                             '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto', '09' => 'Septiembre', '10' => 'Octubre',
                             '11' => 'Noviembre', '12' => 'Diciembre');
-           
+
             //los formularios de creacion y edicion son distintos
             if(!$this->getRequest()->has('editar')){
 
@@ -728,7 +728,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sDescripcion", $value);
                     $this->getTemplate()->parse("OptionSelectAnio", true);
                 }
-                
+
             }else{
 
                 $iUsuarioId = $this->getRequest()->getParam('iUsuarioId');
@@ -994,9 +994,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
-        }            
+        }
     }
-    
+
     private function editarInformacion()
     {
         if($this->getRequest()->has('formInfoBasicaSubmit')){
@@ -1022,7 +1022,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         if($this->getRequest()->has('curriculum')){
             $this->procesarFormCurriculum();
             return;
-        }        
+        }
     }
 
     private function procesarFormInfoBasica(){
@@ -1031,10 +1031,10 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             if(empty($iUsuarioId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
-            
+
             //se fija si existe callback de jQuery y lo guarda, tmb inicializa el array que se va a codificar
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
+
             $usuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
 
             $tipoDocumento  = $this->getRequest()->getPost("tipoDocumento");
@@ -1180,7 +1180,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             if(empty($iUsuarioId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
-            
+
             $nombreInputFile = 'curriculum';
 
             $this->getUploadHelper()->setTiposValidosDocumentos();
@@ -1214,13 +1214,13 @@ class UsuariosControllerAdmin extends PageControllerAbstract
                     $respuesta = "1; ".$this->getTemplate()->pparse('curriculumActualForm', false);
 
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
-                }catch(Exception $e){                    
+                }catch(Exception $e){
                     $respuesta = "0; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                     return;
                 }
             }
-        }catch(Exception $e){            
+        }catch(Exception $e){
             $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
@@ -1279,7 +1279,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
     public function crear()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-                
+
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
@@ -1301,9 +1301,9 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $fechaNacimiento = implode('-', $aFechaNacimiento);
 
             $oUsuario->dFechaNacimiento = $fechaNacimiento;
-                      
+
             $oUsuario = Factory::getUsuarioInstance($oUsuario);
-            
+
             ComunidadController::getInstance()->guardarUsuario($oUsuario);
 
             $this->getJsonHelper()->setSuccess(true);
@@ -1314,7 +1314,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
-    
+
     private function verDatos()
     {
         try{
@@ -1322,7 +1322,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             if(empty($iUsuarioId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
-                        
+
             $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
             $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "popUpContent", "FichaUsuarioBlock");
 
@@ -1336,14 +1336,14 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             }else{
                 $this->getTemplate()->set_var("DescargarButton", "");
             }
-                        
+
             $iPaisId = "";
             $iProvinciaId = "";
             $iCiudadId = "";
             $sUbicacion = "";
             if(null != $oUsuario->getCiudad()){
-                $iCiudadId = $oUsuario->getCiudad()->getId();                                
-                $sUbicacion .= $oUsuario->getCiudad()->getNombre();                                                        
+                $iCiudadId = $oUsuario->getCiudad()->getId();
+                $sUbicacion .= $oUsuario->getCiudad()->getNombre();
                 if(null != $oUsuario->getCiudad()->getProvincia()){
                     $iProvinciaId = $oUsuario->getCiudad()->getProvincia()->getId();
                     $sUbicacion .= " ".$oUsuario->getCiudad()->getProvincia()->getNombre();
@@ -1435,7 +1435,7 @@ class UsuariosControllerAdmin extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
-            
+
             print_r($e->getMessage());
         }
     }
