@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html>
-    
+
 <head>
     <base href="{pathUrlBase}"><!--[if lte IE 8]></base><![endif]-->
 
@@ -29,42 +29,45 @@
 <body id="frameSeguimientos01" class="baco5">
     {msgTop}
     {msgTopWindow}
-    <div id="topHeader" class="topHeader01 bosh3">
-        <div id="topHeaderMenuLeft">
-            <ul class="m_horiz menu01 menuList iveal">
-                <li><a href="{topHeaderMenuHrefHome}"><span class="i bs home"></span> Inicio</a></li>
-                <li>
-                    <a href="{topHeaderMenuHrefComunidad}"><span class="i bs group"></span> Comunidad</a>
-                    <ul>
-                        <li><a href="{topHeaderMenuHrefPublicaciones}"><span class="i mi publish"></span> Publicaciones</a></li>
-                        <li><a href="{topHeaderMenuHrefInstituciones}"><span class="i mc bank"></span> Instituciones</a></li>
-                        <li><a href="{topHeaderMenuHrefDescargas}"><span class="i mi download"></span> Catalogo Descargas</a></li>
-                    </ul>
-                </li>
-                <li><a href="{topHeaderMenuHrefSeguimientos}" class="optionSelected"><span class="i mi relationshipPeople"></span> Seguimientos</a></li>
-            </ul>
-        </div>
-        <div id="topHeaderMenuRight">
-            <ul class="m_horiz menu01 menuList iveal">
-                <li>
-                    <a href="#"><span class="i bs user"></span> Cuenta</a>
-                    <ul style="left:-118px;">
-                        <li><a href="{topHeaderMenuHrefDatosPersonales}"><span class="i bs userEdit"></span> Datos Personales</a></li>
-                        <li><a href="{topHeaderMenuHrefInvitaciones}"><span class="i bs userAdd"></span> Invitaciones</a></li>
-                        <li><a href="{topHeaderMenuHrefSoporte}"><span class="i mi support"></span> Soporte</a></li>
-                        <li><a href="{topHeaderMenuHrefCerrarSesion}"><span class="i mi signOut"></span> Salir</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" title="Configuracion"><span class="i bs settings"></span></a>
-                    <ul style="left:-160px;">
-                        <li><a href="{topHeaderMenuHrefPreferencias}">Preferencias</a></li>
-                    </ul>
-                </li>
-            </ul>
+    <div class="topHeader01 wi100">
+        <div id="topHeader">
+            <div id="topHeaderMenuLeft">
+                <ul class="m_horiz menu01 menuList iveal">
+                    <li><a href="{topHeaderMenuHrefHome}"><span class="i bs home"></span> Inicio</a></li>
+                    <li>
+                        <a href="{topHeaderMenuHrefComunidad}"><span class="i bs group"></span> Comunidad</a>
+                        <ul>
+                            <li><a href="{topHeaderMenuHrefPublicaciones}"><span class="i mi publish"></span> Publicaciones</a></li>
+                            <li><a href="{topHeaderMenuHrefInstituciones}"><span class="i mc bank"></span> Instituciones</a></li>
+                            <li><a href="{topHeaderMenuHrefDescargas}"><span class="i mi download"></span> Catalogo Descargas</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{topHeaderMenuHrefSeguimientos}" class="optionSelected"><span class="i mi relationshipPeople"></span> Seguimientos</a></li>
+                </ul>
+            </div>
+            <div id="topHeaderMenuRight">
+                <ul class="m_horiz menu01 menuList iveal">
+                    <li>
+                        <a href="#"><span class="i bs user"></span> Cuenta</a>
+                        <ul style="left:-118px;">
+                            <li><a href="{topHeaderMenuHrefDatosPersonales}"><span class="i bs userEdit"></span> Datos Personales</a></li>
+                            <li><a href="{topHeaderMenuHrefInvitaciones}"><span class="i bs userAdd"></span> Invitaciones</a></li>
+                            <li><a href="{topHeaderMenuHrefSoporte}"><span class="i mi support"></span> Soporte</a></li>
+                            <li><a href="{topHeaderMenuHrefCerrarSesion}"><span class="i mi signOut"></span> Salir</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" title="Configuracion"><span class="i bs settings"></span></a>
+                        <ul style="left:-160px;">
+                            <li><a href="{topHeaderMenuHrefPreferencias}">Preferencias</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
+    <div class="wi100 baco1 grupo">
     <div id="centerHeader" class="centerHeader01 grupo baco1">
         <div id="logo">
             <a href="http://www.ufasta.edu.ar"><img src="gui/images/banners-logos/fasta.png" alt=""/></a>
@@ -102,27 +105,28 @@
         </div>
         <div id="dialog" title=""><span class="fowe_bo"></span></div>
     </div>
+    </div>
 
-    <div id="page2" class="pato3 baco1">
+    <div id="page2" class="pato baco1">
         <div id="header" class="baco2 bosh3">
             <div id="headerCont" class="grupo">
                 {iconoBlock}
                 <div class="fl_le">
                     <h2 class="co2 pato tesh">{sTituloSeccion}</h2>
-                </div>                                
+                </div>
             </div>
         </div>
         <div id="body" class="baco5 bosh4 grupo cl_bo">
             <div id="bodyCont">
                 <div id="leftCont" class="baco1 bo2 bora">
-                    {pageBodyLeftCont}                    
+                    {pageBodyLeftCont}
                 </div>
                 <div id="centerCont" class="baco1 bo2 bora">
                     {pageBodyCenterCont}
                 </div>
                 <div id="toTop"><span class="i32 bs arrowUp32 ihover"></span></div>
-            </div>            
-        </div>        
+            </div>
+        </div>
     </div>
 </body>
 </html>
