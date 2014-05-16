@@ -1,8 +1,7 @@
 <?php
+
 /**
  *
  * @author Andres
  */
-abstract class EntrevistaIntermediary extends Intermediary{
-	
-}
+abstract class EntrevistaIntermediary extends Intermediary{}

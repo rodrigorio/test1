@@ -5,7 +5,7 @@
  * El valor se determina solo al crear la unidad.
  */
 class Unidad{
-    
+
     const TIPO_EDICION_REGULAR = "regular";
     const TIPO_EDICION_ESPORADICA = "esporadica";
 
@@ -16,9 +16,9 @@ class Unidad{
     private $dFechaHora;
     private $bAsociacionAutomatica;
     private $eTipoEdicion;
-    
+
     /**
-     * Esta relacion se necesita porque pueden existir unidades creadas por usuario 
+     * Esta relacion se necesita porque pueden existir unidades creadas por usuario
      * que todavia no se asignaron a ningun seguimiento.
      * Si la unidad se crea desde el administrador entonces el integrante no existe y la propiedad se mantendra en null
      */
@@ -41,8 +41,8 @@ class Unidad{
      * Esta fecha es != null cuando la unidad esta borrada logicamente. guarda el dia en la que se borro.
      * Es necesaria para saber que unidades mostrar cuando se visualiza una entrada.
      */
-    protected $dFechaBorradoLogico = null;
-			
+    private $dFechaBorradoLogico = null;
+
     public function __construct(stdClass $oParams = null) {
         $vArray = get_object_vars($oParams);
         $vThisVars = get_class_vars(__CLASS__);
@@ -56,7 +56,7 @@ class Unidad{
             }
         }
     }
-	
+
     /**
      *  @param int $iId
      */
@@ -70,7 +70,7 @@ class Unidad{
     public function setNombre($sNombre){
         $this->sNombre = $sNombre;
     }
-    
+
     /**
      * @param string $sDescripcion
      */
@@ -97,13 +97,13 @@ class Unidad{
         }
         return $this->aVariables;
     }
-    
+
     public function addVariable($oVariable)
     {
         $this->aVariables[] = $oVariable;
         return $this;
     }
-    
+
     /**
      *  @return int $iId
      */
@@ -195,7 +195,7 @@ class Unidad{
     {
         return $this->eTipoEdicion == self::TIPO_EDICION_ESPORADICA ? true : false;
     }
-    
+
     public function isTipoEdicionRegular()
     {
         return $this->eTipoEdicion == self::TIPO_EDICION_REGULAR ? true : false;

@@ -1,7 +1,6 @@
 <?php
-/**
- * Description of class CiudadMySQLIntermediary
- */
+
+
 class PreguntaMySQLIntermediary extends PreguntaIntermediary
 {
     private static $instance = null;
@@ -24,7 +23,7 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
     }
     /*
      * Este obtener sirve para obtener tambien  los valores de las respuestas multiples choices cuando la entrevista este asociada a un seguimiento, para eso hay que agregar un filtro con el id de seguimiento
-     * 
+     *
      */
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
@@ -34,32 +33,32 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
             $sSQL = "SELECT
                         p.id as iId, p.descripcion as sDescripcion, p.tipo as sTipoPregunta, psr.respuesta as sRespuesta
                     FROM
-                       preguntas p 
+                       preguntas p
                     JOIN
                        preguntas_simples_respuestas psr
-                    ON 
+                    ON
                        p.id = psr.preguntas_id";
-                       
-            
+
+
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
             /*
-             * 
+             *
              */
 
             $db->query($sSQL);
-                                              
+
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-            
+
             if(empty($iRecordsTotal)){ return null; }
-            
+
             $aPreguntas = array();
             while($oObj = $db->oNextRecord()){
             	$oPregunta 		= new stdClass();
             	$oPregunta->iId 		= $oObj->iId;
             	$oPregunta->sDescripcion	= $oObj->sDescripcion;
-            	
+
             	switch($oObj->sTipoPregunta){
                     case "PreguntaSimple":{
                         $oPregunta = Factory::getPreguntaInstance($oPregunta);
@@ -72,7 +71,7 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
                         $oPregunta->setOpciones($aOpciones);
                         break;
                     }
-            	} 
+            	}
             	$aPreguntas[]		= $oPregunta;
             }
             return $aPreguntas;
@@ -80,9 +79,9 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
-       
-    
+
+
+
 	public  function insertar($oPregunta, $iEntrevistaId)
    {
 		try{
@@ -91,30 +90,30 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
                     " set descripcion =".$db->escape($oPregunta->getDescripcion(),true).", " .
                     " set tipo =".$db->escape($oPregunta->getTipo(),true)." , ".
 			        " entrevistas_id =".$db->escape($iEntrevistaId(),false,MYSQL_TYPE_INT)." ";
-			 
+
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    
+
 	public function actualizar($oPregunta, $iEntrevistaId)
    {
 		try{
 			$db = $this->conn;
-		        
+
 			$sSQL =	" update preguntas ".
                     " set descripcion =".$db->escape($oPregunta->getDescripcion(),true).", " .
 			        " set tipo =".$db->escape($oPregunta->getTipo(),true).", " .
                     " entrevistas_id =".escape($iEntrevistaId(),false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oPregunta->getId(),false,MYSQL_TYPE_INT)." " ;			 
+                    " where id =".$db->escape($oPregunta->getId(),false,MYSQL_TYPE_INT)." " ;
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -141,11 +140,11 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-	
+
 	public function actualizarCampoArray($objects, $cambios){
-		
+
 	}
- 	
+
 	public function existe($filtro){
     	try{
             $db = $this->conn;
@@ -154,21 +153,21 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        preguntas p 
+                        preguntas p
 					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false; 
+           	return false;
         }
-    
+
 }
 }

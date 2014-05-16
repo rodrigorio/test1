@@ -9,7 +9,7 @@ class VariableCualitativa extends VariableAbstract
     /**
      * array objetos Modalidad, nunca esta null porque es una relacion de composicion
      */
-    private $aModalidades;  	
+    private $aModalidades;
 
     /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Variable
@@ -19,22 +19,21 @@ class VariableCualitativa extends VariableAbstract
         $vArray = get_object_vars($oParams);
         $vThisVars = get_class_vars(__CLASS__);
         if(is_array($vArray)){
-                foreach($vArray as $varName => $value){
-                        if(array_key_exists($varName,$vThisVars)){
-                                $this->$varName = $value;
-                        }else{
-                                throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
-                        }
+            foreach($vArray as $varName => $value){
+                if(array_key_exists($varName,$vThisVars)){
+                    $this->$varName = $value;
+                }else{
+                    throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
                 }
+            }
         }
     }
-     
-     
-     /**
+
+    /**
      * En la clase VariableCualitativa es redeclarada para devolver true.
      */
     public function isVariableCualitativa(){ return true; }
-	
+
     /**
      *  @param Modalidad $oModalidad
      */

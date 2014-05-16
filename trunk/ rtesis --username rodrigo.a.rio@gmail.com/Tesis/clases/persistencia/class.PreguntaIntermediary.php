@@ -3,6 +3,4 @@
  *
  * @author Andres
  */
-abstract class PreguntaIntermediary extends Intermediary{
-	
-}
+abstract class PreguntaIntermediary extends Intermediary{}

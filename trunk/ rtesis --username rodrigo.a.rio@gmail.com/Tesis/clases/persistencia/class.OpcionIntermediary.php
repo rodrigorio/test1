@@ -3,6 +3,4 @@
  *
  * @author Andres
  */
-abstract class OpcionIntermediary extends Intermediary{
-	
-}
+abstract class OpcionIntermediary extends Intermediary{}

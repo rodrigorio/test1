@@ -5,14 +5,14 @@
  *
  * @author Andrés
  */
- abstract class VariableAbstract
+abstract class VariableAbstract
 {
     protected $iId;
     protected $sNombre;
     protected $sDescripcion;
     protected $dFecha;
     protected $valor = null;
-				
+
     /**
      * En la clase VariableNumerica es redeclarada para devolver true.
      */
@@ -25,7 +25,7 @@
      * En la clase VariableCualitativa es redeclarada para devolver true.
      */
     public function isVariableCualitativa(){ return false; }
-		
+
    /**
  	 *  @param int $iId
 	 */
@@ -45,12 +45,7 @@
 	public function setDescripcion($sDescripcion){
 		$this->sDescripcion = $sDescripcion;
 	}
-   /**
- 	 *  @param int $oUnidad
-	 */
-	public function setUnidadId($oUnidad){
-		$this->oUnidad=$oUnidad;
-	}	
+
 	/**
 	 *  @return int $iId
 	 */

@@ -42,7 +42,7 @@ class SeguimientosController
             return $oSeguimientoIntermediary->obtenerTiposSeguimientos();
         }catch(Exception $e){
             throw $e;
-        }        
+        }
     }
 
     public function guardarSeguimiento($oSeguimiento){
@@ -58,7 +58,7 @@ class SeguimientosController
     	try{
             $oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
             $filtro["s.usuarios_id"] = $oUsuario->getId();
-            
+
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             return $oSeguimientoIntermediary->buscar($filtro, $iRecordsTotal, $sOrderBy , $sOrder, $iIniLimit, $iRecordCount);
         }catch(Exception $e){
@@ -114,7 +114,7 @@ class SeguimientosController
      * Este es complejo:
      *
      * Primero hay que comprobar que no haya moderacion pendiente, sino no se pueden hacer cambios.
-     * 
+     *
      * Si el usuario que guarda es el que creo el discapacitado -> OK
      * Si el usuario que guarda no es el que creo el discapacitado -> agrega en tabla temporal.
      * (luego cuando se aprueban los cambios por el moderador se avisa al usuario que lo creo original).
@@ -123,7 +123,7 @@ class SeguimientosController
      * originalmente ya no existe en el sistema entonces el usuario pasa a tener el privilegio de modificar sin moderacion
      *
      * @return Array $result, $moderacion. Result es un boolean que dice si se guardo o no, $moderacion indica si se guardo con pendiente de moderacion
-     *     
+     *
      */
     public function guardarDiscapacitado($oDiscapacitado)
     {
@@ -131,12 +131,12 @@ class SeguimientosController
             //ojo, extraigo el objeto usuario del objeto perfil.
             $oUsuarioSesion = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-                                   
+
             //si se modifica (la persona ya existe) y hay moderacion pendiente no se permiten hacer cambios
             if(null !== $oDiscapacitado->getId() && $this->existeModeracionPendiente($oDiscapacitado)){
                 return array(false, false);
             }
-            
+
             //si el usuario que guarda no es el que creo la persona
             if(null !== $oDiscapacitado->getUsuario() && $oUsuarioSesion->getId() != $oDiscapacitado->getUsuario()->getId()){
                 //guarda en la tabla temporal con el usuario que modifica
@@ -151,7 +151,7 @@ class SeguimientosController
                 }
                 $result = $oDiscapacitadoIntermediary->guardar($oDiscapacitado);
                 return array($result, false);
-            }            
+            }
         }catch(Exception $e){
             throw $e;
         }
@@ -171,7 +171,7 @@ class SeguimientosController
             if(null !== $oDiscapacitado->getId() && $this->existeModeracionPendiente($oDiscapacitado)){
                 return array(false, false);
             }
-            
+
             //si el usuario que cambia la foto no es el que creo la persona
             if(null !== $oDiscapacitado->getUsuario() && $oUsuarioSesion->getId() != $oDiscapacitado->getUsuario()->getId()){
                 /*
@@ -179,14 +179,14 @@ class SeguimientosController
                  * el cambio de foto de perfil y guardar los datos en la tabla temporal.
                  *
                  * Ademas tengo que mantener la foto vieja por si se cancelan los cambios.
-                 * 
+                 *
                  */
                 $oFoto = new stdClass();
                 $oFoto->sNombreBigSize = $aNombreArchivos['nombreFotoGrande'];
                 $oFoto->sNombreMediumSize = $aNombreArchivos['nombreFotoMediana'];
                 $oFoto->sNombreSmallSize = $aNombreArchivos['nombreFotoChica'];
                 $oFotoPerfil = Factory::getFotoInstance($oFoto);
-                
+
                 $oDiscapacitado->setUsuario($oUsuarioSesion);
                 $oDiscapacitado->setFotoPerfil($oFotoPerfil);
 
@@ -195,7 +195,7 @@ class SeguimientosController
                 return array($result, true);
             }else{
                 //si el usuario que creo la persona ya no existe mas
-                if(null === $oDiscapacitado->getUsuario()){                    
+                if(null === $oDiscapacitado->getUsuario()){
                     //guardo el usuario actual con el privilegio de modificar sin moderacion
                     $oDiscapacitado->setUsuario($oUsuarioSesion);
                     $oDiscapacitadoIntermediary->guardar($oDiscapacitado);
@@ -204,7 +204,7 @@ class SeguimientosController
                 $result = ComunidadController::getInstance()->guardarFotoPerfil($aNombreArchivos, $pathServidor, $oDiscapacitado);
                 return array($result, false);
             }
-            
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -232,7 +232,7 @@ class SeguimientosController
     public function borrarDiscapacitado($iDiscapacitadoId, $pathServidor){
         try{
             $oDiscapacitadoIntermediary = PersistenceFactory::getDiscapacitadoIntermediary($this->db);
-            $result = false;                       
+            $result = false;
             if(!$oDiscapacitadoIntermediary->tieneSeguimientos($iDiscapacitadoId)){
 
                 $filtro = array('d.id' => $iDiscapacitadoId);
@@ -240,11 +240,11 @@ class SeguimientosController
                 $oDiscapacitado = $aDiscapacitado[0];
 
                 $result = $oDiscapacitadoIntermediary->borrar($iDiscapacitadoId);
-                
+
                 if($result && null !== $oDiscapacitado->getFotoPerfil()){
-                    
+
                     $aNombreArchivos = $oDiscapacitado->getFotoPerfil()->getArrayNombres();
-                    
+
                     foreach($aNombreArchivos as $nombreServidorArchivo){
                         $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
                         if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
@@ -311,7 +311,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * @return array|null
      */
@@ -325,7 +325,7 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
             return false;
-        }        
+        }
     }
 
     /**
@@ -341,9 +341,9 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
             return false;
-        }          
+        }
     }
-    
+
  /**
      * @return array|null
      */
@@ -357,14 +357,14 @@ class SeguimientosController
         }catch(Exception $e){
             throw $e;
             return false;
-        }          
+        }
     }
 
     public function eliminarSeguimiento($oSeguimiento, $pathServidorFotos, $pathServidorArchivos){
-        try{            
+        try{
             $aFotos = $oSeguimiento->getFotos();
             $aArchivos = $oSeguimiento->getArchivos();
-            
+
             $oSeguimientoIntermediary = PersistenceFactory::getSeguimientoIntermediary($this->db);
             $result = $oSeguimientoIntermediary->borrar($oSeguimiento);
             if($result){
@@ -378,7 +378,7 @@ class SeguimientosController
                             if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                                 unlink($pathServidorArchivo);
                             }
-                        }                        
+                        }
                     }
                 }
                 if(null != $aArchivos){
@@ -387,18 +387,18 @@ class SeguimientosController
                         if(is_file($pathServidorArchivo) && file_exists($pathServidorArchivo)){
                             unlink($pathServidorArchivo);
                         }
-                    }                    
+                    }
                 }
             }
-                        
-            return $result;            
-        }catch(Exception $e){            
+
+            return $result;
+        }catch(Exception $e){
             throw $e;
-        }    
+        }
     }
-    
+
     public function guardarAntecedentesFile($seguimiento, $nombreArchivo, $tipoMimeArchivo, $tamanioArchivo, $nombreServidorArchivo, $pathServidor) {
-    	try{           
+    	try{
             //creo el objeto archivo y lo guardo.
             $oArchivo = new stdClass();
             $oArchivo->sNombre 	= $nombreArchivo;
@@ -408,17 +408,17 @@ class SeguimientosController
             $antecedentes = Factory::getArchivoInstance($oArchivo);
 
             $antecedentes->setTipoAntecedentes();
-            
+
             //si ya tenia un archivo de antecedente el seguimiento borro el actual
             if(null !== $seguimiento->getArchivoAntecedentes()){
                 $this->borrarAntecedentesFile($seguimiento, $pathServidor);
             }
-            
+
             $seguimiento->setArchivoAntecedentes($antecedentes);
 
             $oArchivoIntermediary = PersistenceFactory::getArchivoIntermediary($this->db);
             return $oArchivoIntermediary->guardarAntecedentesFile($seguimiento);
-            
+
         }catch(Exception $e){
 
             $pathServidorArchivo = $pathServidor.$nombreServidorArchivo;
@@ -426,11 +426,11 @@ class SeguimientosController
                 unlink($pathServidorArchivo);
             }
             $usuario->setArchivoAntecedentes(null);
-            
+
             throw $e;
         }
     }
-    
+
     public function borrarAntecedentesFile($seguimiento, $pathServidor)
     {
     	try{
@@ -597,7 +597,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Obtener diagnostico de un seguimiento
      *
@@ -651,7 +651,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
      public function getNivelById($iNivelId)
       {
     	try{
@@ -677,9 +677,9 @@ class SeguimientosController
             return $oNivelIntermediary->existe($filtro);
         }catch(Exception $e){
             throw $e;
-        }  
+        }
     }
-    
+
     public function getAreaById($iAreaId)
       {
     	try{
@@ -698,14 +698,14 @@ class SeguimientosController
     }
 
     public function guardarDiagnostico($oDiagnostico){
-        try{          
-            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);                        
+        try{
+            $oDiagnosticoIntermediary = PersistenceFactory::getDiagnosticoIntermediary($this->db);
             return $oDiagnosticoIntermediary->guardar($oDiagnostico);
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
     public function getNiveles($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
@@ -715,7 +715,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     public function getCiclos($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
@@ -725,7 +725,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     public function getAreas($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
     {
     	try{
@@ -767,7 +767,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Obtener areas por id de año
      *
@@ -783,7 +783,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Obtener areas por id de ciclo
      *
@@ -810,16 +810,16 @@ class SeguimientosController
             return $oUsuarioIntermediary->obtenerUsuariosAsociadosPersona($iDiscapacitadoId);
         }catch(Exception $e){
             throw $e;
-        }         
+        }
     }
 
     /**
-     * Obtener Unidades 
+     * Obtener Unidades
      *
      */
    public function getUnidades($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount )
       {
-    	try{    		
+    	try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
         }catch(Exception $e){
@@ -850,38 +850,38 @@ class SeguimientosController
     public function getUnidadesDisponiblesBySeguimientoPersonalizado($oSeguimiento)
     {
         try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();            
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
             $filtro = array('u.usuarios_id' => $iUsuarioId,
                             'u.preCargada' => '0',
                             'u.asociacionAutomatica' => '0',
                             'u.borradoLogico' => '0',
                             'noAsociado' => $oSeguimiento->getId()
                             );
-                       
+
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);            
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
     /**
      * Todas las unidades sin asociar disponibles para asignar a un seguimiento personalizado
      */
     public function getUnidadesDisponiblesBySeguimientoSCC($oSeguimiento)
     {
         try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();            
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
             $filtro = array('u.preCargada' => '1',
                             'u.asociacionAutomatica' => '0',
                             'u.borradoLogico' => '0',
                             'noAsociado' => $oSeguimiento->getId()
                             );
-                       
+
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);            
+            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
@@ -894,13 +894,13 @@ class SeguimientosController
                 $precargada = "0";
             }else{
                 $precargada = "1";
-            }            
+            }
             $filtro = array('u.preCargada' => $precargada,
                             'u.asociacionAutomatica' => '0',
                             'u.tipoEdicion' => 'esporadica',
                             'u.borradoLogico' => '0',
                             'su.seguimientos_id' => $oSeguimiento->getId());
-            
+
             $iRecordsTotal = 0;
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -922,21 +922,21 @@ class SeguimientosController
     {
     	try{
             $eTipoEdicion = ($oEntrada->isRegular())?'regular':'esporadica';
-            
+
             //primero obtengo las unidades asociadas a la entrada
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             $aUnidades = $oUnidadIntermediary->obtenerUnidadesByEntrada($oEntrada->getId(), $eTipoEdicion);
-            
+
             //ahora asigno todas las variables a cada unidad filtrando por entrada
             if(count($aUnidades)>0){
                 foreach($aUnidades as $oUnidad){
-                    //agrego lista de variables con el valor correspondiente a la entrada                    
+                    //agrego lista de variables con el valor correspondiente a la entrada
                     $aVariables = $this->getVariablesContenidoByUnidadId($oEntrada->getId(), $oUnidad->getId());
                     $oUnidad->setVariables($aVariables);
                 }
             }
-            
-            return $aUnidades;            
+
+            return $aUnidades;
         }catch(Exception $e){
             throw $e;
         }
@@ -958,7 +958,7 @@ class SeguimientosController
             return $oUnidadIntermediary->obtenerMetadatosUnidad($iUnidadId, $iUsuarioId);
         }catch(Exception $e){
             throw $e;
-        }        
+        }
     }
 
     /**
@@ -974,7 +974,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Obtener variables por id de unidad
      *
@@ -987,7 +987,7 @@ class SeguimientosController
             if(!$bBorradoLogico){
                 $filtro['v.borradoLogico'] = "0";
             }
-            
+
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -998,6 +998,7 @@ class SeguimientosController
 
     /**
      * Devuelve array de variables para una unidad con el valor actual para una fecha en formato SQL
+     *
      */
     public function getVariablesContenidoByUnidadId($iEntradaId, $iUnidadId, $bBorradoLogico = true)
     {
@@ -1087,12 +1088,12 @@ class SeguimientosController
     {
     	try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            
+
             $filtro["u.usuarios_id"] = $iUsuarioId;
             $filtro["u.preCargada"] = "0";
             $filtro["u.asociacionAutomatica"] = "0";
             $filtro["u.borradoLogico"] = "0";
-            
+
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
@@ -1108,11 +1109,11 @@ class SeguimientosController
      * @param boolean $bBorradoLogico Si FALSE entonces no devuelve las unidades eliminadas
      */
     public function getUnidadesBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sTipoEdicion = null, $bAsociacionAutomatica = true, $sOrderBy = null, $sOrder = null)
-    {        
+    {
     	try{
             $filtro = array('su.seguimientos_id' => $iSeguimientoId);
             if(!$bBorradoLogico){
-                //no tiene que estar borrada la unidad 
+                //no tiene que estar borrada la unidad
                 $filtro['u.borradoLogico'] = "0";
             }
             if(null !== $sTipoEdicion){
@@ -1128,7 +1129,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Guardar Variables
      *
@@ -1143,7 +1144,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Guardar Unidades
      *
@@ -1183,7 +1184,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * recibe un array de 1 o N variables y las borra fisica o logicamente dependiendo el plazo dispuesto para la edicion de seguimientos.
      *
@@ -1191,12 +1192,12 @@ class SeguimientosController
      * sera borrada logicamente en el sistema.
      *
      * El metodo esta pensado para que pueda ser utilizado tanto en la eliminacion individual de una variable
-     * como en la eliminacion de una unidad con un conjunto N de variables. 
+     * como en la eliminacion de una unidad con un conjunto N de variables.
      */
     public function borrarVariables($aVariables)
     {
     	try{
-            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');            
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
             $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
 
             //genero un string con los ids separados con ',' para que se realize la transaccion en el sql.
@@ -1205,13 +1206,13 @@ class SeguimientosController
                 $sIds .= $oVariable->getId().",";
                 $sIds = substr($sIds, 0, -1);
             }
-            
+
             return $oVariableIntermediary->borrarVariables($sIds, $cantDiasExpiracion);
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
     public function isModalidadVariableUsuario($iModalidadId)
     {
         try{
@@ -1236,17 +1237,32 @@ class SeguimientosController
             $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->db);
 
             //si la modalidad se uso como valor de variable en seguimientos asociados el borrado es logico.
-            if($oModalidadIntermediary->isUtilizadaEnSeguimientoUsuario($iModalidadId, $iUsuarioId)){                
+            if($oModalidadIntermediary->isUtilizadaEnSeguimientoUsuario($iModalidadId, $iUsuarioId)){
                 return $oModalidadIntermediary->borradoLogico($iModalidadId);
             }else{
                 return $oModalidadIntermediary->borrar($iModalidadId);
             }
-            
+
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
+    public function getPreguntasRespuestasBySeguimientoId($iSeguimientoId, $iEntrevistaId, $bBorradoLogico = true)
+    {
+        try{
+            $filtro = array('e.id' => $iEntradaId, 'v.unidad_id' => $iUnidadId);
+            if(!$bBorradoLogico){
+                $filtro['v.borradoLogico'] = "0";
+            }
+            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oVariableIntermediary->obtenerContenido($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Obtener Objetivos Personalizados
      *
@@ -1255,7 +1271,7 @@ class SeguimientosController
      */
     public function getObjetivosPersonalizadosBySeguimientoId($iSeguimientoId, $sOrderBy, $sOrder)
       {
-    	try{    	    
+    	try{
             $filtro = array('op.seguimientos_personalizados_id' => $iSeguimientoId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
@@ -1296,11 +1312,11 @@ class SeguimientosController
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oObjetivoIntermediary->obtenerObjetivosPersonalizados($filtro, $iRecordsTotal, null, null, null, null);
-        }catch(Exception $e){            
+        }catch(Exception $e){
             throw $e;
         }
     }
-    
+
    /**
     * Obtener Objetivos Aprendizaje
     *
@@ -1326,9 +1342,9 @@ class SeguimientosController
                 'sxo.fechaCreacion' => $dFechaHora,
                 'sxo.fechaDesactivado' => $dFechaHora
             );
-            
+
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
-            $iRecordsTotal = 0;            
+            $iRecordsTotal = 0;
             return $oObjetivoIntermediary->obtenerObjetivosAprendizajeAsociadosSeguimientoScc($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
@@ -1342,7 +1358,7 @@ class SeguimientosController
     public function getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoSCCId, $iObjetivoId)
       {
     	try{
-            $filtro = array('sxo.seguimientos_scc_id' => $iSeguimientoSCCId, 
+            $filtro = array('sxo.seguimientos_scc_id' => $iSeguimientoSCCId,
                             'sxo.objetivos_aprendizaje_id' => $iObjetivoId);
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             $iRecordsTotal = 0;
@@ -1409,20 +1425,20 @@ class SeguimientosController
      *  Internamente se guarda la relacion entre seguimiento scc y objetivo aprendizaje
      */
     public function guardarObjetivoAprendizajeSeguimientoScc($oObjetivoAprendizaje, $iSeguimientoSCCId){
-        try{        	      		
+        try{
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoAprendizajeSeguimientoScc($oObjetivoAprendizaje, $iSeguimientoSCCId);
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
     /**
      * Guardar Objetivos Personalizados verifica que sea el usuario que creo el seguimiento
      */
     public function guardarObjetivoPersonalizado($oObjetivo, $iSeguimientoId = null)
     {
-        try{            
+        try{
             $oObjetivoIntermediary = PersistenceFactory::getObjetivoIntermediary($this->db);
             return $oObjetivoIntermediary->guardarObjetivoPersonalizadoSeguimiento($oObjetivo, $iSeguimientoId);
         }catch(Exception $e){
@@ -1487,29 +1503,29 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Guardar Ejes Tematicos con estado inicial en un seguimiento SCC
      *
      */
     public function guardarEstadoInicial($oDiagnosticoSCC){
-        try{            
+        try{
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->guardarEstadoInicial($oDiagnosticoSCC);
         }catch(Exception $e){
             throw $e;
         }
     }
-            
+
     public function eliminarEstadoInicial($iEjeTematicoId, $iDiagnosticoSCCId){
-        try{        	        	
+        try{
             $oEjeTematicoIntermediary = PersistenceFactory::getEjeTematicoIntermediary($this->db);
             return $oEjeTematicoIntermediary->eliminarEstadoInicial($iEjeTematicoId, $iDiagnosticoSCCId);
         }catch(Exception $e){
             throw $e;
         }
-    }     
-    
+    }
+
     public function getDiagnosticoSeguimientoSCCById($iSeguimientoId)
     {
     	try{
@@ -1521,7 +1537,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     public function getDiagnosticoSeguimientoPersonalizadoById($iSeguimientoId)
     {
     	try{
@@ -1533,7 +1549,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      *  Obtiene el eje tematico By Id
      */
@@ -1553,7 +1569,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     /**
      * Devuelve true si  pertenece a un seguimiento creado por el usuario que esta logueado.
      *
@@ -1681,7 +1697,7 @@ class SeguimientosController
      */
     public function isUnidadAsociadaSeguimiento($iUnidadId, $iSeguimientoId)
     {
-        try{            
+        try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
             return $oUnidadIntermediary->isUnidadSeguimiento($iUnidadId, $iSeguimientoId);
         }catch(Exception $e){
@@ -1721,7 +1737,7 @@ class SeguimientosController
     {
         try{
             $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();            
+            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();
             return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId, $iCantDiasEdicion);
         }catch(Exception $e){
             throw $e;
@@ -1752,34 +1768,6 @@ class SeguimientosController
     }
 
     /**
-     * Obtener opciones  por id de pregunta
-     *
-     */
-    public function getOpcionesByPreguntaId($iPreguntaId)
-    {
-    	try{
-            $filtro = array('p.id' => $iPreguntaId);
-            $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
-            $iRecordsTotal = 0;
-            return $oOpcionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-    
-    public function getPreguntasByEntrevistaId($iEntevistaId)
-    {
-    	try{
-            $filtro = array('e.id' => $iEntrevistaId);
-            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
-            $iRecordsTotal = 0;
-            return $opreguntasIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-        }catch(Exception $e){
-            throw $e;
-        }
-    }
-
-    /**
      * Se fija que un seguimiento tenga asociado las entidades necesarias previas a ingresar entradas por fecha
      *
      * al menos un objetivo ACTIVO.
@@ -1800,7 +1788,7 @@ class SeguimientosController
                 return false;
             }
 
-            //al menos un objetivo activo                        
+            //al menos un objetivo activo
             if($oSeguimiento->getObjetivos() === null){
                 return false;
             }else{
@@ -1853,7 +1841,7 @@ class SeguimientosController
             return $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
-        }            
+        }
     }
 
     public function getEntradaPorFechaBySeguimientoId($iSeguimientoId, $dFecha)
@@ -1881,11 +1869,11 @@ class SeguimientosController
     {
     	try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
-            
+
             $sOrderBy = "e.fecha"; $sOrder = "desc";
             $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.tipoEdicion' => 'regular');
             $iRecordsTotal = 0;
-            
+
             $aEntrada = $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, 0, 1);
 
             if(null !== $aEntrada){
@@ -1953,8 +1941,8 @@ class SeguimientosController
 
     /**
      * Por ahora la regla es que cada nueva entrada tenga todas las unidades asociadas al seguimiento
-     * hasta la fecha actual 
-     *     
+     * hasta la fecha actual
+     *
      */
     public function crearEntrada($oSeguimiento, $sFechaNuevaEntrada)
     {
@@ -1990,11 +1978,11 @@ class SeguimientosController
             if($oSeguimiento->isSeguimientoSCC()){
                 $oEntrada = Factory::getEntradaSCCInstance($oEntrada);
             }
-            
+
             return $oEntrada;
         }catch(Exception $e){
             throw $e;
-        }            
+        }
     }
 
     /**
@@ -2005,11 +1993,11 @@ class SeguimientosController
      *
      */
     public function crearEntradaUnidadEsporadica($oSeguimiento, $iUnidadId, $sFechaNuevaEntrada)
-    {        
+    {
         try{
             $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
             $oUltimaEntrada = $oUnidad->getUltimaEntrada($oSeguimiento->getId());
-            
+
             //primero compruebo que la fecha de la entrada sea efectivamente posterior a la ultima entrada (si es que existe)
             if($oUltimaEntrada !== null){
                 $dFechaUltimaEntrada = strtotime($oUltimaEntrada->getFecha());
@@ -2051,7 +2039,7 @@ class SeguimientosController
      */
     public function guardarEntrada($oEntrada)
     {
-        try{            
+        try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
             $result = $oEntradaIntermediary->guardar($oEntrada);
             return $result;
@@ -2082,10 +2070,10 @@ class SeguimientosController
      * @param string $dFechaCreacion formato yyyy-mm-dd
      */
     public function isEntidadEditable($dFechaCreacion)
-    {                
+    {
         $iCantDias = Utils::dateDiffDays($dFechaCreacion, date('Y-m-d h:i:s', time()));
         $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
-        
+
         if($iCantDias > $cantDiasExpiracion){
             return false;
         }else{
@@ -2107,15 +2095,15 @@ class SeguimientosController
     	try{
             $filtro = array('oe.seg_scc_x_obj_apr_obj_id' => $iObjetivoId,
                             'oe.seg_scc_x_obj_apr_seg_id' => $iSeguimientoSCCId);
-            
+
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
             return $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
-        }        
+        }
     }
-    
+
     public function obtenerEvolucionObjetivoSccByDate($iObjetivoId, $iSeguimientoSCCId, $dFecha)
     {
     	try{
@@ -2156,7 +2144,7 @@ class SeguimientosController
             throw $e;
         }
     }
-    
+
     public function obtenerEvolucionObjetivoPersonalizado($iObjetivoId)
     {
     	try{
@@ -2167,15 +2155,15 @@ class SeguimientosController
             return $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
-        }  
+        }
     }
-    
+
     public function obtenerEvolucionObjetivoPersonalizadoByDate($iObjetivoId, $dFecha)
     {
     	try{
             $filtro = array('oe.objetivos_personalizados_id' => $iObjetivoId,
                             'e.fecha' => $dFecha);
-            
+
             $oEvolucionIntermediary = PersistenceFactory::getEvolucionIntermediary($this->db);
             $iRecordsTotal = 0;
             $aEvolucion = $oEvolucionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
@@ -2283,7 +2271,7 @@ class SeguimientosController
             }
         }
 
-        //puedo devolver nulo o la fecha mas lejana de todos los objetivos. 
+        //puedo devolver nulo o la fecha mas lejana de todos los objetivos.
         return ($dFecha === null)?$dFecha:date("d/m/Y", $dFecha);
     }
 }
