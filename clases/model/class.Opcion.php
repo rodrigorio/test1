@@ -1,15 +1,15 @@
 <?php
+
  /**
- * @author Andres
- * Esta clase son las opciones a las preguntas multiple choice
- */
+  * @author Andres
+  */
 class Opcion{
+
 	private $iId;
 	private $sDescripcion;
-	
-		
+	private $iOrden;
+
  	/**
- 	 *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase 
 	 * @param stdClass $oParams
 	 */
 	public function __construct(stdClass $oParams = null){
@@ -25,29 +25,42 @@ class Opcion{
 			}
 		}
 	}
-     /**
+
+    /**
  	 *  @param int $iId
 	 */
 	public function setId($iId){
 		$this->iId = (int)$iId;
 	}
+
 	/**
 	 * @param string $sDescripcion
 	 */
 	public function setDescripcion($sDescripcion){
 		$this->sDescripcion = $sDescripcion;
 	}
+
     /**
      *  @return int $iId
      */
     public function getId(){
         return $this->iId ;
     }
-  
+
     /**
      * @return string $sDescripcion
      */
     public function getDescripcion(){
         return $this->sDescripcion;
+    }
+
+    public function getOrden()
+    {
+        return $this->iOrden;
+    }
+
+    public function setOrden($iOrden)
+    {
+        $this->iOrden = $iOrden;
     }
 }

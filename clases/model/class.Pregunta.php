@@ -1,14 +1,10 @@
 <?php
+
  /**
  * @author Andres
- * El tipo de pregunta es: "preguntas simples" o "preguntas con opciones o Multiples Choice"
+ *
  */
-class Pregunta{
-    
-    protected  $iId;
-    protected  $sDescripcion;
-    private    $sRespuesta = null;     
-      
+class Pregunta extends PreguntaAbstract{
 
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -19,63 +15,27 @@ class Pregunta{
                     $this->$varName = $value;
                 }else{
                     throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
-                    }
+                }
             }
         }
     }
+
     /**
-     * En la clase PreguntaMC es redeclarada para devolver true.
-     */
-    public function isPreguntaMC(){ return false; }
-     
-    
-    /**
-     *  @param int $iId
-     */
-    public function setId($iId){
-            $this->iId = (int)$iId;
-    }
-    /**
-     * @param string $sDescripcion
-     */
-    public function setDescripcion($sDescripcion){
-            $this->sDescripcion = $sDesccripcion;
-    }
-     /**
-     * @param string $sTipo 
-     * El tipo de pregunta es: "preguntas simples" o "preguntas con opciones"
-     */
-    public function setTipo($sTipo){
-            $this->sTipo = $sTipo;
-    }
-     /**
-     * @param string $sRespuesta
-     * El campo respuesta por defecto esta en null, cuando el tipo toma el valor pregunta simple
-     *  se coloca la respuesta en este campo
+     *  @param string $sRespuesta
      */
     public function setRespuesta($sRespuesta){
-            $this->sRespuesta = $sRespuesta;
-    }
-   
-    /**
-     *  @return int $iId
-     */
-    public function getId(){
-        return $this->iId ;
+        if(empty($sRespuesta)){ $sRespuesta = null; }
+        $this->respuesta = $sRespuesta;
     }
 
     /**
-     * @return string $sDescripcion
-     */
-    public function getDescripcion(){
-        return $this->sDescripcion;
-    }
-     /**
      * @return string $sRespuesta
      */
-    public function getRespuesta(){
-        return $this->sRespuesta;
-    }  
-    
-         
+    public function getRespuesta($nl2br = false){
+        if($nl2br && null !== $this->respuesta){
+            return nl2br($this->respuesta);
+        }else{
+            return $this->respuesta;
+        }
+    }
 }

@@ -15,16 +15,16 @@ abstract class EntradaAbstract
     const EDICION_ESPORADICA = "esporadica";
 
     protected $iId;
-    
+
     /**
      * Se asigna cuando se crean los objetos entrada.
-     * No significa una referencia doble, se necesita para poder levantar on demand 
+     * No significa una referencia doble, se necesita para poder levantar on demand
      * los conjuntos de objetivos y unidades
      */
     protected $iSeguimientoId;
 
     /**
-     * Fecha en la que se creo una entrada (puede no coincidir con la fecha de la entrada)
+     * Fecha en la que se creo la entrada (puede no coincidir con la fecha del calendario de la entrada)
      */
     protected $dFechaHoraCreacion;
 
@@ -36,7 +36,7 @@ abstract class EntradaAbstract
     protected $aObjetivos = null;
 
     protected $aUnidades = null;
-    
+
     /**
      * Si expiro el plazo de expiracion devuelve falso
      */
@@ -48,7 +48,7 @@ abstract class EntradaAbstract
     protected $bGuardada = false;
 
     protected $eTipoEdicion = self::EDICION_REGULAR;
-    
+
     protected function __construct(){}
 
     public function getId()
@@ -135,7 +135,7 @@ abstract class EntradaAbstract
             return $this->dFecha;
         }
     }
-    
+
     public function setFechaCreacion($dFechaHoraCreacion){
         $this->dFechaHoraCreacion = $dFechaHoraCreacion;
     }

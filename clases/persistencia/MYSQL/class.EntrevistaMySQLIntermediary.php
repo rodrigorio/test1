@@ -1,8 +1,5 @@
 <?php
- /* Description of class EntrevistaMySQLIntermediary
- *
- * @author Andres
- */
+
 class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
 {
     private static $instance = null;
@@ -31,7 +28,7 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
                         e.id as iId, e.descripcion as sDescripcio
                     FROM
                        entrevistas e ";
-             if(!empty($filtro)){     
+             if(!empty($filtro)){
                     	$sSQL .="WHERE".$this->crearCondicionSimple($filtro);
                     }
 
@@ -60,29 +57,29 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
 			$db = $this->conn;
 			$sSQL =	" insert into entrevistas ".
                     " set descripcion =".$db->escape($oEntrevista->getDescripcion(),true).", ";
-                   
-			 
+
+
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    
+
 	public  function actualizar($oEntrevista)
     {
 		try{
 			$db = $this->conn;
-		        
+
 			$sSQL =	" update entrevistas ".
                     " set descripcion =".$db->escape($oEntrevista->getDescripcion(),true)." " .
-                    " where id =".$db->escape($oEntrevista->getId(),false,MYSQL_TYPE_INT)." " ;			 
+                    " where id =".$db->escape($oEntrevista->getId(),false,MYSQL_TYPE_INT)." " ;
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -109,11 +106,11 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-	
+
 	public function actualizarCampoArray($objects, $cambios){
-		
+
 	}
- 	
+
 	public function existe($filtro){
     	try{
             $db = $this->conn;
@@ -122,20 +119,20 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        entrevistas e 
+                        entrevistas e
 					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false; 
+           	return false;
         }
     }
 }

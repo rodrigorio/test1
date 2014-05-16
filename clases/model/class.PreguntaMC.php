@@ -1,13 +1,13 @@
 <?php
+
 /**
  * @author Andres
- * Esta clase es redefinida para guardar las preguntas cuando el tipo es Multiples Choise 
+ *
  */
-class PreguntaMC extends Pregunta{
-               
-    private $oOpcion = null;
+class PreguntaMC extends PreguntaAbstract
+{
     private $aOpciones = null;
-    
+
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
         $vThisVars = get_class_vars(__CLASS__);
@@ -17,49 +17,47 @@ class PreguntaMC extends Pregunta{
                     $this->$varName = $value;
                 }else{
                     throw new Exception("Unknown property $varName in "  . __CLASS__,-1);
-                    }
+                }
             }
         }
     }
-     /**
-     * En la clase PreguntaMC es redeclarada para devolver true.
-     */
+
     public function isPreguntaMC(){ return true; }
-    /**
-     * En este metodo como el tipo de pregunta es con opciones guardo el objeto opción.
-     */
+
     public function setRespuesta($oOpcion){
-        $this->oOpcion = $oOpcion;
+        $this->respuesta = $oOpcion;
         return $this;
     }
-    /**
-     * En este metodo como el tipo de pregunta es con opciones guardo el array de  opciones de la pregunta.
-     */
-    public function setOpciones($aOpciones){
-        $this->aOpciones = $aOpciones;
-        return $this;
-    }
-      /**
-     * @return object $oOpcion
-     * 
-     * En este metodo como el tipo de pregunta es con opciones devuelvo el objeto opción.
-     */
-     
+
+   /**
+    * @return Opcion corresponde a la respuesta marcada
+    */
     public function getRespuesta(){
-           
-        return $this->oOpcion;
+        return $this->respuesta;
     }
-        
-     /**
-     * @return array $aOpciones
-     * 
-     * Este metodo devuelve las opciones de esta pregunta a ser seleccionada.
+
+    /**
+     * Si el valor !== null entonces devuelve el string que describe la opcion seleccionada como respuesta
      */
+    public function getRespuestaStr()
+    {
+        if($this->respuesta !== null){
+            return $this->respuesta->getDescripcion();
+        }
+        return null;
+    }
+
     public function getOpciones()
     {
-        if($this->aOpciones === null){
-            $this->aOpciones = SeguimientosController::getInstance()->getOpcionesByPreguntaId($this->iId);
-        }
         return $this->aOpciones;
-    }      
+    }
+
+    public function setOpciones($aOpciones)
+    {
+        $this->aOpciones = $aOpciones;
+    }
+
+    public function addOpcion($oOpcion){
+        $this->aOpciones[] = $oOpcion;
+    }
 }

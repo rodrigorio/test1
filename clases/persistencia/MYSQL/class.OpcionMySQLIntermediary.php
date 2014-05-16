@@ -1,9 +1,5 @@
 <?php
-/**
- * Description of class OpcionMySQLIntermediary
- *
- * @author Andres
- */
+
 class OpcionMySQLIntermediary extends OpcionIntermediary
 {
     private static $instance = null;
@@ -24,6 +20,7 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
         }
         return self::$instance;
     }
+
      public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone ($this->conn);
@@ -33,17 +30,17 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
                         po.id as iId, po.descripcion as sDescripcion
                     FROM
                        preguntas_opciones po";
-            
+
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
 
             $db->query($sSQL);
-                                              
+
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-            
+
             if(empty($iRecordsTotal)){ return null; }
-            
+
             $aOpciones = array();
             while($oObj = $db->oNextRecord()){
             	$oOpcion 		= new stdClass();
@@ -56,7 +53,7 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
 	public  function insertar($oOpcion, $iPreguntaId)
    {
 		try{
@@ -64,29 +61,29 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
 			$sSQL =	" insert into preguntas_opciones ".
                     " set descripcion =".$db->escape($oOpcion->getDescripcion(),true)." , " .
                     " preguntas_id =".escape($iPreguntaId,false,MYSQL_TYPE_INT)." ";
-			 
+
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-    
+
 	public function actualizar($oOpcion, $iPreguntaId)
    {
 		try{
 			$db = $this->conn;
-	        
+
 			$sSQL =	" update preguntas_opciones ".
                     " set descripcion =".$db->escape($oOpcion->getDescripcion(),true).", " .
                      " preguntas_id =".escape($iPreguntaId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oOpcion->getId(),false,MYSQL_TYPE_INT)." " ;			 
+                    " where id =".$db->escape($oOpcion->getId(),false,MYSQL_TYPE_INT)." " ;
 			 $db->execSQL($sSQL);
 			 $db->commit();
 
-             
+
 		}catch(Exception $e){
 			throw new Exception($e->getMessage(), 0);
 		}
@@ -113,11 +110,11 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
 			throw new Exception($e->getMessage(), 0);
 		}
 	}
-	
+
 	public function actualizarCampoArray($objects, $cambios){
-		
+
 	}
- 	
+
 	public function existe($filtro){
     	try{
             $db = $this->conn;
@@ -126,20 +123,20 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        preguntas_opciones 
+                        preguntas_opciones
 					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false; 
+           	return false;
         }
     }
 
