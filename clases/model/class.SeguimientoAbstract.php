@@ -3,16 +3,16 @@
 /**
  * Description of classSeguimientoAbstract
  *
- * 
+ *
  */
 abstract class SeguimientoAbstract
 {
    /**
-    * Los valores tienen que corresponder con el enum de la tabla 
+    * Los valores tienen que corresponder con el enum de la tabla
     */
    const ESTADO_ACTIVO = "activo";
    const ESTADO_DETENIDO = "detenido";
-   
+
    protected $iId;
    protected $oDiscapacitado;
    protected $sFrecuenciaEncuentros;
@@ -37,7 +37,12 @@ abstract class SeguimientoAbstract
     * y todos los objetivos del seguimiento en esa fecha.
     */
    protected $aEntradas = null;
-   
+
+   /**
+    * Podran obtenerse las preguntas con sus respectivas respuestas desde esta asociacion
+    */
+   protected $aEntrevistas = null;
+
    /*
     * array objetos Foto
     */
@@ -56,7 +61,7 @@ abstract class SeguimientoAbstract
     protected $oAntecedentes;
 
     protected $oDiagnostico;
-        
+
     public function __construct(){}
 
     /**
@@ -67,7 +72,7 @@ abstract class SeguimientoAbstract
      * En la clase SeguimientoSCC es redeclarada para devolver true.
      */
     public function isSeguimientoSCC(){ return false; }
-   
+
     public function setId($id){
         $this->iId = $id;
     }
@@ -119,14 +124,14 @@ abstract class SeguimientoAbstract
     public function getUsuario(){
         return $this->oUsuario;
     }
-    
+
     public function setUsuarioId($iUsuarioId){
         $this->iUsuarioId = $iUsuarioId;
         if(!empty($iUsuarioId) && null !== $this->oUsuario && $this->oUsuario->getId() != $iUsuarioId){
             $this->oUsuario = ComunidadController::getInstance()->getUsuarioById($iUsuarioId);
         }
     }
-    
+
     public function getUsuarioId()
     {
         return $this->iUsuarioId;
@@ -239,7 +244,7 @@ abstract class SeguimientoAbstract
     {
         return $this->oAntecedentes;
     }
-    
+
     public function setArchivoAntecedentes($oAntecedentes){
         $this->oAntecedentes = $oAntecedentes;
     }
@@ -248,7 +253,7 @@ abstract class SeguimientoAbstract
     {
         return $this->aUnidades;
     }
-    
+
     public function setUnidades($aUnidades){
         $this->aUnidades = $aUnidades;
         return $this;
@@ -258,6 +263,14 @@ abstract class SeguimientoAbstract
     {
         $this->aUnidades[] = $oUnidad;
         return $this;
+    }
+
+    public function getEntrevistas()
+    {
+        if($this->aEntrevistas === null){
+            $this->aEntrevistas = SeguimientosController::getInstance()->getEntrevistasBySeguimientoId($this->iId);
+        }
+        return $this->aEntrevistas;
     }
 
     public function getEntradas($dFechaDesde = "", $dFechaHasta = "")
@@ -300,7 +313,7 @@ abstract class SeguimientoAbstract
     abstract public function getObjetivos();
     abstract public function setObjetivos($aObjetivos);
     abstract public function addObjetivo($aObjetivo);
-    
+
     abstract public function getDiagnostico();
     abstract public function setDiagnostico($oDiagnostico);
 }

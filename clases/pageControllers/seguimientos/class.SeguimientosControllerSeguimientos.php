@@ -11,7 +11,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
     const TIPO_SEGUIMIENTO_SCC_DESC = "Seguimiento por competencia curricular";
     const TIPO_SEGUIMIENTO_PERSONALIZADO_DESC = "Seguimiento personalizado";
-    
+
     private $orderByConfig = array('persona' => array('variableTemplate' => 'orderByPersona',
                                                       'orderBy' => 'p.nombre',
                                                       'order' => 'desc'),
@@ -50,10 +50,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         return $this;
     }
-    
+
     private function setJSSeguimientos(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "jsContent", "JsContent");
-        return $this;    	
+        return $this;
     }
     private function setJSAntecedentes(){
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/antecedentes.gui.html", "jsContent", "JsContent");
@@ -71,7 +71,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/pronostico.gui.html", "jsContent", "JsContent");
         return $this;
     }
-    
+
     private function setMenuDerechaHome()
     {
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerCont", "PageRightInnerContHomeBlock");
@@ -81,7 +81,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("hrefListadoSeguimientos", $this->getUrlFromRoute("seguimientosIndexIndex", true));
 
         $this->getTemplate()->set_var("hrefListadoUnidadesVariables", $this->getUrlFromRoute("seguimientosUnidadesIndex", true));
-        $this->getTemplate()->set_var("hrefListadoPlantillasEntrevistas", "");
+        $this->getTemplate()->set_var("hrefListadoPlantillasEntrevistas", $this->getUrlFromRoute("seguimientosEntrevistasIndex", true));
 
         return $this;
     }
@@ -112,7 +112,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
         }
     }
-    
+
     static function setFichaPersonaSeguimiento(Templates $template, UploadHelper $oUploadHelper, $oDiscapacitado)
     {
         $template->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "fichaPersona", "PageRightInnerContFichaPersonaBlock");
@@ -134,19 +134,19 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $template->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
         $template->set_var("scrFotoPerfilActual", $pathFotoServidorSmallSize);
     }
-    
+
     public function index(){
         $this->listar();
     }
 
     public function listar()
     {
-        try{            
+        try{
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
                  ->setHeadTag()
                  ->setMenuDerechaHome();
-                 
+
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
@@ -156,7 +156,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "ListadoSeguimientosBlock");
 
-            //select form filtro                       
+            //select form filtro
             $aTiposSeguimientos = SeguimientosController::getInstance()->obtenerTiposSeguimiento();
             foreach ($aTiposSeguimientos as $value => $descripcion){
                 $this->getTemplate()->set_var("sSeguimientoTipoValue", $value);
@@ -169,7 +169,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $iRecordsTotal = 0;
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            
+
             $filtro["u.id"] = $perfil->getUsuario()->getId();
             $aSeguimientos = SeguimientosController::getInstance()->buscarSeguimientos($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
@@ -177,7 +177,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if(count($aSeguimientos) > 0){
 
                 $this->getTemplate()->set_var("NoRecordsGrillaSeguimientosBlock", "");
-                
+
             	foreach ($aSeguimientos as $oSeguimiento){
 
                     $sEstadoSeguimiento = $oSeguimiento->getEstado();
@@ -186,7 +186,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
                     $this->getTemplate()->set_var("sSeguimientoPersona", $oSeguimiento->getDiscapacitado()->getNombreCompleto());
                     $this->getTemplate()->set_var("iPersonaId", $oSeguimiento->getDiscapacitado()->getId());
-                    
+
                     $this->getTemplate()->set_var("sSeguimientoTipo", $aTiposSeguimientos[get_class($oSeguimiento)]);
                     $this->getTemplate()->set_var("sSeguimientoPersonaDNI", $oSeguimiento->getDiscapacitado()->getNumeroDocumento());
                     $this->getTemplate()->set_var("sSeguimientoFechaCreacion", Utils::fechaFormateada($oSeguimiento->getFechaCreacion()));
@@ -214,7 +214,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }
 
                     $this->getTemplate()->set_var("hrefAmpliarSeguimiento", $hrefAmpliarSeguimiento);
-                                                            
+
                     $srcAvatarPersona = $this->getUploadHelper()->getDirectorioUploadFotos().$oSeguimiento->getDiscapacitado()->getNombreAvatar();
                     $this->getTemplate()->set_var("scrAvatarPersona", $srcAvatarPersona);
 
@@ -240,7 +240,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }else{
                         $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
                     }
-                    
+
                     $this->getTemplate()->parse("SeguimientoBlock", true);
             	}
 
@@ -255,9 +255,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
          }catch(Exception $e){
             print_r($e);
-        } 
-    }       
-    
+        }
+    }
+
     public function buscarSeguimientos()
     {
         //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
@@ -266,11 +266,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
 
         $this->initFiltrosForm($filtroSql, $paramsPaginador, $this->filtrosFormConfig);
-        
+
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "ajaxGrillaSeguimientosBlock", "GrillaSeguimientosBlock");
-                
+
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-        
+
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
         $iRecordsTotal = 0;
@@ -348,7 +348,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->set_var("sUltimaModificacion", "El Seguimiento no posee entradas por fecha");
                 }
 
-                $this->getTemplate()->parse("SeguimientoBlock", true);                               
+                $this->getTemplate()->parse("SeguimientoBlock", true);
             }
 
             $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/buscar-seguimientos", "listadoSeguimientosResult", $paramsPaginador);
@@ -364,7 +364,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     /**
      * Form Nuevo Seguimiento
      */
-    public function nuevoSeguimiento(){        
+    public function nuevoSeguimiento(){
         try{
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
@@ -387,7 +387,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("sSeguimientoSCCNombre", $aTiposSeguimientos['SeguimientoSCC']);
             $this->getTemplate()->set_var("sSeguimientoPersonalizadoValue", "SeguimientoPersonalizado");
             $this->getTemplate()->set_var("sSeguimientoPersonalizadoNombre", $aTiposSeguimientos['SeguimientoPersonalizado']);
-            
+
             $aPracticas = SeguimientosController::getInstance()->obtenerPracticas();
             foreach($aPracticas as $oPractica){
                 $this->getTemplate()->set_var("iPracticaId", $oPractica->getId());
@@ -396,7 +396,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-            
+
          }catch(Exception $e){
             print_r($e);
         }
@@ -425,7 +425,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $aSeguimientos = SeguimientosController::getInstance()->obtenerSeguimientos($filtro, $iRecordsTotal, null, null, null, null);
             if(count($aSeguimientos) > 2){
                 $this->getJsonHelper()->setSuccess(false)->setMessage("La persona a la que quiere hacer un seguimiento ya posee 2. No se puede agregar mas de 2 seguimientos a una persona.");
-                $this->getJsonHelper()->sendJsonAjaxResponse(); 
+                $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
@@ -440,7 +440,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $oSeguimiento->sDiaHorario = $sDiaHorario;
             $oSeguimiento->oDiscapacitado = $oDiscapacitado;
             $oSeguimiento->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
-                        
+
             switch($sTipoSeguimiento)
             {
                 case self::TIPO_SEGUIMIENTO_SCC:
@@ -449,7 +449,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 case self::TIPO_SEGUIMIENTO_PERSONALIZADO:
                     $oSeguimiento = Factory::getSeguimientoPersonalizadoInstance($oSeguimiento);
                     break;
-            }            
+            }
             $resultado = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
             if($resultado){
                 $this->getJsonHelper()->setMessage("El seguimiento fue creado con exito");
@@ -457,12 +457,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }else{
                 $this->getJsonHelper()->setSuccess(false);
             }
-            
+
         }catch(Exception $e){
            $this->getJsonHelper()->setMessage("Ocurrio un error, no se pudo crear el seguimiento");
            $this->getJsonHelper()->setSuccess(false);
         }
-        
+
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
@@ -489,7 +489,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
+
             $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
             if(empty($iSeguimientoId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
@@ -507,10 +507,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if(SeguimientosController::getInstance()->checkEntradasOK($oSeguimiento)){
                 $this->getJsonHelper()->setSuccess(true);
                 $redirect = $this->getUrlFromRoute("seguimientosEntradasIndex")."?iSeguimientoId=".$iSeguimientoId;
-                $this->getJsonHelper()->setRedirect($redirect);                
+                $this->getJsonHelper()->setRedirect($redirect);
             }else{
-                $this->getJsonHelper()->setSuccess(false);                
-                
+                $this->getJsonHelper()->setSuccess(false);
+
                 $tituloMensajeError = "Aún no se pueden cargar entradas";
                 $ficha = "MsgFichaInfoBlock";
                 $mensajeInfoError = "Para poder ingresar información por fecha en el seguimiento primero deben cargarse los Antecedentes, el Diagnóstico y al menos un Objetivo.";
@@ -542,7 +542,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
             $this->getJsonHelper()->sendJsonAjaxResponse();
 
-        }catch(Exception $e){            
+        }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
             $this->getJsonHelper()->sendJsonAjaxResponse();
         }
@@ -565,22 +565,22 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $iPracticaId = $oSeguimiento->getPractica()->getId();
         $sFrecuenciaEncuentros = $oSeguimiento->getFrecuenciaEncuentros();
         $sDiaHorario = $oSeguimiento->getDiaHorario();
-        
+
         $aPracticas = SeguimientosController::getInstance()->obtenerPracticas();
         foreach($aPracticas as $oPractica){
             $this->getTemplate()->set_var("iPracticaId", $oPractica->getId());
             $this->getTemplate()->set_var("sPracticaNombre", $oPractica->getNombre());
             if($oPractica->getId() == $iPracticaId){
                 $this->getTemplate()->set_var("sPracticaSelected", "selected='selected'");
-            }            
+            }
             $this->getTemplate()->parse("OptionPracticaBlock", true);
             $this->getTemplate()->set_var("sPracticaSelected", "");
         }
-        
+
         $this->getTemplate()->set_var("sFrecuenciaEncuentros", $sFrecuenciaEncuentros);
         $this->getTemplate()->set_var("sDiaHorario", $sDiaHorario);
 
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));      
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     public function guardarSeguimiento()
@@ -605,7 +605,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $oSeguimiento->setFrecuenciaEncuentros($this->getRequest()->getPost("frecuencias"));
 
             SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-            
+
             $this->getJsonHelper()->setMessage("El seguimiento se ha modificado con éxito. Los cambios se veran cuando refresque la pagina.");
             $this->getJsonHelper()->setSuccess(true);
         }catch(Exception $e){
@@ -614,9 +614,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
-    
+
     public function cambiarEstadoSeguimientos()
-    {        
+    {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
         $iIdSeguimiento = $this->getRequest()->getPost('iSeguimientoId');
@@ -625,13 +625,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if(empty($iIdSeguimiento) || empty($sEstadoSeguimiento)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
-        
+
         try{
             $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iIdSeguimiento);
 
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
-     
+
             if($oSeguimiento->getUsuarioId() != $iUsuarioId){
                 throw new Exception("No tiene permiso para modificar este seguimiento", 401);
             }
@@ -645,20 +645,20 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $oSeguimiento->setEstadoDetenido();
                     break;
             }
-                        
+
             SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
     }
-    
+
     public function editarAntecedentes()
     {
         $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
-        
+
         try{
             $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
@@ -677,7 +677,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
-            
+
             //titulo seccion
             if($oSeguimiento->isSeguimientoPersonalizado()){
                 $this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_PERSONALIZADO_DESC);
@@ -689,15 +689,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             //$this href para hashtags de los tabs
             $this->getTemplate()->set_var("thisHref", $this->getRequest()->getRequestUri());
-                      
+
             //form para ingresar uno nuevo
             $this->getUploadHelper()->setTiposValidosDocumentos();
             $this->getTemplate()->set_var("sTiposPermitidosArchivo", $this->getUploadHelper()->getStringTiposValidos());
             $this->getTemplate()->set_var("iTamanioMaximo", $this->getUploadHelper()->getTamanioMaximo());
             $this->getTemplate()->set_var("iMaxFileSizeForm", $this->getUploadHelper()->getMaxFileSize());
-            
+
             $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
-            
+
             $this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes());
 
             //si ya tiene un archivo de antecedentes que aparezca.
@@ -715,13 +715,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }else{
                 $this->getTemplate()->unset_blocks("ArchivoAntecedentesActualBlock");
             }
-            
+
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             $this->getResponse()->setBody("Ocurrio un error");
         }
     }
-    
+
     public function procesarAntecedentes(){
 
     	if($this->getRequest()->has('fileAntecedentesUpload')){
@@ -730,13 +730,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
 
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-                
+
     	if($this->getRequest()->has('formAntecedentes')){
             $this->guardarFormAntecedentes();
             return;
         }
     }
-    
+
     private function fileAntecedentesUpload()
     {
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
@@ -750,12 +750,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if($oSeguimiento->getUsuarioId() != $idItem){
             throw new Exception("No tiene permiso para editar este seguimiento", 401);
         }
-        
-        try{            
+
+        try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            			
+
             $this->getUploadHelper()->setTiposValidosDocumentos();
-            
+
             if($this->getUploadHelper()->verificarUpload($nombreInputFile)){
 
             	$pathServidor = $this->getUploadHelper()->getDirectorioUploadArchivos(true);
@@ -775,55 +775,55 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxAntecedentesActual', false);
             }
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
-			
+
         }catch(Exception $e){
             $respuesta = "0;; Error al guardar en base de datos";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
         }
     }
-    
+
     private function guardarFormAntecedentes()
     {
         $iSeguimientoId = $this->getRequest()->getParam('idSeguimiento');
-        
+
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
-        
+
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
 
             $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
-        
+
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $iUsuarioId = $perfil->getUsuario()->getId();
             if($oSeguimiento->getUsuarioId() != $iUsuarioId){
                 throw new Exception("No tiene permiso para editar este seguimiento", 401);
             }
-                        
+
             $sAntecedentes = $this->getRequest()->getPost('antecedentes');
-           
+
             $oSeguimiento->setAntecedentes($sAntecedentes);
             $resultado = SeguimientosController::getInstance()->guardarSeguimiento($oSeguimiento);
-            			
+
             if($resultado){
                 $this->getJsonHelper()->setSuccess(true);
             }else{
                 $this->getJsonHelper()->setSuccess(false);
             }
-            
+
         }catch(Exception $e){
            $this->getJsonHelper()->setSuccess(false);
         }
-               
+
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
-    
+
     public function eliminar()
     {
     	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
-        
+
     	if(empty($iSeguimientoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
     	}
@@ -857,17 +857,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);
             }
-    
-    	}catch(Exception $e){            
+
+    	}catch(Exception $e){
             $msg = "Ocurrio un error, no se ha podido eliminar el seguimiento";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
     	}
-    
+
     	$this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", $bloque);
     	$this->getTemplate()->set_var("sMensaje", $msg);
     	$this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
-    
+
     	$this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
@@ -885,15 +885,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-       
+
         $iUsuarioId = $perfil->getUsuario()->getId();
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para ver este seguimiento", 401);
         }
-        
+
         try{
             $aCurrentOptions[] = "currentOptionVerSeguimiento";
-            
+
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
                  ->setHeadTag();
@@ -922,7 +922,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->load_file_section("gui/vistas/seguimientos/seguimientos.gui.html", "pageRightInnerMainCont", "VerSeguimientoBlock");
 
         $oDiscapacitado = $oSeguimiento->getDiscapacitado();
-       
+
         $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
         $this->getTemplate()->set_var("sNombrePersona", $oDiscapacitado->getNombreCompleto());
         $this->getTemplate()->set_var("iPersonaId", $oDiscapacitado->getId());
@@ -941,7 +941,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
         $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
         $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
-        
+
         $this->getTemplate()->set_var("sFrecuenciaEncuentros", $oSeguimiento->getFrecuenciaEncuentros());
         $this->getTemplate()->set_var("sDiaHorarioEncuentros", $oSeguimiento->getDiaHorario());
         $this->getTemplate()->set_var("sTipoPractica", $oSeguimiento->getPractica()->getNombre());
@@ -1098,7 +1098,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->set_var("hrefDescargar", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oAntecedentes->getNombreServidor());
         }
-        
+
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
@@ -1117,10 +1117,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para ver este seguimiento", 401);
         }
-        
+
         try{
             $aCurrentOptions[] = "currentOptionVerAdjuntosSeguimiento";
-            
+
             $this->setFrameTemplate()
                  ->setJSSeguimientos()
                  ->setHeadTag();
@@ -1128,7 +1128,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
-            
+
             IndexControllerSeguimientos::setCabecera($this->getTemplate());
             IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
             $this->printMsgTop();
@@ -1138,7 +1138,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_PERSONALIZADO_DESC);
             }else{
                 $this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_SCC_DESC);
-            }  
+            }
             $this->getTemplate()->set_var("subtituloSeccion", "galería adjuntos");
             $this->getTemplate()->load_file_section("gui/componentes/galerias.gui.html", "pageRightInnerMainCont", "GaleriaAdjuntosBlock");
             $this->getTemplate()->set_var("TituloItemBlock", "");
@@ -1150,7 +1150,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("ThumbnailFotoBlock", "");
             $this->getTemplate()->set_var("ThumbnailVideoBlock", "");
             $this->getTemplate()->set_var("RowArchivoBlock", "");
-            
+
             //Fotos
             $aFotos = $oSeguimiento->getFotos();
             if(count($aFotos) > 0){
@@ -1281,7 +1281,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getTemplate()->set_var("iItemIdForm", $iSeguimientoId);
 
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     public function formAdjuntarVideo()
@@ -1312,7 +1312,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
-    
+
     public function formAdjuntarArchivo()
     {
         $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
@@ -1343,7 +1343,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getTemplate()->set_var("iItemIdForm", $iSeguimientoId);
 
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     //un mismo metodo para mostrar los 3 forms porq es simple esta accion
@@ -1414,7 +1414,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
         $this->getTemplate()->set_var("iOrden", $iOrden);
 
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     private function formEditarVideo()
@@ -1443,7 +1443,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     }
 
     public function procesarAdjunto()
-    {        
+    {
         if($this->getRequest()->has('agregarFoto')){
             $this->agregarFoto();
             return;
@@ -1453,7 +1453,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->agregarArchivo();
             return;
         }
-        
+
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
@@ -1566,7 +1566,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
-        }        
+        }
     }
 
     private function agregarArchivo()
@@ -1632,7 +1632,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $respuesta = "1;; ".$this->getTemplate()->pparse('ajaxRowFoto', false);
 
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
-                    
+
                 }catch(Exception $e){
                     $respuesta = "0;; Error al guardar en base de datos";
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
@@ -1644,7 +1644,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $respuesta = "0;; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
-        }        
+        }
     }
 
     private function agregarVideo()
@@ -1714,7 +1714,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
             $this->getJsonHelper()->sendJsonAjaxResponse();
             return;
-        }        
+        }
     }
 
     private function guardarFoto()
@@ -1748,7 +1748,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();                
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function eliminarFoto()
@@ -1779,7 +1779,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();                
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function guardarVideo()
@@ -1813,7 +1813,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();                
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function eliminarVideo()
@@ -1842,7 +1842,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();                        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function guardarArchivo()
@@ -1876,7 +1876,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function eliminarArchivo()
@@ -1907,9 +1907,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
-    
+
     public function editarDiagnostico()
     {
     	$iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
@@ -1925,7 +1925,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if($oSeguimiento->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para ver este seguimiento", 401);
         }
-                
+
         try{
             $aCurrentOptions[] = "currentOptionSeguimiento";
             $aCurrentOptions[] = "currentSubOptionEditarDiagnosticoSeguimiento";
@@ -1938,11 +1938,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->setFrameTemplate()
                  ->setJSDiagnostico()
                  ->setHeadTag();
-            
+
             self::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, $aCurrentOptions);
 
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
-                        
+
             $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
 
             $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
@@ -1953,15 +1953,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }else{
             	$this->getTemplate()->set_var("tituloSeccion", self::TIPO_SEGUIMIENTO_SCC_DESC);
             	$this->formDiagnosticoSCC($oSeguimiento);
-            }            
+            }
         }catch(Exception $e){
             throw $e;
         }
     }
-    
+
     private function formDiagnosticoPersonalizado($oSeguimiento)
     {
-        try{            
+        try{
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/diagnostico.gui.html", "pageRightInnerMainCont", "FormularioPersonalizadoBlock");
 
             $oDiagnostico = $oSeguimiento->getDiagnostico();
@@ -1985,7 +1985,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->set_var("sDescripcion", $oDiagnostico->getDescripcion());
             $this->getTemplate()->set_var("iDiagnosticoId", $oDiagnostico->getId());
-            
+
             $aEjesTematicos = $oDiagnostico->getEjesTematicos();
 
             if($aEjesTematicos === null){
@@ -2005,17 +2005,17 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $iNivelId = $oEjeTematico->getArea()->getAnio()->getCiclo()->getNivel()->getId();
                     $iRecordsNiveles = 0;
                     $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
-                    foreach ($aNiveles as $oNivel){                        
+                    foreach ($aNiveles as $oNivel){
                         if($iNivelId == $oNivel->getId()){
                             $this->getTemplate()->set_var("sSelectedNivel", "selected='selected'");
                         }
                         $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-                        $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());                       
+                        $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
                         $this->getTemplate()->parse("NivelesListBlock", true);
                         $this->getTemplate()->set_var("sSelectedNivel", "");
                     }
 
-                    //combo ciclos                    
+                    //combo ciclos
                     $iCicloId = $oEjeTematico->getArea()->getAnio()->getCiclo()->getId();
                     $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
                     foreach ($aCiclos as $oCiclo){
@@ -2066,9 +2066,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         $this->getTemplate()->parse("EjeListBlock", true);
                         $this->getTemplate()->set_var("sSelectedEje", "");
                     }
-                                       
+
                     $this->getTemplate()->parse("EstadoInicialBlock", true);
-                    
+
                     $aSelects = array("NivelesListBlock", "CiclosListBlock", "AreaListBlock", "EjeListBlock");
                     $this->getTemplate()->delete_parsed_blocks($aSelects);
                 }
@@ -2079,13 +2079,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             throw $e;
         }
     }
-	             
+
     public function procesarDiagnostico()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
 
         if($this->getRequest()->has('guardarDiagnosticoPersonalizado') ||
-           $this->getRequest()->has('guardarDiagnosticoSCC')){            
+           $this->getRequest()->has('guardarDiagnosticoSCC')){
             $this->guardarDiagnostico();
             return;
         }
@@ -2094,7 +2094,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->agregarEstadoInicial();
             return;
         }
-        
+
         if($this->getRequest()->has('eliminarEstadoInicial')){
             $this->eliminarEstadoInicial();
             return;
@@ -2124,13 +2124,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();  
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function agregarEstadoInicial()
     {
         $this->getJsonHelper()->initJsonAjaxResponse();
-        
+
         //genero un id para el array del input del form, es solo para el html.
         $sHtmlId = uniqid();
 
@@ -2143,12 +2143,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("disabled", "disabled");
         $this->getTemplate()->set_var("iDiagnosticoSCCId", "");
 
-        //combo niveles        
+        //combo niveles
         $iRecordsNiveles = 0;
         $aNiveles = SeguimientosController::getInstance()->getNiveles($filtro = array(), $iRecordsNiveles, null, null, null, null);
-        foreach ($aNiveles as $oNivel){            
+        foreach ($aNiveles as $oNivel){
             $this->getTemplate()->set_var("iNivelId", $oNivel->getId());
-            $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());            
+            $this->getTemplate()->set_var("sNivelDescripcion", $oNivel->getDescripcion());
             $this->getTemplate()->set_var("sNivelSelected", "");
             $this->getTemplate()->parse("NivelesListBlock", true);
         }
@@ -2156,7 +2156,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->setSuccess(true);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxRowEstadoInicial', false));
         $this->getJsonHelper()->setValor("estadoInicialHtmlId", $sHtmlId);
-        $this->getJsonHelper()->sendJsonAjaxResponse();               
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function guardarDiagnostico()
@@ -2226,7 +2226,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getJsonHelper()->sendJsonAjaxResponse();
                     return;
                 }
-                
+
                 $oEjeTematico = SeguimientosController::getInstance()->getEjeTematicoById($estadoInicial['ejeTematico']);
                 $oEjeTematico->setEstadoInicial($sEstadoInicial);
 
@@ -2242,9 +2242,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
-                       
+
             SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
-           
+
             //genero el html de la grilla de los estados iniciales con el id actualizado.
             $this->restartTemplate();
 
@@ -2329,7 +2329,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $aSelects = array("NivelesListBlock", "CiclosListBlock", "AniosListBlock", "AreaListBlock", "EjeListBlock");
                 $this->getTemplate()->delete_parsed_blocks($aSelects);
             }
-            
+
             $this->getJsonHelper()->setMessage("El diagnóstico se ha guardado con éxito");
             $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('ajaxGrillaEstadosIniciales', false));
             $this->getJsonHelper()->setValor("modificarDiagnosticoSCC", "1");
@@ -2341,7 +2341,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
-    
+
     public function listarCiclosPorNivel()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
@@ -2353,7 +2353,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if(empty($iNivelId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
-            
+
             $jCiclos = array();
             $aCiclos = SeguimientosController::getInstance()->getCiclosByNivelId($iNivelId);
             if(!empty($aCiclos)){
@@ -2364,13 +2364,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     array_push($jCiclos, $obj);
                 }
             }
-            
+
             $this->getJsonHelper()->sendJson($jCiclos);
         }catch(Exception $e){
             throw $e;
         }
     }
-       
+
     public function listarAniosPorCiclo()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404);}
@@ -2427,8 +2427,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }catch(Exception $e){
             throw $e;
         }
-    } 
- 	 
+    }
+
     public function listarEjesPorArea()
     {
     	if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
@@ -2483,9 +2483,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("ListadoBlock", "");
                 $this->getTemplate()->parse("ListadoNoRecordsBlock",false);
             }
-               
+
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse("ListObjetivosAprendizajes"));
- 
+
         }catch(Exception $e){
             throw $e;
         }
@@ -2526,7 +2526,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
 
             $this->getTemplate()->set_var("SubtituloSeccionBlock", "");
-            $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());           
+            $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
             $this->getTemplate()->set_var("tituloSeccion", "Administrar Objetivos Seguimiento");
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "pageRightInnerMainCont", "ListadoObjetivosBlock");
@@ -2547,24 +2547,24 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
                     $this->getTemplate()->set_var("iObjetivoId", $oObjetivo->getId());
-                    
+
                     $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
-                                        
-                    if($oObjetivo->isLogrado()){                        
+
+                    if($oObjetivo->isLogrado()){
                         $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
                         $this->getTemplate()->set_var("EstimacionBlock", "");
 
                         $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
-                    }else{                        
+                    }else{
                         $this->getTemplate()->set_var("ObjetivoLogradoBlock", "");
                         $this->getTemplate()->set_var("FechaLogradoBlock", "");
-                        
+
                         if(!$oObjetivo->isEstimacionVencida()){
                             $this->getTemplate()->set_var("EstimacinoExpiradaBlock", "");
                             $this->getTemplate()->set_var("expiradaClass", "");
                         }else{
                             $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
-                        }                       
+                        }
                     }
 
                     if(!$oObjetivo->isActivo()){
@@ -2579,7 +2579,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         $this->getTemplate()->set_var("calendarClass", "calendarEdit ihover");
                         $this->getTemplate()->set_var("MenuObjetivoDesactivadoBlock", "");
                     }
-                                       
+
                     switch($oObjetivo->getRelevancia()->getDescripcion())
                     {
                         case "baja":{
@@ -2589,11 +2589,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                         case "normal":{
                             $iconoRelevanciaBlock = "IconoRelevanciaNormalBlock";
                             break;
-                        }                        
+                        }
                         case "alta":{
                             $iconoRelevanciaBlock = "IconoRelevanciaAltaBlock";
                             break;
-                        }                        
+                        }
                     }
                     $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
                     $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
@@ -2610,10 +2610,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     }else{
                         $this->getTemplate()->set_var("LinkVerMasBlock", "");
                     }
-                    
+
                     $this->getTemplate()->set_var("tipoObjetivo", get_class($oObjetivo));
                     $this->getTemplate()->set_var("sDescripcionObjetivo", $sDescripcionObjetivo);
-                    
+
                     $this->getTemplate()->parse("ObjetivoBlock", true);
 
                     $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
@@ -2629,10 +2629,10 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-                        
+
         }catch(Exception $e){
             throw $e;
-        }        
+        }
     }
 
     public function procesarObjetivos()
@@ -2649,18 +2649,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if($this->getRequest()->has('toggleActivo')){
             $this->toggleActivo();
             return;
-        }        
-        
+        }
+
         if($this->getRequest()->has('recronogramaForm')){
             $this->recronogramaForm();
             return;
         }
-        
+
         if($this->getRequest()->has('modificarEstimacion')){
             $this->modificarEstimacion();
             return;
         }
-        
+
         if($this->getRequest()->has('eliminarObjetivo')){
             $this->eliminarObjetivo();
             return;
@@ -2674,7 +2674,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
+
             $iSeguimientoId = $this->getRequest()->getPost('iSeguimientoId');
             $iObjetivoId = $this->getRequest()->getParam('iObjetivoId');
             $tipoObjetivo = $this->getRequest()->getParam('tipoObjetivo');
@@ -2716,7 +2716,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->sendJsonAjaxResponse();
         }catch(Exception $e){
             throw $e;
-        }                
+        }
     }
 
     private function recronogramaForm()
@@ -2783,8 +2783,8 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoAprendizajeAsociadoSeguimientoSccById($iSeguimientoId, $iObjetivoId);
             }
-            
-            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));            
+
+            $dEstimacion = Utils::fechaAFormatoSQL($this->getRequest()->getPost("estimacion"));
             $oObjetivo->setEstimacion($dEstimacion);
 
             $bSuccess = false;
@@ -2808,7 +2808,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
+
             $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
             $iObjetivoId = $this->getRequest()->getParam('iObjetivoId');
             $bActivo = $this->getRequest()->getParam('bActivo');
@@ -2836,7 +2836,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }else{
                 $oObjetivo->setFechaDesactivado(null);
             }
-            
+
             $bSuccess = false;
             if($oObjetivo->isObjetivoPersonalizado()){
                 $bSuccess = SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivo);
@@ -2845,7 +2845,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if($oObjetivo->isObjetivoAprendizaje()){
                 $bSuccess = SeguimientosController::getInstance()->guardarObjetivoAprendizajeSeguimientoScc($oObjetivo, $iSeguimientoId);
             }
-            
+
             $this->getJsonHelper()->setSuccess($bSuccess);
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
@@ -2871,7 +2871,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if($oSeguimiento->getUsuarioId() != $iUsuarioId){
                 throw new Exception("No tiene permiso para ver este seguimiento", 401);
             }
-            
+
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "ajaxThumbsObjetivosBlock", "ThumbsObjetivosBlock");
 
             $sOrderBy = $this->getRequest()->getPost("sOrderBy");
@@ -2948,7 +2948,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
                     $this->getTemplate()->set_var("sDescripcionEje", $oObjetivo->getEje()->getDescripcion());
-                    
+
                     //corto si es una descripcion muy larga, lo hago asi porque sino me puede cortar los <br>
                     $sDescripcionObjetivo = $oObjetivo->getDescripcion();
                     if(strlen($sDescripcionObjetivo) > 150){
@@ -2977,7 +2977,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
         }catch(Exception $e){
             throw $e;
-        }  
+        }
     }
 
     public function formObjetivo()
@@ -3001,7 +3001,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if($oSeguimiento->getUsuarioId() != $iUsuarioId){
                 throw new Exception("No tiene permiso para ver este seguimiento", 401);
             }
-            
+
             if($this->getRequest()->getParam('tipoObjetivo') == "ObjetivoPersonalizado"){
                 $this->mostrarFormularioObjetivoPersonalizadoPopUp($iSeguimientoId);
             }else{
@@ -3009,7 +3009,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
         }catch(Exception $e){
             throw $e;
-        }            
+        }
     }
 
     private function mostrarFormularioObjetivoPersonalizadoPopUp($iSeguimientoId)
@@ -3029,25 +3029,25 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             if(!$this->getRequest()->has('iObjetivoId')){
                 $sTituloForm = "Crear un nuevo objetivo";
                 $this->getTemplate()->set_var("SubmitModificarObjetivoBlock", "");
-                
+
                 $iEjeId = "";
                 $sCheckedRelevanciaNormal = "checked='checked'";
                 $sDescripcion = "";
                 $dEstimacion =  "";
                 $iObjetivoId = "";
-                
+
             //FORMULARIO EDITAR
             }else{
                 //tiene permiso para editar este objetivo?
                 $iObjetivoId = $this->getRequest()->get('iObjetivoId');
-                
+
                 if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
                     throw new Exception("No tiene permiso para editar el objetivo", 401);
                 }
 
                 $oObjetivo = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
 
-                if(!$oObjetivo->isEditable()){                    
+                if(!$oObjetivo->isEditable()){
                     $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "sMensajeEdicionExpirada", "MsgFichaInfoBlock");
                     $this->getTemplate()->set_var("sTituloMsgFicha", "Plazo de edición expirado");
                     $this->getTemplate()->set_var("sMsgFicha", "El plazo para edición de Seguimientos y entidades relacionadas en el sistema es de "
@@ -3059,7 +3059,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                 $sTituloForm = "Modificar objetivo";
                 $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
-                
+
                 $iEjeId = $oObjetivo->getEje()->getId();
 
                 switch($oObjetivo->getRelevancia()->getDescripcion()){
@@ -3067,7 +3067,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     case "normal": $sCheckedRelevanciaNormal = "checked='checked'"; break;
                     case "baja": $sCheckedRelevanciaBaja = "checked='checked'"; break;
                 }
-                
+
                 $sDescripcion = $oObjetivo->getDescripcion();
                 $dEstimacion =  $oObjetivo->getEstimacion(true);
             }
@@ -3076,11 +3076,11 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
             $this->getTemplate()->set_var("iObjetivoIdForm", $iObjetivoId);
 
-            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);            
+            $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
             $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-            
-            $this->getTemplate()->set_var("checkedRelevanciaAlta", $sCheckedRelevanciaAlta);                        
-            $this->getTemplate()->set_var("checkedRelevanciaNormal", $sCheckedRelevanciaNormal);                        
+
+            $this->getTemplate()->set_var("checkedRelevanciaAlta", $sCheckedRelevanciaAlta);
+            $this->getTemplate()->set_var("checkedRelevanciaNormal", $sCheckedRelevanciaNormal);
             $this->getTemplate()->set_var("checkedRelevanciaBaja", $sCheckedRelevanciaBaja);
             $aRelevancias = SeguimientosController::getInstance()->obtenerArrayRelevancias();
             $this->getTemplate()->set_var("iRelevanciaAltaId", $aRelevancias['alta']);
@@ -3105,9 +3105,9 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->parse("OptGrpSelectEje", true);
                 $this->getTemplate()->delete_parsed_blocks("OptionSelectEje");
             }
-                          
+
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
-            
+
         }catch(Exception $e){
             throw $e;
         }
@@ -3147,7 +3147,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 }
 
                 $iObjetivoId = "";
-                
+
             //FORMULARIO EDITAR
             }else{
                 //tiene permiso para editar este objetivo?
@@ -3168,7 +3168,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse("sMensajeEdicionExpirada"));
                     return;
                 }
-                
+
                 $sTituloForm = "Editar Objetivo de aprendizaje en Seguimiento";
                 $this->getTemplate()->set_var("SubmitCrearObjetivoBlock", "");
                 $this->getTemplate()->set_var("SelectsObjetivoAprendizajeBlock", "");
@@ -3178,7 +3178,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     case "normal": $sCheckedRelevanciaNormal = "checked='checked'"; break;
                     case "baja": $sCheckedRelevanciaBaja = "checked='checked'"; break;
                 }
-                
+
                 $dEstimacion =  $oObjetivo->getEstimacion();
                 $disabled = "";
 
@@ -3253,7 +3253,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
         }catch(Exception $e){
             throw $e;
-        }                
+        }
     }
 
     private function guardarObjetivoPersonalizado($iSeguimientoId)
@@ -3266,7 +3266,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         if($this->getRequest()->has('modificarObjetivo')){
             $this->modificarObjetivoPersonalizado($iSeguimientoId);
             return;
-        }  
+        }
     }
 
     private function crearObjetivoPersonalizado($iSeguimientoId)
@@ -3286,7 +3286,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $oObjetivoPersonalizado->dEstimacion = $dEstimacion;
 
             $oObjetivoPersonalizado = Factory::getObjetivoPersonalizadoInstance($oObjetivoPersonalizado);
-            
+
             SeguimientosController::getInstance()->guardarObjetivoPersonalizado($oObjetivoPersonalizado, $iSeguimientoId);
 
             $this->getJsonHelper()->setValor("agregarObjetivo", "1");
@@ -3306,13 +3306,13 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $iObjetivoId = $this->getRequest()->getPost('objetivoIdForm');
-           
+
             if(!SeguimientosController::getInstance()->isObjetivoPersonalizadoUsuario($iObjetivoId)){
                 throw new Exception("No tiene permiso para administrar objetivos en este seguimiento", 401);
             }
-            
+
             $oObjetivoPersonalizado = SeguimientosController::getInstance()->getObjetivoPersonalizadoById($iObjetivoId);
-                        
+
             if(!$oObjetivoPersonalizado->isEditable()){
                 $this->getJsonHelper()->setMessage("El plazo para editar el objetivo ha expirado.");
                 $this->getJsonHelper()->setSuccess(false);
@@ -3335,7 +3335,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setMessage("Los cambios se han guardado con éxito");
             $this->getJsonHelper()->setSuccess(true);
 
-        }catch(Exception $e){            
+        }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
 
@@ -3381,7 +3381,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getJsonHelper()->setMessage("El objetivo se ha asociado con éxito");
             $this->getJsonHelper()->setSuccess(true);
 
-        }catch(Exception $e){            
+        }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
 
@@ -3491,7 +3491,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     break;
                 }
             }
-            
+
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/objetivos.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
             $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
             $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
@@ -3502,7 +3502,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                 $this->getTemplate()->set_var("EjeTematicoBlock", "");
             }
 
-            if($oObjetivo->isObjetivoAprendizaje()){                                                                
+            if($oObjetivo->isObjetivoAprendizaje()){
                 $this->getTemplate()->set_var("sNivel", $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion());
                 $this->getTemplate()->set_var("sCiclo", $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getDescripcion());
                 $this->getTemplate()->set_var("sAnio", $oObjetivo->getEje()->getArea()->getAnio()->getDescripcion());
@@ -3511,7 +3511,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
 
                 $this->getTemplate()->set_var("EjePersonalizadoBlock", "");
             }
-                        
+
             $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
 
             //iteracion con los elementos de la evolucion
@@ -3534,12 +3534,12 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
                     $this->getTemplate()->parse("EvolucionFechaBlock", true);
                 }
             }else{
-                $this->getTemplate()->set_var("EvolucionFechaBlock", "");                
+                $this->getTemplate()->set_var("EvolucionFechaBlock", "");
             }
             $this->getTemplate()->parse("VerObjetivoBlock", true);
 
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
-            
+
         }catch(Exception $e){
             throw $e;
         }
