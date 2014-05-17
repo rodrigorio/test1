@@ -3,7 +3,7 @@
 class RutasModuloSeguimientos
 {
     private static $instance = null;
-    
+
     /**
      * Singleton instance
      *
@@ -202,7 +202,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'editarDiagnostico'
                                 ));
-        $router->addRoute('seguimientosEditarDiagnostico', $route);             
+        $router->addRoute('seguimientosEditarDiagnostico', $route);
         $route = new RegexRoute('seguimientos/procesar-diagnostico',
                                 array(
                                         'module' => 'seguimientos',
@@ -234,7 +234,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'listarCiclosPorNivel'
                                 ));
-        $router->addRoute('seguimientosListarCiclosPorNivel', $route);  
+        $router->addRoute('seguimientosListarCiclosPorNivel', $route);
         $route = new RegexRoute('seguimientos/listar-anios-por-ciclo',
                                 array(
                                         'module' => 'seguimientos',
@@ -329,8 +329,6 @@ class RutasModuloSeguimientos
                                 ));
         $router->addRoute('seguimientosUnidadesAmpliarEsporadica', $route);
 
-
-
         //variables
         $route = new RegexRoute('seguimientos/listar-variables',
                                 array(
@@ -382,6 +380,71 @@ class RutasModuloSeguimientos
                                 ));
         $router->addRoute('seguimientosVariablesBorrarModalidad', $route);
 
+        //entrevistas
+        $route = new RegexRoute('seguimientos/listar-entrevistas',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosEntrevistasIndex', $route);
+        $route = new RegexRoute('seguimientos/form-crear-entrevista',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'formCrearEntrevista'
+                                ));
+        $router->addRoute('seguimientosEntrevistasFormCrearEntrevista', $route);
+        $route = new RegexRoute('seguimientos/form-editar-entrevista',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'formEditarEntrevista'
+                                ));
+        $router->addRoute('seguimientosEntrevistasFormEditarEntrevista', $route);
+        $route = new RegexRoute('seguimientos/guardar-entrevista',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'guardarEntrevista'
+                                ));
+        $router->addRoute('seguimientosEntrevistasGuardarEntrevista', $route);
+        $route = new RegexRoute('seguimientos/entrevistas-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('seguimientosEntrevistasProcesar', $route);
+        $route = new RegexRoute('seguimientos/borrar-entrevista',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('seguimientosEntrevistasBorrar', $route);
+        $route = new RegexRoute('seguimientos/entrevistas-seguimiento',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'listarEntrevistasPorSeguimiento'
+                                ));
+        $router->addRoute('seguimientosEntrevistasListarEntrevistasPorSeguimiento', $route);
+        $route = new RegexRoute('seguimientos/entrevistas-seguimiento-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'entrevistasPorSeguimientoProcesar'
+                                ));
+        $router->addRoute('seguimientosEntrevistasEntrevistasPorSeguimientoProcesar', $route);
+        $route = new RegexRoute('seguimientos/ampliar-entrevista',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'ampliar'
+                                ));
+        $router->addRoute('seguimientosEntrevistasAmpliar', $route);
+
         //objetivos
         $route = new RegexRoute('seguimientos/administrar-objetivos',
                                 array(
@@ -410,7 +473,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'seguimientos',
                                         'action'     => 'guardarObjetivo'
                                 ));
-        $router->addRoute('seguimientosSeguimientosGuardarObjetivo', $route);        
+        $router->addRoute('seguimientosSeguimientosGuardarObjetivo', $route);
         $route = new RegexRoute('seguimientos/ver-objetivo',
                                 array(
                                         'module' => 'seguimientos',
@@ -466,7 +529,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'entradas',
                                         'action'     => 'editar'
                                 ));
-        $router->addRoute('seguimientosEntradasEditar', $route);        
+        $router->addRoute('seguimientosEntradasEditar', $route);
         $route = new RegexRoute('seguimientos/entradas/guardar',
                                 array(
                                         'module' => 'seguimientos',

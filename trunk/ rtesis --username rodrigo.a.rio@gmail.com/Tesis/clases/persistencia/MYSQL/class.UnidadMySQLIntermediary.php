@@ -4,7 +4,7 @@
  * @author Andr�s
  */
 class UnidadMySQLIntermediary extends UnidadIntermediary
-{    
+{
     private static $instance = null;
 
     protected function __construct( $conn) {
@@ -26,26 +26,26 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
-        try{            
+        try{
             $db = clone($this->conn);
-            
+
             $sSQL = "   SELECT DISTINCT SQL_CALC_FOUND_ROWS
-                            u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId, 
+                            u.id as iId, u.nombre as sNombre, u.descripcion as sDescripcion, u.usuarios_id as iUsuarioId,
                             u.preCargada as bPreCargada, u.fechaHora as dFechaHora, u.asociacionAutomatica as bAsociacionAutomatica,
                             u.tipoEdicion as eTipoEdicion, u.fechaBorradoLogico as dFechaBorradoLogico
                         FROM
-                            unidades u 
+                            unidades u
                         LEFT JOIN
                             seguimiento_x_unidad su ON u.id = su.unidades_id ";
 
             $WHERE = array();
-            
+
             if(isset($filtro['u.id']) && $filtro['u.id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.id', $filtro['u.id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['u.usuarios_id']) && $filtro['u.usuarios_id']!=""){                
+            if(isset($filtro['u.usuarios_id']) && $filtro['u.usuarios_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.usuarios_id', $filtro['u.usuarios_id'], MYSQL_TYPE_INT);
-            }           
+            }
             if(isset($filtro['u.preCargada']) && $filtro['u.preCargada']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.preCargada', $filtro['u.preCargada']);
             }
@@ -85,7 +85,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                 //por defecto ordeno unidades por fecha de creacion desc
                 $sSQL .= " order by u.fechaHora desc ";
             }
-            
+
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -116,7 +116,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-        }        
+        }
     }
 
     /**
@@ -177,7 +177,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-        } 
+        }
     }
 
     public  function insertar($oUnidad)
@@ -195,13 +195,13 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             //se setean dependiendo si se inserta desde modulo de seguimientos o desde el administrador
             $preCargada = $oUnidad->isPreCargada() ? "1" : "0";
             $asociacionAutomatica = $oUnidad->isAsociacionAutomatica() ? "1" : "0";
-            
+
             $sSQL = " INSERT INTO unidades SET ".
                     "   usuarios_id = ".$this->escInt($usuarioId).", ".
                     "   nombre = ".$this->escStr($oUnidad->getNombre())." , ".
                     "   descripcion = ".$this->escStr($oUnidad->getDescripcion()).", ".
                     "   preCargada = '".$preCargada."', ".
-                    "   asociacionAutomatica = '".$asociacionAutomatica."', ". 
+                    "   asociacionAutomatica = '".$asociacionAutomatica."', ".
                     "   tipoEdicion = ".$this->escStr($oUnidad->getTipoEdicion());
 
             $db->execSQL($sSQL);
@@ -238,7 +238,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                     "   asociacionAutomatica = '".$asociacionAutomatica."', ".
                     "   fechaBorradoLogico = ".$this->escDate($oUnidad->getFechaBorradoLogico())." ".
                     " WHERE id = ".$this->escInt($oUnidad->getId())." ";
-            
+
             $db->execSQL($sSQL);
             $db->commit();
 
@@ -269,8 +269,8 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
     public function borrar($iUnidadId)
     {
         try{
-            $db = $this->conn;           
-            
+            $db = $this->conn;
+
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
@@ -283,7 +283,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             $db->begin_transaction();
-            
+
             if(empty($foundRows)){
                 //borra fisicamente la unidad
                 $db->execSQL("delete from unidades where id = ".$this->escInt($iUnidadId));
@@ -317,12 +317,12 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             }
 
             $db->commit();
-            return true;            
+            return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-		
+
     public function actualizarCampoArray($objects, $cambios){
     }
 
@@ -334,22 +334,22 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        unidades u 
+                        unidades u
                     WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
-            throw new Exception($e->getMessage(), 0); 
+            throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
     public function isUnidadUsuario($iUnidadId, $iUsuarioId)
     {
     	try{
@@ -370,7 +370,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(empty($foundRows)){
             	return false;
             }
-            
+
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -421,9 +421,9 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                             COUNT(*) as cantidad
                         FROM
                             unidades u JOIN variables v ON v.unidad_id = u.id
-                        WHERE 
+                        WHERE
                             u.id = '".$iUnidadId."'");
-            
+
             $iCantidadVariablesAsociadas = $db->oNextRecord()->cantidad;
 
             $db->query("SELECT
@@ -432,7 +432,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                             unidades u JOIN seguimiento_x_unidad su ON u.id = su.unidades_id
                             JOIN seguimientos s ON su.seguimientos_id = s.id
                         WHERE
-                            u.id = '".$iUnidadId."' AND 
+                            u.id = '".$iUnidadId."' AND
                             s.usuarios_id = '".$iUsuarioId."'");
 
             $iCantidadSeguimientosAsociados = $db->oNextRecord()->cantidad;
@@ -466,7 +466,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
      * borro siempre fisicamente asociacion entre unidad y seguimiento
      *
      * tambien borro fisicamente la unidad con sus respectivas variables para entradas
-     * que esten dentro del periodo de edicion    
+     * que esten dentro del periodo de edicion
      * (asociacion de entrada con variables de la unidad)
      * (asociacion de entrada con unidad)
      *
@@ -479,17 +479,17 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
         try{
             $db = $this->conn;
             $db->begin_transaction();
-            
+
             $db->execSQL("delete from seguimiento_x_unidad where unidades_id = ".$this->escInt($iUnidadId)." and seguimientos_id = ".$this->escInt($iSeguimientoId));
 
             $sSQL = " DELETE FROM entrada_x_contenido_variables
                       WHERE entradas_id
                         IN (SELECT e.id FROM entradas e
-                            WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)." 
-                            AND (TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) <= ".$this->escInt($iCantDiasEdicion).") 
+                            WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)."
+                            AND (TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) <= ".$this->escInt($iCantDiasEdicion).")
                             OR ((TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) > ".$this->escInt($iCantDiasEdicion).") AND guardada = 0))
                       AND variables_id
-                        IN (SELECT v.id FROM VARIABLES v WHERE v.unidad_id = ".$this->escInt($iUnidadId).")";
+                        IN (SELECT v.id FROM variables v WHERE v.unidad_id = ".$this->escInt($iUnidadId).")";
 
             $db->execSQL($sSQL);
 
@@ -501,7 +501,7 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
                                           OR ((TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) > ".$this->escInt($iCantDiasEdicion).") AND guardada = 0))";
             $db->execSQL($sSQL);
             $db->commit();
-            
+
             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);

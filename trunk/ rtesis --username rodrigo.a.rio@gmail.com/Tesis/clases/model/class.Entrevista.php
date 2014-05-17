@@ -24,6 +24,10 @@ class Entrevista{
     private $dFechaRealizado;
     private $bRealizada = false;
     private $aPreguntasRespuestas; //preguntas con sus respuestas si esta asociada a un seg y realizada
+    /**
+     * Si expiro el plazo de expiracion devuelve falso
+     */
+    private $bEditable = null;
 
     /**
      * Pensado para que en un futuro se pueda compartir el link y que se complete remotamente
@@ -69,10 +73,7 @@ class Entrevista{
     /**
      * @return string $sDescripcion
      */
-    public function getDescripcion($nl2br = false){
-        if($nl2br){
-            return nl2br($this->sDescripcion);
-        }
+    public function getDescripcion(){
         return $this->sDescripcion;
     }
 
@@ -223,5 +224,21 @@ class Entrevista{
     public function getSeguimientoId()
     {
         return $this->iSeguimientoId;
+    }
+
+    public function isEditable($flag = null){
+        if(null !== $flag){
+            $this->bEditable = $flag ? true : false;
+            return $this;
+        }else{
+            if(null === $this->bEditable){
+                if(SeguimientosController::getInstance()->isEntidadEditable($this->dFechaRealizado)){
+                    $this->bEditable = true;
+                }else{
+                    $this->bEditable = false;
+                }
+            }
+            return $this->bEditable;
+        }
     }
 }
