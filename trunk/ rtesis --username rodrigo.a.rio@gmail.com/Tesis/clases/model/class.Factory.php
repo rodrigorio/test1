@@ -418,10 +418,10 @@ class Factory
     }
     /**
      * @param stdClass $obj
-     * @return Pregunta|null
+     * @return PreguntaAbierta|null
      */
-    public static function &getPreguntaInstance(stdClass $obj){
-        $oPregunta = new Pregunta($obj);
+    public static function &getPreguntaAbiertaInstance(stdClass $obj){
+        $oPregunta = new PreguntaAbierta($obj);
         return $oPregunta;
     }
     /**

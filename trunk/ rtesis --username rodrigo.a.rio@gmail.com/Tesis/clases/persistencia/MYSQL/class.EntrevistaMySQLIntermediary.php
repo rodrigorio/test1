@@ -180,6 +180,34 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
         }
     }
 
+    public function isEntrevistaUsuario($iEntrevistaId, $iUsuarioId)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        entrevistas e
+                      WHERE
+                        e.id = ".$this->escInt($iEntrevistaId)." AND
+                        e.usuarios_id = ".$this->escInt($iUsuarioId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
     public function borrar($oEntrevista) {
 		try{
 			$db = $this->conn;
@@ -191,9 +219,7 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
 		}
 	}
 
-	public function actualizarCampoArray($objects, $cambios){
-
-	}
+	public function actualizarCampoArray($objects, $cambios){}
 
 	public function existe($filtro){
     	try{

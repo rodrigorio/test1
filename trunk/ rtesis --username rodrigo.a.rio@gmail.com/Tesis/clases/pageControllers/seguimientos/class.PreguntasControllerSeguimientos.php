@@ -6,11 +6,11 @@
  */
 class PreguntasControllerSeguimientos extends PageControllerAbstract
 {
-    private $orderByConfig = array('nombre' => array('variableTemplate' => 'orderByNombre',
-                                                     'orderBy' => 'v.nombre',
+    private $orderByConfig = array('descripcion' => array('variableTemplate' => 'orderByDescripcion',
+                                                     'orderBy' => 'p.descripcion',
                                                      'order' => 'desc'),
                                    'tipo' => array('variableTemplate' => 'orderByTipo',
-                                                   'orderBy' => 'v.tipo',
+                                                   'orderBy' => 'p.tipo',
                                                    'order' => 'desc'));
 
     private function setFrameTemplate(){
@@ -32,17 +32,17 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
         $this->getTemplate()->set_var("sMetaKeywords", $keywordsVista);
 
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "jsContent", "JsContent");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "jsContent", "JsContent");
 
         return $this;
     }
 
     private function setMenuDerecha()
     {
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "pageRightInnerCont", "PageRightInnerContListadoVariablesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "pageRightInnerCont", "PageRightInnerContListadoPreguntasBlock");
 
         $this->getTemplate()->set_var("hrefListadoSeguimientos", $this->getUrlFromRoute("seguimientosIndexIndex", true));
-        $this->getTemplate()->set_var("hrefListadoUnidades", $this->getUrlFromRoute("seguimientosUnidadesIndex", true));
+        $this->getTemplate()->set_var("hrefListadoEntrevistas", $this->getUrlFromRoute("seguimientosEntrevistasIndex", true));
 
         return $this;
     }
@@ -58,13 +58,13 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
             throw new Exception("", 404);
         }
 
-        if($this->getRequest()->has('masVariables')){
-            $this->masVariables();
+        if($this->getRequest()->has('masPreguntas')){
+            $this->masPreguntas();
             return;
         }
 
-        if($this->getRequest()->has('agregarModalidad')){
-            $this->agregarModalidad();
+        if($this->getRequest()->has('agregarOpcion')){
+            $this->agregarOpcion();
             return;
         }
     }
@@ -72,18 +72,18 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
     public function listar()
     {
         try{
-            //primero me fijo que este el id de unidad
-            $iUnidadId = $this->getRequest()->getParam('id');
-            if(empty($iUnidadId)){
+            //primero me fijo que este el id de entrevista
+            $iEntrevistaId = $this->getRequest()->getParam('id');
+            if(empty($iEntrevistaId)){
                 throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
             }
 
-            //despues me fijo que el id sea de una unidad perteneciente al integrante logueado
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
+            //despues me fijo que el id sea de una entrevista perteneciente al integrante logueado
+            if(!SeguimientosController::getInstance()->isEntrevistaUsuario($iEntrevistaId)){
+                throw new Exception("No tiene permiso para editar la entrevista", 401);
             }
 
-            $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+            $oEntrevista = SeguimientosController::getInstance()->getEntrevistaById($iEntrevistaId);
 
             $this->setFrameTemplate()
                  ->setMenuDerecha()
@@ -94,71 +94,61 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
             $this->printMsgTop();
 
             //titulo seccion
-            $this->getTemplate()->set_var("tituloSeccion", "Variables");
-            $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "pageRightInnerMainCont", "ListadoVariablesBlock");
-
-            $this->getTemplate()->set_var("sUnidadDescripcion", $oUnidad->getDescripcion(true));
+            $this->getTemplate()->set_var("tituloSeccion", "Preguntas");
+            $this->getTemplate()->set_var("subtituloSeccion", "Entrevista: <span class='fost_it'>".$oEntrevista->getDescripcion()."</span>");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "pageRightInnerMainCont", "ListadoPreguntasBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
             $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
             $iRecordsTotal = 0;
-            $filtro = array('v.unidad_id' => $iUnidadId);
-            //no utilizo getVariablesByUnidadId porque necesito el filtro de los orderBy del listado.
-            $aVariables = SeguimientosController::getInstance()->getVariables($filtro, $iRecordsTotal, null, null, null, null);
+            $filtro = array('p.entrevistas_id' => $iEntrevistaId);
+            $aPreguntas = SeguimientosController::getInstance()->getPreguntas($filtro, $iRecordsTotal, null, null, null, null);
 
-            $this->getTemplate()->set_var("iUnidadId", $iUnidadId);
+            $this->getTemplate()->set_var("iEntrevistaId", $iEntrevistaId);
             $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
-            if(count($aVariables) > 0){
+            if(count($aPreguntas) > 0){
 
-                $this->getTemplate()->set_var("NoRecordsVariablesBlock", "");
+                $this->getTemplate()->set_var("NoRecordsPreguntasBlock", "");
 
-            	foreach ($aVariables as $oVariable){
+            	foreach ($aPreguntas as $oPregunta){
 
-                    $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
-                    $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
-                    $this->getTemplate()->set_var("sTipoEnum", get_class($oVariable));
-                    $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
-                    $this->getTemplate()->set_var("sDescripcion", $oVariable->getDescripcion(true));
+                    $this->getTemplate()->set_var("iPreguntaId", $oPregunta->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oPregunta->getDescripcion());
+                    $this->getTemplate()->set_var("sTipoEnum", get_class($oPregunta));
+                    $this->getTemplate()->set_var("dFechaHora", $oPregunta->getFecha(true));
 
-                    if($oVariable->isVariableNumerica()){
-                        $this->getTemplate()->set_var("sTipo", "Variable Numérica");
-                        $iconoVariableBlock = "IconoTipoNumericaBlock";
-                        $this->getTemplate()->set_var("sModalidades", "");
+                    if($oPregunta->isPreguntaAbierta()){
+                        $this->getTemplate()->set_var("sTipo", "Pregunta Abierta");
+                        $iconoPreguntaBlock = "IconoTipoTextoBlock";
+                        $this->getTemplate()->set_var("sOpciones", "");
                     }
 
-                    if($oVariable->isVariableTexto()){
-                        $this->getTemplate()->set_var("sTipo", "Variable de Texto");
-                        $iconoVariableBlock = "IconoTipoTextoBlock";
-                        $this->getTemplate()->set_var("sModalidades", "");
-                    }
-
-                    if($oVariable->isVariableCualitativa()){
-                        $this->getTemplate()->set_var("sTipo", "Variable Cualitativa");
-                        $iconoVariableBlock = "IconoTipoCualitativaBlock";
-                        $sModalidades = "<strong>Modalidades: </strong> ";
-                        $aModalidades = $oVariable->getModalidades();
-                        foreach($aModalidades as $oModalidad){
-                            $sModalidades .= $oModalidad->getModalidad().", ";
+                    if($oPregunta->isPreguntaMC()){
+                        $this->getTemplate()->set_var("sTipo", "Pregunta Multiple Choise");
+                        $iconoPreguntaBlock = "IconoTipoMCBlock";
+                        $sOpciones = "<strong>Opciones: </strong> ";
+                        $aOpciones = $oPregunta->getOpciones();
+                        foreach($aOpciones as $oOpcion){
+                            $sOpciones .= $oOpcion->getDescripcion().", ";
                         }
-                        $sModalidades = substr($sModalidades, 0, -2);
-                        $this->getTemplate()->set_var("sModalidades", $sModalidades);
+                        $sOpciones = substr($sOpciones, 0, -2);
+                        $this->getTemplate()->set_var("sOpciones", $sOpciones);
                     }
 
-                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "iconoVariable", $iconoVariableBlock);
-                    $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
-                    $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "iconoPregunta", $iconoPreguntaBlock);
+                    $this->getTemplate()->set_var("iconoPregunta", $this->getTemplate()->pparse("iconoPregunta"));
+                    $this->getTemplate()->delete_parsed_blocks($iconoPreguntaBlock);
 
-                    $this->getTemplate()->parse("VariableBlock", true);
+                    $this->getTemplate()->parse("PreguntaBlock", true);
                 }
 
-                $params[] = "id=".$iUnidadId;
-                $params[] = "masVariables=1";
-                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $params);
+                $params[] = "id=".$iEntrevistaId;
+                $params[] = "masPreguntas=1";
+                $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/preguntas-procesar", "listadoPreguntasResult", $params);
             }else{
-                $this->getTemplate()->set_var("sNoRecords", "No hay variables cargadas en la unidad");
-                $this->getTemplate()->set_var("VariableBlock", "");
+                $this->getTemplate()->set_var("sNoRecords", "No hay preguntas cargadas en la entrevista");
+                $this->getTemplate()->set_var("PreguntaBlock", "");
             }
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
@@ -168,83 +158,73 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    private function masVariables()
+    private function masPreguntas()
     {
-        //primero me fijo que este el id de unidad
-        $iUnidadId = $this->getRequest()->getPost('id');
-        if(empty($iUnidadId)){
+        $iEntrevistaId = $this->getRequest()->getPost('id');
+        if(empty($iEntrevistaId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        //despues me fijo que el id sea de una unidad perteneciente al integrante logueado
-        if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-            throw new Exception("No tiene permiso para editar la unidad", 401);
+        if(!SeguimientosController::getInstance()->isEntrevistaUsuario($iEntrevistaId)){
+            throw new Exception("No tiene permiso para editar la entrevista", 401);
         }
 
-        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
+        $oEntrevista = SeguimientosController::getInstance()->getEntrevistaById($iEntrevistaId);
 
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxGrillaVariablesBlock", "GrillaVariablesBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "ajaxGrillaPreguntasBlock", "GrillaPreguntasBlock");
 
         list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
         $this->initOrderBy($sOrderBy, $sOrder, $this->orderByConfig);
 
-        $filtro = array('v.unidad_id' => $iUnidadId);
-        //no utilizo getVariablesByUnidadId porque necesito el filtro de los orderBy del listado.
-        $aVariables = SeguimientosController::getInstance()->getVariables($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
+        $filtro = array('p.entrevistas_id' => $iEntrevistaId);
+        $aPreguntas = SeguimientosController::getInstance()->getPreguntas($filtro, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
         $this->getTemplate()->set_var("iRecordsTotal", $iRecordsTotal);
-        if(count($aVariables) > 0){
+        if(count($aPreguntas) > 0){
 
-            $this->getTemplate()->set_var("NoRecordsVariablesBlock", "");
+            $this->getTemplate()->set_var("NoRecordsPreguntasBlock", "");
 
-            foreach ($aVariables as $oVariable){
+            foreach ($aPreguntas as $oPregunta){
 
-                $this->getTemplate()->set_var("iVariableId", $oVariable->getId());
-                $this->getTemplate()->set_var("sNombre", $oVariable->getNombre());
-                $this->getTemplate()->set_var("sTipoEnum", get_class($oVariable));
-                $this->getTemplate()->set_var("dFechaHora", $oVariable->getFecha(true));
-                $this->getTemplate()->set_var("sDescripcion", $oVariable->getDescripcion(true));
+                    $this->getTemplate()->set_var("iPreguntaId", $oPregunta->getId());
+                    $this->getTemplate()->set_var("sDescripcion", $oPregunta->getDescripcion());
+                    $this->getTemplate()->set_var("sTipoEnum", get_class($oPregunta));
+                    $this->getTemplate()->set_var("dFechaHora", $oPregunta->getFecha(true));
 
-                if($oVariable->isVariableNumerica()){
-                    $this->getTemplate()->set_var("sTipo", "Variable Numérica");
-                    $iconoVariableBlock = "IconoTipoNumericaBlock";
-                    $this->getTemplate()->set_var("sModalidades", "");
-                }
-
-                if($oVariable->isVariableTexto()){
-                    $this->getTemplate()->set_var("sTipo", "Variable de Texto");
-                    $iconoVariableBlock = "IconoTipoTextoBlock";
-                    $this->getTemplate()->set_var("sModalidades", "");
-                }
-
-                if($oVariable->isVariableCualitativa()){
-                    $this->getTemplate()->set_var("sTipo", "Variable Cualitativa");
-                    $iconoVariableBlock = "IconoTipoCualitativaBlock";
-                    $sModalidades = "<strong>Modalidades: </strong> ";
-                    $aModalidades = $oVariable->getModalidades();
-                    foreach($aModalidades as $oModalidad){
-                        $sModalidades .= $oModalidad->getModalidad().", ";
+                    if($oPregunta->isPreguntaAbierta()){
+                        $this->getTemplate()->set_var("sTipo", "Pregunta Abierta");
+                        $iconoPreguntaBlock = "IconoTipoTextoBlock";
+                        $this->getTemplate()->set_var("sOpciones", "");
                     }
-                    $sModalidades = substr($sModalidades, 0, -2);
-                    $this->getTemplate()->set_var("sModalidades", $sModalidades);
-                }
 
-                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "iconoVariable", $iconoVariableBlock);
-                $this->getTemplate()->set_var("iconoVariable", $this->getTemplate()->pparse("iconoVariable"));
-                $this->getTemplate()->delete_parsed_blocks($iconoVariableBlock);
+                    if($oPregunta->isPreguntaMC()){
+                        $this->getTemplate()->set_var("sTipo", "Pregunta Multiple Choise");
+                        $iconoPreguntaBlock = "IconoTipoMCBlock";
+                        $sOpciones = "<strong>Opciones: </strong> ";
+                        $aOpciones = $oPregunta->getOpciones();
+                        foreach($aOpciones as $oOpcion){
+                            $sOpciones .= $oOpcion->getDescripcion().", ";
+                        }
+                        $sOpciones = substr($sOpciones, 0, -2);
+                        $this->getTemplate()->set_var("sOpciones", $sOpciones);
+                    }
 
-                $this->getTemplate()->parse("VariableBlock", true);
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "iconoPregunta", $iconoPreguntaBlock);
+                    $this->getTemplate()->set_var("iconoPregunta", $this->getTemplate()->pparse("iconoPregunta"));
+                    $this->getTemplate()->delete_parsed_blocks($iconoPreguntaBlock);
+
+                    $this->getTemplate()->parse("PreguntaBlock", true);
             }
 
-            $paramsPaginador[] = "id=".$iUnidadId;
-            $paramsPaginador[] = "masVariables=1";
-            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/variables-procesar", "listadoVariablesResult", $paramsPaginador);
+            $paramsPaginador[] = "id=".$iEntrevistaId;
+            $paramsPaginador[] = "masPreguntas=1";
+            $this->calcularPaginas($iItemsForPage, $iPage, $iRecordsTotal, "seguimientos/preguntas-procesar", "listadoPreguntasResult", $paramsPaginador);
         }else{
-            $this->getTemplate()->set_var("VariableBlock", "");
+            $this->getTemplate()->set_var("PreguntaBlock", "");
             $this->getTemplate()->set_var("sNoRecords", "No se encontraron resultados");
         }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaVariablesBlock', false));
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaPreguntasBlock', false));
     }
 
     /**

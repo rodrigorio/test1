@@ -1,8 +1,5 @@
 <?php
- /** 
-  *
-  * @author Andres
-  */
+
 class VariableMySQLIntermediary extends VariableIntermediary
 {
     private static $instance = null;
@@ -23,18 +20,18 @@ class VariableMySQLIntermediary extends VariableIntermediary
         }
         return self::$instance;
     }
-		
+
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
             $db = clone ($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT 
-                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha 
+            $sSQL = "SELECT
+                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha
                     FROM
                        variables v ";
-            
+
             if(!empty($filtro)){
                 $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
             }
@@ -42,17 +39,17 @@ class VariableMySQLIntermediary extends VariableIntermediary
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }
-            
+
             if ($iIniLimit !== null && $iRecordCount !== null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
             }
 
             $db->query($sSQL);
-                                              
+
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
-            
+
             if(empty($iRecordsTotal)){ return null; }
-            
+
             $aVariables = array();
             while($oObj = $db->oNextRecord()){
             	$oVariable = new stdClass();
@@ -77,10 +74,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
                         break;
                     }
                 }
-                
+
             	$aVariables[] = $oVariable;
             }
-            
+
             return $aVariables;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -142,10 +139,10 @@ class VariableMySQLIntermediary extends VariableIntermediary
             	$oVariable->sNombre = $oObj->sNombre;
             	$oVariable->sDescripcion = $oObj->sDescripcion;
                 $oVariable->dFecha = $oObj->dFecha;
-                
+
                 switch($oObj->sTipoVariable){
                     case "VariableTexto":{
-                        $oVariable = Factory::getVariableTextoInstance($oVariable);                        
+                        $oVariable = Factory::getVariableTextoInstance($oVariable);
                         $oVariable->setValor($oObj->sValorTexto);
                         break;
                     }
@@ -170,7 +167,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             	$aVariables[] = $oVariable;
             }
-            
+
             return $aVariables;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
@@ -178,11 +175,11 @@ class VariableMySQLIntermediary extends VariableIntermediary
     }
 
     public function guardar($oVariable, $iUnidadId = "")
-    {                
+    {
         try{
             $db = $this->conn;
             $db->begin_transaction();
-            
+
             if($oVariable->getId() != null){
                 $this->actualizar($oVariable);
             }else{
@@ -204,35 +201,35 @@ class VariableMySQLIntermediary extends VariableIntermediary
    {
         try{
             $db = $this->conn;
-            $sTipo = get_class($oVariable);            
+            $sTipo = get_class($oVariable);
 
             $sSQL = " insert into variables set ".
                     " nombre = ".$this->escStr($oVariable->getNombre()).", ".
                     " tipo = ".$this->escStr($sTipo).", ".
                     " descripcion = ".$this->escStr($oVariable->getDescripcion()).", ".
                     " unidad_id = ".$this->escInt($iUnidadId)." ";
-			 
+
              $this->conn->execSQL($sSQL);
              $oVariable->setId($this->conn->insert_id());
-             
-             if($oVariable->isVariableCualitativa()){                                  
+
+             if($oVariable->isVariableCualitativa()){
                  $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($db);
                  $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
              }
 
-             return true;             
+             return true;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
    public function actualizar($oVariable)
-   { 
+   {
         try{
             $sTipo = get_class($oVariable);
             $db = $this->conn;
             $db->begin_transaction();
-		
+
             $sSQL = " update variables set ".
                     " nombre = ".$this->escStr($oVariable->getNombre()).", ".
                     " descripcion = ".$this->escStr($oVariable->getDescripcion())." ".
@@ -247,7 +244,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             $db->commit();
             return true;
-             
+
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
@@ -258,7 +255,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
      *  En una transaccion primero se hace update de borrado logico = 1 para todas las variables que no se pueden borrar fisicamente.
      *  Luego se utilizan los mismos ids para borrar fisicamente si y solo si borrado logico = 0.
      *  En el caso de las variables cualitativas las modalidades se borran en cascada si el borrado es fisico.
-     *  
+     *
      *
      * @param string $iIds string separado por comas con todos los ids de las variables que hay que borrar (logica o fisicamente)
      * @param integer $cantDiasExpiracion cantidad de dias del periodo en el cual se puede editar un seguimiento.
@@ -282,22 +279,22 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             $sSQL = " DELETE FROM variables WHERE ".
                     " id IN (".$iIds.") AND borradoLogico = '0' ";
-            
+
             $this->conn->execSQL($sSQL);
 
             $db->commit();
             return true;
-         
+
     	}catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
     public function borrar($iVariableId){}
-	
+
     public function actualizarCampoArray($objects, $cambios){}
- 	
+
     public function existe($filtro){
     	try{
             $db = $this->conn;
@@ -313,8 +310,8 @@ class VariableMySQLIntermediary extends VariableIntermediary
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
@@ -322,7 +319,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             return false;
         }
     }
-    
+
     public function isVariableUsuario($iVariableId, $iUsuarioId)
     {
     	try{
@@ -331,7 +328,7 @@ class VariableMySQLIntermediary extends VariableIntermediary
             $sSQL = " SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                       FROM
-                        variables v JOIN unidades u ON v.unidad_id = u.id 
+                        variables v JOIN unidades u ON v.unidad_id = u.id
                       WHERE
                         v.id = ".$this->escInt($iVariableId)." AND
                         u.usuarios_id = ".$this->escInt($iUsuarioId)." ";
