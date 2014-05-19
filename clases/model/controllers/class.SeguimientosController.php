@@ -1467,6 +1467,27 @@ class SeguimientosController
         }
     }
 
+    public function isEntrevistaUsuario($iEntrevistaId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->isEntrevistaUsuario($iEntrevistaId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getPreguntas($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
+    {
+        try{
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+            return $oPreguntaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Obtener Objetivos Personalizados
      *

@@ -4,11 +4,12 @@ abstract class PreguntaAbstract
 {
     protected $iId;
     protected $sDescripcion;
-    protected $dFechaHora;
+    protected $dFecha;
     protected $respuesta = null;
     protected $iOrden;
 
     public function isPreguntaMC(){ return false; }
+    public function isPreguntaAbierta(){ return false; }
 
     /**
  	 *  @param int $iId
@@ -40,14 +41,14 @@ abstract class PreguntaAbstract
 
     public function getFecha($format = false){
         if($format){
-            return Utils::fechaFormateada($this->dFechaHora);
+            return Utils::fechaFormateada($this->dFecha);
         }else{
-            return $this->dFechaHora;
+            return $this->dFecha;
         }
     }
 
-    public function setFecha($dFechaHora){
-        $this->dFechaHora = $dFechaHora;
+    public function setFecha($dFecha){
+        $this->dFecha = $dFecha;
     }
 
     public function getOrden()

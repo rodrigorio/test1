@@ -4,7 +4,7 @@
  * @author Andres
  *
  */
-class Pregunta extends PreguntaAbstract{
+class PreguntaAbierta extends PreguntaAbstract{
 
     public function __construct(stdClass $oParams = null){
         $vArray = get_object_vars($oParams);
@@ -19,6 +19,8 @@ class Pregunta extends PreguntaAbstract{
             }
         }
     }
+
+    public function isPreguntaAbierta(){ return true; }
 
     /**
      *  @param string $sRespuesta

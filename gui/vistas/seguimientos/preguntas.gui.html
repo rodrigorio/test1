@@ -12,11 +12,11 @@
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
-   .script("{pathUrlBase}"+"gui/vistas/seguimientos/variables.js");
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/preguntas.js");
 </script>
 <!--EndJsContent-->
 
-<!--BeginPageRightInnerContListadoVariablesBlock-->
+<!--BeginPageRightInnerContListadoPreguntasBlock-->
 <ul class="m_vert menu08 mabo3 teal_ri">
     <li>
         <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
@@ -24,251 +24,177 @@
         </a>
     </li>
     <li>
-        <a id="listaUnidades" href="{hrefListadoUnidades}">
-            <span class="i bs arrowLeft"></span> Volver a mis unidades
+        <a id="listaEntrevistas" href="{hrefListadoEntrevistas}">
+            <span class="i bs arrowLeft"></span> Volver a mis entrevistas
         </a>
     </li>
 </ul>
-<h3 class="mabo2">Agregar nueva variable a la unidad</h3>
+<h3 class="mabo2">Agregar nueva pregunta a la entrevista</h3>
 <ul class="m_vert menu08 listty_no">
     <li>
-        <a class="di_inbl"id="crearVariableTexto" href="javascript:;">
-            <span class="i mc inputText mari2"></span>Nueva variable de texto
+        <a class="di_inbl"id="crearPreguntaAbierta" href="javascript:;">
+            <span class="i mc inputText mari2"></span>Nueva pregunta abierta
         </a>
     </li>
     <li>
-        <a id="crearVariableNumerica" href="javascript:;">
-            <span class="i mc profits mari2"></span>Nueva variable num&eacute;rica
-        </a>
-    </li>
-    <li>
-        <a id="crearVariableCualitativa" href="javascript:;">
-            <span class="i mc inputRadio mari2"></span>Nueva variable cualitativa
+        <a id="crearPreguntaMC" href="javascript:;">
+            <span class="i mc profits mari2"></span>Nueva pregunta multiple choise
         </a>
     </li>
 </ul>
-<!--EndPageRightInnerContListadoVariablesBlock-->
+<!--EndPageRightInnerContListadoPreguntasBlock-->
 
 <!--BeginIconoTipoTextoBlock-->
 <span class="i mc inputText"></span>
 <!--EndIconoTipoTextoBlock-->
 
-<!--BeginIconoTipoNumericaBlock-->
-<span class="i mc profits"></span>
-<!--EndIconoTipoNumericaBlock-->
-
-<!--BeginIconoTipoCualitativaBlock-->
+<!--BeginIconoTipoMCBlock-->
 <span class="i mc inputRadio"></span>
-<!--EndIconoTipoCualitativaBlock-->
+<!--EndIconoTipoMCBlock-->
 
-<!--BeginListadoVariablesBlock-->
-<div class="baco5 pa2 bobo2 boto2 mabo3">
-    {sUnidadDescripcion}
-</div>
-<div id="listadoVariables" class="grupo po_re">
+<!--BeginListadoPreguntasBlock-->
+<div id="listadoPreguntas" class="grupo po_re">
     <input type="hidden" value="" name="sOrderBy" id="sOrderBy" />
     <input type="hidden" value="" name="sOrder" id="sOrder" />
-    <input type="hidden" value="{iUnidadId}" name="unidadId" id="unidadId" />
+    <input type="hidden" value="{iEntrevistaId}" name="entrevistaId" id="entrevistaId" />
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    <div id="listadoVariablesResult">
-        <!--BeginGrillaVariablesBlock-->
-        <div class="fost_it pato2 pabo2">Cantidad variables: <span class="fowe_bo">{iRecordsTotal}</span></div>
+    <div id="listadoPreguntasResult">
+        <!--BeginGrillaPreguntasBlock-->
+        <div class="fost_it pato2 pabo2">Cantidad preguntas: <span class="fowe_bo">{iRecordsTotal}</span></div>
         <table class="table01 wi100p mabo2">
             <tr class="encabezado">
-               <td class="big iveal">Nombre {orderByNombre}</td>
+               <td class="big iveal">Descripci&oacute;n {orderByDescripcion}</td>
                <td class="medium iveal">Tipo {orderByTipo}</td>
                <td class="small"></td>
             </tr>
-            <!--BeginVariableBlock-->
-            <tr class="{iVariableId} iveal">
-                <td class="desplegable" rel="{iVariableId}">{sNombre}</td>
-                <td class="desplegable iveal" rel="{iVariableId}">
-                    {iconoVariable}
+            <!--BeginPreguntaBlock-->
+            <tr class="{iPreguntaId} iveal">
+                <td class="desplegable" rel="{iPreguntaId}">{sDescripcion}</td>
+                <td class="desplegable iveal" rel="{iPreguntaId}">
+                    {iconoPregunta}
                     {sTipo}
                 </td>
                 <td class="teal_ce">
-                    <span title="Editar" rel="{sTipoEnum}_{iVariableId}" class="i bs edit ihover editarVariable"></span>
-                    <span title="Eliminar" rel="{iVariableId}" class="i bs delete ihover borrarVariable"></span>
+                    <span title="Editar" rel="{sTipoEnum}_{iPreguntaId}" class="i bs edit ihover editarPregunta"></span>
+                    <span title="Eliminar" rel="{iPreguntaId}" class="i bs delete ihover borrarPregunta"></span>
                 </td>
             </tr>
-            <tr class="{iVariableId} ba_no">
-                <td id="desplegable_{iVariableId}" class="pa0 bobo_no" colspan="3" style="display:none;">
+            <tr class="{iPreguntaId} ba_no">
+                <td id="desplegable_{iPreguntaId}" class="pa0 bobo_no" colspan="3" style="display:none;">
                     <div class="anexoFicha grupo">
                         <div class="titulo grupo">
                             <div class="fte fost_it fl_le">Detalles</div>
-                            <span rel="{iVariableId}" class="i bs close closeDesplegable ihover fl_ri"></span>
+                            <span rel="{iPreguntaId}" class="i bs close closeDesplegable ihover fl_ri"></span>
                         </div>
                         <br clear="all">
                         <div class="fte2 mabo2">Creada en <span class="fowe_bo">{dFechaHora}</span></div>
-                        <h3 class="mabo">Descripci&oacute;n</h3>
-                        <p class="pale2">{sDescripcion}</p>
-                        {sModalidades}
+                        {sOpciones}
                         </div>
                     </div>
                 </td>
             </tr>
-            <!--EndVariableBlock-->
+            <!--EndPreguntaBlock-->
 
-            <!--BeginNoRecordsVariablesBlock-->
+            <!--BeginNoRecordsPreguntasBlock-->
             <tr>
                 <td colspan="3">{sNoRecords}</td>
             </tr>
-            <!--EndNoRecordsVariablesBlock-->
+            <!--EndNoRecordsPreguntasBlock-->
         </table>
         {paginacion}
-        <!--EndGrillaVariablesBlock-->
+        <!--EndGrillaPreguntasBlock-->
     </div>
 </div>
-<!--EndListadoVariablesBlock-->
+<!--EndListadoPreguntasBlock-->
 
-<!--BeginFormularioVariableTextoBlock-->
+<!--BeginFormularioPreguntaAbiertaBlock-->
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal">
         <span class="i32 mc inputText32"></span>
     </div>
-    <form id="formVariableTexto" name="formVariableTexto" action="" method="post">
+    <form id="formPreguntaAbierta" name="formPreguntaAbierta" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
-        <div class="form_line msg_nombre">
-            <label for="nombre">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nombre
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre de la variable" maxlength="100" value="{sNombre}" />
-                </div>
-            </div>
-            <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
-        </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
-                Descripci&oacute;n
-            </label>
-            <div class="fwrap mabo2">
-                <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n para el contenido que la variable guarda.">{sDescripcion}</textarea>
-                </div>
-            </div>
-        </div>
-
-        <!--BeginSubmitCrearVariableTextoBlock-->
-        <div class="fl_le iveal mabo2">
-            <label for="crearVariableTexto" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearVariableTexto" type="submit" name="crearVariableTexto" class="btn01">
-                    Crear Variable
-                </button>
-            </label>
-        </div>
-        <!--EndSubmitCrearVariableTextoBlock-->
-
-        <!--BeginSubmitModificarVariableTextoBlock-->
-        <div class="fl_le iveal mabo2">
-            <label for="modificarVariableTexto" class="button buttonConfirm buttonLarge">
-                <button id="modificarVariableTexto" type="submit" name="modificarVariableTexto" class="btn01">
-                    Modificar Variable
-                </button>
-            </label>
-        </div>
-        <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
-        <!--EndSubmitModificarVariableTextoBlock-->
-
-        <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
-        <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-
-    </form>
-</div>
-<!--EndFormularioVariableTextoBlock-->
-
-<!--BeginFormularioVariableNumericaBlock-->
-<div class='ficha04 bora grupo'>
-    <div class="titulo iveal">
-        <span class="i32 mc profits32"></span>
-    </div>
-    <form id="formVariableNumerica" name="formVariableNumerica" action="" method="post">
-        <h2 class="mabo3">{sTituloForm}</h2>
-
-        <div class="form_line msg_nombre">
-            <label for="nombre">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nombre
+                Redacte la pregunta
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre de la variable" maxlength="100" value="{sNombre}" />
+                    <input type="text" name="descripcion" id="descripcion" title="Descripci&oacute;n de la pregunta" maxlength="100" value="{sDescripcion}" />
                 </div>
             </div>
-            <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
         </div>
-        <div class="form_line msg_descripcion">
-            <label for="descripcion">
+
+        <div class="form_line msg_orden">
+            <label for="orden">
                 <span class="marca_obligatorio">&#8226;</span>
-                Descripci&oacute;n
+                N&uacute;mero de orden
             </label>
-            <div class="fwrap mabo2">
+            <div class="fwrap">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n para el contenido que la variable guarda.">{sDescripcion}</textarea>
+                    <input type="text" name="orden" id="orden" title="Utilize el n&uacute;mero de orden para posicionar la pregunta" maxlength="2" value="{iOrden}" />
                 </div>
             </div>
         </div>
 
-        <!--BeginSubmitCrearVariableNumericaBlock-->
+        <!--BeginSubmitCrearPreguntaAbiertaBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="crearVariableNumerica" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearVariableNumerica" type="submit" name="crearVariableNumerica" class="btn01">
-                    Crear Variable
+            <label for="crearPreguntaAbierta" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearPreguntaAbierta" type="submit" name="crearPreguntaAbierta" class="btn01">
+                    Crear Pregunta
                 </button>
             </label>
         </div>
-        <!--EndSubmitCrearVariableNumericaBlock-->
+        <!--EndSubmitCrearPreguntaAbiertaBlock-->
 
-        <!--BeginSubmitModificarVariableNumericaBlock-->
+        <!--BeginSubmitModificarPreguntaAbiertaBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="modificarVariableNumerica" class="button buttonConfirm buttonLarge">
-                <button id="modificarVariableNumerica" type="submit" name="modificarVariableNumerica" class="btn01">
-                    Modificar Variable
+            <label for="modificarPreguntaAbierta" class="button buttonConfirm buttonLarge">
+                <button id="modificarPreguntaAbierta" type="submit" name="modificarPreguntaAbierta" class="btn01">
+                    Modificar Pregunta
                 </button>
             </label>
         </div>
-        <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
-        <!--EndSubmitModificarVariableNumericaBlock-->
+        <input type="hidden" value="{iPreguntaIdForm}" name="preguntaIdForm" id="preguntaIdForm" />
+        <!--EndSubmitModificarPreguntaAbiertaBlock-->
 
-        <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
-        <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+        <input type="hidden" value="{iEntrevistaIdForm}" name="entrevistaIdForm" id="entrevistaIdForm" />
+        <div style="display:none;" id='msg_form_pregunta' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
 
     </form>
 </div>
-<!--EndFormularioVariableNumericaBlock-->
+<!--EndFormularioPreguntaAbiertaBlock-->
 
-<!--BeginFormularioVariableCualitativaBlock-->
+<!--BeginFormularioPreguntaMCBlock-->
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal">
         <span class="i32 mc inputRadio32"></span>
     </div>
-    <form id="formVariableCualitativa" name="formVariableCualitativa" action="" method="post">
+    <form id="formPreguntaMC" name="formPreguntaMC" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
-        <div class="form_line msg_nombre">
-            <label for="nombre">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nombre
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre de la variable" maxlength="100" value="{sNombre}" />
-                </div>
-            </div>
-            <p>El nombre de la variable aparecer&aacute; en las entradas por fecha de los seguimientos a los cuales la unidad este asociada.</p>
-        </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
-                Descripci&oacute;n
+                Redacte la pregunta
             </label>
-            <div class="fwrap mabo2">
+            <div class="fwrap">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n para el contenido que la variable guarda.">{sDescripcion}</textarea>
+                    <input type="text" name="descripcion" id="descripcion" title="Descripci&oacute;n de la pregunta" maxlength="100" value="{sDescripcion}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_orden">
+            <label for="orden">
+                <span class="marca_obligatorio">&#8226;</span>
+                N&uacute;mero de orden
+            </label>
+            <div class="fwrap">
+                <div class="inner_fwrap">
+                    <input type="text" name="orden" id="orden" title="Utilize el n&uacute;mero de orden para posicionar la pregunta" maxlength="2" value="{iOrden}" />
                 </div>
             </div>
         </div>
@@ -346,4 +272,4 @@
 
     </form>
 </div>
-<!--EndFormularioVariableCualitativaBlock-->
+<!--EndFormularioPreguntaMCBlock-->

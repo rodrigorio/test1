@@ -67,7 +67,7 @@ class Entrevista{
      * @param string $sDescripcion
      */
     public function setDescripcion($sDescripcion){
-        $this->sDescripcion = $sDesccripcion;
+        $this->sDescripcion = $sDescripcion;
     }
 
     /**

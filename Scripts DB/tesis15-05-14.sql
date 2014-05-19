@@ -513,11 +513,11 @@ CREATE TABLE `entrevistas` (
   PRIMARY KEY (`id`),
   KEY `FK_entrevistas_usuarios` (`usuarios_id`),
   CONSTRAINT `FK_entrevistas_usuarios` FOREIGN KEY (`usuarios_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `entrevistas` */
 
-insert  into `entrevistas`(`id`,`usuarios_id`,`descripcion`,`borradoLogico`,`fechaBorradoLogico`,`fechaHora`) values (1,63,'Inicial Padres',0,NULL,'2014-05-19 01:16:15');
+insert  into `entrevistas`(`id`,`usuarios_id`,`descripcion`,`borradoLogico`,`fechaBorradoLogico`,`fechaHora`) values (1,63,'Inicial Padres',0,NULL,'2014-05-19 01:16:15'),(2,63,'Otra entrevista',0,NULL,'2014-05-19 01:48:01');
 
 /*Table structure for table `especialidades` */
 
@@ -983,6 +983,23 @@ CREATE TABLE `practicas` (
 
 insert  into `practicas`(`id`,`nombre`) values (1,'Grupal'),(2,'Individual'),(3,'Pareja');
 
+/*Table structure for table `pregunta_opciones` */
+
+DROP TABLE IF EXISTS `pregunta_opciones`;
+
+CREATE TABLE `pregunta_opciones` (
+  `preguntas_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `descripcion` varchar(50) NOT NULL,
+  `orden` int(2) unsigned DEFAULT '1',
+  `borradoLogico` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `FK_preguntas_opciones_preguntas` (`preguntas_id`),
+  CONSTRAINT `FK_preguntas_opciones_preguntas` FOREIGN KEY (`preguntas_id`) REFERENCES `preguntas` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `pregunta_opciones` */
+
 /*Table structure for table `pregunta_x_opcion_x_seguimiento` */
 
 DROP TABLE IF EXISTS `pregunta_x_opcion_x_seguimiento`;
@@ -1021,7 +1038,7 @@ DROP TABLE IF EXISTS `preguntas`;
 
 CREATE TABLE `preguntas` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `descripcion` tinytext NOT NULL,
+  `descripcion` varchar(100) NOT NULL,
   `tipo` enum('PreguntaAbierta','PreguntaMC') NOT NULL,
   `entrevistas_id` int(10) DEFAULT NULL,
   `borradoLogico` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -1033,23 +1050,6 @@ CREATE TABLE `preguntas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `preguntas` */
-
-/*Table structure for table `preguntas_opciones` */
-
-DROP TABLE IF EXISTS `preguntas_opciones`;
-
-CREATE TABLE `preguntas_opciones` (
-  `preguntas_id` int(11) NOT NULL,
-  `id` int(11) NOT NULL,
-  `descripcion` varchar(50) NOT NULL,
-  `orden` int(2) unsigned DEFAULT '1',
-  `borradoLogico` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `FK_preguntas_opciones_preguntas` (`preguntas_id`),
-  CONSTRAINT `FK_preguntas_opciones_preguntas` FOREIGN KEY (`preguntas_id`) REFERENCES `preguntas` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*Data for the table `preguntas_opciones` */
 
 /*Table structure for table `privacidad` */
 
