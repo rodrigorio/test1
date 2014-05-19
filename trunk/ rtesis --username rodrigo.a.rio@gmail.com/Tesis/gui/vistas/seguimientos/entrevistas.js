@@ -1,4 +1,4 @@
-var validateFormUnidad = {
+var validateFormEntrevista = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -12,27 +12,25 @@ var validateFormUnidad = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        nombre:{required:true},
         descripcion:{required:true}
     },
     messages:{
-        nombre: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        descripcion:mensajeValidacion("requerido")
     }
 };
 
-var optionsAjaxFormUnidad = {
+var optionsAjaxFormEntrevista = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-unidad',
+    url: 'seguimientos/guardar-entrevista',
     beforeSerialize:function(){
 
-        if($("#formUnidad").valid() == true){
+        if($("#formEntrevista").valid() == true){
 
-            $('#msg_form_unidad').hide();
-            $('#msg_form_unidad').removeClass("correcto").removeClass("error");
-            $('#msg_form_unidad .msg').html("");
-            setWaitingStatus('formUnidad', true);
+            $('#msg_form_entrevista').hide();
+            $('#msg_form_entrevista').removeClass("correcto").removeClass("error");
+            $('#msg_form_entrevista .msg').html("");
+            setWaitingStatus('formEntrevista', true);
 
         }else{
             return false;
@@ -40,83 +38,82 @@ var optionsAjaxFormUnidad = {
     },
 
     success:function(data){
-        setWaitingStatus('formUnidad', false);
+        setWaitingStatus('formEntrevista', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_unidad .msg').html(lang['error procesar']);
+                $('#msg_form_entrevista .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_unidad .msg').html(data.mensaje);
+                $('#msg_form_entrevista .msg').html(data.mensaje);
             }
-            $('#msg_form_unidad').addClass("error").fadeIn('slow');
+            $('#msg_form_entrevista').addClass("error").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_unidad .msg').html(lang['exito procesar']);
+                $('#msg_form_entrevista .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_unidad .msg').html(data.mensaje);
+                $('#msg_form_entrevista .msg').html(data.mensaje);
             }
-            if(data.agregarUnidad != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formUnidad').each(function(){
+            if(data.agregarEntrevista != undefined){
+                $('#formEntrevista').each(function(){
                   this.reset();
                 });
 
                 //refresco el formulario de busqueda pero elimino el filtro
                 $("#limpiarFiltro").click();
             }
+
             //refresco el listado actual
-            $("#buscarUnidades").click();
-            $('#msg_form_unidad').addClass("correcto").fadeIn('slow');
+            $("#buscarEntrevistas").click();
+            $('#msg_form_entrevista').addClass("correcto").fadeIn('slow');
         }
     }
 };
 
-function bindEventsUnidadForm(){
-    $("#formUnidad").validate(validateFormUnidad);
-    $("#formUnidad").ajaxForm(optionsAjaxFormUnidad);
+function bindEventsEntrevistaForm(){
+    $("#formEntrevista").validate(validateFormEntrevista);
+    $("#formEntrevista").ajaxForm(optionsAjaxFormEntrevista);
 }
 
-function masUnidades(){
+function masEntrevistas(){
 
-    var filtroNombreUnidad = $('#filtroNombreUnidad').val();
+    var filtroDescripcionEntrevista = $('#filtroDescripcionEntrevista').val();
 
     $.ajax({
         type:"POST",
-        url:"seguimientos/unidades-procesar",
+        url:"seguimientos/entrevistas-procesar",
         data:{
-            masUnidades:"1",
-            filtroNombreUnidad: filtroNombreUnidad
+            masEntrevistas:"1",
+            filtroDescripcionEntrevista: filtroDescripcionEntrevista
         },
         beforeSend: function(){
-            setWaitingStatus('listadoUnidades', true);
+            setWaitingStatus('listadoEntrevistas', true);
         },
         success:function(data){
-            setWaitingStatus('listadoUnidades', false);
-            $("#listadoUnidadesResult").html(data);
+            setWaitingStatus('listadoEntrevistas', false);
+            $("#listadoEntrevistasResult").html(data);
         }
     });
 }
 
-function eliminarUnidad(iUnidadId)
+function eliminarEntrevista(iEntrevistaId)
 {
     var buttons = {
         "Confirmar": function(){
-            //este es el dialog que confirma que la unidad fue eliminada del sistema
+            //este es el dialog que confirma que la entrevista fue eliminada del sistema
             var buttonAceptar = { "Aceptar": function(){ $(this).dialog("close"); } }
-            dialog = setWaitingStatusDialog(500, "Borrar Unidad", buttonAceptar);
+            dialog = setWaitingStatusDialog(500, "Borrar Entrevista", buttonAceptar);
             $.ajax({
                 type:"post",
                 dataType:'jsonp',
-                url:"seguimientos/borrar-unidad",
+                url:"seguimientos/borrar-entrevista",
                 data:{
-                    iUnidadId:iUnidadId
+                    iEntrevistaId:iEntrevistaId
                 },
                 success:function(data){
                     dialog.html(data.html);
                     if(data.success != undefined && data.success == 1){
                         $(".ui-dialog-buttonset .ui-button").click(function(){
-                            //se borro la unidad, refresco el listado con el filtro actual como esta
-                            $("#buscarUnidades").click();
+                            $("#buscarEntrevistas").click();
                         });
                     }
                 }
@@ -127,142 +124,67 @@ function eliminarUnidad(iUnidadId)
         }
     }
 
-    //este es el dialog que pide confirmar la accion
-    var dialog = setWaitingStatusDialog(550, 'Borrar Unidad', buttons);
+    var dialog = setWaitingStatusDialog(550, 'Borrar Entrevista', buttons);
     dialog.load(
-        "seguimientos/borrar-unidad",
+        "seguimientos/borrar-entrevista",
         {mostrarDialogConfirmar:"1"},
         function(){}
     );
 }
 
-var validateFormCrearEntradaUnidadEsporadica = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){},
-    highlight: function(element){},
-    unhighlight: function(element){},
-    rules:{
-        dFecha:{required:true}
-    }
-};
-
-var optionsAjaxFormCrearEntradaUnidadEsporadica = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url:'seguimientos/entradas/crear',
-    beforeSerialize:function(){
-        if($("#formCrearEntradaUnidadEsporadica").valid() == true){
-            $('#msg_form_crearEntradaUnidadEsporadica').hide();
-            $('#msg_form_crearEntradaUnidadEsporadica').removeClass("correcto").removeClass("error");
-            $('#msg_form_crearEntradaUnidadEsporadica .msg').html("");
-            setWaitingStatus('formCrearEntradaUnidadEsporadica', true, "16");
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formCrearEntradaUnidadEsporadica', false, "16");
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_crearEntradaUnidadEsporadica .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_crearEntradaUnidadEsporadica .msg').html(data.mensaje);
-            }
-            $('#msg_form_crearEntradaUnidadEsporadica').addClass("error").fadeIn('slow');
-        }else{
-            //cierro el dialog actual, abro otro con el mensaje de confirmacion y en el aceptar redirecciono
-            //al form de edicion de unidad
-            var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
-            dialog = setWaitingStatusDialog(500, "Crear Entrada", buttonAceptar);
-            dialog.html(data.html);
-            if(data.success != undefined && data.success == 1){
-                $(".ui-dialog-buttonset .ui-button").click(function(){
-                    //ampliar entrada creada para editar por primera vez.
-                    location = data.redirect;
-                });
-            }
-        }
-    }
-};
-
-function bindEventsCrearEntradaUnidadEsporadicaForm(){
-    var ultimaEntrada = $("#fechaUltimaEntrada").html();
-    if(ultimaEntrada != undefined && ultimaEntrada != ""){
-        ultimaEntrada = new Date(ultimaEntrada);
-        //le sumo 1 dia
-        var fromDate = new Date(ultimaEntrada.getFullYear(), ultimaEntrada.getMonth(), ultimaEntrada.getDate()+1);
-    }
-    $("#fechaFormUnidadEsporadica").datepicker({
-        minDate:fromDate,
-        maxDate:new Date
-    });
-
-    $(".tooltip").tooltip();
-
-    $("#formCrearEntradaUnidadEsporadica").validate(validateFormCrearEntradaUnidadEsporadica);
-    $("#formCrearEntradaUnidadEsporadica").ajaxForm(optionsAjaxFormCrearEntradaUnidadEsporadica);
-}
-
 $(document).ready(function(){
-    $("#buscarUnidades").live('click', function(){
-        masUnidades();
+    $("#buscarEntrevistas").live('click', function(){
+        masEntrevistas();
         return false;
     });
 
     $("#limpiarFiltro").live('click',function(){
-        $('#formFiltrarUnidades').each(function(){
+        $('#formFiltrarEntrevistas').each(function(){
           this.reset();
         });
         return false;
     });
 
-    $("#crearUnidad").click(function(){
-        var dialog = setWaitingStatusDialog(550, "Crear Unidad");
+    $("#crearEntrevista").click(function(){
+        var dialog = setWaitingStatusDialog(550, "Crear Entrevista");
         dialog.load(
-            "seguimientos/form-crear-unidad",
+            "seguimientos/form-crear-entrevista",
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsUnidadForm();
+                bindEventsEntrevistaForm();
             }
         );
         return false;
     });
 
-    $(".editarUnidad").live('click', function(){
-        var iUnidadId = $(this).attr("rel");
-        var dialog = setWaitingStatusDialog(550, 'Editar Unidad');
+    $(".editarEntrevista").live('click', function(){
+        var iEntrevistaId = $(this).attr("rel");
+        var dialog = setWaitingStatusDialog(550, 'Editar Entrevista');
 
         dialog.load(
-            "seguimientos/form-editar-unidad?unidadId="+iUnidadId,
+            "seguimientos/form-editar-entrevista?entrevistaId="+iEntrevistaId,
             {},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsUnidadForm();
+                bindEventsEntrevistaForm();
             }
         );
     });
 
-    $(".verSeguimientosUnidad").live('click', function(){
-        var iUnidadId = $(this).attr("rel");
+    $(".verSeguimientosEntrevista").live('click', function(){
+        var iEntrevistaId = $(this).attr("rel");
         var dialog = setWaitingStatusDialog(550, 'Seguimientos asociados');
         dialog.load(
-            "seguimientos/unidades-procesar",
+            "seguimientos/entrevistas-procesar",
             {
                 verSeguimientos:"1",
-                iUnidadId:iUnidadId
+                iEntrevistaId:iEntrevistaId
             },
             function(responseText, textStatus, XMLHttpRequest){}
         );
     });
 
-    $(".borrarUnidad").live('click', function(){
-        var iUnidadId = $(this).attr("rel");
-        eliminarUnidad(iUnidadId);
+    $(".borrarEntrevista").live('click', function(){
+        var iEntrevistaId = $(this).attr("rel");
+        eliminarEntrevista(iEntrevistaId);
     });
 });

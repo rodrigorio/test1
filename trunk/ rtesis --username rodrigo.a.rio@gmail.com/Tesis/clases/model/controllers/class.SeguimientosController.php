@@ -1250,38 +1250,34 @@ class SeguimientosController
 
     public function getEntrevistaById($iEntrevistaId)
     {
-        /*
         try{
-            $filtro = array('u.id' => $iUnidadId);
+            $filtro = array('e.id' => $iEntrevistaId);
             $iRecordsTotal = 0;
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $aUnidad = $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
-            if(null !== $aUnidad){
-                return $aUnidad[0];
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            $aEntrevista = $oEntrevistaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEntrevista){
+                return $aEntrevista[0];
             }else{
                 return null;
             }
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     public function getPreguntasRespuestasBySeguimientoId($iSeguimientoId, $iEntrevistaId, $bBorradoLogico = true)
     {
-        /*
         try{
-            $filtro = array('e.id' => $iEntradaId, 'v.unidad_id' => $iUnidadId);
+            $filtro = array('ps.seguimientos_id' => $iSeguimientoId, 'pos.seguimientos_id' => $iSeguimientoId, 'e.id' => $iEntrevistaId);
             if(!$bBorradoLogico){
-                $filtro['v.borradoLogico'] = "0";
+                $filtro['p.borradoLogico'] = "0";
             }
-            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oVariableIntermediary->obtenerContenido($filtro, $iRecordsTotal, null, null, null, null);
+            return $oPreguntaIntermediary->obtenerRespuestas($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
@@ -1293,26 +1289,18 @@ class SeguimientosController
      */
     public function getEntrevistasBySeguimientoId($iSeguimientoId, $bBorradoLogico = true, $sOrderBy = null, $sOrder = null)
     {
-        /*
         try{
-            $filtro = array('su.seguimientos_id' => $iSeguimientoId);
+            $filtro = array('se.seguimientos_id' => $iSeguimientoId);
             if(!$bBorradoLogico){
-                //no tiene que estar borrada la unidad
-                $filtro['u.borradoLogico'] = "0";
+                $filtro['e.borradoLogico'] = "0";
             }
-            if(null !== $sTipoEdicion){
-                $filtro['u.tipoEdicion'] = $sTipoEdicion;
-            }
-            if(!$bAsociacionAutomatica){
-                $filtro['u.asociacionAutomatica'] = "0";
-            }
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);
+            return $oEntrevistaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
@@ -1322,21 +1310,17 @@ class SeguimientosController
      */
     public function obtenerEntrevistasUsuario($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
     {
-        /*
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
 
-            $filtro["u.usuarios_id"] = $iUsuarioId;
-            $filtro["u.preCargada"] = "0";
-            $filtro["u.asociacionAutomatica"] = "0";
-            $filtro["u.borradoLogico"] = "0";
+            $filtro["e.usuarios_id"] = $iUsuarioId;
+            $filtro["e.borradoLogico"] = "0";
 
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
@@ -1346,15 +1330,12 @@ class SeguimientosController
      */
     public function obtenerMetadatosEntrevista($iEntrevistaId)
     {
-        /*
         try{
-            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtenerMetadatosUnidad($iUnidadId, $iUsuarioId);
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->obtenerMetadatosEntrevista($iEntrevistaId);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
@@ -1376,27 +1357,24 @@ class SeguimientosController
      */
     public function borrarEntrevista($oEntrevista)
     {
-        /*
         try{
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
 
             $success = true;
-            if(null !== $oUnidad->getVariables()){
-                //borro todas las variables de la unidad. si devuelve true no hubo errores.
-                $success = $this->borrarVariables($oUnidad->getVariables());
+            if(null !== $oEntrevista->getPreguntas()){
+                //borro todas las preguntas de la unidad. si devuelve true no hubo errores.
+                $success = $this->borrarPreguntas($oEntrevista->getPreguntas());
             }
 
             if($success){
-                //en este metodo se fija que si al menos una variable tiene borrado logico la unidad tmb
-                //se borra logicamente.
-                return $oUnidadIntermediary->borrar($oUnidad->getId());
+                //en este metodo se fija que si al menos una pregunta tiene borrado logico la entrevista tmb se borra logicamente.
+                return $oEntrevistaIntermediary->borrar($oEntrevista->getId());
             }else{
                 return false;
             }
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
@@ -1404,23 +1382,19 @@ class SeguimientosController
      */
     public function getEntrevistasDisponiblesBySeguimiento($oSeguimiento)
     {
-        /*
         try{
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
-            $filtro = array('u.usuarios_id' => $iUsuarioId,
-                            'u.preCargada' => '0',
-                            'u.asociacionAutomatica' => '0',
-                            'u.borradoLogico' => '0',
+            $filtro = array('e.usuarios_id' => $iUsuarioId,
+                            'e.borradoLogico' => '0',
                             'noAsociado' => $oSeguimiento->getId()
                             );
 
             $iRecordsTotal = 0;
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
@@ -1430,63 +1404,67 @@ class SeguimientosController
      */
     public function getPreguntasByEntrevistaId($iEntrevistaId, $bBorradoLogico = TRUE)
     {
-        /*
         try{
-            $filtro = array('v.unidad_id' => $iUnidadId);
+            $filtro = array('p.entrevistas_id' => $iEntrevistaId);
             if(!$bBorradoLogico){
-                $filtro['v.borradoLogico'] = "0";
+                $filtro['p.borradoLogico'] = "0";
             }
 
-            $oVariableIntermediary = PersistenceFactory::getVariableIntermediary($this->db);
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
             $iRecordsTotal = 0;
-            return $oVariableIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            return $oPreguntaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
-    /**
-     * Si la asociacion ya existe pero esta borrada logicamente limpia el registro y la vuelve a activar.
-     * Si la asociacion no existia crea un nuevo row asociando las 2 entidades.
-     *
-     * previamente se tiene que comprobar que el seguimiento sea propiedad del usuario que inicio sesion
-     */
     public function asociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId)
     {
-        /*
         try{
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            return $oUnidadIntermediary->asociarSeguimiento($iSeguimientoId, $iUnidadId);
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->asociarSeguimiento($iSeguimientoId, $iEntrevistaId);
         }catch(Exception $e){
             throw $e;
         }
-        */
+    }
+
+    public function desasociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId)
+    {
+        try{
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();
+            return $oEntrevistaIntermediary->desasociarSeguimiento($iSeguimientoId, $iEntrevistaId, $iCantDiasEdicion);
+        }catch(Exception $e){
+            throw $e;
+        }
     }
 
     /**
-     * borro siempre fisicamente asociacion entre unidad y seguimiento
+     * recibe un array de 1 o N preguntas y las borra fisica o logicamente dependiendo el plazo dispuesto para la edicion de seguimientos.
      *
-     * tambien borro fisicamente la unidad con sus respectivas variables para entradas
-     * que esten dentro del periodo de edicion
-     * (asociacion de entrada con variables de la unidad)
-     * (asociacion de entrada con unidad)
+     * Toda pregunta que tenga asociado un valor a un seguimiento en una fecha que exceda la cantidad de dias del plazo
+     * sera borrada logicamente en el sistema.
      *
-     * tambien borro fisicamente la unidad con sus respectivas variables (se repite el caso)
-     * en entradas posteriores al periodo de edicion pero que no se guardaron nunca. (solo se crearon)
-     *
+     * El metodo esta pensado para que pueda ser utilizado tanto en la eliminacion individual de una pregunta
+     * como en la eliminacion de una entrevista con un conjunto N de preguntas.
      */
-    public function desasociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId)
+    public function borrarPreguntas($aPreguntas)
     {
-        /*
         try{
-            $oUnidadIntermediary = PersistenceFactory::getUnidadIntermediary($this->db);
-            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();
-            return $oUnidadIntermediary->desasociarSeguimiento($iSeguimientoId, $iUnidadId, $iCantDiasEdicion);
+            $cantDiasExpiracion = FrontController::getInstance()->getPlugin('PluginParametros')->obtener('CANT_DIAS_EDICION_SEGUIMIENTOS');
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+
+            //genero un string con los ids separados con ',' para que se realize la transaccion en el sql.
+            $sIds = "";
+            foreach($aPreguntas as $oPregunta){
+                $sIds .= $oPregunta->getId().",";
+                $sIds = substr($sIds, 0, -1);
+            }
+
+            return $oPreguntaIntermediary->borrarPreguntas($sIds, $cantDiasExpiracion);
         }catch(Exception $e){
             throw $e;
         }
-        */
     }
 
     /**
