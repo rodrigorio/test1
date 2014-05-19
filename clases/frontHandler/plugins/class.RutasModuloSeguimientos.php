@@ -343,14 +343,14 @@ class RutasModuloSeguimientos
                                         'controller' => 'variables',
                                         'action'     => 'formCrearVariable'
                                 ));
-        $router->addRoute('seguimientosUnidadesFormCrearVariable', $route);
+        $router->addRoute('seguimientosVariablesFormCrearVariable', $route);
         $route = new RegexRoute('seguimientos/form-editar-variable',
                                 array(
                                         'module' => 'seguimientos',
                                         'controller' => 'variables',
                                         'action'     => 'formEditarVariable'
                                 ));
-        $router->addRoute('seguimientosUnidadesFormEditarVariable', $route);
+        $router->addRoute('seguimientosVariablesFormEditarVariable', $route);
         $route = new RegexRoute('seguimientos/variables-procesar',
                                 array(
                                         'module' => 'seguimientos',
@@ -364,7 +364,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'variables',
                                         'action'     => 'guardar'
                                 ));
-        $router->addRoute('seguimientosUnidadesGuardar', $route);
+        $router->addRoute('seguimientosVariablesGuardar', $route);
         $route = new RegexRoute('seguimientos/borrar-variable',
                                 array(
                                         'module' => 'seguimientos',
@@ -444,6 +444,57 @@ class RutasModuloSeguimientos
                                         'action'     => 'ampliar'
                                 ));
         $router->addRoute('seguimientosEntrevistasAmpliar', $route);
+
+        //preguntas
+        $route = new RegexRoute('seguimientos/listar-preguntas',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosPreguntasIndex', $route);
+        $route = new RegexRoute('seguimientos/form-crear-pregunta',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'formCrearPregunta'
+                                ));
+        $router->addRoute('seguimientosPreguntasFormCrearPreguna', $route);
+        $route = new RegexRoute('seguimientos/form-editar-pregunta',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'formEditarPregunta'
+                                ));
+        $router->addRoute('seguimientosPreguntasFormEditarPregunta', $route);
+        $route = new RegexRoute('seguimientos/preguntas-procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('seguimientosPreguntasProcesar', $route);
+        $route = new RegexRoute('seguimientos/guardar-pregunta',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'guardar'
+                                ));
+        $router->addRoute('seguimientosPreguntasGuardar', $route);
+        $route = new RegexRoute('seguimientos/borrar-pregunta',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'eliminar'
+                                ));
+        $router->addRoute('seguimientosPreguntasBorrar', $route);
+        $route = new RegexRoute('seguimientos/borrar-opcion-pregunta',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'preguntas',
+                                        'action'     => 'eliminarOpcion'
+                                ));
+        $router->addRoute('seguimientosPreguntasBorrarOpcion', $route);
 
         //objetivos
         $route = new RegexRoute('seguimientos/administrar-objetivos',

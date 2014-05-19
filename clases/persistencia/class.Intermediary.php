@@ -131,9 +131,10 @@ abstract class Intermediary
      * @param string $campo El campo de la tabla
      * @param mixed $valor Valor contra el que se va a comparar el campo en una condicion simple  A = B ?
      * @param int $tipo Constante correspondiente al tipo del contenido del campo
+     * @param boolean $allowNull true tambien si el valor del campo es nulo.
      * @return string
      */
-    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING){
+    protected final function crearFiltroSimple($campo, $valor, $tipo = MYSQL_TYPE_STRING, $allowNull = false){
         $filtro = "";
         if($valor != ""){
             switch($tipo){
@@ -150,7 +151,12 @@ abstract class Intermediary
                     break;
                 default: $valor = $this->escStr($valor);
             }
-            $filtro = " ".$campo." = ".$valor." ";
+
+            if(!$allowNull){
+                $filtro = " ".$campo." = ".$valor." ";
+            }else{
+                $filtro = " (ISNULL($campo) OR ($campo = $valor )) ";
+            }
         }
         return $filtro;
     }

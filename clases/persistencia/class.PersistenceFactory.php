@@ -49,7 +49,7 @@ class PersistenceFactory {
     {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (IntegranteActivoMySQLIntermediary::getInstance($conn));
-        }          
+        }
     }
     public static function getDocumentoTiposIntermediary(IMYSQL $conn)
     {
@@ -61,25 +61,25 @@ class PersistenceFactory {
     {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (CiudadMySQLIntermediary::getInstance($conn));
-        }          
+        }
     }
     public static function getProvinciaIntermediary(IMYSQL $conn)
     {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (ProvinciaMySQLIntermediary::getInstance($conn));
-        }          
+        }
     }
     public static function getPaisIntermediary(IMYSQL $conn)
     {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (PaisMySQLIntermediary::getInstance($conn));
-        }          
+        }
     }
     public static function getInstitucionIntermediary(IMYSQL $conn)
     {
   		if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
 			return (InstitucionMySQLIntermediary::getInstance($conn));
-        }          
+        }
     }
     public static function getEspecialidadIntermediary(IMYSQL $conn)
     {
@@ -153,7 +153,7 @@ class PersistenceFactory {
             return (ModeracionMySQLIntermediary::getInstance($conn));
         }
     }
-    
+
     public static function getNivelIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
@@ -221,6 +221,24 @@ class PersistenceFactory {
             return (ModalidadMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getEntrevistaIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (EntrevistaMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getPreguntaIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (PreguntaMySQLIntermediary::getInstance($conn));
+        }
+    }
+    public static function getOpcionIntermediary(IMYSQL $conn)
+    {
+        if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return (OpcionMySQLIntermediary::getInstance($conn));
+        }
+    }
     public static function getParametrosIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
@@ -232,7 +250,7 @@ class PersistenceFactory {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){
             return(ControladorPaginaMySQLIntermediary::getInstance($conn));
         }
-    }    
+    }
     public static function getDenunciaIntermediary(IMYSQL $conn)
     {
         if( ($conn instanceof MySQL) || ($conn instanceof IMySQL)){

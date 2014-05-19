@@ -104,7 +104,7 @@ class Entrevista{
         return $this->aPreguntas;
     }
 
-    public function getPreguntasRespuestas($this->iSeguimientoId)
+    public function getPreguntasRespuestas()
     {
         if(null === $this->iSeguimientoId || !$this->isRealizada()){
             return null;

@@ -35,7 +35,7 @@
 </script>
 <!--EndJsContentAsociarEntrevistas-->
 
-<!--BeginPageRightInnerContListadoUnidadesBlock-->
+<!--BeginPageRightInnerContListadoEntrevistasBlock-->
 <ul class="m_vert menu08 mabo3 teal_ri">
     <li>
         <a id="listaSeguimientos" href="{hrefListadoSeguimientos}">
@@ -45,35 +45,35 @@
 </ul>
 <ul class="m_vert menu08">
     <li>
-        <a id="crearUnidad" href="javascript:;">
-            Crear nueva Unidad
+        <a id="crearEntrevista" href="javascript:;">
+            Crear nueva Entrevista
         </a>
     </li>
 </ul>
-<!--EndPageRightInnerContListadoUnidadesBlock-->
+<!--EndPageRightInnerContListadoEntrevistasBlock-->
 
-<!--BeginListadoUnidadesBlock-->
+<!--BeginListadoEntrevistasBlock-->
 <div class="ficha01 grupo mabo2">
     <div class="encabezado">
         <div class="der"></div>
         <div class="izq">
             <div class="icono"><span class="i32 bs search32"></span></div>
-            <span class="titulo">Buscar Unidades</span><br>
+            <span class="titulo">Buscar Entrevistas</span><br>
             <span class="subtitulo">filtrar los resultados del listado</span>
         </div>
     </div>
     <div class="contenido">
-        <form id="formFiltrarUnidades" name="formFiltrarUnidades" action="" method="post">
+        <form id="formFiltrarEntrevistas" name="formFiltrarEntrevistas" action="" method="post">
             <div class="fl_le mari2 mabo2">
-               <span class="fowe_bo">Nombre Unidad</span>
-               <input type="text" name="filtroNombreUnidad" id="filtroNombreUnidad"/>
+               <span class="fowe_bo">Entrevista</span>
+               <input type="text" name="filtroDescripcionEntrevista" id="filtroDescripcionEntrevista"/>
             </div>
 
             <br clear="all" />
 
-            <label for="buscarUnidades" class="button buttonConfirm mari">
-                <button id="buscarUnidades" type="button" name="buscarUnidades" class="btn01">
-                    Buscar Unidades
+            <label for="buscarEntrevistas" class="button buttonConfirm mari">
+                <button id="buscarEntrevistas" type="button" name="buscarEntrevistas" class="btn01">
+                    Buscar Entrevistas
                 </button>
             </label>
             <label for="limpiarFiltro" class="button">
@@ -85,68 +85,47 @@
     </div>
 </div>
 
-<div id="listadoUnidades" class="grupo po_re">
+<div id="listadoEntrevistas" class="grupo po_re">
     <div class="ajax_wait30 di_no"></div>
-    <div id="listadoUnidadesResult">
-        <!--BeginThumbsUnidadesBlock-->
-        <div class="fost_it pato2 pabo2">Cantidad unidades filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
-            <!--BeginUnidadBlock-->
-            <div class="fl_le mari2 thumbEdit baco3 bora bosh mawi2 miwi2 mihe1 {iUnidadId}">
+    <div id="listadoEntrevistasResult">
+        <!--BeginThumbsEntrevistasBlock-->
+        <div class="fost_it pato2 pabo2">Cantidad entrevistas filtro actual: <span class="fowe_bo">{iRecordsTotal}</span></div>
+            <!--BeginEntrevistaBlock-->
+            <div class="fl_le mari2 thumbEdit baco3 bora bosh mawi2 miwi2 mihe1 {iEntrevistaId}">
                 <div class="grupo baco1 bobo1 bora4 pa2 pabo mabo2">
-                    <div class="fl_le mari3 mabo iveal fte2">
-                        <span title="Tipo de Edici&oacute;n" class="i bs notepad"></span> <span class="fost_it">{sTipoEdicion}</span>
-                    </div>
-                    <h3 class="fl_ri">{sNombreUnidad}</h3>
+                    <h3 class="fl_le mabo fte2">{sNombreEntrevista}</h3>
                 </div>
                 <div class="pa2">
-                    <p class="fte2">
-                        {sDescripcionUnidad}
-                        <!--BeginLinkVerMasBlock-->
-                        <a href="{hrefListarVariablesUnidad}" title="Ver Unidad Completa">ver m&aacute;s</a>
-                        <!--EndLinkVerMasBlock-->
-                    </p>
-                    <span class="fte2 txt_imp2">Cantidad de variables: </span> {iCantidadVariables}<br>
+                    <span class="fte2 txt_imp2">Cantidad de preguntas: </span> {iCantidadPreguntas}<br>
                     <!--BeginLinkSeguimientos-->
-                    <a class="verSeguimientosUnidad fte2" rel="{iUnidadId}" href="javascript:;">Asociada a <span class="fowe_bo">{iCantidadSeguimientos}</span> seguimientos</a>
+                    <a class="verSeguimientosEntrevista fte2" rel="{iEntrevistaId}" href="javascript:;">Asociada a <span class="fowe_bo">{iCantidadSeguimientos}</span> seguimientos</a>
                     <!--EndLinkSeguimientos-->
                     <!--BeginNoLinkSeguimientos-->
                     <span class="fte2">Sin seguimientos asociados</span>
                     <!--EndNoLinkSeguimientos-->
                 </div>
                 <div style="display:none" class="thumbEditMenu teal_ri">
-                    <a class="di_inbl" title="Listar Variables" href="{hrefListarVariablesUnidad}"><span class="i mi expand ihover"></span></a>
-                    <span title="Editar Unidad" rel="{iUnidadId}" class="i bs edit ihover editarUnidad"></span>
-                    <span title="Eliminar Unidad" rel="{iUnidadId}" class="i bs delete ihover borrarUnidad"></span>
+                    <a class="di_inbl" title="Listar Preguntas" href="{hrefListarPreguntasEntrevista}"><span class="i mi expand ihover"></span></a>
+                    <span title="Editar Entrevista" rel="{iEntrevistaId}" class="i bs edit ihover editarEntrevista"></span>
+                    <span title="Eliminar Entrevista" rel="{iEntrevistaId}" class="i bs delete ihover borrarEntrevista"></span>
                 </div>
             </div>
-            <!--EndUnidadBlock-->
+            <!--EndEntrevistaBlock-->
 
-            <!--BeginNoRecordsThumbsUnidadesBlock-->
-            <div class="teal_ce">No hay unidades creadas.</div>
-            <!--EndNoRecordsThumbsUnidadesBlock-->
-        <!--EndThumbsUnidadesBlock-->
+            <!--BeginNoRecordsThumbsEntrevistasBlock-->
+            <div class="teal_ce">No hay entrevistas creadas.</div>
+            <!--EndNoRecordsThumbsEntrevistasBlock-->
+        <!--EndThumbsEntrevistasBlock-->
     </div>
 </div>
-<!--EndListadoUnidadesBlock-->
+<!--EndListadoEntrevistasBlock-->
 
-<!--BeginFormularioUnidadBlock-->
+<!--BeginFormularioEntrevistaBlock-->
 <div class='ficha04 bora grupo'>
-    <div class="titulo iveal"><span class="i32 mi relationshipData32"></span></div>
-    <form id="formUnidad" name="formUnidad" action="" method="post">
+    <div class="titulo iveal"><span class="i32 bs notepad32"></span></div>
+    <form id="formEntrevista" name="formEntrevista" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
 
-        <div class="form_line msg_nombre">
-            <label for="nombre">
-                <span class="marca_obligatorio">&#8226;</span>
-                Nombre
-            </label>
-            <div class="fwrap">
-                <div class="inner_fwrap">
-                    <input type="text" name="nombre" id="nombre" title="Nombre Unidad de Variables" maxlength="100" value="{sNombre}" />
-                </div>
-            </div>
-            <p>El nombre que llevara el conjunto de variables que luego se asociar&aacute;n a sus seguimientos personalizados</p>
-        </div>
         <div class="form_line msg_descripcion">
             <label for="descripcion">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -154,63 +133,38 @@
             </label>
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n del contenido total de la unidad de variables">{sDescripcion}</textarea>
+                    <input type="text" name="descripcion" id="descripcion" title="Describa el contenido de la entrevista." maxlength="50" value="{sDescripcion}" />
                 </div>
             </div>
-            <p>Ingrese una breve descripci&oacute;n que le sirva de referencia a la hora de asociar la unidad a sus seguimientos</p>
+            <p>Ingrese una descripci&oacute;n que identifique a la plantilla de preguntas. Por ejemplo "Inicial Padres". Recomendamos evitar el uso de la palabra "Entrevista" ya que todas lo son :)</p>
         </div>
 
-        <!--BeginSetTipoEdicionBlock-->
-        <div class="form_line msg_tipoEdicion">
-            <div class="cl_le pato2">
-                <input id="radioEdicionEsporadica" type="radio" name="tipoEdicion" value="{eTipoEdicionEsporadica}">
-                <label for="radioEdicionEsporadica">
-                    <span class="fowe_bo">Edici&oacute;n Espor&aacute;dica</span><br>
-                </label>
-                <p class="pabo">
-                    Las unidades de edici&oacute;n espor&aacute;dica no aparecer&aacute;n en la edici&oacute;n de entradas por fecha.<br>
-                    Use este tipo para valores que se van a editar entre 1 o 2 veces por año.<br>
-                    Por ejemplo, variables que guarden los resultados de un test de evaluaci&oacute;n.
-                </p>
-                <input id="radioEdicionRegular" type="radio" name="tipoEdicion" value="{eTipoEdicionRegular}" checked="checked">
-                <label for="radioEdicionRegular">
-                    <span class="fowe_bo">Edici&oacute;n Regular</span><br>
-                </label>
-                <p class="pabo">
-                    Cree una unidad de edici&oacute;n regular cuando los valores estar&aacute;n sujetos a cambios de manera regular.<br>
-                    Por ejemplo, valores que quiera guardar cada vez que se reuna con la persona a la que le realiza un seguimiento.<br>
-                    Las unidades marcadas como edici&oacute;n regular aparecer&aacute;n siempre que se cree una entrada por fecha en un seguimiento.
-                </p>
-            </div>
-        </div>
-        <!--EndSetTipoEdicionBlock-->
-
-        <!--BeginSubmitCrearUnidadBlock-->
+        <!--BeginSubmitCrearEntrevistaBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="crearUnidad" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearUnidad" type="submit" name="crearUnidad" class="btn01">
-                    Crear Unidad
+            <label for="crearEntrevista" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearEntrevista" type="submit" name="crearEntrevista" class="btn01">
+                    Crear Entrevista
                 </button>
             </label>
         </div>
-        <!--EndSubmitCrearUnidadBlock-->
+        <!--EndSubmitCrearEntrevistaBlock-->
 
-        <!--BeginSubmitModificarUnidadBlock-->
+        <!--BeginSubmitModificarEntrevistaBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="modificarUnidad" class="button buttonConfirm buttonLarge">
-                <button id="modificarUnidad" type="submit" name="modificarUnidad" class="btn01">
-                    Modificar Unidad
+            <label for="modificarEntrevista" class="button buttonConfirm buttonLarge">
+                <button id="modificarEntrevista" type="submit" name="modificarEntrevista" class="btn01">
+                    Modificar Entrevista
                 </button>
             </label>
         </div>
-        <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
-        <!--EndSubmitModificarUnidadBlock-->
+        <input type="hidden" value="{iEntrevistaIdForm}" name="entrevistaIdForm" id="entrevistaIdForm" />
+        <!--EndSubmitModificarEntrevistaBlock-->
 
-        <div style="display:none;" id='msg_form_unidad' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
+        <div style="display:none;" id='msg_form_entrevista' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
 
     </form>
 </div>
-<!--EndFormularioUnidadBlock-->
+<!--EndFormularioEntrevistaBlock-->
 
 <!--BeginVerSeguimientosAsociadosBlock-->
 <div class="fost_it pato2 pabo2">Cantidad seguimientos personalizados asociados: <span class="fowe_bo">{iRecordsTotal}</span></div>

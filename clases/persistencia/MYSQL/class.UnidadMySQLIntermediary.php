@@ -70,9 +70,6 @@ class UnidadMySQLIntermediary extends UnidadIntermediary
             if(isset($filtro['u.fechaBorradoLogico']) && $filtro['u.fechaBorradoLogico'] != ""){
                 $WHERE[] = $this->crearFiltroFecha('u.fechaBorradoLogico', null, $filtro['u.fechaBorradoLogico'], true, true);
             }
-            if(isset($filtro['su.fechaBorradoLogico']) && $filtro['su.fechaBorradoLogico'] != ""){
-                $WHERE[] = $this->crearFiltroFecha('su.fechaBorradoLogico', null, $filtro['su.fechaBorradoLogico'], true, true);
-            }
             if(isset($filtro['noAsociado']) && $filtro['noAsociado'] != ""){
                 $WHERE[] = " u.id NOT IN (SELECT unidades_id FROM seguimiento_x_unidad WHERE seguimientos_id = ".$this->escInt($filtro['noAsociado']).") ";
             }

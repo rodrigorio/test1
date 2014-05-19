@@ -313,7 +313,6 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             $oEntrevista->oUsuario = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario();
 
             $oEntrevista = Factory::getEntrevistaInstance($oEntrevista);
-            $oEntrevista->setTipoLocal(); //se guarda tipo remoto una vez que comparte link por mail
 
             SeguimientosController::getInstance()->guardarEntrevista($oEntrevista);
 
