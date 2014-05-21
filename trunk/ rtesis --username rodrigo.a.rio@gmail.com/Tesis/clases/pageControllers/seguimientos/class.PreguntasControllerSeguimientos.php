@@ -228,9 +228,9 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
     }
 
     /**
-     * Devuelve el html de una nueva fila en la tabla de modalidades dentro del formulario de variable cualitativa.
+     * Devuelve el html de una nueva fila en la tabla de opciones dentro del formulario de pregunta mc.
      */
-    private function agregarModalidad()
+    private function agregarOpcion()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
@@ -240,202 +240,150 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
         $sHtmlId = uniqid();
 
         $this->restartTemplate();
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxRowModalidad", "ModalidadBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "ajaxRowOpcion", "OpcionBlock");
 
-        $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
+        $this->getTemplate()->set_var("opcionHtmlId", $sHtmlId);
         $this->getTemplate()->set_var("iOrden", "0");
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxRowModalidad', false));
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxRowOpcion', false));
     }
 
     /**
-     * Las acciones se dividen asi por el hecho de que puede ser de utilidad activar o desactivar la creacion o la edicion de variables
+     * Las acciones se dividen asi por el hecho de que puede ser de utilidad activar o desactivar la creacion o la edicion de preguntas
      * de manera independiente.
-     *
-     * Como en un futuro los objetos pueden diferenciarse cada vez mas de su clase padre se opta por mantener vistas separadas
-     * para cada tipo de variable aunque sean similares.
-     *
      */
-    public function formCrearVariable()
+    public function formCrearPregunta()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
-        if($this->getRequest()->has('formTexto')){
-            $this->mostrarFormularioVariableTextoPopUp();
+        if($this->getRequest()->has('formAbierta')){
+            $this->mostrarFormularioPreguntaAbiertaPopUp();
             return;
         }
-        if($this->getRequest()->has('formNumerica')){
-            $this->mostrarFormularioVariableNumericaPopUp();
-            return;
-        }
-        if($this->getRequest()->has('formCualitativa')){
-            $this->mostrarFormularioVariableCualitativaPopUp();
+        if($this->getRequest()->has('formMC')){
+            $this->mostrarFormularioPreguntaMCPopUp();
             return;
         }
     }
 
-    public function formEditarVariable()
+    public function formEditarPregunta()
     {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
 
-        $iVariableId = $this->getRequest()->getPost('iVariableId');
-        if(empty($iVariableId)){
+        $iPreguntaId = $this->getRequest()->getPost('iPreguntaId');
+        if(empty($iPreguntaId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        //me fijo que la variable pertenezca a una unidad creada por el usuario.
-        if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-            throw new Exception("No tiene permiso para editar la variable", 401);
+        //me fijo que la pregunta pertenezca a una entrevista creada por el usuario.
+        if(!SeguimientosController::getInstance()->isPreguntaUsuario($iPreguntaId)){
+            throw new Exception("No tiene permiso para editar la pregunta", 401);
         }
 
-        $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+        $oPregunta = SeguimientosController::getInstance()->getPreguntaById($iPreguntaId);
 
-        if($oVariable->isVariableNumerica()){
-            $this->mostrarFormularioVariableNumericaPopUp($oVariable);
+        if($oPregunta->isPreguntaAbierta()){
+            $this->mostrarFormularioPreguntaAbiertaPopUp($oPregunta);
             return;
         }
 
-        if($oVariable->isVariableTexto()){
-            $this->mostrarFormularioVariableTextoPopUp($oVariable);
-            return;
-        }
-
-        if($oVariable->isVariableCualitativa()){
-            $this->mostrarFormularioVariableCualitativaPopUp($oVariable);
+        if($oPregunta->isPreguntaMC()){
+            $this->mostrarFormularioPreguntaMCPopUp($oPregunta);
             return;
         }
     }
 
-    private function mostrarFormularioVariableTextoPopUp($oVariableTexto = null)
+    private function mostrarFormularioPreguntaAbiertaPopUp($oPreguntaAbierta = null)
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableTextoBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "popUpContent", "FormularioPreguntaAbiertaBlock");
 
         //FORMULARIO CREAR
-        if($oVariableTexto === null){
+        if($oPreguntaAbierta === null){
 
-            $this->getTemplate()->unset_blocks("SubmitModificarVariableTextoBlock");
+            $this->getTemplate()->unset_blocks("SubmitModificarPreguntaAbiertaBlock");
 
-            $sTituloForm = "Agregar nueva variable de texto a la Unidad";
+            $sTituloForm = "Agregar nueva pregunta abierta a la Entrevista";
 
             //valores por defecto en el agregar
-            $iVariableIdForm = "";
-            $sNombre = "";
+            $iPreguntaIdForm = "";
             $sDescripcion = "";
+            $iOrden = "";
 
         //FORMULARIO EDITAR
         }else{
 
-            $sTituloForm = "Editar variable de texto";
+            $sTituloForm = "Editar pregunta abierta";
 
-            $this->getTemplate()->unset_blocks("SubmitCrearVariableTextoBlock");
-            $this->getTemplate()->set_var("iVariableIdForm", $oVariableTexto->getId());
+            $this->getTemplate()->unset_blocks("SubmitCrearPreguntaAbiertaBlock");
+            $this->getTemplate()->set_var("iPreguntaIdForm", $oPreguntaAbierta->getId());
 
-            $sNombre = $oVariableTexto->getNombre();
-            $sDescripcion = $oVariableTexto->getDescripcion();
+            $sDescripcion = $oPreguntaAbierta->getDescripcion();
+            $iOrden = $oPreguntaAbierta->getOrden();
         }
 
-        $iUnidadId = $this->getRequest()->getPost('unidadId');
-        $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
+        $iEntrevistaId = $this->getRequest()->getPost('entrevistaId');
+        $this->getTemplate()->set_var("iEntrevistaIdForm", $iEntrevistaId);
 
         $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-        $this->getTemplate()->set_var("sNombre", $sNombre);
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
 
-    private function mostrarFormularioVariableNumericaPopUp($oVariableNumerica = null)
+    private function mostrarFormularioPreguntaMCPopUp($oPreguntaMC = null)
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableNumericaBlock");
+        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "popUpContent", "FormularioPreguntaMCBlock");
 
         //FORMULARIO CREAR
-        if($oVariableNumerica === null){
+        if($oPreguntaMC === null){
 
-            $this->getTemplate()->unset_blocks("SubmitModificarVariableNumericaBlock");
+            $this->getTemplate()->unset_blocks("SubmitModificarPreguntaMCBlock");
+            $this->getTemplate()->unset_blocks("OpcionBlock");
 
-            $sTituloForm = "Agregar nueva variable numérica a la Unidad";
+            $sTituloForm = "Agregar nueva pregunta multiple choise a la Entrevista";
 
             //valores por defecto en el agregar
-            $iVariableIdForm = "";
-            $sNombre = "";
+            $iPreguntaIdForm = "";
             $sDescripcion = "";
+            $iOrden = "";
 
         //FORMULARIO EDITAR
         }else{
 
-            $sTituloForm = "Editar variable numérica";
+            $sTituloForm = "Editar pregunta multiple choise";
 
-            $this->getTemplate()->unset_blocks("SubmitCrearVariableNumericaBlock");
-            $this->getTemplate()->set_var("iVariableIdForm", $oVariableNumerica->getId());
+            $this->getTemplate()->unset_blocks("SubmitCrearPreguntaMCBlock");
+            $this->getTemplate()->unset_blocks("NoRecordsOpcionesBlock");
 
-            $sNombre = $oVariableNumerica->getNombre();
-            $sDescripcion = $oVariableNumerica->getDescripcion();
-        }
+            $this->getTemplate()->set_var("iPreguntaIdForm", $oPreguntaMC->getId());
 
-        $iUnidadId = $this->getRequest()->getPost('unidadId');
-        $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
+            $sDescripcion = $oPreguntaMC->getDescripcion();
+            $iOrden = $oPreguntaMC->getOrden();
 
-        $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-        $this->getTemplate()->set_var("sNombre", $sNombre);
-        $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
-
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
-    }
-
-    private function mostrarFormularioVariableCualitativaPopUp($oVariableCualitativa = null)
-    {
-        $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "popUpContent", "FormularioVariableCualitativaBlock");
-
-        //FORMULARIO CREAR
-        if($oVariableCualitativa === null){
-
-            $this->getTemplate()->unset_blocks("SubmitModificarVariableCualitativaBlock");
-            $this->getTemplate()->unset_blocks("ModalidadBlock");
-
-            $sTituloForm = "Agregar nueva variable cualitativa a la Unidad";
-
-            //valores por defecto en el agregar
-            $iVariableIdForm = "";
-            $sNombre = "";
-            $sDescripcion = "";
-
-        //FORMULARIO EDITAR
-        }else{
-
-            $sTituloForm = "Editar variable cualitativa";
-
-            $this->getTemplate()->unset_blocks("SubmitCrearVariableCualitativaBlock");
-            $this->getTemplate()->unset_blocks("NoRecordsModalidadesBlock");
-
-            $this->getTemplate()->set_var("iVariableIdForm", $oVariableCualitativa->getId());
-
-            $sNombre = $oVariableCualitativa->getNombre();
-            $sDescripcion = $oVariableCualitativa->getDescripcion();
-
-            foreach($oVariableCualitativa->getModalidades() as $oModalidad){
+            foreach($oPreguntaMC->getOpciones() as $oOpcion){
 
                 $sHtmlId = uniqid();
-                $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
-                $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
-                $this->getTemplate()->set_var("iOrden", $oModalidad->getOrden());
-                $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
+                $this->getTemplate()->set_var("opcionHtmlId", $sHtmlId);
+                $this->getTemplate()->set_var("iOpcionId", $oOpcion->getId());
+                $this->getTemplate()->set_var("iOrden", $oOpcion->getOrden());
+                $this->getTemplate()->set_var("sDescripcion", $oOpcion->getDescripcion());
 
-                $this->getTemplate()->parse("ModalidadBlock", true);
+                $this->getTemplate()->parse("OpcionBlock", true);
             }
         }
 
-        $iUnidadId = $this->getRequest()->getPost('unidadId');
-        $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
+        $iEntrevistaId = $this->getRequest()->getPost('entrevistaId');
+        $this->getTemplate()->set_var("iEntrevistaIdForm", $iEntrevistaId);
 
         $this->getTemplate()->set_var("sTituloForm", $sTituloForm);
-        $this->getTemplate()->set_var("sNombre", $sNombre);
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
+        $this->getTemplate()->set_var("iOrden", $iOrden);
 
         $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
     }
@@ -446,67 +394,48 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
             throw new Exception("", 404);
         }
 
-        if($this->getRequest()->has('crearVariableTexto')){
-            $this->crearVariableTexto();
+        if($this->getRequest()->has('crearPreguntaAbierta')){
+            $this->crearPreguntaAbierta();
             return;
         }
 
-        if($this->getRequest()->has('modificarVariableTexto')){
-            $this->modificarVariableTexto();
+        if($this->getRequest()->has('modificarPreguntaAbierta')){
+            $this->modificarPreguntaAbierta();
             return;
         }
 
-        if($this->getRequest()->has('crearVariableNumerica')){
-            $this->crearVariableNumerica();
+        if($this->getRequest()->has('crearPreguntaMC')){
+            $this->crearPreguntaMC();
             return;
         }
 
-        if($this->getRequest()->has('modificarVariableNumerica')){
-            $this->modificarVariableNumerica();
-            return;
-        }
-
-        if($this->getRequest()->has('crearVariableCualitativa')){
-            $this->crearVariableCualitativa();
-            return;
-        }
-
-        if($this->getRequest()->has('modificarVariableCualitativa')){
-            $this->modificarVariableCualitativa();
+        if($this->getRequest()->has('modificarPreguntaMC')){
+            $this->modificarPreguntaMC();
             return;
         }
     }
 
-    private function crearVariableTexto()
+    private function crearPreguntaAbierta()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $oVariableTexto = new stdClass();
-            $oVariableTexto = Factory::getVariableTextoInstance($oVariableTexto);
+            $iEntrevistaId = $this->getRequest()->getPost('entrevistaIdForm');
 
-            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-
-            //es una unidad perteneciente al usuario?
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
+            if(!SeguimientosController::getInstance()->isEntrevistaUsuario($iEntrevistaId)){
+                throw new Exception("No tiene permiso para editar la entrevista", 401);
             }
 
-            //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
+            $oPreguntaAbierta = new stdClass();
+            $oPreguntaAbierta = Factory::getPreguntaAbiertaInstance($oPreguntaAbierta);
 
-            $oVariableTexto->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariableTexto->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oPreguntaAbierta->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oPreguntaAbierta->setOrden($this->getRequest()->getPost("orden"));
 
-            SeguimientosController::getInstance()->guardarVariable($oVariableTexto, $iUnidadId);
+            SeguimientosController::getInstance()->guardarPregunta($oPreguntaAbierta, $iEntrevistaId);
 
-            $this->getJsonHelper()->setValor("agregarVariable", "1");
-            $this->getJsonHelper()->setMessage("La variable de texto se ha creado con éxito");
+            $this->getJsonHelper()->setValor("agregarPregunta", "1");
+            $this->getJsonHelper()->setMessage("La pregunta se ha creado con éxito");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -516,197 +445,96 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
-    private function modificarVariableTexto()
+    private function modificarPreguntaAbierta()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $iVariableId = $this->getRequest()->getPost('variableIdForm');
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+            $iPreguntaId = $this->getRequest()->getPost('preguntaIdForm');
 
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para editar la variable", 401);
+            if(!SeguimientosController::getInstance()->isPreguntaUsuario($iPreguntaId)){
+                throw new Exception("No tiene permiso para editar la pregunta", 401);
             }
 
-            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
+            $oPregunta = SeguimientosController::getInstance()->getPreguntaById($iPreguntaId);
+            $oPregunta->setDescripcion($this->getRequest()->getPost("descripcion"));
+            $oPregunta->setOrden($this->getRequest()->getPost("orden"));
 
-            //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
+            SeguimientosController::getInstance()->guardarPregunta($oPregunta);
+
+            $this->getJsonHelper()->setMessage("La pregunta se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarPregunta", "1");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    private function crearPreguntaMC()
+    {
+        $iEntrevistaId = $this->getRequest()->getPost('entrevistaIdForm');
+        if(!SeguimientosController::getInstance()->isEntrevistaUsuario($iEntrevistaId)){
+            throw new Exception("No tiene permiso para editar la entrevista", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $vOpcion = $this->getRequest()->getPost("opcion");
+            if( empty($vOpcion) || !is_array($vOpcion) || count($vOpcion) < 2 ){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("Deben guardarse al menos 2 opciones para la pregunta");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $oPreguntaMC = new stdClass();
+            $oPreguntaMC = Factory::getPreguntaMCInstance($oPreguntaMC);
+
+            $oPreguntaMC->setOrden($this->getRequest()->getPost("orden"));
+            $oPreguntaMC->setDescripcion($this->getRequest()->getPost("descripcion"));
+
+            //listado opciones
+            $aOpciones = array();
+            $aOpcionesAux = array(); //lo uso para asegurarme de que no haya dos opciones con la misma descripcion
+            foreach($vOpcion as $opcion){
+
+                $sDescripcion = trim($opcion['descripcion']);
+                if(empty($sDescripcion)){
                     $this->getJsonHelper()->setSuccess(false);
+                    $this->getJsonHelper()->setMessage("Ninguna descripción puede quedar vacia");
                     $this->getJsonHelper()->sendJsonAjaxResponse();
                     return;
                 }
-            }
+                $iOpcionId = (empty($opcion['opcionId'])) ? null : $opcion['opcionId'];
+                $iOrden = (empty($opcion['orden'])) ? 0 : $opcion['orden'];
 
-            $oVariable->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
+            	$oOpcion = new stdClass();
+            	$oOpcion->iId = $iOpcionId;
+            	$oOpcion->sDescripcion = $sDescripcion;
+                $oOpcion->iOrden = $iOrden;
 
-            SeguimientosController::getInstance()->guardarVariable($oVariable);
-
-            $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
-            $this->getJsonHelper()->setValor("modificarVariable", "1");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    private function crearVariableNumerica()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $oVariableNumerica = new stdClass();
-            $oVariableNumerica = Factory::getVariableNumericaInstance($oVariableNumerica);
-
-            $oVariableNumerica->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariableNumerica->setDescripcion($this->getRequest()->getPost("descripcion"));
-
-            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-
-            //es una unidad perteneciente al usuario?
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
-            }
-
-            //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            SeguimientosController::getInstance()->guardarVariable($oVariableNumerica, $iUnidadId);
-
-            $this->getJsonHelper()->setValor("agregarVariable", "1");
-            $this->getJsonHelper()->setMessage("La variable numérica se ha creado con éxito");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    private function modificarVariableNumerica()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $iVariableId = $this->getRequest()->getPost('variableIdForm');
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
-
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para editar la variable", 401);
-            }
-
-            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-
-            //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if($this->getRequest()->getPost("nombre") != $oVariable->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                    $this->getJsonHelper()->setSuccess(false);
-                    $this->getJsonHelper()->sendJsonAjaxResponse();
-                    return;
-                }
-            }
-
-            $oVariable->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariable->setDescripcion($this->getRequest()->getPost("descripcion"));
-
-            SeguimientosController::getInstance()->guardarVariable($oVariable);
-
-            $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
-            $this->getJsonHelper()->setValor("modificarVariable", "1");
-            $this->getJsonHelper()->setSuccess(true);
-
-        }catch(Exception $e){
-            $this->getJsonHelper()->setSuccess(false);
-        }
-
-        $this->getJsonHelper()->sendJsonAjaxResponse();
-    }
-
-    private function crearVariableCualitativa()
-    {
-        try{
-            $this->getJsonHelper()->initJsonAjaxResponse();
-
-            $oVariableCualitativa = new stdClass();
-            $oVariableCualitativa = Factory::getVariableCualitativaInstance($oVariableCualitativa);
-
-            $oVariableCualitativa->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariableCualitativa->setDescripcion($this->getRequest()->getPost("descripcion"));
-
-            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-
-            //es una unidad perteneciente al usuario?
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar la unidad", 401);
-            }
-
-            //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            $vModalidad = $this->getRequest()->getPost("modalidad");
-            if( empty($vModalidad) || !is_array($vModalidad) || count($vModalidad) < 2 ){
-                $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->setMessage("Deben guardarse al menos 2 modalidades");
-                $this->getJsonHelper()->sendJsonAjaxResponse();
-                return;
-            }
-
-            //listado modalidades
-            $aModalidades = array();
-            $aModalidadesAux = array(); //lo uso para asegurarme de que no haya dos modalidades con el mismo nombre
-            foreach($vModalidad as $modalidad){
-
-                $sModalidad = trim($modalidad['modalidad']);
-                if(empty($sModalidad)){
-                    $this->getJsonHelper()->setSuccess(false);
-                    $this->getJsonHelper()->setMessage("Ninguna modalidad puede quedar vacia");
-                    $this->getJsonHelper()->sendJsonAjaxResponse();
-                    return;
-                }
-                $iModalidadId = (empty($modalidad['modalidadId'])) ? null : $modalidad['modalidadId'];
-                $iOrden = (empty($modalidad['orden'])) ? 0 : $modalidad['orden'];
-
-            	$oModalidad = new stdClass();
-            	$oModalidad->iId = $iModalidadId;
-            	$oModalidad->sModalidad = $sModalidad;
-                $oModalidad->iOrden = $iOrden;
-
-                $aModalidadesAux[] = $sModalidad;
-            	$aModalidades[] = Factory::getModalidadInstance($oModalidad);
+                $aOpcionesAux[] = $sDescripcion;
+            	$aOpciones[] = Factory::getOpcionInstance($oOpcion);
             }
 
             //hubo al menos una repeticion en el array.
-            if(count($aModalidadesAux) != count(array_unique($aModalidadesAux))){
+            if(count($aOpcionesAux) != count(array_unique($aOpcionesAux))){
                 $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->setMessage("No puede haber 2 modalidades con el mismo nombre");
+                $this->getJsonHelper()->setMessage("No puede haber 2 opciones con la misma descripción");
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            $oVariableCualitativa->setModalidades($aModalidades);
+            $oPreguntaMC->setOpciones($aOpciones);
 
-            SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa, $iUnidadId);
+            SeguimientosController::getInstance()->guardarPregunta($oPreguntaMC, $iEntrevistaId);
 
-            $this->getJsonHelper()->setValor("agregarVariable", "1");
-            $this->getJsonHelper()->setMessage("La variable cualitativa se ha creado con éxito");
+            $this->getJsonHelper()->setValor("agregarPregunta", "1");
+            $this->getJsonHelper()->setMessage("La pregunta se ha creado con éxito");
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -716,93 +544,83 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
-    private function modificarVariableCualitativa()
+    private function modificarPreguntaMC()
     {
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
-            $iVariableId = $this->getRequest()->getPost('variableIdForm');
+            $iPreguntaId = $this->getRequest()->getPost('preguntaIdForm');
 
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para editar la variable", 401);
+            if(!SeguimientosController::getInstance()->isPreguntaUsuario($iPreguntaId)){
+                throw new Exception("No tiene permiso para editar la pregunta", 401);
             }
 
-            $iUnidadId = $this->getRequest()->getPost('unidadIdForm');
-            $oVariableCualitativa = SeguimientosController::getInstance()->getVariableById($iVariableId);
+            $iEntrevistaId = $this->getRequest()->getPost('entrevistaIdForm');
+            $oPreguntaMC = SeguimientosController::getInstance()->getPreguntaById($iPreguntaId);
 
-            //no se permiten 2 variables con el mismo nombre dentro de una misma unidad.
-            if($this->getRequest()->getPost("nombre") != $oVariableCualitativa->getNombre()){
-                if(SeguimientosController::getInstance()->existeVariableUnidadIntegrante($this->getRequest()->getPost("nombre"), $iUnidadId)){
-                    $this->getJsonHelper()->setMessage("No puede haber 2 variables con el mismo nombre en la unidad.");
-                    $this->getJsonHelper()->setSuccess(false);
-                    $this->getJsonHelper()->sendJsonAjaxResponse();
-                    return;
-                }
-            }
+            $oPreguntaMC->setOrden($this->getRequest()->getPost("orden"));
+            $oPreguntaMC->setDescripcion($this->getRequest()->getPost("descripcion"));
 
-            $oVariableCualitativa->setNombre($this->getRequest()->getPost("nombre"));
-            $oVariableCualitativa->setDescripcion($this->getRequest()->getPost("descripcion"));
-
-            $vModalidad = $this->getRequest()->getPost("modalidad");
-            if( empty($vModalidad) || !is_array($vModalidad) || count($vModalidad) < 2 ){
+            $vOpcion = $this->getRequest()->getPost("opcion");
+            if( empty($vOpcion) || !is_array($vOpcion) || count($vOpcion) < 2 ){
                 $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->setMessage("Deben guardarse al menos 2 modalidades");
+                $this->getJsonHelper()->setMessage("Deben guardarse al menos 2 opciones");
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            //listado modalidades
-            $aModalidades = array();
-            $aModalidadesAux = array(); //lo uso para asegurarme de que no haya dos modalidades con el mismo nombre
-            foreach($vModalidad as $modalidad){
+            //listado opciones
+            $aOpciones = array();
+            $aOpcionesAux = array();
+            foreach($vOpcion as $opcion){
 
-                $sModalidad = trim($modalidad['modalidad']);
-                if(empty($sModalidad)){
+                $sDescripcion = trim($opcion['descripcion']);
+                if(empty($sDescripcion)){
                     $this->getJsonHelper()->setSuccess(false);
-                    $this->getJsonHelper()->setMessage("Ninguna modalidad puede quedar vacia");
+                    $this->getJsonHelper()->setMessage("Ninguna descripción puede quedar vacía");
                     $this->getJsonHelper()->sendJsonAjaxResponse();
                     return;
                 }
-                $iModalidadId = (empty($modalidad['modalidadId'])) ? null : $modalidad['modalidadId'];
-                $iOrden = (empty($modalidad['orden'])) ? 0 : $modalidad['orden'];
+                $iOpcionId = (empty($opcion['opcionId'])) ? null : $opcion['opcionId'];
+                $iOrden = (empty($opcion['orden'])) ? 0 : $opcion['orden'];
 
-            	$oModalidad = new stdClass();
-            	$oModalidad->iId = $iModalidadId;
-            	$oModalidad->sModalidad = $sModalidad;
-                $oModalidad->iOrden = $iOrden;
+            	$oOpcion = new stdClass();
+            	$oOpcion->iId = $iOpcionId;
+            	$oOpcion->sDescripcion = $sDescripcion;
+                $oOpcion->iOrden = $iOrden;
 
-                $aModalidadesAux[] = $sModalidad;
-            	$aModalidades[] = Factory::getModalidadInstance($oModalidad);
+                $aOpcionesAux[] = $sDescripcion;
+            	$aOpciones[] = Factory::getOpcionInstance($oOpcion);
             }
-            $oVariableCualitativa->setModalidades($aModalidades);
+            $oPreguntaMC->setOpciones($aOpciones);
 
             //hubo al menos una repeticion en el array.
-            if(count($aModalidadesAux) != count(array_unique($aModalidadesAux))){
+            if(count($aOpcionesAux) != count(array_unique($aOpcionesAux))){
                 $this->getJsonHelper()->setSuccess(false);
-                $this->getJsonHelper()->setMessage("No puede haber 2 modalidades con el mismo nombre");
+                $this->getJsonHelper()->setMessage("No puede haber 2 opciones con la misma descripción");
                 $this->getJsonHelper()->sendJsonAjaxResponse();
                 return;
             }
 
-            SeguimientosController::getInstance()->guardarVariable($oVariableCualitativa);
+            SeguimientosController::getInstance()->guardarPregunta($oPreguntaMC);
 
-            //genero el html de la grilla de las modalidades con el id actualizado.
+            //genero el html de la grilla de las opciones con el id actualizado.
             $this->restartTemplate();
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/variables.gui.html", "ajaxGrillaModalidades", "GrillaModalidadesBlock");
-            $this->getTemplate()->set_var("NoRecordsModalidadesBlock", "");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/preguntas.gui.html", "ajaxGrillaOpciones", "GrillaOpcionesBlock");
+            $this->getTemplate()->set_var("NoRecordsOpcionesBlock", "");
 
-            foreach($oVariableCualitativa->getModalidades() as $oModalidad){
+            foreach($oPreguntaMC->getOpciones() as $oOpciones){
                 $sHtmlId = uniqid();
-                $this->getTemplate()->set_var("modalidadHtmlId", $sHtmlId);
-                $this->getTemplate()->set_var("iModalidadId", $oModalidad->getId());
-                $this->getTemplate()->set_var("iOrden", $oModalidad->getOrden());
-                $this->getTemplate()->set_var("sModalidad", $oModalidad->getModalidad());
-                $this->getTemplate()->parse("ModalidadBlock", true);
+                $this->getTemplate()->set_var("opcionHtmlId", $sHtmlId);
+                $this->getTemplate()->set_var("iOpcionId", $oOpciones->getId());
+                $this->getTemplate()->set_var("iOrden", $oOpciones->getOrden());
+                $this->getTemplate()->set_var("sDescripcion", $oOpciones->getDescripcion());
+                $this->getTemplate()->parse("OpcionBlock", true);
             }
 
-            $this->getJsonHelper()->setMessage("La variable se ha modificado con éxito");
-            $this->getJsonHelper()->setValor("modificarVariable", "1");
-            $this->getJsonHelper()->setValor("grillaModalidades", $this->getTemplate()->pparse('ajaxGrillaModalidades', false));
+            $this->getJsonHelper()->setMessage("La pregunta se ha modificado con éxito");
+            $this->getJsonHelper()->setValor("modificarPregunta", "1");
+            $this->getJsonHelper()->setValor("grillaOpciones", $this->getTemplate()->pparse('ajaxGrillaOpciones', false));
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -812,24 +630,22 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
         $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
-    public function eliminarModalidad()
+    public function eliminarOpcion()
     {
-        $iModalidadId = $this->getRequest()->getParam('iModalidadId');
+        $iOpcionId = $this->getRequest()->getParam('iOpcionId');
 
-        if(empty($iModalidadId)){
+        if(empty($iOpcionId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $bOpcionUsuario = SeguimientosController::getInstance()->isOpcionPreguntaUsuario($iOpcionId);
+        if(!$bOpcionUsuario){
+            throw new Exception("No tiene permiso para eliminar esta opción", 401);
         }
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-
-            //la modalidad pertenece a una variable cualitativa creada por el usuario logueado?
-            $bModalidadUsuario = SeguimientosController::getInstance()->isModalidadVariableUsuario($iModalidadId);
-            if(!$bModalidadUsuario){
-                throw new Exception("No tiene permiso para eliminar esta modalidad", 401);
-            }
-
-            SeguimientosController::getInstance()->borrarModalidadVariable($iModalidadId);
+            SeguimientosController::getInstance()->borrarOpcionPregunta($iOpcionId);
             $this->getJsonHelper()->setSuccess(true);
 
         }catch(Exception $e){
@@ -841,37 +657,37 @@ class PreguntasControllerSeguimientos extends PageControllerAbstract
 
     public function eliminar()
     {
-        $iVariableId = $this->getRequest()->getPost('iVariableId');
+        $iPreguntaId = $this->getRequest()->getPost('iPreguntaId');
 
-        if(empty($iVariableId)){
+        if(empty($iPreguntaId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        if(!SeguimientosController::getInstance()->isPreguntaUsuario($iPreguntaId)){
+            throw new Exception("No tiene permiso para borrar la pregunta", 401);
         }
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            $oVariable = SeguimientosController::getInstance()->getVariableById($iVariableId);
+            $oPregunta = SeguimientosController::getInstance()->getPreguntaById($iPreguntaId);
 
-            if(!SeguimientosController::getInstance()->isVariableUsuario($iVariableId)){
-                throw new Exception("No tiene permiso para borrar la variable", 401);
-            }
-
-            $aVariables[] = $oVariable;
-            $result = SeguimientosController::getInstance()->borrarVariables($aVariables);
+            $aPreguntas[] = $oPregunta;
+            $result = SeguimientosController::getInstance()->borrarPreguntas($aPreguntas);
 
             $this->restartTemplate();
 
             if($result){
-                $msg = "La variable fue eliminada de la unidad";
+                $msg = "La pregunta fue eliminada de la entrevista";
                 $bloque = 'MsgCorrectoBlockI32';
                 $this->getJsonHelper()->setSuccess(true);
             }else{
-                $msg = "Ocurrio un error, no se ha eliminado la variable de la unidad";
+                $msg = "Ocurrio un error, no se ha eliminado la pregunta de la entrevista";
                 $bloque = 'MsgErrorBlockI32';
                 $this->getJsonHelper()->setSuccess(false);
             }
 
         }catch(Exception $e){
-            $msg = "Ocurrio un error, no se ha eliminado la variable de la unidad";
+            $msg = "Ocurrio un error, no se ha eliminado la pregunta de la entrevista";
             $bloque = 'MsgErrorBlockI32';
             $this->getJsonHelper()->setSuccess(false);
         }

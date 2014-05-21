@@ -38,6 +38,8 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
 
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by orden asc ";
             }
 
             if ($iIniLimit !== null && $iRecordCount !== null){
@@ -117,7 +119,10 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
 
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by orden asc ";
             }
+
             if ($iIniLimit !== null && $iRecordCount !== null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT);
             }
@@ -170,16 +175,16 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
         }
     }
 
-    public function guardar($oVariable, $iUnidadId = "")
+    public function guardar($oPregunta, $iEntrevistaId = "")
     {
         try{
             $db = $this->conn;
             $db->begin_transaction();
 
-            if($oVariable->getId() != null){
-                $this->actualizar($oVariable);
+            if($oPregunta->getId() != null){
+                $this->actualizar($oPregunta);
             }else{
-                $this->insertar($oVariable, $iUnidadId);
+                $this->insertar($oPregunta, $iEntrevistaId);
             }
 
             $db->commit();
@@ -191,26 +196,26 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
     }
 
    /**
-    * Si es actualizar no es necesario el id de unidad
+    * Si es actualizar no es necesario el id de entrevista
     */
-   public  function insertar($oVariable, $iUnidadId = "")
+   public  function insertar($oPregunta, $iEntrevistaId = "")
    {
         try{
             $db = $this->conn;
-            $sTipo = get_class($oVariable);
+            $sTipo = get_class($oPregunta);
 
-            $sSQL = " insert into variables set ".
-                    " nombre = ".$this->escStr($oVariable->getNombre()).", ".
+            $sSQL = " insert into preguntas set ".
+                    " descripcion = ".$this->escStr($oPregunta->getDescripcion()).", ".
                     " tipo = ".$this->escStr($sTipo).", ".
-                    " descripcion = ".$this->escStr($oVariable->getDescripcion()).", ".
-                    " unidad_id = ".$this->escInt($iUnidadId)." ";
+                    " orden = ".$this->escInt($oPregunta->getOrden()).", ".
+                    " entrevistas_id = ".$this->escInt($iEntrevistaId)." ";
 
              $this->conn->execSQL($sSQL);
-             $oVariable->setId($this->conn->insert_id());
+             $oPregunta->setId($this->conn->insert_id());
 
-             if($oVariable->isVariableCualitativa()){
-                 $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($db);
-                 $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
+             if($oPregunta->isPreguntaMC()){
+                 $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($db);
+                 $oOpcionIntermediary->guardarOpcionesPreguntaMC($oPregunta);
              }
 
              return true;
@@ -219,23 +224,23 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
         }
     }
 
-   public function actualizar($oVariable)
+   public function actualizar($oPregunta)
    {
         try{
-            $sTipo = get_class($oVariable);
+            $sTipo = get_class($oPregunta);
             $db = $this->conn;
             $db->begin_transaction();
 
-            $sSQL = " update variables set ".
-                    " nombre = ".$this->escStr($oVariable->getNombre()).", ".
-                    " descripcion = ".$this->escStr($oVariable->getDescripcion())." ".
-                    " where id = ".$this->escInt($oVariable->getId())." ";
+            $sSQL = " update preguntas set ".
+                    " orden = ".$this->escInt($oPregunta->getOrden()).", ".
+                    " descripcion = ".$this->escStr($oPregunta->getDescripcion())." ".
+                    " where id = ".$this->escInt($oPregunta->getId())." ";
 
              $this->conn->execSQL($sSQL);
 
-             if($oVariable->isVariableCualitativa()){
-                 $oModalidadIntermediary = PersistenceFactory::getModalidadIntermediary($this->conn);
-                 $oModalidadIntermediary->guardarModalidadesVariableCualitativa($oVariable);
+             if($oPregunta->isPreguntaMC()){
+                 $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($db);
+                 $oOpcionIntermediary->guardarOpcionesPreguntaMC($oPregunta);
              }
 
             $db->commit();
@@ -248,22 +253,23 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
     }
 
     /**
-     *  En una transaccion primero se hace update de borrado logico = 1 para todas las variables que no se pueden borrar fisicamente.
+     *  En una transaccion primero se hace update de borrado logico = 1 para todas las preguntas que no se pueden borrar fisicamente.
      *  Luego se utilizan los mismos ids para borrar fisicamente si y solo si borrado logico = 0.
-     *  En el caso de las variables cualitativas las modalidades se borran en cascada si el borrado es fisico.
+     *  En el caso de las preguntas multiple choise las opciones se borran en cascada si el borrado es fisico.
      *
      *
-     * @param string $iIds string separado por comas con todos los ids de las variables que hay que borrar (logica o fisicamente)
+     * @param string $iIds string separado por comas con todos los ids de las preguntas que hay que borrar (logica o fisicamente)
      * @param integer $cantDiasExpiracion cantidad de dias del periodo en el cual se puede editar un seguimiento.
-     * Esto implica que si la variable tiene al menos una entrada por fecha con valor mayor al periodo se borra si o si logicamente.
+     * Esto implica que si la pregunta esta contestada en algun seguimiento y a su vez expirada desde la fecha en la q se realizo la entrevisata,
+     * entonces se borra si o si logicamente.
      */
-    public function borrarVariables($iIds, $cantDiasExpiracion)
+    public function borrarPreguntas($iIds, $cantDiasExpiracion)
     {
         try{
             $db = $this->conn;
             $db->begin_transaction();
 
-            $sSQL = " UPDATE variables SET ".
+            $sSQL = " UPDATE preguntas SET ".
                     " borradoLogico = '1' ".
                     " WHERE ".
                     " id in (SELECT DISTINCT ecv.variables_id
@@ -273,7 +279,7 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
 
             $this->conn->execSQL($sSQL);
 
-            $sSQL = " DELETE FROM variables WHERE ".
+            $sSQL = " DELETE FROM preguntas WHERE ".
                     " id IN (".$iIds.") AND borradoLogico = '0' ";
 
             $this->conn->execSQL($sSQL);
@@ -299,7 +305,7 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        variables v
+                        preguntas p
                     WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
@@ -316,7 +322,7 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
         }
     }
 
-    public function isVariableUsuario($iVariableId, $iUsuarioId)
+    public function isPreguntaUsuario($iPreguntaId, $iUsuarioId)
     {
         try{
             $db = $this->conn;
@@ -324,10 +330,10 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
             $sSQL = " SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                       FROM
-                        variables v JOIN unidades u ON v.unidad_id = u.id
+                        preguntas p JOIN entrevistas e ON p.entrevistas_id = e.id
                       WHERE
-                        v.id = ".$this->escInt($iVariableId)." AND
-                        u.usuarios_id = ".$this->escInt($iUsuarioId)." ";
+                        p.id = ".$this->escInt($iPreguntaId)." AND
+                        e.usuarios_id = ".$this->escInt($iUsuarioId)." ";
 
             $db->query($sSQL);
 

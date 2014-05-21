@@ -1488,6 +1488,66 @@ class SeguimientosController
         }
     }
 
+    public function guardarPregunta($oPregunta, $iEntrevistaId = ""){
+        try{
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+            return $oPreguntaIntermediary->guardar($oPregunta, $iEntrevistaId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function isPreguntaUsuario($iPreguntaId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+            return $oPreguntaIntermediary->isPreguntaUsuario($iPreguntaId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getPreguntaById($iPreguntaId)
+    {
+        try{
+            $filtro = array('p.id' => $iPreguntaId);
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aPreguntas = $oPreguntaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aPreguntas){
+                return $aPreguntas[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getOpcionesByPreguntaId($iPreguntaMCId)
+    {
+        try{
+            $filtro = array('po.preguntas_id' => $iPreguntaMCId);
+            $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            return $oOpcionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function isOpcionPreguntaUsuario($iOpcionId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
+            return $oOpcionIntermediary->isOpcionPreguntaUsuario($iOpcionId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     /**
      * Obtener Objetivos Personalizados
      *

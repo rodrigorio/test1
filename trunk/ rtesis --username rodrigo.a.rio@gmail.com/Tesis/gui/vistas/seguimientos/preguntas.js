@@ -1,4 +1,4 @@
-var validateFormVariableTexto = {
+var validateFormPreguntaAbierta = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -12,27 +12,31 @@ var validateFormVariableTexto = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        nombre:{required:true},
-        descripcion:{required:true}
+        descripcion:{required:true},
+        orden:{required:true, digits:true, range:[1, 99]}
     },
     messages:{
-        nombre: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        descripcion: mensajeValidacion("requerido"),
+        orden:{
+            required:mensajeValidacion("requerido"),
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
     }
 };
 
-var optionsAjaxFormVariableTexto = {
+var optionsAjaxFormPreguntaAbierta = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-variable',
+    url: 'seguimientos/guardar-pregunta',
     beforeSerialize:function(){
 
-        if($("#formVariableTexto").valid() == true){
+        if($("#formPreguntaAbierta").valid() == true){
 
-            $('#msg_form_variable').hide();
-            $('#msg_form_variable').removeClass("correcto").removeClass("error");
-            $('#msg_form_variable .msg').html("");
-            setWaitingStatus('formVariableTexto', true);
+            $('#msg_form_pregunta').hide();
+            $('#msg_form_pregunta').removeClass("correcto").removeClass("error");
+            $('#msg_form_pregunta .msg').html("");
+            setWaitingStatus('formPreguntaAbierta', true);
 
         }else{
             return false;
@@ -40,110 +44,38 @@ var optionsAjaxFormVariableTexto = {
     },
 
     success:function(data){
-        setWaitingStatus('formVariableTexto', false);
+        setWaitingStatus('formPreguntaAbierta', false);
 
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_variable .msg').html(lang['error procesar']);
+                $('#msg_form_pregunta .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_variable .msg').html(data.mensaje);
+                $('#msg_form_pregunta .msg').html(data.mensaje);
             }
-            $('#msg_form_variable').addClass("error").fadeIn('slow');
+            $('#msg_form_pregunta').addClass("error").fadeIn('slow');
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_variable .msg').html(lang['exito procesar']);
+                $('#msg_form_pregunta .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_variable .msg').html(data.mensaje);
+                $('#msg_form_pregunta .msg').html(data.mensaje);
             }
-            if(data.agregarVariable != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formVariableTexto').each(function(){
+            if(data.agregarPregunta != undefined){
+                $('#formPreguntaAbierta').each(function(){
                   this.reset();
                 });
             }
 
             //refresco el listado actual
-            masVariables();
-            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
-        }
-    }
-};
-
-var validateFormVariableNumerica = {
-    errorElement: "div",
-    validClass: "correcto",
-    onfocusout: false,
-    onkeyup: false,
-    onclick: false,
-    focusInvalid: false,
-    focusCleanup: true,
-    errorPlacement:function(error, element){
-        error.appendTo(".msg_"+element.attr("id"));
-    },
-    highlight: function(element){},
-    unhighlight: function(element){},
-    rules:{
-        nombre:{required:true},
-        descripcion:{required:true}
-    },
-    messages:{
-        nombre: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
-    }
-};
-
-var optionsAjaxFormVariableNumerica = {
-    dataType: 'jsonp',
-    resetForm: false,
-    url: 'seguimientos/guardar-variable',
-    beforeSerialize:function(){
-
-        if($("#formVariableNumerica").valid() == true){
-
-            $('#msg_form_variable').hide();
-            $('#msg_form_variable').removeClass("correcto").removeClass("error");
-            $('#msg_form_variable .msg').html("");
-            setWaitingStatus('formVariableNumerica', true);
-
-        }else{
-            return false;
-        }
-    },
-
-    success:function(data){
-        setWaitingStatus('formVariableNumerica', false);
-
-        if(data.success == undefined || data.success == 0){
-            if(data.mensaje == undefined){
-                $('#msg_form_variable .msg').html(lang['error procesar']);
-            }else{
-                $('#msg_form_variable .msg').html(data.mensaje);
-            }
-            $('#msg_form_variable').addClass("error").fadeIn('slow');
-        }else{
-            if(data.mensaje == undefined){
-                $('#msg_form_variable .msg').html(lang['exito procesar']);
-            }else{
-                $('#msg_form_variable .msg').html(data.mensaje);
-            }
-            if(data.agregarVariable != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formVariableNumerica').each(function(){
-                  this.reset();
-                });
-            }
-
-            //refresco el listado actual
-            masVariables();
-            $('#msg_form_variable').addClass("correcto").fadeIn('slow');
+            masPreguntas();
+            $('#msg_form_pregunta').addClass("correcto").fadeIn('slow');
         }
     }
 };
 
 /**
- * La validacion de las modalidades se hacen del lado del server y se devuelve por ajax.
+ * La validacion de las opciones se hacen del lado del server directamente y se devuelve por ajax.
  */
-var validateFormVariableCualitativa = {
+var validateFormPreguntaMC = {
     errorElement: "div",
     validClass: "correcto",
     onfocusout: false,
@@ -157,27 +89,31 @@ var validateFormVariableCualitativa = {
     highlight: function(element){},
     unhighlight: function(element){},
     rules:{
-        nombre:{required:true},
-        descripcion:{required:true}
+        descripcion:{required:true},
+        orden:{required:true, digits:true, range:[1, 99]}
     },
     messages:{
-        nombre: mensajeValidacion("requerido"),
-        descripcion: mensajeValidacion("requerido")
+        descripcion: mensajeValidacion("requerido"),
+        orden:{
+            required:mensajeValidacion("requerido"),
+            digits:mensajeValidacion("digitos"),
+            range:"El numero de orden debe ser un numero positivo mayor a 1."
+        }
     }
 };
 
-var optionsAjaxFormVariableCualitativa = {
+var optionsAjaxFormPreguntaMC = {
     dataType: 'jsonp',
     resetForm: false,
-    url: 'seguimientos/guardar-variable',
+    url: 'seguimientos/guardar-pregunta',
     beforeSerialize:function(){
 
-        if($("#formVariableCualitativa").valid() == true){
+        if($("#formPreguntaMC").valid() == true){
 
-            $('#msg_form_variable').hide();
-            $('#msg_form_variable').removeClass("correcto").removeClass("error");
-            $('#msg_form_variable .msg').html("");
-            setWaitingStatus('formVariableCualitativa', true);
+            $('#msg_form_pregunta').hide();
+            $('#msg_form_pregunta').removeClass("correcto").removeClass("error");
+            $('#msg_form_pregunta .msg').html("");
+            setWaitingStatus('formPreguntaMC', true);
 
         }else{
             return false;
@@ -187,102 +123,96 @@ var optionsAjaxFormVariableCualitativa = {
     success:function(data){
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
-                $('#msg_form_variable .msg').html(lang['error procesar']);
+                $('#msg_form_pregunta .msg').html(lang['error procesar']);
             }else{
-                $('#msg_form_variable .msg').html(data.mensaje);
+                $('#msg_form_pregunta .msg').html(data.mensaje);
             }
-            $('#msg_form_variable').addClass("error");
+            $('#msg_form_pregunta').addClass("error");
         }else{
             if(data.mensaje == undefined){
-                $('#msg_form_variable .msg').html(lang['exito procesar']);
+                $('#msg_form_pregunta .msg').html(lang['exito procesar']);
             }else{
-                $('#msg_form_variable .msg').html(data.mensaje);
+                $('#msg_form_pregunta .msg').html(data.mensaje);
             }
-            if(data.agregarVariable != undefined){
-                //el submit fue para agregar una nueva publicacion. limpio el form
-                $('#formVariableCualitativa').each(function(){
+            if(data.agregarPregunta != undefined){
+                $('#formPreguntaMC').each(function(){
                   this.reset();
                 });
 
-                $('.modalidad').remove();
+                $('.opcion').remove();
             }
 
-            //si estoy editando una variable cualitativa refresco el listado de modalidades. necesario por ids
-            if(data.modificarVariable != undefined){
-                $("#grillaModalidadesWrapper").html(data.grillaModalidades);
+            //si estoy editando una pregunta multiple choise refresco el listado de opciones. necesario por ids
+            if(data.modificarPregunta != undefined){
+                $("#grillaOpcionesWrapper").html(data.grillaOpciones);
             }
 
             //refresco el listado actual
-            masVariables();
-            $('#msg_form_variable').addClass("correcto");
+            masPreguntas();
+            $('#msg_form_pregunta').addClass("correcto");
         }
 
-        setWaitingStatus('formVariableCualitativa', false);
-        $('#msg_form_variable').fadeIn('slow');
+        setWaitingStatus('formPreguntaMC', false);
+        $('#msg_form_pregunta').fadeIn('slow');
     }
 };
 
-function bindEventsVariableTextoForm(){
-    $("#formVariableTexto").validate(validateFormVariableTexto);
-    $("#formVariableTexto").ajaxForm(optionsAjaxFormVariableTexto);
+function bindEventsPreguntaAbiertaForm(){
+    $("#formPreguntaAbierta").validate(validateFormPreguntaAbierta);
+    $("#formPreguntaAbierta").ajaxForm(optionsAjaxFormPreguntaAbierta);
 }
 
-function bindEventsVariableNumericaForm(){
-    $("#formVariableNumerica").validate(validateFormVariableNumerica);
-    $("#formVariableNumerica").ajaxForm(optionsAjaxFormVariableNumerica);
+function bindEventsPreguntaMCForm(){
+    $("#formPreguntaMC").validate(validateFormPreguntaMC);
+    $("#formPreguntaMC").ajaxForm(optionsAjaxFormPreguntaMC);
 }
 
-function bindEventsVariableCualitativaForm(){
-    $("#formVariableCualitativa").validate(validateFormVariableCualitativa);
-    $("#formVariableCualitativa").ajaxForm(optionsAjaxFormVariableCualitativa);
-}
-
-function masVariables(){
+function masPreguntas(){
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
-    var unidadId = $('#unidadId').val();
+    var entrevistaId = $('#entrevistaId').val();
 
     $.ajax({
         type:"POST",
-        url:"seguimientos/variables-procesar",
+        url:"seguimientos/preguntas-procesar",
         data:{
-            masVariables:"1",
+            masPreguntas: "1",
             sOrderBy: sOrderBy,
             sOrder: sOrder,
-            id: unidadId
+            id: entrevistaId
         },
-        beforeSend: function(){
-            setWaitingStatus('listadoVariables', true);
+        beforeSend:function(){
+            setWaitingStatus('listadoPreguntas', true);
         },
         success:function(data){
-            setWaitingStatus('listadoVariables', false);
-            $("#listadoVariablesResult").html(data);
+            setWaitingStatus('listadoPreguntas', false);
+            $("#listadoPreguntasResult").html(data);
         }
     });
 }
 
-function eliminarVariable(iVariableId){
-    if(confirm("Se borrara la variable de la unidad de manera permanente, desea continuar?")){
+function eliminarPregunta(iPreguntaId){
+    if(confirm("Se borrara la pregunta de la entrevista de manera permanente, desea continuar?")){
         $.ajax({
             type:"post",
             dataType: 'jsonp',
-            url:"seguimientos/borrar-variable",
+            url:"seguimientos/borrar-pregunta",
             data:{
-                iVariableId:iVariableId
+                iPreguntaId:iPreguntaId
             },
             success:function(data){
                 if(data.success != undefined && data.success == 1){
                     //remuevo la fila y la ficha
-                    $("."+iVariableId).hide("slow", function(){
-                        $("."+iVariableId).remove();
+                    $("."+iPreguntaId).hide("slow", function(){
+                        $("."+iPreguntaId).remove();
                     });
                 }
 
                 var dialog = $("#dialog");
                 if($("#dialog").length){
-                    dialog.attr("title","Borrar Variable");
+                    dialog.attr("title","Borrar Pregunta");
                 }else{
-                    dialog = $('<div id="dialog" title="Borrar Variable"></div>').appendTo('body');
+                    dialog = $('<div id="dialog" title="Borrar Pregunta"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
 
@@ -309,130 +239,111 @@ $(document).ready(function(){
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
-        masVariables();
+        masPreguntas();
     });
 
-    $("#crearVariableTexto").click(function(){
-        var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(550, "Crear variable de Texto");
+    $("#crearPreguntaAbierta").click(function(){
+        var entrevistaId = $('#entrevistaId').val();
+        var dialog = setWaitingStatusDialog(550, "Crear pregunta abierta");
         dialog.load(
-            "seguimientos/form-crear-variable",
-            {"formTexto":"1", "unidadId":unidadId},
+            "seguimientos/form-crear-pregunta",
+            {"formAbierta":"1", "entrevistaId":entrevistaId},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsVariableTextoForm();
+                bindEventsPreguntaAbiertaForm();
             }
         );
         return false;
     });
 
-    $("#crearVariableNumerica").click(function(){
-        var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(550, "Crear variable Numérica");
+    $("#crearPreguntaMC").click(function(){
+        var entrevistaId = $('#entrevistaId').val();
+        var dialog = setWaitingStatusDialog(550, "Crear pregunta multiple choise");
         dialog.load(
-            "seguimientos/form-crear-variable",
-            {"formNumerica":"1", "unidadId":unidadId},
+            "seguimientos/form-crear-pregunta",
+            {"formMC":"1", "entrevistaId":entrevistaId},
             function(responseText, textStatus, XMLHttpRequest){
-                bindEventsVariableNumericaForm();
+                bindEventsPreguntaMCForm();
             }
         );
         return false;
     });
 
-    $("#crearVariableCualitativa").click(function(){
-        var unidadId = $('#unidadId').val();
-        var dialog = setWaitingStatusDialog(550, "Crear variable Cualitativa");
-        dialog.load(
-            "seguimientos/form-crear-variable",
-            {"formCualitativa":"1", "unidadId":unidadId},
-            function(responseText, textStatus, XMLHttpRequest){
-                bindEventsVariableCualitativaForm();
-            }
-        );
-        return false;
-    });
-
-    $(".editarVariable").live('click', function(){
+    $(".editarPregunta").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var tipo = rel[0];
-        var iVariableId = rel[1];
-        var unidadId = $('#unidadId').val();
+        var iPreguntaId = rel[1];
+        var entrevistaId = $('#entrevistaId').val();
 
         var titulo = "";
         switch(tipo){
-            case "VariableTexto": titulo = "Editar variable de Texto"; break;
-            case "VariableCualitativa": titulo = "Editar variable Cualitativa"; break;
-            case "VariableNumerica": titulo = "Editar variable Numérica"; break;
+            case "PreguntaAbierta": titulo = "Editar pregunta abierta"; break;
+            case "PreguntaMC": titulo = "Editar pregunta multiple choise"; break;
         }
 
         var dialog = setWaitingStatusDialog(550, titulo);
 
-        //desde el page controller me doy cuenta como muestro el formulario por la clase del objeto variable
-        //aca la unica condicion que me fijo es para bindear el javascript segun el tipo de formulario, la url es la misma.
         dialog.load(
-            "seguimientos/form-editar-variable",
-            {"iVariableId":iVariableId, "unidadId":unidadId},
+            "seguimientos/form-editar-pregunta",
+            {"iPreguntaId":iPreguntaId, "entrevistaId":entrevistaId},
             function(responseText, textStatus, XMLHttpRequest){
                 switch(tipo){
-                case "VariableTexto":
-                  bindEventsVariableTextoForm();
+                case "PreguntaAbierta":
+                  bindEventsPreguntaAbiertaForm();
                   break;
-                case "VariableNumerica":
-                  bindEventsVariableNumericaForm();
-                  break;
-                case "VariableCualitativa":
-                  bindEventsVariableCualitativaForm();
+                case "PreguntaMC":
+                  bindEventsPreguntaMCForm();
                   break;
                 }
             }
         );
     });
 
-    $(".borrarVariable").live('click', function(){
-        var iVariableId = $(this).attr("rel");
-        eliminarVariable(iVariableId);
+    $(".borrarPregunta").live('click', function(){
+        var iPreguntaId = $(this).attr("rel");
+        eliminarPregunta(iPreguntaId);
     });
 
-    $("#agregarModalidad").live('click', function(){
+    $("#agregarOpcion").live('click', function(){
         $.ajax({
             type:"POST",
-            url:"seguimientos/variables-procesar",
+            url:"seguimientos/preguntas-procesar",
             data:{
-                agregarModalidad:"1"
+                agregarOpcion:"1"
             },
             beforeSend: function(){
-                setWaitingStatus('listadoModalidades', true);
+                setWaitingStatus('listadoOpciones', true);
             },
             success:function(data){
-                if($("#noRecordsModalidades").length){
-                    $("#noRecordsModalidades").hide("slow", function(){
-                        $("#noRecordsModalidades").remove();
+                if($("#noRecordsOpciones").length){
+                    $("#noRecordsOpciones").hide("slow", function(){
+                        $("#noRecordsOpciones").remove();
                     });
                 }
-                setWaitingStatus('listadoModalidades', false);
-                $('#grillaModalidades').append(data);
+                setWaitingStatus('listadoOpciones', false);
+                $('#grillaOpciones').append(data);
             }
         });
     });
 
-    $(".borrarModalidad").live('click', function(){
+    $(".borrarOpcion").live('click', function(){
         var rel = $(this).attr("rel").split('_');
-        var modalidadHtmlId = rel[0];
-        var iModalidadId = rel[1];
+        var opcionHtmlId = rel[0];
+        var iOpcionId = rel[1];
 
-        //solo si la modalidad estaba guardada en db
-        if(iModalidadId != ""){
-            if(confirm("Se borrara la modalidad seleccionada en la variable, desea continuar?")){
+        //solo si la opcion estaba guardada en db
+        if(iOpcionId != ""){
+            if(confirm("Se borrara la opción seleccionada en la pregunta, desea continuar?")){
                 $.ajax({
                     type:"post",
                     dataType:"jsonp",
-                    url:"seguimientos/borrar-modalidad-variable",
+                    url:"seguimientos/borrar-opcion-pregunta",
                     data:{
-                        iModalidadId:iModalidadId
+                        iOpcionId:iOpcionId
                     },
                     success:function(data){
                         if(data.success != undefined && data.success == 1){
-                            $("."+modalidadHtmlId).hide("slow", function(){
-                                $("."+modalidadHtmlId).remove();
+                            $("."+opcionHtmlId).hide("slow", function(){
+                                $("."+opcionHtmlId).remove();
                             });
                         }
                     }
@@ -440,8 +351,8 @@ $(document).ready(function(){
             }
         //repito el codigo en el else por el asincronismo del ajax si es que necesitas ejecutarse.
         }else{
-            $("."+modalidadHtmlId).hide("slow", function(){
-                $("."+modalidadHtmlId).remove();
+            $("."+opcionHtmlId).hide("slow", function(){
+                $("."+opcionHtmlId).remove();
             });
         }
     });
