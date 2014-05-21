@@ -137,6 +137,7 @@
                     <input type="text" name="orden" id="orden" title="Utilize el n&uacute;mero de orden para posicionar la pregunta" maxlength="2" value="{iOrden}" />
                 </div>
             </div>
+            <p>Utilize el n&uacute;mero de orden para ordenar las preguntas dentro de la entrevista.</p>
         </div>
 
         <!--BeginSubmitCrearPreguntaAbiertaBlock-->
@@ -173,7 +174,7 @@
         <span class="i32 mc inputRadio32"></span>
     </div>
     <form id="formPreguntaMC" name="formPreguntaMC" action="" method="post">
-        <h2 class="mabo3">{sTituloForm}</h2>
+        <h2 class="mabo3 lihe2">{sTituloForm}</h2>
 
         <div class="form_line msg_descripcion">
             <label for="descripcion">
@@ -197,79 +198,79 @@
                     <input type="text" name="orden" id="orden" title="Utilize el n&uacute;mero de orden para posicionar la pregunta" maxlength="2" value="{iOrden}" />
                 </div>
             </div>
+            <p>Utilize el n&uacute;mero de orden para ordenar las preguntas dentro de la entrevista.</p>
         </div>
 
-        <div class="form_line msg_modalidades" id="listadoModalidades">
+        <div class="form_line msg_opciones" id="listadoOpciones">
             <label for="">
                 <span class="marca_obligatorio">&#8226;</span>
-                Modalidades
+                Opciones
             </label>
 
-            <div id="grillaModalidadesWrapper">
-            <!--BeginGrillaModalidadesBlock-->
-            <table id="grillaModalidades" class="table01 wi100p">
+            <div id="grillaOpcionesWrapper">
+            <!--BeginGrillaOpcionesBlock-->
+            <table id="grillaOpciones" class="table01 wi100p">
                 <tr class="encabezado">
-                   <td class="small iveal">Modalidad</td>
+                   <td class="small iveal">Descripci&oacute;n</td>
                    <td class="small iveal">Orden</td>
                    <td class="small"></td>
                 </tr>
 
-                <!--BeginModalidadBlock-->
-                <tr class="{modalidadHtmlId} modalidad">
+                <!--BeginOpcionBlock-->
+                <tr class="{opcionHtmlId} opcion">
                     <td>
-                        <input class="medium" type="text" name="modalidad[{modalidadHtmlId}][modalidad]" title="Nombre Modalidad" maxlength="50" value="{sModalidad}" />
-                        <input type="hidden" name="modalidad[{modalidadHtmlId}][modalidadId]" value="{iModalidadId}" />
+                        <input class="medium" type="text" name="opcion[{opcionHtmlId}][descripcion]" title="Descripci&oacute;n Opci&oacute;n" maxlength="50" value="{sDescripcion}" />
+                        <input type="hidden" name="opcion[{opcionHtmlId}][opcionId]" value="{iOpcionId}" />
                     </td>
                     <td>
-                        <input size="2" type="text" name="modalidad[{modalidadHtmlId}][orden]" title="N&uacute;mero de ordenamiento" maxlength="2" value="{iOrden}" />
+                        <input size="2" type="text" name="opcion[{opcionHtmlId}][orden]" title="N&uacute;mero de ordenamiento" maxlength="2" value="{iOrden}" />
                     </td>
                     <td class="teal_ce">
-                        <span title="Eliminar" rel="{modalidadHtmlId}_{iModalidadId}" class="i bs delete ihover borrarModalidad"></span>
+                        <span title="Eliminar" rel="{opcionHtmlId}_{iOpcionId}" class="i bs delete ihover borrarOpcion"></span>
                     </td>
                 </tr>
-                <!--EndModalidadBlock-->
+                <!--EndOpcionBlock-->
 
-                <!--BeginNoRecordsModalidadesBlock-->
-                <tr id="noRecordsModalidades">
-                    <td colspan="3">Sin modalidades</td>
+                <!--BeginNoRecordsOpcionesBlock-->
+                <tr id="noRecordsOpciones">
+                    <td colspan="3">Sin opciones</td>
                 </tr>
-                <!--EndNoRecordsModalidadesBlock-->
+                <!--EndNoRecordsOpcionesBlock-->
             </table>
-            <!--EndGrillaModalidadesBlock-->
+            <!--EndGrillaOpcionesBlock-->
             </div>
-            <p>Listado con las distintas modalidades que la variable puede asumir. Por ejemplo: Malo, Regular, Bueno. Utilize el n&uacute;mero de orden para ordenar la lista.</p>
+            <p>Listado con las distintas opciones que la pregunta puede tener como respuesta. Utilize el n&uacute;mero de orden para ordenar la lista.</p>
         </div>
         <div class="baco3 bobo1 pa2 mabo3">
-            <label id="agregarModalidad" class="button">
+            <label id="agregarOpcion" class="button">
                 <span class="i bs add"></span>
-                <span class="buttonText">Agregar Modalidad</span>
+                <span class="buttonText">Agregar Opci&oacute;n</span>
             </label>
         </div>
 
-        <!--BeginSubmitCrearVariableCualitativaBlock-->
+        <!--BeginSubmitCrearPreguntaMCBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="crearVariableCualitativa" class="button buttonConfirm buttonLarge mari3">
-                <button id="crearVariableCualitativa" type="submit" name="crearVariableCualitativa" class="btn01">
-                    Crear Variable
+            <label for="crearPreguntaMC" class="button buttonConfirm buttonLarge mari3">
+                <button id="crearPreguntaMC" type="submit" name="crearPreguntaMC" class="btn01">
+                    Crear Pregunta
                 </button>
             </label>
         </div>
-        <!--EndSubmitCrearVariableCualitativaBlock-->
+        <!--EndSubmitCrearPreguntaMCBlock-->
 
-        <!--BeginSubmitModificarVariableCualitativaBlock-->
+        <!--BeginSubmitModificarPreguntaMCBlock-->
         <div class="fl_le iveal mabo2">
-            <label for="modificarVariableCualitativa" class="button buttonConfirm buttonLarge">
-                <button id="modificarVariableCualitativa" type="submit" name="modificarVariableCualitativa" class="btn01">
-                    Modificar Variable
+            <label for="modificarPreguntaMC" class="button buttonConfirm buttonLarge">
+                <button id="modificarPreguntaMC" type="submit" name="modificarPreguntaMC" class="btn01">
+                    Modificar Pregunta
                 </button>
             </label>
         </div>
-        <input type="hidden" value="{iVariableIdForm}" name="variableIdForm" id="variableIdForm" />
-        <!--EndSubmitModificarVariableCualitativaBlock-->
+        <input type="hidden" value="{iPreguntaIdForm}" name="preguntaIdForm" id="preguntaIdForm" />
+        <!--EndSubmitModificarPreguntaMCBlock-->
 
-        <input type="hidden" value="{iUnidadIdForm}" name="unidadIdForm" id="unidadIdForm" />
-        <div style="display:none;" id='msg_form_variable' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-
+        <input type="hidden" value="{iEntrevistaIdForm}" name="entrevistaIdForm" id="entrevistaIdForm" />
+        <div style="display:none;" id='msg_form_pregunta' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
     </form>
 </div>
 <!--EndFormularioPreguntaMCBlock-->

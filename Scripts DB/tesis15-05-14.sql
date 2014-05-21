@@ -989,7 +989,7 @@ DROP TABLE IF EXISTS `pregunta_opciones`;
 
 CREATE TABLE `pregunta_opciones` (
   `preguntas_id` int(11) NOT NULL,
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(50) NOT NULL,
   `orden` int(2) unsigned DEFAULT '1',
   `borradoLogico` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -1047,9 +1047,11 @@ CREATE TABLE `preguntas` (
   PRIMARY KEY (`id`),
   KEY `FK_preguntas_x_entrevista` (`entrevistas_id`),
   CONSTRAINT `FK_preguntas_entrevistas` FOREIGN KEY (`entrevistas_id`) REFERENCES `entrevistas` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `preguntas` */
+
+insert  into `preguntas`(`id`,`descripcion`,`tipo`,`entrevistas_id`,`borradoLogico`,`fechaHora`,`orden`) values (1,'una pregunta','PreguntaAbierta',1,0,'2014-05-21 00:35:25',3);
 
 /*Table structure for table `privacidad` */
 

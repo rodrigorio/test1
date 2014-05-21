@@ -21,123 +21,230 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
         return self::$instance;
     }
 
-     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
+    public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
+    {
         try{
-            $db = clone ($this->conn);
+            $db = clone($this->conn);
             $filtro = $this->escapeStringArray($filtro);
 
-            $sSQL = "SELECT
-                        po.id as iId, po.descripcion as sDescripcion
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        po.id as iId,
+                        po.descripcion as sDescripcion,
+                        po.orden as iOrden
                     FROM
-                       preguntas_opciones po";
+                       pregunta_opciones po
+                    WHERE
+                       po.borradoLogico = 0 ";
 
             if(!empty($filtro)){
-                $sSQL .= "WHERE".$this->crearCondicionSimple($filtro);
+                $sSQL .= "AND ".$this->crearCondicionSimple($filtro);
+            }
+
+            if (isset($sOrderBy) && isset($sOrder)){
+                $sSQL .= " order by $sOrderBy $sOrder ";
+            }else{
+                $sSQL .= " order by orden asc ";
             }
 
             $db->query($sSQL);
-
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($iRecordsTotal)){ return null; }
 
             $aOpciones = array();
             while($oObj = $db->oNextRecord()){
-            	$oOpcion 		= new stdClass();
-            	$oOpcion->iId 		= $oObj->iId;
-            	$oOpcion->sDescripcion	= $oObj->sDescripcion;
-            	$aOpciones[]		= Factory::getOpcionInstance($oOpcion);
+                $oOpcion = new stdClass();
+                $oOpcion->iId = $oObj->iId;
+                $oOpcion->sDescripcion = $oObj->sDescripcion;
+                $oOpcion->iOrden = $oObj->iOrden;
+
+                $aOpciones[] = Factory::getOpcionInstance($oOpcion);
             }
-            return $aCiudades;
+
+            return $aOpciones;
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
 
-	public  function insertar($oOpcion, $iPreguntaId)
-   {
-		try{
-			$db = $this->conn;
-			$sSQL =	" insert into preguntas_opciones ".
-                    " set descripcion =".$db->escape($oOpcion->getDescripcion(),true)." , " .
-                    " preguntas_id =".escape($iPreguntaId,false,MYSQL_TYPE_INT)." ";
+    public function guardarOpcionesPreguntaMC(PreguntaMC $oPregunta)
+    {
+        try
+        {
+            if(null !== $oPregunta->getOpciones()){
+                $db = $this->conn;
+                $db->begin_transaction();
+                foreach($oPregunta->getOpciones() as $oOpcion){
+                    if(null !== $oOpcion->getId()){
+                        $this->actualizar($oOpcion);
+                    }else{
+                        $iPreguntaId = $oPregunta->getId();
+                        $this->insertarAsociado($oOpcion, $iPreguntaId);
+                    }
+                }
+                $db->commit();
+            }
+            return true;
+        }catch(Exception $e){
+            echo $e->getMessage(); exit();
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-
-	public function actualizar($oOpcion, $iPreguntaId)
-   {
-		try{
-			$db = $this->conn;
-
-			$sSQL =	" update preguntas_opciones ".
-                    " set descripcion =".$db->escape($oOpcion->getDescripcion(),true).", " .
-                     " preguntas_id =".escape($iPreguntaId,false,MYSQL_TYPE_INT)." ".
-                    " where id =".$db->escape($oOpcion->getId(),false,MYSQL_TYPE_INT)." " ;
-			 $db->execSQL($sSQL);
-			 $db->commit();
-
-
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
-    public function guardar($oOpcion)
+    /**
+     * Inserta una opcion asociada a la pregunta a la cual pertenece.
+     *
+     */
+    public function insertarAsociado($oOpcion, $iPreguntaId)
     {
         try{
-			if($oOpcion->getId() != null){
-            	return $this->actualizar($oOpcion);
-            }else{
-				return $this->insertar($oOpcion);
-            }
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
+            $iVariableId = $this->escInt($iPreguntaId);
+
+            $sSQL = " INSERT INTO pregunta_opciones SET ".
+                     " preguntas_id = '".$iPreguntaId."', ".
+                     " descripcion = ".$this->escStr($oOpcion->getDescripcion()).", ".
+                     " orden = ".$this->escInt($oOpcion->getOrden())." ";
+
+            $this->conn->execSQL($sSQL);
+            $oOpcion->setId($this->conn->insert_id());
+
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
     }
-	public function borrar($oOpcion) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from preguntas_opciones where id=".$db->escape($oOpcion->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
 
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+    public function actualizar($oOpcion)
+    {
+        try{
+            $sSQL = " UPDATE pregunta_opciones SET ".
+                    " descripcion = ".$this->escStr($oOpcion->getDescripcion()).", ".
+                    " orden = ".$this->escInt($oOpcion->getOrden())." ".
+                    " where id = ".$this->escInt($oOpcion->getId())." ";
 
-	public function actualizarCampoArray($objects, $cambios){
+            $this->conn->execSQL($sSQL);
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 
-	}
+    public function borradoLogico($iOpcionId)
+    {
+        try{
+            $sSQL = " UPDATE pregunta_opciones SET ".
+                    " borradoLogico = 1 ".
+                    " where id = ".$this->escInt($iOpcionId)." ";
+            $db->execSQL($sSQL);
+            $this->conn->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 
-	public function existe($filtro){
-    	try{
+    public function borrar($iOpcionId)
+    {
+        try{
+            $db = $this->conn;
+            $db->execSQL("delete from pregunta_opciones where id = ".$this->escInt($iOpcionId));
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function existe($filtro)
+    {
+        try{
             $db = $this->conn;
             $filtro = $this->escapeStringArray($filtro);
 
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        preguntas_opciones
-					WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
+                        pregunta_opciones po
+                    WHERE ".$this->crearCondicionSimple($filtro);
 
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
             if(empty($foundRows)){
-            	return false;
+                return false;
             }
+
             return true;
-    	}catch(Exception $e){
+        }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-           	return false;
         }
     }
 
+    public function isOpcionPreguntaUsuario($iOpcionId, $iUsuarioId)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        pregunta_opciones po
+                        JOIN preguntas p ON po.preguntas_id = p.id
+                        JOIN entrevistas e ON p.entrevistas_id = e.id
+                      WHERE
+                        op.id = ".$this->escInt($iOpcionId)." AND
+                        e.usuarios_id = ".$this->escInt($iUsuarioId)." ";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Devuelve true si la opcion se selecciono como valor de una pregunta multiple choise
+     * asociada a un seguimiento de un usuario.
+     */
+    public function isUtilizadaEnSeguimientoUsuario($iOpcionId, $iUsuarioId)
+    {
+        try{
+            $db = $this->conn;
+
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        pregunta_x_opcion_x_seguimiento pos
+                        JOIN seguimientos s ON pos.seguimientos_id = s.id
+                      WHERE
+                        pos.preguntas_opciones_id = ".$this->escInt($iOpcionId)." AND
+                        s.usuarios_id = ".$this->escInt($iUsuarioId)." ";
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+            return true;
+
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    public function guardar($object){}
+    public function insertar($objects){}
+    public function actualizarCampoArray($objects, $cambios){}
 }
