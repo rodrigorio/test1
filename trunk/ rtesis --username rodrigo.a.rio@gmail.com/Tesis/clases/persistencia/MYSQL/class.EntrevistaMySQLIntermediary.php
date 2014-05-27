@@ -26,13 +26,23 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
         try{
             $db = clone($this->conn);
 
-            $sSQL = "   SELECT DISTINCT SQL_CALC_FOUND_ROWS
-                            e.id as iId, e.descripcion as sDescripcion, e.usuarios_id as iUsuarioId,
-                            e.fechaHora as dFechaHora, e.fechaBorradoLogico as dFechaBorradoLogico
-                        FROM
-                            entrevistas e
-                        LEFT JOIN
-                            seguimiento_x_entrevista se ON e.id = se.entrevistas_id ";
+            $bSeguimiento = false; //si se obtienen las asociadas al seguimiento levanto campos de relacion
+            if(isset($filtro['se.seguimientos_id']) && $filtro['se.seguimientos_id'] != ""){
+                $bSeguimiento = true;
+            }
+
+            $sSQL = "SELECT DISTINCT SQL_CALC_FOUND_ROWS
+                        e.id as iId, e.descripcion as sDescripcion, e.usuarios_id as iUsuarioId,
+                        e.fechaHora as dFechaHora, e.fechaBorradoLogico as dFechaBorradoLogico ";
+
+            if($bSeguimiento){
+                $sSQL .= ", se.fechaRealizado as dFechaRealizado, se.realizada as bRealizada ";
+            }
+
+            $sSQL .= "FROM
+                         entrevistas e
+                      LEFT JOIN
+                         seguimiento_x_entrevista se ON e.id = se.entrevistas_id ";
 
             $WHERE = array();
 
@@ -48,7 +58,7 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
             if(isset($filtro['e.descripcion']) && $filtro['e.descripcion'] != ""){
                 $WHERE[] = $this->crearFiltroTexto('e.descripcion', $filtro['e.descripcion']);
             }
-            if(isset($filtro['se.seguimientos_id']) && $filtro['se.seguimientos_id'] != ""){
+            if($bSeguimiento){
                 $WHERE[] = $this->crearFiltroSimple('se.seguimientos_id', $filtro['se.seguimientos_id'], MYSQL_TYPE_INT);
             }
             if(isset($filtro['e.fechaHora']) && $filtro['e.fechaHora'] != ""){
@@ -82,6 +92,11 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
                 $oEntrevista->sDescripcion = $oObj->sDescripcion;
                 $oEntrevista->dFechaHora = $oObj->dFechaHora;
                 $oEntrevista->dFechaBorradoLogico = $oObj->dFechaBorradoLogico;
+
+                if($bSeguimiento){
+                    $oEntrevista->bRealizada = ($oObj->bRealizada == '1')?true:false;
+                    $oEntrevista->dFechaRealizado = $oObj->dFechaRealizado;
+                }
 
                 //puede no tener un usuario asociado si es precargada desde admin
                 if($oObj->iUsuarioId !== null){
@@ -149,6 +164,38 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
 		}
     }
 
+    public function guardarRespuestas($oEntrevista)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            //si se guarda por primera vez actualizo fecha realizado
+            if(!$oEntrevista->isRealizada()){
+
+                $oEntrevista->setFechaRealizadoHoy();
+
+                $sSQL = " UPDATE seguimiento_x_entrevista SET ".
+                        " realizada = '1', fechaRealizado = ".$this->escDate($oEntrevista->getFechaRealizado())." ".
+                        " WHERE entrevistas_id = ".$this->escInt($oEntrevista->getId())." ".
+                        " AND seguimientos_id = ".$this->escInt($oEntrevista->getSeguimientoId())." ";
+                $db->execSQL($sSQL);
+
+                $oEntrevista->isRealizada(true);
+            }
+
+            //notar que preguntasRespuestas devuelve lo que el controlador de entradas seteo desde el post del form
+            $aPreguntas = $oEntrevista->getPreguntasRespuestas();
+            SeguimientosController::getInstance()->guardarRespuestasPreguntas($aPreguntas, $oEntrevista->getSeguimientoId());
+
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
     public function obtenerMetadatosEntrevista($iEntrevistaId)
     {
         try{
@@ -208,16 +255,74 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
         }
     }
 
-    public function borrar($oEntrevista) {
-		try{
-			$db = $this->conn;
-			$db->execSQL("delete from entrevistas where id=".$db->escape($oEntrevista->getId(),false,MYSQL_TYPE_INT));
-			$db->commit();
+    public function isEntrevistaSeguimiento($iEntrevistaId, $iSeguimientoId)
+    {
+        try{
+            $db = $this->conn;
 
-		}catch(Exception $e){
-			throw new Exception($e->getMessage(), 0);
-		}
-	}
+            $sSQL = " SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                      FROM
+                        seguimiento_x_entrevista se
+                      WHERE
+                        se.entrevistas_id = ".$this->escInt($iEntrevistaId)." AND
+                        se.seguimientos_id = ".$this->escInt($iSeguimientoId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            if(empty($foundRows)){
+                return false;
+            }
+
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    public function borrar($oEntrevista)
+    {
+        try{
+            $db = $this->conn;
+
+            $iEntrevistaId = $oEntrevista->getId();
+
+            //si al menos una pregunta fue borrada logicamente en la entrevista, entonces la entrevista tmb se borra logicamente
+            $sSQL = "SELECT SQL_CALC_FOUND_ROWS
+                        1 as existe
+                    FROM
+                        entrevistas e
+                    JOIN preguntas p ON e.id = p.entrevistas_id
+                    WHERE p.borradoLogico = 1 AND e.id = ".$this->escInt($iEntrevistaId);
+
+            $db->query($sSQL);
+
+            $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
+
+            $db->begin_transaction();
+
+            if(empty($foundRows)){
+                //borra fisicamente la entrevista, la asociacion se va con borrado en cascada
+                $db->execSQL("delete from entrevistas where id = ".$this->escInt($iEntrevistaId));
+            }else{
+                //borra logicamente la entrevista
+                $dFechaBorradoLogico = $oEntrevista->getFechaBorradoLogico();
+                $db->execSQL("UPDATE entrevistas SET borradoLogico = 1, fechaBorradoLogico = ".$this->escDate($dFechaBorradoLogico)." WHERE id = ".$this->escInt($iEntrevistaId));
+
+                //Si el borrado es logico, entonces borro las relaciones entre entrevistas y seguimientos
+                //para los seguimientos que tienen la entrevista asociada pero que todavia no fue realizada.
+                $db->execSQL("DELETE FROM seguimiento_x_entrevista WHERE entrevistas_id = ".$this->escInt($iEntrevistaId)." AND realizada = 0");
+            }
+
+            $db->commit();
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
 
 	public function actualizarCampoArray($objects, $cambios){}
 
@@ -243,6 +348,92 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
            	return false;
+        }
+    }
+
+    /**
+     * Las respuestas multiple choise estan preparadas para que se pueda elegir mas de una opcion.
+     * Por eso el insert se hace solo cuando se guarda la entrevista con las respuestas.
+     */
+    public function asociarSeguimiento($iSeguimientoId, $oEntrevista)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            //creo la relacion entre entrevista y seguimiento
+            $sSQL = " INSERT INTO seguimiento_x_entrevista SET ".
+                    "   entrevistas_id = ".$this->escInt($oEntrevista->getId()).", ".
+                    "   seguimientos_id = ".$this->escInt($iSeguimientoId);
+
+            $db->execSQL($sSQL);
+
+            //asocio las preguntas abiertas al seguimiento (sin respuestas)
+            $aPreguntas = $oEntrevista->getPreguntas();
+            $sSQL = "INSERT INTO pregunta_x_seguimiento (preguntas_id, respuesta, seguimientos_id) VALUES ";
+
+            $bEntro = false;
+            if(count($aPreguntas) > 0){
+                foreach($aPreguntas as $oPregunta){
+                    if($oPregunta->isPreguntaAbierta()){
+                        $bEntro = true;
+                        $sSQL .= " (".$this->escInt($oPregunta->getId()).", null, ".$this->escInt($iSeguimientoId)."),";
+                    }
+                }
+            }
+
+            if($bEntro){
+                $sSQL = substr($sSQL, 0, -1);
+                $db->execSQL($sSQL);
+            }
+
+            $db->commit();
+
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
+            return false;
+        }
+    }
+
+    /**
+     * borro siempre fisicamente asociacion entre entrevista y seguimiento y
+     * se eliminan fisicamente las respuestas para las preguntas de la entrevista
+     *
+     * si esta realizada y expirada -> no se puede desasociar, SE DETERMINA EN EL CONTROLLER
+     *
+     * es mucho mas facil que unidad por entrada porque solo se puede realizar 1 vez, no hay multiples fechas
+     * por eso se determina en controller si se puede desasociar, aca siempre es fisico
+     *
+     */
+    public function desasociarSeguimiento($iSeguimientoId, $iEntrevistaId)
+    {
+        try{
+            $db = $this->conn;
+            $db->begin_transaction();
+
+            $db->execSQL("delete from seguimiento_x_entrevista where entrevistas_id = ".$this->escInt($iEntrevistaId)." and seguimientos_id = ".$this->escInt($iSeguimientoId));
+
+            $sSQL = " DELETE FROM pregunta_x_seguimiento
+                        JOIN preguntas p ON p.id = preguntas_id
+                      WHERE
+                        seguimientos_id = ".$this->escInt($iSeguimientoId)."
+                      AND p.entrevistas_id = ".$this->escInt($iEntrevistaId);
+
+            $db->execSQL($sSQL);
+
+            $sSQL = " DELETE FROM pregunta_x_opcion_x_seguimiento
+                        JOIN preguntas p ON p.id = preguntas_id
+                      WHERE
+                        seguimientos_id = ".$this->escInt($iSeguimientoId)."
+                      AND p.entrevistas_id = ".$this->escInt($iEntrevistaId);
+
+            $db->execSQL($sSQL);
+            $db->commit();
+
+            return true;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage(), 0);
         }
     }
 }

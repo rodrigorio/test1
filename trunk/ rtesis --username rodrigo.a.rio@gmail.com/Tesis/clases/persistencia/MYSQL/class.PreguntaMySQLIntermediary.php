@@ -83,36 +83,133 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
     }
 
     /**
-     * devuelve variables pero con el contenido por fecha
+     * las preguntas abiertas ya estan asociadas al seguimiento y hay que guardar el valor.
+     * las preguntas multiple choise se tratan a parte porque pueden tener mas de una opcion marcada como respuesta.
+     */
+    public final function guardarRespuestas($aPreguntas, $iSeguimientoId)
+    {
+        try{
+            $db = $this->conn;
+
+            if(count($aPreguntas)==0){
+                return true;
+            }
+
+            //preparo los strings para agregar respuestas abiertas y MC
+            $sSqlPreguntasAbiertasTemp = "";
+            $sSqlPreguntasMC = "";
+            $sIdsPreguntasMC = "";
+
+            foreach($aPreguntas as $oPregunta){
+
+                if($oPregunta->isPreguntaAbierta()){
+                    $sSqlPreguntasAbiertasTemp .= " (".$this->escInt($oPregunta->getId()).", ".$this->escStr($oPregunta->getRespuesta()).", ".$this->escInt($iSeguimientoId)."),";
+                }
+
+                if($oPregunta->isPreguntaMC()){
+                    $sIdsPreguntasMC .= " ".$oPregunta->getId().",";
+                    $iValor = $oPregunta->getRespuesta() ? $oPregunta->getRespuesta()->getId() : "null";
+                    $sSqlPreguntasMC .= " (".$this->escInt($oPregunta->getId()).", ".$iValor.", ".$this->escInt($iSeguimientoId)."),";
+                }
+            }
+
+            $db->begin_transaction();
+
+            //al menos 1 pregunta abierta
+            if(!empty($sSqlPreguntasAbiertasTemp)){
+
+                //tabla temporal para las respuestas a preguntas abiertas
+                $sSQL = "CREATE TEMPORARY TABLE IF NOT EXISTS preguntasTemp(
+                            `preguntas_id` INT(11) NOT NULL,
+                            `respuesta` TEXT,
+                            `seguimientos_id` INT(11) NOT NULL)";
+                $db->execSQL($sSQL);
+
+                $sSqlPreguntasAbiertasTemp = substr($sSqlPreguntasAbiertasTemp, 0, -1);
+                $sSqlPreguntasAbiertasTemp = "INSERT INTO preguntasTemp (preguntas_id, respuesta, seguimientos_id) VALUES ".$sSqlPreguntasAbiertasTemp;
+                $db->execSQL($sSqlPreguntasAbiertasTemp);
+
+                //update desde tabla temporal
+                $sSQL = "UPDATE pregunta_x_seguimiento ps
+                        JOIN preguntasTemp pt ON ps.preguntas_id = pt.preguntas_id AND ps.seguimientos_id = pt.seguimientos_id
+                        SET ps.respuesta = pt.respuesta";
+                $db->execSQL($sSQL);
+
+                //elimino la tabla temporal
+                $sSQL = "DROP TABLE preguntasTemp";
+                $db->execSQL($sSQL);
+            }
+
+            //al menos 1 pregunta MC
+            if(!empty($sSqlPreguntasMC)){
+
+                //elimino fisicamente todas las opciones para todas las preguntas, luego vuelvo a insertar las nuevas
+                $sIdsPreguntasMC = substr($sIdsPreguntasMC, 0, -1);
+                $sSqlPreguntasMC = substr($sSqlPreguntasMC, 0, -1);
+
+                $sSQL = " DELETE FROM pregunta_x_opcion_x_seguimiento WHERE ".
+                        " seguimientos_id = ".$this->escInt($iSeguimientoId)." ".
+                        " AND preguntas_id IN (".$sIdsPreguntasMC.") ";
+                $db->execSQL($sSQL);
+
+                //inserto las opciones nuevas
+                $sSqlPreguntasMC = "INSERT INTO pregunta_x_opcion_x_seguimiento (preguntas_id, preguntas_opciones_id, seguimientos_id) VALUES ".$sSqlPreguntasMC;
+                $db->execSQL($sSQL);
+            }
+
+            $db->commit();
+
+            return true;
+        }catch(Exception $e){
+            $db->rollback_transaction();
+            throw new Exception($e->getMessage(), 0);
+        }
+    }
+
+    /**
+     * Devuelve preguntas con respuestas.
+     * Lo complicado es que las respuestas de multiple choise son en tabla aparte y hay que mantener el orden de las preguntas en la entrevista.
+     * Estan en tabla aparte las respuestas MC porque esta todo preparado para q en el futuro soporte mas de una opcion como respuesta.
+     *
+     * Si o si tiene que venir el filtro de entrevista y de seguimiento
+     *
+     * @todo falta soportar mas de una opcion por pregunta MC. como esta ahora generaria 1 pregunta por cada opcion
      */
     public final function obtenerRespuestas($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
         try{
-            $db = clone ($this->conn);
+            $db = clone($this->conn);
+
+            if(!isset($filtro['p.entrevistas_id']) || !isset($filtro['ps.seguimientos_id']) || !isset($filtro['pos.seguimientos_id'])){
+                return null;
+            }
 
             $sSQL = "SELECT
-                       v.id AS iId, v.nombre AS sNombre, v.tipo AS sTipoVariable, v.descripcion AS sDescripcion, v.fechaHora as dFecha,
-                       ecv.valorTexto as sValorTexto, ecv.valorNumerico as sValorNumerico
+                        p.id AS iId, p.tipo AS sTipoPregunta, p.descripcion AS sDescripcion, p.fechaHora as dFecha, p.orden as iOrden,
+                        ps.respuesta as sRespuesta, pos.preguntas_opciones_id as iOpcionId
                     FROM
-                       variables v
-                    JOIN
-                       entrada_x_contenido_variables ecv ON v.id = ecv.variables_id
-                    JOIN
-                       entradas e ON ecv.entradas_id = e.id";
+                       preguntas p
+                    LEFT JOIN
+                       pregunta_x_seguimiento ps ON p.id = ps.preguntas_id
+                    LEFT JOIN
+                       pregunta_x_opcion_x_seguimiento pos ON p.id = pos.preguntas_id";
 
             $WHERE = array();
 
-            if(isset($filtro['e.id']) && $filtro['e.id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('e.id', $filtro['e.id'], MYSQL_TYPE_INT);
+            if(isset($filtro['p.id']) && $filtro['p.id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.id', $filtro['p.id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['v.unidad_id']) && $filtro['v.unidad_id']!=""){
-                $WHERE[] = $this->crearFiltroSimple('v.unidad_id', $filtro['v.unidad_id'], MYSQL_TYPE_INT);
+            if(isset($filtro['p.entrevistas_id']) && $filtro['p.entrevistas_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.entrevistas_id', $filtro['p.entrevistas_id'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['e.fechaHoraCreacion']) && $filtro['e.fechaHoraCreacion'] != ""){
-                $WHERE[] = $this->crearFiltroSimple('e.fechaHoraCreacion', $filtro['e.fechaHoraCreacion'], MYSQL_TYPE_DATE);
+            if(isset($filtro['p.borradoLogico']) && $filtro['p.borradoLogico']!=""){
+                $WHERE[] = $this->crearFiltroSimple('p.borradoLogico', $filtro['p.borradoLogico'], MYSQL_TYPE_INT);
             }
-            if(isset($filtro['v.borradoLogico']) && $filtro['v.borradoLogico']!=""){
-                $WHERE[] = $this->crearFiltroSimple('v.borradoLogico', $filtro['v.borradoLogico']);
+            if(isset($filtro['ps.seguimientos_id']) && $filtro['ps.seguimientos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('ps.seguimientos_id', $filtro['ps.seguimientos_id'], MYSQL_TYPE_INT, TRUE);
+            }
+            if(isset($filtro['pos.seguimientos_id']) && $filtro['pos.seguimientos_id']!=""){
+                $WHERE[] = $this->crearFiltroSimple('pos.seguimientos_id', $filtro['pos.seguimientos_id'], MYSQL_TYPE_INT, TRUE);
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
@@ -133,32 +230,27 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
 
             if(empty($iRecordsTotal)){ return null; }
 
-            $aVariables = array();
+            $aPreguntas = array();
             while($oObj = $db->oNextRecord()){
-                $oVariable = new stdClass();
-                $oVariable->iId = $oObj->iId;
-                $oVariable->sNombre = $oObj->sNombre;
-                $oVariable->sDescripcion = $oObj->sDescripcion;
-                $oVariable->dFecha = $oObj->dFecha;
+                $oPregunta = new stdClass();
+                $oPregunta->iId = $oObj->iId;
+                $oPregunta->sDescripcion = $oObj->sDescripcion;
+                $oPregunta->dFecha = $oObj->dFecha;
+                $oPregunta->iOrden = $oObj->iOrden;
 
-                switch($oObj->sTipoVariable){
-                    case "VariableTexto":{
-                        $oVariable = Factory::getVariableTextoInstance($oVariable);
-                        $oVariable->setValor($oObj->sValorTexto);
+                switch($oObj->sTipoPregunta){
+                    case "PreguntaAbierta":{
+                        $oPregunta = Factory::getPreguntaAbiertaInstance($oPregunta);
+                        $oPregunta->setRespuesta($oObj->sRespuesta);
                         break;
                     }
-                    case "VariableNumerica":{
-                        $oVariable = Factory::getVariableNumericaInstance($oVariable);
-                        $oVariable->setValor($oObj->sValorNumerico);
-                        break;
-                    }
-                    case "VariableCualitativa":{
-                        $oVariable = Factory::getVariableCualitativaInstance($oVariable);
-                        $aModalidades = SeguimientosController::getInstance()->getModalidadesByVariableId($oObj->iId);
-                        $oVariable->setModalidades($aModalidades);
-                        foreach($aModalidades as $oModalidad){
-                            if($oModalidad->getId() == $oObj->sValorNumerico){
-                                $oVariable->setValor($oModalidad);
+                    case "PreguntaMC":{
+                        $oPregunta = Factory::getPreguntaMCInstance($oPregunta);
+                        $aOpciones = SeguimientosController::getInstance()->getOpcionesByPreguntaId($oObj->iId);
+                        $oPregunta->setOpciones($aOpciones);
+                        foreach($aOpciones as $oOpcion){
+                            if($oOpcion->getId() == $oObj->iOpcionId){
+                                $oPregunta->setRespuesta($oOpcion);
                                 break;
                             }
                         }
@@ -166,10 +258,10 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
                     }
                 }
 
-                $aVariables[] = $oVariable;
+                $aPreguntas[] = $oPregunta;
             }
 
-            return $aVariables;
+            return $aPreguntas;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -263,24 +355,37 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
      * Esto implica que si la pregunta esta contestada en algun seguimiento y a su vez expirada desde la fecha en la q se realizo la entrevisata,
      * entonces se borra si o si logicamente.
      */
-    public function borrarPreguntas($iIds, $cantDiasExpiracion)
+    public function borrarPreguntas($sIds, $cantDiasExpiracion)
     {
         try{
             $db = $this->conn;
             $db->begin_transaction();
 
+            //para hacerlo mas simple me fijo por separado las multiple choise y las abiertas porq son distintas tablas
             $sSQL = " UPDATE preguntas SET ".
                     " borradoLogico = '1' ".
                     " WHERE ".
-                    " id in (SELECT DISTINCT ecv.variables_id
-                             FROM entrada_x_contenido_variables ecv JOIN entradas e ON e.id = ecv.entradas_id
-                             WHERE variables_id IN (".$iIds.")
-                             AND TO_DAYS(NOW()) - TO_DAYS(e.fechaHoraCreacion) <= ".$cantDiasExpiracion.") ";
+                    " id in (SELECT DISTINCT pos.preguntas_id
+                             FROM pregunta_x_opcion_x_seguimiento pos JOIN seguimiento_x_entrevista se ON se.seguimientos_id = pos.seguimientos_id
+                             WHERE se.realizada = 1
+                             AND preguntas_id IN (".$sIds.")
+                             AND TO_DAYS(NOW()) - TO_DAYS(se.fechaRealizado) <= ".$cantDiasExpiracion.") ";
+
+            $this->conn->execSQL($sSQL);
+
+            $sSQL = " UPDATE preguntas SET ".
+                    " borradoLogico = '1' ".
+                    " WHERE ".
+                    " id in (SELECT DISTINCT ps.preguntas_id
+                             FROM pregunta_x_seguimiento ps JOIN seguimiento_x_entrevista se ON se.seguimientos_id = ps.seguimientos_id
+                             WHERE se.realizada = 1
+                             AND preguntas_id IN (".$sIds.")
+                             AND TO_DAYS(NOW()) - TO_DAYS(se.fechaRealizado) <= ".$cantDiasExpiracion.") ";
 
             $this->conn->execSQL($sSQL);
 
             $sSQL = " DELETE FROM preguntas WHERE ".
-                    " id IN (".$iIds.") AND borradoLogico = '0' ";
+                    " id IN (".$sIds.") AND borradoLogico = '0' ";
 
             $this->conn->execSQL($sSQL);
 

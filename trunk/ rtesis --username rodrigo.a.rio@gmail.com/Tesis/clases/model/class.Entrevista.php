@@ -226,11 +226,19 @@ class Entrevista{
         return $this->iSeguimientoId;
     }
 
+    /**
+     * Si ya esta realizada y la fecha de realizado esta expirada entonces no es editable
+     *
+     * (si no esta realizada entonces la fecha de realizado == null siempre)
+     */
     public function isEditable($flag = null){
         if(null !== $flag){
             $this->bEditable = $flag ? true : false;
             return $this;
         }else{
+            if(!$this->isRealizada()){
+                return true;
+            }
             if(null === $this->bEditable){
                 if(SeguimientosController::getInstance()->isEntidadEditable($this->dFechaRealizado)){
                     $this->bEditable = true;

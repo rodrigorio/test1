@@ -195,7 +195,7 @@ class OpcionMySQLIntermediary extends OpcionIntermediary
                         JOIN preguntas p ON po.preguntas_id = p.id
                         JOIN entrevistas e ON p.entrevistas_id = e.id
                       WHERE
-                        op.id = ".$this->escInt($iOpcionId)." AND
+                        po.id = ".$this->escInt($iOpcionId)." AND
                         e.usuarios_id = ".$this->escInt($iUsuarioId)." ";
 
             $db->query($sSQL);
