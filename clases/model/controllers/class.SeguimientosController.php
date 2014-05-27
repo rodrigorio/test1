@@ -1268,7 +1268,7 @@ class SeguimientosController
     public function getPreguntasRespuestasBySeguimientoId($iSeguimientoId, $iEntrevistaId, $bBorradoLogico = true)
     {
         try{
-            $filtro = array('ps.seguimientos_id' => $iSeguimientoId, 'pos.seguimientos_id' => $iSeguimientoId, 'e.id' => $iEntrevistaId);
+            $filtro = array('ps.seguimientos_id' => $iSeguimientoId, 'pos.seguimientos_id' => $iSeguimientoId, 'p.entrevistas_id' => $iEntrevistaId);
             if(!$bBorradoLogico){
                 $filtro['p.borradoLogico'] = "0";
             }
@@ -1352,6 +1352,18 @@ class SeguimientosController
     }
 
     /**
+     * Guarda las respuestas a una entrevista
+     */
+    public function guardarRespuestasEntrevista($oEntrevista){
+        try{
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->guardarRespuestas($oEntrevista);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Borrar Entrevista
      *
      */
@@ -1368,7 +1380,7 @@ class SeguimientosController
 
             if($success){
                 //en este metodo se fija que si al menos una pregunta tiene borrado logico la entrevista tmb se borra logicamente.
-                return $oEntrevistaIntermediary->borrar($oEntrevista->getId());
+                return $oEntrevistaIntermediary->borrar($oEntrevista);
             }else{
                 return false;
             }
@@ -1418,22 +1430,27 @@ class SeguimientosController
         }
     }
 
-    public function asociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId)
+    public function asociarEntrevistaSeguimiento($iSeguimientoId, $oEntrevista)
     {
         try{
             $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
-            return $oEntrevistaIntermediary->asociarSeguimiento($iSeguimientoId, $iEntrevistaId);
+            return $oEntrevistaIntermediary->asociarSeguimiento($iSeguimientoId, $oEntrevista);
         }catch(Exception $e){
             throw $e;
         }
     }
 
-    public function desasociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId)
+    public function desasociarEntrevistaSeguimiento($iSeguimientoId, $oEntrevista)
     {
         try{
             $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
-            $iCantDiasEdicion = $this->getCantidadDiasExpiracionSeguimiento();
-            return $oEntrevistaIntermediary->desasociarSeguimiento($iSeguimientoId, $iEntrevistaId, $iCantDiasEdicion);
+
+            //si ya esta realizada y expirada no se puede desasociar, retorno falso.
+            if(!$oEntrevista->isEditable()){
+                return false;
+            }
+
+            return $oEntrevistaIntermediary->desasociarSeguimiento($iSeguimientoId, $oEntrevista->getId());
         }catch(Exception $e){
             throw $e;
         }
@@ -1478,6 +1495,17 @@ class SeguimientosController
         }
     }
 
+    public function isEntrevistaSeguimiento($iEntrevistaId, $iSeguimientoId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            return $oEntrevistaIntermediary->isEntrevistaSeguimiento($iEntrevistaId, $iSeguimientoId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     public function getPreguntas($filtro, &$iRecordsTotal, $sOrderBy, $sOrder , $iIniLimit , $iRecordCount)
     {
         try{
@@ -1492,6 +1520,20 @@ class SeguimientosController
         try{
             $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
             return $oPreguntaIntermediary->guardar($oPregunta, $iEntrevistaId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * Guarda preguntas con respuestas
+     * Este metodo permanece disasociado para posible reutilizacion pero se utiliza dentro del SQL de Entrevistas
+     */
+    public function guardarRespuestasPreguntas($aPreguntas, $iSeguimientoId)
+    {
+        try{
+            $oPreguntaIntermediary = PersistenceFactory::getPreguntaIntermediary($this->db);
+            return $oPreguntaIntermediary->guardarRespuestas($aPreguntas, $iSeguimientoId);
         }catch(Exception $e){
             throw $e;
         }
@@ -1543,6 +1585,30 @@ class SeguimientosController
             $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
             $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
             return $oOpcionIntermediary->isOpcionPreguntaUsuario($iOpcionId, $iUsuarioId);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+     * En las opciones no se tiene en cuenta el periodo de ventana en el cual se puede editar un seguimiento,
+     * porque sino habria que reemplazar la opcion utilizada por otra antes de ser eliminada.
+     *
+     * Simplemente siempre que esta asociada con al menos un seguimiento se borra logicamente.
+     */
+    public function borrarOpcionPregunta($iOpcionId)
+    {
+        try{
+            $iUsuarioId = SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()->getId();
+            $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
+
+            //si la opcion se uso como respuesta a una pregunta en seguimientos asociados el borrado es logico.
+            if($oOpcionIntermediary->isUtilizadaEnSeguimientoUsuario($iOpcionId, $iUsuarioId)){
+                return $oOpcionIntermediary->borradoLogico($iOpcionId);
+            }else{
+                return $oOpcionIntermediary->borrar($iOpcionId);
+            }
+
         }catch(Exception $e){
             throw $e;
         }

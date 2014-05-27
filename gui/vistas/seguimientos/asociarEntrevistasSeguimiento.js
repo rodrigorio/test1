@@ -1,60 +1,60 @@
-function asociarUnidad(unidad){
-    moverUnidad(unidad, "asociarUnidadSeguimiento");
+function asociarEntrevista(entrevista){
+    moverEntrevista(entrevista, "asociarEntrevistaSeguimiento");
 }
 
-function desasociarUnidad(unidad)
+function desasociarEntrevista(entrevista)
 {
     var buttons = {
         "Confirmar": function(){
-            moverUnidad(unidad, "desasociarUnidadSeguimiento");
+            moverEntrevista(entrevista, "desasociarEntrevistaSeguimiento");
             $(this).dialog( "close" );
         },
         "Cancelar": function(){
             //volver a posicion inicial
-            var rel = unidad.attr("rel").split('_');
-            var iUnidadId = rel[1];
-            $("#unidad_"+iUnidadId).appendTo('#unidadesAsociadas');
-            $(this).dialog( "close" );
+            var rel = entrevista.attr("rel").split('_');
+            var iEntrevistaId = rel[1];
+            $("#entrevista_"+iEntrevistaId).appendTo('#entrevistasAsociadas');
+            $(this).dialog("close");
         }
     }
 
     //este es el dialog que pide confirmar la accion
-    var dialog = setWaitingStatusDialog(500, "Asociar Unidad", buttons);
+    var dialog = setWaitingStatusDialog(500, "Asociar Entrevista", buttons);
     dialog.load(
-        "seguimientos/unidades-seguimiento-procesar",
+        "seguimientos/entrevistas-seguimiento-procesar",
         {dialogConfirmar:"1"},
         function(){}
     );
 }
 
-function moverUnidad(unidad, accion)
+function moverEntrevista(entrevista, accion)
 {
-    var rel = unidad.attr("rel").split('_');
+    var rel = entrevista.attr("rel").split('_');
     var iSeguimientoId = rel[0];
-    var iUnidadId = rel[1];
+    var iEntrevistaId = rel[1];
 
     $.ajax({
         type:"post",
         dataType:'jsonp',
-        url:"seguimientos/unidades-seguimiento-procesar",
+        url:"seguimientos/entrevistas-seguimiento-procesar",
         data:{
-            moverUnidad:accion,
+            moverEntrevista:accion,
             iSeguimientoId:iSeguimientoId,
-            iUnidadId:iUnidadId
+            iEntrevistaId:iEntrevistaId
         },
         beforeSend: function(){
-            setWaitingStatus('unidadesWrapper', true);
+            setWaitingStatus('entrevistasWrapper', true);
         },
         success:function(data){
-            setWaitingStatus('unidadesWrapper', false);
+            setWaitingStatus('entrevistasWrapper', false);
             if(data.success == undefined || data.success == 0){
                 //volver a posicion inicial el li
-                $("#unidad_"+iUnidadId).appendTo('#unidadesAsociadas');
+                $("#entrevista_"+iEntrevistaId).appendTo('#entrevistasAsociadas');
             }else{
-                if(accion == "asociarUnidadSeguimiento"){
+                if(accion == "asociarEntrevistaSeguimiento"){
                     $("#noRecordsAsociadas").remove();
                 }
-                if(accion == "desasociarUnidadSeguimiento"){
+                if(accion == "desasociarEntrevistaSeguimiento"){
                     $("#noRecordsDesasociadas").remove();
                 }
             }
@@ -64,14 +64,14 @@ function moverUnidad(unidad, accion)
 
 $(document).ready(function(){
 
-    $(".ampliarUnidad").live('click', function(){
-        var iUnidadId = $(this).attr("rel");
+    $(".ampliarEntrevista").live('click', function(){
+        var iEntrevistaId = $(this).attr("rel");
 
-        var dialog = setWaitingStatusDialog(550, "Detalles Unidad");
+        var dialog = setWaitingStatusDialog(550, "Detalle Entrevista");
         dialog.load(
-            "seguimientos/unidades-seguimiento-procesar",
-            {iUnidadId:iUnidadId,
-             ampliarUnidad:"1"},
+            "seguimientos/entrevistas-seguimiento-procesar",
+            {iEntrevistaId:iEntrevistaId,
+             ampliarEntrevista:"1"},
             function(responseText, textStatus, XMLHttpRequest){
                 $(".tooltip").tooltip();
             }
@@ -79,7 +79,7 @@ $(document).ready(function(){
     });
 
     var itemclone, idx;
-    $("#unidadesSinAsociar, #unidadesAsociadas").sortable({
+    $("#entrevistasSinAsociar, #entrevistasAsociadas").sortable({
         start: function(event, ui){
             //create clone of current seletected li
             itemclone = $(ui.item).clone();
@@ -101,17 +101,17 @@ $(document).ready(function(){
             $(this).find("li:eq(" + idx + ")").css('position', 'relative');
         },
         stop: function(){
-            var unidad = $(this).find("li:eq(" + idx + ")");
+            var entrevista = $(this).find("li:eq(" + idx + ")");
 
-            if($(this).attr("id") == 'unidadesSinAsociar'){
-                asociarUnidad(unidad);
+            if($(this).attr("id") == 'entrevistasSinAsociar'){
+                asociarEntrevista(entrevista);
             }
-            if($(this).attr("id") == 'unidadesAsociadas'){
-                desasociarUnidad(unidad);
+            if($(this).attr("id") == 'entrevistasAsociadas'){
+                desasociarEntrevista(entrevista);
             }
 
             //Once Finish Sort, remove Clone Li from current list
-            unidad.remove();
+            entrevista.remove();
         },
         connectWith: ".connectedSortable"
     }).disableSelection();

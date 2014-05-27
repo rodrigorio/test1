@@ -189,107 +189,102 @@
 </table>
 <!--EndVerSeguimientosAsociadosBlock-->
 
-<!--BeginAsociarUnidadesBlock-->
+<!--BeginAsociarEntrevistasBlock-->
 <div class='ficha05 bora iveal mabo2'>
-    <span class="i bs infoo"></span> Arrastre unidades desde una columna hacia la otra para realizar los cambios.
+    <span class="i bs infoo"></span> Arrastre entrevistas desde una columna hacia la otra para realizar los cambios.
 </div>
-<div id="unidadesWrapper" class="columnas2B grupo po_re">
+<div id="entrevistasWrapper" class="columnas2B grupo po_re">
     <div class="ajax_wait30 di_no"></div>
     <div class="col1 grupo">
-        <h2 class="pa2 baco2 bora4 bobo3 co2">Unidades sin asociar</h2>
-        <ul id="unidadesSinAsociar" class="pa2 baco3 bora3 mihe3 grupo connectedSortable">
-            <!--BeginUnidadesSinAsociar-->
-            {unidadesSinAsociar}
-            <!--EndUnidadesSinAsociar-->
+        <h2 class="pa2 baco2 bora4 bobo3 co2">Entrevistas sin asociar</h2>
+        <ul id="entrevistasSinAsociar" class="pa2 baco3 bora3 mihe3 grupo connectedSortable">
+
+            <!--BeginEntrevistasSinAsociar-->
+            {entrevistasSinAsociar}
+            <!--EndEntrevistasSinAsociar-->
+
             <!--BeginNoRecordsSinAsociarBlock-->
-            <p id="noRecordsDesasociadas" class="co3 fost_it teal_ce">No hay unidades para asociar al seguimiento.</p>
+            <p id="noRecordsDesasociadas" class="co3 fost_it teal_ce">No hay entrevistas para asociar al seguimiento.</p>
             <!--EndNoRecordsSinAsociarBlock-->
         </ul>
     </div>
     <div class="col2 grupo">
-        <h2 class="pa2 baco2 bora4 bobo3 co2">Unidades en seguimiento</h2>
-        <ul id="unidadesAsociadas" class="pa2 baco3 bora3 mihe3 grupo connectedSortable">
-            <!--BeginUnidadesAsociadas-->
-            {unidadesAsociadas}
-            <!--EndUnidadesAsociadas-->
+        <h2 class="pa2 baco2 bora4 bobo3 co2">Entrevistas en seguimiento</h2>
+        <ul id="entrevistasAsociadas" class="pa2 baco3 bora3 mihe3 grupo connectedSortable">
+
+            <!--BeginEntrevistasAsociadas-->
+            {entrevistasAsociadas}
+            <!--EndEntrevistasAsociadas-->
+
             <!--BeginNoRecordsAsociadasBlock-->
-            <p id="noRecordsAsociadas" class="co3 fost_it teal_ce">El seguimiento no posee unidades asociadas.</p>
+            <p id="noRecordsAsociadas" class="co3 fost_it teal_ce">El seguimiento no posee entrevistas asociadas.</p>
             <!--EndNoRecordsAsociadasBlock-->
         </ul>
     </div>
 </div>
-<!--EndAsociarUnidadesBlock-->
+<!--EndAsociarEntrevistasBlock-->
 
-<!--BeginUnidadListadoAsociarBlock-->
-<li rel="{iSeguimientoId}_{iUnidadId}" id="unidad_{iUnidadId}" class="fl_le mari2 baco5 mabo2 bora bosh mawi1 cu_mo">
+<!--BeginEntrevistaListadoAsociarBlock-->
+<li rel="{iSeguimientoId}_{iEntrevistaId}" id="entrevista_{iEntrevistaId}" class="fl_le mari2 baco5 mabo2 bora bosh mawi2 cu_mo">
     <div class="grupo baco1 bobo1 bora4 pa mabo">
         <h3 class="fl_ri iveal">
-            {sNombreUnidad}
-            <span class="i mi relationshipData male"></span>
+            {sDescripcionEntrevista}
+            <span class="i bs notepad male"></span>
         </h3>
     </div>
     <div class="pa">
-        <p class="fte2">
-            {sDescripcionUnidad}
-            <a class="ampliarUnidad" rel="{iUnidadId}" href="javascript:;" title="Ampliar Unidad">ver m&aacute;s</a>
+        <p class="fte2 mabo0">
+            <a class="ampliarEntrevista" rel="{iEntrevistaId}" href="javascript:;" title="Ampliar Entrevista">ver preguntas</a>
         </p>
     </div>
 </li>
-<!--EndUnidadListadoAsociarBlock-->
+<!--EndEntrevistaListadoAsociarBlock-->
 
 <!--BeginIconoTipoTextoBlock-->
 <span class="i mc inputText"></span>
 <!--EndIconoTipoTextoBlock-->
 
-<!--BeginIconoTipoNumericaBlock-->
-<span class="i mc profits"></span>
-<!--EndIconoTipoNumericaBlock-->
-
-<!--BeginIconoTipoCualitativaBlock-->
+<!--BeginIconoTipoMCBlock-->
 <span class="i mc inputRadio"></span>
-<!--EndIconoTipoCualitativaBlock-->
+<!--EndIconoTipoMCBlock-->
 
-<!--BeginAmpliarUnidadBlock-->
-<h2 class="pabo2">{sNombreUnidad}</h2>
-<div class="pa grupo bobo1 baco3 mabo2">
-    {sDescripcionUnidad}
-</div>
+<!--BeginAmpliarEntrevistaBlock-->
+<h2 class="pabo2">{sDescripcionEntrevista}</h2>
 
-<div class="fost_it pato2 pabo2">Cantidad variables: <span class="fowe_bo">{iRecordsTotal}</span></div>
+<div class="fost_it pato2 pabo2">Cantidad preguntas: <span class="fowe_bo">{iRecordsTotal}</span></div>
 <table class="table01 wi100p mabo2">
     <tr class="encabezado">
-       <td class="iveal">Nombre</td>
+       <td class="iveal">Pregunta</td>
        <td class="medium iveal">Tipo</td>
     </tr>
-    <!--BeginVariableBlock-->
-    <tr class="{iVariableId} iveal">
-        <td class="desplegable" rel="{iVariableId}">{sNombre}</td>
-        <td class="desplegable iveal" rel="{iVariableId}">
+    <!--BeginPreguntaBlock-->
+    <tr class="{iPreguntaId} iveal">
+        <td class="desplegable" rel="{iPreguntaId}">{sDescripcion}</td>
+        <td class="desplegable iveal" rel="{iPreguntaId}">
             {iconoVariable}
             {sTipo}
         </td>
     </tr>
-    <tr class="{iVariableId} ba_no">
-        <td id="desplegable_{iVariableId}" class="pa0 bobo_no" colspan="3" style="display:none;">
+    <tr class="{iPreguntaId} ba_no">
+        <td id="desplegable_{iPreguntaId}" class="pa0 bobo_no" colspan="3" style="display:none;">
             <div class="anexoFicha grupo">
                 <div class="titulo grupo">
                     <div class="fte fost_it fl_le">Detalles</div>
-                    <span rel="{iVariableId}" class="i bs close closeDesplegable ihover fl_ri"></span>
+                    <span rel="{iPreguntaId}" class="i bs close closeDesplegable ihover fl_ri"></span>
                 </div>
                 <br clear="all">
-                <h3 class="mabo">Descripci&oacute;n</h3>
-                <p class="pale2">{sDescripcionVariable}</p>
-                {sModalidades}
+                <div class="fte2 mabo2">Creada en <span class="fowe_bo">{dFechaHora}</span></div>
+                {sOpciones}
                 </div>
             </div>
         </td>
     </tr>
-    <!--EndVariableBlock-->
+    <!--EndPreguntaBlock-->
 
-    <!--BeginNoRecordsVariablesBlock-->
+    <!--BeginNoRecordsPreguntasBlock-->
     <tr>
         <td colspan="2">{sNoRecords}</td>
     </tr>
-    <!--EndNoRecordsVariablesBlock-->
+    <!--EndNoRecordsPreguntasBlock-->
 </table>
-<!--EndAmpliarUnidadBlock-->
+<!--EndAmpliarEntrevistaBlock-->

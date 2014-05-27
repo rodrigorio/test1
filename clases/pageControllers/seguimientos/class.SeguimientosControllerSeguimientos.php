@@ -103,6 +103,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         $oTemplate->set_var("hrefAdministrarObjetivosSeguimiento", $oPageController->getUrlFromRoute("seguimientosSeguimientosAdministrarObjetivos", true));
         $oTemplate->set_var("hrefEditarPronosticoSeguimiento", $oPageController->getUrlFromRoute("seguimientosEditarPronostico", true));
         $oTemplate->set_var("hrefAsociarUnidadesSeguimiento", $oPageController->getUrlFromRoute("seguimientosUnidadesListarUnidadesPorSeguimiento", true));
+        $oTemplate->set_var("hrefAsociarEntrevistasSeguimiento", $oPageController->getUrlFromRoute("seguimientosEntrevistasListarEntrevistasPorSeguimiento", true));
 
         //marco los selecteds en el menu de la izq
         if(is_array($aCurrentOption)){

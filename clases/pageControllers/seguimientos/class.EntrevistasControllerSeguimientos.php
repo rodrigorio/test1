@@ -300,6 +300,22 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             $this->modificarEntrevista();
             return;
         }
+
+        if($this->getRequest()->has('guardarRespuestas')){
+            $this->guardarRespuestas();
+            return;
+        }
+    }
+
+    private function guardarRespuestas()
+    {
+        //set fecha realizado hoy, seria como guardar unidad esporadica
+
+        //si no es editable no puedo seguir (realizada y expirada)
+
+        //setPreguntasRespuestas() porque es el get que se usa en el SQL
+
+        //guardarRespuestasEntrevista($oEntrevista);
     }
 
     private function crearEntrevista()
@@ -638,7 +654,7 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            SeguimientosController::getInstance()->asociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId);
+            SeguimientosController::getInstance()->asociarEntrevistaSeguimiento($iSeguimientoId, $oEntrevista);
             $this->getJsonHelper()->setSuccess(true)
                                   ->sendJsonAjaxResponse();
             return;
@@ -680,7 +696,7 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
 
         $this->getJsonHelper()->initJsonAjaxResponse();
         try{
-            SeguimientosController::getInstance()->desasociarEntrevistaSeguimiento($iSeguimientoId, $iEntrevistaId);
+            SeguimientosController::getInstance()->desasociarEntrevistaSeguimiento($iSeguimientoId, $oEntrevista);
             $this->getJsonHelper()->setSuccess(true)
                                   ->sendJsonAjaxResponse();
             return;
