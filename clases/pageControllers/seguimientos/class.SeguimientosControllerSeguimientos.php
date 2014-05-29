@@ -978,6 +978,18 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("UnidadesEsporadicasBlock", "");
         }
 
+        //entrevistas
+        $aEntrevistas = SeguimientosController::getInstance()->getEntrevistasBySeguimientoId($oSeguimiento->getId());
+        if(count($aEntrevistas)>0){
+            foreach($aEntrevistas as $oEntrevista){
+                $this->getTemplate()->set_var("sEntrevistaDescripcion", $oEntrevista->getDescripcion());
+                $this->getTemplate()->set_var("iEntrevistaId", $oEntrevista->getId());
+                $this->getTemplate()->parse("EntrevistaButton", true);
+            }
+        }else{
+            $this->getTemplate()->set_var("EntrevistasBlock", "");
+        }
+
         //antecedentes
         $sAntecedentes = $oSeguimiento->getAntecedentes();
         $oAntecedentes = $oSeguimiento->getArchivoAntecedentes();

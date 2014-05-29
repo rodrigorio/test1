@@ -484,8 +484,9 @@
             <span class="fte2 txt_imp2">Cantidad Archivos:</span> {iCantidadArchivos}<br>
             <a class="fowe_bo modificarSeguimiento fte2" rel="{iSeguimientoId}" href="">Editar Seguimiento</a>
         </div>
+
         <!--BeginUnidadesEsporadicasBlock-->
-        <div class="fl_le lihe2 mari3">
+        <div class="fl_le lihe2 mari3 mabo2 pa2 baco1 bora bo2 mawi2">
             <h3 class="mabo2 bobo1">Edici&oacute;n Espor&aacute;dica</h3>
             <!--BeginUnidadEsporadicaButton-->
             <a rel="{iUnidadEsporadicaId}_{iSeguimientoId}" class="button mabo ampliarUnidadEsporadica mabo2" title="{sUnidadEsporadicaNombre}" href="javascript:;">
@@ -495,6 +496,18 @@
             <!--EndUnidadEsporadicaButton-->
         </div>
         <!--EndUnidadesEsporadicasBlock-->
+
+        <!--BeginEntrevistasBlock-->
+        <div class="fl_le lihe2 mari3 mabo2 pa2 baco1 bora bo2 mawi2">
+            <h3 class="mabo2 bobo1">Entrevistas</h3>
+            <!--BeginEntrevistaButton-->
+            <a rel="{iEntrevistaId}_{iSeguimientoId}" class="button mabo ampliarEntrevista mabo2" title="{sEntrevistaDescripcion}" href="javascript:;">
+                <span class="i mi relationshipData mari"></span>
+                <span class="buttonText">{sEntrevistaDescripcion}</span>
+            </a>
+            <!--EndEntrevistaButton-->
+        </div>
+        <!--EndEntrevistasBlock-->
     </div>
 </div>
 <div class="slide slide01">
