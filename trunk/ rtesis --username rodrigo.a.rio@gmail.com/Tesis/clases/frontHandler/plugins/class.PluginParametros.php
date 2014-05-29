@@ -35,7 +35,7 @@
  * 2) Los paramatros de entidad siempre son dinamicos, los parametros estaticos unicamente son los de controlador y de sistema.
  *
  *
-    'DATABASE_HOST' => '181.168.228.197',
+    'DATABASE_HOST' => '24.232.188.102',
     'DATABASE_DRIVER' => 'IMYSQL',
     'DATABASE_USER' => 'usuariodetest',
     'DATABASE_PASSWORD' => 'usuariodetest1234',
@@ -69,23 +69,23 @@ class PluginParametros extends PluginAbstract
      * El Plugin se instancia en index.php
      */
     public function __construct()
-    {
+    {        
         $this->setParametrosDinamicosStrategy( new PluginParametrosDinamicosSession() );
     }
 
-    public function routeStartup(Request $request)
+    public function routeStartup(HttpRequest $request)
     {
         //Si la session se destruyo entonces cambio la estrategia de como manejar los parametros dinamicos.
         if(Session::isDestroyed()){
             $this->setParametrosDinamicosStrategy( new PluginParametrosDinamicosDB() );
         }
         $this->parametrosDinamicosStrategy->setRequest($request);
-
+              
         $this->setRequest($request) //se setea porque el $request se va a usar en metodos privados de la clase
              ->agregarParametrosEstaticos();
     }
 
-    public function preDispatch(Request $request)
+    public function preDispatch(HttpRequest $request)
     {
         //carga parametros dinamicos solo si el plugin de base de datos pudo establecer conexion
         if(PluginConexionDataBase::isConnected()){
@@ -95,7 +95,7 @@ class PluginParametros extends PluginAbstract
         }
     }
 
-    public function postDispatch(Request $request)
+    public function postDispatch(HttpRequest $request)
     {
         //Carga parametros dinamicos si se pudo establecer conexion y si el request todavia no fue despachado.
         if(PluginConexionDataBase::isConnected() && !$request->isDispatched())
@@ -109,11 +109,11 @@ class PluginParametros extends PluginAbstract
     private function agregarParametrosEstaticos()
     {
         $sistema = array(
-
-                        'DATABASE_HOST' => 'localhost',
+                       
+                        'DATABASE_HOST' => '24.232.188.102',//'localhost',
                         'DATABASE_DRIVER' => 'IMYSQL',
-                        'DATABASE_USER' => 'root',
-                        'DATABASE_PASSWORD' => 'root1234',
+                        'DATABASE_USER' =>  'usuariodetest',//'root',
+                        'DATABASE_PASSWORD' =>  'usuariodetest1234', //'',
                         'DATABASE_NAME' => 'tesis',
                         'DATABASE_PORT' => '3306',
                         'DATABASE_AUTOCOMMIT' => '0',
@@ -178,7 +178,7 @@ class PluginParametros extends PluginAbstract
 
     /**
      * El parametro esta tipeado para reforzar la idea del strategy. Solo objetos de la interfaz, no cualquier objeto.
-     *
+     * 
      * @param PluginParametrosDinamicosStrategy $strategy
      */
     public function setParametrosDinamicosStrategy($strategy)
@@ -257,13 +257,13 @@ class PluginParametros extends PluginAbstract
         if(!$this->request->isDispatched() || $soloSistema){
             return $this->obtenerParametroSistema($key);
         }
-
+        
         //solo busca la key en el grupo de parametros de usuario si hay un usuario logueado
         if(!Session::isDestroyed() && null !== SessionAutentificacion::getInstance()->obtenerIdentificacion()->getUsuario()){
             $valor = $this->obtenerParametroUsuario($key); // existe ? -> return valor
             if(null !== $valor){ return $valor; }
         }
-
+        
         $valor = $this->obtenerParametroControlador($key); // existe ? -> return valor
         if(null !== $valor){ return $valor; }
 
@@ -293,20 +293,20 @@ class PluginParametros extends PluginAbstract
         {
             $valor = $this->parametrosDinamicosStrategy->obtenerParametroDinamico($grupoUsuario, $key);
         }
-        return $valor;
+        return $valor;         
     }
-
+    
     private function obtenerParametroControlador($key)
     {
-        $grupoControlador = $this->getGrupoControladorParametro();
-        $valor = $this->obtenerParametroEstatico($grupoControlador, $key);
+        $grupoControlador = $this->getGrupoControladorParametro();        
+        $valor = $this->obtenerParametroEstatico($grupoControlador, $key);        
         if (null === $valor && $this->parametrosDinamicosCargados)
         {
             $valor = $this->parametrosDinamicosStrategy->obtenerParametroDinamico($grupoControlador, $key);
         }
-        return $valor;
+        return $valor;                
     }
-
+    
     private function obtenerParametroEstatico($grupo, $key)
     {
         if(isset($this->parametrosEstaticos[$grupo][$key])){
@@ -314,5 +314,5 @@ class PluginParametros extends PluginAbstract
         }else{
             return null;
         }
-    }
+    }  
 }
