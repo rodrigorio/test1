@@ -104,22 +104,22 @@ class Entrevista{
         return $this->aPreguntas;
     }
 
-    public function getPreguntasRespuestas()
-    {
-        if(null === $this->iSeguimientoId || !$this->isRealizada()){
-            return null;
-        }
-
-        if($this->aPreguntasRespuestas === null){
-            $this->aPreguntasRespuestas = SeguimientosController::getInstance()->getPreguntasRespuestasBySeguimientoId($this->iSeguimientoId, $this->iId);
-        }
-        return $this->aPreguntasRespuestas;
-    }
-
     public function addPregunta($oPregunta)
     {
         $this->aPreguntas[] = $oPregunta;
         return $this;
+    }
+
+    public function getPreguntasRespuestas()
+    {
+        if(null === $this->iSeguimientoId){
+            return null;
+        }
+
+        if($this->aPreguntas === null){
+            $this->aPreguntas = SeguimientosController::getInstance()->getPreguntasRespuestasBySeguimientoId($this->iSeguimientoId, $this->iId);
+        }
+        return $this->aPreguntas;
     }
 
     /**

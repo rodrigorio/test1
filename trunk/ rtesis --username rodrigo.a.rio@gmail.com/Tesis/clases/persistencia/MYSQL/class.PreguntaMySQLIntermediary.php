@@ -150,10 +150,11 @@ class PreguntaMySQLIntermediary extends PreguntaIntermediary
                 $sSQL = " DELETE FROM pregunta_x_opcion_x_seguimiento WHERE ".
                         " seguimientos_id = ".$this->escInt($iSeguimientoId)." ".
                         " AND preguntas_id IN (".$sIdsPreguntasMC.") ";
+
                 $db->execSQL($sSQL);
 
                 //inserto las opciones nuevas
-                $sSqlPreguntasMC = "INSERT INTO pregunta_x_opcion_x_seguimiento (preguntas_id, preguntas_opciones_id, seguimientos_id) VALUES ".$sSqlPreguntasMC;
+                $sSQL = "INSERT INTO pregunta_x_opcion_x_seguimiento (preguntas_id, preguntas_opciones_id, seguimientos_id) VALUES ".$sSqlPreguntasMC;
                 $db->execSQL($sSQL);
             }
 

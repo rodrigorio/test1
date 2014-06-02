@@ -11,7 +11,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
      *
      * Los valores de las constantes TIENEN QUE COINCIDIR CON EL NOMBRE DE LAS CLASES CONCRETAS
      * 'SeguimientoSCC', 'SeguimientoPersonalizado'
-     * 
+     *
      */
     const TIPO_SEGUIMIENTO_SCC = "SeguimientoSCC";
     const TIPO_SEGUIMIENTO_PERSONALIZADO = "SeguimientoPersonalizado";
@@ -66,7 +66,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                           a.orden as iArchivoOrden,
                           a.titulo as sArchivoTitulo,
                           a.tipo as sArchivoTipo,
-                          
+
                           p.nombre
                     FROM
                         seguimientos s
@@ -75,15 +75,18 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     LEFT JOIN
                         seguimientos_scc sscc ON s.id = sscc.id
                     LEFT JOIN
-			(SELECT * FROM archivos WHERE archivos.tipo = 'antecedentes') AS a ON a.seguimientos_id = s.id
+                        (SELECT * FROM archivos WHERE archivos.tipo = 'antecedentes') AS a ON a.seguimientos_id = s.id
+                    LEFT JOIN
+                        seguimiento_x_unidad su ON su.seguimientos_id = s.id
+                    LEFT JOIN
+                        seguimiento_x_entrevista se ON se.seguimientos_id = s.id
                     JOIN
                         discapacitados d ON d.id = s.discapacitados_id
                     JOIN
                         personas p ON p.id = d.id
                     JOIN
-                        usuarios u ON u.id = s.usuarios_id
-                    JOIN
-                        seguimiento_x_unidad su ON su.seguimientos_id = s.id ";
+                        usuarios u ON u.id = s.usuarios_id ";
+
 
             $WHERE = array();
 
@@ -99,16 +102,19 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if(isset($filtro['su.unidades_id']) && $filtro['su.unidades_id'] != ""){
                 $WHERE[] = $this->crearFiltroSimple('su.unidades_id', $filtro['su.unidades_id'], MYSQL_TYPE_INT);
             }
+            if(isset($filtro['se.entrevistas_id']) && $filtro['se.entrevistas_id'] != ""){
+                $WHERE[] = $this->crearFiltroSimple('se.entrevistas_id', $filtro['se.entrevistas_id'], MYSQL_TYPE_INT);
+            }
             if(isset($filtro['tipo']) && $filtro['tipo'] != ""){
                 if($filtro['tipo'] == "SeguimientoSCC"){
                     $WHERE[] = " sscc.id != 'null' ";
                 }else{
                     $WHERE[] = " sp.id != 'null' ";
                 }
-            }            
+            }
             //filtro de la fecha. es un array que adentro tiene fechaDesde y fechaHasta
             if(isset($filtro['fecha']) && null !== $filtro['fecha']){
-                if(is_array($filtro['fecha'])){                    
+                if(is_array($filtro['fecha'])){
                     $WHERE[] = $this->crearFiltroFechaDesdeHasta('s.fechaCreacion', $filtro['fecha']);
                 }
             }
@@ -122,11 +128,11 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             }else{
                 $sSQL .= " order by sEstado asc, s.fechaCreacion desc ";
             }
-            
+
             if($iIniLimit !== null && $iRecordCount !== null){
                 $sSQL .= " limit ".$this->escInt($iIniLimit).", ".$this->escInt($iRecordCount);
             }
-            
+
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -188,8 +194,8 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        seguimientos s 
-                    JOIN 
+                        seguimientos s
+                    JOIN
                     	usuarios u ON s.usuarios_id = u.id
                     WHERE ".$this->crearCondicionSimple($filtro,"",false,"OR");
 
@@ -197,15 +203,15 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null){
         try{
             $db = clone($this->conn);
@@ -242,7 +248,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                         seguimientos_scc sscc ON s.id = sscc.id
                     JOIN usuarios u ON u.id = s.usuarios_id
                     LEFT JOIN
-			(SELECT * FROM archivos WHERE archivos.tipo = 'antecedentes') AS a ON a.seguimientos_id = s.id 
+			(SELECT * FROM archivos WHERE archivos.tipo = 'antecedentes') AS a ON a.seguimientos_id = s.id
                     JOIN personas p ON p.id = s.discapacitados_id ";
 
             if(!empty($filtro)){
@@ -254,7 +260,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
+
             $db->query($sSQL);
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
@@ -290,7 +296,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     $oAntecedentes->sTipo = $oObj->sArchivoTipo;
                     $oSeguimiento->oAntecedentes = Factory::getArchivoInstance($oAntecedentes);
                 }
-                
+
                 if($oObj->tipo == self::TIPO_SEGUIMIENTO_SCC){
                     $oSeguimiento->oDiagnostico = SeguimientosController::getInstance()->getDiagnosticoSeguimientoSCCById($oObj->iId);
                     $objSeguimiento = Factory::getSeguimientoSCCInstance($oSeguimiento);
@@ -319,7 +325,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
         if($oSeguimiento->getPractica() === null){
             throw new Exception("El seguimiento no tiene practica", 0);
         }
-        
+
         try{
             if($oSeguimiento->getId() !== null){
 
@@ -327,7 +333,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 if($oSeguimiento->getDiagnostico() === null){
                     throw new Exception("El seguimiento no tiene diagnostico", 0);
                 }
-                
+
                 if($oSeguimiento->isSeguimientoPersonalizado()){
                     return $this->actualizar($oSeguimiento);
                 }else{
@@ -339,7 +345,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                 }else{
                     return $this->insertarSCC($oSeguimiento);
                 }
-            }            
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -354,7 +360,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $iDiscapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
             $iDiagnosticoId = $oSeguimientoPersonalizado->getDiagnostico()->getId();
             $iPracticaId = $oSeguimientoPersonalizado->getPractica()->getId();
-			
+
             $db->begin_transaction();
 
             $sSQL = " UPDATE seguimientos SET ".
@@ -369,7 +375,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
-			 
+
             $sSQL = " UPDATE seguimientos_personalizados SET ".
                     " diagnosticos_personalizado_id = ".$db->escape($iDiagnosticoId,false,MYSQL_TYPE_INT)." ".
                     " WHERE id = ".$db->escape($oSeguimientoPersonalizado->getId(),false,MYSQL_TYPE_INT)." ";
@@ -378,7 +384,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $db->commit();
 
             return true;
-	
+
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
@@ -389,14 +395,14 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
     {
         try{
             $db = $this->conn;
-					
+
             $iUsuarioId = $oSeguimientoSCC->getUsuario()->getId();
             $iDiscapacitadoId = $oSeguimientoSCC->getDiscapacitado()->getId();
             $iDiagnosticoId = $oSeguimientoSCC->getDiagnostico()->getId();
             $iPracticaId = $oSeguimientoSCC->getPractica()->getId();
-			
+
             $db->begin_transaction();
-            
+
             $sSQL = " UPDATE seguimientos SET ".
                     " frecuenciaEncuentros = ".$db->escape($oSeguimientoSCC->getFrecuenciaEncuentros(),true).", " .
                     " diaHorario = ".$db->escape($oSeguimientoSCC->getDiaHorario(),true).", " .
@@ -409,7 +415,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
-			 
+
             $sSQL = " UPDATE seguimientos_scc SET ".
                     " diagnosticos_scc_id = ".$db->escape($iDiagnosticoId,false,MYSQL_TYPE_INT)." ".
                     " WHERE id = ".$db->escape($oSeguimientoSCC->getId(),false,MYSQL_TYPE_INT)." ";
@@ -424,7 +430,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
     public function insertar($oSeguimientoPersonalizado)
     {
         try{
@@ -433,7 +439,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $iUsuarioId = $oSeguimientoPersonalizado->getUsuario()->getId();
             $iDiscapacitadoId = $oSeguimientoPersonalizado->getDiscapacitado()->getId();
             $iPracticaId = $oSeguimientoPersonalizado->getPractica()->getId();
-			
+
             $db->begin_transaction();
 
             $sSQL = " INSERT INTO seguimientos ".
@@ -456,7 +462,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " diagnosticos_personalizado_id = ".$db->escape($oDiagnostico->getId(),false,MYSQL_TYPE_INT)." ";
 
             $db->execSQL($sSQL);
-          
+
             $sSQL = "SELECT u.id as iId FROM unidades u WHERE u.asociacionAutomatica = 1";
             $db->query($sSQL);
             while($oObj = $db->oNextRecord()){
@@ -466,7 +472,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $sSQL = " insert into seguimiento_x_unidad set ".
                     " unidades_id = ".$this->escInt($iUnidadId).", ".
                     " seguimientos_id = ".$this->escInt($iLastId)." ";
-            
+
 
             $db->execSQL($sSQL);
             $db->commit();
@@ -482,7 +488,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-   
+
     public function insertarSCC($oSeguimientoSCC)
     {
         try{
@@ -491,7 +497,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $iPracticaId = $oSeguimientoSCC->getPractica()->getId();
 
             $db = $this->conn;
-									
+
             $db->begin_transaction();
 
             $sSQL = " insert into seguimientos ".
@@ -502,13 +508,13 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                     " practicas_id =".$db->escape($iPracticaId,false,MYSQL_TYPE_INT).", ".
                     " antecedentes =".$db->escape($oSeguimientoSCC->getAntecedentes(),true).", " .
                     " pronostico= ".$db->escape($oSeguimientoSCC->getPronostico(), true) ." ";
-			
+
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
-			
+
             $oDiagnostico = Factory::getDiagnosticoSCCInstance(new stdClass());
             SeguimientosController::getInstance()->guardarDiagnostico($oDiagnostico);
-			
+
             $sSQL = " insert into seguimientos_scc set ".
             " id = ".$this->escInt($iLastId).", ".
             " diagnosticos_scc_id = ".$this->escInt($oDiagnostico->getId())." ";
@@ -524,7 +530,7 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             $sSQL = " insert into seguimiento_x_unidad set ".
                     " unidades_id = ".$this->escInt($iUnidadId).", ".
                     " seguimientos_id = ".$this->escInt($iLastId)." ";
-		
+
             $db->execSQL($sSQL);
             $db->commit();
             return true;
@@ -534,23 +540,23 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             throw new Exception($e->getMessage(), 0);
         }
    }
-    
+
    public function borrar($oSeguimiento)
    {
         try{
             $db = $this->conn;
-            
+
             $db->begin_transaction();
-			
+
             $iSeguimientoId = $oSeguimiento->getId();
             $iDiagnosticoId = $oSeguimiento->getDiagnostico()->getId();
-           
+
             $db->execSQL("delete from seguimientos where id = ".$this->escInt($iSeguimientoId));
             $db->execSQL("delete from diagnosticos where id = ".$this->escInt($iDiagnosticoId));
-                        
+
             $db->commit();
             return true;
-            
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -600,9 +606,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                         1 as existe
                       FROM
                         seguimientos s
-                      JOIN 
-                      	seguimientos _personalizados sp 
-                      ON 
+                      JOIN
+                      	seguimientos _personalizados sp
+                      ON
                       	sp.id = s.id
                       WHERE
                         s.id = ".$this->escInt($iSeguimientoId)." AND
@@ -630,9 +636,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                         1 as existe
                       FROM
                         seguimientos s
-                      JOIN 
-                      	seguimientos_personalizados sp 
-                      ON 	
+                      JOIN
+                      	seguimientos_personalizados sp
+                      ON
                       	sp.id = s.id
                       WHERE
                         sp.diagnosticos_personalizado_id = ".$this->escInt($iDiagnosticoPersonalizadoId)." AND
@@ -660,9 +666,9 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
                         1 as existe
                       FROM
                         seguimientos s
-                      JOIN 
-                      	seguimientos_SCC sscc 
-                      ON 	
+                      JOIN
+                      	seguimientos_SCC sscc
+                      ON
                       	sscc.id = s.id
                       WHERE
                         sscc.diagnosticos_scc_id = ".$this->escInt($iDiagnosticoSCCId)." AND
@@ -681,6 +687,6 @@ class SeguimientoMySQLIntermediary extends SeguimientoIntermediary
             return false;
         }
     }
-    
-    public function actualizarCampoArray($objects, $cambios){}    
+
+    public function actualizarCampoArray($objects, $cambios){}
 }

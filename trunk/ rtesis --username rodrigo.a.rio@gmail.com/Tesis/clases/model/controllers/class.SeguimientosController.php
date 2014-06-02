@@ -1304,6 +1304,34 @@ class SeguimientosController
     }
 
     /**
+     * Mismo metodo que getEntrevistasBySeguimientoId
+     * La diferencia es que sirve para obtener una entrevista en particular
+     * La entrevista se devuelve con todos los campos provenientes de la asociacion al seguimiento
+     *
+     */
+    public function getEntrevistaBySeguimientoId($iEntrevistaId, $iSeguimientoId, $bBorradoLogico = true)
+    {
+        try{
+            $filtro = array('se.seguimientos_id' => $iSeguimientoId);
+            $filtro['e.id'] = $iEntrevistaId;
+            if(!$bBorradoLogico){
+                $filtro['e.borradoLogico'] = "0";
+            }
+
+            $oEntrevistaIntermediary = PersistenceFactory::getEntrevistaIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aEntrevistas = $oEntrevistaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aEntrevistas){
+                return $aEntrevistas[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
      * Obtiene todas las entrevistas administrables que el usuario creo
      * para asociar a sus seguimientos
      *
@@ -1559,6 +1587,23 @@ class SeguimientosController
             $aPreguntas = $oPreguntaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
             if(null !== $aPreguntas){
                 return $aPreguntas[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getOpcionById($iOpcionId)
+    {
+        try{
+            $filtro = array('po.id' => $iOpcionId);
+            $oOpcionIntermediary = PersistenceFactory::getOpcionIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aOpciones = $oOpcionIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            if(null !== $aOpciones){
+                return $aOpciones[0];
             }else{
                 return null;
             }

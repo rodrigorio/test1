@@ -300,22 +300,6 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             $this->modificarEntrevista();
             return;
         }
-
-        if($this->getRequest()->has('guardarRespuestas')){
-            $this->guardarRespuestas();
-            return;
-        }
-    }
-
-    private function guardarRespuestas()
-    {
-        //set fecha realizado hoy, seria como guardar unidad esporadica
-
-        //si no es editable no puedo seguir (realizada y expirada)
-
-        //setPreguntasRespuestas() porque es el get que se usa en el SQL
-
-        //guardarRespuestasEntrevista($oEntrevista);
     }
 
     private function crearEntrevista()
@@ -466,6 +450,8 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "pageRightInnerMainCont", "AsociarEntrevistasBlock");
+            $iCantDias = SeguimientosController::getInstance()->getCantidadDiasExpiracionSeguimiento();
+            $this->getTemplate()->set_var("iCantDiasExpiracion", $iCantDias);
 
             $aEntrevistasDisponibles = SeguimientosController::getInstance()->getEntrevistasDisponiblesBySeguimiento($oSeguimiento);
 
@@ -490,12 +476,6 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             }
 
             //Obtengo la lista de entrevistas asociadas al seguimiento actualmente
-
-            /*
-                FALTA QUE LAS QUE ESTAN COMPLETADAS Y EXPIRADAS QUEDEN BLOQUEADAS
-                POR JS POPUP AUTOMATICO Y RETURN FALSE
-            */
-
             $aEntrevistasAsociadas = SeguimientosController::getInstance()->getEntrevistasBySeguimientoId($oSeguimiento->getId(), false);
             if(count($aEntrevistasAsociadas) > 0){
 
@@ -504,12 +484,18 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
 
                 foreach($aEntrevistasAsociadas as $oEntrevista){
 
+                    if(!$oEntrevista->isEditable()){
+                        $this->getTemplate()->set_var("expiradaClass", "thumb03 expirada");
+                        $this->getTemplate()->set_var("title", "Edición Bloqueada");
+                    }
+
                     $this->getTemplate()->set_var("iEntrevistaId", $oEntrevista->getId());
                     $this->getTemplate()->set_var("sDescripcionEntrevista", $oEntrevista->getDescripcion());
 
                     $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "entrevista", "EntrevistaListadoAsociarBlock");
                     $htmlEntrevistas .= $this->getTemplate()->pparse("entrevista", false);
                     $this->getTemplate()->delete_parsed_blocks("EntrevistaListadoAsociarBlock");
+                    $this->getTemplate()->delete_parsed_blocks("ExpiradaBlock");
                 }
 
                 $this->getTemplate()->set_var("EntrevistasAsociadas", $htmlEntrevistas);
@@ -571,7 +557,7 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
         }
 
-        $oEntrevista = SeguimientosController::getInstance()->getUnidadById($iEntrevistaId);
+        $oEntrevista = SeguimientosController::getInstance()->getEntrevistaById($iEntrevistaId);
 
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $iUsuarioId = $perfil->getUsuario()->getId();
@@ -597,6 +583,7 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("iPreguntaId", $oPregunta->getId());
                     $this->getTemplate()->set_var("sDescripcion", $oPregunta->getDescripcion());
+                    $this->getTemplate()->set_var("dFechaHora", $oPregunta->getFecha(true));
 
                     if($oPregunta->isPreguntaMC()){
                         $this->getTemplate()->set_var("sTipo", "Multiple Choise");
@@ -685,16 +672,19 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
             throw new Exception("No tiene permiso para editar este seguimiento", 401);
         }
 
-        $oEntrevista = SeguimientosController::getInstance()->getUnidadById($iEntrevistaId);
+        $oEntrevista = SeguimientosController::getInstance()->getEntrevistaBySeguimientoId($iEntrevistaId, $iSeguimientoId);
         if($oEntrevista->getUsuarioId() != $iUsuarioId){
             throw new Exception("No tiene permiso para desasociar esta entrevista", 401);
         }
 
+        $this->getJsonHelper()->initJsonAjaxResponse();
+
         if(!$oEntrevista->isEditable()){
-            throw new Exception("La entrevista ya fue realizada y expiró el período de edición", 401);
+            $this->getJsonHelper()->setSuccess(false);
+            $this->getJsonHelper()->sendJsonAjaxResponse();
+            return;
         }
 
-        $this->getJsonHelper()->initJsonAjaxResponse();
         try{
             SeguimientosController::getInstance()->desasociarEntrevistaSeguimiento($iSeguimientoId, $oEntrevista);
             $this->getJsonHelper()->setSuccess(true)
@@ -707,111 +697,243 @@ class EntrevistasControllerSeguimientos extends PageControllerAbstract
         }
     }
 
-    /**
-     * Si la entrevista aun no fue realizada cargo el formulario.
-     * Si ya se realizo muestro las preguntas con las respuestas sin formulario
-     * Si todavia no expiro el tiempo de edicion (desde la fecha en la que se guardo x primera vez)
-     * entonces muestro el boton de EDITAR, y cargo el form con las respuestas
-     */
-    public function ampliar()
+    public function formEntrevistaRespuestas()
     {
-        /*
-        $iUnidadId = $this->getRequest()->getParam('iUnidadEsporadicaId');
-        $iSeguimientoId = $this->getRequest()->getParam('iSeguimientoId');
-        if(empty($iUnidadId) || empty($iSeguimientoId)){
-            throw new Exception("La url esta incompleta, no puede ejecutar la accion", 401);
+        $iEntrevistaId = $this->getRequest()->getParam("iEntrevistaId");
+        $iSeguimientoId = $this->getRequest()->getParam("iSeguimientoId");
+        if(null === $iEntrevistaId || null === $iSeguimientoId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
         }
 
-        $oUnidad = SeguimientosController::getInstance()->getUnidadById($iUnidadId);
-        if(!$oUnidad->isPrecargada()){
-            if(!SeguimientosController::getInstance()->isUnidadUsuario($iUnidadId)){
-                throw new Exception("No tiene permiso para editar este seguimiento", 401);
-            }
+        $oEntrevista = SeguimientosController::getInstance()->getEntrevistaBySeguimientoId($iEntrevistaId, $iSeguimientoId);
+        if($oEntrevista === null){
+            throw new Exception("No existe la entrevista para el identificador seleccionado", 401);
+        }
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oEntrevista->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar esta entrevista", 401);
+        }
+
+        //me fijo periodo de expiracion
+        if(!$oEntrevista->isEditable()){
+            throw new Exception("La entrevista no se puede editar, periodo de edicion expirado", 401);
         }
 
         try{
-            //ultima entrada en la que se asocio la unidad
-            $oEntrada = $oUnidad->getUltimaEntrada($iSeguimientoId);
+            $aCurrentOptions[] = "currentOptionAsociarEntrevistasSeguimiento";
 
-            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "popUpContent", "AmpliarEntradaEsporadicaBlock");
+            $this->setFrameTemplate()
+                 ->setJsEntrevistas()
+                 ->setHeadTag();
 
-            $this->getTemplate()->set_var("iUnidadIdForm", $iUnidadId);
-            $this->getTemplate()->set_var("iSeguimientoIdForm", $iSeguimientoId);
-            $this->getTemplate()->set_var("subtituloSeccion", "Unidad: <span class='fost_it'>".$oUnidad->getNombre()."</span>");
-            $this->getTemplate()->set_var("sUnidadDescripcion", $oUnidad->getDescripcion());
+            IndexControllerSeguimientos::setCabecera($this->getTemplate());
+            IndexControllerSeguimientos::setCenterHeader($this->getTemplate());
+            $this->printMsgTop();
 
-            //si $oEntrada == null, muestro el popup con el form pero con el mensaje de que no existen entradas. Sino muestro la info de la unidad
-            if($oEntrada === null){
-                $this->getTemplate()->set_var("EntradaEsporadicaBlock", "");
-                $this->getTemplate()->set_var("VerEntradasButtonBlock", "");
-                $this->getTemplate()->set_var("EliminarEntradaEsporadicaButtonBlock", "");
+            $oSeguimiento = SeguimientosController::getInstance()->getSeguimientoById($iSeguimientoId);
 
-                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "msgTopEntrada", "MsgFichaHintBlock");
-                $this->getTemplate()->set_var("sTituloMsgFicha", "Unidad sin entradas.");
-                $this->getTemplate()->set_var("sMsgFicha", "Aún no se ha guardado información en esta unidad en ninguna fecha. Seleccione una fecha desde el calendario marcada como disponible.");
-            }else{
-                if(!$oEntrada->isEditable()){
-                    $this->getTemplate()->set_var("EliminarEntradaEsporadicaButtonBlock", "");
-                }
-                $this->getTemplate()->set_var("dFechaEntrada", $oEntrada->getFecha(true));
-                $sUltimaEntrada = str_replace("-", "/", $oEntrada->getFecha());
-                $this->getTemplate()->set_var("sUltimaEntrada", $sUltimaEntrada);
-                $this->getTemplate()->set_var("iEntradaId", $oEntrada->getId());
-                $this->getTemplate()->set_var("hrefVerEntradasUnidadEsporadica", $this->getUrlFromRoute("seguimientosEntradasEntradasUnidadEsporadica", true)."?unidad=".$oUnidad->getId()."&seguimiento=".$iSeguimientoId);
+            SeguimientosControllerSeguimientos::setMenuDerechaVerSeguimiento($this->getTemplate(), $this, null);
+            SeguimientosControllerSeguimientos::setFichaPersonaSeguimiento($this->getTemplate(), $this->getUploadHelper(), $oSeguimiento->getDiscapacitado());
 
-                //Esto se hace asi porque los valores de las variables se obtienen desde la llamada de la entrada
-                $aUnidades = $oEntrada->getUnidades();
-                $oUnidad = $aUnidades[0];
-                $aVariables = $oUnidad->getVariables();
-                if(count($aVariables) == 0){
-                    $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "MsgTopEntradaBlock", "MsgFichaInfoBlock");
-                    $this->getTemplate()->set_var("sTituloMsgFicha", "Variables Unidad");
-                    $this->getTemplate()->set_var("sMsgFicha", "La unidad se encuentra sin variables, no hay datos para ampliar.");
-                    $this->getTemplate()->set_var("EntradaEsporadicaBlock", "");
-                    $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
-                    return;
-                }else{
-                    $this->getTemplate()->set_var("MsgTopEntradaBlock", "");
-                }
+            //titulo seccion
+            $this->getTemplate()->set_var("tituloSeccion", "Completar Entrevista");
+            $this->getTemplate()->set_var("subtituloSeccion", "Entrevista: <span class='fost_it'>".$oEntrevista->getDescripcion()."</span>");
 
-                foreach($aVariables as $oVariable){
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "pageRightInnerMainCont", "RealizarEntrevistaBlock");
 
-                    $this->getTemplate()->set_var("sVariableDescription", $oVariable->getDescripcion());
-                    $this->getTemplate()->set_var("sVariableNombre", $oVariable->getNombre());
+            $this->getTemplate()->set_var("iSeguimientoId", $oSeguimiento->getId());
+            $this->getTemplate()->set_var("iEntrevistaId", $oEntrevista->getId());
+            $this->getTemplate()->set_var("sDescripcionEntrevista", $oEntrevista->getDescripcion());
 
-                    if($oVariable->isVariableNumerica()){
-                        $variable = "VariableNumerica";
-                        $valor = $oVariable->getValor();
-                        if(null === $valor){ $valor = " - "; }
-                        $this->getTemplate()->set_var("sVariableValorNumerico", $valor);
-                    }
+            $aPreguntas = $oEntrevista->getPreguntasRespuestas();
 
-                    if($oVariable->isVariableTexto()){
-                        $variable = "VariableTexto";
-                        $valor = $oVariable->getValor(true);
-                        if(null === $valor){ $valor = " - "; }
-                        $this->getTemplate()->set_var("sVariableValorTexto", $valor);
-                    }
-
-                    if($oVariable->isVariableCualitativa()){
-                        $variable = "VariableCualitativa";
-                        //valor en cualitativa es un objeto Modalidad
-                        $valor = $oVariable->getValorStr();
-                        if(null === $valor){ $valor = " - "; }
-                        $this->getTemplate()->set_var("sVariableModalidad", $valor);
-                    }
-
-                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "variable", $variable);
-                    $this->getTemplate()->set_var("variable", $this->getTemplate()->pparse("variable"));
-                    $this->getTemplate()->delete_parsed_blocks($variable);
-                    $this->getTemplate()->parse("VariableBlock", true);
-                }
+            if(count($aPreguntas) == 0){
+                $this->getTemplate()->set_var("FormEntrevistaRespuestasBlock", "");
+                $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "mensajeSinPreguntas", "MsgFichaInfoBlock");
+                $this->getTemplate()->set_var("sTituloMsgFicha", "Preguntas Entrevista");
+                $this->getTemplate()->set_var("sMsgFicha", "La entrevista se encuentra sin preguntas, no se puede generar el formulario");
+                $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+                return;
             }
+
+            foreach($aPreguntas as $oPregunta){
+                $this->getTemplate()->set_var("sPreguntaDescripcion", $oPregunta->getDescripcion());
+                $this->getTemplate()->set_var("iPreguntaId", $oPregunta->getId());
+
+                if($oPregunta->isPreguntaAbierta()){
+                    $block = "PreguntaAbiertaEditar";
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "preguntaEditar", $block);
+                    $this->getTemplate()->set_var("sRespuesta", $oPregunta->getRespuesta(true));
+                }
+
+                if($oPregunta->isPreguntaMC()){
+                    $block = "PreguntaMCEditar";
+                    $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "preguntaEditar", $block);
+                    $aOpciones = $oPregunta->getOpciones();
+                    foreach($aOpciones as $oOpcion){
+                        $this->getTemplate()->set_var("iOpcionId", $oOpcion->getId());
+                        $this->getTemplate()->set_var("sDescripcion", $oOpcion->getDescripcion());
+                        if($oPregunta->getRespuesta() !== null && $oOpcion->getId() == $oPregunta->getRespuesta()->getId()){
+                            $this->getTemplate()->set_var("sChecked", "checked='checked'");
+                        }
+                        $this->getTemplate()->parse("OpcionEditar", true);
+                        $this->getTemplate()->set_var("sChecked", "");
+                    }
+                }
+
+                $this->getTemplate()->set_var("preguntaEntrevistaEditar", $this->getTemplate()->pparse("preguntaEditar"));
+                $this->getTemplate()->delete_parsed_blocks($block);
+                $this->getTemplate()->delete_parsed_blocks("OpcionEditar");
+                $this->getTemplate()->parse("PreguntaEntrevistaEditarBlock", true);
+            }
+
+            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+         }catch(Exception $e){
+            print_r($e);
+        }
+    }
+
+    public function formEntrevistaGuardarRespuestas()
+    {
+        $iEntrevistaId = $this->getRequest()->getPost("entrevistaIdForm");
+        $iSeguimientoId = $this->getRequest()->getPost("seguimientoIdForm");
+
+        if(null === $iEntrevistaId || null === $iSeguimientoId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEntrevista = SeguimientosController::getInstance()->getEntrevistaBySeguimientoId($iEntrevistaId, $iSeguimientoId);
+        if($oEntrevista === null){
+            throw new Exception("No existe la entrevista para el identificador seleccionado", 401);
+        }
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oEntrevista->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para editar esta entrevista", 401);
+        }
+
+        //me fijo periodo de expiracion
+        if(!$oEntrevista->isEditable()){
+            throw new Exception("La entrevista no se puede editar, periodo de edicion expirado", 401);
+        }
+
+        try{
+            $this->getJsonHelper()->initJsonAjaxResponse();
+
+            $vPreguntas = $this->getRequest()->getPost("preguntas");
+            if( empty($vPreguntas) || !is_array($vPreguntas)){
+                $this->getJsonHelper()->setSuccess(false);
+                $this->getJsonHelper()->setMessage("El formulario no tiene un formato correcto");
+                $this->getJsonHelper()->sendJsonAjaxResponse();
+                return;
+            }
+
+            $aPreguntas = array();
+            foreach($vPreguntas as $pregunta){
+                $iPreguntaId = $pregunta['id'];
+
+                $oPregunta = SeguimientosController::getInstance()->getPreguntaById($iPreguntaId);
+
+                //si es multiple choise levanto la opcion, sino agrego la respuesta de manera normal.
+                if($oPregunta->isPreguntaMC()){
+                    $oOpcion = null;
+                    if(isset($pregunta['respuesta'])){
+                        $oOpcion = SeguimientosController::getInstance()->getOpcionById($pregunta['respuesta']);
+                        $oPregunta->setRespuesta($oOpcion);
+                    }
+                }else{
+                    $oPregunta->setRespuesta($pregunta['respuesta']);
+                }
+
+                $aPreguntas[] = $oPregunta;
+            }
+            $oEntrevista->setPreguntas($aPreguntas);
+            SeguimientosController::getInstance()->guardarRespuestasEntrevista($oEntrevista);
+
+            $this->getJsonHelper()->setMessage("Las respuestas se han guardado con éxito");
+            $this->getJsonHelper()->setSuccess(true);
+
+        }catch(Exception $e){
+            $this->getJsonHelper()->setSuccess(false);
+        }
+
+        $this->getJsonHelper()->sendJsonAjaxResponse();
+    }
+
+    /**
+     * muestro las preguntas con las respuestas
+     * Si todavia no expiro el tiempo de edicion (desde la fecha en la que se guardo x primera vez)
+     * entonces muestro el boton de EDITAR
+     */
+    public function ampliar()
+    {
+        $iEntrevistaId = $this->getRequest()->getParam("iEntrevistaId");
+        $iSeguimientoId = $this->getRequest()->getParam("iSeguimientoId");
+
+        if(null === $iEntrevistaId || null === $iSeguimientoId){
+            throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
+        }
+
+        $oEntrevista = SeguimientosController::getInstance()->getEntrevistaBySeguimientoId($iEntrevistaId, $iSeguimientoId);
+        if($oEntrevista === null){
+            throw new Exception("No existe la entrevista para el identificador seleccionado", 401);
+        }
+
+        $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
+        $iUsuarioId = $perfil->getUsuario()->getId();
+        if($oEntrevista->getUsuarioId() != $iUsuarioId){
+            throw new Exception("No tiene permiso para ampliar esta entrevista", 401);
+        }
+
+        try{
+            $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
+            $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "popUpContent", "AmpliarEntrevistaRespuestasBlock");
+
+            $this->getTemplate()->set_var("iEntrevistaId", $iEntrevistaId);
+            $this->getTemplate()->set_var("iSeguimientoId", $iSeguimientoId);
+
+            $this->getTemplate()->set_var("subtituloSeccion", "<span class='fost_it'>".$oEntrevista->getDescripcion()."</span>");
+
+            if(!$oEntrevista->isEditable()){
+                $this->getTemplate()->set_var("FormEditarEntrevistaBlock", "");
+            }else{
+                $this->getTemplate()->set_var("hrefFormEntrevistaRespuestas", $this->getUrlFromRoute("seguimientosEntrevistasFormEntrevistaRespuestas", true));
+            }
+
+            $this->getTemplate()->set_var("sFechaRealizado", $oEntrevista->getFechaRealizado(true));
+
+            $aPreguntas = $oEntrevista->getPreguntasRespuestas();
+            foreach($aPreguntas as $oPregunta){
+
+                $this->getTemplate()->set_var("sPreguntaDescripcion", $oPregunta->getDescripcion());
+
+                if($oPregunta->isPreguntaAbierta()){
+                    $pregunta = "PreguntaAbierta";
+                    $respuesta = $oPregunta->getRespuesta(TRUE);
+                    if(null === $respuesta){ $respuesta = " - "; }
+                    $this->getTemplate()->set_var("sPreguntaRespuestaAbierta", $respuesta);
+                }
+
+                if($oPregunta->isPreguntaMC()){
+                    $pregunta = "PreguntaMC";
+                    //respuesta en multiple choise es un objeto Opcion
+                    $respuesta = $oPregunta->getRespuestaStr();
+                    if(null === $respuesta){ $respuesta = " - "; }
+                    $this->getTemplate()->set_var("sPreguntaOpcion", $respuesta);
+                }
+
+                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entrevistas.gui.html", "pregunta", $pregunta);
+                $this->getTemplate()->set_var("pregunta", $this->getTemplate()->pparse("pregunta"));
+                $this->getTemplate()->delete_parsed_blocks($pregunta);
+                $this->getTemplate()->parse("PreguntaBlock", true);
+            }
+
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             $this->getResponse()->setBody("Ocurrio un error al procesar lo solicitado");
         }
-        */
     }
 }

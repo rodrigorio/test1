@@ -80,7 +80,11 @@ $(document).ready(function(){
 
     var itemclone, idx;
     $("#entrevistasSinAsociar, #entrevistasAsociadas").sortable({
+        items:"li:not(.expirada)",
         start: function(event, ui){
+
+            //if($(ui.item).hasClass("expirada")){return false;}
+
             //create clone of current seletected li
             itemclone = $(ui.item).clone();
             //get current li index position in list

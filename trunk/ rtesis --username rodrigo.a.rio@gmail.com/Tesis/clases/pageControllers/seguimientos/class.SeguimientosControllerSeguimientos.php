@@ -984,7 +984,15 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             foreach($aEntrevistas as $oEntrevista){
                 $this->getTemplate()->set_var("sEntrevistaDescripcion", $oEntrevista->getDescripcion());
                 $this->getTemplate()->set_var("iEntrevistaId", $oEntrevista->getId());
+
+                if($oEntrevista->isRealizada()){
+                    $this->getTemplate()->set_var("SinRealizarBlock", "");
+                    $this->getTemplate()->set_var("ampliarEntrevistaClass", "ampliarEntrevista");
+                }
+                $this->getTemplate()->set_var("hrefFormEntrevistaRespuestas", $this->getUrlFromRoute("seguimientosEntrevistasFormEntrevistaRespuestas", true));
+
                 $this->getTemplate()->parse("EntrevistaButton", true);
+                $this->getTemplate()->delete_parsed_blocks("SinRealizarBlock");
             }
         }else{
             $this->getTemplate()->set_var("EntrevistasBlock", "");
@@ -1082,6 +1090,26 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             }
         }else{
             $this->getTemplate()->set_var("UnidadesEsporadicasBlock", "");
+        }
+
+        //entrevistas
+        $aEntrevistas = SeguimientosController::getInstance()->getEntrevistasBySeguimientoId($oSeguimiento->getId());
+        if(count($aEntrevistas)>0){
+            foreach($aEntrevistas as $oEntrevista){
+                $this->getTemplate()->set_var("sEntrevistaDescripcion", $oEntrevista->getDescripcion());
+                $this->getTemplate()->set_var("iEntrevistaId", $oEntrevista->getId());
+
+                if($oEntrevista->isRealizada()){
+                    $this->getTemplate()->set_var("SinRealizarBlock", "");
+                    $this->getTemplate()->set_var("ampliarEntrevistaClass", "ampliarEntrevista");
+                }
+                $this->getTemplate()->set_var("hrefFormEntrevistaRespuestas", $this->getUrlFromRoute("seguimientosEntrevistasFormEntrevistaRespuestas", true));
+
+                $this->getTemplate()->parse("EntrevistaButton", true);
+                $this->getTemplate()->delete_parsed_blocks("SinRealizarBlock");
+            }
+        }else{
+            $this->getTemplate()->set_var("EntrevistasBlock", "");
         }
 
         //antecedentes
