@@ -29,6 +29,7 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
             $bSeguimiento = false; //si se obtienen las asociadas al seguimiento levanto campos de relacion
             if(isset($filtro['se.seguimientos_id']) && $filtro['se.seguimientos_id'] != ""){
                 $bSeguimiento = true;
+                $iSeguimientoId = $filtro['se.seguimientos_id'];
             }
 
             $sSQL = "SELECT DISTINCT SQL_CALC_FOUND_ROWS
@@ -94,6 +95,7 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
                 $oEntrevista->dFechaBorradoLogico = $oObj->dFechaBorradoLogico;
 
                 if($bSeguimiento){
+                    $oEntrevista->iSeguimientoId = $iSeguimientoId;
                     $oEntrevista->bRealizada = ($oObj->bRealizada == '1')?true:false;
                     $oEntrevista->dFechaRealizado = $oObj->dFechaRealizado;
                 }
@@ -181,11 +183,11 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
                         " AND seguimientos_id = ".$this->escInt($oEntrevista->getSeguimientoId())." ";
                 $db->execSQL($sSQL);
 
-                $oEntrevista->isRealizada(true);
+                $oEntrevista->isRealizada(TRUE);
             }
 
-            //notar que preguntasRespuestas devuelve lo que el controlador de entradas seteo desde el post del form
             $aPreguntas = $oEntrevista->getPreguntasRespuestas();
+
             SeguimientosController::getInstance()->guardarRespuestasPreguntas($aPreguntas, $oEntrevista->getSeguimientoId());
 
             $db->commit();
@@ -414,19 +416,19 @@ class EntrevistaMySQLIntermediary extends EntrevistaIntermediary
 
             $db->execSQL("delete from seguimiento_x_entrevista where entrevistas_id = ".$this->escInt($iEntrevistaId)." and seguimientos_id = ".$this->escInt($iSeguimientoId));
 
-            $sSQL = " DELETE FROM pregunta_x_seguimiento
-                        JOIN preguntas p ON p.id = preguntas_id
+            $sSQL = " DELETE pregunta_x_seguimiento FROM pregunta_x_seguimiento
+                        JOIN preguntas ON preguntas.id = pregunta_x_seguimiento.preguntas_id
                       WHERE
                         seguimientos_id = ".$this->escInt($iSeguimientoId)."
-                      AND p.entrevistas_id = ".$this->escInt($iEntrevistaId);
+                      AND preguntas.entrevistas_id = ".$this->escInt($iEntrevistaId);
 
             $db->execSQL($sSQL);
 
-            $sSQL = " DELETE FROM pregunta_x_opcion_x_seguimiento
-                        JOIN preguntas p ON p.id = preguntas_id
+            $sSQL = " DELETE pregunta_x_opcion_x_seguimiento FROM pregunta_x_opcion_x_seguimiento
+                        JOIN preguntas ON preguntas.id = pregunta_x_opcion_x_seguimiento.preguntas_id
                       WHERE
                         seguimientos_id = ".$this->escInt($iSeguimientoId)."
-                      AND p.entrevistas_id = ".$this->escInt($iEntrevistaId);
+                      AND preguntas.entrevistas_id = ".$this->escInt($iEntrevistaId);
 
             $db->execSQL($sSQL);
             $db->commit();

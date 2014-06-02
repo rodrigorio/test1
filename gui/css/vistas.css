@@ -303,6 +303,7 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .thumbEdit{position:relative; margin-bottom:30px;}
 .thumbEditMenu{position:absolute; right:0px; bottom:-25px; padding-top:10px; width:150px}
 .thumbTop{position:absolute; left:0px; top:-19px; padding-bottom:10px; width:150px}
+.thumbBottom{position:absolute; left:0px; bottom:-15px; padding-top:10px; width:150px}
 
 /*** OTROS ***/
 .valoracion{width:69px; height:14px; margin-bottom:-2px; display:inline-block}
@@ -579,7 +580,8 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 .thumb02 i:hover{border:1px solid #FFF}
 .thumb02 span{padding:1px 5px; background:none repeat scroll 0 0 #333; color:#FFF}
 /* no ampliable */
-.thumb03{padding:3px; border-width:1px 2px 2px 1px; border-style:solid; border-color:#E7EBF2 #AAA #AAA #E7EBF2; background-color:#FFF;  cursor:default !important; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px}
+.thumb03{padding:3px; border-width:1px 2px 2px 1px; border-style:solid; border-color:#E7EBF2 #AAA #AAA #E7EBF2; background-color:#FFF;  cursor:default !important; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;
+-moz-box-shadow:none !important; box-shadow:none !important; -webkit-box-shadow:none !important;}
 
 /*** BOTONES ***/
 /* confirmar accion */
@@ -617,7 +619,7 @@ ul.menu01 li li li:hover ul, ul.menu01 li li li.sfHover ul{left: 10em; top: 0;}
 
 /*** VARIOS ***/
 .txt_cuidado{color:#F00}
-.txt_correcto{color:green}
+.txt_correcto{color:#30AD30}
 .txt_imp{font-weight:bold; text-transform:capitalize}
 .txt_imp2{font-weight:bold; text-transform:uppercase}
 p .destacado{font-weight:bold;}

@@ -132,6 +132,63 @@ function eliminarEntrevista(iEntrevistaId)
     );
 }
 
+var validateFormEntrevistaRespuestas = {
+    errorElement: "div",
+    validClass: "correcto",
+    onfocusout: false,
+    onkeyup: false,
+    onclick: false,
+    focusInvalid: false,
+    focusCleanup: true,
+    errorPlacement:function(error, element){
+        error.appendTo(".msg_"+element.attr("id"));
+    },
+    highlight: function(element){},
+    unhighlight: function(element){}
+};
+
+var optionsAjaxFormEntrevistaRespuestas = {
+    dataType: 'jsonp',
+    resetForm: false,
+    url: 'seguimientos/form-entrevista-guardar-respuestas',
+    beforeSerialize:function(){
+        if($("#formEntrevistaRespuestas").valid() == true){
+
+            $('#msg_form_entrevista').hide();
+            $('#msg_form_entrevista').removeClass("correcto").removeClass("error");
+            $('#msg_form_entrevista .msg').html("");
+            setWaitingStatus('formEntrevistaRespuestas', true);
+
+        }else{
+            return false;
+        }
+    },
+
+    success:function(data){
+        setWaitingStatus('formEntrevistaRespuestas', false);
+        if(data.success == undefined || data.success == 0){
+            if(data.mensaje == undefined){
+                $('#msg_form_entrevista .msg').html(lang['error procesar']);
+            }else{
+                $('#msg_form_entrevista .msg').html(data.mensaje);
+            }
+            $('#msg_form_entrevista').addClass("error").fadeIn('slow');
+        }else{
+            if(data.mensaje == undefined){
+                $('#msg_form_entrevista .msg').html(lang['exito procesar']);
+            }else{
+                $('#msg_form_entrevista .msg').html(data.mensaje);
+            }
+            $('#msg_form_entrevista').addClass("correcto").fadeIn('slow');
+        }
+    }
+};
+
+function bindEventsGuardarEntrevistaForm(){
+    $("#formEntrevistaRespuestas").validate(validateFormEntrevistaRespuestas);
+    $("#formEntrevistaRespuestas").ajaxForm(optionsAjaxFormEntrevistaRespuestas);
+}
+
 $(document).ready(function(){
     $("#buscarEntrevistas").live('click', function(){
         masEntrevistas();
@@ -187,4 +244,8 @@ $(document).ready(function(){
         var iEntrevistaId = $(this).attr("rel");
         eliminarEntrevista(iEntrevistaId);
     });
+
+    if($("#formEntrevistaRespuestas").length){
+        bindEventsGuardarEntrevistaForm();
+    }
 });

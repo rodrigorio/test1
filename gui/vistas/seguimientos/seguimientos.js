@@ -28,22 +28,22 @@ var optionsAjaxFormCrearSeguimiento = {
     resetForm: false,
     url: "seguimientos/procesar-seguimiento",
     beforeSerialize: function($form, options){
-    	
+
         if($("#formCrearSeguimiento").valid() == true){
-        	
+
             $('#msg_form_crearSeguimiento').hide();
             $('#msg_form_crearSeguimiento').removeClass("correcto").removeClass("error");
             $('#msg_form_crearSeguimiento .msg').html("");
 
             setWaitingStatus('formCrearSeguimiento', true);
         }else{
-        	
+
             return false;
         }
     },
 
     success:function(data){
-    	
+
         setWaitingStatus('formCrearSeguimiento', false);
         if(data.success == undefined || data.success == 0){
             if(data.mensaje == undefined){
@@ -68,8 +68,8 @@ var optionsAjaxFormCrearSeguimiento = {
             $("#frecuencias").val("");
             $("#diaHorario").val("");
             $("#diaHorario").val("");
-            $("#practica").val("");            
-        }      
+            $("#practica").val("");
+        }
     }
 };
 
@@ -84,7 +84,7 @@ function masSeguimientos(){
 
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
-    
+
     $.ajax({
         url: "seguimientos/buscar-seguimientos",
         type: "POST",
@@ -233,9 +233,9 @@ function bindEventsFormAgregarVideo(iSeguimientoId)
             }
         }
     };
-    
+
     $("#formAgregarVideo").validate(validateFormAgregarVideo);
-    $("#formAgregarVideo").ajaxForm(optionsAjaxFormAgregarVideo);    
+    $("#formAgregarVideo").ajaxForm(optionsAjaxFormAgregarVideo);
 }
 
 function bindEventsFormAgregarArchivo(iSeguimientoId)
@@ -287,7 +287,7 @@ function bindEventsFormAgregarArchivo(iSeguimientoId)
                 return;
             }
         });
-    }    
+    }
 }
 
 function bindEventsFormAgregarFoto(iSeguimientoId)
@@ -341,7 +341,7 @@ function bindEventsFormAgregarFoto(iSeguimientoId)
                 return;
             }
         });
-    }    
+    }
 }
 
 var validateFormFoto = {
@@ -536,7 +536,7 @@ function bindEventsEditarVideoForm(){
 }
 
 function editarFoto(iFotoId)
-{    
+{
     var dialog = setWaitingStatusDialog(550, "Editar Foto");
     dialog.load(
         "seguimientos/form-editar-adjunto?editarFoto=1&iFotoId="+iFotoId,
@@ -695,7 +695,7 @@ function bindEventsFormModificarSeguimiento()
 }
 
 $(document).ready(function(){
-       
+
     //Listado Seguimientos
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
@@ -742,7 +742,7 @@ $(document).ready(function(){
                 $("#personaId").val("");
             }
         });
-        
+
         //para borrar la persona seleccionada con el autocomplete
         $('#persona_clean').click(function(){
             $("#persona").removeClass("selected");
@@ -764,7 +764,7 @@ $(document).ready(function(){
                     beforeSend: function(){
                        revelarElemento($("#persona_loading"));
                     },
-                    success: function(data){                        
+                    success: function(data){
                         ocultarElemento($("#persona_loading"));
                         response($.map(data.discapacitados, function(discapacitados){
                             return{
@@ -823,13 +823,13 @@ $(document).ready(function(){
         );
         return false;
     });
-    
+
     $(".ampliarUnidadEsporadica").live('click',function()
     {
         var rel = $(this).attr("rel").split('_');
         var iUnidadEsporadicaId = rel[0];
-        var iSeguimientoId = rel[1];      
-        var dialog = setWaitingStatusDialog(650, "Unidad Esporádica");
+        var iSeguimientoId = rel[1];
+        var dialog = setWaitingStatusDialog(700, "Unidad Esporádica");
         dialog.load(
             "seguimientos/ampliar-unidad-esporadica",
             {
@@ -847,6 +847,23 @@ $(document).ready(function(){
         return false;
     });
 
+    $(".ampliarEntrevista").live('click',function()
+    {
+        var rel = $(this).attr("rel").split('_');
+        var iEntrevistaId = rel[0];
+        var iSeguimientoId = rel[1];
+        var dialog = setWaitingStatusDialog(650, "Entrevista");
+        dialog.load(
+            "seguimientos/ampliar-entrevista",
+            {
+                iEntrevistaId:iEntrevistaId,
+                iSeguimientoId:iSeguimientoId
+            },
+            function(responseText, textStatus, XMLHttpRequest){}
+        );
+        return false;
+    });
+
     $(".modificarSeguimiento").live('click',function()
     {
         var dialog = setWaitingStatusDialog(450, "Edicion Básica");
@@ -859,7 +876,7 @@ $(document).ready(function(){
         );
         return false;
     });
-        
+
     //formulario adjuntar foto, video, archivo
     $(".agregarFotoSeguimiento").live('click',function(){
 
@@ -869,10 +886,10 @@ $(document).ready(function(){
         dialog.load(
             "seguimientos/form-adjuntar-foto?iSeguimientoId="+iSeguimientoId,
             {},
-            function(responseText, textStatus, XMLHttpRequest){                
+            function(responseText, textStatus, XMLHttpRequest){
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarFoto(iSeguimientoId);
-                }                          
+                }
             }
         );
 
@@ -882,12 +899,12 @@ $(document).ready(function(){
     $(".agregarVideoSeguimiento").live('click',function(){
 
         var iSeguimientoId = $("#iItemIdForm").val();
-        
+
         var dialog = setWaitingStatusDialog(450, "Agregar Video");
         dialog.load(
             "seguimientos/form-adjuntar-video?iSeguimientoId="+iSeguimientoId,
             {},
-            function(responseText, textStatus, XMLHttpRequest){                
+            function(responseText, textStatus, XMLHttpRequest){
                 if(iSeguimientoId != undefined && iSeguimientoId != ""){
                     bindEventsFormAgregarVideo(iSeguimientoId);
                 }
@@ -899,7 +916,7 @@ $(document).ready(function(){
     $(".agregarArchivoSeguimiento").live('click',function(){
 
         var iSeguimientoId = $("#iItemIdForm").val();
-        
+
         var dialog = setWaitingStatusDialog(450, "Agregar Archivo");
         dialog.load(
             "seguimientos/form-adjuntar-archivo?iSeguimientoId="+iSeguimientoId,
@@ -912,7 +929,7 @@ $(document).ready(function(){
         );
         return false;
     });
-       
+
     //Galeria de fotos
     $(".borrarFoto").live('click', function(){
         var iFotoId = $(this).attr("rel");

@@ -12,6 +12,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientosGeneral.js")
    .script("{pathUrlBase}"+"gui/vistas/seguimientos/entrevistas.js");
 </script>
 <!--EndJsContent-->
@@ -191,7 +192,7 @@
 
 <!--BeginAsociarEntrevistasBlock-->
 <div class='ficha05 bora iveal mabo2'>
-    <span class="i bs infoo"></span> Arrastre entrevistas desde una columna hacia la otra para realizar los cambios.
+    <span class="i bs infoo"></span> Arrastre entrevistas desde una columna hacia la otra para realizar los cambios.<br> <strong>Las entrevistas que se hayan realizado hace mas de {iCantDiasExpiracion} d&iacute;as se visualizan pero ya no podr&aacute;n desasociarse.</strong>
 </div>
 <div id="entrevistasWrapper" class="columnas2B grupo po_re">
     <div class="ajax_wait30 di_no"></div>
@@ -225,7 +226,7 @@
 <!--EndAsociarEntrevistasBlock-->
 
 <!--BeginEntrevistaListadoAsociarBlock-->
-<li rel="{iSeguimientoId}_{iEntrevistaId}" id="entrevista_{iEntrevistaId}" class="fl_le mari2 baco5 mabo2 bora bosh mawi2 cu_mo">
+<li title="{title}" rel="{iSeguimientoId}_{iEntrevistaId}" id="entrevista_{iEntrevistaId}" class="fl_le mari2 baco5 mabo2 bora bosh mawi2 cu_mo po_re {expiradaClass}">
     <div class="grupo baco1 bobo1 bora4 pa mabo">
         <h3 class="fl_ri iveal">
             {sDescripcionEntrevista}
@@ -288,3 +289,109 @@
     <!--EndNoRecordsPreguntasBlock-->
 </table>
 <!--EndAmpliarEntrevistaBlock-->
+
+<!--BeginPreguntaAbiertaEditar-->
+<div class="form_line msg_pregunta_{iPreguntaId}">
+    <label for="pregunta_{iPreguntaId}">
+        {sPreguntaDescripcion}
+    </label>
+    <div class="fwrap mabo2">
+        <div class="inner_fwrap">
+            <textarea class="mihe1 maxlength" rows="0" cols="0" id="pregunta_{iPreguntaId}" name="preguntas[{iPreguntaId}][respuesta]" title="">{sRespuesta}</textarea>
+            <input type="hidden" name="preguntas[{iPreguntaId}][id]" value="{iPreguntaId}" />
+        </div>
+    </div>
+</div>
+<!--EndPreguntaAbiertaEditar-->
+
+<!--BeginPreguntaMCEditar-->
+<div class="form_line msg_pregunta_{iPreguntaId}">
+    <fieldset>
+        <legend>{sPreguntaDescripcion}</legend>
+        <!--BeginOpcionEditar-->
+        <div class="mabo">
+            <input class="mari veal_mi" id="opcion_{iOpcionId}" type="radio" name="preguntas[{iPreguntaId}][respuesta]" value="{iOpcionId}" {sChecked} />
+            <label for="opcion_{iOpcionId}">
+                <span class="fowe_bo">{sDescripcion}</span>
+            </label>
+        </div>
+        <!--EndOpcionEditar-->
+    </fieldset>
+    <input type="hidden" name="preguntas[{iPreguntaId}][id]" value="{iPreguntaId}" />
+</div>
+<!--EndPreguntaMCEditar-->
+
+<!--BeginPreguntaAbierta-->
+<div class="pa pale3 mabo">
+    <span class="fowe_bo teta_up fte2">{sPreguntaDescripcion}</span>
+    <br>
+    <p class="mabo0 co3">{sPreguntaRespuestaAbierta}</p>
+</div>
+<!--EndPreguntaAbierta-->
+
+<!--BeginPreguntaMC-->
+<div class="pa pale3 mabo">
+    <span class="fowe_bo teta_up fte2">{sPreguntaDescripcion}: </span> <span class="co3">{sPreguntaOpcion}</span>
+</div>
+<!--EndPreguntaMC-->
+
+<!--BeginRealizarEntrevistaBlock-->
+{mensajeSinPreguntas}
+
+<!--BeginFormEntrevistaRespuestasBlock-->
+<br>
+<div class='ficha04 bora'>
+
+    <div class="titulo iveal">Editar {sDescripcionEntrevista}</div>
+
+    <form id="formEntrevistaRespuestas" name="formEntrevistaRespuestas" action="" method="post">
+        <div id='ajax_loading' class="ajax_wait30 di_no"></div>
+
+        <!--BeginPreguntaEntrevistaEditarBlock-->
+        {preguntaEntrevistaEditar}
+        <!--EndPreguntaEntrevistaEditarBlock-->
+
+        <div class="mabo2">
+            <label for="guardarRespuestas" class="button buttonLarge buttonConfirm mari3">
+                <button id="guardarRespuestas" type="submit" name="guardarRespuestas" class="btn01 guardarEntrevista">
+                    Guardar {sDescripcionEntrevista}
+                </button>
+            </label>
+        </div>
+        <input type="hidden" name="entrevistaIdForm" value="{iEntrevistaId}">
+        <input type="hidden" name="seguimientoIdForm" value="{iSeguimientoId}">
+
+        <div style="display:none;" id='msg_form_entrevista' class="msg_form iveal cl_le"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<!--EndFormEntrevistaRespuestasBlock-->
+<!--EndRealizarEntrevistaBlock-->
+
+
+<!--BeginAmpliarEntrevistaRespuestasBlock-->
+<h2 class="teta_up mabo3 tesh pabo2 bobo1 teal_ri">{subtituloSeccion}</h2>
+
+<!--BeginEntrevistaRespuestasBlock-->
+<div class="bobo1 grupo">
+    <h2 class="mabo"><span class="i bs notepad mari"></span> Realizada el {sFechaRealizado}</h2>
+</div>
+
+<div class="pa grupo bobo1 baco3 mabo2 cl_bo">
+    <!--BeginPreguntaBlock-->
+    {pregunta}
+    <!--EndPreguntaBlock-->
+</div>
+<!--EndEntrevistaRespuestasBlock-->
+
+<!--BeginFormEditarEntrevistaBlock-->
+<div class="baco5 bobo2 boto2 pa2 iveal ov_hi grupo po_re">
+    <li class="fl_le grupo">
+        <a href="{hrefFormEntrevistaRespuestas}?iEntrevistaId={iEntrevistaId}&iSeguimientoId={iSeguimientoId}" class="button" >
+            <span class="i bs notepadEdit"></span>
+            <span class="buttonText">Editar Respuestas</span>
+        </a>
+    </li>
+</div>
+<!--EndFormEditarEntrevistaBlock-->
+
+<!--EndAmpliarEntrevistaRespuestasBlock-->

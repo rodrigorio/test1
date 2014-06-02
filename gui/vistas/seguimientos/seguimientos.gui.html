@@ -465,14 +465,14 @@
     <div class="slideExpanded iveal"><span class="i mi ihover"></span>Informaci&oacute;n B&aacute;sica</div>
     <div id="contenidoInfoBasica" class="contenido pa2 grupo bobo1 baco3">
 
-        <div class="fl_le mari3">
+        <div class="fl_le mari3 mabo2">
             <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01 mabo3">
                 <i style="background-image:url('{scrFotoPerfilActual}')"></i>
             </a>
             <h2 class="mabo2">{sNombrePersona}</h2>
             <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
         </div>
-        <div class="fl_le lihe2 mari3">
+        <div class="fl_le lihe2 mari3 mabo2">
             <span class="fte2 txt_imp2">Fecha Creaci&oacute;n:</span> {sSeguimientoFechaCreacion}<br>
             <span class="fte2 txt_imp2">Ultima Modificaci&oacute;n:</span> {sUltimaModificacion}<br>
             <span class="fte2 txt_imp2">Duraci&oacute;n Estimada:</span> {sDuracionEstimada}<br>
@@ -489,7 +489,7 @@
         <div class="fl_le lihe2 mari3 mabo2 pa2 baco1 bora bo2 mawi2">
             <h3 class="mabo2 bobo1">Edici&oacute;n Espor&aacute;dica</h3>
             <!--BeginUnidadEsporadicaButton-->
-            <a rel="{iUnidadEsporadicaId}_{iSeguimientoId}" class="button mabo ampliarUnidadEsporadica mabo2" title="{sUnidadEsporadicaNombre}" href="javascript:;">
+            <a rel="{iUnidadEsporadicaId}_{iSeguimientoId}" class="button ampliarUnidadEsporadica mabo2" title="{sUnidadEsporadicaNombre}" href="javascript:;">
                 <span class="i mi relationshipData mari"></span>
                 <span class="buttonText">{sUnidadEsporadicaNombre}</span>
             </a>
@@ -501,9 +501,14 @@
         <div class="fl_le lihe2 mari3 mabo2 pa2 baco1 bora bo2 mawi2">
             <h3 class="mabo2 bobo1">Entrevistas</h3>
             <!--BeginEntrevistaButton-->
-            <a rel="{iEntrevistaId}_{iSeguimientoId}" class="button mabo ampliarEntrevista mabo2" title="{sEntrevistaDescripcion}" href="javascript:;">
+            <a rel="{iEntrevistaId}_{iSeguimientoId}" class="button {ampliarEntrevistaClass} mabo3 po_re" title="{sEntrevistaDescripcion}" href="{hrefFormEntrevistaRespuestas}?iEntrevistaId={iEntrevistaId}&iSeguimientoId={iSeguimientoId}">
                 <span class="i mi relationshipData mari"></span>
                 <span class="buttonText">{sEntrevistaDescripcion}</span>
+                <!--BeginSinRealizarBlock-->
+                <div class="thumbBottom teal_le iveal">
+                    <span class="fost_it fte2 txt_correcto">Sin Realizar</span>
+                </div>
+                <!--EndSinRealizarBlock-->
             </a>
             <!--EndEntrevistaButton-->
         </div>

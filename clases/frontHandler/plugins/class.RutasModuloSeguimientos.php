@@ -444,6 +444,20 @@ class RutasModuloSeguimientos
                                         'action'     => 'ampliar'
                                 ));
         $router->addRoute('seguimientosEntrevistasAmpliar', $route);
+        $route = new RegexRoute('seguimientos/form-entrevista-respuestas',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'formEntrevistaRespuestas'
+                                ));
+        $router->addRoute('seguimientosEntrevistasFormEntrevistaRespuestas', $route);
+        $route = new RegexRoute('seguimientos/form-entrevista-guardar-respuestas',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'entrevistas',
+                                        'action'     => 'formEntrevistaGuardarRespuestas'
+                                ));
+        $router->addRoute('seguimientosEntrevistasFormEntrevistaGuardarRespuestas', $route);
 
         //preguntas
         $route = new RegexRoute('seguimientos/listar-preguntas',
@@ -459,7 +473,7 @@ class RutasModuloSeguimientos
                                         'controller' => 'preguntas',
                                         'action'     => 'formCrearPregunta'
                                 ));
-        $router->addRoute('seguimientosPreguntasFormCrearPreguna', $route);
+        $router->addRoute('seguimientosPreguntasFormCrearPregunta', $route);
         $route = new RegexRoute('seguimientos/form-editar-pregunta',
                                 array(
                                         'module' => 'seguimientos',
