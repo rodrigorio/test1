@@ -1,0 +1,129 @@
+/****************************************/
+/* RESETS */
+/****************************************/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, code,
+del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, dialog, figure, footer, header,
+hgroup, nav, section, input, textarea, select{margin:0; padding:0; border:0; font-weight:inherit; font-style:inherit; font-size:100%; font-family:inherit; vertical-align:baseline}
+
+ul, ol{list-style:none}
+
+/* Tables still need 'cellspacing="0"' in the markup. */
+table{border-collapse: separate; border-spacing:0}
+th, td{text-align: left; font-weight: normal}
+table, td, th{vertical-align: middle}
+div{display:block}
+
+/* Remove annoying border on linked images. */
+a img{border:none}
+
+/*saca bordes naranjas en chrome etc*/
+*:focus{outline:none}
+
+
+
+/****************************************/
+/* FIXES */
+/****************************************/
+
+/*clearfix*/
+#wrapper:after, .grupo:after{visibility:hidden; display:block; content:"."; clear:both; height:0}
+#wrapper, .grupo{display:block}
+
+/*resetea extra padding en buttons*/
+button:-moz-focus-inner{border:0; padding:0}
+
+
+
+/****************************************/
+/* GENERALES */
+/****************************************/
+
+body{width:100%; height:100%; font-family:Arial; font-size:14px; line-height:16px; direction:ltr;}
+body, th, td{color:#666}
+li{text-decoration:none}
+i{background-color:#EEE}
+p{margin-bottom:18px}
+
+h1{font-size:2.8em; line-height:36px}
+h2{font-size:1.7em}
+h3{font-weight:bold; text-transform:uppercase;}
+
+table td.small{width:50px}
+table td.medium{width:150px}
+table td.big{width:200px}
+
+/****************************************/
+/* MICROESTILOS */
+/****************************************/
+
+.pa{padding:5px} .pa2{padding:10px} .pa3{padding:20px}
+.pale{padding-left:5px} .pari{padding-right:5px} .pato{padding-top:5px} .pabo{padding-bottom:5px}
+.pale2{padding-left:10px !important} .pari2{padding-right:10px} .pato2{padding-top:10px} .pabo2{padding-bottom:10px}
+.pale3{padding-left:20px} .pari3{padding-right:20px} .pato3{padding-top:20px} .pabo3{padding-bottom:20px}
+.pa0{padding:0 !important} .pale0{padding-left:0 !important} .pari0{padding-right:0 !important} .pato0{padding-top:0 !important} .pabo0{padding-bottom:0 !important}
+.ma{margin:5px} .ma2{margin:10px} .ma3{margin:20px}
+.male{margin-left:5px} .mari{margin-right:5px} .mato{margin-top:5px} .mabo{margin-bottom:5px}
+.male2{margin-left:10px} .mari2{margin-right:10px} .mato2{margin-top:10px} .mabo2{margin-bottom:10px !important}
+.male3{margin-left:20px} .mari3{margin-right:20px} .mato3{margin-top:20px} .mabo3{margin-bottom:20px !important}
+.mabo4{margin-bottom:30px;}
+.ma0{margin:0 !important} .male0{margin-left:0 !important} .mari0{margin-right:0 !important} .mato0{margin-top:0 !important} .mabo0{margin-bottom:0 !important}
+
+.di_bl{display:block} .di_no{display:none !important} .di_in{display:inline} .di_inbl{display:inline-block !important}
+.cl_bo{clear:both} .cl_le{clear:left !important} .cl_ri{clear:right !important}
+.teal_le{text-align:left} .teal_ri{text-align:right} .teal_ce{text-align:center} .teal_ju{text-align:justify;}
+.tetr_ca{text-transform:capitalize}
+.lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
+.fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
+.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC} .boto2{border-top:1px dashed #CCC} .bori2{border-right:1px solid #CCC}
+.bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
+.fowe_bo{font-weight:bold}
+.teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
+.po_re{position:relative !important}
+.po_ab{position:absolute !important}
+.veal_mi{vertical-align:middle !important}
+.mawi0{max-width:100px} .mawi1{max-width:200px} .mawi2{max-width:300px} .mawi3{max-width:400px} .mawi4{max-width:500px}
+.miwi0{min-width:100px} .miwi1{min-width:200px} .miwi2{min-width:300px} .miwi3{min-width:400px} .miwi4{min-width:500px}
+.mihe0{min-height:100px} .mihe1{min-height:200px} .mihe2{min-height:300px} .mihe3{min-height:400px} .mihe4{min-height:500px}
+.mahe0{max-height:100px} .mahe1{max-height:200px} .mahe2{max-height:300px} .mahe3{max-height:400px} .mahe4{max-height:500px}
+.fost_it{font-style:italic;}
+.ov_au{overflow:auto} .ov_hi{overflow:hidden}
+.zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}
+.cu_mo{cursor:move !important} .cu_po{cursor:pointer}
+
+.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF} .baco5{background-color:#E9EAED}
+.ba_no, .ba_no:hover{background:none !important}
+
+.bora{-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
+.bora2{-moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;}
+.bora3{-moz-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; border-radius:0 0 5px 5px;}
+.bora4{-moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0;}
+.bora5{-moz-border-radius:5px 0 0 5px; -webkit-border-radius:5px 0 0 5px; border-radius:5px 0 0 5px;}
+.bora6{-moz-border-radius:0 5px 5px 0; -webkit-border-radius:0 5px 5px 0; border-radius:0 5px 5px 0;}
+
+.bosh{-moz-box-shadow:0 1px 2px #333; box-shadow:0 1px 2px #333; -webkit-box-shadow:0 1px 2px #333;}
+.bosh2{-moz-box-shadow:1px 2px 6px 0; box-shadow:1px 2px 6px 0; -webkit-box-shadow:1px 2px 6px 0 #333;}
+.bosh3{-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); box-shadow:0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow:0 0 8px rgba(82, 168, 236, 0.5);}
+.bosh4{-moz-box-shadow:0 1px 1px #555 inset; -webkit-box-shadow:0 1px 1px #555 inset; box-shadow:0 1px 1px #555 inset}
+
+.tesh{text-shadow:#333 1px 1px 1px}
+
+.wi100p{width:100% !important;} .wi300{width:300px !important;} .wi_au{width:auto !important} .wi200{width:200px !important;}
+
+.he400{height:400px !important; } .he500{height:500px !important; }
+.listty_no li{list-style-type:none !important}
+
+
+/****************************************/
+/* TEMPLATES */
+/****************************************/
+
+#frameExport #header, #frameExport #body, #frameExport #footer{width:700px; margin:0 auto;}
+#frameExport #header, #frameExport #body {border-bottom:1px solid #333; margin-bottom:20px;}
+#frameExport #header{padding-bottom:20px;}
+

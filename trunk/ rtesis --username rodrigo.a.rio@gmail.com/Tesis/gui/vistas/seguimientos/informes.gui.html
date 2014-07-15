@@ -1,0 +1,174 @@
+<!--BeginJsContent-->
+<script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
+<script type="text/javascript">
+    $LAB
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.tools.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
+   .script("{pathUrlBase}"+"gui/js/vistas.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientosGeneral.js")
+   .script("{pathUrlBase}"+"gui/vistas/seguimientos/informes.js");
+</script>
+<!--EndJsContent-->
+
+<!--BeginIconoHeaderBlock-->
+<div class="fl_le mari2">
+    <span class="i32 mi readMore32"></span>
+</div>
+<!--EndIconoHeaderBlock-->
+
+<!--BeginConfigurarInformesBlock-->
+<h2 class="teta_up tesh pabo2 bobo1">Edite los textos del encabezado y pie para los informes generados.</h2>
+<br clear="all">
+<div class='ficha04 bora'>
+    <div class="titulo iveal">Editar Cabecera</div>
+    <form id="formCabecera" name="formCabecera" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+
+        <div class="form_line msg_titulo">
+            <label for="titulo">
+                <span class="marca_obligatorio">&#8226;</span>
+                T&iacute;tulo
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <input type="text" name="titulo" id="titulo" title="" maxlength="150" value="{sTitulo}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line msg_subtitulo">
+            <label for="subtitulo">
+                Subt&iacute;tulo
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <input type="text" name="subtitulo" id="subtitulo" title="" maxlength="150" value="{sSubtitulo}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mabo2 teal_ri">
+            <label for="guardarCabecera" class="button buttonLarge buttonConfirm">
+                <button id="guardarCabecera" type="submit" name="guardarCabecera" class="btn01">
+                    Guardar Cabecera
+                </button>
+            </label>
+        </div>
+
+        <div style="display:none;" id='msg_form_cabecera' class="msg_form iveal cl_le"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+<br clear="all">
+<div class='ficha04 bora cl_bo mabo3'>
+    <div class="titulo iveal">Editar Pie</div>
+    <form id="formPie" name="formPie" action="" method="post">
+        <div class="ajax_wait30 di_no"></div>
+
+        <div class="form_line msg_pie">
+            <label for="pie">
+                Texto Pie
+            </label>
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="pie" name="pie" class="maxlength" title="">{sPie}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="mabo2 teal_ri">
+            <label for="guardarPie" class="button buttonLarge buttonConfirm">
+                <button id="guardarPie" type="submit" name="guardarPie" class="btn01">
+                    Guardar Pie
+                </button>
+            </label>
+        </div>
+
+        <div style="display:none;" id='msg_form_pie' class="msg_form iveal cl_le"><span class="bs i"></span> <span class="msg"></span></div>
+    </form>
+</div>
+
+<h2 class="teta_up tesh pabo2 bobo1 mabo3">Vista Preliminar</h2>
+<div id="vistaPreliminar">
+  <div id='ajaxLoadPreliminar' class="ajax_wait30 di_no"></div>
+  <div id='ajaxContPreliminar'>
+    {vistaPreliminar}
+  </div>
+</div>
+
+<!--EndConfigurarInformesBlock-->
+
+<!--BeginVistaPreliminarBlock-->
+<div id="preliminarCabecera" class="grupo">
+    <div class="izq">
+        <span class="logo">Sequitur</span><br>
+        <span class="web">www.sequitur.com</span>
+    </div>
+    <div class="center">
+        <span>{sTituloPreliminar}</span>
+    </div>
+    <div class="der">
+        <span>20/21/2014</span>
+    </div>
+    <div class="sub">
+        <span>{sSubtituloPreliminar}</span>
+    </div>
+</div>
+<div id="preliminarCuerpo">
+    <div>Cuerpo Informe</div>
+</div>
+<div id="preliminarPie">
+    <div class="center">
+        {sPiePreliminar}
+    </div>
+</div>
+<!--EndVistaPreliminarBlock-->
+
+<!--BeginConfeccionarInformeBlock-->
+<div class='ficha04 bora grupo'>
+    <div class="titulo iveal"><span class="i32 mi readMore32"></span></div>
+    <form id="formConfeccionarInforme" name="formConfeccionarInforme" action="seguimientos/informes/generar" method="post">
+        <h2 class="mabo3 bobo1 pabo2 fost_it">Seleccione los elementos para confeccionar el informe</h2>
+
+
+
+
+        <div class="form_line msg_test">
+            <label for="test">
+                test
+            </label>
+            <br>
+            <input class="large" type="text" name="test" id="test" title="test" maxlength="100" value="" />
+        </div>
+
+        <h2 class="mabo3 mato3 bobo1 pabo2 fost_it">Adjunte opcionalmente una nota para concluir</h2>
+
+        <div class="form_line msg_test2">
+            <div class="fwrap mabo2">
+                <div class="inner_fwrap">
+                    <textarea rows="0" cols="0" id="pie" name="test2" class="maxlength" title=""></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="fl_le mabo2">
+            <label for="generarInforme" class="button buttonConfirm buttonXLarge buttonSpecial">
+                <button id="generarInforme" type="submit" name="generarInforme" class="btn01">
+                    Generar Informe
+                </button>
+            </label>
+            <input type="hidden" value="{iSeguimientoId}" name="iSeguimientoIdForm" id="iSeguimientoIdForm" />
+        </div>
+    </form>
+</div>
+<!--EndConfeccionarInformeBlock-->
+
+<!--BeginInformeSeguimientoBodyContentBlock-->
+
+<!--EndInformeSeguimientoBodyContentBlock-->
