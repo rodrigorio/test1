@@ -942,6 +942,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
         $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
         $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
+        $this->getTemplate()->set_var("hrefConfeccionarInforme", $this->getUrlFromRoute("seguimientosInformesConfeccionar", true)."?id=".$oSeguimiento->getId());
 
         $this->getTemplate()->set_var("sFrecuenciaEncuentros", $oSeguimiento->getFrecuenciaEncuentros());
         $this->getTemplate()->set_var("sDiaHorarioEncuentros", $oSeguimiento->getDiaHorario());
@@ -1056,6 +1057,7 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
         }
         $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada",$pathFotoServidorBigSize);
         $this->getTemplate()->set_var("scrFotoPerfilActual",$pathFotoServidorMediumSize);
+        $this->getTemplate()->set_var("hrefConfeccionarInforme", $this->getUrlFromRoute("seguimientosInformesConfeccionar", true)."?id=".$oSeguimiento->getId());
 
         $this->getTemplate()->set_var("sFrecuenciaEncuentros", $oSeguimiento->getFrecuenciaEncuentros());
         $this->getTemplate()->set_var("sDiaHorarioEncuentros", $oSeguimiento->getDiaHorario());

@@ -281,4 +281,10 @@ class PersistenceFactory {
             return(EvolucionMySQLIntermediary::getInstance($conn));
         }
     }
+    public static function getInformeIntermediary(IMYSQL $conn)
+    {
+        if(($conn instanceof MySQL) || ($conn instanceof IMySQL)){
+            return(InformeMySQLIntermediary::getInstance($conn));
+        }
+    }
 }

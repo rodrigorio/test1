@@ -19,7 +19,7 @@ var validateFormSoftware = {
         activo:{required:true},
         publico:{required:true},
         activoComentarios:{required:true},
-        descripcion:{required:true} 
+        descripcion:{required:true}
     },
     messages:{
         titulo: mensajeValidacion("requerido"),
@@ -44,7 +44,7 @@ var optionsAjaxFormSoftware = {
             $('#msg_form_software').removeClass("correcto").removeClass("error");
             $('#msg_form_software .msg').html("");
             setWaitingStatus('formSoftware', true);
-            
+
         }else{
             return false;
         }
@@ -61,7 +61,7 @@ var optionsAjaxFormSoftware = {
             }
             $('#msg_form_software').addClass("error").fadeIn('slow');
         }else{
-            if(data.mensaje == undefined){            
+            if(data.mensaje == undefined){
                 $('#msg_form_software .msg').html(lang['exito procesar']);
             }else{
                 $('#msg_form_software .msg').html(data.mensaje);
@@ -108,7 +108,7 @@ var optionsAjaxFormFoto = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'comunidad/descargas/galeria-fotos/procesar?guardarFoto=1',
-    beforeSerialize:function(){        
+    beforeSerialize:function(){
         if($("#formFoto").valid() == true){
             $('#msg_form_foto').hide();
             $('#msg_form_foto').removeClass("correcto").removeClass("error");
@@ -133,7 +133,7 @@ var optionsAjaxFormFoto = {
             //si guardo bien directamente cierro el dialog
             if($("#dialog").length != 0){
                 $("#dialog").hide("slow").remove();
-            }            
+            }
         }
     }
 };
@@ -197,7 +197,7 @@ var optionsAjaxFormArchivo = {
 };
 
 function bindEventsComentarForm(iSoftwareId){
-    
+
     var validateFormComentar = {
         errorElement: "div",
         validClass: "correcto",
@@ -264,7 +264,7 @@ function bindEventsComentarForm(iSoftwareId){
             }
         }
     };
-    
+
     $("#formComentar").validate(validateFormComentar);
     $("#formComentar").ajaxForm(optionsAjaxFormComentar);
 }
@@ -368,7 +368,7 @@ function bindEventsSoftwareForm(){
             $('#enlace').val('');
         }else{
             $('#enlace').addClass('error');
-        }        
+        }
     });
 }
 
@@ -400,7 +400,7 @@ function cambiarEstadoSoftware(iSoftwareId, valor){
     });
 }
 
-function editarSoftware(iSoftwareId){    
+function editarSoftware(iSoftwareId){
     var dialog = setWaitingStatusDialog(550, "Modificar Aplicación");
     dialog.load(
         "comunidad/descargas/form-modificar-aplicacion?iSoftwareId="+iSoftwareId,
@@ -434,7 +434,7 @@ function editarArchivo(iArchivoId){
 }
 
 function masMisAplicaciones(){
-    
+
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
 
@@ -457,7 +457,7 @@ function masMisAplicaciones(){
 }
 
 function masAplicaciones(){
-    
+
     var filtroTitulo = $('#filtroTitulo').val();
     var filtroCategoria = $('#filtroCategoria').val();
 
@@ -475,7 +475,7 @@ function masAplicaciones(){
         success:function(data){
             setWaitingStatus('listadoSoftware', false);
             $("#listadoSoftwareResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     });
 }
@@ -565,9 +565,9 @@ function uploaderFotoGaleria(iSoftwareId){
                 }else{
                     $('#msg_form_fotoGaleria .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_fotoGaleria').addClass("correcto").fadeIn('slow');
-                    
+
                     $('#Thumbnails').append(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto();
+                    $("a[rel^='prettyphoto']").prettyphoto();
                     if($('#msgNoRecord').length){$('#msgNoRecord').hide();}
                 }
                 return;
@@ -618,7 +618,7 @@ function uploaderArchivoGaleria(iSoftwareId){
                 }else{
                     $('#msg_form_archivoGaleria .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_archivoGaleria').addClass("correcto").fadeIn('slow');
-                    
+
                     $('#Rows').append(html);
                     if($('#msgNoRecord').length){$('#msgNoRecord').hide();}
                 }
@@ -684,7 +684,7 @@ function reportarSoftware(iSoftwareId)
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $(".reportarSoftware").live('click', function(){
         var iSoftwareId = $(this).attr("rel");
@@ -729,13 +729,13 @@ $(document).ready(function(){
         borrarSoftware(iSoftwareId);
     })
     ////////////////
-    
+
     $("#crearSoftware").click(function(){
         var dialog = setWaitingStatusDialog(550, "Crear Aplicación");
         dialog.load(
             "comunidad/descargas/form-nueva-aplicacion",
             {},
-            function(responseText, textStatus, XMLHttpRequest){                
+            function(responseText, textStatus, XMLHttpRequest){
                 bindEventsSoftwareForm();
             }
         );

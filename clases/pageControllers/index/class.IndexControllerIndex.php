@@ -2,11 +2,11 @@
 
 /**
  * Action Controller Index
- * 
+ *
  * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.
  */
 class IndexControllerIndex extends PageControllerAbstract
-{    
+{
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/index/frame01-01.gui.html", "frame");
         return $this;
@@ -20,7 +20,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $tituloVista = $nombreSitio.' | '.$parametros->obtener('METATAG_TITLE');
         $descriptionVista = $parametros->obtener('METATAG_DESCRIPTION');
         $keywordsVista = $parametros->obtener('METATAG_KEYWORDS');
-        
+
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", $tituloVista);
         $this->getTemplate()->set_var("sMetaDescription", $descriptionVista);
@@ -37,14 +37,14 @@ class IndexControllerIndex extends PageControllerAbstract
     static function setCabecera(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
-        
+
         //links menu ppal
         $template->set_var("hrefOpcionInicio", $request->getBaseUrl().'/');
         $template->set_var("hrefOpcionAcceder", $request->getBaseUrl().'/login');
         $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
         $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
         $template->set_var("hrefOpcionDescargas", $request->getBaseUrl().'/descargas');
-        $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
+        $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sequitur');
         $template->set_var("hrefOpcionGrupoTrabajo", $request->getBaseUrl().'/grupo-de-trabajo');
         $template->set_var("hrefOpcionContacto", $request->getBaseUrl().'/contacto');
     }
@@ -57,7 +57,7 @@ class IndexControllerIndex extends PageControllerAbstract
         $request = FrontController::getInstance()->getRequest();
 
         $template->load_file_section("gui/vistas/index/home.gui.html", "footerContent", "FooterContent");
-        
+
         //redes sociales
         $template->set_var("hrefDelicious", '#');
         $template->set_var("hrefDigg", '#');
@@ -92,7 +92,7 @@ class IndexControllerIndex extends PageControllerAbstract
         }else{
             $template->set_var("UltimasPublicacionesBlock", "");
         }
-        
+
         //ultimas 5 instituciones
         $iRecordsTotal = 0;
         $aInstituciones = ComunidadController::getInstance()->buscarInstitucionesVisitantes($filtro = null, $iRecordsTotal, $sOrderBy = 'i.id', $sOrder = 'desc', $iMinLimit = 1, $iItemsForPage = 5);
@@ -119,14 +119,14 @@ class IndexControllerIndex extends PageControllerAbstract
         $template->set_var("hrefOpcionPublicaciones", $request->getBaseUrl().'/publicaciones');
         $template->set_var("hrefOpcionInstituciones", $request->getBaseUrl().'/instituciones');
         $template->set_var("hrefOpcionDescargas", $request->getBaseUrl().'/descargas');
-        $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sgpapd');
+        $template->set_var("hrefOpcionProyecto", $request->getBaseUrl().'/proyecto-sequitur');
     }
 
     public function index(){
         try{
             $this->setFrameTemplate()
                  ->setHeadTag();
-            
+
             $this->setCabecera($this->getTemplate());
             $this->setFooter($this->getTemplate());
 
@@ -142,20 +142,20 @@ class IndexControllerIndex extends PageControllerAbstract
             }
             //contenido home
             $this->getTemplate()->load_file_section("gui/vistas/index/home.gui.html", "centerPageContent", "HomeCenterPageBlock");
-            
+
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
          }catch(Exception $e){
             print_r($e);
         }
     }
-        
+
     /**
      * Muestra pagina de sitio en construccion
      */
     public function sitioEnConstruccion()
     {
         $this->getTemplate()->load_file("gui/templates/index/frame02-02.gui.html", "frame");
-        
+
         $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
         $this->getTemplate()->set_var("sTituloVista", "Sitio en construccion");
         $this->getTemplate()->set_var("sMetaDescription", "");
@@ -163,7 +163,7 @@ class IndexControllerIndex extends PageControllerAbstract
 
         $this->getTemplate()->set_var("tituloVista", "Sitio en construccion");
         $this->getTemplate()->set_var("subtituloVista", "Estamos trabajando, muy pronto estaremos en línea");
-            
+
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
@@ -196,7 +196,7 @@ class IndexControllerIndex extends PageControllerAbstract
     public function ajaxError()
     {
         $request = $this->getRequest();
-        
+
         //extraigo mensaje si es que existe y el tipo de ficha (la ficha solo se usa si hay que devolver html)
         switch(true){
             case $request->has('msgInfo'):
@@ -216,7 +216,7 @@ class IndexControllerIndex extends PageControllerAbstract
                 $ficha = "MsgInfoBlockI32";
                 break;
         }
-       
+
         if($request->has('callback')){
             //devuelvo error ajax en formato json
             $this->getJsonHelper()->initJsonAjaxResponse()
@@ -227,10 +227,10 @@ class IndexControllerIndex extends PageControllerAbstract
             //devuelvo error ajax en formato html
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "respuesta", $ficha);
             $this->getTemplate()->set_var("sMensaje", $mensaje);
-            
+
             //setea los headers para response ajax html y setea el body content
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('respuesta', false));
-        }       
+        }
     }
 
     /**
@@ -271,7 +271,7 @@ class IndexControllerIndex extends PageControllerAbstract
 
         $videoAmpliarHtml = $this->getTemplate()->pparse("videoAmpliarHtml");
         $this->getTemplate()->set_var("popUpContent", $videoAmpliarHtml);
-            
+
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
@@ -281,7 +281,7 @@ class IndexControllerIndex extends PageControllerAbstract
 
     	try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
+
             $iPaisId = $this->getRequest()->getPost("iPaisId");
 
             if(empty($iPaisId)){
@@ -308,10 +308,10 @@ class IndexControllerIndex extends PageControllerAbstract
     public function ciudadesByProvincia()
     {
          if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-         
+
     	 try{
             $this->getJsonHelper()->initJsonAjaxResponse();
-            
+
             $iProvinciaId = $this->getRequest()->getPost("iProvinciaId");
 
             if(empty($iProvinciaId)){
@@ -365,7 +365,7 @@ class IndexControllerIndex extends PageControllerAbstract
         }catch(Exception $e){
             $mensaje = "Ocurrio un error no se pudo cancelar la suscripción a notificaciones";
         }
-        
+
         $this->getTemplate()->load_file("gui/templates/index/frame02-01.gui.html", "frame");
 
         $front = FrontController::getInstance();

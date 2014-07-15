@@ -1,14 +1,14 @@
 <!--BeginJsContent-->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
-<script type="text/javascript">    
+<script type="text/javascript">
 $LAB
 .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
 .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
 .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
 .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
 .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-.script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+.script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 .script("{pathUrlBase}"+"gui/js/googleMaps.js")
 .script("{pathUrlBase}"+"gui/js/vistas.js")
 .script("{pathUrlBase}"+"gui/vistas/index/instituciones.js");
@@ -36,7 +36,7 @@ $LAB
                 </div>
             </div>
             <div class="fwrap">
-                <div class="inner_fwrap">                       
+                <div class="inner_fwrap">
                    <select name="filtroTipoInstitucion" id="filtroTipoInstitucion" >
                        <option value="">Tipo Instituci&oacute;n:</option>
                        <!--BeginListaTipoDeInstitucionesBlock-->
@@ -44,7 +44,7 @@ $LAB
                        <!--EndListaTipoDeInstitucionesBlock-->
                    </select>
                 </div>
-            </div>            
+            </div>
             <div class="fwrap">
                 <div class="inner_fwrap">
                     <select name="filtroPais" id="filtroPais">
@@ -53,7 +53,7 @@ $LAB
                         <option value="{iPaisId}">{sPaisNombre}</option>
                         <!--EndListaPaisesBlock-->
                     </select>
-                </div>                
+                </div>
             </div>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -148,17 +148,17 @@ $LAB
 
 <!--BeginFichaInstitucionBlock-->
 <div class="ficha03 ampliada grupo mabo3">
-    <div class="encabezado">               
+    <div class="encabezado">
         <div class="izq">
             <div class="titulo">{sNombre}</div>
             <div class="subtitulo">{sTipo} - {sUbicacion}</div>
         </div>
     </div>
-    
+
     <div class="contenido row">
         <p>{sDescripcion}</p>
     </div>
-    
+
     <div class="contenido">
 
         <!--BeginActividadesMesBlock-->
@@ -183,13 +183,13 @@ $LAB
         <!--BeginSitioWebBlock-->
         <span class="teta_up fowe_bo">Sitio Web: </span> <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a><br>
         <!--EndSitioWebBlock-->
-        
-        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>        
+
+        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>
     </div>
 
     <!--BeginMapaInstitucionBlock-->
     <div rel="{sLatitud}_{sLongitud}" id="mapaInstitucion" class="mapa01 mihe2 mabo2"></div>
-    <!--EndMapaInstitucionBlock-->    
+    <!--EndMapaInstitucionBlock-->
 
     <ul class="fl_ri mabo2 mato iveal cl_bo">
         <li><a href="{hrefImprimir}"><span class="i bs print mari"></span>Imprimir Instituci&oacute;n</a></li>

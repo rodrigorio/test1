@@ -1,7 +1,7 @@
 <!--BeginJsContent-->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="utilidades/js-scripts/LABjs-1.2.0/LAB.min.js"></script>
-<script type="text/javascript">    
+<script type="text/javascript">
 $LAB
 .script("{pathUrlBase}"+"utilidades/jquery/jquery-1.8.3.min.js").wait()
 .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery.bgiframe-2.1.2.js")
@@ -10,7 +10,7 @@ $LAB
 .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
 .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
 .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-.script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+.script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 .script("{pathUrlBase}"+"gui/js/googleMaps.js")
 .script("{pathUrlBase}"+"gui/js/vistas.js")
 .script("{pathUrlBase}"+"gui/vistas/comunidad/instituciones.js");
@@ -45,7 +45,7 @@ $LAB
             <div class="icono"><span class="i32 bs search32"></span></div>
             <span class="titulo">Buscar Instituciones</span><br>
             <span class="subtitulo">filtrar los resultados del listado</span>
-        </div>        
+        </div>
     </div>
     <div class="contenido">
         <form id="formFiltrarInstituciones" name="formFiltrarInstituciones" action="" method="post">
@@ -92,7 +92,7 @@ $LAB
                     <!--EndListaCiudadesBlock-->
                </select>
             </div>
-            
+
             <br clear="all" />
 
             <label for="BuscarInstituciones" class="button buttonConfirm mari">
@@ -153,7 +153,7 @@ $LAB
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
     <div id="listadoMisInstitucionesResult">
-        
+
         <!--BeginGrillaMisInstitucionesBlock-->
         <table class="table01 wi100p mabo2">
             <tr class="encabezado">
@@ -203,7 +203,7 @@ $LAB
 <div class="ficha03 ampliada grupo mabo3">
     <div class="encabezado">
 
-        <div class="der">            
+        <div class="der">
             <!--BeginSolicitarInstitucionBlock-->
             <div id="solicitarInstitucionCont" class="mabo">
                 <a rel="{iInstitucionId}" class="solicitarInstitucion" href="">Solicitar la administraci&oacute;n de esta instituci&oacute;n</a>
@@ -222,11 +222,11 @@ $LAB
             <div class="subtitulo">{sTipo} - {sUbicacion}</div>
         </div>
     </div>
-    
+
     <div class="contenido row">
         <p>{sDescripcion}</p>
     </div>
-    
+
     <div class="contenido">
         <span class="teta_up fowe_bo">Actividades del mes</span><br>
         <p>{sActividadesMes}</p>
@@ -244,13 +244,13 @@ $LAB
         <!--BeginSitioWebBlock-->
         <span class="teta_up fowe_bo">Sitio Web: </span> <a target="_blank" href="{sSitioWeb}">{sSitioWeb}</a><br>
         <!--EndSitioWebBlock-->
-        
-        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>        
+
+        <span class="teta_up fowe_bo">Direcci&oacute;n: </span> {sDireccion}<br>
     </div>
 
     <!--BeginMapaInstitucionBlock-->
     <div rel="{sLatitud}_{sLongitud}" id="mapaInstitucion" class="mapa01 mihe2 mabo2"></div>
-    <!--EndMapaInstitucionBlock-->    
+    <!--EndMapaInstitucionBlock-->
 
     <ul class="fl_ri mabo2 mato iveal cl_bo">
         <li><a href="{hrefImprimir}"><span class="i bs print mari"></span>Imprimir Instituci&oacute;n</a></li>
@@ -261,10 +261,10 @@ $LAB
     <div class="pabo bobo1 mabo2">
         <span class="mari2 fost_it">Integrantes de la comunidad asociados a la instituci&oacute;n</span>
     </div>
-    
+
     <!--BeginIntegranteBlock-->
     <div class="pa mari2 mabo2 baco4 fl_le grupo">
-        <a title="" href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+        <a title="" href="{hrefFotoPerfil}" rel="prettyphoto" class="th_fto_s thumb01 fl_le mari2 mabo">
             <i style="background-image:url('{scrAvatarAutor}')"></i>
         </a>
         <span class="txt_imp2 mari">{sNombreUsuario}</span>
@@ -288,7 +288,7 @@ $LAB
         <!--EndCvBlock-->
     </div>
     <!--EndIntegranteBlock-->
-    
+
     <!--BeginIntegranteNoRecords-->
     <div class="teal_ce fowe_bo">No hay integrantes de la comunidad asociados a esta instituci&oacute;n</div>
     <!--EndIntegranteNoRecords-->
@@ -298,12 +298,12 @@ $LAB
 <!--BeginFormularioBlock-->
 <div class='ficha04 bora grupo'>
     <div class="titulo iveal"><span class="i32 mc bank32"></span></div>
-    
+
     <form id="formInstitucion" name="formInstitucion" action="" method="post">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
 
         <h2 class="mabo3">{sTituloForm}</h2>
-        
+
         <div class="form_line msg_nombre">
             <label for="nombre">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -334,7 +334,7 @@ $LAB
                 <!--EndOptionSelectTipoInstitucion-->
             </select>
         </div>
-        
+
         <div class="form_line msg_cargo">
             <label for="cargo">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -344,7 +344,7 @@ $LAB
             <input class="large" type="text" name="cargo" id="cargo" title="Cargo que ocupa en la instituci&oacute;n" maxlength="50" value="{sCargo}" />
             <p>Describa el cargo que ud. ocupa en la instituci&oacute;n</p>
         </div>
-        
+
         <div class="form_line msg_personaJuridica">
             <label for="personeriaJuridica">
                 Personer&iacute;a Jur&iacute;dica
@@ -352,7 +352,7 @@ $LAB
             <br>
             <input class="large" type="text" name="personeriaJuridica" id="personeriaJuridica" title="Personer&iacute;a Jur&iacute;dica" maxlength="100" value="{sPersoneriaJuridica}" />
         </div>
-        
+
         <div class="form_line msg_direccion">
             <label for="direccion">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -409,7 +409,7 @@ $LAB
             <br>
             <input class="large" type="text" name="email" id="email" title="Email de la instituci&oacute;n" maxlength="50" value="{sEmail}" />
         </div>
-        
+
          <div class="form_line msg_telefono">
             <label for="telefono">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -442,7 +442,7 @@ $LAB
             <br>
             <textarea rows="0" cols="0" id="sedes" name="sedes" class="co maxlength textareaAutoGrow large" placeholder="Sedes instituci&oacute;n" title="Sedes instituci&oacute;n">{sSedes}</textarea>
         </div>
-        
+
         <div class="form_line msg_autoridades">
             <label for="autoridades">
                 Autoridades
@@ -458,13 +458,13 @@ $LAB
             <br>
             <textarea rows="0" cols="0" id="actividadesMes" name="actividadesMes" class="co maxlength textareaAutoGrow large" placeholder="Actividades del mes" title="Actividades del mes">{sActividadesMes}</textarea>
         </div>
-        
+
         <div class="form_line msg_activadesMes mabo2">
-            <label>Ubicaci&oacute;n</label>                        
+            <label>Ubicaci&oacute;n</label>
             <div id="mapaSeleccionarCoordenadas" class="mapa01 mihe2"></div>
             <p>Haga click en el mapa para modificar la ubicaci&oacute;n</p>
             <input type="hidden" name="latitud" id="latitud" value="{sLatitud}" >
-            <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >            
+            <input type="hidden" name="longitud" id="longitud" value="{sLongitud}" >
         </div>
 
         <!--BeginSubmitCrearInstitucionBlock-->

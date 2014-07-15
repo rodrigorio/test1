@@ -20,7 +20,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                                    'activo' => array('variableTemplate' => 'orderByActivo',
                                                    'orderBy' => 'f.activo',
                                                    'order' => 'desc'));
-    
+
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
         return $this;
@@ -63,7 +63,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "widgetsContent", "HeaderBlock");
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "mainContent", "ListadoSoftwareBlock");
-            
+
             //select filtro categoria
             $iRecordsTotal = 0;
             $aCategorias = ComunidadController::getInstance()->obtenerCategoria($filtro = array(), $iRecordsTotal, null, null, null, null);
@@ -91,10 +91,10 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                     $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                     $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
-                                        
+
                     $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
                     $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
-                    
+
                     if($oSoftware->isActivo()){
                         $this->getTemplate()->set_var("sSelectedSoftwareActivo", "selected='selected'");
                     }else{
@@ -112,7 +112,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                 }
 
                 $this->getTemplate()->set_var("NoRecordsSoftwareBlock", "");
-                
+
             }else{
                 $this->getTemplate()->set_var("SoftwareBlock", "");
                 $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "noRecords", "NoRecordsSoftwareBlock");
@@ -203,7 +203,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     }
 
     public function procesar()
-    {        
+    {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
@@ -232,7 +232,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->modificarSoftware();
             return;
         }
-        
+
         if($this->getRequest()->has('ampliarSoftware')){
             $this->ampliar();
             return;
@@ -242,7 +242,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->eliminarComentario();
             return;
         }
-        
+
         if($this->getRequest()->has('moderarSoftware')){
             $this->moderarSoftware();
             return;
@@ -269,7 +269,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
         if($this->getRequest()->has('formFoto')){
             $this->formFoto();
             return;
-        }        
+        }
         if($this->getRequest()->has('guardarFoto')){
             $this->guardarFoto();
             return;
@@ -281,7 +281,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     }
 
     private function moderarSoftware()
-    {        
+    {
         $iModeracionId = $this->getRequest()->getParam('iModeracionId');
         $sEstado = $this->getRequest()->getParam('estado');
         $sMensaje = $this->getRequest()->getParam('mensaje');
@@ -323,7 +323,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     /**
@@ -359,7 +359,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function ampliar()
@@ -392,7 +392,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $sActivoComentarios = ($oSoftware->isActivoComentarios())?"Si":"No";
 
             $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
-            $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));            
+            $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
             $this->getTemplate()->set_var("sAutor", $sNombreAutor);
             $this->getTemplate()->set_var("sCategoria", $sNombreCategoria);
             $this->getTemplate()->set_var("sActiva", $sActiva);
@@ -438,7 +438,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $aComentarios = $oSoftware->getComentarios();
 
             if(count($aComentarios)>0){
-                $this->getTemplate()->load_file_section("gui/componentes/backEnd/comentarios.gui.html", "comentarios", "ComentariosBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/backend/comentarios.gui.html", "comentarios", "ComentariosBlock");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
@@ -490,10 +490,10 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             //se puede llamar a este metodo porque sirve para cualquier clase que herede de FichaAbstract
             list($cantFotos, $cantVideos, $cantArchivos) = ComunidadController::getInstance()->obtenerCantidadMultimediaFicha($oSoftware->getId());
-           
+
             if($cantFotos > 0 || $cantArchivos > 0){
 
-                $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
 
                 //videos ya se que no voy a tener en software
                 $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
@@ -521,7 +521,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                 }else{
                     $this->getTemplate()->set_var("ThumbnailFotoEditBlock", "");
                 }
-            
+
                 if($cantArchivos > 0)
                 {
                     $aArchivos = $oSoftware->getArchivos();
@@ -583,7 +583,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
         }catch(Exception $e){
             throw new Exception($e->getMessage());
-        }                            
+        }
     }
 
     private function modificarSoftware()
@@ -746,7 +746,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     public function formArchivo()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
+        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
 
         $iArchivoId = $this->getRequest()->getParam('iArchivoId');
         if(empty($iArchivoId)){
@@ -823,8 +823,8 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     private function formFoto()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
-               
+        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
+
         $iFotoId = $this->getRequest()->getParam('iFotoId');
         if(empty($iFotoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
@@ -936,12 +936,12 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                     $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
 
                     $this->getTemplate()->set_var("iSoftwareId", $oSoftware->getId());
-                    $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());                    
+                    $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                     $this->getTemplate()->set_var("sTitulo", $oSoftware->getTitulo());
                     $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha());
-                    
+
                     $aModeracion = AdminController::getInstance()->obtenerHistorialModeracionesFicha($oSoftware->getId());
                     //al menos 1 porque es un listado de software con moderacion pendiente.
                     foreach($aModeracion as $oModeracion){
@@ -949,16 +949,16 @@ class SoftwareControllerAdmin extends PageControllerAbstract
                         $this->getTemplate()->set_var("sEstadoModeracion", $oModeracion->getEstado());
 
                         $sMensajeModeracion = $oModeracion->getMensaje(true);
-                        if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }                      
+                        if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }
                         $this->getTemplate()->set_var("sMensaje", $sMensajeModeracion);
                         $this->getTemplate()->set_var("iModeracionId", $oModeracion->getId());
-                        
+
                         $this->getTemplate()->parse("ModeracionHistorialSoftwareBlock", true);
                     }
 
                     $this->getTemplate()->set_var("sEstadoAprobarValue", "aprobado");
                     $this->getTemplate()->set_var("sEstadoRechazarValue", "rechazado");
-                    
+
                     $this->getTemplate()->parse("SoftwareModerarBlock", true);
                     $this->getTemplate()->set_var("ModeracionHistorialSoftwareBlock", "");
                 }
@@ -978,7 +978,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
-        }        
+        }
     }
 
     private function masModeraciones()
@@ -987,7 +987,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/software.gui.html", "ajaxGrillaModeracionesBlock", "GrillaModeracionesBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-            
+
             $iRecordsTotal = 0;
             $aSoftware = AdminController::getInstance()->buscarSoftwareModeracion($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
@@ -1044,7 +1044,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaModeracionesBlock', false));
         }catch(Exception $e){
             print_r($e);
-        }        
+        }
     }
 
     public function listarDenuncias()
@@ -1086,7 +1086,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("sCategoria", $oSoftware->getCategoria()->getNombre());
                     $this->getTemplate()->set_var("sFecha", $oSoftware->getFecha(true));
-                                                                                                                      
+
                     $aDenuncias = $oSoftware->getDenuncias();
 
                     $this->getTemplate()->set_var("iCantDenuncias", count($aDenuncias));
@@ -1170,7 +1170,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $oSoftware = ComunidadController::getInstance()->getSoftwareById($iSoftwareId);
 
             $oUsuario = $oSoftware->getUsuario();
-            
+
             //el usuario tiene activadas las notificaciones por mail?
             //lo tengo que levantar asi porque NO es el usuario que inicio sesion.
             $oParametroUsuario = AdminController::getInstance()->getParametroUsuarioByNombre('NOTIFICACIONES_MAIL', $oUsuario->getId());

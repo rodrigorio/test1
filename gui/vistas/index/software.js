@@ -1,5 +1,5 @@
 function masAplicaciones(){
-    
+
     var filtroTitulo = $('#filtroTitulo').val();
     var filtroCategoria = $('#filtroCategoria').val();
 
@@ -19,14 +19,14 @@ function masAplicaciones(){
         success:function(data){
             setWaitingStatus('listadoSoftware', false);
             $("#listadoSoftwareResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     });
 }
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#BuscarSoftware").live('click', function(){
         masAplicaciones();

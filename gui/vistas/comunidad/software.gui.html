@@ -10,7 +10,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/comunidad/software.js");
 </script>
@@ -84,7 +84,7 @@
 
 <br clear="left" />
 <div class="slide slide02 mabo2 grupo">
-    
+
     <!--BeginListadoCategoriasInitExpanded-->
     <div class="slideExpanded iveal"><span class="i mi ihover"></span>Categor&iacute;as en cat&aacute;logo</div>
     <div id="listadoCategorias" class="contenido pa2">
@@ -101,7 +101,7 @@
                 <i style="background-image:url('{urlFotoCategoria}')"></i>
             </a><br>
             <span class="txt_imp2 mari">{sNombreCategoria}</span>
-        </div>        
+        </div>
         <!--EndThumbCategoriaBlock-->
 
     </div>
@@ -111,7 +111,7 @@
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <div id="listadoSoftwareResult">
         <!--BeginFichasSoftwareBlock-->
-        
+
             <!--BeginSoftwareBlock-->
             <div class="ficha03 grupo mabo2">
                 <div class="encabezado">
@@ -139,11 +139,11 @@
                 </div>
                 <div class="contenido">
                     {thumbDestacado}
-                    
+
                     <div class="fowe_bo fost_it mabo2">Resumen</div>
                     <p class="mabo0">{sDescripcionBreve}</p>
                 </div>
-                
+
                 {comentarios}
             </div>
             <!--EndSoftwareBlock-->
@@ -151,7 +151,7 @@
             <!--BeginNoRecordsSoftwareBlock-->
             <div class="teal_ce fowe_bo">{sNoRecords}</div>
             <!--EndNoRecordsSoftwareBlock-->
-            
+
             {paginacion}
         <!--EndFichasSoftwareBlock-->
     </div>
@@ -163,7 +163,7 @@
     <div class="titulo iveal"><span class="i32 mi upload32"></span></div>
     <form id="formSoftware" name="formSoftware" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
-       
+
         <div class="form_line msg_titulo">
             <label for="titulo">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -176,7 +176,7 @@
             </div>
             <p>El T&iacute;tulo que llevar&aacute; el software en el cat&aacute;logo de la comunidad</p>
         </div>
-        
+
         <div class="form_line msg_categoria">
             <label for="categoria">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -188,9 +188,9 @@
                 <!--BeginOptionCategoriaBlock-->
                 <option value="{iCategoriaId}" {sSelectedCategoria}>{sCategoria}</option>
                 <!--EndOptionCategoriaBlock-->
-            </select>            
+            </select>
         </div>
-        
+
         <div class="form_line msg_descripcionBreve">
             <label for="descripcionBreve">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -203,14 +203,14 @@
             </div>
             <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
         </div>
-        
+
         <div class="form_line msg_activo">
             <label for="activo">
                 Visible?
             </label>
             <div class="cl_le"></div>
             <select class="small" name="activo" id="activo" title="Aplicaci&oacute;n Visible?">
-                <option value="">Seleccionar</option>                
+                <option value="">Seleccionar</option>
                 <option {sSelectedActivo} value="1">S&iacute;</option>
                 <option {sSelectedDesactivado} value="0">No</option>
             </select>
@@ -234,7 +234,7 @@
             </label>
             <div class="cl_le"></div>
             <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-                <option value="">Seleccionar</option>                
+                <option value="">Seleccionar</option>
                 <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
                 <option {sSelectedDesactivadoComentarios} value="0">No</option>
             </select>
@@ -248,7 +248,7 @@
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
                     <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Descripci&oacute;n completa Software">{sDescripcion}</textarea>
-                </div>                
+                </div>
             </div>
             <p>En lo posible redactar las caracter&iacute;sticas, prestaciones, requerimientos, etc.</p>
         </div>
@@ -268,7 +268,7 @@
             <a href="javascript:;" id="limpiarEnlaces" class="fl_ri fte2">limpiar enlaces</a>
         </div>
         <br clear="all" />
-        
+
         <!--BeginSubmitCrearSoftwareBlock-->
         <div class="fl_le iveal mabo2">
             <label for="crearSoftware" class="button buttonConfirm buttonLarge mari3">
@@ -291,7 +291,7 @@
         <!--EndSubmitModificarSoftwareBlock-->
 
         <div style="display:none;" id='msg_form_software' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-        
+
     </form>
 </div>
 <!--EndFormularioSoftwareBlock-->
@@ -342,7 +342,7 @@
                         <div class="fl_le lihe2">
                            Alcance Privacidad: <span class="fowe_bo">{sPublico}</span><br>
                            Activo Comentarios: <span class="fowe_bo">{sActivoComentarios}</span><br>
-                           Cantidad Fotos: <span class="fowe_bo">{iCantidadFotos}</span><br>                           
+                           Cantidad Fotos: <span class="fowe_bo">{iCantidadFotos}</span><br>
                            Cantidad Archivos: <span class="fowe_bo">{iCantidadArchivos}</span><br>
                            Rating Actual: {ratingActual}
                         </div>
@@ -354,10 +354,10 @@
             <!--BeginNoRecordsMisAplicacionesBlock-->
             <tr>
                 <td colspan="5">{sNoRecords}</td>
-            </tr>           
+            </tr>
             <!--EndNoRecordsMisAplicacionesBlock-->
         </table>
-        {paginacion}            
+        {paginacion}
         <!--EndGrillaMisAplicacionesBlock-->
     </div>
 </div>

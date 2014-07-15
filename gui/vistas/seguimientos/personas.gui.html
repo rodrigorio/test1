@@ -8,7 +8,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/seguimientos/personas.js");
@@ -28,7 +28,7 @@
         <form id="formPersona" name="formPersona" action="" method="post">
 
             <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-            
+
             <div class="form_line msg_nroDocumento msg_tipoDocumento">
                 <label for="nroDocumento">
                     <span class="marca_obligatorio">&#8226;</span>
@@ -306,15 +306,15 @@
 
         </form>
     </div>
-    
+
     <div class="tabContent pa2 grupo" id="tabFormFotoPerfilContent">
         <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        
+
         <div id="contFotoPerfilActual">
             <!--BeginFotoPerfilActualBlock-->
             <div id="fotoPerfilActual" class="mabo3">
                 <h2 class="mabo3">Foto Actual</h2>
-                <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
+                <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto" class="th_fto_m thumb01">
                     <i style="background-image:url('{scrFotoPerfilActual}')"></i>
                 </a>
             </div>
@@ -345,7 +345,7 @@
         </div>
 
         <input type="hidden" value="{iPersonaIdFoto}" name="personaIdFoto" id="personaIdFoto" />
-        
+
         <div style="display:none;" id='msg_form_fotoPerfil' class="msg_form iveal cl_le mato3"><span class="msg"></span></div>
     </div>
 </div>
@@ -362,7 +362,7 @@
         </div>
         <div class="izq">
             <div id="fotoPerfilActual">
-                <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01">
+                <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto" class="th_fto_m thumb01">
                     <i style="background-image:url('{scrFotoPerfilActual}')"></i>
                 </a>
             </div>
@@ -407,7 +407,7 @@
 
         <!--BeginIntegranteBlock-->
         <div class="pa male3 mabo2 baco4 grupo">
-            <a title="" href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+            <a title="" href="{hrefFotoPerfil}" rel="prettyphoto" class="th_fto_s thumb01 fl_le mari2 mabo">
                 <i style="background-image:url('{scrAvatarAutor}')"></i>
             </a>
             <span class="txt_imp2 mari">{sNombreUsuario}</span>

@@ -7,7 +7,7 @@
     .script("{pathUrlBase}"+"utilidades/jquery/ui/jquery-ui-1.10.3.custom.js")
     .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
     .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
-    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+    .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
     .script("{pathUrlBase}"+"gui/js/vistas.js")
     .script("{pathUrlBase}"+"gui/vistas/index/publicaciones.js");
 </script>
@@ -43,7 +43,7 @@
                     <input type="text" readonly="readonly" name="filtroFechaDesde" id="filtroFechaDesde" class="defVal" value="Fecha desde" title="Fecha desde" />
                 </div>
             </div>
-            
+
             <label for="BuscarPublicaciones" class="button buttonConfirm mabo">
                 <button id="BuscarPublicaciones" type="button" name="BuscarPublicaciones" class="btn01">
                     Buscar Publicaciones
@@ -64,7 +64,7 @@
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <div id="listadoPublicacionesResult">
         <!--BeginFichasPublicacionesBlock-->
-        
+
             <!--BeginPublicacionBlock-->
             <div class="ficha03 grupo mabo2">
                 <div class="encabezado">
@@ -84,17 +84,17 @@
                 </div>
                 <div class="contenido">
                     {thumbDestacado}
-                    
+
                     <div class="fowe_bo fost_it mabo2">Resumen</div>
                     <p class="mabo0">{sDescripcionBreve}</p>
-                </div>               
+                </div>
             </div>
             <!--EndPublicacionBlock-->
 
             <!--BeginNoRecordsPublicacionesBlock-->
             <div class="teal_ce fowe_bo">{sNoRecords}</div>
             <!--EndNoRecordsPublicacionesBlock-->
-            
+
             {paginacion}
         <!--EndFichasPublicacionesBlock-->
     </div>
@@ -142,7 +142,7 @@
     <div class="contenido mabo3">
         <p>{sDescripcion}</p>
     </div>
-    
+
     {galeriaAdjuntos}
 
     <ul class="fl_ri mabo2 mato iveal cl_bo">
@@ -190,7 +190,7 @@
             Acerca de un/a <span class="fost_it fowe_bo">{sItemType}</span>
         </div>
         <!--EndItemTypeBlock-->
-       
+
         <!--BeginItemEventSummaryBlock-->
         <div class="mabo2">
             Detalles evento: <span class="fost_it">{sItemEventSummary}</span><br>

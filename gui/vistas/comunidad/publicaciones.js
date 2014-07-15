@@ -44,7 +44,7 @@ var optionsAjaxFormPublicacion = {
             $('#msg_form_publicacion').removeClass("correcto").removeClass("error");
             $('#msg_form_publicacion .msg').html("");
             setWaitingStatus('formPublicacion', true);
-            
+
         }else{
             return false;
         }
@@ -61,7 +61,7 @@ var optionsAjaxFormPublicacion = {
             }
             $('#msg_form_publicacion').addClass("error").fadeIn('slow');
         }else{
-            if(data.mensaje == undefined){            
+            if(data.mensaje == undefined){
                 $('#msg_form_publicacion .msg').html(lang['exito procesar']);
             }else{
                 $('#msg_form_publicacion .msg').html(data.mensaje);
@@ -105,7 +105,7 @@ var optionsAjaxFormFoto = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'comunidad/publicaciones/galeria-fotos/procesar?guardarFoto=1',
-    beforeSerialize:function(){        
+    beforeSerialize:function(){
         if($("#formFoto").valid() == true){
             $('#msg_form_foto').hide();
             $('#msg_form_foto').removeClass("correcto").removeClass("error");
@@ -130,7 +130,7 @@ var optionsAjaxFormFoto = {
             //si guardo bien directamente cierro el dialog
             if($("#dialog").length != 0){
                 $("#dialog").hide("slow").remove();
-            }            
+            }
         }
     }
 };
@@ -193,7 +193,7 @@ var optionsAjaxFormAgregarVideo = {
             $('#msg_form_agregar_video').addClass("correcto").fadeIn('slow');
 
             $('#Thumbnails').append(data.html);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
             if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
         }
     }
@@ -404,7 +404,7 @@ var optionsAjaxFormReview = {
 };
 
 function bindEventsComentarForm(iPublicacionId, sTipoItemForm){
-    
+
     var validateFormComentar = {
         errorElement: "div",
         validClass: "correcto",
@@ -468,7 +468,7 @@ function bindEventsComentarForm(iPublicacionId, sTipoItemForm){
             }
         }
     };
-    
+
     $("#formComentar").validate(validateFormComentar);
     $("#formComentar").ajaxForm(optionsAjaxFormComentar);
 }
@@ -563,7 +563,7 @@ function bindEventsArchivoForm(){
     $("#formArchivo").ajaxForm(optionsAjaxFormArchivo);
 }
 
-function bindEventsAgregarVideoForm(){            
+function bindEventsAgregarVideoForm(){
     $("#formAgregarVideo").validate(validateFormAgregarVideo);
     $("#formAgregarVideo").ajaxForm(optionsAjaxFormAgregarVideo);
 }
@@ -690,7 +690,7 @@ function masMisPublicaciones(){
 }
 
 function masPublicaciones(){
-    
+
     var filtroTitulo = $('#filtroTitulo').val();
     var filtroApellidoAutor = $('#filtroApellidoAutor').val();
     var filtroFechaDesde = $('#filtroFechaDesde').val();
@@ -712,7 +712,7 @@ function masPublicaciones(){
         success:function(data){
             setWaitingStatus('listadoPublicaciones', false);
             $("#listadoPublicacionesResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     });
 }
@@ -804,9 +804,9 @@ function uploaderFotoGaleria(iPublicacionId, sTipoItemForm){
                 }else{
                     $('#msg_form_fotoGaleria .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_fotoGaleria').addClass("correcto").fadeIn('slow');
-                    
+
                     $('#Thumbnails').append(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto();
+                    $("a[rel^='prettyphoto']").prettyphoto();
                     if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
                 }
                 return;
@@ -858,7 +858,7 @@ function uploaderArchivoGaleria(iPublicacionId, sTipoItemForm){
                 }else{
                     $('#msg_form_archivoGaleria .msg').html(lang['exito procesar archivo']);
                     $('#msg_form_archivoGaleria').addClass("correcto").fadeIn('slow');
-                    
+
                     $('#Rows').append(html);
                     if($('#msgNoRecord').length){ $('#msgNoRecord').hide(); }
                 }
@@ -944,12 +944,12 @@ function reportarPublicacion(iPublicacionId, sTipoItemForm)
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
-    
+    $("a[rel^='prettyphoto']").prettyphoto();
+
     $(".reportarPublicacion").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var tipo = rel[0];
-        var iPublicacionId = rel[1];  
+        var iPublicacionId = rel[1];
         reportarPublicacion(iPublicacionId, tipo);
         return false;
     });
@@ -1000,13 +1000,13 @@ $(document).ready(function(){
         borrarPublicacion(iPublicacionId, tipo);
     })
     ////////////////
-    
+
     $("#crearPublicacion").click(function(){
         var dialog = setWaitingStatusDialog(550, "Crear Publicacion");
         dialog.load(
             "comunidad/publicaciones/form-nueva-publicacion",
             {},
-            function(responseText, textStatus, XMLHttpRequest){                
+            function(responseText, textStatus, XMLHttpRequest){
                 bindEventsPublicacionForm();
             }
         );
@@ -1047,8 +1047,8 @@ $(document).ready(function(){
     //Galeria de videos
     if($('#formAgregarVideo').length){
         bindEventsAgregarVideoForm();
-    } 
-    
+    }
+
     $(".editarVideo").live('click', function(){
         var iEmbedVideoId = $(this).attr("rel");
         editarVideo(iEmbedVideoId);

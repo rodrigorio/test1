@@ -342,6 +342,18 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .progress-bar .goal{background-color:#3AAA36 !important}
 .progress-bar-percentage span{display:inline-block; position:absolute; width:100%; left:0;}
 
+#vistaPreliminar{padding-top:20px; position:relative; padding:10px; background-color:#EEE; border:1px dashed #CCC;}
+#preliminarCabecera, #preliminarCuerpo{border-bottom:1px solid #CCC;}
+#preliminarCabecera .izq{float:left; text-align:left; width:200px;}
+#preliminarCabecera .izq .logo{font-weight:bold; color:#AAA; font-size:20px;}
+#preliminarCabecera .izq .web{font-size:14px; color:#AAA; line-height:25px}
+#preliminarCabecera .center{font-weight:bold; float:left; text-align:center; width:560px; padding-top:10px; font-size:24px; color:#666;}
+#preliminarCabecera .der{float:right; text-align:right; width:200px; font-size:14px; color:#AAA; font-style:italic;}
+#preliminarCabecera .sub{text-align:center; clear:both; padding-top:10px; padding-bottom:30px; color:#666; font-size:18px;}
+#preliminarCuerpo{height:300px; padding:20px; margin-bottom:20px; position:relative;}
+#preliminarCuerpo div{position:absolute; top:160px; left:300px; font-size:50px; color:#CCC; -webkit-transform:rotate(-45deg); -moz-transform:rotate(-45deg); -ms-transform:rotate(-45deg); -o-transform:rotate(-45deg); filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=5);}
+#preliminarPie .center{text-align:center; padding-bottom:10px; color:#666; font-size:14px;}
+
 
 
 /****************************************/
@@ -452,7 +464,7 @@ input.error{max-width:none !important; font-weight:normal !important; color:whit
 .ficha03.ampliada{padding:10px 10px 0 10px; border:1px solid #CCC; border-top:1px solid #999; -moz-border-radius:5px 5px 0 0; -webkit-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0}
 
 /* tiene que estar wrappeada con un <div class="grupo"></div> para que respete margin-top en ie7 */
-.ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:35px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
+.ficha04{margin-top:20px; font-size:1em; font-family:Arial; padding:40px 10px 10px; border:1px solid #CCC; position:relative; background-color:#EEEFFF; background-image:-moz-linear-gradient(top, #FFF, #EEEFFF); background-image:-webkit-gradient(linear, left top,left bottom, from(#FFF), to(#EEEFFF)); background-image:linear-gradient(top, #FFF, #EEEFFF)}
 .ficha04 .titulo{padding:6px 8px; background-color:#80A3C9; border:1px solid #666; position:absolute; top:-20px; text-transform:capitalize; font-size:1.7em; color:#FFFFFF;}
 
 /* esto lo tengo que hacer todo con important porq la ficha05 es de carteles, etc. y puede estar dentro de OTRA ficha */

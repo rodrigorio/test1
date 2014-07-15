@@ -9,13 +9,13 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
 
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/selectivizr.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/js/backend/script.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/parametros.js");
 </script>
 <!--EndJsContent-->
@@ -95,7 +95,7 @@
             </tr>
         <!--EndParametroBlock-->
         <!--BeginNoRecordsParametrosBlock-->
-            <tr>                
+            <tr>
                 <td></td>
                 <td></td>
                 <td>{sNoRecords}</td>
@@ -144,7 +144,7 @@
                 <td class="pa2">
                     {sValor}
                     <!--BeginEditAsociacionBlock-->
-                    <div class="cl_bo pato"></div>                    
+                    <div class="cl_bo pato"></div>
                     <span title="Modificar Valor Par&aacute;metro" rel="{tipoAsociacion}_{iParametroId}_{iGrupoId}" class="fl_ri mari i bs edit ihover modificarValorParametro"></span>
                     <!--EndEditAsociacionBlock-->
                 </td>
@@ -186,7 +186,7 @@
                 <td class="pa2">{sDescripcion}</td>
                 <td>{sTipo}</td>
                 <td class="pa2">
-                    {sValor}                    
+                    {sValor}
                 </td>
                 <td>
                     <span title="Eliminar asociaci&oacute;n del par&aacute;metro con los usuarios del sistema" rel="{iParametroId}" class="i bs delete ihover eliminarParametroUsuarios"></span>
@@ -208,14 +208,14 @@
 <!--EndListadoParametrosAsociadosUsuarioBlock-->
 
 <!--BeginFormularioParametroBlock-->
-<article class="full-block clearfix">    
+<article class="full-block clearfix">
     <header>
         <h2>{sTituloForm} Par&aacute;metro Din&aacute;mico</h2>
     </header>
 
     <form id="formParametro" name="formParametro" action="" method="post">
         <div class="ajax_wait30 di_no"></div>
-        
+
         <dt>
             <label for="namespace">Nombre (Key)</label>
         </dt>
@@ -227,7 +227,7 @@
         </dt>
         <dd>
             <select name="tipo" id="tipo">
-                <option value="">Tipo:</option>                
+                <option value="">Tipo:</option>
                 <option {sSelectedTipoBoolean} value="boolean">Booleano</option>
                 <option {sSelectedTipoNumeric} value="numeric">Num&eacute;rico</option>
                 <option {sSelectedTipoString} value="string">Cadena Caracteres</option>
@@ -248,7 +248,7 @@
         <!--BeginSubmitCrearParametroBlock-->
         <button id="crearParametro" name="crearParametro" type="submit">Crear Parametro</button>
         <!--EndSubmitCrearParametroBlock-->
-        
+
         <!--BeginSubmitModificarParametroBlock-->
         <button id="modificarParametro" name="modificarParametro" type="submit">Modificar Parametro</button>
         <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
@@ -265,7 +265,7 @@
 
     <form id="formParametroSistema" name="formParametroSistema" action="" method="post">
         <div class="ajax_wait30 di_no"></div>
-        
+
         <!--BeginCrearAsociacionSistemaBlock-->
         <dt>
             <label for="parametro">Parametro</label>
@@ -311,7 +311,7 @@
         <button id="modificarAsociacionSistema" name="modificarAsociacionSistema" type="submit">Modificar Valor Parametro</button>
         <input type="hidden" value="{iParametroId}" name="iParametroIdForm" id="iParametroIdForm" />
         <!--EndSubmitModificarAsociacionSistemaBlock-->
-        
+
     </form>
 </article>
 <!--EndFormularioParametroSistemaBlock-->

@@ -1,4 +1,4 @@
-function cerrarCuentaUsuario(iUsuarioId){   
+function cerrarCuentaUsuario(iUsuarioId){
     if(confirm("Se borrara el integrante del sistema de manera permanente, desea continuar?")){
         $.ajax({
             type:"post",
@@ -59,7 +59,7 @@ function cambiarEstadoUsuario(iUsuarioId, valor){
 }
 
 //para cambiar el tipo de perfil de un usuario de la comunidad
-function cambiarPerfilUsuario(iUsuarioId, valor){    
+function cambiarPerfilUsuario(iUsuarioId, valor){
     $.ajax({
         type: "POST",
         url: "admin/usuarios-cambiar-perfil",
@@ -85,11 +85,11 @@ function borrarFotoPerfil(iUsuarioId){
             data:{
                 iUsuarioId:iUsuarioId,
                 borrarFotoPerfil:"1"
-            },            
+            },
             success:function(data){
-                if(data.success != undefined && data.success == 1){                    
+                if(data.success != undefined && data.success == 1){
                     $("#fotoPerfilActualCont").remove();
-                    $("#fotoPerfilActual_"+iUsuarioId).remove();                    
+                    $("#fotoPerfilActual_"+iUsuarioId).remove();
                 }
             }
         });
@@ -191,7 +191,7 @@ jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
                     }
                 }
             },
-            success:function(data){                
+            success:function(data){
                 if(data == '1'){result = false;}
             }
         });
@@ -232,7 +232,7 @@ var validateFormCrearUsuario = {
         sexo:{required:true},
         fechaNacimientoDia:{required:true, digits: true},
         fechaNacimientoMes:{required:true, digits: true},
-        fechaNacimientoAnio:{required:true, digits: true}        
+        fechaNacimientoAnio:{required:true, digits: true}
     },
     messages:{
         tipoDocumento:"Debe especificar tipo de documento",
@@ -273,7 +273,7 @@ var validateFormCrearUsuario = {
         fechaNacimientoAnio:{
                 required: mensajeValidacion("requerido", 'año'),
                 digits: mensajeValidacion("digitos")
-        }        
+        }
     }
 };
 
@@ -281,13 +281,13 @@ var optionsAjaxFormCrearUsuario = {
     dataType: 'jsonp',
     resetForm: true,
     url: 'admin/usuarios-crear',
-    
+
     beforeSerialize: function($form, options){
         if($("#formCrearUsuario").valid() == true){
 
             hashPassword("contrasenia", "contraseniaMD5");
             $("#contrasenia").val("");
-            
+
             $('#msg_form_crearUsuario').hide();
             $('#msg_form_crearUsuario').removeClass("success").removeClass("error2");
             $('#msg_form_crearUsuario .msg').html("");
@@ -308,7 +308,7 @@ var optionsAjaxFormCrearUsuario = {
                 $('#msg_form_crearUsuario .msg').html(data.mensaje);
             }
             $('#msg_form_crearUsuario').addClass("error2").fadeIn('slow');
-        }else{            
+        }else{
             if(data.mensaje == undefined){
                 $('#msg_form_crearUsuario .msg').html("El usuario fue agregado exitosamente al sistema");
             }else{
@@ -358,7 +358,7 @@ var validateFormInfoBasica = {
     messages:{
         tipoDocumento: "Debe especificar tipo de documento",
         nroDocumento:{
-                        required: "Debe ingresar su numero de documento",                        
+                        required: "Debe ingresar su numero de documento",
                         digits: mensajeValidacion("digitos"),
                         maxlength: mensajeValidacion("maxlength", '8'),
                         existeNumeroDocumento: "El numero de documento ya existe para una persona cargada en el sistema."
@@ -399,9 +399,9 @@ var optionsAjaxFormInfoBasica = {
     resetForm: false,
     url: "admin/usuarios-procesar",
     beforeSerialize: function($form, options){
-        
-        if($("#formInfoBasica").valid() == true){            
-            
+
+        if($("#formInfoBasica").valid() == true){
+
             $('#msg_form_usuario').hide();
             $('#msg_form_usuario').removeClass("success").removeClass("error2");
             $('#msg_form_usuario .msg').html("");
@@ -421,7 +421,7 @@ var optionsAjaxFormInfoBasica = {
     success:function(data){
         setWaitingStatus('formInfoBasica', false);
         $("#contraseniaNuevaMD5").val("");
-        
+
         if(data.success == undefined || data.success == 0){
             $('#msg_form_usuario .msg').html(lang['error procesar']);
             $('#msg_form_usuario').addClass("error2").fadeIn('slow');
@@ -446,14 +446,14 @@ function resetSelect(select, defaultOpt){
 
 function listaProvinciasByPais(idPais){
     resetSelect($('#ciudad'), 'Elija Ciudad:');
-    
+
     if(idPais == ''){
         resetSelect($('#provincia'), 'Elija Provincia:');
         return;
     }else{
         $('#provincia').removeClass("disabled");
     }
-    
+
     $.ajax({
         type: "POST",
         url: "provinciasByPais",
@@ -461,7 +461,7 @@ function listaProvinciasByPais(idPais){
         beforeSend: function(){
             setWaitingStatus('selectsUbicacion', true);
         },
-        success: function(lista){            
+        success: function(lista){
             $('#provincia').html("");
 
             if(lista.length != undefined && lista.length > 0){
@@ -576,7 +576,7 @@ var optionsAjaxFormInfoContacto = {
             $('#msg_form_usuario .msg').html(lang['exito procesar']);
             $('#msg_form_usuario').addClass("success").fadeIn('slow');
         }
-    }    
+    }
 }
 
 /////////////////////////
@@ -798,7 +798,7 @@ function uploaderFotoPerfil(iUsuarioId){
                 }else{
                     $('#msg_form_usuario .msg').html(lang['exito procesar archivo']);
                     $('#contFotoPerfilActual').html(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
+                    $("a[rel^='prettyphoto']").prettyphoto(); //asocio el evento al html nuevo
                     $('#msg_form_usuario').addClass("success").fadeIn('slow');
                 }
                 return;
@@ -812,7 +812,7 @@ function uploaderFotoPerfil(iUsuarioId){
 //////////////////////////////////
 
 function uploaderCurriculumVitae(iUsuarioId){
-    if($('#cvUpload').length){        
+    if($('#cvUpload').length){
         new Ajax_upload('#cvUpload',{
             action: 'admin/usuarios-procesar',
             data: {
@@ -841,7 +841,7 @@ function uploaderCurriculumVitae(iUsuarioId){
                 var dataInfo = response.split(';');
                 var resultado = dataInfo[0]; //0 = error, 1 = actualizacion satisfactoria
                 var html = dataInfo[1]; //si es satisfactorio el html devuelve el bloque de descarga
-                
+
                 //si rebota por accion desactivada o alguna de esas no tiene el formato de "0; mensaje mensaje mensaje"
                 if(resultado != "0" && resultado != "1"){
                     $('#msg_form_usuario .msg').html(lang['error permiso']);
@@ -866,14 +866,14 @@ function uploaderCurriculumVitae(iUsuarioId){
 /**
  * Para la paginacion de resultados de filtro con ajax en el listado principal.
  */
-function buscarUsuarios(){    
+function buscarUsuarios(){
     var filtroApellido = $('#filtroApellido').val();
     var filtroNumeroDocumento = $('#filtroNumeroDocumento').val();
     var filtroInstitucion = $('#filtroInstitucion').val();
-    var filtroCiudad = $('#filtroCiudad').val();        
+    var filtroCiudad = $('#filtroCiudad').val();
     var filtroEspecialidad = $('#filtroEspecialidad option:selected').val();
     var filtroPerfil = $('#filtroPerfil option:selected').val();
-    var filtroSuspendido = $('#filtroSuspendido option:selected').val();    
+    var filtroSuspendido = $('#filtroSuspendido option:selected').val();
     var sOrderBy = $('#sOrderBy').val();
     var sOrder = $('#sOrder').val();
 
@@ -898,7 +898,7 @@ function buscarUsuarios(){
         success:function(data){
             setWaitingStatus('listadoUsuariosResult', false);
             $("#listadoUsuariosResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     });
 }
@@ -955,7 +955,7 @@ function vistaImpresion(){
                        .set("filtroNumeroDocumento", filtroNumeroDocumento)
                        .set("filtroInstitucion", filtroInstitucion)
                        .set("filtroCiudad", filtroCiudad)
-                       .set("filtroEspecialidad", filtroEspecialidad)                       
+                       .set("filtroEspecialidad", filtroEspecialidad)
                        .set("filtroPerfil", filtroPerfil)
                        .set("filtroSuspendido", filtroSuspendido)
                        .set("sOrderBy", sOrderBy)
@@ -966,8 +966,8 @@ function vistaImpresion(){
 }
 
 $(document).ready(function(){
-    
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#exportarFiltroActual").live('click', function(){
         exportarUsuarios();
@@ -985,11 +985,11 @@ $(document).ready(function(){
     $(".orderLink").live('click', function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
-        buscarUsuarios();        
+        buscarUsuarios();
     });
- 
+
     //para limpiar el filtro del listado de usuarios.
-    $("#limpiarFiltro").live('click',function(){        
+    $("#limpiarFiltro").live('click',function(){
         $('#formFiltrarUsuarios').each(function(){
           this.reset();
         });
@@ -1016,13 +1016,13 @@ $(document).ready(function(){
         borrarFotoPerfil(iUsuarioId);
         return false; //porq es un <a>
     });
-    
+
     $("#eliminarCvActual").live('click', function(){
         var iUsuarioId = $(this).attr("rel");
         borrarCurriculumVitae(iUsuarioId);
         return false;
     });
-    
+
     $(".verFichaUsuario").live('click',function()
     {
         var dialog = setWaitingStatusDialog(650, $(this).html());
@@ -1031,7 +1031,7 @@ $(document).ready(function(){
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsAdmin();
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;
@@ -1050,11 +1050,11 @@ $(document).ready(function(){
     if($("#formInfoContacto").length){
         $("#formInfoContacto").validate(validateFormInfoContacto);
         $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
-        
+
         $("#pais").change(function(){ listaProvinciasByPais($("#pais option:selected").val());});
         $("#provincia").change(function(){listaCiudadesByProvincia($("#provincia option:selected").val());});
     }
-    
+
     if($("#formInfoProfesional").length){
         $("#formInfoProfesional").validate(validateFormInfoProfesional);
         $("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);

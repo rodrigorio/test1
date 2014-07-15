@@ -123,6 +123,7 @@ class PluginParametros extends PluginAbstract
                         'HOME_SITIO_CONTROLADOR' => 'index',
                         'HOME_SITIO_ACCION' => 'index',
                         'HOME_SITIO_PATH' => '/',
+                        'BIN_PATH' => '/usr/local/bin/wkhtmltox/bin/',
 
                         //ojo que los nombres corresponden con el nombre de los archivos y carpetas fisicos
                         'ACTIVO_MODULO_ADMIN' => '1', //este no deberia desactivarse nunca

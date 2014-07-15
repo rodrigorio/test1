@@ -9,16 +9,16 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/selectivizr.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
    .script("{pathUrlBase}"+"gui/js/googleMaps.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/js/backend/script.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/instituciones.js");
 </script>
 <!--EndJsContent-->
@@ -328,7 +328,7 @@
                         </td>
                     </tr>
                     <tr class="{iInstitucionId}">
-                        <td id="desplegable_{iInstitucionId}" class="pa0" colspan="5" style="display:none;">                          
+                        <td id="desplegable_{iInstitucionId}" class="pa0" colspan="5" style="display:none;">
                             <article class="nested clearrm mabo0 po_re">
                                 <div class="ajax_wait30 di_no"></div>
                                 <header>
@@ -357,7 +357,7 @@
                                         <!--EndDenunciaHistorialInstitucionBlock-->
                                     </table>
                                 </section>
-                                <section class="teal_le">                                    
+                                <section class="teal_le">
                                     <button class="blue limpiarDenunciasInstitucion" rel="{iInstitucionId}">Limpiar Denuncias</button>
                                     <button rel="{iInstitucionId}" class="red borrarInstitucionPorDenuncias">Eliminar Instituci&oacute;n</button>
                                 </section>
@@ -380,7 +380,7 @@
 
 <!--BeginFormularioInstitucionBlock-->
 <h1 class="teta_up mabo2">Modificar instituci&oacute;n</h1>
-<form id="formInstitucion" name="formInstitucion" action="" method="post">   
+<form id="formInstitucion" name="formInstitucion" action="" method="post">
     <dt>
         <label for="nombre">Nombre</label>
     </dt>
@@ -402,7 +402,7 @@
             <!--BeginOptionSelectTipoInstitucion-->
             <option value="{iTipoInstitucionValue}" {sSelectedTipoInstitucion}>{sTipoInstitucion}</option>
             <!--EndOptionSelectTipoInstitucion-->
-        </select>        
+        </select>
     </dd>
     <dt>
         <label for="cargo">Cargo instituci&oacute;n</label>
@@ -457,7 +457,7 @@
             </dd>
         </dl>
     </fieldset>
-    
+
     <dt>
         <label for="email">Email de contacto</label>
     </dt>
@@ -512,7 +512,7 @@
     </dd>
 
     <div style="display:none"  id='msg_form_institucion' class="notification mabo2"><p class="msg"></p></div>
-       
+
     <button id="modificarInstitucion" name="modificarInstitucion" type="submit">Modificar Instituci&oacute;n</button>
     <input type="hidden" value="{iInstitucionId}" name="institucionIdForm" id="institucionIdForm" />
 </form>
@@ -535,12 +535,12 @@
             <h3>Instituci&oacute;n</h3>
 
             <div class="teal_le mabo2">
-                
+
                 <div class="fowe_bo teta_up mabo">Integrante Administrador</div>
                 <!--BeginIntegranteAdministradorBlock-->
                 <div id="integranteAdministradorCont" class="baco2 pa mabo2 mabo2 ov_au po_re">
                     <span title="Destituir Integrante" rel="{iInstitucionId}" class="i bs delete ihover destituirIntegrante po_ab topRight"></span>
-                    <a href="{hrefFotoPerfilIntegranteAdministrador}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                    <a href="{hrefFotoPerfilIntegranteAdministrador}" rel="prettyphoto" class="fl_le mari2 mabo">
                         <img src="{scrAvatarIntegranteAdministrador}" />
                     </a>
                     <span class="txt_imp2 mari">{sNombreUsuarioAdministrador}</span>
@@ -560,7 +560,7 @@
                     <a rel="{iInstitucionId}" class="solicitarInstitucion" href="javascript:;">Quiero ser administrador de esta instituci&oacute;n</a>
                 </div>
                 <!--EndIntegranteAdministradorNoExisteBlock-->
-                
+
                 <p>
                     <span class="fowe_bo teta_up">nombre:</span> {sNombre}
                 </p>
@@ -615,7 +615,7 @@
 
             <!--BeginIntegranteBlock-->
             <div class="pa mari2 mabo2 baco2 fl_le">
-                <a href="{hrefFotoPerfilIntegrante}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                <a href="{hrefFotoPerfilIntegrante}" rel="prettyphoto" class="fl_le mari2 mabo">
                     <img src="{scrAvatarIntegrante}" />
                 </a>
                 <span class="txt_imp2 mari">{sNombreUsuario}</span>
@@ -632,7 +632,7 @@
 
             <!--BeginIntegranteNoRecords-->
             <div class="teal_ce fowe_bo">No hay integrantes de la comunidad asociados a esta instituci&oacute;n</div>
-            <!--EndIntegranteNoRecords-->            
+            <!--EndIntegranteNoRecords-->
         </div>
 
         <div class="tab" id="tab3">
@@ -640,7 +640,7 @@
 
             <!--BeginDiscapacitadoBlock-->
             <div class="pa mari2 mabo2 baco2 fl_le grupo">
-                <a href="{hrefFotoPerfilPersona}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                <a href="{hrefFotoPerfilPersona}" rel="prettyphoto" class="fl_le mari2 mabo">
                     <img src="{scrAvatarPersona}" />
                 </a>
                 <span class="txt_imp2 mari">{sNombrePersona}</span>

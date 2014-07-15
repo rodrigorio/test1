@@ -1,4 +1,4 @@
-//Existe un discapacitado con el numero de documento ingresado? 
+//Existe un discapacitado con el numero de documento ingresado?
 jQuery.validator.addMethod("existeNumeroDocumento", function(value, element){
     var result = true;
     if($("#nroDocumento").val() != ""){
@@ -74,7 +74,7 @@ function uploader(idPersona){
                     if(resultado == '1'){
                         $('#msg_form_fotoPerfil .msg').html(lang['exito procesar archivo']);
                         $('#contFotoPerfilActual').html(html);
-                        $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
+                        $("a[rel^='prettyphoto']").prettyphoto(); //asocio el evento al html nuevo
                         $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
                     }else{
                         $('#msg_form_fotoPerfil .msg').html(html);
@@ -215,7 +215,7 @@ function resetSelect(select, defaultOpt){
 }
 
 function bindEventsPersonaForm(){
-   
+
     //si entra al form de foto por 'modificar' entonces creo el boton uploader de entrada
     var personaIdFoto = $("#personaIdFoto").val();
     if(personaIdFoto != undefined && personaIdFoto != ""){
@@ -251,7 +251,7 @@ function bindEventsPersonaForm(){
             $("#institucionId").val("");
         }
     });
-    
+
     $("#institucion").autocomplete({
         source:function(request, response){
             $.ajax({
@@ -295,7 +295,7 @@ function bindEventsPersonaForm(){
             }
         }
     });
-    
+
     //pais provincia ciudad
     function listaProvinciasByPais(idPais){
         resetSelect($('#ciudad'), 'Elija Ciudad:');
@@ -369,7 +369,7 @@ function bindEventsPersonaForm(){
         $("#institucionId").val("");
         ocultarElemento($(this));
     });
-    
+
     $("#formPersona").validate(validateFormPersona);
     $("#formPersona").ajaxForm(optionsAjaxFormPersona);
 }
@@ -384,7 +384,7 @@ function bindEventsPersonaVerFicha()
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsPersonaForm();
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;

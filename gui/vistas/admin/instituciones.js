@@ -9,7 +9,7 @@ function resetSelect(select, defaultOpt){
 function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idContenedor)
 {
     resetSelect($('#'+idSelectCiudad), 'Elija Ciudad:');
-       
+
     if(idPais == ''){
         resetSelect($('#'+idSelectProvincia), 'Elija Provincia:');
         return;
@@ -47,7 +47,7 @@ function listaCiudadesByProvincia(idProvincia, idSelectCiudad, idContenedor){
     }else{
         $('#'+idSelectCiudad).removeClass("disabled");
     }
-    
+
     $.ajax({
         type: "POST",
         url: "ciudadesByProvincia",
@@ -121,7 +121,7 @@ var optionsAjaxFormInstitucion = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'admin/instituciones-procesar',
-    
+
     beforeSerialize:function($form, options){
         if($("#formInstitucion").valid() == true){
             $('#msg_form_institucion').hide();
@@ -197,8 +197,8 @@ function ampliarInstitucion(iInstitucionId)
         },
         function(responseText, textStatus, XMLHttpRequest){
             bindEventsAdmin();
-            $("a[rel^='prettyPhoto']").prettyPhoto();
-            
+            $("a[rel^='prettyphoto']").prettyphoto();
+
             if($("#mapaInstitucion").length){
                 mapaSimple("mapaInstitucion");
             }
@@ -298,7 +298,7 @@ function solicitarAdministrarContenido(iInstitucionId){
         success:function(data){
             if(data.success != undefined && data.success == 1){
                 $("#solicitudAdministradorCont").html("Su usario ha sido asignado a la institución");
-                
+
                 //si se ejecuto la accion desde el listado de solicitudes de institucion elimino la fila porque ya no sirve.
                 if($(".solicitud_"+iInstitucionId).length){
                     $(".solicitud_"+iInstitucionId).hide("slow", function(){
@@ -310,7 +310,7 @@ function solicitarAdministrarContenido(iInstitucionId){
     });
 }
 
-function aprobarSolicitud(iInstitucionId, iUsuarioId){    
+function aprobarSolicitud(iInstitucionId, iUsuarioId){
     $.ajax({
         type:"post",
         dataType:"jsonp",
@@ -462,7 +462,7 @@ function borrarInstitucionPorDenuncias(iInstitucionId){
 }
 
 $(document).ready(function(){
-    
+
     $(".borrarInstitucion").live('click', function(){
         var iInstitucionId = $(this).attr("rel");
         borrarInstitucion(iInstitucionId);
@@ -505,7 +505,7 @@ $(document).ready(function(){
         solicitarAdministrarContenido(iInstitucionId);
         return false;
     });
-    
+
     $(".aprobarSolicitud").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var iInstitucionId = rel[0];
@@ -521,7 +521,7 @@ $(document).ready(function(){
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsAdmin();
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;
@@ -642,5 +642,5 @@ $(document).ready(function(){
                 }
             });
         }
-    });    
-}); 
+    });
+});

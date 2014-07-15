@@ -21,7 +21,7 @@ function aprobarModeracion(personaId){
                     dialog = $('<div id="dialog" title="Aprobar Moderacion"></div>').appendTo('body');
                 }
                 dialog.html(data.html);
-                               
+
                 dialog.dialog({
                     position:['center', 'center'],
                     width:400,
@@ -135,7 +135,7 @@ function ampliarPersona(iPersonaId)
         },
         function(responseText, textStatus, XMLHttpRequest){
             bindEventsAdmin();
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     );
 }
@@ -151,13 +151,13 @@ function ampliarInstitucion(iInstitucionId)
         },
         function(responseText, textStatus, XMLHttpRequest){
             bindEventsAdmin();
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     );
 }
 
 $(document).ready(function(){
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $(".aprobarModeracion").click(function(){
         var personaId = $(this).attr("rel");
@@ -182,6 +182,6 @@ $(document).ready(function(){
 
     $(".ampliarPersona").live('click', function(){
         var iPersonaId = $(this).attr("rel");
-        ampliarPersona(iPersonaId);        
+        ampliarPersona(iPersonaId);
     });
 });

@@ -151,7 +151,7 @@ function setWaitingStatusDialog(width, titulo, buttons){
     buttons = buttons || undefined;
 
     var dialog = $("#dialog");
-    if($("#dialog").length){ 
+    if($("#dialog").length){
         dialog.remove();
     }
     dialog = $("<div id='dialog' title='"+titulo+"'><div class='fte3 pa2'>Cargando... <span class='ajax_wait30'></span></div></div>").appendTo('body');
@@ -167,7 +167,7 @@ function setWaitingStatusDialog(width, titulo, buttons){
         closeOnEscape:true,
         buttons:buttons
     });
-    return dialog;   
+    return dialog;
 }
 
 /**
@@ -178,7 +178,7 @@ function setWaitingStatus(contenedorId, show, ajaxLoadingSize)
 {
     //ajaxLoading tiene valor por defecto
     ajaxLoadingSize = ajaxLoadingSize || '30';
-    
+
     var contenedor = $("#" + contenedorId);
 
     var ajaxLoading
@@ -226,7 +226,7 @@ function setMsgResultado(contenedorId, show, tipoMsg, mensaje)
 {
     var contenedor = $("#" + contenedorId);
     var contenedorMensaje = $("#" + contenedorId + " .msg");
-    if(show){        
+    if(show){
         contenedor.addClass(tipoMsg);
         if(mensaje != null){
             contenedorMensaje.html(mensaje);
@@ -251,7 +251,7 @@ function setMsgResultado(contenedorId, show, tipoMsg, mensaje)
  */
 function verificarValorDefecto(elementId)
 {
-    var campo = $("#" + elementId);    
+    var campo = $("#" + elementId);
     //puede ser textarea o input
     if(campo.attr("title") == campo.attr("value") || campo.attr("title") == campo.html()){
         campo.attr("value", "");
@@ -285,7 +285,7 @@ function paginar(iPage ,toUrl, div, params){
         success: function(data){
             setWaitingStatus(div, false);
             $("#"+div).html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     });
  }
@@ -321,7 +321,7 @@ function paginar(iPage ,toUrl, div, params){
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 $(document).ready(function(){
-	
+
     /* para ocultar msgTop 10 segundos despues que se termina de cargar la pagina */
     setTimeout(function(){
         $("#msg_top").hide('drop', {direction: "up"}, 1000)
@@ -332,12 +332,12 @@ $(document).ready(function(){
             $(this).parent().fadeTo(350, 0, function () {$(this).slideUp(600);});
         }
     );
-    
+
     $("input.defVal").live("focus", function(){valueToggleFocus($(this));});
     $("input.defVal").live("blur", function(){valueToggleBlur($(this),false);});
 
     $("textarea.maxlength").maxlength();
-        
+
     $("textarea.defVal").live("focus", function(){
         var elemento = $(this);
         valueToggleFocus(elemento);
@@ -360,7 +360,7 @@ $(document).ready(function(){
        $(this).removeClass("slideCollapsed").addClass("slideExpanded");
        $(this).next().show();
     });
-    
+
     /* Comunidad/Seguimientos */
     $("#togleInnerCont").live("click", function(){
         var togleInnerCont = $("#togleInnerCont");
@@ -374,7 +374,7 @@ $(document).ready(function(){
             pageRightInnerMainCont.addClass("mari0");
             ocultarElemento(pageRightInnerCont);
             togleInnerCont.removeClass("collapse").addClass("expand");
-        }       
+        }
     });
 
     //para desplegables en general.
@@ -447,5 +447,5 @@ $(document).ready(function(){
         });
         $(this).__tabs(a, b, c, d, e, f);
     };
-    
+
 });

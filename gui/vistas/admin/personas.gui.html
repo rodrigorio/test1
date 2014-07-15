@@ -8,15 +8,15 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/selectivizr.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/js/backend/script.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/personas.js");
 </script>
 <!--EndJsContent-->
@@ -47,7 +47,7 @@
         <!--BeginPersonasBlock-->
             <tr class="{iPersonaId}" class="{odd}">
                 <td>
-                    <a href="{scrAvatarDiscapacitadoAmpliada}" rel="prettyPhoto">
+                    <a href="{scrAvatarDiscapacitadoAmpliada}" rel="prettyphoto">
                         <img src="{scrAvatarDiscapacitado}" />
                     </a>
                 </td>
@@ -155,7 +155,7 @@
                                 <section class="teal_le">
                                     <p class="{destacadoFotoPerfil}">
                                         <span class="fowe_bo teta_up">Foto de Perfil</span><br>
-                                        <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">
+                                        <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto">
                                             <img src="{scrFotoPerfilActual}" />
                                         </a>
                                     </p>
@@ -170,7 +170,7 @@
 
                                     <p class="{destacadoNombre}">
                                         <span class="fowe_bo teta_up">nombre:</span> {sNombreMod}
-                                    </p>                                    
+                                    </p>
                                     <p class="{destacadoDocumento}">
                                         <span class="fowe_bo teta_up">documento:</span> {sDocumentoMod}
                                     </p>
@@ -221,7 +221,7 @@
                                 <section class="teal_le">
                                     <p class="{destacadoFotoPerfil}">
                                         <span class="fowe_bo teta_up">Foto de Perfil</span><br>
-                                        <a href="{hrefFotoPerfilActualAmpliadaMod}" rel="prettyPhoto">
+                                        <a href="{hrefFotoPerfilActualAmpliadaMod}" rel="prettyphoto">
                                             <img src="{scrFotoPerfilActualMod}" />
                                         </a>
                                     </p>
@@ -259,7 +259,7 @@
                 <div class="image-frame left">
                     <img src="{scrFotoPerfilActual}" />
                     <ul class="image-actions">
-                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
+                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto">Ampliar</a></li>
                     </ul>
                 </div>
             </div>
@@ -286,16 +286,16 @@
             <p>
                 <span class="fowe_bo teta_up">domicilio:</span> {sDomicilio}
             </p>
-        </div>        
+        </div>
     </section>
 
     <header>
         <h2>Informaci&oacute;n Adicional</h2>
-    </header>    
+    </header>
     <section class="di_bl mabo2">
-        
+
         <div class="teal_le mabo3">
-            
+
             <p>
                 <span class="fowe_bo teta_up">nombre padre:</span> {sNombreApellidoPadre}
             </p>
@@ -334,7 +334,7 @@
         <div class="teal_le mabo3">
             <!--BeginIntegranteBlock-->
             <div class="pa mari2 mabo2 baco2 fl_le">
-                <a href="{hrefFotoPerfilIntegrante}" rel="prettyPhoto" class="fl_le mari2 mabo">
+                <a href="{hrefFotoPerfilIntegrante}" rel="prettyphoto" class="fl_le mari2 mabo">
                     <img src="{scrAvatarIntegrante}" />
                 </a>
                 <span class="txt_imp2 mari">{sNombreUsuario}</span>

@@ -463,4 +463,14 @@ class Factory
         $oEvolucion = new Evolucion($obj);
         return $oEvolucion;
     }
+
+    public static function &getInformeInstance(stdClass $obj){
+        $oInforme = new Informe($obj);
+        return $oInforme;
+    }
+
+    public static function &getInformeConfiguracionInstance(stdClass $obj){
+        $oInformeConfiguracion = new InformeConfiguracion($obj);
+        return $oInformeConfiguracion;
+    }
 }

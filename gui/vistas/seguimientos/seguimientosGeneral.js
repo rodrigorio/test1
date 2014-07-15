@@ -51,7 +51,7 @@ function checkSeguimientoEntradasOK(iSeguimientoId)
 }
 
 $(document).ready(function(){
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     //menu derecha
     if($("#pageRightInnerContNav").length){
@@ -79,7 +79,7 @@ $(document).ready(function(){
             function(responseText, textStatus, XMLHttpRequest){
                 setWaitingStatus('fichaPersonaMenu', false, "16");
                 bindEventsPersonaVerFicha(); //la funcion esta en personas.js
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;
