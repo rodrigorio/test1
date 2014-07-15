@@ -92,7 +92,7 @@ var validateFormInstitucion = {
         ciudad:{required:true},
         email:{required:true, email:true},
         telefono:{required:true},
-        sitioWeb:{url:true}        
+        sitioWeb:{url:true}
     },
     messages:{
         nombre: mensajeValidacion("requerido"),
@@ -116,7 +116,7 @@ var optionsAjaxFormInstitucion = {
     dataType: 'jsonp',
     resetForm: false,
     url:"comunidad/guardar-institucion",
-    
+
     beforeSerialize:function($form, options){
         if($("#formInstitucion").valid() == true){
             $('#msg_form_institucion').hide();
@@ -127,7 +127,7 @@ var optionsAjaxFormInstitucion = {
             verificarValorDefecto("sedes");
             verificarValorDefecto("autoridades");
             verificarValorDefecto("actividadesMes");
-            
+
             setWaitingStatus('formInstitucion', true);
         }else{
             return false;
@@ -286,7 +286,7 @@ function bindEventsFormSolicitarInstitucion()
 {
     $("#formSolicitarInstitucion").validate(validateFormSolicitarInstitucion);
     $("#formSolicitarInstitucion").ajaxForm(optionsAjaxFormSolicitarInstitucion);
-    
+
     $("textarea.maxlength").maxlength();
 }
 
@@ -294,7 +294,7 @@ function bindEventsFormDenunciarInstitucion()
 {
     $("#formDenunciar").validate(validateFormDenunciarInstitucion);
     $("#formDenunciar").ajaxForm(optionsAjaxFormDenunciarInstitucion);
-    
+
     $("textarea.maxlength").maxlength();
 }
 
@@ -402,7 +402,7 @@ function solicitarInstitucion(iInstitucionId)
         },
         success:function(data){
             dialog.html(data);
-            bindEventsFormSolicitarInstitucion();           
+            bindEventsFormSolicitarInstitucion();
         }
     });
 }
@@ -425,7 +425,7 @@ function reportarInstitucion(iInstitucionId)
 
 $(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     if($("#formInstitucion").length){
         $("#formInstitucion").validate(validateFormInstitucion);
@@ -482,7 +482,7 @@ $(function(){
         $('#sOrderBy').val($(this).attr('orderBy'));
         $('#sOrder').val($(this).attr('order'));
         masMisInstituciones();
-    });    
+    });
 });
 
 $(window).load(function(){

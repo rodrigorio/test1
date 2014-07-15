@@ -20,7 +20,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                                    'activo' => array('variableTemplate' => 'orderByActivo',
                                                    'orderBy' => 'f.activo',
                                                    'order' => 'desc'));
-    
+
     private function setFrameTemplate(){
         $this->getTemplate()->load_file("gui/templates/admin/frame01-02.gui.html", "frame");
         return $this;
@@ -80,7 +80,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $scrAvatarAutor = $this->getUploadHelper()->getDirectorioUploadFotos().$oUsuario->getNombreAvatar();
 
                     $sNombreUsuario = $oUsuario->getApellido().", ".$oUsuario->getNombre();
-                    
+
                     $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
                     $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
                     $this->getTemplate()->set_var("iUsuarioId", $oUsuario->getId());
@@ -94,7 +94,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
                     $this->getTemplate()->set_var("scrAvatarAutor", $scrAvatarAutor);
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
-                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());                    
+                    $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                     $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
 
                     $this->getTemplate()->parse("PublicacionBlock", true);
@@ -103,7 +103,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                 }
 
                 $this->getTemplate()->set_var("NoRecordsPublicacionesBlock", "");
-                
+
             }else{
                 $this->getTemplate()->set_var("PublicacionBlock", "");
                 $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "noRecords", "NoRecordsPublicacionesBlock");
@@ -144,7 +144,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             case "review":
                 $this->formModificarReview($iPublicacionId);
                 break;
-        }        
+        }
     }
 
     private function formModificarPublicacion($iPublicacionId)
@@ -181,7 +181,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         }else{
             $this->getTemplate()->set_var("sSelectedDesactivadoComentarios", "selected='selected'");
         }
-       
+
         $this->getTemplate()->set_var("sTitulo", $sTitulo);
         $this->getTemplate()->set_var("sDescripcionBreve", $sDescripcionBreve);
         $this->getTemplate()->set_var("sDescripcion", $sDescripcion);
@@ -302,7 +302,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
     }
 
     public function procesar()
-    {        
+    {
         if(!$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
@@ -336,7 +336,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->modificarReview();
             return;
         }
-        
+
         if($this->getRequest()->has('ampliarPublicacion')){
             $this->ampliar();
             return;
@@ -346,18 +346,18 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->eliminarComentario();
             return;
         }
-        
+
         if($this->getRequest()->has('moderarPublicacion')){
             $this->moderarPublicacion();
             return;
         }
-        
+
         if($this->getRequest()->has('toggleModeraciones')){
             $this->toggleModeraciones();
             return;
         }
 
-        //adjuntos en publicacion ampliada 
+        //adjuntos en publicacion ampliada
         if($this->getRequest()->has('eliminarArchivo')){
             $this->eliminarArchivo();
             return;
@@ -381,7 +381,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         if($this->getRequest()->has('formFoto')){
             $this->formFoto();
             return;
-        }        
+        }
         if($this->getRequest()->has('guardarFoto')){
             $this->guardarFoto();
             return;
@@ -397,7 +397,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
     }
 
     private function moderarPublicacion()
-    {        
+    {
         $iModeracionId = $this->getRequest()->getParam('iModeracionId');
         $sEstado = $this->getRequest()->getParam('estado');
         $sMensaje = $this->getRequest()->getParam('mensaje');
@@ -439,7 +439,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         $this->getTemplate()->set_var("sMensaje", $msg);
         $this->getJsonHelper()->setValor("html", $this->getTemplate()->pparse('html', false));
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     /**
@@ -475,7 +475,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function ampliar()
@@ -499,7 +499,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             case "review":
                 $this->ampliarReview($iPublicacionId);
                 break;
-        }          
+        }
     }
 
     private function ampliarPublicacion($iPublicacionId)
@@ -519,7 +519,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $sActiva = ($oPublicacion->isActivo())?"Si":"No";
             $sPrivacidad = ($oPublicacion->isPublico())?"El Mundo":"Comunidad";
             $sActivoComentarios = ($oPublicacion->isActivoComentarios())?"Si":"No";
-                        
+
             $this->getTemplate()->set_var("sTitulo", $oPublicacion->getTitulo());
             $this->getTemplate()->set_var("sFecha", $oPublicacion->getFecha());
             $this->getTemplate()->set_var("sAutor", $sNombreAutor);
@@ -533,12 +533,12 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->agregarComentariosAmpliarFicha($oPublicacion);
 
             $this->agregarAdjuntosAmpliarFicha($oPublicacion);
-            
+
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('frame', false));
 
         }catch(Exception $e){
             throw new Exception($e->getMessage());
-        }            
+        }
     }
 
     private function ampliarReview($iReviewId)
@@ -631,13 +631,13 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                 }
 
                 $this->getTemplate()->load_file_section("gui/componentes/valoracion.gui.html", "valoracion", $valoracionBloque);
-                $valoracion = $this->getTemplate()->pparse("valoracion");                
+                $valoracion = $this->getTemplate()->pparse("valoracion");
                 $this->getTemplate()->set_var("valoracion", $valoracion);
                 $this->getTemplate()->parse("RatingBlock");
             }else{
                 $this->getTemplate()->set_var("RatingBlock", "");
             }
-            
+
 
             if(null !== $oReview->getFuenteOriginal()){
                 $this->getTemplate()->set_var("hrefFuenteUriginal", $oReview->getFuenteOriginal());
@@ -655,7 +655,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
         }catch(Exception $e){
             throw new Exception($e->getMessage());
-        }                    
+        }
     }
 
     private function agregarAdjuntosAmpliarFicha($oFicha)
@@ -664,8 +664,8 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
 
         if($cantFotos > 0 || $cantVideos > 0 || $cantArchivos > 0){
 
-            $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
-                 
+            $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
+
             if($cantFotos > 0){
 
                 $aFotos = $oFicha->getFotos();
@@ -776,7 +776,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $aComentarios = $oFicha->getComentarios();
 
             if(count($aComentarios)>0){
-                $this->getTemplate()->load_file_section("gui/componentes/backEnd/comentarios.gui.html", "comentarios", "ComentariosBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/backend/comentarios.gui.html", "comentarios", "ComentariosBlock");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
@@ -871,7 +871,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->getJsonHelper()->setSuccess(false);
         }
 
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function masPublicaciones()
@@ -1020,7 +1020,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
     public function formArchivo()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
+        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
 
         $iArchivoId = $this->getRequest()->getParam('iArchivoId');
         if(empty($iArchivoId)){
@@ -1097,7 +1097,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
     public function formVideo()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioVideoBlock");
+        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioVideoBlock");
 
         $iEmbedVideoId = $this->getRequest()->getParam('iEmbedVideoId');
         if(empty($iEmbedVideoId)){
@@ -1175,8 +1175,8 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
     private function formFoto()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
-               
+        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
+
         $iFotoId = $this->getRequest()->getParam('iFotoId');
         if(empty($iFotoId)){
             throw new Exception("La url esta incompleta, no puede ejecutar la acción", 401);
@@ -1270,7 +1270,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             if($oParametroControlador->getValor()){
                 $this->getTemplate()->set_var("moderacionesChecked", "checked='checked'");
             }
-            
+
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
 
             $iRecordsTotal = 0;
@@ -1296,7 +1296,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $this->getTemplate()->set_var("sAutor", $sNombreUsuario);
                     $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
                     $this->getTemplate()->set_var("sFecha", $oFicha->getFecha());
-                    
+
                     $aModeracion = AdminController::getInstance()->obtenerHistorialModeracionesFicha($oFicha->getId());
                     //al menos 1 porque es un listado de publicaciones con moderacion pendiente.
                     foreach($aModeracion as $oModeracion){
@@ -1304,16 +1304,16 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                         $this->getTemplate()->set_var("sEstadoModeracion", $oModeracion->getEstado());
 
                         $sMensajeModeracion = $oModeracion->getMensaje(true);
-                        if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }                      
+                        if(empty($sMensajeModeracion)){ $sMensajeModeracion = " - "; }
                         $this->getTemplate()->set_var("sMensaje", $sMensajeModeracion);
                         $this->getTemplate()->set_var("iModeracionId", $oModeracion->getId());
-                        
+
                         $this->getTemplate()->parse("ModeracionHistorialPublicacionBlock", true);
                     }
 
                     $this->getTemplate()->set_var("sEstadoAprobarValue", "aprobado");
                     $this->getTemplate()->set_var("sEstadoRechazarValue", "rechazado");
-                    
+
                     $this->getTemplate()->parse("PublicacionModerarBlock", true);
                     $this->getTemplate()->set_var("ModeracionHistorialPublicacionBlock", "");
                 }
@@ -1333,7 +1333,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
         }catch(Exception $e){
             print_r($e);
-        }        
+        }
     }
 
     private function masModeraciones()
@@ -1342,7 +1342,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->getTemplate()->load_file_section("gui/vistas/admin/publicaciones.gui.html", "ajaxGrillaModeracionesBlock", "GrillaModeracionesBlock");
 
             list($iItemsForPage, $iPage, $iMinLimit, $sOrderBy, $sOrder) = $this->initPaginator();
-            
+
             $iRecordsTotal = 0;
             $aFichas = AdminController::getInstance()->buscarPublicacionesModeracion($filtro = null, $iRecordsTotal, $sOrderBy, $sOrder, $iMinLimit, $iItemsForPage);
 
@@ -1403,7 +1403,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
             $this->getAjaxHelper()->sendHtmlAjaxResponse($this->getTemplate()->pparse('ajaxGrillaModeracionesBlock', false));
         }catch(Exception $e){
             print_r($e);
-        }        
+        }
     }
 
     public function listarDenuncias()
@@ -1432,10 +1432,10 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                 foreach($aFichas as $oFicha){
 
                     $this->getTemplate()->set_var("iPublicacionId", $oFicha->getId());
-                    
+
                     $sTipoPublicacion = (get_class($oFicha) == "Publicacion")?"publicacion":"review";
                     $this->getTemplate()->set_var("sTipo", $sTipoPublicacion);
-                    
+
                     $this->getTemplate()->set_var("sTitulo", $oFicha->getTitulo());
 
                     $oUsuario = $oFicha->getUsuario();
@@ -1695,7 +1695,7 @@ class PublicacionesControllerAdmin extends PageControllerAbstract
                     $oFicha = ComunidadController::getInstance()->getReviewById($iPublicacionId);
                     break;
             }
-           
+
             $result = AdminController::getInstance()->limpiarDenuncias($oFicha);
 
             $this->restartTemplate();

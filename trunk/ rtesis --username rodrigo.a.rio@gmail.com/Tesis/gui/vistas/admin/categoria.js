@@ -189,7 +189,7 @@ function uploaderFoto(iCategoriaId){
                 }else{
                     $('#msg_form_foto .msg').html(lang['exito procesar archivo']);
                     $('#contFotoActual').html(html).show();
-                    $("a[rel^='prettyPhoto']").prettyPhoto();
+                    $("a[rel^='prettyphoto']").prettyphoto();
                     $('.image-frame').hover(
                         function() { $(this).find('.image-actions').css('display', 'none').fadeIn('fast').css('display', 'block'); }, // Show actions menu
                         function() { $(this).find('.image-actions').fadeOut(100); } // Hide actions menu
@@ -225,7 +225,7 @@ function borrarFoto(iCategoriaId){
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     if($("#formCategoria").length){
         bindEventsCategoriaForm();
@@ -243,6 +243,6 @@ $(document).ready(function(){
     $("#fotoBorrar").live('click', function(){
         var iCategoriaId = $(this).attr("rel");
         borrarFoto(iCategoriaId);
-        return false; 
+        return false;
     });
 });

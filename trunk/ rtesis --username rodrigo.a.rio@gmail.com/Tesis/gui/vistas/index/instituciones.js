@@ -25,7 +25,7 @@ function listaProvinciasByPais(idPais, idSelectProvincia, idSelectCiudad, idCont
         },
         success: function(lista){
             $('#'+idSelectProvincia).html("");
-            
+
             if(lista.length != undefined && lista.length > 0){
                 $('#'+idSelectProvincia).append(new Option('Elija Provincia:', '',true));
                 for(var i=0;i<lista.length;i++){
@@ -147,14 +147,14 @@ function cargarMarcasMapaInstituciones()
             }else{
                 agregarMarcas(data.marcas);
             }
-            setWaitingStatus('contenedorMapaInstituciones', false);            
+            setWaitingStatus('contenedorMapaInstituciones', false);
         }
     });
 }
 
 $(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#BuscarInstituciones").live('click', function(){
         if(!$("#listadoInstituciones").hasClass("di_no")){

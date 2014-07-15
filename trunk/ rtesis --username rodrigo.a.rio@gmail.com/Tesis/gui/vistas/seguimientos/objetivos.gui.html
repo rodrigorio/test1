@@ -10,7 +10,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/seguimientos/seguimientosGeneral.js")
    .script("{pathUrlBase}"+"gui/vistas/seguimientos/objetivos.js");
@@ -45,7 +45,7 @@
 <div class="baco5 bobo2 boto2 mabo4 pa2 iveal ov_hi">
     <span class="di_no" name="sOrderBy" id="sOrderBy">relevancia</span>
     <span class="di_no" name="sOrder" id="sOrder">desc</span>
-        
+
     <ul class="fl_le m_horiz grupo">
         <li>
             <label for="orderByRelevancia" class="button">
@@ -79,7 +79,7 @@
             Asociar objetivo de aprendizaje
         </button>
     </label>
-    <!--EndAsociarObjetivoAprendizajeBlock-->   
+    <!--EndAsociarObjetivoAprendizajeBlock-->
 </div>
 
 <div id="listadoObjetivos" class="grupo po_re">
@@ -89,7 +89,7 @@
 
             <!--BeginObjetivoBlock-->
             <div id="objetivo_{iObjetivoId}_{iSeguimientoId}" class="fl_le thumbEdit baco3 bora bosh mawi2 miwi2 mari2 mihe0">
-                
+
                 <!--BeginEstimacinoExpiradaBlock-->
                 <div class="thumbTop teal_le iveal">
                     <span class="fost_it fte2">Estimaci&oacute;n Vencida</span> <span title="El Objetivo ha llegado a la fecha estimada de finalizaci&oacute;n" class="i bs warning"></span>
@@ -133,7 +133,7 @@
                 </div>
                 <!--EndMenuObjetivoDesactivadoBlock-->
                 <!--BeginMenuObjetivoActivoBlock-->
-                <div style="display:none" class="thumbEditMenu teal_ri">                    
+                <div style="display:none" class="thumbEditMenu teal_ri">
                     <span title="Ver Objetivo Completo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i mi expand ihover verObjetivo"></span>
                     <span title="Editar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i bs edit ihover editarObjetivo"></span>
                     <span title="Eliminar Objetivo" rel="{iObjetivoId}_{iSeguimientoId}_{tipoObjetivo}" class="i bs delete ihover borrarObjetivo"></span>
@@ -142,7 +142,7 @@
                 <!--EndMenuObjetivoActivoBlock-->
             </div>
             <!--EndObjetivoBlock-->
-       
+
             <!--BeginNoRecordsThumbsObjetivosBlock-->
             <div class="teal_ce">A&uacute;n no hay objetivos creados en el seguimiento.</div>
             <!--EndNoRecordsThumbsObjetivosBlock-->
@@ -230,7 +230,7 @@
                     <div class="inner_fwrap">
                         <div id="objetivosAprendizajeCont" class="mihe1 mahe1 ov_au"></div>
                         <input type="hidden" value="" name="objetivoAprendizaje" id="objetivoAprendizaje" />
-                    </div>                    
+                    </div>
                 </div>
                 <p class="fte2">Haga click para seleccionar un objetivo de la lista.</p>
             <!--EndSelectsObjetivoAprendizajeBlock-->
@@ -241,11 +241,11 @@
                 <input value="{sAreaDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="area" id="area" title="&Aacute;rea">
                 <input value="{sEjeDescripcion}" class="mabo2 miwi2 readonly" readonly="readonly" name="eje" id="eje" title="Eje Tem&aacute;tico">
                 <div class="cl_le"></div>
-                <textarea class="pa miwi3 mabo2 readonly mahe0" rows="0" cols="0" id="objAprendizaje" name="objAprendizaje" title="Objetivo de Aprendizaje">{sObjetivoDescripcion}</textarea>               
+                <textarea class="pa miwi3 mabo2 readonly mahe0" rows="0" cols="0" id="objAprendizaje" name="objAprendizaje" title="Objetivo de Aprendizaje">{sObjetivoDescripcion}</textarea>
             <!--EndReadOnlyObjetivoAprendizaje-->
         </div>
         <!--EndObjetivoAprendizajeBlock-->
-        
+
         <div class="form_line msg_relevancia grupo">
             <label for="radioRelevanciaAlta">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -254,7 +254,7 @@
             <div class="cl_le pato2">
                 <ul class="fl_le m_horiz grupo">
                     <li class="pa">
-                        <span class="i mi flagYellow"></span> 
+                        <span class="i mi flagYellow"></span>
                         <input id="radioRelevanciaAlta" type="radio" name="relevancia" value="{iRelevanciaAltaId}" {checkedRelevanciaAlta}>
                         <label for="radioRelevanciaAlta">
                             <span class="fowe_bo">Alta</span>
@@ -277,7 +277,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="form_line msg_estimacion">
             <label for="estimacion">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -361,7 +361,7 @@
             <!--BeginEstimacionBlock-->
             <span class="fowe_bo">Alcanzar el </span><span class="fowe_bo {expiradaClass}">{dEstimacion}</span>
             <!--EndEstimacionBlock-->
-            
+
             <!--BeginFechaLogradoBlock-->
             <span class="fowe_bo txt_correcto">Logrado el {dFechaLogrado}</span>
             <!--EndFechaLogradoBlock-->
@@ -428,8 +428,8 @@
 <!--BeginObjetivosAprendizaListBlock-->
     <!--BeginListadoBlock-->
         <div id="{iObjetivoAprendizajeId}" class="obj_aprendizaje pa baco3 bobo1 mabo" >{sObjetivoAprendizajeDescripcion}</div>
-    <!--EndListadoBlock--> 
+    <!--EndListadoBlock-->
     <!--BeginListadoNoRecordsBlock-->
         <div class="pa baco3 bobo1 mabo" >No se encontraron objetivos para este eje</div>
-    <!--EndListadoNoRecordsBlock--> 
+    <!--EndListadoNoRecordsBlock-->
 <!--EndObjetivosAprendizaListBlock-->

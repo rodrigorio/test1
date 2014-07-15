@@ -1,6 +1,6 @@
 function showDialogIntegranteActivo()
 {
-    var dialog = setWaitingStatusDialog(650, "Cambio de Perfil");    
+    var dialog = setWaitingStatusDialog(650, "Cambio de Perfil");
     dialog.load(
         "comunidad/datos-personales-procesar",
         {seccion:'dialogIntegranteActivo'},
@@ -114,7 +114,7 @@ var validateFormInfoBasica = {
         contraseniaConfirmar:{required:function(element){
                                 return $("#contraseniaNueva").val() != "";
                               }, equalTo:'#contraseniaNueva'},
-        sexo:{required:true},                                
+        sexo:{required:true},
         fechaNacimientoDia:{required:true, digits: true},
         fechaNacimientoMes:{required:true, digits: true},
         fechaNacimientoAnio:{required:true, digits: true}
@@ -169,7 +169,7 @@ var optionsAjaxFormInfoBasica = {
     url: 'comunidad/datos-personales-procesar',
 
     beforeSerialize: function($form, options){
-        if($("#formInfoBasica").valid() == true){            
+        if($("#formInfoBasica").valid() == true){
             $('#msg_form_infoBasica').hide();
             $('#msg_form_infoBasica').removeClass("correcto").removeClass("error");
             $('#msg_form_infoBasica .msg').html("");
@@ -217,13 +217,13 @@ function resetSelect(select, defaultOpt){
 //combo pais provincia ciudad form info contacto
 function listaProvinciasByPais(idPais){
     resetSelect($('#ciudad'), 'Elija Ciudad:');
-    if(idPais == ''){ 
+    if(idPais == ''){
         resetSelect($('#provincia'), 'Elija Provincia:');
         return;
     }else{
         $('#provincia').removeClass("disabled");
     }
-    
+
     $.ajax({
         type: "POST",
         url: "provinciasByPais",
@@ -313,7 +313,7 @@ var validateFormInfoContacto = {
         },
         ciudad:{
             required: mensajeValidacion("requerido"),
-            digits: mensajeValidacion("digitos")            
+            digits: mensajeValidacion("digitos")
         },
         codigoPostal: mensajeValidacion("requerido"),
         direccion: mensajeValidacion("requerido"),
@@ -510,7 +510,7 @@ function cvUpload()
 }
 
 function fotoUpload()
-{    
+{
     if($('#fotoUpload').length){
         new Ajax_upload('#fotoUpload', {
             action: 'comunidad/datos-personales-procesar',
@@ -549,7 +549,7 @@ function fotoUpload()
                 }else{
                     $('#msg_form_fotoPerfil .msg').html(lang['exito procesar archivo']);
                     $('#contFotoPerfilActual').html(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto(); //asocio el evento al html nuevo
+                    $("a[rel^='prettyphoto']").prettyphoto(); //asocio el evento al html nuevo
                     $('#msg_form_fotoPerfil').addClass("correcto").fadeIn('slow');
                 }
                 return;
@@ -570,10 +570,10 @@ function bindEventsFormInfoBasica()
 }
 
 function bindEventsFormContacto()
-{    
+{
     $("#formInfoContacto").validate(validateFormInfoContacto);
     $("#formInfoContacto").ajaxForm(optionsAjaxFormInfoContacto);
-        
+
     $("#pais").change(function(){
         listaProvinciasByPais($("#pais option:selected").val());
     });
@@ -589,7 +589,7 @@ function bindEventsFormProfesional()
 
     $("#formInfoProfesional").validate(validateFormInfoProfesional);
     $("#formInfoProfesional").ajaxForm(optionsAjaxFormInfoProfesional);
-    
+
     if($("#institucionId").val() == ""){
         $('#contCargoInstitucion').addClass("disabled");
         $('#cargoInstitucion').attr('readonly', 'readonly');
@@ -689,12 +689,12 @@ function bindEventsFormProfesional()
             }
         }
     });
-   
+
     cvUpload();
 }
 function bindEventsFormFoto()
 {
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
     fotoUpload();
 }
 
@@ -709,17 +709,17 @@ $(document).ready(function(){
     $("#privacidadMovil").change(function(){cambiarPrivacidad('celular', $("#privacidadMovil option:selected").val());});
     $("#privacidadFax").change(function(){cambiarPrivacidad('fax', $("#privacidadFax option:selected").val());});
     $("#privacidadCurriculum").change(function(){cambiarPrivacidad('curriculum', $("#privacidadCurriculum option:selected").val());});
-    
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#formMenu li a").live('click', function(){
         if($(this).hasClass("active")){return false}
 
         $("#formMenu li a.active").removeClass("active");
         $(this).addClass("active");
-        
+
         var seccion = $(this).attr("rel");
-        
+
         $.ajax({
             type: "POST",
             url: "comunidad/datos-personales",
@@ -734,7 +734,7 @@ $(document).ready(function(){
                 setWaitingStatus('formMenu', false);
 
                 $("#formCont").append(data);
-                
+
                 switch(seccion){
                 case "basica":
                     bindEventsFormInfoBasica();
@@ -748,7 +748,7 @@ $(document).ready(function(){
                 case "foto":
                     bindEventsFormFoto();
                     break;
-                }                
+                }
             }
         });
     });

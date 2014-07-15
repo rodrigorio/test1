@@ -49,7 +49,7 @@ class EmbedVideoHelper extends FileManagerAbstract
         $cadena = "";
         if(empty($this->aServidoresValidos)){ return $cadena; }
 
-        foreach ($this->aServidoresValidos as $servidor) {            
+        foreach ($this->aServidoresValidos as $servidor) {
             $cadena .= $servidor.", ";
         }
 
@@ -72,7 +72,7 @@ class EmbedVideoHelper extends FileManagerAbstract
         $imageURL = $this->utilClass->getImageURL();
 
         if(empty($imageURL)){
-            $imageURL = $this->getDirectorioImagenesSitio()."defaultVideoMedium.png";
+            $imageURL = $this->getDirectorioImagenesSitio()."defaultvideomedium.png";
         }
 
         return $imageURL;
@@ -100,7 +100,7 @@ class EmbedVideoHelper extends FileManagerAbstract
         if(null === $this->utilClass->getStub()){
             $this->utilClass->parseUrl($oEmbedVideo->getCodigo());
         }
-        
+
         return $this->utilClass->getStub("title");
     }
 }

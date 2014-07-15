@@ -36,14 +36,14 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     public function procesar()
     {
         $seccion = $this->getRequest()->getPost('seccion');
-        
+
         //si accedio a traves de la url muestra pagina 404, excepto si es upload de archivo
-        if($seccion != 'curriculum' && 
+        if($seccion != 'curriculum' &&
            $seccion != 'foto' &&
            !$this->getAjaxHelper()->isAjaxContext()){
             throw new Exception("", 404);
         }
-               
+
         //segun seccion del formulario proceso de manera diferente
         switch($seccion){
             case 'basica': $this->procesarFormInfoBasica(); break;
@@ -117,7 +117,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function procesarFormInfoContacto(){
@@ -128,7 +128,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
             $usuario = $perfil->getUsuario();
 
-            $iCiudadId      = $this->getRequest()->getPost("ciudad");            
+            $iCiudadId      = $this->getRequest()->getPost("ciudad");
             $sCiudadOrigen  = $this->getRequest()->getPost("ciudadOrigen");
             $sCodigoPostal  = $this->getRequest()->getPost("codigoPostal");
             $sDomicilio     = $this->getRequest()->getPost("direccion");
@@ -145,7 +145,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             //estos dos no son obligatorios, si se envian con cadena vacia elimina los valores viejos
             $usuario->setCelular($sCelular);
             $usuario->setFax($sFax);
-            
+
             ComunidadController::getInstance()->guardarUsuario($usuario);
 			//SysController::getInstance()->iniciarPerfilSessionUsuario($usuario);
             if(ComunidadController::getInstance()->cumpleIntegranteActivo($usuario) &&
@@ -159,7 +159,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-        $this->getJsonHelper()->sendJsonAjaxResponse();        
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function procesarFormInfoProfesional(){
@@ -180,7 +180,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $sSecundaria        = $this->getRequest()->getPost("secundaria");
             $sSitioWeb          = $this->getRequest()->getPost("sitioWeb");
             $iEspecialidadId    = $this->getRequest()->getPost("especialidad");
-            
+
             $usuario->setInstitucionId($iInstitucionId);
             $usuario->setCargoInstitucion($sCargoInstitucion);
             $usuario->setBiografia($sBiografia);
@@ -211,7 +211,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         }catch(Exception $e){
             $this->getJsonHelper()->setSuccess(false);
         }
-        $this->getJsonHelper()->sendJsonAjaxResponse();         
+        $this->getJsonHelper()->sendJsonAjaxResponse();
     }
 
     private function procesarFormCurriculum(){
@@ -240,7 +240,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                     $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
                     $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
                     $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor());
-                    
+
                     $respuesta = "1; ".$this->getTemplate()->pparse('curriculumActual', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
@@ -255,7 +255,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             return;
         }
     }
-    
+
     private function procesarFormFotoPerfil()
     {
         try{
@@ -285,7 +285,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                     $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
                     $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
                     $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
-            
+
                     $respuesta = "1; ".$this->getTemplate()->pparse('contFotoPerfilActual', false);
                     $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
                 }catch(Exception $e){
@@ -298,9 +298,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $respuesta = "0; Error al procesar el archivo";
             $this->getAjaxHelper()->sendHtmlAjaxResponse($respuesta);
             return;
-        }        
+        }
     }
-    
+
     /**
      * (AJAX) devuelve 1 si el mail ya existe en la DB asociado a una cuenta que no es la del usuario que modifica sus datos.
      */
@@ -313,7 +313,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $dataResult = '1';
         }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
     }
 
     private function nombreUsuarioDb()
@@ -324,9 +324,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $dataResult = '1';
         }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
     }
-    
+
     private function numeroDocumentoDb()
     {
         $dataResult = '0';
@@ -341,7 +341,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             }
         }
 
-        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);        
+        $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
     }
 
     /**
@@ -355,16 +355,16 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         if($usuario->getContrasenia() == $this->getRequest()->getPost('contraseniaActual')){
             $dataResult = '1';
         }
-        
+
         $this->getAjaxHelper()->sendHtmlAjaxResponse($dataResult);
     }
-    
+
     /**
      * Vista con el formulario de modificacion de datos personales
      *
      */
     public function formulario()
-    {               
+    {
         //si el request es ajax devuelvo el formulario
         if($this->getAjaxHelper()->isAjaxContext()){
 
@@ -379,7 +379,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $this->getAjaxHelper()->sendHtmlAjaxResponse($form);
             return;
         }
-        
+
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
 
@@ -404,7 +404,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
                                                                 <br>Recuerda que estos datos permanecerán ocultos a otros usuarios y los solicitamos para brindar una mayor seguridad dentro de la comunidad.");
            $this->getTemplate()->parse('msgIntegranteInactivo');
         }
-        
+
         //privacidad (columna)
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerCont", "PageRightInnerContBlock");
         //seteo los valores actuales para los campos
@@ -417,8 +417,8 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "pageRightInnerMainCont", "FormulariosContBlock");
         $this->getTemplate()->set_var("formulario", $this->getFormInfoBasica());
-        
-        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));        
+
+        $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
     private function getFormInfoBasica()
@@ -436,7 +436,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $sexo = $usuario->getSexo();
         $fechaNacimiento = $usuario->getFechaNacimiento();
         list($nacimientoAnio, $nacimientoMes, $nacimientoDia) = explode("-", $fechaNacimiento);
-        
+
         //armo el select con los tipos de documentos cargados en db
         $aTiposDocumentos = IndexController::getInstance()->obtenerTiposDocumentos();
         foreach ($aTiposDocumentos as $value => $text){
@@ -453,17 +453,17 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $this->getTemplate()->set_var("sNombre", $nombre);
         $this->getTemplate()->set_var("sApellido", $apellido);
         $this->getTemplate()->set_var("sEmail", $email);
-        
+
         if($sexo == 'm'){
             $this->getTemplate()->set_var("sSelectedMasculino", "selected='selected'");
         }else{
             $this->getTemplate()->set_var("sSelectedFemenino", "selected='selected'");
         }
 
-        for($i = 1; $i <= 31; $i++){  
+        for($i = 1; $i <= 31; $i++){
             $value = (string)$i;
             if($i<10){ $value = "0".$value; }
-            
+
             $this->getTemplate()->set_var("iValue", $value);
             $this->getTemplate()->set_var("sDescripcion", $value);
             if($nacimientoDia == $i){
@@ -476,7 +476,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         $aMeses = array('01' => 'enero', '02' => 'febrero', '03' => 'marzo', '04' => 'abril', '05' => 'mayo',
                         '06' => 'junio', '07' => 'julio', '08' => 'agosto', '09' => 'septiembre', '10' => 'octubre',
                         '11' => 'noviembre', '12' => 'diciembre');
-        
+
         foreach ($aMeses as $value => $text){
             $this->getTemplate()->set_var("iValue", $value);
             $this->getTemplate()->set_var("sDescripcion", $text);
@@ -487,9 +487,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sSelected", "");
         }
 
-        $anioActual = date("Y");                
+        $anioActual = date("Y");
         for($i = $anioActual; $i >= 1905; $i--){
-            $value = (string)$i;            
+            $value = (string)$i;
             $this->getTemplate()->set_var("iValue", $value);
             $this->getTemplate()->set_var("sDescripcion", $value);
             if($nacimientoAnio == $i){
@@ -499,7 +499,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $this->getTemplate()->set_var("sSelected", "");
         }
 
-        return $this->getTemplate()->pparse('ajaxFormInfoBasica', false);        
+        return $this->getTemplate()->pparse('ajaxFormInfoBasica', false);
     }
 
     private function getFormInfoContacto()
@@ -594,7 +594,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         if(null != $usuario->getEspecialidad()){
             $iEspecialidadId = $usuario->getEspecialidad()->getId();
         }
-                
+
         $this->getTemplate()->set_var("sInstitucion", $sInstitucion);
         $this->getTemplate()->set_var("iInstitucionId", $iInstitucionId);
         $this->getTemplate()->set_var("sCargoInstitucion", $sCargoInstitucion);
@@ -634,15 +634,15 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
         //si ya tiene curriculum que aparezca.
         if(null !== $usuario->getCurriculumVitae()){
             $oArchivo = $usuario->getCurriculumVitae();
-            
+
             $this->getTemplate()->set_var("sNombreArchivo", $oArchivo->getNombre());
             $this->getTemplate()->set_var("sExtensionArchivo", $oArchivo->getTipoMime());
             $this->getTemplate()->set_var("sTamanioArchivo", $oArchivo->getTamanio());
             $this->getTemplate()->set_var("sFechaArchivo", $oArchivo->getFechaAlta());
-           
+
             $this->getTemplate()->set_var("hrefDescargarCvActual", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oArchivo->getNombreServidor());
 
-            $this->getTemplate()->parse("CurriculumActualBlock");           
+            $this->getTemplate()->parse("CurriculumActualBlock");
         }else{
             $this->getTemplate()->unset_blocks("CurriculumActualBlock");
         }
@@ -658,7 +658,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     private function getFormFotoPerfil()
     {
         $this->getTemplate()->load_file_section("gui/vistas/comunidad/datosPersonales.gui.html", "ajaxFormFotoPerfil", "FormularioFotoPerfilBlock");
-        
+
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
 
@@ -668,7 +668,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $this->getUploadHelper()->utilizarDirectorioUploadUsuarios();
             $pathFotoServidorMediumSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreMediumSize();
             $pathFotoServidorBigSize = $this->getUploadHelper()->getDirectorioUploadFotos().$oFoto->getNombreBigSize();
-            
+
             $this->getTemplate()->set_var("scrFotoPerfilActual", $pathFotoServidorMediumSize);
             $this->getTemplate()->set_var("hrefFotoPerfilActualAmpliada", $pathFotoServidorBigSize);
 
@@ -691,7 +691,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
     {
         //si accedio a traves de la url muestra pagina 404 porq es ajax
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
+
         $perfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
         $usuario = $perfil->getUsuario();
         $usuario->guardarPrivacidadCampo($this->getRequest()->getPost('nombreCampo'), $this->getRequest()->getPost('valorPrivacidad'));
@@ -704,9 +704,9 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
 
         //devuelvo el dialog para confirmar el cierre de cuenta.
         if($this->getRequest()->has('confirmar')){
-           
+
             $this->getTemplate()->load_file_section("gui/componentes/carteles.gui.html", "html", "MsgFichaInfoBlock");
-            $this->getTemplate()->set_var("sTituloMsgFicha", "Cuenta integrante Sistema SGPAPD");
+            $this->getTemplate()->set_var("sTituloMsgFicha", "Cuenta integrante Sistema Sequitur");
             $this->getTemplate()->set_var("sMsgFicha", "Cuidado, se eliminaran todos los seguimientos, publicaciones y otras entidades asociadas a la cuenta de manera permanente.
                                                        <br>Una vez eliminada la cuenta la información no podra volver a recuperarse.");
 
@@ -720,7 +720,7 @@ class DatosPersonalesControllerComunidad extends PageControllerAbstract
             $pathServidor = $this->getUploadHelper()->getDirectorioUploadFotos(true);
 
             $oPerfil = SessionAutentificacion::getInstance()->obtenerIdentificacion();
-            $oUsuario = $oPerfil->getUsuario();           
+            $oUsuario = $oPerfil->getUsuario();
             $result = AdminController::getInstance()->cerrarCuentaIntegrante($oUsuario, $pathServidor);
 
             if($result){

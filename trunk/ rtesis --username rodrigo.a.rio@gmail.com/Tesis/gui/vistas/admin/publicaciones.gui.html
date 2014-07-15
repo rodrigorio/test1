@@ -9,15 +9,15 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.query.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/selectivizr.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/js/backend/script.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/publicaciones.js");
 </script>
 <!--EndJsContent-->
@@ -28,7 +28,7 @@
         <h2>Administrar Publicaciones</h2>
     </header>
     <section>
-        <h3>Administrador de publicaciones y reviews de la comunidad SGPAPD</h3>
+        <h3>Administrador de publicaciones y reviews de la comunidad</h3>
     </section>
 </article>
 <!--EndHeaderBlock-->
@@ -94,7 +94,7 @@
                 <tbody>
                 <!--BeginPublicacionBlock-->
                     <tr class="{iPublicacionId}">
-                        <td>                            
+                        <td>
                             <img src="{scrAvatarAutor}" class="pari" />
                             <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="javascript:;">{sAutor}</a>
                         </td>
@@ -206,7 +206,7 @@
                                                     </dd>
                                                 </dl>
                                         </fieldset>
-                                        
+
                                         <dt>
                                             <label for="mensaje_{iPublicacionId}">Mensaje</label>
                                         </dt>
@@ -217,7 +217,7 @@
                                         <div style="display:none"  id='msg_form_moderacion_{iPublicacionId}' class="notification">
                                             <p class="msg"></p>
                                         </div>
-                                       
+
                                         <button rel="{iPublicacionId}" class="moderarSubmit mabo2" type="button">Moderar publicaci&oacute;n</button>
                                         <input type="hidden" id="moderacionId_{iPublicacionId}" name="moderacionId_{iPublicacionId}" value="{iModeracionId}">
                                     </form>
@@ -252,7 +252,7 @@
                 <thead>
                     <tr>
                         <th class="iveal big">T&iacute;tulo Publicaci&oacute;n</th>
-                        <th class="iveal small">Nombre autor</th>                        
+                        <th class="iveal small">Nombre autor</th>
                         <th class="iveal">Fecha creaci&oacute;n</th>
                         <th></th>
                     </tr>
@@ -331,7 +331,7 @@
 <h1 class="teta_up mabo2">Modificar publicaci&oacute;n</h1>
 <form id="formPublicacion" name="formPublicacion" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    
+
     <dt>
         <label for="titulo">T&iacute;tulo</label>
     </dt>
@@ -347,7 +347,7 @@
         <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada de la Publicaci&oacute;n" maxlength="100" value="{sDescripcionBreve}">
         <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
     </dd>
-    
+
     <dt>
         <label for="activo">Visible?</label>
     </dt>
@@ -403,7 +403,7 @@
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
-   
+
     <button class="mabo" id="modificarPublicacion" name="modificarPublicacion" type="submit">Modificar Publicacion</button>
     <input type="hidden" value="{iPublicacionIdForm}" name="publicacionIdForm" id="publicacionIdForm" />
 </form>
@@ -440,10 +440,10 @@
         </dt>
         <dd>
             <input class="large" type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
-            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>            
+            <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>
         </dd>
     </div>
-    
+
     <dt>
         <label for="item">Nombre Item</label>
     </dt>
@@ -455,7 +455,7 @@
             Si fuera un art&iacute;culo acerca de una persona debe ingresar aqui el nombre de la misma, etc.
         </p>
     </dd>
-    
+
     <dt>
         <label for="titulo">T&iacute;tulo</label>
     </dt>
@@ -609,7 +609,7 @@
                 <p>
                     <span class="fowe_bo teta_up">fecha:</span> {sFecha}
                 </p>
-                
+
                 <div class="fowe_bo teta_up mabo">descripcion breve</div>
                 <div class="baco2 pa mabo2">{sDescripcionBreve}</div>
 
@@ -685,7 +685,7 @@
                     <span class="fowe_bo teta_up">fuente original:</span> <a href="{hrefFuenteUriginal}">{sFuenteOriginal}</a>
                 </p>
                 <!--EndFuenteOriginalBlock-->
-                
+
                 <p>
                     <span class="fowe_bo teta_up">t&iacute;tulo:</span> {sTitulo}
                 </p>

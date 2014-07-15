@@ -229,7 +229,7 @@ function bindEventsFormAgregarVideo(iSeguimientoId)
                 $('#msg_form_agregar_video').addClass("correcto").fadeIn('slow');
 
                 $('#Thumbnails').append(data.html);
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         }
     };
@@ -336,7 +336,7 @@ function bindEventsFormAgregarFoto(iSeguimientoId)
                     $('#msg_form_fotoGaleria').addClass("correcto").fadeIn('slow');
 
                     $('#Thumbnails').append(html);
-                    $("a[rel^='prettyPhoto']").prettyPhoto();
+                    $("a[rel^='prettyphoto']").prettyphoto();
                 }
                 return;
             }
@@ -818,7 +818,7 @@ $(document).ready(function(){
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsPersonaForm(); //la funcion esta en personas.js
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;

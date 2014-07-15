@@ -7,7 +7,7 @@ function masPublicaciones(){
     if(verificarValorDefectoBool("filtroTitulo")){ filtroTitulo = ""; }
     if(verificarValorDefectoBool("filtroApellidoAutor")){ filtroApellidoAutor = ""; }
     if(verificarValorDefectoBool("filtroFechaDesde")){ filtroFechaDesde = ""; }
-    
+
     $.ajax({
         type:"POST",
         url:"publicaciones/procesar",
@@ -23,14 +23,14 @@ function masPublicaciones(){
         success:function(data){
             setWaitingStatus('listadoPublicaciones', false);
             $("#listadoPublicacionesResult").html(data);
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     });
 }
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#filtroFechaDesde").datepicker();
 
@@ -44,5 +44,5 @@ $(document).ready(function(){
           this.reset();
         });
         return false;
-    });    
+    });
 });

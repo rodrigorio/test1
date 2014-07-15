@@ -21,7 +21,7 @@ var validateFormSoftware = {
         activo:{required:true},
         publico:{required:true},
         activoComentarios:{required:true},
-        descripcion:{required:true}        
+        descripcion:{required:true}
     },
     messages:{
         titulo: mensajeValidacion("requerido"),
@@ -281,7 +281,7 @@ function ampliarSoftware(iSoftwareId){
         },
         function(responseText, textStatus, XMLHttpRequest){
             bindEventsAdmin();
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     );
 }
@@ -494,7 +494,7 @@ function borrarArchivo(iArchivoId){
                 if(data.success != undefined && data.success == 1){
                     $("#archivo_"+iArchivoId).hide("slow", function(){
                         $("#archivo_"+iArchivoId).remove();
-                    });                    
+                    });
                 }
             }
         });
@@ -612,7 +612,7 @@ function borrarSoftwarePorDenuncias(iSoftwareId){
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
@@ -707,7 +707,7 @@ $(document).ready(function(){
             {},
             function(responseText, textStatus, XMLHttpRequest){
                 bindEventsAdmin();
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;
@@ -731,7 +731,7 @@ $(document).ready(function(){
         cartel.hide();
         cartel.removeClass("correcto").removeClass("error2");
         mensajeCont.html("");
-        
+
         if(!$('#aprobar_'+iSoftwareId).is(':checked') &&
            !$('#rechazar_'+iSoftwareId).is(':checked')){
 
@@ -740,13 +740,13 @@ $(document).ready(function(){
             return false;
         }
 
-        
+
         if($('#mensaje_'+iSoftwareId).val() == ""){
             mensajeCont.html(mensajeValidacion);
             cartel.addClass("error").fadeIn('slow');
             return false;
         }
-        
+
         var estado;
         if($('#aprobar_'+iSoftwareId).is(':checked')){
             estado = $('#aprobar_'+iSoftwareId).val();
@@ -828,5 +828,5 @@ $(document).ready(function(){
                 }
             });
         }
-    });    
+    });
 });

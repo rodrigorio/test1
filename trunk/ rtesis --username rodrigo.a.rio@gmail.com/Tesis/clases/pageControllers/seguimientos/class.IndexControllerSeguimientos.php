@@ -6,7 +6,7 @@
  * Es Singleton para que se pueda reutilizar los pedazos del header y el footer.
  */
 class IndexControllerSeguimientos extends PageControllerAbstract
-{    
+{
     /**
      * Este metodo es estatico porque se usa desde los otros controladores de pagina del modulo.
      *
@@ -26,7 +26,7 @@ class IndexControllerSeguimientos extends PageControllerAbstract
         $template->set_var("topHeaderMenuHrefInvitaciones", $request->getBaseUrl().'/comunidad/invitaciones');
         $template->set_var("topHeaderMenuHrefSoporte", $request->getBaseUrl().'/comunidad/soporte');
         $template->set_var("topHeaderMenuHrefCerrarSesion", $request->getBaseUrl().'/logout');
-        $template->set_var("topHeaderMenuHrefPreferencias", $request->getBaseUrl().'/comunidad/preferencias');
+        $template->set_var("topHeaderMenuHrefConfiguracionInformes", $request->getBaseUrl().'/seguimientos/informes/configuracion');
     }
 
     /**
@@ -61,17 +61,17 @@ class IndexControllerSeguimientos extends PageControllerAbstract
         $seguimientosControllerSeguimientos = new SeguimientosControllerSeguimientos($this->getRequest(), $this->getResponse(), $this->getInvokeArgs());
         $seguimientosControllerSeguimientos->listar();
     }
-    
+
     public function buscarDiscapacitados(){
         //si accedio a traves de la url muestra pagina 404
         if(!$this->getAjaxHelper()->isAjaxContext()){ throw new Exception("", 404); }
-        
+
         try{
             $this->getJsonHelper()->initJsonAjaxResponse();
 
             $filtro = array("p.apellido" => $this->getRequest()->get('str'));
             $aDiscapacitados = SeguimientosController::getInstance()->obtenerDiscapacitado($filtro);
-            
+
             $vResult = array();
             if(count($aDiscapacitados) > 0){
                 foreach($aDiscapacitados as $oDiscapacitado){
@@ -90,5 +90,5 @@ class IndexControllerSeguimientos extends PageControllerAbstract
 	}
         //setea headers y body en el response con los valores codificados
         $this->getJsonHelper()->sendJsonAjaxResponse();
-    }    
+    }
 }

@@ -10,7 +10,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
    .script("{pathUrlBase}"+"gui/vistas/comunidad/publicaciones.js");
 </script>
@@ -90,7 +90,7 @@
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <div id="listadoPublicacionesResult">
         <!--BeginFichasPublicacionesBlock-->
-        
+
             <!--BeginPublicacionBlock-->
             <div class="ficha03 grupo mabo2">
                 <div class="encabezado">
@@ -113,11 +113,11 @@
                 </div>
                 <div class="contenido">
                     {thumbDestacado}
-                    
+
                     <div class="fowe_bo fost_it mabo2">Resumen</div>
                     <p class="mabo0">{sDescripcionBreve}</p>
                 </div>
-                
+
                 {comentarios}
             </div>
             <!--EndPublicacionBlock-->
@@ -125,7 +125,7 @@
             <!--BeginNoRecordsPublicacionesBlock-->
             <div class="teal_ce fowe_bo">{sNoRecords}</div>
             <!--EndNoRecordsPublicacionesBlock-->
-            
+
             {paginacion}
         <!--EndFichasPublicacionesBlock-->
     </div>
@@ -137,7 +137,7 @@
     <div class="titulo iveal"><span class="i32 mi publish32"></span></div>
     <form id="formPublicacion" name="formPublicacion" action="" method="post">
         <h2 class="mabo3">{sTituloForm}</h2>
-       
+
         <div class="form_line msg_titulo">
             <label for="titulo">
                 <span class="marca_obligatorio">&#8226;</span>
@@ -161,14 +161,14 @@
                 </div>
             </div>
             <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
-        </div>    
+        </div>
         <div class="form_line msg_activo">
             <label for="activo">
                 Visible?
             </label>
             <div class="cl_le"></div>
             <select class="small" name="activo" id="activo" title="Publicaci&oacute;n Visible?">
-                <option value="">Seleccionar</option>                
+                <option value="">Seleccionar</option>
                 <option {sSelectedActivo} value="1">S&iacute;</option>
                 <option {sSelectedDesactivado} value="0">No</option>
             </select>
@@ -192,7 +192,7 @@
             </label>
             <div class="cl_le"></div>
             <select class="small" name="activoComentarios" id="activoComentarios" title="Activar Comentarios?">
-                <option value="">Seleccionar</option>                
+                <option value="">Seleccionar</option>
                 <option {sSelectedActivoComentarios} value="1">S&iacute;</option>
                 <option {sSelectedDesactivadoComentarios} value="0">No</option>
             </select>
@@ -208,7 +208,7 @@
                     <textarea class="mihe2" rows="0" cols="0" id="descripcion" name="descripcion" title="Contenido de la publicaci&oacute;n">{sDescripcion}</textarea>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="form_line msg_keywords">
 
             <div class="fwrap">
@@ -218,7 +218,7 @@
             </div>
             <p>Ingrese algunas palabras que ayuden a otros integrantes de la comunidad a encontrar lo que buscan.</p>
         </div>
-        
+
         <!--BeginSubmitCrearPublicacionBlock-->
         <div class="fl_le iveal mabo2">
             <label for="crearPublicacion" class="button buttonConfirm buttonLarge mari3">
@@ -241,7 +241,7 @@
         <!--EndSubmitModificarPublicacionBlock-->
 
         <div style="display:none;" id='msg_form_publicacion' class="msg_form iveal cl_bo"><span class="bs i"></span> <span class="msg"></span></div>
-        
+
     </form>
 </div>
 <!--EndFormularioPublicacionBlock-->
@@ -254,7 +254,7 @@
             <h2 class="mabo">{sTituloForm}</h2>
             <span class="fost_it">Los reviews tienen como objetivo lograr aportes a la comunidad en forma de cr&iacute;ticas constructivas</span>
         </div>
-        
+
         <div class="form_line msg_itemType">
             <label for="itemType">
                 Acerca de?
@@ -282,7 +282,7 @@
                 <div class="inner_fwrap">
                     <input type="text" name="itemEventSummary" id="itemEventSummary" title="Resumen Evento" maxlength="255" value="{sItemEventSummary}" />
                 </div>
-            </div>            
+            </div>
             <p>Unas breves palabras en forma de resumen acerca del evento que se llevara acabo</p>
         </div>
 
@@ -399,7 +399,7 @@
         </div>
         <div class="form_line msg_itemUrl">
             <label for="itemUrl">
-                Link 
+                Link
             </label>
             <div class="fwrap">
                 <div class="inner_fwrap">
@@ -521,10 +521,10 @@
             <!--BeginNoRecordsMisPublicacionesBlock-->
             <tr>
                 <td colspan="5">{sNoRecords}</td>
-            </tr>           
+            </tr>
             <!--EndNoRecordsMisPublicacionesBlock-->
         </table>
-        {paginacion}            
+        {paginacion}
         <!--EndGrillaMisPublicacionesBlock-->
     </div>
 </div>
@@ -561,13 +561,13 @@
     <div class="contenido mabo3">
         <p>{sDescripcion}</p>
     </div>
-    
+
     {galeriaAdjuntos}
 
     <div class="cl_bo mabo2 mato grupo">
         <div class="fl_le">
             <div class="pa mari2 baco4">
-                <a title="" href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+                <a title="" href="{hrefFotoPerfil}" rel="prettyphoto" class="th_fto_s thumb01 fl_le mari2 mabo">
                     <i style="background-image:url('{scrAvatarAutor}')"></i>
                 </a>
                 <span class="fost_it">por</span> <span class="txt_imp2 mari fost_it">{sAutor}</span>
@@ -633,7 +633,7 @@
             Acerca de un/a <span class="fost_it fowe_bo">{sItemType}</span>
         </div>
         <!--EndItemTypeBlock-->
-       
+
         <!--BeginItemEventSummaryBlock-->
         <div class="mabo2">
             Detalles evento: <span class="fost_it">{sItemEventSummary}</span><br>
@@ -661,7 +661,7 @@
     <div class="cl_bo mabo2 mato grupo">
         <div class="fl_le">
             <div class="pa mari2 baco4">
-                <a title="" href="{hrefFotoPerfil}" rel="prettyPhoto" class="th_fto_s thumb01 fl_le mari2 mabo">
+                <a title="" href="{hrefFotoPerfil}" rel="prettyphoto" class="th_fto_s thumb01 fl_le mari2 mabo">
                     <i style="background-image:url('{scrAvatarAutor}')"></i>
                 </a>
                 <span class="fost_it">por</span> <span class="txt_imp2 mari fost_it">{sAutor}</span>

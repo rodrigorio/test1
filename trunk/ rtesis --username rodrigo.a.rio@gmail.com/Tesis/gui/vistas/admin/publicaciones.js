@@ -67,7 +67,7 @@ var optionsAjaxFormPublicacion = {
                 $('#msg_form_publicacion .msg').html(lang['exito procesar']);
             }else{
                 $('#msg_form_publicacion .msg').html(data.mensaje);
-            }            
+            }
             $('#msg_form_publicacion').addClass("success").fadeIn('slow');
         }
     }
@@ -472,7 +472,7 @@ function ampliarPublicacion(iPublicacionId, tipo)
         },
         function(responseText, textStatus, XMLHttpRequest){
             bindEventsAdmin();
-            $("a[rel^='prettyPhoto']").prettyPhoto();
+            $("a[rel^='prettyphoto']").prettyphoto();
         }
     );
 }
@@ -737,7 +737,7 @@ function borrarArchivo(iArchivoId){
                 if(data.success != undefined && data.success == 1){
                     $("#archivo_"+iArchivoId).hide("slow", function(){
                         $("#archivo_"+iArchivoId).remove();
-                    });                    
+                    });
                 }
             }
         });
@@ -857,7 +857,7 @@ function borrarPublicacionPorDenuncias(iPublicacionId, tipo){
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     $("#filtroFechaDesde").datepicker();
     $("#filtroFechaHasta").datepicker();
@@ -990,7 +990,7 @@ $(document).ready(function(){
                     closeOnEscape:true
                 });
                 bindEventsAdmin();
-                $("a[rel^='prettyPhoto']").prettyPhoto();
+                $("a[rel^='prettyphoto']").prettyphoto();
             }
         );
         return false;
@@ -1014,7 +1014,7 @@ $(document).ready(function(){
         cartel.hide();
         cartel.removeClass("correcto").removeClass("error2");
         mensajeCont.html("");
-        
+
         if(!$('#aprobar_'+iPublicacionId).is(':checked') &&
            !$('#rechazar_'+iPublicacionId).is(':checked')){
 
@@ -1023,14 +1023,14 @@ $(document).ready(function(){
             return false;
         }
 
-        
+
         if($('#mensaje_'+iPublicacionId).val() == ""){
 
             mensajeCont.html(mensajeValidacion);
             cartel.addClass("error").fadeIn('slow');
             return false;
         }
-        
+
         var estado;
         if($('#aprobar_'+iPublicacionId).is(':checked')){
             estado = $('#aprobar_'+iPublicacionId).val();
@@ -1083,7 +1083,7 @@ $(document).ready(function(){
             }
         });
     });
-    
+
     $("#toggleModeraciones").click(function(){
         var msg;
         var valor;
@@ -1111,6 +1111,6 @@ $(document).ready(function(){
                     setWaitingStatus('subHeaderModeraciones', false);
                 }
             });
-        }        
+        }
     });
 });

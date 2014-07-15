@@ -609,5 +609,50 @@ class RutasModuloSeguimientos
                                         'action'     => 'entradasUnidadEsporadica'
                                 ));
         $router->addRoute('seguimientosEntradasEntradasUnidadEsporadica', $route);
+
+        //informes
+        $route = new RegexRoute('seguimientos/informes',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'informes',
+                                        'action'     => 'index'
+                                ));
+        $router->addRoute('seguimientosInformesIndex', $route);
+        $route = new RegexRoute('seguimientos/informes/configuracion',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'informes',
+                                        'action'     => 'configuracion'
+                                ));
+        $router->addRoute('seguimientosInformesConfiguracion', $route);
+        $route = new RegexRoute('seguimientos/informes/configuracion-guardar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'informes',
+                                        'action'     => 'guardarConfiguracion'
+                                ));
+        $router->addRoute('seguimientosInformesGuardarConfiguracion', $route);
+        $route = new RegexRoute('seguimientos/informes/procesar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'informes',
+                                        'action'     => 'procesar'
+                                ));
+        $router->addRoute('seguimientosInformesProcesar', $route);
+        $route = new RegexRoute('seguimientos/informes/confeccionar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'informes',
+                                        'action'     => 'confeccionar'
+                                ));
+        $router->addRoute('seguimientosInformesConfeccionar', $route);
+        $route = new RegexRoute('seguimientos/informes/generar',
+                                array(
+                                        'module' => 'seguimientos',
+                                        'controller' => 'informes',
+                                        'action'     => 'generar'
+                                ));
+        $router->addRoute('seguimientosInformesGenerar', $route);
     }
 }
+

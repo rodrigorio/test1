@@ -2670,4 +2670,33 @@ class SeguimientosController
         //puedo devolver nulo o la fecha mas lejana de todos los objetivos.
         return ($dFecha === null)?$dFecha:date("d/m/Y", $dFecha);
     }
+
+    public function getConfiguracionInformeByUsuarioId($iUsuarioId)
+    {
+        try{
+            $filtro = array('ci.usuarios_id' => $iUsuarioId);
+
+            $oInformeIntermediary = PersistenceFactory::getInformeIntermediary($this->db);
+            $iRecordsTotal = 0;
+            $aConfiguracionInforme = $oInformeIntermediary->obtenerConfiguracion($filtro, $iRecordsTotal, null, null, null, null);
+
+            if(null !== $aConfiguracionInforme){
+                return $aConfiguracionInforme[0];
+            }else{
+                return null;
+            }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    public function guardarConfiguracionInformeUsuario($oInformeConfiguracion)
+    {
+        try{
+            $oInformeIntermediary = PersistenceFactory::getInformeIntermediary($this->db);
+            return $oInformeIntermediary->guardarConfiguracionInforme($oInformeConfiguracion);
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 }

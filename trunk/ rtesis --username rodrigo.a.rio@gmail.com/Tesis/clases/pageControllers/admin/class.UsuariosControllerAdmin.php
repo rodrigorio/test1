@@ -492,8 +492,8 @@ class UsuariosControllerAdmin extends PageControllerAbstract
         try{
             $this->getTemplate()->load_file("gui/templates/index/framePrint01-01.gui.html", "frame");
             $this->getTemplate()->set_var("pathUrlBase", $this->getRequest()->getBaseTagUrl());
-            $this->getTemplate()->set_var("sTituloVista", "Usuarios SGPAPD - Imprimir");
-            $this->getTemplate()->set_var("sTitulo", "Sistema SGPAPD");
+            $this->getTemplate()->set_var("sTituloVista", "Usuarios Sequitur - Imprimir");
+            $this->getTemplate()->set_var("sTitulo", "Sistema Sequitur");
             $today = date('m/d/Y');
             $this->getTemplate()->set_var("sSubtitulo", "Usuarios Integrantes Comunidad ".$today);
             $this->getTemplate()->load_file_section("gui/vistas/admin/usuarios.gui.html", "bodyContent", "ListadoUsuariosPrintBlock");

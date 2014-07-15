@@ -10,12 +10,12 @@ class Categoria{
      * objeto Foto
      */
     private $oFoto = null;
-		
+
     /**
      * array objetos Software
      */
     private $aSoftware = null;
-		
+
     /**
      *  Se pasa un objeto stdClass y para cada atributo de este objeto se verifica que exista para la clase Categoria
      * @param stdClass $oParams
@@ -54,7 +54,7 @@ class Categoria{
     public function setDescripcion($sDescripcion){
         $this->sDescripcion = $sDescripcion;
     }
-	
+
     public function setSoftware($aSoftware){
         $this->aSoftware = $aSoftware;
     }
@@ -72,7 +72,7 @@ class Categoria{
     public function getNombre(){
         return $this->sNombre;
     }
-        
+
     public function getDescripcion($nl2br = false){
         if($nl2br){
             return nl2br($this->sDescripcion);
@@ -103,7 +103,7 @@ class Categoria{
 
     public function getNombreAvatar($medium = false){
         if(null == $this->oFoto){
-            return $medium ? "defaultCategoriaMedium.png" : "defaultCategoriaSmall.png";
+            return $medium ? "defaultcategoriamedium.png" : "defaultcategoriasmall.png";
         }
 
         return $medium ? $this->oFoto->getNombreMediumSize() : $this->oFoto->getNombreSmallSize();

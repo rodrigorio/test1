@@ -9,15 +9,15 @@
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.query.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/selectivizr.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/js/backend/script.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/software.js");
 </script>
 <!--EndJsContent-->
@@ -101,7 +101,7 @@
                 <tbody>
                 <!--BeginSoftwareBlock-->
                     <tr class="{iSoftwareId}">
-                        <td>                            
+                        <td>
                             <img src="{scrAvatarAutor}" class="pari" />
                             <a class="fowe_bo verFichaUsuario" rel="{iUsuarioId}" href="javascript:;">{sAutor}</a>
                         </td>
@@ -213,7 +213,7 @@
                                                     </dd>
                                                 </dl>
                                         </fieldset>
-                                        
+
                                         <dt>
                                             <label for="mensaje_{iSoftwareId}">Mensaje</label>
                                         </dt>
@@ -224,7 +224,7 @@
                                         <div style="display:none"  id='msg_form_moderacion_{iSoftwareId}' class="notification">
                                             <p class="msg"></p>
                                         </div>
-                                       
+
                                         <button rel="{iSoftwareId}" class="moderarSubmit mabo2" type="button">Moderar aplicaci&oacute;n</button>
                                         <input type="hidden" id="moderacionId_{iSoftwareId}" name="moderacionId_{iSoftwareId}" value="{iModeracionId}">
                                     </form>
@@ -259,7 +259,7 @@
                 <thead>
                     <tr>
                         <th class="iveal big">T&iacute;tulo software</th>
-                        <th class="iveal small">Nombre autor</th>                        
+                        <th class="iveal small">Nombre autor</th>
                         <th class="iveal">Categor&iacute;a</th>
                         <th class="iveal">Fecha creaci&oacute;n</th>
                         <th></th>
@@ -342,7 +342,7 @@
 <h1 class="teta_up mabo2">Modificar Software</h1>
 <form id="formSoftware" name="formSoftware" action="" method="post">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-    
+
     <dt>
         <label for="titulo">T&iacute;tulo</label>
     </dt>
@@ -370,7 +370,7 @@
         <input name="descripcionBreve" id="descripcionBreve" type="text" class="large" title="Descripcion Abreviada para el Software" maxlength="100" value="{sDescripcionBreve}">
         <p>Resumen del contenido del review en 100 caracteres, aparece en los listados junto al t&iacute;tulo</p>
     </dd>
-    
+
     <dt>
         <label for="activo">Visible?</label>
     </dt>
@@ -434,7 +434,7 @@
         <a class="close-notification" rel="tooltip" href="#" original-title="Ocultar Notificacion">x</a>
         <p class="msg"></p>
     </div>
-   
+
     <button id="modificarSoftware" name="modificarSoftware" type="submit">Modificar Software</button>
     <input type="hidden" value="{iSoftwareId}" name="softwareIdForm" id="softwareIdForm" />
 </form>

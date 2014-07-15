@@ -10,15 +10,15 @@
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.query.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
 
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/modernizr-1.7.min.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/libs/selectivizr.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/modernizr-1.7.min.js")
+   .script("{pathUrlBase}"+"gui/js/backend/libs/selectivizr.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.facebox.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.tipsy.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.wysiwyg.js")
    .script("{pathUrlBase}"+"utilidades/jquery/jquery.datatables.js")
-   .script("{pathUrlBase}"+"gui/js/backEnd/script.js")
+   .script("{pathUrlBase}"+"gui/js/backend/script.js")
    .script("{pathUrlBase}"+"utilidades/js-scripts/md5.js")
    .script("{pathUrlBase}"+"gui/vistas/admin/usuarios.js");
 </script>
@@ -30,7 +30,7 @@
         <h2>Administrar Usuarios</h2>
     </header>
     <section>
-        <h3>Administrador de usuarios y perfiles de la comunidad SGPAPD</h3>
+        <h3>Administrador de usuarios y perfiles de la comunidad</h3>
     </section>
 </article>
 <!--EndHeaderBlock-->
@@ -49,7 +49,7 @@
 </div>
 <form id="formFiltrarUsuarios" name="formFiltrarUsuarios" action="" method="post">
     <fieldset>
-        <legend>Filtrar B&uacute;squeda</legend>        
+        <legend>Filtrar B&uacute;squeda</legend>
         <div class="mabo2 clearfix">
             <label for="filtroApellido">Apellido</label> <input type="text" id="filtroApellido" name="filtroApellido" class="mari2">
             <label for="filtroNumeroDocumento">N&uacute;mero Documento</label> <input type="text" id="filtroNumeroDocumento" name="filtroNumeroDocumento" class="mari2">
@@ -88,7 +88,7 @@
 </form>
 <section id="listadoUsuarios">
     <div id='ajax_loading' class="ajax_wait30 di_no"></div>
-        <div id="listadoUsuariosResult">        
+        <div id="listadoUsuariosResult">
             <!--BeginGrillaUsuariosBlock-->
             <div class="mabo">
                 Cantidad usuarios filtro actual: <strong>{iRecordsTotal}</strong>
@@ -108,7 +108,7 @@
                 <!--BeginUsuarioBlock-->
                     <tr class="{iUsuarioId}" class="{odd}">
                         <td>
-                            <a id="fotoPerfilActual_{iUsuarioId}" href="{scrAvatarUsuarioAmpliada}" rel="prettyPhoto">
+                            <a id="fotoPerfilActual_{iUsuarioId}" href="{scrAvatarUsuarioAmpliada}" rel="prettyphoto">
                                 <img src="{scrAvatarUsuario}" />
                             </a>
                         </td>
@@ -195,8 +195,8 @@
             </ul>
         </nav>
     </header>
-    
-    <section>        
+
+    <section>
         <div class="tab default-tab" id="tab1">
             <h3>Informaci&oacute;n b&aacute;sica del usuario</h3>
 
@@ -225,14 +225,14 @@
                 <div class="image-frame left">
                     <img src="{scrFotoPerfilActual}" />
                     <ul class="image-actions">
-                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">Ampliar</a></li>
+                        <li class="view"><a href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto">Ampliar</a></li>
                         <li class="delete"><a id="fotoPerfilBorrar" href="javascript:;" rel="{iUsuarioId}">Borrar</a></li>
                     </ul>
                 </div>
             </div>
             <!--EndFotoPerfilActualBlock-->
         </div>
-                  
+
         <div class="tab" id="tab2">
             <h3>Informaci&oacute;n de contacto</h3>
             <div class="teal_le">
@@ -259,7 +259,7 @@
                 </p>
             </div>
         </div>
-        
+
         <div class="tab" id="tab3">
             <h3>Informaci&oacute;n de formaci&oacute;n profesional</h3>
             <div class="teal_le">
@@ -307,7 +307,7 @@
                     <!--EndDescargarButton-->
                 </p>
             </div>
-        </div>            
+        </div>
     </section>
 </article>
 <!--EndFichaUsuarioBlock-->
@@ -388,7 +388,7 @@
             </dd>
         </dl>
     </fieldset>
-    
+
     <dt>
         <label for="sexo">Sexo</label>
     </dt>
@@ -434,14 +434,14 @@
             </dd>
         </dl>
     </fieldset>
-        
+
     <button id="crearUsuario" name="crearUsuario" type="submit">Crear Usuario</button>
 </form>
 <!--EndFormularioCrearBlock-->
 
 <!--BeginFormularioModificarBlock-->
 <article class="full-block clearfix">
-    <div id='ajax_loading' class="ajax_wait30 di_no"></div>        
+    <div id='ajax_loading' class="ajax_wait30 di_no"></div>
     <header>
         <h2>Modificar Usuario</h2>
         <nav>
@@ -519,7 +519,7 @@
                         <dd>
                             <input class="small" type="password" name="contraseniaNueva" id="contraseniaNueva" title="Nueva Contrase&ntilde;a" maxlength="30" />
                             <p>La contrase&ntilde;a contempla may&uacute;sculas y min&uacute;sculas.</p>
-                            <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />                            
+                            <input type="hidden" name="contraseniaNuevaMD5" id="contraseniaNuevaMD5" value="" />
                         </dd>
                         <dt>
                             <label for="contraseniaConfirmar">Vuelva a ingresar nueva</label>
@@ -565,7 +565,7 @@
                         </dd>
                     </dl>
                 </fieldset>
-                <button id="formInfoBasicaSubmit" name="formInfoBasicaSubmit" type="submit">Modificar Usuario</button>                
+                <button id="formInfoBasicaSubmit" name="formInfoBasicaSubmit" type="submit">Modificar Usuario</button>
                 <input type="hidden" value="1" name="modificarUsuario" />
                 <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" />
             </form>
@@ -654,7 +654,7 @@
                         <dd>
                             <input class="small" type="text" name="fax" id="fax" title="Fax" maxlength="40" value="{sFax}" />
                         </dd>
-                        
+
                         <button id="formInfoContactoSubmit" name="formInfoContactoSubmit" type="submit">Modificar Usuario</button>
                         <input type="hidden" value="1" name="modificarUsuario" />
                         <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" />
@@ -667,7 +667,7 @@
                         <!--BeginFotoPerfilActualFormBlock-->
                         <div id="fotoPerfilActual" class="mabo3">
                             <h2 class="mabo3">Foto Actual</h2>
-                            <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto">
+                            <a href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto">
                                 <img src="{scrFotoPerfilActual}" />
                             </a>
                         </div>
@@ -694,7 +694,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="tab" id="tab3">
             <h3>Informaci&oacute;n formaci&oacute;n profesional</h3>
 
@@ -802,7 +802,7 @@
                         <button id="formInfoProfesionalSubmit" name="formInfoProfesionalSubmit" type="submit">Modificar Usuario</button>
                         <input type="hidden" value="1" name="modificarUsuario" />
                         <input type="hidden" value="{iUsuarioId}" name="iUsuarioId" />
-                    </form>                    
+                    </form>
                 </div>
 
                 <div class="sidetab" id="tabCurriculum">

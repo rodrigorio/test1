@@ -43,7 +43,7 @@ class PageControllerAbstract implements PageControllerInterface
      */
     private $download = null;
     /**
-     * Instancia de ExportarPlanillaCalculoHelper
+     * Instancia de ExportarPlanillaCalculoHelperdd
      */
     private $exportarPlanilla = null;
     /**
@@ -54,6 +54,10 @@ class PageControllerAbstract implements PageControllerInterface
      * Instancia de MailerHelper
      */
     private $mailer = null;
+    /**
+     * Instancia de HtmlToPdf
+     */
+    private $pdf = null;
 
 
     public function __construct(Request $request, Response $response, array $invokeArgs = array())
@@ -170,6 +174,15 @@ class PageControllerAbstract implements PageControllerInterface
             $this->mailer = new MailerHelper();
         }
         return $this->mailer;
+    }
+
+    protected final function getHtmlToPdfHelper()
+    {
+        if(null === $this->pdf)
+        {
+            $this->pdf = new HtmlToPdf();
+        }
+        return $this->pdf;
     }
 
     protected final function getRequest()
@@ -419,7 +432,7 @@ class PageControllerAbstract implements PageControllerInterface
         //parseo los botones de orderBy
         foreach($aOrderBy as $aliasOrderBy => $aOrderByData){
             $block = ($aOrderByData['order'] == 'asc') ? "IconOrderByAscBlock" : "IconOrderByDescBlock";
-            $this->getTemplate()->load_file_section("gui/componentes/backEnd/grillas.gui.html", $aOrderByData['variableTemplate'], $block);
+            $this->getTemplate()->load_file_section("gui/componentes/backend/grillas.gui.html", $aOrderByData['variableTemplate'], $block);
             $this->getTemplate()->set_var("sAliasOrderBy", $aliasOrderBy);
             $this->getTemplate()->parse($aOrderByData['variableTemplate'], false);
             $this->getTemplate()->delete_parsed_blocks($block);

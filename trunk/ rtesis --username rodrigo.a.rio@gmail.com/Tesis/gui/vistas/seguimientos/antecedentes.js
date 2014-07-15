@@ -23,7 +23,7 @@ var optionsAjaxFormAntecedentes = {
     dataType: 'jsonp',
     resetForm: false,
     url: 'seguimientos/procesar-antecedentes?formAntecedentes=1',
-    beforeSerialize:function(){        
+    beforeSerialize:function(){
         if($("#formGuardarAntecedentes").valid() == true){
             $('#msg_form_guardarAntecedentes').hide();
             $('#msg_form_guardarAntecedentes').removeClass("correcto").removeClass("error");
@@ -80,7 +80,7 @@ function bindEventFormAgregarArchivo(iSeguimientoId)
                 this.disable(); //solo un archivo a la vez
             },
             onComplete:function(file, response){
-                
+
                 setWaitingStatus('tabsFormAntecedentes', false);
                 this.enable();
 
@@ -91,8 +91,8 @@ function bindEventFormAgregarArchivo(iSeguimientoId)
                 }
 
                 var dataInfo = response.split(';;');
-                var resultado = dataInfo[0]; 
-                var html = dataInfo[1]; 
+                var resultado = dataInfo[0];
+                var html = dataInfo[1];
 
                 if(resultado != "0" && resultado != "1"){
                     $('#msg_form_antecedentes .msg').html(lang['error permiso']);
@@ -112,12 +112,12 @@ function bindEventFormAgregarArchivo(iSeguimientoId)
                 return;
             }
         });
-    }    
+    }
 }
 
 $(document).ready(function(){
 
-    $("a[rel^='prettyPhoto']").prettyPhoto();
+    $("a[rel^='prettyphoto']").prettyphoto();
 
     //menu derecha
     $("#pageRightInnerContNav li").mouseenter(function(){

@@ -108,9 +108,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = $this->generateSelectUsuarios(). "
 
                         e.id as iEspecialidadId,
-                        e.nombre as sEspecialidadNombre, 
+                        e.nombre as sEspecialidadNombre,
                         e.descripcion as sEspecialidadDescripcion
-         
+
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
                         LEFT JOIN especialidades e ON u.especialidades_id = e.id
@@ -142,16 +142,16 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(isset($filtro['u.urlTokenKey']) && $filtro['u.urlTokenKey']!=""){
                 $WHERE[] = $this->crearFiltroTexto('u.urlTokenKey', $filtro['u.urlTokenKey']);
             }
-           
+
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-                                
+
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }
             if ($iIniLimit!==null && $iRecordCount!==null){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-                       
+
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -159,7 +159,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(empty($iRecordsTotal)){ return null; }
 
             $aUsuarios = array();
-            while($oObj = $db->oNextRecord()){                                
+            while($oObj = $db->oNextRecord()){
                 $oUsuario                   = new stdClass();
                 $oUsuario->iId              = $oObj->iId;
                 $oUsuario->sNombre          = $oObj->sNombre;
@@ -253,7 +253,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = clone($this->conn);
 
             $sSQL =  $this->generateSelectUsuarios(). "
-            
+
                         pe.descripcion as sPerfilDescripcion
                     FROM
                         personas p JOIN usuarios u ON p.id = u.id
@@ -267,7 +267,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             if(isset($filtro['p.apellido']) && $filtro['p.apellido']!=""){
                 $WHERE[] = $this->crearFiltroTexto($db->decryptData('p.apellido',true),  $filtro['p.apellido'] );
-            }            
+            }
             if(isset($filtro['p.numeroDocumento']) && $filtro['p.numeroDocumento']!=""){
                 $WHERE[] = $this->crearFiltroTexto('p.numeroDocumento', $filtro['p.numeroDocumento']);
             }
@@ -282,7 +282,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }
             if(isset($filtro['u.perfiles_id']) && $filtro['u.perfiles_id']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.perfiles_id', $filtro['u.perfiles_id'], MYSQL_TYPE_INT);
-            }            
+            }
             if(isset($filtro['u.activo']) && $filtro['u.activo']!=""){
                 $WHERE[] = $this->crearFiltroSimple('u.activo', $filtro['u.activo']);
             }
@@ -294,17 +294,17 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }
 
             $sSQL = $this->agregarFiltrosConsulta($sSQL, $WHERE);
-                       
+
             if (isset($sOrderBy) && isset($sOrder)){
                 $sSQL .= " order by $sOrderBy $sOrder ";
             }else{
                 $sSQL .= " order by p.apellido";
             }
-            
+
             if ($iIniLimit !== null && $iRecordCount !== null ){
                 $sSQL .= " limit  ".$db->escape($iIniLimit,false,MYSQL_TYPE_INT).",".$db->escape($iRecordCount,false,MYSQL_TYPE_INT) ;
             }
-            
+
             $db->query($sSQL);
 
             $iRecordsTotal = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
@@ -397,33 +397,33 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = clone($this->conn);
 
             $sSQL =  "SELECT SQL_CALC_FOUND_ROWS
-                       DISTINCT p.id as iId, 
-                        ".$db->decryptData( 'p.nombre')." as sNombre, 
+                       DISTINCT p.id as iId,
+                        ".$db->decryptData( 'p.nombre')." as sNombre,
                         ".$db->decryptData( 'p.apellido')." as sApellido,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        ".$db->decryptData( 'p.email ')." as sEmail, 
-                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
+                        ".$db->decryptData( 'p.email ')." as sEmail,
+                        ".$db->decryptData( 'p.telefono')." as sTelefono,
                         ".$db->decryptData( 'p.celular')." as sCelular,
-                        ".$db->decryptData( 'p.fax')." as sFax, 
-                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
+                        ".$db->decryptData( 'p.fax')." as sFax,
+                        ".$db->decryptData( 'p.domicilio')." as sDomicilio,
                         ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
                         p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
                         ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
                         ".$db->decryptData( 'p.empresa')." as sEmpresa,
-                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
+                        ".$db->decryptData( 'p.universidad')." as sUniversidad,
                         ".$db->decryptData( 'p.secundaria')." as sSecundaria,
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
 
-                        ".$db->decryptData( 'u.sitioWeb' )." as sSitioWeb, 
+                        ".$db->decryptData( 'u.sitioWeb' )." as sSitioWeb,
                         ".$db->decryptData( 'u.nombre' )." as sNombreUsuario, u.activo as bActivo,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        u.cargoInstitucion as sCargoInstitucion, 
+                        u.cargoInstitucion as sCargoInstitucion,
                         ".$db->decryptData( 'u.biografia' )." as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
                         u.urlTokenKey as sUrlTokenKey,
-                        
+
                         a.id as iCvId, a.nombre as sCvNombre,
                         a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
                         a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
@@ -441,7 +441,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         LEFT JOIN archivos a ON a.usuarios_id = u.id
                         JOIN seguimientos s ON s.usuarios_id = u.id
                     WHERE
-                        s.discapacitados_id = ".$iDiscapacitadoId." 
+                        s.discapacitados_id = ".$iDiscapacitadoId."
                     ORDER BY p.apellido ASC";
 
             $db->query($sSQL);
@@ -524,7 +524,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
-        }        
+        }
     }
 
     public function existe($filtro){
@@ -535,17 +535,17 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        personas p 
-                    JOIN 
+                        personas p
+                    JOIN
                     	usuarios u ON p.id = u.id
                     WHERE ".$this->crearCondicionSimple($filtro);
-            
+
             $db->query($sSQL);
 
             $foundRows = (int) $db->getDBValue("select FOUND_ROWS() as list_count");
 
-            if(empty($foundRows)){ 
-            	return false; 
+            if(empty($foundRows)){
+            	return false;
             }
             return true;
     	}catch(Exception $e){
@@ -553,13 +553,13 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             return false;
         }
     }
-        
+
     public function registrarInvitado($oObj)
     {
         try{
             $db = $this->conn;
             $db->begin_transaction();
-            
+
             $sSQL = " UPDATE personas SET ".
                     " nombre = ".$db->encryptData($this->escStr($oObj->sNombre)).", " .
                     " apellido = ".$db->encryptData($this->escStr($oObj->sApellido)).", " .
@@ -568,12 +568,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " sexo = ".$this->escStr($oObj->sSexo).", " .
                     " fechaNacimiento = ".$this->escDate($oObj->dFechaNacimiento)." ".
                     " WHERE id = ".$this->escInt($oObj->iInvitadoId)." ";
-            
+
             $db->execSQL($sSQL);
 
             $time = time();
             $sUrlTokenKey = md5($time.$oObj->sNombre.$oObj->sApellido);
-            
+
             $sSQL =" INSERT INTO usuarios SET ".
                    " id = ".$this->escInt($oObj->iInvitadoId).", ".
                    " perfiles_id = ".self::PERFIL_INTEGRANTE_INACTIVO.", ".
@@ -592,8 +592,8 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->execSQL($sSQL);
 
             //borro las otras invitaciones pendientes a la misma persona si es que las hay
-            $sSQL = "DELETE FROM usuario_x_invitado 
-                     WHERE invitados_id = ".$this->escInt($oObj->iInvitadoId)." 
+            $sSQL = "DELETE FROM usuario_x_invitado
+                     WHERE invitados_id = ".$this->escInt($oObj->iInvitadoId)."
                      AND estado = 'pendiente' ";
             $db->execSQL($sSQL);
 
@@ -606,6 +606,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                      FROM parametros_usuario ";
 
             $db->execSQL($sSQL);
+
+            //inserto configuracion informes con valores en nulo. 1 x usuario
+            $db->execSQL("INSERT INTO configuraciones_informes SET usuarios_id = ".$this->escInt($oObj->iInvitadoId)." ");
 
             $db->commit();
 
@@ -632,15 +635,15 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $oUsuario->iInvitacionesDisponibles = 5;
 
             return Factory::getUsuarioInstance($oUsuario);
-            
+
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }
     }
-        
+
     public function actualizar($oUsuario)
-    {       
+    {
         try{
             $db = $this->conn;
 
@@ -665,7 +668,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
 
             $activo = $oUsuario->isActivo()?"1":"0";
-			
+
             $db->begin_transaction();
             $sSQL = " update personas " .
                     " set nombre =".$db->encryptData($db->escape($oUsuario->getNombre(),true)).", " .
@@ -673,7 +676,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " documento_tipos_id =".$db->escape($oUsuario->getTipoDocumento(), false,MYSQL_TYPE_INT).", ".
                     " numeroDocumento =".$db->escape($oUsuario->getNumeroDocumento(),true).", " .
                     " sexo =".$db->escape($oUsuario->getSexo(),true).", " .
-                    " fechaNacimiento = ".$this->escDate($oUsuario->getFechaNacimiento()).", ".                   
+                    " fechaNacimiento = ".$this->escDate($oUsuario->getFechaNacimiento()).", ".
                     " email =".$db->encryptData($db->escape($oUsuario->getEmail(),true)).", " .
                     " telefono =".$db->encryptData($db->escape($oUsuario->getTelefono(),true)).", " .
                     " celular =".$db->encryptData($db->escape($oUsuario->getCelular(),true)).", " .
@@ -687,7 +690,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " universidad =".$db->encryptData($db->escape($oUsuario->getUniversidad(),true)).", " .
                     " secundaria =".$db->encryptData($db->escape($oUsuario->getSecundaria(),true))." ".
                     " WHERE id = ".$db->escape($oUsuario->getId(),false,MYSQL_TYPE_INT)." ";
-            
+
             $db->execSQL($sSQL);
 
             $sSQL =" update usuarios ".
@@ -706,7 +709,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->commit();
 
             return true;
-            
+
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
@@ -748,15 +751,15 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }else{
                 $especialidadId = null;
             }
-            
+
             $carreraFinalizada = $oUsuario->isCarreraFinalizada() ? "1" : "0";
 
             $time = time();
             $sUrlTokenKey = md5($time.$oUsuario->getNombre().$oUsuario->getApellido());
-            
+
             $db->begin_transaction();
-            
-           
+
+
             $sSQL = " insert into personas ".
             " set nombre =".$db->encryptData($db->escape($oUsuario->getNombre(),true)).", " .
             " apellido =".$db->encryptData($db->escape($oUsuario->getApellido(),true)).", " .
@@ -798,7 +801,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                     " nombre = ".$db->encryptData($db->escape($oUsuario->getNombreUsuario(),true)).",".
                     " contrasenia = ".$db->escape($oUsuario->getContrasenia(),true)." ";
 
-            $db->execSQL($sSQL);   
+            $db->execSQL($sSQL);
 
             $db->execSQL("insert into privacidad set usuarios_id = ".$db->escape($iLastId,false,MYSQL_TYPE_INT));
 
@@ -808,12 +811,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                      FROM parametros_usuario ";
 
             $db->execSQL($sSQL);
-            
+
             $db->commit();
 
             $oUsuario->setId($iLastId);
             $oUsuario->setUrlTokenKey($sUrlTokenKey);
-                        
+
             return true;
 
         }catch(Exception $e){
@@ -834,7 +837,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-		
+
     public function obtenerPrivacidadCampo($filtro, $nombreCampo)
     {
     	try{
@@ -843,14 +846,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                      FROM
                         privacidad p
                      WHERE ".$this->crearCondicionSimple($filtro);
-            
-            $db->query($sSQL);            
+
+            $db->query($sSQL);
             return $db->oNextRecord()->priv;
 
     	}catch(Exception $e){
             return "";
             throw new Exception($e->getMessage(), 0);
-        }        
+        }
     }
 
     /**
@@ -869,7 +872,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             $db->query($sSQL);
             $record = $db->oNextRecord();
-            
+
             if(null !== $record){
                 return  array('email' => $record->email,
                               'telefono' => $record->telefono,
@@ -879,11 +882,11 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             }else{
                 return null;
             }
-            
+
     	}catch(Exception $e){
             return "";
             throw new Exception($e->getMessage(), 0);
-        }            
+        }
     }
 
     public function updatePrivacidadCampo($filtro, $nombreCampo, $valorPrivacidad)
@@ -891,7 +894,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
         $db = $this->conn;
         $sSQL = "UPDATE privacidad p SET ".$nombreCampo." = ".$this->escStr($valorPrivacidad)."
                  WHERE ".$this->crearCondicionSimple($filtro);
-        
+
         $db->execSQL($sSQL);
         $db->commit();
     }
@@ -906,7 +909,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db = $this->conn;
 
             $email = $this->escStr($email);
-            
+
             if(!empty($userId)){
                 //ojo con esta verga que si le llega un null lo convierte en 'NULL' (un string)
                 $userId = $this->escInt($userId);
@@ -931,12 +934,12 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             if(empty($foundRows)){
             	return false;
             }
-            
+
             return true;
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
             return false;
-        }        
+        }
     }
 
     public function existeNombreUsuarioDb($nombreUsuario)
@@ -949,7 +952,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
-                        usuarios 
+                        usuarios
                     WHERE nombre = ".$db->encryptData($nombreUsuario);
 
             $db->query($sSQL);
@@ -963,9 +966,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
             return false;
-        }        
+        }
     }
-    
+
     public function existeDocumentoUsuario($numeroDocumento)
     {
     	try{
@@ -977,7 +980,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         1 as existe
                     FROM
                         personas p
-                    JOIN usuarios u ON p.id = u.id 
+                    JOIN usuarios u ON p.id = u.id
                     WHERE numeroDocumento = ".$numeroDocumento;
 
             $db->query($sSQL);
@@ -991,14 +994,14 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     	}catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
             return false;
-        }        
+        }
     }
 
     public function existePasswordTemporal($filtro)
     {
         try{
             $db = $this->conn;
-            
+
             $sSQL = "SELECT SQL_CALC_FOUND_ROWS
                         1 as existe
                     FROM
@@ -1069,9 +1072,9 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
             $db->commit();
 
             $oPasswordTemporal->setFecha(date("Y/m/d"));
-            
+
             return true;
-            
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
             return false;
@@ -1088,7 +1091,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
 
             //asocio el nuevo password al usuario
             $sSQL = "UPDATE usuarios SET contrasenia = (
-                        SELECT contraseniaNueva 
+                        SELECT contraseniaNueva
                         FROM usuario_passwords_temporales upt
                         WHERE upt.token = ".$sToken." )
                      WHERE id = (
@@ -1111,37 +1114,37 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
     }
 
     public function actualizarCampoArray($objects, $cambios){}
-    
+
     private function generateSelectUsuarios(){
     	$db = $this->conn;
       	$sSQL = "SELECT SQL_CALC_FOUND_ROWS
-                        p.id as iId, 
-                        ".$db->decryptData( 'p.nombre')." as sNombre, 
+                        p.id as iId,
+                        ".$db->decryptData( 'p.nombre')." as sNombre,
                         ".$db->decryptData( 'p.apellido')." as sApellido,
                         p.sexo as sSexo, p.fechaNacimiento as dFechaNacimiento,
-                        ".$db->decryptData( 'p.email ')." as sEmail, 
-                        ".$db->decryptData( 'p.telefono')." as sTelefono, 
+                        ".$db->decryptData( 'p.email ')." as sEmail,
+                        ".$db->decryptData( 'p.telefono')." as sTelefono,
                         ".$db->decryptData( 'p.celular')." as sCelular,
-                        ".$db->decryptData( 'p.fax')." as sFax, 
-                        ".$db->decryptData( 'p.domicilio')." as sDomicilio, 
+                        ".$db->decryptData( 'p.fax')." as sFax,
+                        ".$db->decryptData( 'p.domicilio')." as sDomicilio,
                         ".$db->decryptData( 'p.ciudadOrigen')." as sCiudadOrigen,
                         p.ciudades_id as iCiudadId, p.instituciones_id as iInstitucionId,
                         ".$db->decryptData( 'p.codigoPostal')." as sCodigoPostal,
                         ".$db->decryptData( 'p.empresa')." as sEmpresa,
-                        ".$db->decryptData( 'p.universidad')." as sUniversidad, 
+                        ".$db->decryptData( 'p.universidad')." as sUniversidad,
                         ".$db->decryptData( 'p.secundaria')." as sSecundaria,
                         p.documento_tipos_id as iTipoDocumentoId,
                         p.numeroDocumento as sNumeroDocumento,
 
-                        ".$db->decryptData( 'u.sitioWeb' )." as sSitioWeb, 
+                        ".$db->decryptData( 'u.sitioWeb' )." as sSitioWeb,
                         ".$db->decryptData( 'u.nombre' )." as sNombreUsuario, u.activo as bActivo,
                         u.fechaAlta as dFechaAlta, u.contrasenia as sContrasenia,
                         u.invitacionesDisponibles as iInvitacionesDisponibles,
-                        u.cargoInstitucion as sCargoInstitucion, 
+                        u.cargoInstitucion as sCargoInstitucion,
                         ".$db->decryptData( 'u.biografia' )." as sBiografia,
                         u.universidadCarrera as sUniveridadCarrera, u.carreraFinalizada as bCarreraFinalizada,
                         u.urlTokenKey as sUrlTokenKey,
-                        
+
                         a.id as iCvId, a.nombre as sCvNombre,
                         a.nombreServidor as sCvNombreServidor, a.descripcion as sCvDescripcion,
                         a.tipoMime as sCvTipoMime, a.tamanio as iCvTamanio,
@@ -1151,7 +1154,7 @@ class UsuarioMySQLIntermediary extends UsuarioIntermediary
                         f.id as iFotoId, f.nombreBigSize as sFotoNombreBigSize,
                         f.nombreMediumSize as sFotoNombreMediumSize, f.nombreSmallSize as sFotoNombreSmallSize,
                         f.orden as iFotoOrden, f.titulo as sFotoTitulo,
-                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo, 
+                        f.descripcion as sFotoDescripcion, f.tipo as sFotoTipo,
                ";
       	return $sSQL;
     }

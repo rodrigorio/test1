@@ -9,7 +9,7 @@
    .script("{pathUrlBase}"+"utilidades/jquery/maxlength/maxlength.js")
    .script("{pathUrlBase}"+"utilidades/jquery/form/jquery.form.js")
    .script("{pathUrlBase}"+"utilidades/jquery/validate/jquery.validate.min.js")
-   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyPhoto.js")
+   .script("{pathUrlBase}"+"utilidades/jquery/jquery.prettyphoto.js")
    .script("{pathUrlBase}"+"utilidades/jquery/menu/superfish.js")
    .script("{pathUrlBase}"+"utilidades/jquery/ajaxupload.3.6.js")
    .script("{pathUrlBase}"+"gui/js/vistas.js")
@@ -126,7 +126,7 @@
 <div id="fichaPersonaMenu" class="pa2 mabo3 po_re grupo baco1 bo2 bora">
     <div class="ajax_wait16 di_no"></div>
     <div class="fl_ri teal_ri">
-        <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_s thumb01 mabo">
+        <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto" class="th_fto_s thumb01 mabo">
             <i style="background-image:url('{scrFotoPerfilActual}')"></i>
         </a>
         <h2 class="mabo lihe2">{sNombrePersona}</h2>
@@ -373,7 +373,7 @@
         </form>
     </div>
 </div>
-<div id="listadoSeguimientos" class="grupo po_re">
+<div id="listadoSeguimientos" class="grupo po_re cl_le">
     <div class="ajax_wait30 di_no"></div>
     <div id="listadoSeguimientosResult">
        <!--BeginGrillaSeguimientosBlock-->
@@ -466,11 +466,17 @@
     <div id="contenidoInfoBasica" class="contenido pa2 grupo bobo1 baco3">
 
         <div class="fl_le mari3 mabo2">
-            <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyPhoto" class="th_fto_m thumb01 mabo3">
+            <a title="" href="{hrefFotoPerfilActualAmpliada}" rel="prettyphoto" class="th_fto_m thumb01 mabo3">
                 <i style="background-image:url('{scrFotoPerfilActual}')"></i>
             </a>
             <h2 class="mabo2">{sNombrePersona}</h2>
-            <a class="fowe_bo verPersona fte2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
+            <a class="fowe_bo verPersona fte2 mabo2" rel="{iPersonaId}" href="javascript:;">Ampliar Persona</a>
+            <div class="cl_le pato2">
+            <a class="button buttonLarge buttonSpecial" href="{hrefConfeccionarInforme}">
+                <span class="i mi readMore"></span>
+                <span class="buttonText">Generar Informe</span>
+            </a>
+            </div>
         </div>
         <div class="fl_le lihe2 mari3 mabo2">
             <span class="fte2 txt_imp2">Fecha Creaci&oacute;n:</span> {sSeguimientoFechaCreacion}<br>
