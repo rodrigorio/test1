@@ -2224,17 +2224,21 @@ class SeguimientosController
      * Devuelve lista completa de entradas para un seguimiento, los objetos son livianos.
      * puede setearse un periodo de entre fechas como filtro.
      */
-    public function getEntradasBySeguimientoId($iSeguimientoId, $dFechaDesde, $dFechaHasta)
+    public function getEntradasBySeguimientoId($iSeguimientoId, $dFechaDesde = NULL, $dFechaHasta = NULL, $sOrderBy = NULL, $sOrder = NULL)
     {
     	try{
             $oEntradaIntermediary = PersistenceFactory::getEntradaIntermediary($this->db);
 
-            $filtroFecha = array('fechaDesde' => $dFechaDesde, 'fechaHasta' => $dFechaHasta);
             $filtro = array('e.seguimientos_id' => $iSeguimientoId, 'e.tipoEdicion' => 'regular');
-            $filtro['fechas'] = $filtroFecha;
+
+            if($dFechaDesde && $dFechaHasta){
+                $filtroFecha = array('fechaDesde' => $dFechaDesde, 'fechaHasta' => $dFechaHasta);
+                $filtro['fechas'] = $filtroFecha;
+            }
+
             $iRecordsTotal = 0;
 
-            return $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, null, null, null, null);
+            return $oEntradaIntermediary->obtener($filtro, $iRecordsTotal, $sOrderBy, $sOrder, null, null);
         }catch(Exception $e){
             throw $e;
         }

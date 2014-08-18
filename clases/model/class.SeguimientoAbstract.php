@@ -273,10 +273,10 @@ abstract class SeguimientoAbstract
         return $this->aEntrevistas;
     }
 
-    public function getEntradas($dFechaDesde = "", $dFechaHasta = "")
+    public function getEntradas($dFechaDesde = "", $dFechaHasta = "", $sOrderBy = null, $sOrder = null)
     {
         if($this->aEntradas === null){
-            $this->aEntradas = SeguimientosController::getInstance()->getEntradasBySeguimientoId($this->iId, $dFechaDesde, $dFechaHasta);
+            $this->aEntradas = SeguimientosController::getInstance()->getEntradasBySeguimientoId($this->iId, $dFechaDesde, $dFechaHasta, $sOrderBy, $sOrder);
         }
         return $this->aEntradas;
     }

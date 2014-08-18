@@ -177,6 +177,11 @@ class InformesControllerSeguimientos extends PageControllerAbstract
         }
     }
 
+    /**
+     *
+     * @TODO hay que validar lo mismo que para poder realizar entradas x fecha. + que haya al menos una entrada
+     *
+     */
     public function generar()
     {
         try{
@@ -208,12 +213,129 @@ class InformesControllerSeguimientos extends PageControllerAbstract
 
             $this->getTemplate()->load_file_section("gui/vistas/seguimientos/informes.gui.html", "bodyContent", "InformeSeguimientoBodyContentBlock");
 
-            $aTokens[] = $oSeguimiento->getDiscapacitado()->getNombreCompleto();
-            //$this->getHtmlToPdfHelper()->generarFileName($aTokens);
-            //$this->getHtmlToPdfHelper()->agregarPagina($this->getTemplate()->pparse('frame', false));
-            //$this->getHtmlToPdfHelper()->generar();
+            $this->getTemplate()->set_var("dFechaHoy", date("d/m/y"));
 
-            $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
+            $oDiscapacitado = $oSeguimiento->getDiscapacitado();
+            $this->getTemplate()->set_var("sNombrePersona", $oDiscapacitado->getNombreCompleto());
+            $this->getTemplate()->set_var("sTipoDocumento", $oDiscapacitado->getTipoDocumento());
+            $this->getTemplate()->set_var("sNumeroDocumento", $oDiscapacitado->getNumeroDocumento());
+            $this->getTemplate()->set_var("sEdad", $oDiscapacitado->getEdad());
+
+            if($this->getRequest()->has('antecedentesCheck')){
+                $this->getTemplate()->set_var("sAntecedentes", $oSeguimiento->getAntecedentes(true));
+            }else{
+                $this->getTemplate()->set_var("AntecedentesBlock", "");
+            }
+
+            if($this->getRequest()->has('diagnosticoCheck')){
+
+                $this->getTemplate()->set_var("sDescripcionDiagnostico", $oSeguimiento->getDiagnostico()->getDescripcion(true));
+
+                if($oSeguimiento->isSeguimientoSCC()){
+                    $this->getTemplate()->set_var("CodigoDiagnosticoBlock", "");
+
+                    $aEjesTematicos = $oSeguimiento->getDiagnostico()->getEjesTematicos();
+                    foreach($aEjesTematicos as $oEjeTematico){
+                        $this->getTemplate()->set_var("sArea", $oEjeTematico->getArea()->getDescripcion());
+                        $this->getTemplate()->set_var("sEjeTematico", $oEjeTematico->getDescripcion());
+                        $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
+                        $this->getTemplate()->parse("EstadoInicialRow", true);
+                    }
+                }
+
+                if($oSeguimiento->isSeguimientoPersonalizado()){
+                    $this->getTemplate()->set_var("EstadoInicialBlock", "");
+
+                    $sCodigoDiagnostico = $oSeguimiento->getDiagnostico()->getCodigo();
+                    if(!empty($sCodigoDiagnostico)){
+                        $this->getTemplate()->set_var("sCodigoDiagnostico", $sCodigoDiagnostico);
+                    }else{
+                        $this->getTemplate()->set_var("CodigoDiagnosticoBlock", "");
+                    }
+                }
+            }else{
+                $this->getTemplate()->set_var("DiagnosticoBlock", "");
+                $this->getTemplate()->set_var("CodigoDiagnosticoBlock", "");
+                $this->getTemplate()->set_var("EstadoInicialBlock", "");
+            }
+
+            if($this->getRequest()->has('objetivosCheck')){
+
+                $aObjetivos = $oSeguimiento->getObjetivos();
+
+                if($oSeguimiento->isSeguimientoSCC()){
+                    $this->getTemplate()->set_var("ObjetivoPersonalizadoRowBlock", "");
+
+                    foreach($aObjetivos as $oObjetivo){
+                        $this->getTemplate()->set_var("sArea", $oObjetivo->getEje()->getArea()->getDescripcion());
+                        $this->getTemplate()->set_var("sEjeTematico", $oObjetivo->getEje()->getDescripcion());
+                        $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+                        $this->getTemplate()->set_var("sEstimacion", $oObjetivo->getEstimacion(true));
+                        $this->getTemplate()->parse("ObjetivoSCCRowBlock", true);
+                    }
+                }
+
+                if($oSeguimiento->isSeguimientoPersonalizado()){
+                    $this->getTemplate()->set_var("ObjetivoSCCRowBlock", "");
+
+                    foreach($aObjetivos as $oObjetivo){
+                        $this->getTemplate()->set_var("sEje", $oObjetivo->getEje()->getEjePadre()->getDescripcion()." > ".$oObjetivo->getEje()->getDescripcion());
+                        $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+                        $this->getTemplate()->set_var("sEstimacion", $oObjetivo->getEstimacion(true));
+                        $this->getTemplate()->parse("ObjetivoPersonalizadoRowBlock", true);
+                    }
+                }
+
+            }else{
+                $this->getTemplate()->set_var("ObjetivosBlock", "");
+                $this->getTemplate()->set_var("ObjetivoSCCRowBlock", "");
+                $this->getTemplate()->set_var("ObjetivoPersonalizadoRowBlock", "");
+            }
+
+            if($this->getRequest()->has('entradasCheck')){
+
+                $aEntrada = $oSeguimiento->getEntradas(null, null, "e.fecha", "asc");
+
+                foreach($aEntrada as $oEntrada){
+
+                    $sVariableEntradaBasica = "";
+                    $aUnidades = $oEntrada->getUnidades();
+
+                    foreach ($aUnidades as $oUnidad){
+                        if(!$oUnidad->isAsociacionAutomatica()){ continue; }
+
+                        $aVariables = $oUnidad->getVariables();
+                        $sVariableEntradaBasica = $aVariables[0]->getValor(true);
+                        break;
+                    }
+
+                    $this->getTemplate()->set_var("sVariableEntradaBasica", $sVariableEntradaBasica);
+                    $this->getTemplate()->set_var("sFechaEntrada", $oEntrada->getFecha(true));
+                    $this->getTemplate()->parse("EntradaRowBlock", true);
+                }
+
+            }else{
+                $this->getTemplate()->set_var("EntradasBlock", "");
+                $this->getTemplate()->set_var("EntradaRowBlock", "");
+            }
+
+            if($this->getRequest()->has('pronosticoCheck')){
+                $this->getTemplate()->set_var("sPronostico", $oSeguimiento->getPronostico(true));
+            }else{
+                $this->getTemplate()->set_var("PronosticoBlock", "");
+            }
+
+            $sNotaAdicional = $this->getRequest()->getParam('notaAdicional');
+            if(!empty($sNotaAdicional)){
+                $this->getTemplate()->set_var("sNotaAdjunta", $sNotaAdicional);
+            }else{
+                $this->getTemplate()->set_var("NotaAdjuntaBlock", "");
+            }
+
+            $aTokens[] = $oSeguimiento->getDiscapacitado()->getNombreCompleto();
+            $this->getHtmlToPdfHelper()->generarFileName($aTokens);
+            $this->getHtmlToPdfHelper()->agregarPagina($this->getTemplate()->pparse('frame', false));
+            $this->getHtmlToPdfHelper()->generar();
 
         }catch(Exception $e){
             throw($e);

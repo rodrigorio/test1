@@ -35,7 +35,7 @@ class HtmlToPdf extends HelperAbstract
         $this->sFileName = InflectorHelper::unaccent($this->sFileName);
         $this->sFileName .= time();
         $this->sFileName = str_replace(" ", "_", $this->sFileName);
-        $this->sFileName .= $this->sFileName.".pdf";
+        $this->sFileName = $this->sFileName.".pdf";
     }
 
     public function agregarPagina($sHtml){

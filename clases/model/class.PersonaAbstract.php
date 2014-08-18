@@ -37,7 +37,7 @@ abstract class PersonaAbstract
      * Instancia de clase Foto
      */
     protected $oFotoPerfil;
-    
+
     public function __construct(){}
 
     public function setId($id){
@@ -139,7 +139,7 @@ abstract class PersonaAbstract
         $this->oFotoPerfil = $oFotoPerfil;
         return $this;
     }
-   
+
     public function getId(){
         return $this->iId;
     }
@@ -155,7 +155,7 @@ abstract class PersonaAbstract
     public function getNombreCompleto(){
         return $this->sNombre." ".$this->sApellido;
     }
-    
+
     public function getSexo(){
         return $this->sSexo;
     }
@@ -172,6 +172,12 @@ abstract class PersonaAbstract
         return $this->dFechaNacimiento;
     }
 
+    public function getEdad(){
+        if($this->dFechaNacimiento !== null){
+            return intval(substr(date('Ymd') - date('Ymd', strtotime($this->dFechaNacimiento)), 0, -4));
+        }
+    }
+
     public function getEmail(){
        return $this->sEmail;
     }
@@ -180,7 +186,7 @@ abstract class PersonaAbstract
     	return $this->iCiudadId;
     }
 
-    public function getCiudad(){                
+    public function getCiudad(){
     	if($this->oCiudad == null && !empty($this->iCiudadId)){
             $this->oCiudad = ComunidadController::getInstance()->getCiudadById($this->iCiudadId);
     	}
