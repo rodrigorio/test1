@@ -44,11 +44,11 @@ button:-moz-focus-inner{border:0; padding:0}
 /* GENERALES */
 /****************************************/
 
-body{width:100%; height:100%; font-family:Arial; font-size:14px; line-height:16px; direction:ltr;}
+body{width:100%; height:100%; font-family:Arial; font-size:14px; line-height:20px; direction:ltr;}
 body, th, td{color:#666}
 li{text-decoration:none}
 i{background-color:#EEE}
-p{margin-bottom:18px}
+p{margin-bottom:18px; padding:5px; background-color:#F4F4F4;}
 
 h1{font-size:2.8em; line-height:36px}
 h2{font-size:1.7em}
@@ -80,7 +80,7 @@ table td.big{width:200px}
 .tetr_ca{text-transform:capitalize}
 .lihe1{line-height:18px !important} .lihe2{line-height:36px} .lihe3{line-height:72px} .lihe0{line-height:0 !important /* Para bloques sin texto */}
 .fl_ri{float:right} .fl_le{float:left} .fl_no{float:none !important} .fl_no li{float:none !important}
-.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #999} .bo2{border:1px solid #CCC} .boto2{border-top:1px dashed #CCC} .bori2{border-right:1px solid #CCC}
+.bobo1{border-bottom:1px solid #CCC} .bobo2{border-bottom:1px dashed #CCC} .bo{border:1px solid #333 !important} .bo1{border:1px solid #EEE} .bo2{border:1px solid #CCC} .boto2{border-top:1px dashed #CCC} .bori2{border-right:1px solid #CCC}
 .bo_no{border:none !important} .boto_no{border-top:none} .bobo_no{border-bottom:none !important} .bole_no{border-left:none} .bori_no{border-right:none !important}
 .fowe_bo{font-weight:bold}
 .teta_up{text-transform:uppercase} .teta_ca{text-transform:capitalize}
@@ -96,7 +96,7 @@ table td.big{width:200px}
 .zin{z-index:0 !important} .zin1{z-index:10 !important} .zin2{z-index:100 !important}
 .cu_mo{cursor:move !important} .cu_po{cursor:pointer}
 
-.baco1{background-color:#FFF} .baco2{background-color:#9CF} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF} .baco5{background-color:#E9EAED}
+.baco1{background-color:#F4F4F4} .baco2{background-color:#F9F9F9} .baco3{background-color:#E8EAFF} .baco4{background-color:#FFFABF} .baco5{background-color:#E9EAED}
 .ba_no, .ba_no:hover{background:none !important}
 
 .bora{-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}
@@ -119,11 +119,27 @@ table td.big{width:200px}
 .listty_no li{list-style-type:none !important}
 
 
+
 /****************************************/
 /* TEMPLATES */
 /****************************************/
 
 #frameExport #header, #frameExport #body, #frameExport #footer{width:700px; margin:0 auto;}
-#frameExport #header, #frameExport #body {border-bottom:1px solid #333; margin-bottom:20px;}
-#frameExport #header{padding-bottom:20px;}
+#frameExport #header, #frameExport #body {border-bottom:1px solid #999; padding:20px 0px;}
 
+#frameExport #header .izq{float:left; text-align:left; width:100px;}
+#frameExport #header .izq .logo{font-weight:bold; color:#AAA; font-size:20px;}
+#frameExport #header .center{font-weight:bold; float:left; text-align:center; width:500px; padding-top:10px; font-size:24px; color:#666;}
+#frameExport #header .der{float:right; text-align:right; width:100px; font-size:14px; color:#AAA; font-style:italic;}
+#frameExport #header .sub{text-align:center; clear:both; padding:20px 0px 10px; color:#666; font-size:18px;}
+
+#frameExport #footer{padding:20px; text-align:center;}
+
+/****************************************/
+/* SKIN */
+/****************************************/
+
+.titulo1{font-size:32px; line-height: 36px;}
+.titulo2{font-size:26px; line-height: 30px; font-style:italic; padding-bottom:5px; border-bottom:1px solid #DDD; margin-bottom:20px;}
+.titulo3{font-size:18px; line-height: 22px; margin-bottom:15px; font-style:italic;}
+.fte2{font-size:18px; line-height:24px;}

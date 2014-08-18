@@ -136,23 +136,49 @@
     <form id="formConfeccionarInforme" name="formConfeccionarInforme" action="seguimientos/informes/generar" method="post">
         <h2 class="mabo3 bobo1 pabo2 fost_it">Seleccione los elementos para confeccionar el informe</h2>
 
-
-
-
-        <div class="form_line msg_test">
-            <label for="test">
-                test
+        <div class="form_line msg_antecedentesCheck pa bobo2 boto2 baco5">
+            <input class="veal_mi" type="checkbox" name="antecedentesCheck" id="antecedentesCheck" checked="checked">
+            <label class="pale" for="antecedentesCheck">
+                <span class="fowe_bo co3 fost_it">Antecedentes</span>
             </label>
-            <br>
-            <input class="large" type="text" name="test" id="test" title="test" maxlength="100" value="" />
         </div>
 
-        <h2 class="mabo3 mato3 bobo1 pabo2 fost_it">Adjunte opcionalmente una nota para concluir</h2>
+        <div class="form_line msg_diagnosticoCheck pa bobo2 boto2 baco5">
+            <input class="veal_mi" type="checkbox" name="diagnosticoCheck" id="diagnosticoCheck" checked="checked">
+            <label class="pale" for="diagnosticoCheck">
+                <span class="fowe_bo co3 fost_it">Diagnostico</span>
+            </label>
+        </div>
 
-        <div class="form_line msg_test2">
+        <div class="form_line msg_objetivosCheck pa bobo2 boto2 baco5">
+            <input class="veal_mi" type="checkbox" name="objetivosCheck" id="objetivosCheck" checked="checked">
+            <label class="pale" for="objetivosCheck">
+                <span class="fowe_bo co3 fost_it">Objetivos</span>
+            </label>
+        </div>
+
+        <div class="form_line msg_entradasCheck pa bobo2 boto2 baco5">
+                <input type="checkbox" checked="checked" id="entradasCheck" name="entradasCheck" class="veal_mi">
+                <label for="entradasCheck" class="pale">
+                    <span class="fowe_bo co3 fost_it">Entradas</span>
+                </label>
+                <span class="male3 fowe_bo co3 fost_it">a partir del:</span>
+                <input class="inputTextLihe" type="text" id="entradasFechaDesde" name="entradasFechaDesde" readonly="readonly">
+        </div>
+
+        <div class="form_line msg_pronosticoCheck pa bobo2 boto2 baco5">
+            <input class="veal_mi" type="checkbox" name="pronosticoCheck" id="pronosticoCheck" checked="checked">
+            <label class="pale" for="pronosticoCheck">
+                <span class="fowe_bo co3 fost_it">Pron&oacute;stico</span>
+            </label>
+        </div>
+
+        <h2 class="mabo3 mato3 bobo1 pabo2 fost_it">Adjunte opcionalmente informaci&oacute;n adicional</h2>
+
+        <div class="form_line msg_notaAdicional">
             <div class="fwrap mabo2">
                 <div class="inner_fwrap">
-                    <textarea rows="0" cols="0" id="pie" name="test2" class="maxlength" title=""></textarea>
+                    <textarea rows="0" cols="0" id="pie" name="notaAdicional" id="notaAdicional" class="maxlength" title=""></textarea>
                 </div>
             </div>
         </div>
@@ -170,5 +196,99 @@
 <!--EndConfeccionarInformeBlock-->
 
 <!--BeginInformeSeguimientoBodyContentBlock-->
+    <div class="mabo4 baco2 bo1 teal_ri pa3">
+        <div class="mabo2">
+            <span class="titulo1 fost_it">{sNombrePersona}</span>
+        </div>
+        <span class="fowe_bo">Documento:</span> <span>{sNumeroDocumento}</span><br>
+        <span class="fowe_bo">Edad:</span> <span>{sEdad} años.</span>
+    </div>
+
+    <!--BeginAntecedentesBlock-->
+    <div class="mabo4 cl_bo">
+        <div class="titulo2">Antecedentes</div>
+        <p>{sAntecedentes}</p>
+    </div>
+    <!--EndAntecedentesBlock-->
+
+    <!--BeginDiagnosticoBlock-->
+    <div class="mabo4 cl_bo">
+        <div class="titulo2">Diagn&oacute;stico</div>
+        <p>{sDescripcionDiagnostico}</p>
+
+        <!--BeginCodigoDiagnosticoBlock-->
+        <span class="fowe_bo">C&oacute;digo:</span> <span>{sCodigoDiagnostico}</span>
+        <!--EndCodigoDiagnosticoBlock-->
+
+        <!--BeginEstadoInicialBlock-->
+        <div class="pale3 grupo">
+            <div class="titulo3">Estado inicial por eje tem&aacute;tico</div>
+
+            <!--BeginEstadoInicialRow-->
+            <div class="mabo">
+                <span class="fowe_bo">&Aacute;rea: </span> <span>{sArea}</span><br>
+                <span class="fowe_bo">Eje Tem&aacute;tico: </span> <span>{sEjeTematico}</span>
+            </div>
+            <p class="teal_ri">{sEstadoInicial}</p>
+            <!--EndEstadoInicialRow-->
+        </div>
+        <!--EndEstadoInicialBlock-->
+    </div>
+    <!--EndDiagnosticoBlock-->
+
+    <!--BeginObjetivosBlock-->
+    <div class="mabo4 cl_bo">
+        <div class="titulo2">Objetivos</div>
+
+        <!--BeginObjetivoSCCRowBlock-->
+        <div class="mabo2">
+            <div class="mabo">
+                <span class="fowe_bo">&Aacute;rea: </span> <span>{sArea}</span><br>
+                <span class="fowe_bo">Eje Tem&aacute;tico: </span> <span>{sEjeTematico}</span><br>
+                <span class="fowe_bo">Estimaci&oacute;n de logro:</span> <span>{sEstimacion}</span>
+            </div>
+            <p class="teal_ri">{sDescripcionObjetivo}</p>
+        </div>
+        <!--EndObjetivoSCCRowBlock-->
+
+        <!--BeginObjetivoPersonalizadoRowBlock-->
+        <div class="mabo2">
+            <div class="mabo">
+                <span class="fowe_bo">Eje: </span> <span>{sEje}</span><br>
+                <span class="fowe_bo">Estimaci&oacute;n de logro:</span> <span>{sEstimacion}</span>
+            </div>
+            <p class="teal_ri">{sDescripcionObjetivo}</p>
+        </div>
+        <!--EndObjetivoPersonalizadoRowBlock-->
+
+    </div>
+    <!--EndObjetivosBlock-->
+
+    <!--BeginEntradasBlock-->
+    <div class="mabo4 cl_bo">
+        <div class="titulo2">Historial Seguimiento</div>
+
+        <!--BeginEntradaRowBlock-->
+        <div class="teal_ri fost_it">
+            <span>Fecha:</span> <span>{sFechaEntrada}</span>
+        </div>
+        <p class="">{sVariableEntradaBasica}</p>
+        <!--EndEntradaRowBlock-->
+    </div>
+    <!--EndEntradasBlock-->
+
+    <!--BeginPronosticoBlock-->
+    <div class="mabo4 cl_bo">
+        <div class="titulo2">Pron&oacute;stico</div>
+        <p>{sPronostico}</p>
+    </div>
+    <!--EndPronosticoBlock-->
+
+    <!--BeginNotaAdjuntaBlock-->
+    <div class="mabo4 cl_bo">
+        <div class="titulo2">Nota Adjunta</div>
+        <p>{sNotaAdjunta}</p>
+    </div>
+    <!--EndNotaAdjuntaBlock-->
 
 <!--EndInformeSeguimientoBodyContentBlock-->

@@ -120,6 +120,8 @@ $(function(){
     if($("#formPie").length){
         $("#formPie").ajaxForm(optionsAjaxFormPie);
     }
+
+    $("#entradasFechaDesde").datepicker();
 });
 
 

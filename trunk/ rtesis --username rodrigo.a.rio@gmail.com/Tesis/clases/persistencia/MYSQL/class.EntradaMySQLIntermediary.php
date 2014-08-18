@@ -4,7 +4,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 {
     const EDICION_REGULAR = "regular";
     const EDICION_ESPORADICA = "esporadica";
-    
+
     private static $instance = null;
 
     protected function __construct( $conn) {
@@ -23,11 +23,11 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         }
         return self::$instance;
     }
-		
+
     public function insertar($oEntrada)
-    {        
+    {
         $db = $this->conn;
-        try{            
+        try{
             $db->begin_transaction();
 
             $sSQL = " INSERT INTO entradas SET ".
@@ -37,7 +37,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $db->execSQL($sSQL);
             $iLastId = $db->insert_id();
-            
+
             $aUnidades = $oEntrada->getUnidades();
 
             $sSQL1 = "INSERT INTO entrada_x_unidad (unidades_id, entradas_id) VALUES ";
@@ -70,17 +70,17 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
             $db->execSQL($sSQL1);
             $db->execSQL($sSQL2);
-            
+
             $db->commit();
 
-            $oEntrada->setId($iLastId);            
+            $oEntrada->setId($iLastId);
             return true;
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
         }
     }
-    
+
     public function actualizar($oEntrada)
     {
         try{
@@ -142,14 +142,14 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             $db->execSQL($sSQL);
 
             $db->commit();
-           
+
             return true;
         }catch(Exception $e){
             $db->rollback_transaction();
             throw new Exception($e->getMessage(), 0);
-        }            
+        }
     }
-    
+
     public function guardar($oEntrada)
     {
         try{
@@ -165,16 +165,16 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
 
     public final function obtener($filtro, &$iRecordsTotal, $sOrderBy = null, $sOrder = null, $iIniLimit = null, $iRecordCount = null)
     {
-        try{            
+        try{
             $db = clone($this->conn);
 
-            $sSQL = "SELECT DISTINCT 
+            $sSQL = "SELECT DISTINCT
                         e.id as iId, e.fechaHoraCreacion as dFechaHoraCreacion, e.fecha as dFecha, e.seguimientos_id as iSeguimientoId, e.guardada as bGuardada,
                         IF(scc.id IS NULL, 'SeguimientoPersonalizado', 'SeguimientoSCC') as sObjType,
                         e.tipoEdicion as eTipoEdicion
                      FROM
                         entradas e
-                     LEFT JOIN 
+                     LEFT JOIN
                         seguimientos_personalizados sp ON e.seguimientos_id = sp.id
                      LEFT JOIN
                         seguimientos_scc scc ON e.seguimientos_id = scc.id
@@ -195,7 +195,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
                 $WHERE[] = $this->crearFiltroSimple('e.fecha', $filtro['e.fecha'], MYSQL_TYPE_DATE);
             }
             if(isset($filtro['fechas']) && null !== $filtro['fechas']){
-                if(is_array($filtro['fechas'])){
+                if(is_array($filtro['fechas']) && (count($filtro['fechas']) > 0)){
                     $WHERE[] = $this->crearFiltroFechaDesdeHasta('e.fecha', $filtro['fechas'], false);
                 }
             }
@@ -242,7 +242,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             }
 
             return $aEntradas;
-            
+
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
@@ -348,13 +348,13 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
         $aMeses = array('1' => 'enero', '2' => 'febrero', '3' => 'marzo', '4' => 'abril', '5' => 'mayo',
                         '6' => 'junio', '7' => 'julio', '8' => 'agosto', '9' => 'septiembre', '10' => 'octubre',
                         '11' => 'noviembre', '12' => 'diciembre');
-        
+
         try{
             $db = clone($this->conn);
 
             $sSQL = " SELECT YEAR(fecha) AS year, MONTH(fecha) AS month, COUNT(*) AS cantEntradas
                       FROM entradas e WHERE e.seguimientos_id = ".$this->escInt($iSeguimientoId)."
-                      AND e.tipoEdicion = ".$this->escStr(self::EDICION_REGULAR)." 
+                      AND e.tipoEdicion = ".$this->escStr(self::EDICION_REGULAR)."
                       GROUP BY YEAR(fecha), MONTH(fecha)
                       ORDER BY year DESC, month ASC ";
 
@@ -372,7 +372,7 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
                     $aYears[] = $oYear; //esto se puede hacer porq se guarda solo apuntador
                     $oLastRow = $oRow;
                 }
-                
+
                 $oMonth = new stdClass();
                 $oMonth->month = $aMeses[$oRow->month];
                 $oMonth->monthNumber = $oRow->month;
@@ -380,12 +380,12 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
                 $oYear->months[] = $oMonth;
             }
 
-            return $aYears; 
+            return $aYears;
         }catch(Exception $e){
             throw new Exception($e->getMessage(), 0);
         }
     }
-            
+
     public function borrar($oEntrada)
     {
         try{
@@ -397,11 +397,11 @@ class EntradaMySQLIntermediary extends EntradaIntermediary
             throw new Exception($e->getMessage(), 0);
         }
     }
-	
+
     public function existe($filtro)
     {
 
     }
-       
+
     public function actualizarCampoArray($objects, $cambios){}
 }
