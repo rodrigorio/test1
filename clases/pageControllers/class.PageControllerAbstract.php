@@ -432,7 +432,7 @@ class PageControllerAbstract implements PageControllerInterface
         //parseo los botones de orderBy
         foreach($aOrderBy as $aliasOrderBy => $aOrderByData){
             $block = ($aOrderByData['order'] == 'asc') ? "IconOrderByAscBlock" : "IconOrderByDescBlock";
-            $this->getTemplate()->load_file_section("gui/componentes/backend/grillas.gui.html", $aOrderByData['variableTemplate'], $block);
+            $this->getTemplate()->load_file_section("gui/componentes/backEnd/grillas.gui.html", $aOrderByData['variableTemplate'], $block);
             $this->getTemplate()->set_var("sAliasOrderBy", $aliasOrderBy);
             $this->getTemplate()->parse($aOrderByData['variableTemplate'], false);
             $this->getTemplate()->delete_parsed_blocks($block);

@@ -1027,6 +1027,134 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("hrefDescargar", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oAntecedentes->getNombreServidor());
         }
 
+        //Diagnostico SCC
+        $this->getTemplate()->set_var("CodigoDiagnosticoBlock", "");
+        $oDiagnostico = $oSeguimiento->getDiagnostico();
+        $sDiagnosticoDesc = $oDiagnostico->getDescripcion(true);
+        if(!empty($sDiagnosticoDesc)){
+            $this->getTemplate()->set_var("NoInfoDiagnosticoBlock", "");
+            $this->getTemplate()->set_var("sDescripcionDiagnostico", $sDiagnosticoDesc);
+
+            $aEjesTematicos = $oSeguimiento->getDiagnostico()->getEjesTematicos();
+            foreach($aEjesTematicos as $oEjeTematico){
+                $this->getTemplate()->set_var("sNivel", $oEjeTematico->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion());
+                $this->getTemplate()->set_var("sCiclo", $oEjeTematico->getArea()->getAnio()->getCiclo()->getDescripcion());
+                $this->getTemplate()->set_var("sAnio", $oEjeTematico->getArea()->getAnio()->getDescripcion());
+                $this->getTemplate()->set_var("sArea", $oEjeTematico->getArea()->getDescripcion());
+                $this->getTemplate()->set_var("sEjeTematico", $oEjeTematico->getDescripcion());
+                $this->getTemplate()->set_var("sEstadoInicial", $oEjeTematico->getEstadoInicial());
+                $this->getTemplate()->parse("EstadoInicialRow", true);
+            }
+
+        }else{
+            $this->getTemplate()->set_var("DiagnosticoDescripcionBlock", "");
+            $this->getTemplate()->set_var("EstadoInicialBlock", "");
+            $this->getTemplate()->set_var("EstadoInicialRow", "");
+        }
+
+        //objetivosSCC
+        $aObjetivos = null;
+        if($oUltimaEntrada){ $aObjetivos = $oUltimaEntrada->getObjetivos(); }
+
+        if($aObjetivos && count($aObjetivos)>0){
+            $this->getTemplate()->set_var("NoInfoObjetivosBlock", "");
+            foreach($aObjetivos as $oObjetivo){
+                $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
+
+                switch($oObjetivo->getRelevancia()->getDescripcion())
+                {
+                    case "baja":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaBajaBlock";
+                        break;
+                    }
+                    case "normal":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaNormalBlock";
+                        break;
+                    }
+                    case "alta":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaAltaBlock";
+                        break;
+                    }
+                }
+                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
+                $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
+                $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
+
+                if($oObjetivo->isLogrado()){
+                    $this->getTemplate()->set_var("EstimacionBlock", "");
+                    $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
+                }else{
+                    $this->getTemplate()->set_var("FechaLogradoBlock", "");
+                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+                    if(!$oObjetivo->isEstimacionVencida()){
+                        $this->getTemplate()->set_var("expiradaClass", "");
+                    }else{
+                        $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                    }
+                }
+
+                $sDescripcionEje = $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getNivel()->getDescripcion()." > ".
+                                   $oObjetivo->getEje()->getArea()->getAnio()->getCiclo()->getDescripcion()." > ".
+                                   $oObjetivo->getEje()->getArea()->getAnio()->getDescripcion()." > ".
+                                   $oObjetivo->getEje()->getArea()->getDescripcion()." > ".
+                                   $oObjetivo->getEje()->getDescripcion();
+
+                $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
+                $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+
+                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oUltimaEntrada->getFecha());
+                if(null === $oEvolucion){
+                    $this->getTemplate()->set_var("iEvolucion", "0");
+                    $this->getTemplate()->set_var("VerComentariosEvolucionBlock", "");
+                }else{
+                    $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
+                    if($oEvolucion->isObjetivoLogrado()){
+                        $this->getTemplate()->set_var("sGoalClass", "goal");
+                    }else{
+                        $this->getTemplate()->set_var("sGoalClass", "");
+                    }
+                    $this->getTemplate()->set_var("sEvolucionComentarios", $oEvolucion->getComentarios());
+                }
+                $this->getTemplate()->parse("ObjetivoRowBlock", true);
+
+                $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
+                $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
+                $this->getTemplate()->delete_parsed_blocks("VerComentariosEvolucionBlock");
+            }
+        }else{
+            $this->getTemplate()->set_var("ObjetivoRowBlock", "");
+        }
+
+        //descripcion basica ultima entrada
+        if($oUltimaEntrada){
+            $this->getTemplate()->set_var("NoInfoUltimaEntradaBlock", "");
+            $aUnidades = $oUltimaEntrada->getUnidades();
+
+            $sVariableEntradaBasica = "";
+            foreach ($aUnidades as $oUnidad){
+                if(!$oUnidad->isAsociacionAutomatica()){ continue; }
+
+                $aVariables = $oUnidad->getVariables();
+                $sVariableEntradaBasica = $aVariables[0]->getValor(true);
+                break;
+            }
+
+            $this->getTemplate()->set_var("sVariableEntradaBasica", $sVariableEntradaBasica);
+            $this->getTemplate()->set_var("sFechaEntrada", $oUltimaEntrada->getFecha(true));
+            $this->getTemplate()->parse("InformeBasicoBlock", true);
+        }else{
+            $this->getTemplate()->set_var("InformeBasicoBlock", "");
+        }
+
+        //pronostico
+        $sPronostico = $oSeguimiento->getPronostico(true);
+        if(null === $sAntecedentes){
+            $this->getTemplate()->set_var("VerPronosticoActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("NoInfoPronosticoBlock", "");
+            $this->getTemplate()->set_var("sPronostico", $sPronostico);
+        }
+
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
     }
 
@@ -1140,6 +1268,126 @@ class SeguimientosControllerSeguimientos extends PageControllerAbstract
             $this->getTemplate()->set_var("sFechaArchivo", $oAntecedentes->getFechaAlta());
 
             $this->getTemplate()->set_var("hrefDescargar", $this->getRequest()->getBaseUrl().'/comunidad/descargar?nombreServidor='.$oAntecedentes->getNombreServidor());
+        }
+
+        //Diagnostico Personalizado
+        $this->getTemplate()->set_var("EstadoInicialBlock", "");
+        $this->getTemplate()->set_var("EstadoInicialRow", "");
+
+        $oDiagnostico = $oSeguimiento->getDiagnostico();
+        $sDiagnosticoDesc = $oDiagnostico->getDescripcion(true);
+        $sCodigoDiagnostico = $oSeguimiento->getDiagnostico()->getCodigo();
+
+        if(!empty($sDiagnosticoDesc) || !empty($sCodigoDiagnostico)){
+            $this->getTemplate()->set_var("NoInfoDiagnosticoBlock", "");
+        }
+        if(!empty($sDiagnosticoDesc)){
+            $this->getTemplate()->set_var("sDescripcionDiagnostico", $sDiagnosticoDesc);
+        }else{
+            $this->getTemplate()->set_var("DiagnosticoDescripcionBlock", "");
+        }
+        if(!empty($sCodigoDiagnostico)){
+            $this->getTemplate()->set_var("sCodigoDiagnostico", $sCodigoDiagnostico);
+        }else{
+            $this->getTemplate()->set_var("CodigoDiagnosticoBlock", "");
+        }
+
+        //objetivos personalizado
+        $aObjetivos = null;
+        if($oUltimaEntrada){ $aObjetivos = $oUltimaEntrada->getObjetivos(); }
+
+        if($aObjetivos && count($aObjetivos)>0){
+            $this->getTemplate()->set_var("NoInfoObjetivosBlock", "");
+            foreach($aObjetivos as $oObjetivo){
+                $this->getTemplate()->set_var("sRelevancia", $oObjetivo->getRelevancia()->getDescripcion());
+
+                switch($oObjetivo->getRelevancia()->getDescripcion())
+                {
+                    case "baja":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaBajaBlock";
+                        break;
+                    }
+                    case "normal":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaNormalBlock";
+                        break;
+                    }
+                    case "alta":{
+                        $iconoRelevanciaBlock = "IconoRelevanciaAltaBlock";
+                        break;
+                    }
+                }
+                $this->getTemplate()->load_file_section("gui/vistas/seguimientos/entradas.gui.html", "iconoRelevancia", $iconoRelevanciaBlock);
+                $this->getTemplate()->set_var("iconoRelevancia", $this->getTemplate()->pparse("iconoRelevancia"));
+                $this->getTemplate()->delete_parsed_blocks($iconoRelevanciaBlock);
+
+                if($oObjetivo->isLogrado()){
+                    $this->getTemplate()->set_var("EstimacionBlock", "");
+                    $this->getTemplate()->set_var("dFechaLogrado", $oObjetivo->getUltimaEvolucion()->getFecha(true));
+                }else{
+                    $this->getTemplate()->set_var("FechaLogradoBlock", "");
+                    $this->getTemplate()->set_var("dEstimacion", $oObjetivo->getEstimacion(true));
+                    if(!$oObjetivo->isEstimacionVencida()){
+                        $this->getTemplate()->set_var("expiradaClass", "");
+                    }else{
+                        $this->getTemplate()->set_var("expiradaClass", "txt_cuidado");
+                    }
+                }
+
+                $sDescripcionEje = $oObjetivo->getEje()->getEjePadre()->getDescripcion()." > ".$oObjetivo->getEje()->getDescripcion();
+                $this->getTemplate()->set_var("sDescripcionEje", $sDescripcionEje);
+                $this->getTemplate()->set_var("sDescripcionObjetivo", $oObjetivo->getDescripcion(true));
+
+                $oEvolucion = $oObjetivo->getUltimaEvolucionToDate($oUltimaEntrada->getFecha());
+                if(null === $oEvolucion){
+                    $this->getTemplate()->set_var("iEvolucion", "0");
+                    $this->getTemplate()->set_var("VerComentariosEvolucionBlock", "");
+                }else{
+                    $this->getTemplate()->set_var("iEvolucion", $oEvolucion->getProgreso());
+                    if($oEvolucion->isObjetivoLogrado()){
+                        $this->getTemplate()->set_var("sGoalClass", "goal");
+                    }else{
+                        $this->getTemplate()->set_var("sGoalClass", "");
+                    }
+                    $this->getTemplate()->set_var("sEvolucionComentarios", $oEvolucion->getComentarios());
+                }
+                $this->getTemplate()->parse("ObjetivoRowBlock", true);
+
+                $this->getTemplate()->delete_parsed_blocks("EstimacionBlock");
+                $this->getTemplate()->delete_parsed_blocks("FechaLogradoBlock");
+                $this->getTemplate()->delete_parsed_blocks("VerComentariosEvolucionBlock");
+            }
+        }else{
+            $this->getTemplate()->set_var("ObjetivoRowBlock", "");
+        }
+
+        //descripcion basica ultima entrada
+        if($oUltimaEntrada){
+            $this->getTemplate()->set_var("NoInfoUltimaEntradaBlock", "");
+            $aUnidades = $oUltimaEntrada->getUnidades();
+
+            $sVariableEntradaBasica = "";
+            foreach ($aUnidades as $oUnidad){
+                if(!$oUnidad->isAsociacionAutomatica()){ continue; }
+
+                $aVariables = $oUnidad->getVariables();
+                $sVariableEntradaBasica = $aVariables[0]->getValor(true);
+                break;
+            }
+
+            $this->getTemplate()->set_var("sVariableEntradaBasica", $sVariableEntradaBasica);
+            $this->getTemplate()->set_var("sFechaEntrada", $oUltimaEntrada->getFecha(true));
+            $this->getTemplate()->parse("InformeBasicoBlock", true);
+        }else{
+            $this->getTemplate()->set_var("InformeBasicoBlock", "");
+        }
+
+        //pronostico
+        $sPronostico = $oSeguimiento->getPronostico(true);
+        if(null === $sAntecedentes){
+            $this->getTemplate()->set_var("VerPronosticoActualBlock", "");
+        }else{
+            $this->getTemplate()->set_var("NoInfoPronosticoBlock", "");
+            $this->getTemplate()->set_var("sPronostico", $sPronostico);
         }
 
         $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));

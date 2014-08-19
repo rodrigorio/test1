@@ -326,7 +326,7 @@ fieldset legend{text-transform:uppercase; font-weight:bold; font-style:italic;}
 .tabs .leftTabs{float:left; padding-left:10px}
 .tabs .rightTabs{float:right; padding-right:10px}
 .toggleTabs li{display:inline}
-#toTop{position:absolute; bottom:20px; right:5px; display:none;}
+#toTop{position:absolute; bottom:20px; right:-40px; display:none;}
 
 /* para ubicar en posiciones absolutas */
 .topRight{top:5px; right:5px}
@@ -847,7 +847,7 @@ p .destacado{font-weight:bold;}
 
 /*** ACA REESCRIBO ALGUNAS REGLAS DE LAS CLASES BASE, LO HAGO ACA ASI CUANDO SALEN ACTUALIZACIONES NO HAY LIO ***/
 /* dialog */
-.ui-dialog-content{background-color:#FFF !important; padding:5px !important; min-height:150px !important}
+.ui-dialog-content{background-color:#FFF !important; padding:5px !important; min-height:150px !important; z-index:100;}
 .ui-dialog-content, .ui-dialog{min-height:0px; overflow:visible !important;}
 .ui-dialog-buttonpane{padding:0px; margin:0px !important; background-color:#EEE; border-top:1px dashed #CCC}
 .ui-dialog{padding:0px !important; -moz-box-shadow:0 0 30px #333; box-shadow:0 0 30px #333; -webkit-box-shadow:0 0 30px #333}

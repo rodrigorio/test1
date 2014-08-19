@@ -26,7 +26,7 @@ class IndexControllerAdmin extends PageControllerAbstract
 
         //js de home
         $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "jsContent", "JsContent");
-        
+
         return $this;
     }
 
@@ -36,7 +36,7 @@ class IndexControllerAdmin extends PageControllerAbstract
     static function setCabecera(Templates $template)
     {
         $request = FrontController::getInstance()->getRequest();
-        
+
         //menu cabecera
         $template->set_var("hrefHomeModuloIndex", $request->getBaseTagUrl());
         $template->set_var("hrefHomeModuloComunidad", $request->getBaseTagUrl()."comunidad/home");
@@ -51,7 +51,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         //lo hago asi para no enroscarme porq es un metodo estatico no puedo usar $this
         $oUploadHelper = new UploadHelper();
         $srcAvatar = $oUploadHelper->getDirectorioUploadFotos().$perfil->getAvatarUsuario();
-        
+
         $template->set_var("scrAvatarSession", $srcAvatar);
         $template->set_var("userName", $nombreUsuario);
         $template->set_var("hrefEditarPerfil", $request->getBaseTagUrl().'comunidad/datos-personales');
@@ -70,7 +70,7 @@ class IndexControllerAdmin extends PageControllerAbstract
 
         //usuarios
         $template->set_var("sHrefUsuariosListar", $request->getBaseTagUrl()."admin/usuarios");
-        
+
         //moderacion
         $template->set_var("sHrefPersonasModeracion", $request->getBaseTagUrl()."admin/personas-moderacion");
         $template->set_var("sHrefPublicacionesModeracion", $request->getBaseTagUrl()."admin/publicaciones-moderacion");
@@ -82,7 +82,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("sHrefPublicacionesDenuncias", $request->getBaseTagUrl()."admin/publicaciones-denuncias");
         $template->set_var("sHrefInstitucionesDenuncias", $request->getBaseTagUrl()."admin/instituciones-denuncias");
         $template->set_var("sHrefSoftwareDenuncias", $request->getBaseTagUrl()."admin/software-denuncias");
-        
+
         //especialidades
         $template->set_var("sHrefEspecialidadIndex", $request->getBaseTagUrl()."admin/administrar-especialidad");
         $template->set_var("sHrefEspecialidadCargar", $request->getBaseTagUrl()."admin/nueva-especialidad");
@@ -113,7 +113,7 @@ class IndexControllerAdmin extends PageControllerAbstract
         $template->set_var("sHrefEjes", $request->getBaseTagUrl()."admin/listar-ejes");
         $template->set_var("sHrefObjetivosAprendizaje", $request->getBaseTagUrl()."admin/listar-objetivos-aprendizaje");
         $template->set_var("sHrefUnidades", $request->getBaseTagUrl()."admin/listar-unidades");
-        
+
         //avanzadas
         $template->set_var("sHrefAccionesPerfil", $request->getBaseTagUrl()."admin/acciones-perfil");
         $template->set_var("sHrefParametros", $request->getBaseTagUrl()."admin/parametros");
@@ -130,14 +130,11 @@ class IndexControllerAdmin extends PageControllerAbstract
             $this->setCabecera($this->getTemplate());
             $this->setMenu($this->getTemplate());
 
-            //widgets
-            $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "widgetsContent", "WidgetsContent");
-
             //contenido ppal home
             $this->getTemplate()->load_file_section("gui/vistas/admin/home.gui.html", "mainContent", "MainContent");
 
             $this->getResponse()->setBody($this->getTemplate()->pparse('frame', false));
-            
+
         }catch(Exception $e){
             print_r($e);
         }

@@ -448,4 +448,18 @@ $(document).ready(function(){
         $(this).__tabs(a, b, c, d, e, f);
     };
 
+    if($("#toTop").length){
+        //back to top button
+        $(window).scroll(function(){
+            if($(this).scrollTop()){
+                $('#toTop').fadeIn();
+            }else{
+                $('#toTop').fadeOut();
+            }
+        });
+        $("#toTop").click(function(){
+           $("html, body").animate({scrollTop: 0}, 1000);
+        });
+    }
+
 });

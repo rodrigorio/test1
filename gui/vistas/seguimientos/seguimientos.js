@@ -959,4 +959,11 @@ $(document).ready(function(){
         var iArchivoId = $(this).attr("rel");
         editarArchivo(iArchivoId);
     });
+
+    $("#collapseAll").live("click", function(){
+        $(".contenido").hide(function(){});
+        $(".slideExpanded").removeClass("slideExpanded").addClass("slideCollapsed");
+    });
+
+    $(".evolucionDescripcion").tooltip();
 });
