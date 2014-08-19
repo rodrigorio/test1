@@ -3,7 +3,7 @@
  */
 function Calendario(element){
     var self = this;
-    
+
     this._element = element;
     this._seguimientoId = null;
     this._entradas = [];
@@ -20,7 +20,7 @@ function Calendario(element){
             this._ultimaEntrada = new Date(this._ultimaEntrada);
         }
 
-        //si no se esta visualizando una entrada entonces el calendario se inicializa en mes actual        
+        //si no se esta visualizando una entrada entonces el calendario se inicializa en mes actual
         var date = new Date();
         if(this._entradaActual != undefined && this._entradaActual != ""){
             date = new Date(this._entradaActual);
@@ -28,7 +28,7 @@ function Calendario(element){
         }
         var month = date.getMonth() + 1;
         var year = date.getFullYear();
-        
+
         this.getFechasEntradasMes(year, month);
     }
 
@@ -39,7 +39,7 @@ function Calendario(element){
             beforeShowDay:this.mostrarEntradas,
             onChangeMonthYear:this.getFechasEntradasMes,
             onSelect:this.clickDateEvent
-        });        
+        });
     }
 
     this.cambiarMes = function(year, month){
@@ -47,14 +47,14 @@ function Calendario(element){
         self._element.datepicker("setDate", new Date(year,month,01));
     }
 
-    this.getFechasEntradasMes = function(year, month){        
+    this.getFechasEntradasMes = function(year, month){
         //agrego un 0 al mes si es un solo digito.
         month = ('0' + month).slice(-2);
-        
+
         $.ajax({
             type:"get",
             dataType:'jsonp',
-            async:false, 
+            async:false,
             url:"seguimientos/entradas/procesar",
             data:{
                 fechasEntradasMes:"1",
@@ -65,14 +65,14 @@ function Calendario(element){
             beforeSend:function(){
                 setWaitingStatus("calendarWrap", true, "16");
             },
-            success:function(data){                
+            success:function(data){
                 //convierto a objeto date cada una de las fechas
                 var dates = [];
                 jQuery.each(data, function(){
                     dates.push(new Date(this));
-                });                
+                });
                 self._entradas = dates;
-                
+
                 //si no es la primera vez que se renderiza hago refresh
                 if(self._firstRender){
                     var defaultDate = "01/"+month+"/"+year;
@@ -84,7 +84,7 @@ function Calendario(element){
 
                 setWaitingStatus("calendarWrap", false, "16");
             }
-        });       
+        });
     }
 
     this.mostrarEntradas = function(date){
@@ -123,7 +123,7 @@ function Calendario(element){
     this.clickDateEvent = function(date){
         //aca ya viene configurada segun los settings del plugin en vistas.js en formato dd/mm/yyyy
         var dateObj = new Date(date.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3") );
-                
+
         var action = self.mostrarEntradas(dateObj);
         //crearEntrada || verEntrada || verEntrada entradaActual
         action = action[1];
@@ -218,7 +218,7 @@ function eliminarEntrada(iEntradaId, popup, contMenu, listRow)
             $(this).dialog( "close" );
         }
     }
-    
+
     $.ajax({
         type:"post",
         dataType: 'jsonp',
@@ -333,7 +333,7 @@ function bindEventsFormEvolucion()
     $("#formEvolucion").validate(validateFormEvolucion);
     $("#formEvolucion").ajaxForm(optionsAjaxFormEvolucion);
 
-    $("#comentarios").maxlength();    
+    $("#comentarios").maxlength();
     $("#progreso").rangeinput();
 }
 
@@ -360,7 +360,7 @@ function submitFormUnidad(iUnidadId)
         dataType: 'jsonp',
         resetForm: false,
         url: 'seguimientos/entradas/guardar',
-        beforeSerialize:function(){            
+        beforeSerialize:function(){
             if(form.valid() == true){
 
                 $('#msg_form_unidad_'+iUnidadId).hide();
@@ -388,7 +388,7 @@ function submitFormUnidad(iUnidadId)
                     if($("#dialog").length){dialog.remove();}
                     dialog = $('<div id="dialog" title="Guardar Unidad"></div>').appendTo('body');
                     dialog.html(data.html);
-                    
+
                     var buttonAceptar = {"Aceptar": function(){$(this).dialog("close");}}
                     dialog.dialog({
                         position:['center', 'center'],
@@ -419,7 +419,7 @@ function submitFormUnidad(iUnidadId)
 
     form.submit();
 }
-   
+
 $(document).ready(function(){
 
     var calendario = new Calendario($("#calendarioEntradas"));
@@ -431,10 +431,10 @@ $(document).ready(function(){
         var month = rel[1];
         calendario.cambiarMes(year, month);
     });
-    
+
     $(".desplegables").tooltip();
     $(".evolucionDescripcion").tooltip();
-    
+
     $(".expand").live("click", function(){
        $(this).removeClass("expand").addClass("collapse");
     });
@@ -455,24 +455,12 @@ $(document).ready(function(){
         $(".desplegable").removeClass("collapse").addClass("expand");
     });
 
-    //back to top button
-    $(window).scroll(function(){
-        if($(this).scrollTop()){
-            $('#toTop').fadeIn();
-        }else{
-            $('#toTop').fadeOut();
-        }
-    });
-    $("#toTop").click(function(){
-       $("html, body").animate({scrollTop: 0}, 1000);
-    });
-
     $("#eliminarEntrada").live('click', function(){
         var iEntradaId = $(this).attr("rel");
         var popup = false;
         var listRow = false;
         eliminarEntrada(iEntradaId, popup, "menuEntrada", listRow);
-    });    
+    });
     $("#eliminarEntradaPopup").live('click', function(){
         var iEntradaId = $(this).attr("rel");
         var popup = true;
@@ -485,7 +473,7 @@ $(document).ready(function(){
         var listRow = true; //porq es una entrada en forma de listado
         eliminarEntrada(iEntradaId, popup, "menuEntrada_"+iEntradaId, listRow);
     });
-    
+
     $("#crearEntradaHoy").live('click', function(){
         var rel = $(this).attr("rel").split('_');
         var iSeguimientoId = rel[0];
@@ -548,5 +536,5 @@ $(document).ready(function(){
             function( data, textStatus, jqxhr ){
                 bindEventsCrearEntradaUnidadEsporadicaForm();
             });
-    }    
+    }
 });

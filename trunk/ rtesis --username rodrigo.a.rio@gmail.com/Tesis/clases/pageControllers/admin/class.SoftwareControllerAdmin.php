@@ -438,7 +438,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
             $aComentarios = $oSoftware->getComentarios();
 
             if(count($aComentarios)>0){
-                $this->getTemplate()->load_file_section("gui/componentes/backend/comentarios.gui.html", "comentarios", "ComentariosBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/backEnd/comentarios.gui.html", "comentarios", "ComentariosBlock");
                 $this->getTemplate()->set_var("totalComentarios", count($aComentarios));
 
                 foreach($aComentarios as $oComentario){
@@ -493,7 +493,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
 
             if($cantFotos > 0 || $cantArchivos > 0){
 
-                $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
+                $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "galeriaAdjuntos", "GaleriaAdjuntosBlock");
 
                 //videos ya se que no voy a tener en software
                 $this->getTemplate()->set_var("GaleriaAdjuntosVideosBlock", "");
@@ -746,7 +746,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     public function formArchivo()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
+        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioArchivoBlock");
 
         $iArchivoId = $this->getRequest()->getParam('iArchivoId');
         if(empty($iArchivoId)){
@@ -823,7 +823,7 @@ class SoftwareControllerAdmin extends PageControllerAbstract
     private function formFoto()
     {
         $this->getTemplate()->load_file("gui/templates/index/framePopUp01-02.gui.html", "frame");
-        $this->getTemplate()->load_file_section("gui/componentes/backend/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
+        $this->getTemplate()->load_file_section("gui/componentes/backEnd/galerias.gui.html", "popUpContent", "FormularioFotoBlock");
 
         $iFotoId = $this->getRequest()->getParam('iFotoId');
         if(empty($iFotoId)){

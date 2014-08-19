@@ -461,6 +461,9 @@
 <!--EndListadoSeguimientosBlock-->
 
 <!--BeginVerSeguimientoBlock-->
+<div class="fl_ri">
+    <a id="collapseAll" class="fte2" href="javascript:;">Contraer todos</a>
+</div>
 <div class="slide slide01">
     <div class="slideExpanded iveal"><span class="i mi ihover"></span>Informaci&oacute;n B&aacute;sica</div>
     <div id="contenidoInfoBasica" class="contenido pa2 grupo bobo1 baco3">
@@ -522,7 +525,7 @@
     </div>
 </div>
 <div class="slide slide01">
-    <div class="slideCollapsed iveal"><span class="i mi ihover"></span>Antecedentes</div>
+    <div class="desplegable slideCollapsed iveal"><span class="i mi ihover"></span>Antecedentes</div>
     <div id="contenidoAntecedentes" class="contenido pa2 grupo bobo1 baco3" style="display:none">
 
         <div class="fowe_bo teta_up mabo3">Antecedentes actuales de la persona</div>
@@ -532,7 +535,7 @@
         <!--EndNoInfoAntecedentesBlock-->
 
         <!--BeginVerAntecedentesActualBlock-->
-        <p>{sAntecedentes}</p>
+        <p class="fte co3">{sAntecedentes}</p>
         <!--EndVerAntecedentesActualBlock-->
 
         <!--BeginVerArchivoAntecedentesActualBlock-->
@@ -554,4 +557,126 @@
         <!--EndVerArchivoAntecedentesActualBlock-->
     </div>
 </div>
+
+<div class="slide slide01">
+    <div class="desplegable slideCollapsed iveal"><span class="i mi ihover"></span>Diagn&oacute;stico</div>
+    <div id="contenidoDiagnostico" class="contenido pa2 grupo bobo1 baco3" style="display:none">
+
+        <div class="fowe_bo teta_up mabo3">Descripci&oacute;n diagn&oacute;stico</div>
+
+        <!--BeginNoInfoDiagnosticoBlock-->
+        <p>No hay informaci&oacute;n cargada.</p>
+        <!--EndNoInfoDiagnosticoBlock-->
+
+        <!--BeginDiagnosticoDescripcionBlock-->
+        <p class="fte co3">{sDescripcionDiagnostico}</p>
+        <!--EndDiagnosticoDescripcionBlock-->
+
+        <!--BeginCodigoDiagnosticoBlock-->
+        <span class="fowe_bo">C&oacute;digo:</span> <span>{sCodigoDiagnostico}</span>
+        <!--EndCodigoDiagnosticoBlock-->
+
+        <!--BeginEstadoInicialBlock-->
+        <div class="pale3 grupo">
+            <div class="fowe_bo teta_up mabo3">Estado inicial por eje tem&aacute;tico</div>
+
+            <!--BeginEstadoInicialRow-->
+            <div class="mabo">
+                <span class="fowe_bo">Año: </span> <span>{sNivel}</span> > <span>{sCiclo}</span> > <span>{sAnio}</span><br>
+                <span class="fowe_bo">&Aacute;rea: </span> <span>{sArea}</span><br>
+                <span class="fowe_bo">Eje Tem&aacute;tico: </span> <span>{sEjeTematico}</span>
+            </div>
+            <p class="baco1 pa">{sEstadoInicial}</p>
+            <!--EndEstadoInicialRow-->
+        </div>
+        <!--EndEstadoInicialBlock-->
+
+    </div>
+</div>
+
+<div class="slide slide01">
+    <div class="desplegable slideCollapsed iveal"><span class="i mi ihover"></span>Objetivos</div>
+    <div id="contenidoObjetivos" class="contenido pa2 grupo bobo1 baco3" style="display:none">
+
+        <div class="fowe_bo teta_up mabo3">Evoluci&oacute;n actual de los objetivos activos</div>
+
+        <!--BeginNoInfoObjetivosBlock-->
+        <p>No hay informaci&oacute;n cargada.</p>
+        <!--EndNoInfoObjetivosBlock-->
+
+        <!--BeginObjetivoRowBlock-->
+        <div class="grupo mabo2 pa2 baco1 iveal">
+            <div class="fl_le">
+                <span class="fowe_bo">Relevancia: </span> {iconoRelevancia} <span class="fost_it tetr_ca fte2">{sRelevancia}</span>
+            </div>
+            <div class="fl_le male3">
+                <span class="fowe_bo">Estimaci&oacute;n: </span>
+                <span class="i bs calendar"></span>
+                <!--BeginEstimacionBlock-->
+                <span class="fowe_bo fte2 {expiradaClass}">{dEstimacion}</span>
+                <!--EndEstimacionBlock-->
+
+                <!--BeginFechaLogradoBlock-->
+                <span class="fowe_bo fte2 txt_correcto">{dFechaLogrado}</span>
+                <!--EndFechaLogradoBlock-->
+            </div>
+            <div class="fl_le male3">
+                <span class="fowe_bo">Evoluci&oacute;n: </span>
+            </div>
+            <div class="fl_le male miwi1">
+                <div class="bora progress-bar">
+                    <div id="progreso_{iEvolucionId}" class="bora progress-bar-percentage {sGoalClass}" style="width:{iEvolucion}%"><span>{iEvolucion}/100</span></div>
+                </div>
+            </div>
+            <!--BeginVerComentariosEvolucionBlock-->
+            <div class="fl_le male">
+                <span class="evolucionDescripcion fte2 fowe_bo fost_it" title="{sEvolucionComentarios}">Rese&ntilde;a</span>
+            </div>
+            <!--EndVerComentariosEvolucionBlock-->
+        </div>
+        <span class="fte2 txt_imp2">Descripci&oacute;n Eje</span><br>
+        <p class="co3">{sDescripcionEje}</p>
+        <span class="fte2 txt_imp2">Descripci&oacute;n Objetivo</span><br>
+        <p class="co3">{sDescripcionObjetivo}</p>
+        <!--EndObjetivoRowBlock-->
+
+    </div>
+</div>
+
+<div class="slide slide01">
+    <div class="desplegable slideCollapsed iveal"><span class="i mi ihover"></span>&Uacute;ltima Entrada</div>
+    <div id="contenidoUltimaEntrada" class="contenido pa2 grupo bobo1 baco3" style="display:none">
+
+        <div class="fowe_bo teta_up mabo3">Informe b&aacute;sico &uacute;ltimo encuentro</div>
+
+        <!--BeginNoInfoUltimaEntradaBlock-->
+        <p>No hay informaci&oacute;n cargada.</p>
+        <!--EndNoInfoUltimaEntradaBlock-->
+
+        <!--BeginInformeBasicoBlock-->
+        <div class="mabo2 fost_it">
+            <span>Fecha:</span> <span>{sFechaEntrada}</span>
+        </div>
+        <p class="fte co3">{sVariableEntradaBasica}</p>
+        <!--EndInformeBasicoBlock-->
+    </div>
+</div>
+
+<div class="slide slide01">
+    <div class="desplegable slideCollapsed iveal"><span class="i mi ihover"></span>Pron&oacute;stico</div>
+    <div id="contenidoPronostico" class="contenido pa2 grupo bobo1 baco3" style="display:none">
+
+        <div class="fowe_bo teta_up mabo3">Pron&oacute;stico acerca de la evoluci&oacute; en la persona</div>
+
+        <!--BeginNoInfoPronosticoBlock-->
+        <p>No hay informaci&oacute;n cargada.</p>
+        <!--EndNoInfoPronosticoBlock-->
+
+        <!--BeginVerPronosticoActualBlock-->
+        <p class="fte co3">{sPronostico}</p>
+        <!--EndVerPronosticoActualBlock-->
+
+    </div>
+</div>
+<div id="toTop"><span class="i32 bs arrowUp32 ihover"></span></div>
 <!--EndVerSeguimientoBlock-->
